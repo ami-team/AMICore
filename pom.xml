@@ -132,6 +132,10 @@
           </execution>
         </executions>
 
+        <configuration>
+          <outputDirectory>${project.build.directory}/antlr4</outputDirectory>
+        </configuration>
+
       </plugin>
 
       <!--****************************************************************-->
