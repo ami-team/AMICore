@@ -1,6 +1,4 @@
 .DS_Store
+/bin/
 /target/
 /tomcat/
-/bin/
-/bin/
-/bin/
