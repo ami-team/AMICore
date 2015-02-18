@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<meta charset="utf-8"/>
+
+		<title>Server setup</title>
+
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" ></script>
+
+		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+		<script type="text/javascript">
+
+			function apply() {
+
+			}
+
+		</script>
+
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body style="background: white url('/AMI/background.jpg') fixed;">
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h4 class="modal-title"><i class="fa fa-cogs"></i> Server setup</h4>
+				</div>
+
+				<div class="modal-body">
+
+					<div id="message"></div>
+
+					<div class="text-right"><kbd>Server</kbd></div>
+
+					<div>
+
+						<div class="form-group">
+							<label for="host" class="control-label">host <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="host" class="form-control" id="host" />
+						</div>
+
+						<div class="form-group">
+							<label for="agent" class="control-label">agent <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="agent" class="form-control" id="agent" />
+						</div>
+
+						<div class="form-group">
+							<label for="guest_user" class="control-label">guest_user <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="guest_user" class="form-control" id="guest_user" />
+						</div>
+
+						<div class="form-group">
+							<label for="guest_pass" class="control-label">guest_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="guest_pass" class="form-control" id="guest_pass" />
+						</div>
+
+						<div class="form-group">
+							<label for="encryption_key" class="control-label">encryption_key <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="encryption_key" class="form-control" id="encryption_key" />
+						</div>
+
+					</div>
+
+					<div class="text-right"><kbd>Router database</kbd></div>
+
+					<div>
+
+						<div class="form-group">
+							<label for="jdbc_url" class="control-label">jdbc_url <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="jdbc_url" class="form-control" id="jdbc_url" />
+						</div>
+
+						<div class="form-group">
+							<label for="router_user" class="control-label">router_user <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="router_user" class="form-control" id="router_user" />
+						</div>
+
+						<div class="form-group">
+							<label for="router_pass" class="control-label">router_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="router_pass" class="form-control" id="router_pass" />
+						</div>
+
+						<div class="form-group">
+							<label for="router_name" class="control-label">router_name <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+							<input type="text" name="router_name" class="form-control" id="router_name" />
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<a href="javascript:apply();" class="btn btn-primary">Submit</a>
+				</div>
+
+			</div>
+		</div>
+
+		<div style="background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(243,243,243,1) 50%,rgba(255,255,255,1) 100%); padding-right: 20px; text-align: right;">
+			<a href="mailto:ami@lpsc.in2p3.fr">The AMI team</a>
+		</div>
+
+		<script type="text/javascript">
+
+			$('.amitt').tooltip({delay: {show: 500, hide: 100}});
+
+		</script>
+
+	</body>
+</html>
