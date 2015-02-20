@@ -61,6 +61,7 @@ public class Setup extends HttpServlet {
 
 			while((line = bufferedReader.readLine()) != null) {
 				result.append(line);
+				result.append('\n');
 			}
 
 		} catch(IOException e) {

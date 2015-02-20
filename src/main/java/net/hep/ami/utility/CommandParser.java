@@ -89,7 +89,7 @@ public class CommandParser {
 
 		for(String token: tokens) {
 
-			/*  */ if(token.equals("-")
+			/****/ if(token.equals("-")
 			          ||
 			          token.equals("/")
 			 ) {

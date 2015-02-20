@@ -62,7 +62,7 @@ public class QueryResult {
 
 			for(int i = 0; i < numberOfColumn; i++) {
 
-				/*  */ if(m_types[i].equals("TIME")) {
+				/****/ if(m_types[i].equals("TIME")) {
 					/*-----------------------------------------------------*/
 					/* TIME                                                */
 					/*-----------------------------------------------------*/
@@ -264,7 +264,11 @@ public class QueryResult {
 
 		StringBuilder result = new StringBuilder();
 
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset>");
+
+		/*-----------------------------------------------------------------*/
 
 		for(String[] row: m_rows) {
 
@@ -275,7 +279,11 @@ public class QueryResult {
 			result.append("</row>");
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
