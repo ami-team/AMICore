@@ -12,12 +12,10 @@ import org.w3c.dom.*;
 public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
-	public static String m_tomcatPath = null;
-
-	/*---------------------------------------------------------------------*/
-
 	private static boolean m_validConfFile = false;
 	private static boolean m_validDataBase = false;
+
+	/*---------------------------------------------------------------------*/
 
 	private static HashMap<String, String> m_properties = new HashMap<String, String>();
 

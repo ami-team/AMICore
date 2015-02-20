@@ -23,7 +23,7 @@ public class ClassFinder {
 
 		String name = "/net/hep/ami/utility/ClassFinder.class";
 
-		String path = ClassLoader.class.getResource(name).getPath();
+		String path = ClassFinder.class.getResource(name).getPath();
 
 		path = path.substring(0, path.indexOf(name));
 
@@ -50,11 +50,11 @@ public class ClassFinder {
 		} else {
 			String fileName = file.getName().toLowerCase();
 
-			/*  */ if(fileName.endsWith(".ear")
-			          ||
-			          fileName.endsWith(".jar")
-			          ||
-			          fileName.endsWith(".war")
+			if(fileName.endsWith(".ear")
+			   ||
+			   fileName.endsWith(".jar")
+			   ||
+			   fileName.endsWith(".war")
 			 ) {
 				addZip(file);
 			} else {

@@ -170,6 +170,8 @@ public class CommandSingleton {
 		} else {
 			result = Templates.help(
 				m_commands.get(command).y
+				,
+				m_commands.get(command).z
 			);
 		}
 

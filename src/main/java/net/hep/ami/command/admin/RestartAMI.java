@@ -3,8 +3,13 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.utility.*;
 
 public class RestartAMI extends CommandAbstractClass {
+	/*---------------------------------------------------------------------*/
+
+	private final String m_path = System.getProperty("catalina.home") + "/bin";
+
 	/*---------------------------------------------------------------------*/
 
 	public RestartAMI(HashMap<String, String> arguments, int transactionID) {
@@ -16,11 +21,9 @@ public class RestartAMI extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		StringBuilder result = new StringBuilder();
+		Shell.exec(new String[] {"bash", "-c", String.format("%s/shutdown.sh ; sleep 2 ; %s/startup.sh", m_path, m_path)});
 
-		LogSingleton.log(LogSingleton.LogLevel.INFO, ConfigSingleton.m_tomcatPath);
-
-		return result;
+		return new StringBuilder("<info><![CDATA[restarting AMI...]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

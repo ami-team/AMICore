@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.security.cert.*;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
 
 import net.hep.ami.*;
@@ -20,13 +19,6 @@ public class FrontEnd extends HttpServlet {
 
 	private static final String m_guest_user = ConfigSingleton.getProperty("guest_user");
 	private static final String m_guest_pass = ConfigSingleton.getProperty("guest_pass");
-
-	/*---------------------------------------------------------------------*/
-
-	public void init(final ServletConfig config) {
-
-		ConfigSingleton.m_tomcatPath = config.getServletContext().getRealPath("/");
-	}
 
 	/*---------------------------------------------------------------------*/
 
