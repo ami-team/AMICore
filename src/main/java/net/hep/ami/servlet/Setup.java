@@ -102,7 +102,7 @@ public class Setup extends HttpServlet {
 
 	private String level2(HttpServletRequest req) {
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET/POST VARIABLES (SERVER)                                     */
 		/*-----------------------------------------------------------------*/
 
 		String host = req.getParameter("host");
@@ -127,7 +127,7 @@ public class Setup extends HttpServlet {
 		encryption_key = (encryption_key != null) ? encryption_key.trim() : "";
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
 		/*-----------------------------------------------------------------*/
 
 		String jdbc_url = req.getParameter("jdbc_url");
@@ -143,7 +143,7 @@ public class Setup extends HttpServlet {
 		router_name = (router_name != null) ? router_name.trim() : "";
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* PATCH HOST                                                      */
 		/*-----------------------------------------------------------------*/
 
 		while(host.endsWith("/")) {
@@ -151,7 +151,7 @@ public class Setup extends HttpServlet {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* BUILD CONFIG FILE                                               */
 		/*-----------------------------------------------------------------*/
 
 		String content = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
@@ -172,21 +172,23 @@ public class Setup extends HttpServlet {
 		                 "</properties>\n"
 		;
 
+		/*-----------------------------------------------------------------*/
+		/* CHECK AND SAVE CONFIG FILE                                      */
+		/*-----------------------------------------------------------------*/
+
 		String path = this.getClass().getResource("/AMI.xml").getPath();
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
+		BasicLoader    basicLoader    = null;
 		BufferedWriter bufferedWriter = null;
-		BasicLoader basicLoader = null;
 
 		try {
-			bufferedWriter = new BufferedWriter(new FileWriter(path));
-			bufferedWriter.write(content);
-
 			basicLoader = new BasicLoader(jdbc_url, router_user, router_pass);
 			basicLoader.useDB(router_name);
+
+			bufferedWriter = new BufferedWriter(new FileWriter(path));
+			bufferedWriter.write(content);
 
 			return readHtmlFile(Setup.class.getResourceAsStream("/html/setup_level2_success.html")).toString().replace("%%HOST%%", host).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass);
 
@@ -197,10 +199,10 @@ public class Setup extends HttpServlet {
 		} finally {
 			/*-------------------------------------------------------------*/
 
-			if(bufferedWriter != null) {
+			if(basicLoader != null) {
 
 				try {
-					bufferedWriter.close();
+					basicLoader.rollbackAndRelease();
 
 				} catch(Exception e) {
 					/* IGNORE */
@@ -209,10 +211,10 @@ public class Setup extends HttpServlet {
 
 			/*-------------------------------------------------------------*/
 
-			if(basicLoader != null) {
+			if(bufferedWriter != null) {
 
 				try {
-					basicLoader.rollbackAndRelease();
+					bufferedWriter.close();
 
 				} catch(Exception e) {
 					/* IGNORE */
