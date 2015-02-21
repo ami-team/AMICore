@@ -17,8 +17,35 @@
 
 		<script type="text/javascript">
 
-			function apply() {
+			function validateForm() {
 
+				var error = '';
+
+				$.each($(':input').serializeArray(), function(index, param) {
+
+					if(param.name !== 'guest_pass' && param.value === '') {
+						error += ' Field `' + param.name + '` empty.';
+					}
+				});
+
+				if(error !== '') {
+					error = '<div class="alert alert-danger alert-dismissible" role="alert">\n'
+						+
+					        '  <button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>\n'
+						+
+					        '  <strong>Error!</strong>' + error + '\n'
+						+
+					        '</div>'
+					;
+
+					$('#message').html(error);
+
+					$(document).scrollTop(0);
+
+					return false;
+				}
+
+				return true;
 			}
 
 		</script>
@@ -30,7 +57,7 @@
 	<body style="background: white url('/AMI/background.jpg') fixed;">
 
 		<div class="modal-dialog">
-			<div class="modal-content">
+			<form method="post" action="" class="modal-content" onsubmit="return validateForm();" >
 
 				<div class="modal-header">
 					<h4 class="modal-title"><i class="fa fa-cogs"></i> Server setup</h4>
@@ -100,10 +127,12 @@
 				</div>
 
 				<div class="modal-footer">
-					<a href="javascript:apply();" class="btn btn-primary">Submit</a>
+					<input type="hidden" name="level" value="2" />
+
+					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>
 
-			</div>
+			</form>
 		</div>
 
 		<div style="background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(243,243,243,1) 50%,rgba(255,255,255,1) 100%); padding-right: 20px; text-align: right;">
