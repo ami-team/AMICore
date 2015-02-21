@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.servlet.http.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 
 public class Setup extends HttpServlet {
@@ -94,8 +95,41 @@ public class Setup extends HttpServlet {
 	/*---------------------------------------------------------------------*/
 
 	private String level1(HttpServletRequest req) {
+		/*-----------------------------------------------------------------*/
+		/* VARIABLES (SERVER)                                              */
+		/*-----------------------------------------------------------------*/
 
-		return readHtmlFile(Setup.class.getResourceAsStream("/html/setup_level1.html")).toString();
+		String host = ConfigSingleton.getProperty("host");
+
+		String agent = ConfigSingleton.getProperty("agent");
+
+		String admin_user = ConfigSingleton.getProperty("admin_user");
+
+		String admin_pass = ConfigSingleton.getProperty("admin_pass");
+
+		String guest_user = ConfigSingleton.getProperty("guest_user");
+
+		String guest_pass = ConfigSingleton.getProperty("guest_pass");
+
+		String encryption_key = ConfigSingleton.getProperty("encryption_key");
+
+		/*-----------------------------------------------------------------*/
+		/* VARIABLES (DATABASE)                                            */
+		/*-----------------------------------------------------------------*/
+
+		String jdbc_url = ConfigSingleton.getProperty("jdbc_url");
+
+		String router_user = ConfigSingleton.getProperty("router_user");
+
+		String router_pass = ConfigSingleton.getProperty("router_pass");
+
+		String router_name = ConfigSingleton.getProperty("router_name");
+
+		/*-----------------------------------------------------------------*/
+
+		return readHtmlFile(Setup.class.getResourceAsStream("/html/setup_level1.html")).toString().replace("%%HOST%%", host).replace("%%AGENT%%", agent).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass).replace("%%GUEST_USER%%", guest_user).replace("%%GUEST_PASS%%", guest_pass).replace("%%ENCRYPTION_KEY%%", encryption_key).replace("%%JDBC_URL%%", jdbc_url).replace("%%ROUTER_USER%%", router_user).replace("%%ROUTER_PASS%%", router_pass).replace("%%ROUTER_NAME%%", router_name);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

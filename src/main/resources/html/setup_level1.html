@@ -30,6 +30,7 @@
 				});
 
 				if(error !== '') {
+
 					error = '<div class="alert alert-danger alert-dismissible">\n'
 						+
 					        '  <button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>\n'
@@ -52,7 +53,8 @@
 		</script>
 
 		<!--[if lt IE 9]>
-		<script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
 		<![endif]-->
 	</head>
 	<body style="background: white url('images/background.jpg') fixed;">
@@ -98,53 +100,49 @@
 
 							<div class="text-right"><kbd>Server</kbd></div>
 
-							<div>
+							<div class="form-group">
+								<label for="host" class="control-label">host<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+								<input type="text" name="host" value="%%HOST%%" class="form-control" id="host" />
+							</div>
 
-								<div class="form-group">
-									<label for="host" class="control-label">host <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-									<input type="text" name="host" class="form-control" id="host" />
-								</div>
+							<div class="form-group">
+								<label for="agent" class="control-label">agent<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+								<input type="text" name="agent" value="%%AGENT%%" class="form-control" id="agent" />
+							</div>
 
-								<div class="form-group">
-									<label for="agent" class="control-label">agent <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-									<input type="text" name="agent" class="form-control" id="agent" />
-								</div>
-
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="admin_user" class="control-label">admin_user <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="text" name="admin_user" class="form-control" id="admin_user" />
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="admin_pass" class="control-label">admin_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="password" name="admin_pass" autocomplete="off" class="form-control" id="admin_pass" />
-										</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="admin_user" class="control-label">admin_user<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="text" name="admin_user" value="%%ADMIN_USER%%" class="form-control" id="admin_user" />
 									</div>
 								</div>
-
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="guest_user" class="control-label">guest_user <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="text" name="guest_user" class="form-control" id="guest_user" />
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="guest_pass" class="control-label">guest_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="password" name="guest_pass" autocomplete="off" class="form-control" id="guest_pass" />
-										</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="admin_pass" class="control-label">admin_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="password" name="admin_pass" value="%%ADMIN_PASS%%" autocomplete="off" class="form-control" id="admin_pass" />
 									</div>
 								</div>
+							</div>
 
-								<div class="form-group">
-									<label for="encryption_key" class="control-label">encryption_key <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-									<input type="password" name="encryption_key" autocomplete="off" class="form-control" id="encryption_key" />
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="guest_user" class="control-label">guest_user<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="text" name="guest_user" value="%%GUEST_USER%%" class="form-control" id="guest_user" />
+									</div>
 								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="guest_pass" class="control-label">guest_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="password" name="guest_pass" value="%%GUEST_PASS%%" autocomplete="off" class="form-control" id="guest_pass" />
+									</div>
+								</div>
+							</div>
 
+							<div class="form-group">
+								<label for="encryption_key" class="control-label">encryption_key<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+								<input type="password" name="encryption_key" value="%%ENCRYPTION_KEY%%" autocomplete="off" class="form-control" id="encryption_key" />
 							</div>
 
 						</div>
@@ -161,34 +159,32 @@
 
 							<div class="text-right"><kbd>Router database</kbd></div>
 
-							<div>
-
-								<div class="form-group">
-									<label for="jdbc_url" class="control-label">jdbc_url <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-									<input type="text" name="jdbc_url" class="form-control" id="jdbc_url" />
-								</div>
-
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="router_user" class="control-label">router_user <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="text" name="router_user" class="form-control" id="router_user" />
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="router_pass" class="control-label">router_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="password" name="router_pass" autocomplete="off" class="form-control" id="router_pass" />
-										</div>
-									</div>
-								</div>
-
-								<div class="form-group">
-									<label for="router_name" class="control-label">router_name <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-									<input type="text" name="router_name" class="form-control" id="router_name" />
-								</div>
-
+							<div class="form-group">
+								<label for="jdbc_url" class="control-label">jdbc_url<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+								<input type="text" name="jdbc_url" value="%%JDBC_URL%%" class="form-control" id="jdbc_url" />
 							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="router_user" class="control-label">router_user<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="text" name="router_user" value="%%ROUTER_USER%%" class="form-control" id="router_user" />
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="router_pass" class="control-label">router_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="password" name="router_pass" value="%%ROUTER_PASS%%" autocomplete="off" class="form-control" id="router_pass" />
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="router_name" class="control-label">router_name<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+								<input type="text" name="router_name" value="%%ROUTER_NAME%%" class="form-control" id="router_name" />
+							</div>
+
+							<input type="hidden" name="Level" value="2" />
 
 						</div>
 
@@ -197,8 +193,6 @@
 				</div>
 
 				<div class="modal-footer">
-					<input type="hidden" name="Level" value="2" />
-
 					<button type="submit" class="btn btn-primary">&gt;&gt;</button>
 				</div>
 
