@@ -58,7 +58,7 @@ public class SLS extends HttpServlet {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* VARIABLES FOR SLS                                               */
+		/* GET/POST VARIABLES                                              */
 		/*-----------------------------------------------------------------*/
 
 		String service = req.getParameter("Service");

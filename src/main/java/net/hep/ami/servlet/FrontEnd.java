@@ -68,7 +68,7 @@ public class FrontEnd extends HttpServlet {
 		link = (link != null) ? link.trim() : "";
 
 		/*-----------------------------------------------------------------*/
-		/* VARIABLES FOR COMMANDS                                          */
+		/* GET/POST VARIABLES                                              */
 		/*-----------------------------------------------------------------*/
 
 		String command = req.getParameter("Command");
