@@ -24,7 +24,7 @@
 
 				$.each($(':input').serializeArray(), function(index, param) {
 
-					if(param.name !== 'admin_pass' && param.name !== 'guest_pass' && param.value === '') {
+					if(param.name !== 'admin_pass' && param.name !== 'guest_pass' && param.name !== 'router_pass' && param.value === '') {
 						error += ' Field `' + param.name + '` empty.';
 					}
 				});
