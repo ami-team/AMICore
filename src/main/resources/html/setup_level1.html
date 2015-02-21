@@ -57,11 +57,31 @@
 	</head>
 	<body style="background: white url('images/background.jpg') fixed;">
 
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header" style="line-height: 45px;">
+					<button class="navbar-toggle" data-toggle="collapse" data-target="#ami_navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<img src="images/logo.png" alt="Logo" />
+				</div>
+				<div class="collapse navbar-collapse" id="ami_navbar">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="mailto:ami@lpsc.in2p3.fr"><i class="fa fa-envelope-o"></i> Contact</a></li>
+						<li><a href="http://www.cern.ch/ami/" target="_blank">About</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
 		<div class="modal-dialog">
 			<form method="post" action="" class="modal-content" onsubmit="return validateForm();">
 
 				<div class="modal-header">
-					<h3 class="modal-title">Server setup</h3>
+					<h3 class="modal-title"><i class="fa fa-magic"></i> Server setup</h3>
 				</div>
 
 				<div class="modal-body">
@@ -100,7 +120,7 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="admin_pass" class="control-label">admin_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="text" name="admin_pass" class="form-control" id="admin_pass" />
+											<input type="password" name="admin_pass" autocomplete="off" class="form-control" id="admin_pass" />
 										</div>
 									</div>
 								</div>
@@ -115,14 +135,14 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="guest_pass" class="control-label">guest_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="text" name="guest_pass" class="form-control" id="guest_pass" />
+											<input type="password" name="guest_pass" autocomplete="off" class="form-control" id="guest_pass" />
 										</div>
 									</div>
 								</div>
 
 								<div class="form-group">
 									<label for="encryption_key" class="control-label">encryption_key <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-									<input type="text" name="encryption_key" class="form-control" id="encryption_key" />
+									<input type="password" name="encryption_key" autocomplete="off" class="form-control" id="encryption_key" />
 								</div>
 
 							</div>
@@ -158,7 +178,7 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="router_pass" class="control-label">router_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-											<input type="text" name="router_pass" class="form-control" id="router_pass" />
+											<input type="password" name="router_pass" autocomplete="off" class="form-control" id="router_pass" />
 										</div>
 									</div>
 								</div>
