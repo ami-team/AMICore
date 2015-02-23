@@ -63,9 +63,9 @@ public class LogSingleton {
 				case CRITICAL:
 					m_logger.logp(Level.SEVERE, className, methodName, message);
 
-					if(!m_to.isEmpty()
+					if(m_to.isEmpty() == false
 					   ||
-					   !m_cc.isEmpty()
+					   m_cc.isEmpty() == false
 					 ) {
 
 						try {

@@ -107,20 +107,6 @@ public class FrontEnd extends HttpServlet {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* GET CLIENT DN                                                   */
-		/*-----------------------------------------------------------------*/
-
-		String clientDN = getClientDN(req);
-		session.setAttribute("clientDN", clientDN);
-
-		/*-----------------------------------------------------------------*/
-		/* GET ISSUER DN                                                   */
-		/*-----------------------------------------------------------------*/
-
-		String issuerDN = getIssuerDN(req);
-		session.setAttribute("issuerDN", issuerDN);
-
-		/*-----------------------------------------------------------------*/
 		/* SET CONTENT DISPOSITION                                         */
 		/*-----------------------------------------------------------------*/
 
@@ -137,31 +123,44 @@ public class FrontEnd extends HttpServlet {
 
 		String data;
 
-		try {
+		if(ConfigSingleton.hasValidConfFile() == false) {
 
-			if(link.isEmpty() == false) {
+			try {
+				/*---------------------------------------------------------*/
+				/* RESOLVE LINK                                            */
+				/*---------------------------------------------------------*/
 
-				String[] result = resolveLink(link);
+				if(link.isEmpty() == false) {
 
-				command = result[0];
-				converter = result[1];
+					String[] result = resolveLink(link);
+
+					command = result[0];
+					converter = result[1];
+				}
+
+				/*---------------------------------------------------------*/
+				/* EXECUTE COMMAND                                         */
+				/*---------------------------------------------------------*/
+
+				CommandParser.Tuple result = CommandParser.parse(command);
+
+				updateSessionAndCommandArgs(
+					req,
+					session,
+					result.y
+				);
+
+				data = CommandSingleton.executeCommand(result.x, result.y);
+
+				/*---------------------------------------------------------*/
+			} catch(Exception e) {
+				data = Templates.error(
+					e.getMessage()
+				);
 			}
-
-			CommandParser.Tuple result = CommandParser.parse(command);
-
-			updateSessionAndCommandArgs(
-				session,
-				result.y,
-				req,
-				clientDN,
-				issuerDN
-			);
-
-			data = CommandSingleton.executeCommand(result.x, result.y);
-
-		} catch(Exception e) {
+		} else {
 			data = Templates.error(
-				e.getMessage()
+				"config error"
 			);
 		}
 
@@ -344,16 +343,43 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private void updateSessionAndCommandArgs(HttpSession session, HashMap<String, String> arguments, HttpServletRequest req, String clientDN, String issuerDN) throws Exception {
+	private void updateSessionAndCommandArgs(HttpServletRequest request, HttpSession session, HashMap<String, String> arguments) throws Exception {
 
 		String AMIUser;
 		String AMIPass;
 
-		if(req.getParameter("NoCert") != null) {
+		/*-----------------------------------------------------------------*/
+		/* GET CLIENT DN                                                   */
+		/*-----------------------------------------------------------------*/
+
+		String clientDN = getClientDN(request);
+		session.setAttribute("clientDN", clientDN);
+
+		/*-----------------------------------------------------------------*/
+		/* GET ISSUER DN                                                   */
+		/*-----------------------------------------------------------------*/
+
+		String issuerDN = getIssuerDN(request);
+		session.setAttribute("issuerDN", issuerDN);
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		boolean noCert;
+
+		noCert = request.getParameter("NoCert") != null;
+
+		if(noCert == false) {
+			noCert = session.getAttribute("NoCert") != null;
+
+		} else {
 			session.setAttribute("NoCert", "true");
 		}
 
-		if(!clientDN.isEmpty() && !issuerDN.isEmpty() && session.getAttribute("NoCert") == null) {
+		/*-----------------------------------------------------------------*/
+
+		if(clientDN.isEmpty() == false && issuerDN.isEmpty() == false && noCert) {
 			/*-------------------------------------------------------------*/
 			/* CERTIFICATE LOGIN                                           */
 			/*-------------------------------------------------------------*/
@@ -436,7 +462,7 @@ public class FrontEnd extends HttpServlet {
 		arguments.put("clientDN", clientDN);
 		arguments.put("issuerDN", issuerDN);
 
-		arguments.put("isSecure", req.isSecure() ? "1" : "0");
+		arguments.put("isSecure", request.isSecure() ? "1" : "0");
 
 		/*-----------------------------------------------------------------*/
 	}

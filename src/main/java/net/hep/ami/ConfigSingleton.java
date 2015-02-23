@@ -12,8 +12,8 @@ import org.w3c.dom.*;
 public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static boolean m_validConfFile = false;
-	private static boolean m_validDataBase = false;
+	private static boolean m_hasValidConfFile = false;
+	private static boolean m_hasValidDataBase = false;
 
 	/*---------------------------------------------------------------------*/
 
@@ -29,14 +29,38 @@ public class ConfigSingleton {
 			/*-------------------------------------------------------------*/
 
 			readFromConfFile();
-			m_validConfFile = true;
+			m_hasValidConfFile = true;
 
 			/*-------------------------------------------------------------*/
 			/* READ FROM DATA BASE                                         */
 			/*-------------------------------------------------------------*/
 
 			readFromDataBase();
-			m_validDataBase = true;
+			m_hasValidDataBase = true;
+
+			/*-------------------------------------------------------------*/
+			/* CHECK IF NOT EMPTY                                          */
+			/*-------------------------------------------------------------*/
+
+			if(ConfigSingleton.getProperty("host").isEmpty()
+			   ||
+			   ConfigSingleton.getProperty("agent").isEmpty()
+			   ||
+			   ConfigSingleton.getProperty("admin_user").isEmpty()
+			   ||
+			   ConfigSingleton.getProperty("guest_user").isEmpty()
+			   ||
+			   ConfigSingleton.getProperty("encryption_key").isEmpty()
+			   ||
+			   ConfigSingleton.getProperty("jdbc_url").isEmpty()
+			   ||
+			   ConfigSingleton.getProperty("router_user").isEmpty()
+			   ||
+			   ConfigSingleton.getProperty("router_name").isEmpty()
+			 ) {
+				m_hasValidConfFile = false;
+				m_hasValidDataBase = false;
+			}
 
 			/*-------------------------------------------------------------*/
 		} catch(Exception e) {
@@ -150,13 +174,13 @@ public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
 	public static Boolean hasValidConfFile() {
-		return m_validConfFile;
+		return m_hasValidConfFile;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Boolean hasValidDataBase() {
-		return m_validDataBase;
+		return m_hasValidDataBase;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -249,8 +273,8 @@ public class ConfigSingleton {
 		result.append("<rowset type=\"status\">");
 		result.append("<row>");
 
-		result.append("<field name=\"validConfFile\"><![CDATA[" + m_validConfFile + "]]></field>");
-		result.append("<field name=\"validDataBase\"><![CDATA[" + m_validDataBase + "]]></field>");
+		result.append("<field name=\"validConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>");
+		result.append("<field name=\"validDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>");
 
 		result.append("</row>");
 		result.append("</rowset>");
