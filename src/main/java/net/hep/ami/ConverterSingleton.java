@@ -40,10 +40,16 @@ public class ConverterSingleton {
 			NodeList nodeList = document.getElementsByTagName("transform");
 
 			/*-------------------------------------------------------------*/
+			/* GET NUMBER OF CONVERTERS                                    */
+			/*-------------------------------------------------------------*/
+
+			final int nr = nodeList.getLength();
+
+			/*-------------------------------------------------------------*/
 			/* ADD CONVERTERS                                              */
 			/*-------------------------------------------------------------*/
 
-			for(int i = 0; i < nodeList.getLength(); i++) {
+			for(int i = 0; i < nr; i++) {
 
 				Node node = nodeList.item(i);
 

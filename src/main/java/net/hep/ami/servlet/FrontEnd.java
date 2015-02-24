@@ -123,7 +123,7 @@ public class FrontEnd extends HttpServlet {
 
 		String data;
 
-		if(ConfigSingleton.hasValidConfFile() == false) {
+		if(ConfigSingleton.hasValidConfFile() != false) {
 
 			try {
 				/*---------------------------------------------------------*/
@@ -145,12 +145,15 @@ public class FrontEnd extends HttpServlet {
 				CommandParser.Tuple result = CommandParser.parse(command);
 
 				updateSessionAndCommandArgs(
-					req,
+					result.y,
 					session,
-					result.y
+					req
 				);
 
-				data = CommandSingleton.executeCommand(result.x, result.y);
+				data = CommandSingleton.executeCommand(
+					result.x,
+					result.y
+				);
 
 				/*---------------------------------------------------------*/
 			} catch(Exception e) {
@@ -339,11 +342,11 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private String _safe(String s) { return s == null ? "" : s; }
+	private String _safe(Object s) { return s != null ? (String) s : ""; }
 
 	/*---------------------------------------------------------------------*/
 
-	private void updateSessionAndCommandArgs(HttpServletRequest request, HttpSession session, HashMap<String, String> arguments) throws Exception {
+	private void updateSessionAndCommandArgs(HashMap<String, String> arguments, HttpSession session, HttpServletRequest request) throws Exception {
 
 		String AMIUser;
 		String AMIPass;
@@ -368,24 +371,30 @@ public class FrontEnd extends HttpServlet {
 
 		boolean noCert;
 
-		noCert = request.getParameter("NoCert") != null;
-
-		if(noCert == false) {
+		if(request.getParameter("NoCert") == null) {
 			noCert = session.getAttribute("NoCert") != null;
-
 		} else {
 			session.setAttribute("NoCert", "true");
+			noCert = true;
 		}
 
+		if(request.getParameter("NoCert") != null) {
+			session.setAttribute("NoCert", "");
+		}
+
+		noCert = session.getAttribute("NoCert") != null;
+
+		/*-----------------------------------------------------------------*/
+		/* PATCH SESSION                                                   */
 		/*-----------------------------------------------------------------*/
 
-		if(clientDN.isEmpty() == false && issuerDN.isEmpty() == false && noCert) {
+		if(clientDN.isEmpty() == false && issuerDN.isEmpty() == false && noCert == false) {
 			/*-------------------------------------------------------------*/
 			/* CERTIFICATE LOGIN                                           */
 			/*-------------------------------------------------------------*/
 
-			AMIUser = _safe((String) session.getAttribute("AMIUser_certificate"));
-			AMIPass = _safe((String) session.getAttribute("AMIPass_certificate"));
+			AMIUser = _safe(session.getAttribute("AMIUser_certificate"));
+			AMIPass = _safe(session.getAttribute("AMIPass_certificate"));
 
 			if(AMIUser.isEmpty()
 			   ||
@@ -424,8 +433,8 @@ public class FrontEnd extends HttpServlet {
 				AMIUser = arguments.get("AMIUser");
 				AMIPass = arguments.get("AMIPass");
 			} else {
-				AMIUser = _safe((String) session.getAttribute("AMIUser_credential"));
-				AMIPass = _safe((String) session.getAttribute("AMIPass_credential"));
+				AMIUser = _safe(session.getAttribute("AMIUser_credential"));
+				AMIPass = _safe(session.getAttribute("AMIPass_credential"));
 			}
 
 			if(AMIUser.isEmpty()
@@ -453,7 +462,7 @@ public class FrontEnd extends HttpServlet {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* PATCH ARGUMENTS                                                 */
 		/*-----------------------------------------------------------------*/
 
 		arguments.put("AMIUser", AMIUser);
@@ -462,7 +471,7 @@ public class FrontEnd extends HttpServlet {
 		arguments.put("clientDN", clientDN);
 		arguments.put("issuerDN", issuerDN);
 
-		arguments.put("isSecure", request.isSecure() ? "1" : "0");
+		arguments.put("isSecure", request.isSecure() ? "true" : "false");
 
 		/*-----------------------------------------------------------------*/
 	}

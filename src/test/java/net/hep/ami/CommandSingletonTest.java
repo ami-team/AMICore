@@ -10,9 +10,8 @@ public class CommandSingletonTest {
 		HashMap<String, String> arguments = new HashMap<String, String>();
 
 		try {
-//			System.out.println(CommandSingleton.executeCommand("ListCommands", arguments));
-//			System.out.println(CommandSingleton.executeCommand("ListConverters", arguments));
-			System.out.println(CommandSingleton.executeCommand("RestartAMI", arguments));
+			System.out.println(CommandSingleton.executeCommand("ListCommands", arguments));
+			System.out.println(CommandSingleton.executeCommand("ListConverters", arguments));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

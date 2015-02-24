@@ -8,7 +8,7 @@ import net.hep.ami.utility.*;
 public class RestartAMI extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private final String m_path = System.getProperty("catalina.home") + "/bin";
+	private final String m_path = System.getProperty("catalina.base") + "/bin";
 
 	/*---------------------------------------------------------------------*/
 

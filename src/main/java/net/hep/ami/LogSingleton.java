@@ -26,7 +26,7 @@ public class LogSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Logger m_logger = Logger.getLogger(LogSingleton.class.getName());
+	private static final Logger m_logger = Logger.getLogger(LogSingleton.class.getName());
 
 	/*---------------------------------------------------------------------*/
 

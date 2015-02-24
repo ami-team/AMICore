@@ -13,7 +13,6 @@ import org.bouncycastle.cert.*;
 import org.bouncycastle.cert.jcajce.*;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
-
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
@@ -25,8 +24,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	private static PaddedBufferedBlockCipher m_encryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
-	private static PaddedBufferedBlockCipher m_decryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
+	private static final PaddedBufferedBlockCipher m_encryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
+	private static final PaddedBufferedBlockCipher m_decryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
 
 	/*---------------------------------------------------------------------*/
 
@@ -36,7 +35,7 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void init(String password) {
+	public static void init(String password) throws Exception {
 
 		byte[] key;
 
@@ -49,7 +48,7 @@ public class Cryptography {
 		} else if(length <= 32) {
 			key = String.format("%1$-32s", password).getBytes();
 		} else {
-			throw new RuntimeException("too long password (max 32)");
+			throw new Exception("too long password (max 32)");
 		}
 
 		m_encryptCipher.init(true, new KeyParameter(key));

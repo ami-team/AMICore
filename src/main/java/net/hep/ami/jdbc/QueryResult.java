@@ -33,7 +33,7 @@ public class QueryResult {
 		/* INITIALIZE DATA STRUCTURES                                      */
 		/*-----------------------------------------------------------------*/
 
-		int numberOfColumn = resultSetMetaData.getColumnCount();
+		final int numberOfColumn = resultSetMetaData.getColumnCount();
 
 		m_tables = new String[numberOfColumn];
 		m_fields = new String[numberOfColumn];

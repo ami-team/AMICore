@@ -11,9 +11,9 @@ import org.w3c.dom.*;
 public class XMLFactories {
 	/*---------------------------------------------------------------------*/
 
-	private static DocumentBuilderFactory m_documentBuilderFactory = DocumentBuilderFactory.newInstance();
+	private static final DocumentBuilderFactory m_documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
-	private static   TransformerFactory     m_transformerFactory   =   TransformerFactory.newInstance()  ;
+	private static final   TransformerFactory     m_transformerFactory   =   TransformerFactory.newInstance()  ;
 
 	/*---------------------------------------------------------------------*/
 
@@ -42,7 +42,9 @@ public class XMLFactories {
 
 		NamedNodeMap attributes = node.getAttributes();
 
-		for(int i = 0; i < attributes.getLength(); i++) {
+		final int nr = attributes.getLength();
+
+		for(int i = 0; i < nr; i++) {
 
 			Attr attr = (Attr) attributes.item(i);
 

@@ -12,6 +12,10 @@ import org.w3c.dom.*;
 public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
+	private static String m_configFileName = System.getProperty("user.home");
+
+	/*---------------------------------------------------------------------*/
+
 	private static boolean m_hasValidConfFile = false;
 	private static boolean m_hasValidDataBase = false;
 
@@ -39,39 +43,39 @@ public class ConfigSingleton {
 			m_hasValidDataBase = true;
 
 			/*-------------------------------------------------------------*/
-			/* CHECK IF NOT EMPTY                                          */
+			/* CHECK IF VALID                                              */
 			/*-------------------------------------------------------------*/
 
-			if(ConfigSingleton.getProperty("host").isEmpty()
+			if(getProperty("host").isEmpty()
 			   ||
-			   ConfigSingleton.getProperty("agent").isEmpty()
+			   getProperty("agent").isEmpty()
 			   ||
-			   ConfigSingleton.getProperty("admin_user").isEmpty()
+			   getProperty("admin_user").isEmpty()
 			   ||
-			   ConfigSingleton.getProperty("guest_user").isEmpty()
+			   getProperty("guest_user").isEmpty()
 			   ||
-			   ConfigSingleton.getProperty("encryption_key").isEmpty()
+			   getProperty("encryption_key").isEmpty()
 			   ||
-			   ConfigSingleton.getProperty("jdbc_url").isEmpty()
+			   getProperty("jdbc_url").isEmpty()
 			   ||
-			   ConfigSingleton.getProperty("router_user").isEmpty()
+			   getProperty("router_user").isEmpty()
 			   ||
-			   ConfigSingleton.getProperty("router_name").isEmpty()
+			   getProperty("router_name").isEmpty()
 			 ) {
 				m_hasValidConfFile = false;
 				m_hasValidDataBase = false;
 			}
 
 			/*-------------------------------------------------------------*/
+			/* SET ENCRYPTION KEY                                          */
+			/*-------------------------------------------------------------*/
+
+			Cryptography.init(getProperty("encryption_key"));
+
+			/*-------------------------------------------------------------*/
 		} catch(Exception e) {
 			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* SET ENCRYPTION KEY                                              */
-		/*-----------------------------------------------------------------*/
-
-		Cryptography.init(getProperty("encryption_key"));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -80,10 +84,33 @@ public class ConfigSingleton {
 
 	private static void readFromConfFile() throws Exception {
 		/*-----------------------------------------------------------------*/
+		/* GET CONFIG FILE NAME                                            */
+		/*-----------------------------------------------------------------*/
+
+		String tomcatPath = System.getProperty("catalina.base");
+		if(tomcatPath != null) {
+			m_configFileName = tomcatPath.trim() + File.separator + "conf";
+
+		} else {
+
+			String customPath = System.getProperty("ami.conf_path");
+			if(customPath != null) {
+				m_configFileName = customPath.trim() /* pathname or filename */;
+
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_configFileName.endsWith(".xml") == false) {
+			m_configFileName = m_configFileName.concat(File.separator + "AMI.xml");
+		}
+
+		/*-----------------------------------------------------------------*/
 		/* GET INPUT STREAM                                                */
 		/*-----------------------------------------------------------------*/
 
-		InputStream inputStream = ConfigSingleton.class.getResourceAsStream("/AMI.xml");
+		InputStream inputStream = new FileInputStream(m_configFileName);
 
 		/*-----------------------------------------------------------------*/
 		/* PARSE FILE                                                      */
@@ -169,6 +196,12 @@ public class ConfigSingleton {
 		}
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String getConfigFileName() {
+		return m_configFileName;
 	}
 
 	/*---------------------------------------------------------------------*/
