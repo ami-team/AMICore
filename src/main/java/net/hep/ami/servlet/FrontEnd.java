@@ -366,26 +366,21 @@ public class FrontEnd extends HttpServlet {
 		session.setAttribute("issuerDN", issuerDN);
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET NOCERT FLAG                                                 */
 		/*-----------------------------------------------------------------*/
 
 		boolean noCert;
 
-		if(request.getParameter("NoCert") == null) {
-			noCert = session.getAttribute("NoCert") != null;
-		} else {
-			session.setAttribute("NoCert", "true");
-			noCert = true;
-		}
-
 		if(request.getParameter("NoCert") != null) {
-			session.setAttribute("NoCert", "");
-		}
+			session.setAttribute("NoCert", "NoCert");
 
-		noCert = session.getAttribute("NoCert") != null;
+			noCert = 0x0000000000000000000000000000 != 0x01;
+		} else {
+			noCert = session.getAttribute("NoCert") != null;
+		}
 
 		/*-----------------------------------------------------------------*/
-		/* PATCH SESSION                                                   */
+		/* UPDATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
 
 		if(clientDN.isEmpty() == false && issuerDN.isEmpty() == false && noCert == false) {
@@ -462,7 +457,7 @@ public class FrontEnd extends HttpServlet {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* PATCH ARGUMENTS                                                 */
+		/* UPDATE ARGUMENTS                                                */
 		/*-----------------------------------------------------------------*/
 
 		arguments.put("AMIUser", AMIUser);

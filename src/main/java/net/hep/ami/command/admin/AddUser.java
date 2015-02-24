@@ -8,22 +8,22 @@ import net.hep.ami.jdbc.*;
 public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private String m_firstName = "";
-	private String m_lastName = "";
-	private String m_email = "";
+//	private String m_firstName = "";
+//	private String m_lastName = "";
+//	private String m_email = "";
 	private String m_amiLogin = "";
-	private String m_amiPassword = "";
+//	private String m_amiPassword = "";
 
 	/*---------------------------------------------------------------------*/
 
 	public AddUser(HashMap<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
-		m_firstName = arguments.get("firstName");
-		m_lastName = arguments.get("lastName");
-		m_email = arguments.get("email");
+//		m_firstName = arguments.get("firstName");
+//		m_lastName = arguments.get("lastName");
+//		m_email = arguments.get("email");
 		m_amiLogin = arguments.get("amiLogin");
-		m_amiPassword = arguments.get("amiPassword");
+//		m_amiPassword = arguments.get("amiPassword");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -40,9 +40,17 @@ public class AddUser extends CommandAbstractClass {
 			throw new Exception("");
 		}
 
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		/* TODO */
+
+		/*-----------------------------------------------------------------*/
+
 		StringBuilder result = new StringBuilder();
 
-
+		/* TODO */
 
 		return result;
 	}
