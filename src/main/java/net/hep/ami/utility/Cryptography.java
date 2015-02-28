@@ -13,6 +13,7 @@ import org.bouncycastle.cert.*;
 import org.bouncycastle.cert.jcajce.*;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
+
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
@@ -415,19 +416,19 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String encrypt(String data) {
+	public static String encrypt(String s) {
 
 		return new String(
-			org.bouncycastle.util.encoders.Base64.encode(encrypt(data.getBytes()))
+			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes()))
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String decrypt(String data) {
+	public static String decrypt(String s) {
 
 		return new String(
-			decrypt(org.bouncycastle.util.encoders.Base64.decode(data.toString()))
+			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString()))
 		);
 	}
 
