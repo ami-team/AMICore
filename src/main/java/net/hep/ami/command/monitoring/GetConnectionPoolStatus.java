@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class GetConnectionPoolStatus extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetConnectionPoolStatus(HashMap<String, String> arguments, int transactionID) {
+	public GetConnectionPoolStatus(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 

@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class GetDBSchemas extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetDBSchemas(HashMap<String, String> arguments, int transactionID) {
+	public GetDBSchemas(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 

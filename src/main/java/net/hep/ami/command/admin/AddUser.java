@@ -16,7 +16,7 @@ public class AddUser extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public AddUser(HashMap<String, String> arguments, int transactionID) {
+	public AddUser(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 //		m_firstName = arguments.get("firstName");

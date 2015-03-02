@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class GetSessionInfo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetSessionInfo(HashMap<String, String> arguments, int transactionID) {
+	public GetSessionInfo(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
@@ -26,12 +26,12 @@ public class GetSessionInfo extends CommandAbstractClass {
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		String clientDNInAMI = queryResult.getFieldValueForRow(0, "clientDN");
-		String issuerDNInAMI = queryResult.getFieldValueForRow(0, "issuerDN");
-		String firstName = queryResult.getFieldValueForRow(0, "firstName");
-		String lastName = queryResult.getFieldValueForRow(0, "lastName");
-		String email = queryResult.getFieldValueForRow(0, "email");
-		String valid = queryResult.getFieldValueForRow(0, "valid");
+		String clientDNInAMI = queryResult.getValue(0, "clientDN");
+		String issuerDNInAMI = queryResult.getValue(0, "issuerDN");
+		String firstName = queryResult.getValue(0, "firstName");
+		String lastName = queryResult.getValue(0, "lastName");
+		String email = queryResult.getValue(0, "email");
+		String valid = queryResult.getValue(0, "valid");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

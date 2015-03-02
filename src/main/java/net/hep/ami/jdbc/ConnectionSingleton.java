@@ -22,7 +22,7 @@ public class ConnectionSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static HashMap<String, DataSource> m_pools = new HashMap<String, DataSource>();
+	private static Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -166,7 +166,7 @@ public class ConnectionSingleton {
 			IntrospectionSingleton.readSchema(dataSource);
 
 		} catch(SQLException e) {
-			LogSingleton.log(LogSingleton.LogLevel.ERROR, "ConnectionSingleton: " + e.getMessage());
+			LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
 		}
 
 		/*-----------------------------------------------------------------*/

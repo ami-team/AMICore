@@ -274,8 +274,8 @@ public class FrontEnd extends HttpServlet {
 		if(queryResult.getNumberOfRows() == 1) {
 
 			return new String[] {
-				queryResult.getFieldValueForRow(0,  "command" ),
-				queryResult.getFieldValueForRow(0, "converter"),
+				queryResult.getValue(0,  "command" ),
+				queryResult.getValue(0, "converter"),
 			};
 		}
 
@@ -323,8 +323,8 @@ public class FrontEnd extends HttpServlet {
 		if(queryResult.getNumberOfRows() == 1) {
 
 			return new String[] {
-				/******************/(queryResult.getFieldValueForRow(0, "AMIUser")),
-				Cryptography.decrypt(queryResult.getFieldValueForRow(0, "AMIPass")),
+				/******************/(queryResult.getValue(0, "AMIUser")),
+				Cryptography.decrypt(queryResult.getValue(0, "AMIPass")),
 			};
 		}
 
@@ -346,7 +346,7 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private void updateSessionAndCommandArgs(HashMap<String, String> arguments, HttpSession session, HttpServletRequest request) throws Exception {
+	private void updateSessionAndCommandArgs(Map<String, String> arguments, HttpSession session, HttpServletRequest request) throws Exception {
 
 		String AMIUser;
 		String AMIPass;

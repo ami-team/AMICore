@@ -5,18 +5,18 @@ import java.util.*;
 public class CommandTokenizer {
 	/*---------------------------------------------------------------------*/
 
-	public static ArrayList<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes) throws Exception {
+	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes) throws Exception {
 
 		return tokenize(s, spaces, kwords, quotes, "\\");
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static ArrayList<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes, String escape) throws Exception {
+	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes, String escape) throws Exception {
 
 		HashSet<Character> spaceSet = new HashSet<Character>();
 
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 
 		for(Character space: spaces) {
 			spaceSet.add(space);

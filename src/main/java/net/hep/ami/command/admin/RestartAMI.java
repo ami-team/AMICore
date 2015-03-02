@@ -12,7 +12,7 @@ public class RestartAMI extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public RestartAMI(HashMap<String, String> arguments, int transactionID) {
+	public RestartAMI(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 

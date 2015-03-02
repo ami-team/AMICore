@@ -18,7 +18,7 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	private HashMap<String, Integer> m_fieldIndices = new HashMap<String, Integer>();
+	private Map<String, Integer> m_fieldIndices = new HashMap<String, Integer>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -54,7 +54,7 @@ public class QueryResult {
 
 		int numberOfRows = 0;
 
-		LinkedList<String[]> linkedList = new LinkedList<String[]>();
+		List<String[]> linkedList = new LinkedList<String[]>();
 
 		while(resultSet.next()) {
 
@@ -242,19 +242,19 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldValueForRow(int rowIndex, String fieldName) {
+	public String getValue(int rowIndex, int fieldIndex) {
 
-		return (rowIndex < m_rows.length && m_fieldIndices.containsKey(fieldName)) ? m_rows[rowIndex][m_fieldIndices.get(fieldName)]
-		                                                                           : null
+		return (rowIndex < m_rows.length && fieldIndex < m_fields.length) ? m_rows[rowIndex][fieldIndex]
+		                                                                  : null
 		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(int rowIndex, int fieldIndex) {
+	public String getValue(int rowIndex, String fieldName) {
 
-		return (rowIndex < m_rows.length && fieldIndex < m_fields.length) ? m_rows[rowIndex][fieldIndex]
-		                                                                  : null
+		return (rowIndex < m_rows.length && m_fieldIndices.containsKey(fieldName)) ? m_rows[rowIndex][m_fieldIndices.get(fieldName)]
+		                                                                           : null
 		;
 	}
 

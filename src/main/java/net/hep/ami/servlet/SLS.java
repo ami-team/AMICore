@@ -137,8 +137,8 @@ public class SLS extends HttpServlet {
 
 			int score;
 
-			String nodeName = queryResult.getFieldValueForRow(i, "name");
-			String nodeURL = queryResult.getFieldValueForRow(i, "url");
+			String nodeName = queryResult.getValue(i, "name");
+			String nodeURL = queryResult.getValue(i, "url");
 
 			try {
 				checkAvailability(mode, nodeName, nodeURL);

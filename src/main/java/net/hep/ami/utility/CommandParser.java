@@ -5,9 +5,9 @@ import java.util.*;
 public class CommandParser {
 	/*---------------------------------------------------------------------*/
 
-	public static class Tuple extends Tuple2<String, HashMap<String, String>> {
+	public static class Tuple extends Tuple2<String, Map<String, String>> {
 
-		public Tuple(String _x, HashMap<String, String> _y) {
+		public Tuple(String _x, Map<String, String> _y) {
 			super(_x, _y);
 		}
 	}
@@ -63,7 +63,7 @@ public class CommandParser {
 		/* TOKENIZE COMMAND                                                */
 		/*-----------------------------------------------------------------*/
 
-		ArrayList<String> tokens = CommandTokenizer.tokenize(s, m_spaces, m_kwords, m_quotes);
+		List<String> tokens = CommandTokenizer.tokenize(s, m_spaces, m_kwords, m_quotes);
 
 		if(tokens.size() == 0) {
 			throw new Exception("empty command");
@@ -75,7 +75,7 @@ public class CommandParser {
 
 		String command = "";
 
-		HashMap<String, String> arguments = new HashMap<String, String>();
+		Map<String, String> arguments = new HashMap<String, String>();
 
 		/*-----------------------------------------------------------------*/
 

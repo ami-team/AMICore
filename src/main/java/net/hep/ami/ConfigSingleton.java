@@ -21,7 +21,7 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static HashMap<String, String> m_properties = new HashMap<String, String>();
+	private static Map<String, String> m_properties = new HashMap<String, String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -189,9 +189,9 @@ public class ConfigSingleton {
 		for(int i = 0; i < nr; i++) {
 
 			m_properties.put(
-				queryResult.getFieldValueForRow(i, "name").trim()
+				queryResult.getValue(i, "name").trim()
 				,
-				queryResult.getFieldValueForRow(i, "value").trim()
+				queryResult.getValue(i, "value").trim()
 			);
 		}
 

@@ -7,7 +7,7 @@ import java.util.zip.*;
 public class ClassFinder {
 	/*---------------------------------------------------------------------*/
 
-	private ArrayList<String> m_classList = new ArrayList<String>();
+	private List<String> m_classList = new ArrayList<String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -131,7 +131,7 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	public ArrayList<String> getClassList() {
+	public List<String> getClassList() {
 		return m_classList;
 	}
 

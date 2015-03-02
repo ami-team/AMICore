@@ -1,13 +1,13 @@
 package net.hep.ami;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class CommandSingletonTest {
 	/*---------------------------------------------------------------------*/
 
 	public static void main(String[] args) throws Exception {
 
-		HashMap<String, String> arguments = new HashMap<String, String>();
+		Map<String, String> arguments = new HashMap<String, String>();
 
 		try {
 			System.out.println(CommandSingleton.executeCommand("ListCommands", arguments));

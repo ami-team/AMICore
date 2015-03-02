@@ -182,9 +182,9 @@ public class IntrospectionSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static HashMap<String, HashMap<String, LinkedHashMap<String, Column>>> m_columns = new HashMap<String, HashMap<String, LinkedHashMap<String, Column>>>();
-	private static HashMap<String, HashMap<String, List<ForeignKey>>> m_foreignKeys = new HashMap<String, HashMap<String, List<ForeignKey>>>();
-	private static HashMap<String, HashMap<String, List<Index>>> m_indices = new HashMap<String, HashMap<String, List<Index>>>();
+	private static Map<String, Map<String, Map<String, Column>>> m_columns = new HashMap<String, Map<String, Map<String, Column>>>();
+	private static Map<String, Map<String, List<ForeignKey>>> m_foreignKeys = new HashMap<String, Map<String, List<ForeignKey>>>();
+	private static Map<String, Map<String, List<Index>>> m_indices = new HashMap<String, Map<String, List<Index>>>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -241,7 +241,7 @@ public class IntrospectionSingleton {
 			   &&
 			   name.equals("performance_schema") == false
 			 ) {
-				  m_columns.put(name, new HashMap<String, LinkedHashMap<String, Column>>());
+				  m_columns.put(name, new HashMap<String, Map<String, Column>>());
 				  m_foreignKeys.put(name, new HashMap<String, List<ForeignKey>>());
 				  m_indices.put(name, new HashMap<String, List<Index>>());
 
@@ -367,11 +367,11 @@ public class IntrospectionSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static HashMap<String, Column> getColumns(String catalog, String table) throws Exception {
+	public static Map<String, Column> getColumns(String catalog, String table) throws Exception {
 
 		if(m_columns.containsKey(catalog)) {
 
-			HashMap<String, LinkedHashMap<String, Column>> catalogMap = m_columns.get(catalog);
+			Map<String, Map<String, Column>> catalogMap = m_columns.get(catalog);
 
 			if(catalogMap.containsKey(table)) {
 
@@ -388,7 +388,7 @@ public class IntrospectionSingleton {
 
 		if(m_foreignKeys.containsKey(catalog)) {
 
-			HashMap<String, List<ForeignKey>> catalogMap = m_foreignKeys.get(catalog);
+			Map<String, List<ForeignKey>> catalogMap = m_foreignKeys.get(catalog);
 
 			if(catalogMap.containsKey(table)) {
 
@@ -405,7 +405,7 @@ public class IntrospectionSingleton {
 
 		if(m_indices.containsKey(catalog)) {
 
-			HashMap<String, List<Index>> catalogMap = m_indices.get(catalog);
+			Map<String, List<Index>> catalogMap = m_indices.get(catalog);
 
 			if(catalogMap.containsKey(table)) {
 
@@ -430,9 +430,9 @@ public class IntrospectionSingleton {
 
 		result.append("<rowset type=\"columns\">");
 
-		for(Entry<String, HashMap<String, LinkedHashMap<String, Column>>> entry1: m_columns.entrySet()) {
+		for(Entry<String, Map<String, Map<String, Column>>> entry1: m_columns.entrySet()) {
 
-			for(Entry<String, LinkedHashMap<String, Column>> entry2: entry1.getValue().entrySet()) {
+			for(Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet()) {
 
 				for(Entry<String, Column> entry3: entry2.getValue().entrySet()) {
 
@@ -461,7 +461,7 @@ public class IntrospectionSingleton {
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Entry<String, HashMap<String, List<ForeignKey>>> entry1: m_foreignKeys.entrySet()) {
+		for(Entry<String, Map<String, List<ForeignKey>>> entry1: m_foreignKeys.entrySet()) {
 
 			for(Entry<String, List<ForeignKey>> entry2: entry1.getValue().entrySet()) {
 
@@ -492,7 +492,7 @@ public class IntrospectionSingleton {
 
 		result.append("<rowset type=\"indices\">");
 
-		for(Entry<String, HashMap<String, List<Index>>> entry1: m_indices.entrySet()) {
+		for(Entry<String, Map<String, List<Index>>> entry1: m_indices.entrySet()) {
 
 			for(Entry<String, List<Index>> entry2: entry1.getValue().entrySet()) {
 
@@ -527,7 +527,7 @@ public class IntrospectionSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<info>execution time: " + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + "ms</info>");
+		result.append("<info>execution time: " + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + " s</info>");
 
 		/*-----------------------------------------------------------------*/
 

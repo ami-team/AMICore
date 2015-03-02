@@ -18,11 +18,11 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static HashMap<String, CommandTuple> m_commands = new HashMap<String, CommandTuple>();
+	private static Map<String, CommandTuple> m_commands = new HashMap<String, CommandTuple>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Class<?>[] m_prototype = new Class<?>[] { HashMap.class, int.class };
+	private static final Class<?>[] m_ctor = new Class<?>[] { Map.class, int.class };
 
 	/*---------------------------------------------------------------------*/
 
@@ -51,7 +51,7 @@ public class CommandSingleton {
 					clazz.getSimpleName()
 					,
 					new CommandTuple(
-						clazz.getConstructor(m_prototype)
+						clazz.getConstructor(m_ctor)
 						,
 						clazz.getMethod("help").invoke(null).toString()
 						,
@@ -84,14 +84,14 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, HashMap<String, String> arguments) throws Exception {
+	public static String executeCommand(String command, Map<String, String> arguments) throws Exception {
 
 		return executeCommand(command, arguments, -1);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, HashMap<String, String> arguments, int transactionID) throws Exception {
+	public static String executeCommand(String command, Map<String, String> arguments, int transactionID) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* CHECK COMMAND                                                   */
 		/*-----------------------------------------------------------------*/
