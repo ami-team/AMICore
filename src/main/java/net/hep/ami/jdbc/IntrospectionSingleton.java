@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.*;
 import java.util.Map.*;
 
+import net.hep.ami.*;
+
 import org.apache.tomcat.jdbc.pool.*;
 
 public class IntrospectionSingleton {
@@ -192,7 +194,7 @@ public class IntrospectionSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void readSchema(DataSource dataSource) throws SQLException {
+	public static void readSchema(DataSource dataSource) {
 
 		Connection connection = null;
 
@@ -215,10 +217,19 @@ public class IntrospectionSingleton {
 
 			/*-------------------------------------------------------------*/
 
+		} catch(SQLException e) {
+			LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
+
 		} finally {
 
 			if(connection != null) {
-				connection.close();
+
+				try {
+					connection.close();
+
+				} catch(SQLException e) {
+					LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
+				}
 			}
 		}
 	}

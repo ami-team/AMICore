@@ -3,7 +3,7 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.util.*;
 
-import net.hep.ami.utility.DateFormater;
+import net.hep.ami.utility.*;
 
 public class QueryResult {
 	/*---------------------------------------------------------------------*/

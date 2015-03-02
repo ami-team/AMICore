@@ -1,4 +1,4 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command;
 
 import java.util.*;
 import java.util.Map.*;
@@ -31,7 +31,7 @@ public class Echo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "A stupid command.";
+		return "Dump arguments.";
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -72,7 +72,7 @@ public class LogSingleton {
 							MailSingleton.sendMessage(m_from, m_to, m_cc, String.format("CRITICAL ERROR (%s.%s)", className, methodName), message);
 
 						} catch(Exception e) {
-							/* IGNORE */
+							log(LogLevel.ERROR, e.getMessage());
 						}
 					}
 

@@ -1,4 +1,4 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command;
 
 import java.util.*;
 

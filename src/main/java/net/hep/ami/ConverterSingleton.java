@@ -25,7 +25,7 @@ public class ConverterSingleton {
 			/* GET INPUT STREAM                                            */
 			/*-------------------------------------------------------------*/
 
-			InputStream inputStream = ConfigSingleton.class.getResourceAsStream("/XSLT.xml");
+			InputStream inputStream = ConverterSingleton.class.getResourceAsStream("/XSLT.xml");
 
 			/*-------------------------------------------------------------*/
 			/* PARSE FILE                                                  */
@@ -75,7 +75,7 @@ public class ConverterSingleton {
 			/* GET INPUT STREAM                                            */
 			/*-------------------------------------------------------------*/
 
-			InputStream inputStream = ConfigSingleton.class.getResourceAsStream(xslt);
+			InputStream inputStream = ConverterSingleton.class.getResourceAsStream(xslt);
 
 			/*-------------------------------------------------------------*/
 			/* PARSE FILE                                                  */
@@ -83,11 +83,11 @@ public class ConverterSingleton {
 
 			Transformer transformer = XMLFactories.newTransformer(inputStream);
 
+			transformer.setParameter("mime", mime);
+
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTER                                               */
 			/*-------------------------------------------------------------*/
-
-			transformer.setParameter("mime", mime);
 
 			m_transformers.put(new File(xslt).getName(), transformer);
 
@@ -104,9 +104,7 @@ public class ConverterSingleton {
 		/* CHECK TRANSFORM                                                 */
 		/*-----------------------------------------------------------------*/
 
-		if(m_transformers.containsKey(fileName) == false) {
-			throw new Exception("converter `" + fileName + "` not found");
-		}
+		if(m_transformers.containsKey(fileName) == false) throw new Exception("converter `" + fileName + "` not found");
 
 		/*-----------------------------------------------------------------*/
 		/* APPLY TRANSFORM                                                 */
@@ -143,7 +141,8 @@ public class ConverterSingleton {
 		for(Entry<String, Transformer> entry: m_transformers.entrySet()) {
 
 			String xslt = entry.getKey();
-			String mime = entry.getValue().getParameter("mime").toString();
+			String mime = entry.getValue().
+			                    getParameter("mime").toString();
 
 			result.append(
 				"<row>"

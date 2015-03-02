@@ -162,12 +162,7 @@ public class ConnectionSingleton {
 		/* READ SCHEMAS                                                    */
 		/*-----------------------------------------------------------------*/
 
-		try {
-			IntrospectionSingleton.readSchema(dataSource);
-
-		} catch(SQLException e) {
-			LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
-		}
+		IntrospectionSingleton.readSchema(dataSource);
 
 		/*-----------------------------------------------------------------*/
 

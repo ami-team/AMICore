@@ -64,13 +64,10 @@ public class ConfigSingleton {
 			 ) {
 				m_hasValidConfFile = false;
 				m_hasValidDataBase = false;
+
+			} else {
+				Cryptography.init(getProperty("encryption_key"));
 			}
-
-			/*-------------------------------------------------------------*/
-			/* SET ENCRYPTION KEY                                          */
-			/*-------------------------------------------------------------*/
-
-			Cryptography.init(getProperty("encryption_key"));
 
 			/*-------------------------------------------------------------*/
 		} catch(Exception e) {
