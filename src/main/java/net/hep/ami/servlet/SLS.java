@@ -109,7 +109,7 @@ public class SLS extends HttpServlet {
 
 			basicLoader.useDB(ConfigSingleton.getProperty("router_name"));
 
-			queryResult = basicLoader.executeQuery("SELECT nodeName, nodeURL FROM router_nodes WHERE service LIKE '" + service + "'");
+			queryResult = basicLoader.executeQuery("SELECT `name`, `url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
 
 		} finally {
 
@@ -137,8 +137,8 @@ public class SLS extends HttpServlet {
 
 			int score;
 
-			String nodeName = queryResult.getFieldValueForRow(i, "nodeName");
-			String nodeURL = queryResult.getFieldValueForRow(i, "nodeURL");
+			String nodeName = queryResult.getFieldValueForRow(i, "name");
+			String nodeURL = queryResult.getFieldValueForRow(i, "url");
 
 			try {
 				checkAvailability(mode, nodeName, nodeURL);

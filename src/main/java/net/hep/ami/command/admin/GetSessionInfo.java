@@ -20,7 +20,7 @@ public class GetSessionInfo extends CommandAbstractClass {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult = getRouterLoader().executeQuery("SELECT clientDN, issuerDN, lastName, firstName, email, valid FROM router_user WHERE AMIUser = '" + m_AMIUser + "' || AMIUser = '" + m_guestUser + "'");
+		QueryResult queryResult = getRouterLoader().executeQuery("SELECT `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' || `AMIUser` = '" + m_guestUser + "'");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

@@ -34,7 +34,7 @@ public class AddUser extends CommandAbstractClass {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult = getRouterLoader().executeQuery("SELECT COUNT(*) FROM router_user WHERE AMIUser = '" + m_amiLogin + "'");
+		QueryResult queryResult = getRouterLoader().executeQuery("SELECT COUNT(*) FROM `router_user` WHERE `AMIUser` = '" + m_amiLogin + "'");
 
 		if(queryResult.getNumberOfRows() > 0) {
 			throw new Exception("");

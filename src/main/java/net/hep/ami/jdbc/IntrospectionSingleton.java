@@ -119,8 +119,76 @@ public class IntrospectionSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static HashMap<String, HashMap<String, LinkedHashMap<String,   Column  >>>   m_columns   = new HashMap<String, HashMap<String, LinkedHashMap<String,   Column  >>>();
-	private static HashMap<String, HashMap<String, LinkedHashMap<String, ForeignKey>>> m_foreignKeys = new HashMap<String, HashMap<String, LinkedHashMap<String, ForeignKey>>>();
+	public static class Index {
+		/*-----------------------------------------------------------------*/
+
+		private String m_catalog;
+		private String m_table;
+		private String m_name;
+		private String m_type;
+		private String m_column;
+		private int m_position;
+
+		/*-----------------------------------------------------------------*/
+
+		public Index(String catalog, String table, String name, String type, String column, int position) {
+
+			m_catalog = catalog;
+			m_table = table;
+			m_name = name;
+			m_type = type;
+			m_column = column;
+			m_position = position;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String getCatalog() {
+			return m_catalog;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String getTable() {
+			return m_table;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String getName() {
+			return m_name;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String getType() {
+			return m_type;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String getColumn() {
+			return m_column;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public int getPosition() {
+			return m_position;
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static HashMap<String, HashMap<String, LinkedHashMap<String, Column>>> m_columns = new HashMap<String, HashMap<String, LinkedHashMap<String, Column>>>();
+	private static HashMap<String, HashMap<String, List<ForeignKey>>> m_foreignKeys = new HashMap<String, HashMap<String, List<ForeignKey>>>();
+	private static HashMap<String, HashMap<String, List<Index>>> m_indices = new HashMap<String, HashMap<String, List<Index>>>();
+
+	/*---------------------------------------------------------------------*/
+
+	private static long m_executionTime = 0;
 
 	/*---------------------------------------------------------------------*/
 
@@ -139,7 +207,11 @@ public class IntrospectionSingleton {
 			/* READ DB SCHEMA                                              */
 			/*-------------------------------------------------------------*/
 
+			long t1 = System.currentTimeMillis();
 			readDBMetaData(connection.getMetaData());
+			long t2 = System.currentTimeMillis();
+
+			m_executionTime = t2 - t1;
 
 			/*-------------------------------------------------------------*/
 
@@ -155,20 +227,23 @@ public class IntrospectionSingleton {
 
 	private static void readDBMetaData(DatabaseMetaData metaData) throws SQLException {
 
+		String name;
+
 		ResultSet resultSet = metaData.getCatalogs();
 
 		while(resultSet.next()) {
 
-			String name = resultSet.getString("TABLE_CAT");
+			name = resultSet.getString("TABLE_CAT");
 
-			if(name.equals(      "mysql"       ) == false
+			if(name.equals(/****/"mysql"/*****/) == false
 			   &&
 			   name.equals("information_schema") == false
 			   &&
 			   name.equals("performance_schema") == false
 			 ) {
-				  m_columns  .put(name, new HashMap<String, LinkedHashMap<String,   Column  >>());
-				m_foreignKeys.put(name, new HashMap<String, LinkedHashMap<String, ForeignKey>>());
+				  m_columns.put(name, new HashMap<String, LinkedHashMap<String, Column>>());
+				  m_foreignKeys.put(name, new HashMap<String, List<ForeignKey>>());
+				  m_indices.put(name, new HashMap<String, List<Index>>());
 
 				readTableMetaData(metaData, name);
 			}
@@ -186,11 +261,13 @@ public class IntrospectionSingleton {
 			String name = resultSet.getString("TABLE_NAME");
 
 			if(true) {
-				  m_columns  .get(catalog).put(name, new LinkedHashMap<String,   Column  >());
-				m_foreignKeys.get(catalog).put(name, new LinkedHashMap<String, ForeignKey>());
+				m_columns.get(catalog).put(name, new LinkedHashMap<String, Column>());
+				m_foreignKeys.get(catalog).put(name, new ArrayList<ForeignKey>());
+				m_indices.get(catalog).put(name, new ArrayList<Index>());
 
 				readColumnMetaData(metaData, catalog, name);
 				readForeignKeyMetaData(metaData, catalog, name);
+				readIndexMetaData(metaData, catalog, name);
 			}
 		}
 	}
@@ -230,12 +307,41 @@ public class IntrospectionSingleton {
 			String pktable = resultSet.getString("PKTABLE_NAME");
 			String pkcolumn = resultSet.getString("PKCOLUMN_NAME");
 
-			m_foreignKeys.get(catalog).get(table).put(fktable, new ForeignKey(
+			m_foreignKeys.get(catalog).get(table).add(new ForeignKey(
 				catalog,
 				fktable,
 				fkcolumn,
 				pktable,
 				pkcolumn
+			));
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static void readIndexMetaData(DatabaseMetaData metaData, String catalog, String table) throws SQLException {
+
+		ResultSet resultSet = metaData.getIndexInfo(catalog, null, table, false, false);
+
+		while(resultSet.next()) {
+
+			String name = resultSet.getString("INDEX_NAME");
+			String column = resultSet.getString("COLUMN_NAME");
+			int position = resultSet.getInt("ORDINAL_POSITION");
+			boolean unique = !resultSet.getBoolean("NON_UNIQUE");
+
+			String type = unique ? name.equals("PRIMARY") ? "PRIMARY"
+			                                              : "UNIQUE"
+			                                              : "INDEX"
+			;
+
+			m_indices.get(catalog).get(table).add(new Index(
+				catalog,
+				table,
+				name,
+				type,
+				column,
+				position
 			));
 		}
 	}
@@ -278,11 +384,28 @@ public class IntrospectionSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static HashMap<String, ForeignKey> getForeignKeys(String catalog, String table) throws Exception {
+	public static List<ForeignKey> getForeignKeys(String catalog, String table) throws Exception {
 
 		if(m_foreignKeys.containsKey(catalog)) {
 
-			HashMap<String, LinkedHashMap<String, ForeignKey>> catalogMap = m_foreignKeys.get(catalog);
+			HashMap<String, List<ForeignKey>> catalogMap = m_foreignKeys.get(catalog);
+
+			if(catalogMap.containsKey(table)) {
+
+				return catalogMap.get(table);
+			}
+		}
+
+		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<Index> getIndices(String catalog, String table) throws Exception {
+
+		if(m_indices.containsKey(catalog)) {
+
+			HashMap<String, List<Index>> catalogMap = m_indices.get(catalog);
 
 			if(catalogMap.containsKey(table)) {
 
@@ -338,24 +461,57 @@ public class IntrospectionSingleton {
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Entry<String, HashMap<String, LinkedHashMap<String, ForeignKey>>> entry1: m_foreignKeys.entrySet()) {
+		for(Entry<String, HashMap<String, List<ForeignKey>>> entry1: m_foreignKeys.entrySet()) {
 
-			for(Entry<String, LinkedHashMap<String, ForeignKey>> entry2: entry1.getValue().entrySet()) {
+			for(Entry<String, List<ForeignKey>> entry2: entry1.getValue().entrySet()) {
 
-				for(Entry<String, ForeignKey> entry3: entry2.getValue().entrySet()) {
+				for(ForeignKey entry3: entry2.getValue()) {
 
 					result.append(
 						"<row>"
 						+
-						"<field name=\"catalog\">" + entry3.getValue().m_catalog + "</field>"
+						"<field name=\"catalog\">" + entry3.m_catalog + "</field>"
 						+
-						"<field name=\"fkTable\">" + entry3.getValue().m_fkTable + "</field>"
+						"<field name=\"fkTable\">" + entry3.m_fkTable + "</field>"
 						+
-						"<field name=\"fkColumn\">" + entry3.getValue().m_fkColumn + "</field>"
+						"<field name=\"fkColumn\">" + entry3.m_fkColumn + "</field>"
 						+
-						"<field name=\"pkTable\">" + entry3.getValue().m_pkTable + "</field>"
+						"<field name=\"pkTable\">" + entry3.m_pkTable + "</field>"
 						+
-						"<field name=\"pkColumn\">" + entry3.getValue().m_pkColumn + "</field>"
+						"<field name=\"pkColumn\">" + entry3.m_pkColumn + "</field>"
+						+
+						"</row>"
+					);
+				}
+			}
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"indices\">");
+
+		for(Entry<String, HashMap<String, List<Index>>> entry1: m_indices.entrySet()) {
+
+			for(Entry<String, List<Index>> entry2: entry1.getValue().entrySet()) {
+
+				for(Index entry3: entry2.getValue()) {
+
+					result.append(
+						"<row>"
+						+
+						"<field name=\"catalog\">" + entry3.m_catalog + "</field>"
+						+
+						"<field name=\"table\">" + entry3.m_table + "</field>"
+						+
+						"<field name=\"name\">" + entry3.m_name + "</field>"
+						+
+						"<field name=\"type\">" + entry3.m_type + "</field>"
+						+
+						"<field name=\"column\">" + entry3.m_column + "</field>"
+						+
+						"<field name=\"position\">" + entry3.m_position + "</field>"
 						+
 						"</row>"
 					);
@@ -368,6 +524,10 @@ public class IntrospectionSingleton {
 		/*-----------------------------------------------------------------*/
 
 		result.append("</Result>");
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<info>execution time: " + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + "ms</info>");
 
 		/*-----------------------------------------------------------------*/
 
