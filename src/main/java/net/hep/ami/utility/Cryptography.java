@@ -42,7 +42,7 @@ public class Cryptography {
 
 		final int length = password.length();
 
-		/*  */ if(length <= 16) {
+		/****/ if(length <= 16) {
 			key = String.format("%1$-16s", password).getBytes();
 		} else if(length <= 24) {
 			key = String.format("%1$-24s", password).getBytes();
