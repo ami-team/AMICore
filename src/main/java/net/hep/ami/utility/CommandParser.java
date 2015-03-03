@@ -63,7 +63,7 @@ public class CommandParser {
 		/* TOKENIZE COMMAND                                                */
 		/*-----------------------------------------------------------------*/
 
-		List<String> tokens = CommandTokenizer.tokenize(s, m_spaces, m_kwords, m_quotes);
+		List<String> tokens = Tokenizer.tokenize(s, m_spaces, m_kwords, m_quotes);
 
 		if(tokens.size() == 0) {
 			throw new Exception("empty command");

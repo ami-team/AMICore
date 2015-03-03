@@ -2,7 +2,7 @@ package net.hep.ami.utility;
 
 import java.util.*;
 
-public class CommandTokenizer {
+public class Tokenizer {
 	/*---------------------------------------------------------------------*/
 
 	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes) throws Exception {
