@@ -180,4 +180,10 @@ public class GenerateCertificate extends CommandAbstractClass {
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	public static String usage() {
+		return "-country=\"value\" -locality=\"value\" -organization=\"value\" -organizationalUnit=\"value\" -commonName=\"value\" -password=\"value\"";
+	}
+
+	/*---------------------------------------------------------------------*/
 }
