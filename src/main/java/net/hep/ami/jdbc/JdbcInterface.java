@@ -23,7 +23,7 @@ public interface JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcPrefix();
+	public String getJdbcProtocol();
 
 	/*---------------------------------------------------------------------*/
 

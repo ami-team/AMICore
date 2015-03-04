@@ -2,7 +2,7 @@ package net.hep.ami.jdbc.driver;
 
 @Jdbc(
 	className = "org.gjt.mm.mysql.Driver",
-	prefix = "jdbc:mysql"
+	protocol = "jdbc:mysql"
 )
 
 public class MySQLDriver extends DriverAbstractClass {

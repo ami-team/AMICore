@@ -11,7 +11,7 @@ public @interface Jdbc {
 
 	String className();
 
-	String prefix();
+	String protocol();
 
 	/*---------------------------------------------------------------------*/
 }

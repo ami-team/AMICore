@@ -2,7 +2,7 @@ package net.hep.ami.jdbc.driver;
 
 @Jdbc(
 	className = "org.postgresql.Driver",
-	prefix = "jdbc:postgresql"
+	protocol = "jdbc:postgresql"
 )
 
 public class PostgreSQLDriver extends DriverAbstractClass {

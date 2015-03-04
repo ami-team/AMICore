@@ -32,7 +32,11 @@ public class CommandSingleton {
 
 		for(String className: classFinder.getClassList()) {
 
-			addCommandClass(className);
+			try {
+				addCommandClass(className);
+			} catch(Exception e) {
+				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+			}
 		}
 	}
 
@@ -40,28 +44,23 @@ public class CommandSingleton {
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommandClass(String className) {
+	private static void addCommandClass(String className) throws Exception {
 
-		try {
-			Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
+		Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
 
-			if(isCommandClass(clazz)) {
+		if(isCommandClass(clazz)) {
 
-				m_commands.put(
-					clazz.getSimpleName()
+			m_commands.put(
+				clazz.getSimpleName()
+				,
+				new CommandTuple(
+					clazz.getConstructor(m_ctor)
 					,
-					new CommandTuple(
-						clazz.getConstructor(m_ctor)
-						,
-						clazz.getMethod("help").invoke(null).toString()
-						,
-						clazz.getMethod("usage").invoke(null).toString()
-					)
-				);
-			}
-
-		} catch(Exception e) {
-			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+					clazz.getMethod("help").invoke(null).toString()
+					,
+					clazz.getMethod("usage").invoke(null).toString()
+				)
+			);
 		}
 	}
 

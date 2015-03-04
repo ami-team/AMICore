@@ -14,7 +14,7 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 	/*---------------------------------------------------------------------*/
 
 	protected String m_jdbcClassName = null;
-	protected String m_jdbcPrefix = null;
+	protected String m_jdbcProtocol = null;
 	protected String m_jdbcUrl = null;
 	protected String m_user = null;
 	protected String m_pass = null;
@@ -28,24 +28,19 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 
 	public DriverAbstractClass(String jdbcUrl, String user, String pass) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
 		Jdbc annotation = getClass().getAnnotation(Jdbc.class);
-
 		if(annotation == null) {
-			throw new Exception("no `JdbcDriver` annotation for driver `" + getClass().getName() + "`");
+			throw new Exception("no `Jdbc` annotation for driver `" + getClass().getName() + "`");
 		}
 
 		String jdbcClassName = annotation.className();
-		String jdbcPrefix = annotation.prefix();
+		String jdbcProtocol = annotation.protocol();
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		m_jdbcClassName = jdbcClassName;
-		m_jdbcPrefix = jdbcPrefix;
+		m_jdbcProtocol = jdbcProtocol;
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
@@ -169,9 +164,9 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcPrefix() {
+	public String getJdbcProtocol() {
 
-		return m_jdbcPrefix;
+		return m_jdbcProtocol;
 	}
 
 	/*---------------------------------------------------------------------*/

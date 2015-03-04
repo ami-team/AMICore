@@ -2,7 +2,7 @@ package net.hep.ami.jdbc.driver;
 
 @Jdbc(
 	className = "oracle.jdbc.driver.OracleDriver",
-	prefix = "jdbc:oracle"
+	protocol = "jdbc:oracle"
 )
 
 public class OracleDriver extends DriverAbstractClass {
