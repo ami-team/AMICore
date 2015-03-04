@@ -31,7 +31,7 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		JdbcDriver annotation = getClass().getAnnotation(JdbcDriver.class);
+		Jdbc annotation = getClass().getAnnotation(Jdbc.class);
 
 		if(annotation == null) {
 			throw new Exception("no `JdbcDriver` annotation for driver `" + getClass().getName() + "`");

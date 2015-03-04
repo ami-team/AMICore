@@ -1,6 +1,6 @@
 package net.hep.ami.jdbc.driver;
 
-@JdbcDriver(
+@Jdbc(
 	className = "org.gjt.mm.mysql.Driver",
 	prefix = "jdbc:mysql"
 )

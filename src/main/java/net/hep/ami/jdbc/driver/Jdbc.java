@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
 
-public @interface JdbcDriver {
+public @interface Jdbc {
 	/*---------------------------------------------------------------------*/
 
 	String className();

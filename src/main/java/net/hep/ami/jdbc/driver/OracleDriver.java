@@ -1,6 +1,6 @@
 package net.hep.ami.jdbc.driver;
 
-@JdbcDriver(
+@Jdbc(
 	className = "oracle.jdbc.driver.OracleDriver",
 	prefix = "jdbc:oracle"
 )

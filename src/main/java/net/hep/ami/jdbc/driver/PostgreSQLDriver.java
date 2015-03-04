@@ -1,6 +1,6 @@
 package net.hep.ami.jdbc.driver;
 
-@JdbcDriver(
+@Jdbc(
 	className = "org.postgresql.Driver",
 	prefix = "jdbc:postgresql"
 )
