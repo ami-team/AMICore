@@ -34,6 +34,7 @@ public class CommandSingleton {
 
 			try {
 				addCommandClass(className);
+
 			} catch(Exception e) {
 				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 			}

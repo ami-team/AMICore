@@ -26,6 +26,7 @@ public class BasicLoader implements JdbcInterface {
 
 			try {
 				addDriverClass(className);
+
 			} catch(Exception e) {
 				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 			}
