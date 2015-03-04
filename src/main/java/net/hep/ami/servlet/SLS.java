@@ -5,10 +5,16 @@ import java.net.*;
 import java.util.*;
 
 import javax.servlet.http.*;
+import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+
+@WebServlet(
+	name = "SLS",
+	urlPatterns = "/SLS"
+)
 
 public class SLS extends HttpServlet {
 	/*---------------------------------------------------------------------*/

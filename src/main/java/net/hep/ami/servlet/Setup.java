@@ -3,10 +3,16 @@ package net.hep.ami.servlet;
 import java.io.*;
 
 import javax.servlet.http.*;
+import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+
+@WebServlet(
+	name = "Setup",
+	urlPatterns = "/Setup"
+)
 
 public class Setup extends HttpServlet {
 	/*---------------------------------------------------------------------*/

@@ -5,10 +5,16 @@ import java.util.*;
 import java.security.cert.*;
 
 import javax.servlet.http.*;
+import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+
+@WebServlet(
+	name = "FrontEnd",
+	urlPatterns = "/FrontEnd"
+)
 
 public class FrontEnd extends HttpServlet {
 	/*---------------------------------------------------------------------*/
