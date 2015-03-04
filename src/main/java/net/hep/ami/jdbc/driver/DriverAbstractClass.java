@@ -1,11 +1,10 @@
 package net.hep.ami.jdbc.driver;
 
 import java.sql.*;
-import java.util.concurrent.atomic.*;
 
 import net.hep.ami.jdbc.*;
 
-public abstract class DriverAbstractClass implements JdbcInterface{
+public abstract class DriverAbstractClass implements JdbcInterface {
 	/*---------------------------------------------------------------------*/
 
 	protected Connection m_connection = null;
@@ -14,34 +13,53 @@ public abstract class DriverAbstractClass implements JdbcInterface{
 
 	/*---------------------------------------------------------------------*/
 
-	protected String m_jdbc_url = null;
+	protected String m_jdbcClassName = null;
+	protected String m_jdbcPrefix = null;
+	protected String m_jdbcUrl = null;
 	protected String m_user = null;
 	protected String m_pass = null;
 	protected String m_db = null;
 
 	/*---------------------------------------------------------------------*/
 
-	protected AtomicInteger m_refCnt = null;
+	protected java.util.concurrent.atomic.AtomicInteger m_refCnt = new java.util.concurrent.atomic.AtomicInteger(1);
 
 	/*---------------------------------------------------------------------*/
 
-	public DriverAbstractClass(String jdbc_url, String user, String pass) throws Exception {
+	public DriverAbstractClass(String jdbcUrl, String user, String pass) throws Exception {
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
 
-		m_jdbc_url = jdbc_url;
+		JdbcDriver annotation = getClass().getAnnotation(JdbcDriver.class);
+
+		if(annotation == null) {
+			throw new Exception("no `JdbcDriver` annotation for driver `" + getClass().getName() + "`");
+		}
+
+		String jdbcClassName = annotation.className();
+		String jdbcPrefix = annotation.prefix();
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		m_jdbcClassName = jdbcClassName;
+		m_jdbcPrefix = jdbcPrefix;
+		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
-		m_db = null;
-
-		m_refCnt = new AtomicInteger(1);
 
 		m_connection = ConnectionSingleton.getConnection(
-			getJDBCDriver(),
-			m_jdbc_url,
+			m_jdbcClassName,
+			m_jdbcUrl,
 			m_user,
 			m_pass
 		);
 
 		m_statement = m_connection.createStatement();
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -144,13 +162,23 @@ public abstract class DriverAbstractClass implements JdbcInterface{
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract String getJDBCDriver();
+	public String getJdbcClassName() {
+
+		return m_jdbcClassName;
+	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJDBCURL() {
+	public String getJdbcPrefix() {
 
-		return m_jdbc_url;
+		return m_jdbcPrefix;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getJdbcUrl() {
+
+		return m_jdbcUrl;
 	}
 
 	/*---------------------------------------------------------------------*/

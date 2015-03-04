@@ -89,16 +89,23 @@ public class BasicLoader implements JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJDBCDriver() {
+	public String getJdbcClassName() {
 
-		return m_driver.getJDBCDriver();
+		return m_driver.getJdbcClassName();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJDBCURL() {
+	public String getJdbcPrefix() {
 
-		return m_driver.getJDBCURL();
+		return m_driver.getJdbcPrefix();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getJdbcUrl() {
+
+		return m_driver.getJdbcUrl();
 	}
 
 	/*---------------------------------------------------------------------*/

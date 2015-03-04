@@ -11,9 +11,9 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	private String m_filter;
+	private String m_filter = null;
 
-	private File m_base;
+	private File m_base = null;
 
 	/*---------------------------------------------------------------------*/
 

@@ -1,19 +1,16 @@
 package net.hep.ami.jdbc.driver;
 
+@JdbcDriver(
+	className = "org.gjt.mm.mysql.Driver",
+	prefix = "jdbc:mysql"
+)
+
 public class MySQLDriver extends DriverAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public MySQLDriver(String jdbc_url, String user, String pass) throws Exception {
 
 		super(jdbc_url, user, pass);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public String getJDBCDriver() {
-
-		return "org.gjt.mm.mysql.Driver";
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -2,7 +2,7 @@
 
 <web-app>
   <display-name>AMI Server</display-name>
-
+<!--
   <servlet>
     <servlet-name>FrontEnd</servlet-name>
     <servlet-class>net.hep.ami.servlet.FrontEnd</servlet-class>
@@ -32,5 +32,5 @@
     <servlet-name>SLS</servlet-name>
     <url-pattern>/SLS/*</url-pattern>
   </servlet-mapping>
-
+-->
 </web-app>

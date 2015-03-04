@@ -1,13 +1,13 @@
 package net.hep.ami.servlet;
 
-import java.io.IOException;
+import java.io.*;
 
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
 @WebServlet(
 	name = "Rest",
-	urlPatterns = "/Rest*"
+	urlPatterns = "/Rest/*"
 )
 
 public class Rest extends HttpServlet {
@@ -17,13 +17,33 @@ public class Rest extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	@Override
+	public void init() {
 
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+		/*-----------------------------------------------------------------*/
+		/* WRITE FORM                                                      */
+		/*-----------------------------------------------------------------*/
+
+		res.setContentType("text/html");
+
+		PrintWriter writer = res.getWriter();
+
+		writer.write("Hello");
+
+		writer.close();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
 	}
 

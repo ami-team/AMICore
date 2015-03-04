@@ -19,11 +19,15 @@ public interface JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJDBCDriver();
+	public String getJdbcClassName();
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJDBCURL();
+	public String getJdbcPrefix();
+
+	/*---------------------------------------------------------------------*/
+
+	public String getJdbcUrl();
 
 	/*---------------------------------------------------------------------*/
 

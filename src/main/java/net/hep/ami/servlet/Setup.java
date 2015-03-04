@@ -21,13 +21,15 @@ public class Setup extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		doCommand(req, res);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		doCommand(req, res);
 	}
 
