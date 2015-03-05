@@ -13,8 +13,8 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	protected String m_jdbcClassName = null;
-	protected String m_jdbcProtocol = null;
+	protected String m_jdbcProto = null;
+	protected String m_jdbcClass = null;
 	protected String m_jdbcUrl = null;
 	protected String m_user = null;
 	protected String m_pass = null;
@@ -35,19 +35,19 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 			throw new Exception("no `Jdbc` annotation for driver `" + getClass().getName() + "`");
 		}
 
-		String jdbcClassName = annotation.clazz();
-		String jdbcProtocol = annotation.proto();
+		String jdbcProto = annotation.proto();
+		String jdbcClass = annotation.clazz();
 
 		/*-----------------------------------------------------------------*/
 
-		m_jdbcClassName = jdbcClassName;
-		m_jdbcProtocol = jdbcProtocol;
+		m_jdbcProto = jdbcProto;
+		m_jdbcClass = jdbcClass;
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
 
 		m_connection = PoolSingleton.getConnection(
-			m_jdbcClassName,
+			m_jdbcClass,
 			m_jdbcUrl,
 			m_user,
 			m_pass
@@ -158,16 +158,32 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcClassName() {
+	@Deprecated
+	public Connection getConnection() {
 
-		return m_jdbcClassName;
+		return m_connection;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcProtocol() {
+	@Deprecated
+	public Statement getStatement() {
 
-		return m_jdbcProtocol;
+		return m_statement;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getJdbcProto() {
+
+		return m_jdbcProto;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getJdbcClass() {
+
+		return m_jdbcClass;
 	}
 
 	/*---------------------------------------------------------------------*/

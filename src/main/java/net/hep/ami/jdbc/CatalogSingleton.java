@@ -72,19 +72,45 @@ public class CatalogSingleton {
 
 		for(int i = 0; i < nr; i++) {
 
-			m_catalogs.put(
-				queryResult.getValue(i, "catalog").trim()
-				,
-				new CatalogTuple(
-					queryResult.getValue(i, "jdbcUrl").trim()
+			try {
+				String catalog = queryResult.getValue(i, "catalog").trim();
+				String jdbcUrl = queryResult.getValue(i, "jdbcUrl").trim();
+				String user    = queryResult.getValue(i, "user").trim();
+				String pass    = queryResult.getValue(i, "pass").trim();
+				String name    = queryResult.getValue(i, "name").trim();
+
+				/*---------------------------------------------------------*/
+				/* CHECK CATALOG                                           */
+				/*---------------------------------------------------------*/
+
+				BasicLoader loader = new BasicLoader(
+					catalog,
+					jdbcUrl,
+					user,
+					pass
+				);
+
+				loader.rollbackAndRelease();
+
+				/*---------------------------------------------------------*/
+				/* ADD CATALOG                                             */
+				/*---------------------------------------------------------*/
+
+				m_catalogs.put(
+					catalog
 					,
-					queryResult.getValue(i, "user").trim()
-					,
-					queryResult.getValue(i, "pass").trim()
-					,
-					queryResult.getValue(i, "name").trim()
-				)
-			);
+					new CatalogTuple(
+						jdbcUrl,
+						user,
+						pass,
+						name
+					)
+				);
+
+				/*---------------------------------------------------------*/
+			} catch(Exception e) {
+				LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

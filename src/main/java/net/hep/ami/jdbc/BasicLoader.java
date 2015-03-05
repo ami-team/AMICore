@@ -1,5 +1,8 @@
 package net.hep.ami.jdbc;
 
+import java.sql.Connection;
+import java.sql.Statement;
+
 import net.hep.ami.jdbc.driver.*;
 
 public class BasicLoader implements JdbcInterface {
@@ -93,16 +96,32 @@ public class BasicLoader implements JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcClassName() {
+	@Deprecated
+	public Connection getConnection() {
 
-		return m_driver.getJdbcClassName();
+		return m_driver.getConnection();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcProtocol() {
+	@Deprecated
+	public Statement getStatement() {
 
-		return m_driver.getJdbcProtocol();
+		return m_driver.getStatement();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getJdbcProto() {
+
+		return m_driver.getJdbcProto();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getJdbcClass() {
+
+		return m_driver.getJdbcClass();
 	}
 
 	/*---------------------------------------------------------------------*/

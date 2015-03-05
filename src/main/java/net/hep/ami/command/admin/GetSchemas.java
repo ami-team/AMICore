@@ -5,10 +5,10 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 
-public class GetDBSchemas extends CommandAbstractClass {
+public class GetSchemas extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetDBSchemas(Map<String, String> arguments, int transactionID) {
+	public GetSchemas(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 

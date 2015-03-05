@@ -65,10 +65,8 @@ public class CommandSingleton {
 				clazz.getSimpleName()
 				,
 				new CommandTuple(
-					clazz.getMethod("help").invoke(null).toString()
-					,
-					clazz.getMethod("usage").invoke(null).toString()
-					,
+					clazz.getMethod("help").invoke(null).toString(),
+					clazz.getMethod("usage").invoke(null).toString(),
 					clazz.getConstructor(m_ctor)
 				)
 			);

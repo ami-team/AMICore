@@ -19,11 +19,11 @@ public interface JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcClassName();
+	public String getJdbcProto();
 
 	/*---------------------------------------------------------------------*/
 
-	public String getJdbcProtocol();
+	public String getJdbcClass();
 
 	/*---------------------------------------------------------------------*/
 
