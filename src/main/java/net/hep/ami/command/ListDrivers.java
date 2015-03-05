@@ -17,7 +17,7 @@ public class ListDrivers extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		return ConnectionSingleton.listDrivers();
+		return DriverSingleton.listDrivers();
 	}
 
 	/*---------------------------------------------------------------------*/

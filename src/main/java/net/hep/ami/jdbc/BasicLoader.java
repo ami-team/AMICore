@@ -18,14 +18,14 @@ public class BasicLoader implements LoaderInterface {
 
 	public BasicLoader(String jdbcUrl, String user, String pass) throws Exception {
 
-		m_driver = ConnectionSingleton.getConnection(jdbcUrl, user, pass);
+		m_driver = DriverSingleton.getConnection(jdbcUrl, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public BasicLoader(String jdbcUrl, String user, String pass, String name) throws Exception {
 
-		m_driver = ConnectionSingleton.getConnection(jdbcUrl, user, pass, name);
+		m_driver = DriverSingleton.getConnection(jdbcUrl, user, pass, name);
 	}
 
 	/*---------------------------------------------------------------------*/

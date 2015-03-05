@@ -155,7 +155,7 @@ public class CatalogSingleton {
 		/* CONNECTION                                                      */
 		/*-----------------------------------------------------------------*/
 
-		return ConnectionSingleton.getConnection(tuple.x, tuple.y, tuple.z, tuple.t);
+		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.z, tuple.t);
 
 		/*-----------------------------------------------------------------*/
 	}

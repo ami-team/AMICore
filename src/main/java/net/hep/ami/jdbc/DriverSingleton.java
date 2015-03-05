@@ -8,7 +8,7 @@ import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 
-public class ConnectionSingleton {
+public class DriverSingleton {
 	/*---------------------------------------------------------------------*/
 
 	private static class DriverTuple extends Tuple3<String, String, Constructor<DriverAbstractClass>> {
