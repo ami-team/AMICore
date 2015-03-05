@@ -1,8 +1,5 @@
 package net.hep.ami.jdbc;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
 import net.hep.ami.jdbc.driver.*;
 
 public class BasicLoader implements JdbcInterface {
@@ -92,22 +89,6 @@ public class BasicLoader implements JdbcInterface {
 	public void rollbackAndRelease() throws Exception {
 
 		m_driver.rollbackAndRelease();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Deprecated
-	public Connection getConnection() {
-
-		return m_driver.getConnection();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Deprecated
-	public Statement getStatement() {
-
-		return m_driver.getStatement();
 	}
 
 	/*---------------------------------------------------------------------*/

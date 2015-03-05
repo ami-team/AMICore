@@ -159,22 +159,6 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	@Deprecated
-	public Connection getConnection() {
-
-		return m_connection;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Deprecated
-	public Statement getStatement() {
-
-		return m_statement;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public String getJdbcProto() {
 
 		return m_jdbcProto;
