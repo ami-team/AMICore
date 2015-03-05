@@ -5,7 +5,7 @@ import java.sql.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 
-public abstract class DriverAbstractClass implements JdbcInterface {
+public abstract class DriverAbstractClass implements LoaderInterface {
 	/*---------------------------------------------------------------------*/
 
 	protected Connection m_connection = null;

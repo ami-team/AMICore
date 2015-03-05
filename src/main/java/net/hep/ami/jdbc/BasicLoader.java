@@ -2,7 +2,7 @@ package net.hep.ami.jdbc;
 
 import net.hep.ami.jdbc.driver.*;
 
-public class BasicLoader implements JdbcInterface {
+public class BasicLoader implements LoaderInterface {
 	/*---------------------------------------------------------------------*/
 
 	private DriverAbstractClass m_driver;

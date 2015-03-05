@@ -1,6 +1,6 @@
 package net.hep.ami.jdbc;
 
-public interface JdbcInterface {
+public interface LoaderInterface {
 	/*---------------------------------------------------------------------*/
 
 	public void useDB(String db) throws Exception;
