@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.driver;
 import java.sql.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.pool.*;
 
 public abstract class DriverAbstractClass implements JdbcInterface {
 	/*---------------------------------------------------------------------*/
@@ -46,7 +47,7 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 		m_user = user;
 		m_pass = pass;
 
-		m_connection = PoolSingleton.getConnection(
+		m_connection = ConnectionPoolSingleton.getConnection(
 			m_jdbcClass,
 			m_jdbcUrl,
 			m_user,

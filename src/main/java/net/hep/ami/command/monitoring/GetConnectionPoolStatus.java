@@ -3,7 +3,7 @@ package net.hep.ami.command.monitoring;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.pool.*;
 
 public class GetConnectionPoolStatus extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -19,7 +19,7 @@ public class GetConnectionPoolStatus extends CommandAbstractClass {
 
 		StringBuilder result = new StringBuilder();
 
-		result.append(PoolSingleton.getStatus());
+		result.append(ConnectionPoolSingleton.getStatus());
 
 		return result;
 	}

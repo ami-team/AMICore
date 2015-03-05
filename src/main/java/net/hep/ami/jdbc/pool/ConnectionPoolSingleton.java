@@ -1,13 +1,14 @@
-package net.hep.ami.jdbc;
+package net.hep.ami.jdbc.pool;
 
 import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.SchemaSingleton;
 
 import org.apache.tomcat.jdbc.pool.*;
 
-public class PoolSingleton {
+public class ConnectionPoolSingleton {
 	/*---------------------------------------------------------------------*/
 
 	private static final int m_initialSizeDefault = 10;

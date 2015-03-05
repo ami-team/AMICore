@@ -1,0 +1,5 @@
+package net.hep.ami.jdbc.pool;
+
+public class TransactionPoolSingleton {
+
+}
