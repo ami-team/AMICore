@@ -140,10 +140,10 @@ public class FrontEnd extends HttpServlet {
 
 				if(link.isEmpty() == false) {
 
-					String[] result = resolveLink(link);
+					Tuple2<String, String> result = resolveLink(link);
 
-					command = result[0];
-					converter = result[1];
+					command = result.x;
+					converter = result.y;
 				}
 
 				/*---------------------------------------------------------*/
@@ -249,7 +249,7 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private String[] resolveLink(String linkId) throws Exception {
+	private Tuple2<String, String> resolveLink(String linkId) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
@@ -275,10 +275,10 @@ public class FrontEnd extends HttpServlet {
 
 		if(queryResult.getNumberOfRows() == 1) {
 
-			return new String[] {
+			return new Tuple2<String, String>(
 				queryResult.getValue(0,  "command" ),
-				queryResult.getValue(0, "converter"),
-			};
+				queryResult.getValue(0, "converter")
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -292,7 +292,7 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private String[] resolveCertificate(String clientDN) throws Exception {
+	private Tuple2<String, String> resolveCertificate(String clientDN) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
@@ -318,20 +318,20 @@ public class FrontEnd extends HttpServlet {
 
 		if(queryResult.getNumberOfRows() == 1) {
 
-			return new String[] {
+			return new Tuple2<String, String>(
 				/******************/(queryResult.getValue(0, "AMIUser")),
-				Cryptography.decrypt(queryResult.getValue(0, "AMIPass")),
-			};
+				Cryptography.decrypt(queryResult.getValue(0, "AMIPass"))
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* RAISE ERROR                                                     */
 		/*-----------------------------------------------------------------*/
 
-		return new String[] {
+		return new Tuple2<String, String>(
 			m_guest_user,
-			m_guest_pass,
-		};
+			m_guest_pass
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -391,10 +391,10 @@ public class FrontEnd extends HttpServlet {
 			   ||
 			   AMIPass.isEmpty()
 			 ) {
-				String[] result = resolveCertificate(clientDN);
+				Tuple2<String, String> result = resolveCertificate(clientDN);
 
-				AMIUser = result[0];
-				AMIPass = result[1];
+				AMIUser = result.x;
+				AMIPass = result.y;
 			}
 
 			if(!AMIUser.equals(m_guest_user)) {

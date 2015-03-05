@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc.driver;
 
+import net.hep.ami.jdbc.driver.annotation.*;
+
 @Jdbc(
 	proto = "jdbc:oracle",
 	clazz = "oracle.jdbc.driver.OracleDriver"

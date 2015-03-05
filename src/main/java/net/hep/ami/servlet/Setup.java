@@ -207,8 +207,8 @@ public class Setup extends HttpServlet {
 
 			try {
 				return TextFile.read(Setup.class.getResourceAsStream("/html/setup_level2_success.html")).replace("%%HOST%%", host).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass);
-			} catch(Exception e) {
-				return "<html><body><![CDATA[" + e.getMessage() + "]]></body></html>";
+			} catch(Exception f) {
+				return "<html><body><![CDATA[" + f.getMessage() + "]]></body></html>";
 			}
 
 		} catch(Exception e) {

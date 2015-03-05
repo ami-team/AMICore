@@ -17,12 +17,12 @@ public class Shell {
 	private static class StreamReader implements Runnable {
 
 		private StringBuilder m_stringBuilder;
-		private  InputStream   m_inputStream ;
+		private InputStream   m_inputStream  ;
 
 		public StreamReader(StringBuilder stringBuilder, InputStream inputStream) {
 
 			m_stringBuilder = stringBuilder;
-			 m_inputStream  =  inputStream ;
+			m_inputStream   = inputStream  ;
 		}
 
 		public void run() {

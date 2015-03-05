@@ -26,9 +26,8 @@ public class Rest extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
 		/*-----------------------------------------------------------------*/
-		/* WRITE FORM                                                      */
+		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		res.setContentType("text/html");
@@ -46,9 +45,6 @@ public class Rest extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
 	}
-
-	/*---------------------------------------------------------------------*/
-
 
 	/*---------------------------------------------------------------------*/
 }

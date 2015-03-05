@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc.driver;
 
+import net.hep.ami.jdbc.driver.annotation.*;
+
 @Jdbc(
 	proto = "jdbc:mysql",
 	clazz = "org.gjt.mm.mysql.Driver"

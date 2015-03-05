@@ -64,7 +64,6 @@ public class ConfigSingleton {
 			 ) {
 				m_hasValidConfFile = false;
 				m_hasValidDataBase = false;
-
 			} else {
 				Cryptography.init(getProperty("encryption_key"));
 			}
@@ -93,14 +92,13 @@ public class ConfigSingleton {
 			String customPath = System.getProperty("ami.conf_path");
 			if(customPath != null) {
 				m_configFileName = customPath.trim() /* pathname or filename */;
-
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(m_configFileName.endsWith(".xml") == false) {
-			m_configFileName = m_configFileName.concat(File.separator + "AMI.xml");
+			m_configFileName.concat(File.separator + "AMI.xml");
 		}
 
 		/*-----------------------------------------------------------------*/

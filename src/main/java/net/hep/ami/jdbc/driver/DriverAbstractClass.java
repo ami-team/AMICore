@@ -4,12 +4,12 @@ import java.sql.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
+import net.hep.ami.jdbc.driver.annotation.*;
 
 public abstract class DriverAbstractClass implements LoaderInterface {
 	/*---------------------------------------------------------------------*/
 
 	protected Connection m_connection = null;
-
 	protected Statement m_statement = null;
 
 	/*---------------------------------------------------------------------*/

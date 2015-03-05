@@ -238,13 +238,11 @@ public class SchemaSingleton {
 
 	private static void readDBMetaData(DatabaseMetaData metaData) throws SQLException {
 
-		String name;
-
 		ResultSet resultSet = metaData.getCatalogs();
 
 		while(resultSet.next()) {
 
-			name = resultSet.getString("TABLE_CAT");
+			String name = resultSet.getString("TABLE_CAT");
 
 			if(name.equals(/****/"mysql"/*****/) == false
 			   &&
@@ -271,15 +269,13 @@ public class SchemaSingleton {
 
 			String name = resultSet.getString("TABLE_NAME");
 
-			if(true) {
-				m_columns.get(catalog).put(name, new LinkedHashMap<String, Column>());
-				m_foreignKeys.get(catalog).put(name, new ArrayList<ForeignKey>());
-				m_indices.get(catalog).put(name, new ArrayList<Index>());
+			m_columns.get(catalog).put(name, new LinkedHashMap<String, Column>());
+			m_foreignKeys.get(catalog).put(name, new ArrayList<ForeignKey>());
+			m_indices.get(catalog).put(name, new ArrayList<Index>());
 
-				readColumnMetaData(metaData, catalog, name);
-				readForeignKeyMetaData(metaData, catalog, name);
-				readIndexMetaData(metaData, catalog, name);
-			}
+			readColumnMetaData(metaData, catalog, name);
+			readForeignKeyMetaData(metaData, catalog, name);
+			readIndexMetaData(metaData, catalog, name);
 		}
 	}
 

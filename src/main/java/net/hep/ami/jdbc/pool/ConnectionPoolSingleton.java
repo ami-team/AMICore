@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.SchemaSingleton;
+import net.hep.ami.jdbc.*;
 
 import org.apache.tomcat.jdbc.pool.*;
 
