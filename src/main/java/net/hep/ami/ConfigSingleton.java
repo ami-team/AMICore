@@ -98,7 +98,7 @@ public class ConfigSingleton {
 		/*-----------------------------------------------------------------*/
 
 		if(m_configFileName.endsWith(".xml") == false) {
-			m_configFileName.concat(File.separator + "AMI.xml");
+			m_configFileName = m_configFileName.concat(File.separator + "AMI.xml");
 		}
 
 		/*-----------------------------------------------------------------*/
