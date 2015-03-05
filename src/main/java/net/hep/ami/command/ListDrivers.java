@@ -23,7 +23,7 @@ public class ListDrivers extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "List catalogs.";
+		return "List drivers.";
 	}
 
 	/*---------------------------------------------------------------------*/
