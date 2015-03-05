@@ -39,14 +39,6 @@ public class GetSessionInfo extends CommandAbstractClass {
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		if(queryResult.getNumberOfRows() != 1) {
-			throw new Exception("session internal error");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
-
 		String clientDNInAMI = queryResult.getValue(0, "clientDN");
 		String issuerDNInAMI = queryResult.getValue(0, "issuerDN");
 		String firstName = queryResult.getValue(0, "firstName");

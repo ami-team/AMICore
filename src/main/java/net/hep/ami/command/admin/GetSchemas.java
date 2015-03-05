@@ -17,7 +17,7 @@ public class GetSchemas extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		return IntrospectionSingleton.getDBSchemas();
+		return SchemaSingleton.getDBSchemas();
 	}
 
 	/*---------------------------------------------------------------------*/

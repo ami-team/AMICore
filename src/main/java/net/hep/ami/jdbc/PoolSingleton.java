@@ -162,7 +162,7 @@ public class PoolSingleton {
 		/* READ SCHEMA                                                     */
 		/*-----------------------------------------------------------------*/
 
-		IntrospectionSingleton.readSchema(dataSource);
+		SchemaSingleton.readSchema(dataSource);
 
 		/*-----------------------------------------------------------------*/
 

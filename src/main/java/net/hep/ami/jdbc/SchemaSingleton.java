@@ -8,7 +8,7 @@ import net.hep.ami.*;
 
 import org.apache.tomcat.jdbc.pool.*;
 
-public class IntrospectionSingleton {
+public class SchemaSingleton {
 	/*---------------------------------------------------------------------*/
 
 	public static class Column {
@@ -538,7 +538,7 @@ public class IntrospectionSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<info>execution time: " + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + " s</info>");
+		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + " s</info>");
 
 		/*-----------------------------------------------------------------*/
 
