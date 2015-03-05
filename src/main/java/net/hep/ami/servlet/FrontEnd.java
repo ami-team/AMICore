@@ -258,13 +258,7 @@ public class FrontEnd extends HttpServlet {
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader(
-				ConfigSingleton.getProperty("jdbc_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
-			);
-
-			basicLoader.useDB(ConfigSingleton.getProperty("router_name"));
+			basicLoader = new BasicLoader("self");
 
 			queryResult = basicLoader.executeQuery("SELECT command, converter FROM router_link WHERE id = '" + linkId + "'");
 
@@ -307,13 +301,7 @@ public class FrontEnd extends HttpServlet {
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader(
-				ConfigSingleton.getProperty("jdbc_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
-			);
-
-			basicLoader.useDB(ConfigSingleton.getProperty("router_name"));
+			basicLoader = new BasicLoader("self");
 
 			queryResult = basicLoader.executeQuery("SELECT AMIUser, AMIPass FROM router_user WHERE clientDN = '" + clientDN.replaceAll("'", "''") + "'");
 

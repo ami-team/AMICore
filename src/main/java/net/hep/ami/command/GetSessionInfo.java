@@ -20,7 +20,28 @@ public class GetSessionInfo extends CommandAbstractClass {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult = getRouterLoader().executeQuery("SELECT `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' || `AMIUser` = '" + m_guestUser + "'");
+		BasicLoader basicLoader = null;
+		QueryResult queryResult = null;
+
+		try {
+			basicLoader = new BasicLoader("self");
+
+			queryResult = basicLoader.executeQuery("SELECT `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' || `AMIUser` = '" + m_guestUser + "'");
+
+		} finally {
+
+			if(basicLoader != null) {
+				basicLoader.rollbackAndRelease();
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		if(queryResult.getNumberOfRows() != 1) {
+			throw new Exception("session internal error");
+		}
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

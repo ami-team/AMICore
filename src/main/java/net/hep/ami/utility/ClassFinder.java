@@ -142,4 +142,21 @@ public class ClassFinder {
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	public static boolean extendsClass(Class<?> child, Class<?> parent) {
+
+		boolean result = false;
+
+		while((child = child.getSuperclass()) != null) {
+
+			if(child == parent) {
+				result = true;
+				break;
+			}
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
 }

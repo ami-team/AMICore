@@ -1,8 +1,8 @@
 package net.hep.ami.jdbc.driver;
 
 @Jdbc(
-	className = "org.gjt.mm.mysql.Driver",
-	protocol = "jdbc:mysql"
+	proto = "jdbc:mysql",
+	clazz = "org.gjt.mm.mysql.Driver"
 )
 
 public class MySQLDriver extends DriverAbstractClass {

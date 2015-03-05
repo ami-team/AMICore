@@ -1,14 +1,14 @@
-package net.hep.ami.command.monitoring;
+package net.hep.ami.command;
 
 import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 
-public class GetConnectionPoolStatus extends CommandAbstractClass {
+public class ListDrivers extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetConnectionPoolStatus(Map<String, String> arguments, int transactionID) {
+	public ListDrivers(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
@@ -17,17 +17,13 @@ public class GetConnectionPoolStatus extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		StringBuilder result = new StringBuilder();
-
-		result.append(PoolSingleton.getStatus());
-
-		return result;
+		return ConnectionSingleton.listDrivers();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Get connection pool status.";
+		return "List catalogs.";
 	}
 
 	/*---------------------------------------------------------------------*/

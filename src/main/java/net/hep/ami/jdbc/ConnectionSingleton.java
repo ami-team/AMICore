@@ -1,179 +1,142 @@
 package net.hep.ami.jdbc;
 
-import java.sql.*;
 import java.util.*;
+import java.util.Map.*;
+import java.lang.reflect.*;
 
 import net.hep.ami.*;
-
-import org.apache.tomcat.jdbc.pool.*;
+import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.driver.*;
 
 public class ConnectionSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static final int m_initialSizeDefault = 10;
-	private static final int m_maxActiveDefault = 100;
-	private static final int m_minIdleDefault = 10;
-	private static final int m_maxIdleDefault = 100;
+	private static class DriverTuple extends Tuple3<String, String, Constructor<DriverAbstractClass>> {
 
-	private static final int m_timeBetweenEvictionRunsMillisDefault = 5000;
-	private static final int m_minEvictableIdleTimeMillisDefault = 30000;
-	private static final int m_validationIntervalDefault = 30000;
-	private static final int m_maxWaitDefault = 10000;
+		public DriverTuple(String _x, String _y, Constructor<DriverAbstractClass> _z) {
+			super(_x, _y, _z);
+		}
+	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
+	private static Map<String, DriverTuple> m_drivers = new HashMap<String, DriverTuple>();
 
 	/*---------------------------------------------------------------------*/
 
-	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass) throws Exception {
+	private static final Class<?>[] m_ctor = new Class<?>[] {
+		String.class,
+		String.class,
+		String.class,
+	};
 
-		return getDataSource(
-			/* DATABASE */
-			jdbc_driver,
-			jdbc_url,
+	/*---------------------------------------------------------------------*/
+
+	static {
+
+		ClassFinder classFinder = new ClassFinder("net.hep.ami.jdbc.driver");
+
+		for(String className: classFinder.getClassList()) {
+
+			try {
+				addDriver(className);
+
+			} catch(Exception e) {
+				LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
+			}
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+	@SuppressWarnings("unchecked")
+	/*---------------------------------------------------------------------*/
+
+	private static void addDriver(String className) throws Exception {
+		/*-----------------------------------------------------------------*/
+		/* GET CLASS OBJECT                                                */
+		/*-----------------------------------------------------------------*/
+
+		Class<DriverAbstractClass> clazz = (Class<DriverAbstractClass>) Class.forName(className);
+
+		/*-----------------------------------------------------------------*/
+		/* ADD DRIVER                                                      */
+		/*-----------------------------------------------------------------*/
+
+		if(ClassFinder.extendsClass(clazz, DriverAbstractClass.class)) {
+
+			Jdbc jdbc = clazz.getAnnotation(Jdbc.class);
+
+			if(jdbc == null) {
+				throw new Exception("no `Jdbc` annotation for driver `" + clazz.getName() + "`");
+			}
+
+			m_drivers.put(
+				jdbc.proto()
+				,
+				new DriverTuple(
+					jdbc.clazz(),
+					clazz.getName(),
+					clazz.getConstructor(m_ctor)
+				)
+			);
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* GET PROTOCOL                                                    */
+		/*-----------------------------------------------------------------*/
+
+		jdbcUrl = jdbcUrl.trim();
+
+		int index = jdbcUrl.indexOf("://");
+
+		if(index < 0) {
+			throw new Exception("invalid JDBC URL `" + jdbcUrl + "`");
+		}
+
+		String jdbcProto = jdbcUrl.substring(0, index);
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK DRIVER                                                    */
+		/*-----------------------------------------------------------------*/
+
+		if(m_drivers.containsKey(jdbcProto) == false) {
+			throw new Exception("unknown JDBC protocol `" + jdbcProto + "`");
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CREATE DRIVER                                                   */
+		/*-----------------------------------------------------------------*/
+
+		return m_drivers.get(jdbcProto).z.newInstance(new Object[] {
+			jdbcUrl,
 			user,
 			pass
-
-		).getConnection();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) throws Exception {
-
-		return getDataSource(
-			/* DATABASE */
-			jdbc_driver,
-			jdbc_url,
-			user,
-			pass,
-			/* POOL - CONTENT */
-			initialSize,
-			maxActive,
-			minIdle,
-			maxIdle,
-			/* POOL - TIMING */
-			timeBetweenEvictionRunsMillis,
-			minEvictableIdleTimeMillis,
-			validationInterval,
-			maxWait
-
-		).getConnection();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass) {
-
-		return getDataSource(
-			/* DATABASE */
-			jdbc_driver,
-			jdbc_url,
-			user,
-			pass,
-			/* POOL - CONTENT */
-			ConfigSingleton.getProperty("initial_size", m_initialSizeDefault),
-			ConfigSingleton.getProperty("max_active", m_maxActiveDefault),
-			ConfigSingleton.getProperty("min_idle", m_minIdleDefault),
-			ConfigSingleton.getProperty("max_idle", m_maxIdleDefault),
-			/* POOL - TIMING */
-			ConfigSingleton.getProperty("time_between_eviction_runs_millis", m_timeBetweenEvictionRunsMillisDefault),
-			ConfigSingleton.getProperty("min_evictable_idle_time_millis", m_minEvictableIdleTimeMillisDefault),
-			ConfigSingleton.getProperty("validation_interval", m_validationIntervalDefault),
-			ConfigSingleton.getProperty("max_wait", m_maxWaitDefault)
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static synchronized DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) {
-		/*-----------------------------------------------------------------*/
-		/* GET POOL IF EXISTS                                              */
-		/*-----------------------------------------------------------------*/
-
-		String key = jdbc_url + "@" + user;
-
-		if(m_pools.containsKey(key)) return m_pools.get(key);
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE POOL PROPERTIES                                          */
-		/*-----------------------------------------------------------------*/
-
-		PoolProperties poolProperties = new PoolProperties();
-
-		/*---------------------------*/
-		/* DATABASE                  */
-		/*---------------------------*/
-
-		poolProperties.setDriverClassName(jdbc_driver);
-		poolProperties.setUrl(jdbc_url);
-		poolProperties.setUsername(user);
-		poolProperties.setPassword(pass);
-
-		/*---------------------------*/
-		/* POOL - CONTENT            */
-		/*---------------------------*/
-
-		poolProperties.setInitialSize(initialSize);
-		poolProperties.setMaxActive(maxActive);
-		poolProperties.setMinIdle(minIdle);
-		poolProperties.setMaxIdle(maxIdle);
-
-		/*---------------------------*/
-		/* POOL - TIMING             */
-		/*---------------------------*/
-
-		poolProperties.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-		poolProperties.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-		poolProperties.setValidationInterval(validationInterval);
-		poolProperties.setMaxWait(maxWait);
-
-		/*---------------------------*/
-		/* TESTS                     */
-		/*---------------------------*/
-
-		poolProperties.setTestOnBorrow(true);				/* The indication of whether objects will be validated before being borrowed from the pool. */
-		poolProperties.setTestOnReturn(true);				/* The indication of whether objects will be validated after being returned to the pool. */
-		poolProperties.setTestOnConnect(false);				/* Set to true if query validation should take place the first time on a connection. */
-		poolProperties.setTestWhileIdle(true);				/* Set to true if query validation should take place while the connection is idle. */
-
-		poolProperties.setValidationQuery("SELECT 1");
-
-		/*---------------------------*/
-		/* ABANDONED CONNECTIONS     */
-		/*---------------------------*/
-
-		poolProperties.setLogAbandoned(true);
-		poolProperties.setRemoveAbandoned(true);
-		poolProperties.setRemoveAbandonedTimeout(60);
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE DATA SOURCE                                              */
-		/*-----------------------------------------------------------------*/
-
-		DataSource dataSource = new DataSource();
-
-		dataSource.setPoolProperties(poolProperties);
-
-		m_pools.put(key, dataSource);
-
-		/*-----------------------------------------------------------------*/
-		/* READ SCHEMAS                                                    */
-		/*-----------------------------------------------------------------*/
-
-		IntrospectionSingleton.readSchema(dataSource);
-
-		/*-----------------------------------------------------------------*/
-
-		return dataSource;
+		});
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getStatus() {
+	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, String name) throws Exception {
+
+		DriverAbstractClass result = getConnection(jdbcUrl, user, pass);
+
+		result.useDB(name);
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static StringBuilder listDrivers() {
 
 		StringBuilder result = new StringBuilder();
 
@@ -183,34 +146,21 @@ public class ConnectionSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(DataSource entry: m_pools.values()) {
+		for(Entry<String, DriverTuple> entry: m_drivers.entrySet()) {
+
+			String jdbcProto = entry.getKey();
+
+			String jdbcClass = entry.getValue().x;
+			String driverClass = entry.getValue().y;
 
 			result.append(
 				"<row>"
 				+
-				"<field name=\"url\">" + entry.getUrl() + "</field>"
+				"<field name=\"jdbcProto\"><![CDATA[" + jdbcProto + "]]></field>"
 				+
-				"<field name=\"name\">" + entry.getUsername() + "</field>"
+				"<field name=\"jdbcClass\"><![CDATA[" + jdbcClass + "]]></field>"
 				+
-				"<field name=\"poolSize\">" + entry.getPoolSize() + "</field>"
-				+
-				"<field name=\"minIdle\">" + entry.getMinIdle() + "</field>"
-				+
-				"<field name=\"maxIdle\">" + entry.getMaxIdle() + "</field>"
-				+
-				"<field name=\"maxActive\">" + entry.getMaxActive() + "</field>"
-				+
-				"<field name=\"timeBetweenEvictionRunsMillis\">" + entry.getTimeBetweenEvictionRunsMillis() + "</field>"
-				+
-				"<field name=\"minEvictableIdleTimeMillis\">" + entry.getMinEvictableIdleTimeMillis() + "</field>"
-				+
-				"<field name=\"validationInterval\">" + entry.getValidationInterval() + "</field>"
-				+
-				"<field name=\"maxWait\">" + entry.getMaxWait() + "</field>"
-				+
-				"<field name=\"numIdle\">" + entry.getNumIdle() + "</field>"
-				+
-				"<field name=\"numActive\">" + entry.getNumActive() + "</field>"
+				"<field name=\"driverClass\"><![CDATA[" + driverClass + "]]></field>"
 				+
 				"</row>"
 			);
@@ -222,7 +172,7 @@ public class ConnectionSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		return result.toString();
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

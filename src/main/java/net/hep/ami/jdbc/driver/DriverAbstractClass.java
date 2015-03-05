@@ -30,12 +30,13 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 		/*-----------------------------------------------------------------*/
 
 		Jdbc annotation = getClass().getAnnotation(Jdbc.class);
+
 		if(annotation == null) {
 			throw new Exception("no `Jdbc` annotation for driver `" + getClass().getName() + "`");
 		}
 
-		String jdbcClassName = annotation.className();
-		String jdbcProtocol = annotation.protocol();
+		String jdbcClassName = annotation.clazz();
+		String jdbcProtocol = annotation.proto();
 
 		/*-----------------------------------------------------------------*/
 
@@ -45,7 +46,7 @@ public abstract class DriverAbstractClass implements JdbcInterface {
 		m_user = user;
 		m_pass = pass;
 
-		m_connection = ConnectionSingleton.getConnection(
+		m_connection = PoolSingleton.getConnection(
 			m_jdbcClassName,
 			m_jdbcUrl,
 			m_user,

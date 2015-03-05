@@ -159,10 +159,9 @@ public class ConfigSingleton {
 			basicLoader = new BasicLoader(
 				ConfigSingleton.getProperty("jdbc_url"),
 				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
+				ConfigSingleton.getProperty("router_pass"),
+				ConfigSingleton.getProperty("router_name")
 			);
-
-			basicLoader.useDB(ConfigSingleton.getProperty("router_name"));
 
 			queryResult = basicLoader.executeQuery("SELECT `name`, `value` FROM `router_config`");
 

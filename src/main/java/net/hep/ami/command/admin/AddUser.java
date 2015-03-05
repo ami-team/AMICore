@@ -3,7 +3,7 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
+//import net.hep.ami.jdbc.*;
 
 public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -11,7 +11,7 @@ public class AddUser extends CommandAbstractClass {
 //	private String m_firstName = "";
 //	private String m_lastName = "";
 //	private String m_email = "";
-	private String m_amiLogin = "";
+//	private String m_amiLogin = "";
 //	private String m_amiPassword = "";
 
 	/*---------------------------------------------------------------------*/
@@ -22,7 +22,7 @@ public class AddUser extends CommandAbstractClass {
 //		m_firstName = arguments.get("firstName");
 //		m_lastName = arguments.get("lastName");
 //		m_email = arguments.get("email");
-		m_amiLogin = arguments.get("amiLogin");
+//		m_amiLogin = arguments.get("amiLogin");
 //		m_amiPassword = arguments.get("amiPassword");
 	}
 
@@ -34,11 +34,11 @@ public class AddUser extends CommandAbstractClass {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult = getRouterLoader().executeQuery("SELECT COUNT(*) FROM `router_user` WHERE `AMIUser` = '" + m_amiLogin + "'");
+//		QueryResult queryResult = getRouterLoader().executeQuery("SELECT COUNT(*) FROM `router_user` WHERE `AMIUser` = '" + m_amiLogin + "'");
 
-		if(queryResult.getNumberOfRows() > 0) {
-			throw new Exception("");
-		}
+//		if(queryResult.getNumberOfRows() > 0) {
+//			throw new Exception("");
+//		}
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

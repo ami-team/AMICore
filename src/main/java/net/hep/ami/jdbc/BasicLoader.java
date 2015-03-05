@@ -1,117 +1,31 @@
 package net.hep.ami.jdbc;
 
-import java.util.*;
-import java.lang.reflect.*;
-
-import net.hep.ami.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 
 public class BasicLoader implements JdbcInterface {
-	/*---------------------------------------------------------------------*/
-
-	private static Map<String, Constructor<DriverAbstractClass>> m_drivers = new HashMap<String, Constructor<DriverAbstractClass>>();
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Class<?>[] m_ctor = new Class<?>[] { String.class, String.class, String.class };
-
-	/*---------------------------------------------------------------------*/
-
-	static {
-
-		ClassFinder classFinder = new ClassFinder("net.hep.ami.jdbc.driver");
-
-		for(String className: classFinder.getClassList()) {
-
-			try {
-				addDriverClass(className);
-
-			} catch(Exception e) {
-				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
-			}
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unchecked")
-	/*---------------------------------------------------------------------*/
-
-	private static void addDriverClass(String className) throws Exception {
-
-		Class<DriverAbstractClass> clazz = (Class<DriverAbstractClass>) Class.forName(className);
-
-		if(isDriverClass(clazz)) {
-
-			Jdbc annotation = clazz.getAnnotation(Jdbc.class);
-			if(annotation == null) {
-				throw new Exception("no `Jdbc` annotation for driver `" + clazz.getName() + "`");
-			}
-
-			m_drivers.put(
-				annotation.protocol(),
-				clazz.getConstructor(m_ctor)
-			);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static boolean isDriverClass(Class<?> clazz) {
-
-		boolean result = false;
-
-		while((clazz = clazz.getSuperclass()) != null) {
-
-			if(clazz == DriverAbstractClass.class) {
-				result = true;
-				break;
-			}
-		}
-
-		return result;
-	}
-
 	/*---------------------------------------------------------------------*/
 
 	private DriverAbstractClass m_driver;
 
 	/*---------------------------------------------------------------------*/
 
+	public BasicLoader(String catalog) throws Exception {
+
+		m_driver = CatalogSingleton.getConnection(catalog);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public BasicLoader(String jdbcUrl, String user, String pass) throws Exception {
-		/*-----------------------------------------------------------------*/
-		/* GET PROTOCOL                                                    */
-		/*-----------------------------------------------------------------*/
 
-		jdbcUrl = jdbcUrl.trim();
+		m_driver = ConnectionSingleton.getConnection(jdbcUrl, user, pass);
+	}
 
-		int index = jdbcUrl.indexOf("://");
+	/*---------------------------------------------------------------------*/
 
-		if(index < 0) {
-			throw new Exception("invalid JDBC URL `" + jdbcUrl + "`");
-		}
+	public BasicLoader(String jdbcUrl, String user, String pass, String name) throws Exception {
 
-		String jdbcProtocol = jdbcUrl.substring(0, index);
-
-		/*-----------------------------------------------------------------*/
-		/* CHECK DRIVER                                                    */
-		/*-----------------------------------------------------------------*/
-
-		if(m_drivers.containsKey(jdbcProtocol) == false) {
-			throw new Exception("invalid JDBC protocol `" + jdbcProtocol + "`");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE DRIVER                                                   */
-		/*-----------------------------------------------------------------*/
-
-		m_driver = m_drivers.get(jdbcProtocol).newInstance(new Object[] {
-			jdbcUrl,
-			user,
-			pass
-		});
-
-		/*-----------------------------------------------------------------*/
+		m_driver = ConnectionSingleton.getConnection(jdbcUrl, user, pass, name);
 	}
 
 	/*---------------------------------------------------------------------*/

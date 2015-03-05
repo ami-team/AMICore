@@ -7,7 +7,6 @@ import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
-import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 
@@ -109,13 +108,7 @@ public class SLS extends HttpServlet {
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader(
-				ConfigSingleton.getProperty("jdbc_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
-			);
-
-			basicLoader.useDB(ConfigSingleton.getProperty("router_name"));
+			basicLoader = new BasicLoader("self");
 
 			queryResult = basicLoader.executeQuery("SELECT `name`, `url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
 

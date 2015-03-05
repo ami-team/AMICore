@@ -9,9 +9,9 @@ import java.lang.annotation.*;
 public @interface Jdbc {
 	/*---------------------------------------------------------------------*/
 
-	String className();
+	String proto();
 
-	String protocol();
+	String clazz();
 
 	/*---------------------------------------------------------------------*/
 }

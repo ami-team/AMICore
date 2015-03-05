@@ -9,9 +9,9 @@ import net.hep.ami.utility.*;
 public class CommandSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class CommandTuple extends Tuple3<Constructor<CommandAbstractClass>, String, String> {
+	private static class CommandTuple extends Tuple3<String, String, Constructor<CommandAbstractClass>> {
 
-		public CommandTuple(Constructor<CommandAbstractClass> _x, String _y, String _z) {
+		public CommandTuple(String _x, String _y, Constructor<CommandAbstractClass> _z) {
 			super(_x, _y, _z);
 		}
 	}
@@ -22,7 +22,10 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Class<?>[] m_ctor = new Class<?>[] { Map.class, int.class };
+	private static final Class<?>[] m_ctor = new Class<?>[] {
+		Map.class,
+		int.class,
+	};
 
 	/*---------------------------------------------------------------------*/
 
@@ -33,7 +36,7 @@ public class CommandSingleton {
 		for(String className: classFinder.getClassList()) {
 
 			try {
-				addCommandClass(className);
+				addCommand(className);
 
 			} catch(Exception e) {
 				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
@@ -45,53 +48,45 @@ public class CommandSingleton {
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommandClass(String className) throws Exception {
+	private static void addCommand(String className) throws Exception {
+		/*-----------------------------------------------------------------*/
+		/* GET CLASS OBJECT                                                */
+		/*-----------------------------------------------------------------*/
 
 		Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
 
-		if(isCommandClass(clazz)) {
+		/*-----------------------------------------------------------------*/
+		/* GET COMMAND                                                     */
+		/*-----------------------------------------------------------------*/
+
+		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class)) {
 
 			m_commands.put(
 				clazz.getSimpleName()
 				,
 				new CommandTuple(
-					clazz.getConstructor(m_ctor)
-					,
 					clazz.getMethod("help").invoke(null).toString()
 					,
 					clazz.getMethod("usage").invoke(null).toString()
+					,
+					clazz.getConstructor(m_ctor)
 				)
 			);
 		}
-	}
 
-	/*---------------------------------------------------------------------*/
-
-	private static boolean isCommandClass(Class<?> clazz) {
-
-		boolean result = false;
-
-		while((clazz = clazz.getSuperclass()) != null) {
-
-			if(clazz == CommandAbstractClass.class) {
-				result = true;
-				break;
-			}
-		}
-
-		return result;
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String executeCommand(String command, Map<String, String> arguments) throws Exception {
 
-		return executeCommand(command, arguments, -1);
+		return executeCommand(command, arguments, true, -1);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments, int transactionID) throws Exception {
+	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, int transactionID) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* CHECK COMMAND                                                   */
 		/*-----------------------------------------------------------------*/
@@ -113,7 +108,7 @@ public class CommandSingleton {
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
 
-			CommandAbstractClass commandObject = m_commands.get(command).x.newInstance(new Object[] {
+			CommandAbstractClass commandObject = m_commands.get(command).z.newInstance(new Object[] {
 				arguments, transactionID
 			});
 
@@ -169,9 +164,9 @@ public class CommandSingleton {
 			/*-------------------------------------------------------------*/
 		} else {
 			result = Templates.help(
-				m_commands.get(command).y
+				m_commands.get(command).x
 				,
-				m_commands.get(command).z
+				m_commands.get(command).y
 			);
 		}
 
@@ -196,20 +191,20 @@ public class CommandSingleton {
 
 			String command = entry.getKey();
 
-			String clazz = entry.getValue().x.getName();
-			String help = entry.getValue().y.toString();
-			String usage = entry.getValue().z.toString();
+			String help = entry.getValue().x.toString();
+			String usage = entry.getValue().y.toString();
+			String clazz = entry.getValue().z.getName();
 
 			result.append(
 				"<row>"
 				+
 				"<field name=\"command\"><![CDATA[" + command + "]]></field>"
 				+
-				"<field name=\"class\"><![CDATA[" + clazz + "]]></field>"
-				+
 				"<field name=\"help\"><![CDATA[" + help + "]]></field>"
 				+
 				"<field name=\"usage\"><![CDATA[" + usage + "]]></field>"
+				+
+				"<field name=\"class\"><![CDATA[" + clazz + "]]></field>"
 				+
 				"</row>"
 			);

@@ -2,8 +2,6 @@ package net.hep.ami;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
-
 public abstract class CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
@@ -24,10 +22,6 @@ public abstract class CommandAbstractClass {
 	protected Map<String, String> m_arguments = null;
 
 	protected int m_transactionID = -1;
-
-	/*---------------------------------------------------------------------*/
-
-	private BasicLoader m_routerLoader = null;
 
 	/*---------------------------------------------------------------------*/
 
@@ -78,9 +72,7 @@ public abstract class CommandAbstractClass {
 
 		StringBuilder result = main();
 
-		if(m_routerLoader != null) {
-			m_routerLoader.commitAndRelease();
-		}
+		/* TODO */
 
 		return result;
 	}
@@ -101,24 +93,6 @@ public abstract class CommandAbstractClass {
 	public static String usage() {
 
 		return "";
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public JdbcInterface getRouterLoader() throws Exception {
-
-		if(m_routerLoader == null) {
-
-			m_routerLoader = new BasicLoader(
-				ConfigSingleton.getProperty("jdbc_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
-			);
-
-			m_routerLoader.useDB(ConfigSingleton.getProperty("router_name"));
-		}
-
-		return m_routerLoader;
 	}
 
 	/*---------------------------------------------------------------------*/
