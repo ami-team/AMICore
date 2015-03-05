@@ -117,14 +117,14 @@ DROP TABLE IF EXISTS `router_user`;
 
 CREATE TABLE IF NOT EXISTS `router_user` (
  `id` int(11) NOT NULL,
- `valid` int(1) NOT NULL,
  `AMIUser` varchar(128) NOT NULL,
  `AMIPass` varchar(128) NOT NULL,
- `clientDN` varchar(256) NOT NULL,
- `issuerDN` varchar(256) NOT NULL,
+ `clientDN` varchar(256) NOT NULL DEFAULT '',
+ `issuerDN` varchar(256) NOT NULL DEFAULT '',
  `firstName` varchar(256) NOT NULL,
  `lastName` varchar(256) NOT NULL,
- `email` varchar(256) NOT NULL
+ `email` varchar(256) NOT NULL,
+ `valid` int(1) NOT NULL
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_user`

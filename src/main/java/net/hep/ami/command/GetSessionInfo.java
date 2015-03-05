@@ -26,7 +26,10 @@ public class GetSessionInfo extends CommandAbstractClass {
 		try {
 			basicLoader = new BasicLoader("self");
 
-			queryResult = basicLoader.executeQuery("SELECT `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' || `AMIUser` = '" + m_guestUser + "'");
+			queryResult = basicLoader.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "'");
+			if(queryResult.getNumberOfRows() == 0) {
+				queryResult = basicLoader.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_guestUser + "'");
+			}
 
 		} finally {
 
@@ -39,6 +42,7 @@ public class GetSessionInfo extends CommandAbstractClass {
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
+		String AMIUser = queryResult.getValue(0, "AMIUser");
 		String clientDNInAMI = queryResult.getValue(0, "clientDN");
 		String issuerDNInAMI = queryResult.getValue(0, "issuerDN");
 		String firstName = queryResult.getValue(0, "firstName");
@@ -74,7 +78,7 @@ public class GetSessionInfo extends CommandAbstractClass {
 		result.append("<rowset type=\"user\">");
 		result.append("<row>");
 
-		result.append("<field name=\"AMIUser\"><![CDATA[" + m_AMIUser + "]]></field>");
+		result.append("<field name=\"AMIUser\"><![CDATA[" + AMIUser + "]]></field>");
 		result.append("<field name=\"guestUser\"><![CDATA[" + m_guestUser + "]]></field>");
 		result.append("<field name=\"clientDNInAMI\"><![CDATA[" + clientDNInAMI + "]]></field>");
 		result.append("<field name=\"issuerDNInAMI\"><![CDATA[" + issuerDNInAMI + "]]></field>");
