@@ -91,7 +91,7 @@ public class SLS extends HttpServlet {
 
 		PrintWriter writer = res.getWriter();
 
-		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<serviceupdate xmlns=\"http://sls.cern.ch/SLS/XML/update\"><id>" + service + "</id><availability>" + tuple.x + "</availability><data>" + tuple.y + "</data><notes><![CDATA[" + tuple.z + "]]></notes><timestamp>" +  DateTimeFormater.formatSLS(new Date()) + "</timestamp></serviceupdate>");
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<serviceupdate xmlns=\"http://sls.cern.ch/SLS/XML/update\"><id>" + service + "</id><availability>" + tuple.x + "</availability><data>" + tuple.y + "</data><notes><![CDATA[" + tuple.z + "]]></notes><timestamp>" +  DateFormater.formatSLS(new Date()) + "</timestamp></serviceupdate>");
 		writer.close();
 
 		/*-----------------------------------------------------------------*/

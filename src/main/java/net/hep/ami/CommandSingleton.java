@@ -114,7 +114,7 @@ public class CommandSingleton {
 			/* GET EXECUTION DATE                                          */
 			/*-------------------------------------------------------------*/
 
-			String executionDate = DateTimeFormater.format(new Date());
+			String executionDate = DateFormater.format(new Date());
 
 			/*-------------------------------------------------------------*/
 			/* EXECUTE COMMAND                                             */

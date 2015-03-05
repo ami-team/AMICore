@@ -75,7 +75,7 @@ public class QueryResult {
 					/* DATE                                                */
 					/*-----------------------------------------------------*/
 
-					row[i] = DateTimeFormater.format(resultSet.getDate(i + 1));
+					row[i] = DateFormater.format(resultSet.getDate(i + 1));
 					if(row[i] == null) {
 						row[i] = resultSet.getString(i + 1);
 					}
@@ -86,7 +86,7 @@ public class QueryResult {
 					/* TIMESTAMP                                           */
 					/*-----------------------------------------------------*/
 
-					row[i] = DateTimeFormater.format(resultSet.getTimestamp(i + 1));
+					row[i] = DateFormater.format(resultSet.getTimestamp(i + 1));
 					if(row[i] == null) {
 						row[i] = resultSet.getString(i + 1);
 					}

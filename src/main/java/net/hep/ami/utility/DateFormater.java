@@ -3,7 +3,7 @@ package net.hep.ami.utility;
 import java.text.*;
 import java.util.*;
 
-public class DateTimeFormater {
+public class DateFormater {
 	/*---------------------------------------------------------------------*/
 
 	private static final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.US);
