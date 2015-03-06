@@ -56,7 +56,7 @@ public class CommandSingleton {
 		Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
-		/* GET COMMAND                                                     */
+		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
 		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class)) {

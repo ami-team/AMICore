@@ -29,14 +29,14 @@ public class ConfigSingleton {
 
 		try {
 			/*-------------------------------------------------------------*/
-			/* READ FROM CONF FILE                                         */
+			/* READ FROM CONFFILE                                          */
 			/*-------------------------------------------------------------*/
 
 			readFromConfFile();
 			m_hasValidConfFile = true;
 
 			/*-------------------------------------------------------------*/
-			/* READ FROM DATA BASE                                         */
+			/* READ FROM DATABASE                                          */
 			/*-------------------------------------------------------------*/
 
 			readFromDataBase();
@@ -80,7 +80,7 @@ public class ConfigSingleton {
 
 	private static void readFromConfFile() throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* GET CONFIG FILE NAME                                            */
+		/* GET FILE NAME                                                   */
 		/*-----------------------------------------------------------------*/
 
 		String tomcatPath = System.getProperty("catalina.base");
@@ -300,6 +300,7 @@ public class ConfigSingleton {
 		result.append("<rowset type=\"status\">");
 		result.append("<row>");
 
+		result.append("<field name=\"configFileName\"><![CDATA[" + m_configFileName + "]]></field>");
 		result.append("<field name=\"validConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>");
 		result.append("<field name=\"validDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>");
 

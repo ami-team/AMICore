@@ -280,7 +280,7 @@ public class Cryptography {
 
 	public static String byteArrayToBase64String(byte[] data) {
 		/*-----------------------------------------------------------------*/
-		/* ENCODE TO BASE64 STRING                                         */
+		/* ENCODE TO BASE64                                                */
 		/*-----------------------------------------------------------------*/
 
 		String string = org.bouncycastle.util.encoders.Base64.toBase64String(data);

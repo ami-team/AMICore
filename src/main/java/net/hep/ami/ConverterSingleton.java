@@ -104,7 +104,9 @@ public class ConverterSingleton {
 		/* CHECK TRANSFORM                                                 */
 		/*-----------------------------------------------------------------*/
 
-		if(m_transformers.containsKey(fileName) == false) throw new Exception("converter `" + fileName + "` not found");
+		if(m_transformers.containsKey(fileName) == false) {
+			throw new Exception("converter `" + fileName + "` not found");
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* APPLY TRANSFORM                                                 */

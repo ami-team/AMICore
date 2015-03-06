@@ -206,14 +206,18 @@ public class SchemaSingleton {
 			connection = dataSource.getConnection();
 
 			/*-------------------------------------------------------------*/
-			/* READ DB SCHEMA                                              */
+			/* READ DB METADATA                                            */
 			/*-------------------------------------------------------------*/
 
 			long t1 = System.currentTimeMillis();
 			readDBMetaData(connection.getMetaData());
 			long t2 = System.currentTimeMillis();
 
-			m_executionTime = t2 - t1;
+			/*-------------------------------------------------------------*/
+			/* UPDATE EXECUTION TIME                                       */
+			/*-------------------------------------------------------------*/
+
+			m_executionTime += t2 - t1;
 
 			/*-------------------------------------------------------------*/
 
