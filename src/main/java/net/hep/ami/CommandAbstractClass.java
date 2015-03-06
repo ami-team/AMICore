@@ -21,11 +21,11 @@ public abstract class CommandAbstractClass {
 
 	protected Map<String, String> m_arguments = null;
 
-	protected int m_transactionID = -1;
+	protected long m_transactionID = -1;
 
 	/*---------------------------------------------------------------------*/
 
-	public CommandAbstractClass(Map<String, String> arguments, int transactionID) {
+	public CommandAbstractClass(Map<String, String> arguments, long transactionID) {
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/

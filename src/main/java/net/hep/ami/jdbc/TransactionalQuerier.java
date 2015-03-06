@@ -1,24 +1,34 @@
 package net.hep.ami.jdbc;
 
+import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.*;
 
-public class BasicQuerier implements QuerierInterface {
+public class TransactionalQuerier implements QuerierInterface {
 	/*---------------------------------------------------------------------*/
+
+	private long m_transactionID;
 
 	private DriverAbstractClass m_driver;
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicQuerier(String catalog) throws Exception {
+	public TransactionalQuerier(String catalog, long transactionID) throws Exception {
 
-		m_driver = CatalogSingleton.getConnection(catalog);
+		m_driver = TransactionPoolSingleton.getConnection(catalog, m_transactionID = transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicQuerier(String jdbcUrl, String user, String pass) throws Exception {
+	public TransactionalQuerier(String jdbcUrl, String user, String pass, long transactionID) throws Exception {
 
-		m_driver = DriverSingleton.getConnection(jdbcUrl, user, pass);
+		m_driver = TransactionPoolSingleton.getConnection(jdbcUrl, user, pass, m_transactionID = transactionID);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public long getTransactionID() {
+
+		return m_transactionID;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -40,34 +50,6 @@ public class BasicQuerier implements QuerierInterface {
 	public void executeUpdate(String sql) throws Exception {
 
 		m_driver.executeUpdate(sql);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public void commit() throws Exception {
-
-		m_driver.commit();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public void rollback() throws Exception {
-
-		m_driver.rollback();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public void commitAndRelease() throws Exception {
-
-		m_driver.commitAndRelease();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public void rollbackAndRelease() throws Exception {
-
-		m_driver.rollbackAndRelease();
 	}
 
 	/*---------------------------------------------------------------------*/

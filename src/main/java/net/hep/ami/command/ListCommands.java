@@ -7,7 +7,7 @@ import net.hep.ami.*;
 public class ListCommands extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public ListCommands(Map<String, String> arguments, int transactionID) {
+	public ListCommands(Map<String, String> arguments, long transactionID) {
 		super(arguments, transactionID);
 	}
 

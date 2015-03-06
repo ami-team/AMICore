@@ -23,10 +23,6 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	protected java.util.concurrent.atomic.AtomicInteger m_refCnt = new java.util.concurrent.atomic.AtomicInteger(1);
-
-	/*---------------------------------------------------------------------*/
-
 	public DriverAbstractClass(String jdbcUrl, String user, String pass) throws Exception {
 		/*-----------------------------------------------------------------*/
 
@@ -100,32 +96,16 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public void retain() {
-
-		m_refCnt.incrementAndGet();
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public void commitAndRelease() throws Exception {
-
-		int value = m_refCnt.decrementAndGet();
-
-		if(value < 0) {
-			throw new Exception("internal reference counter error for `<DriverInterface>.commitAndRelease()`");
-		}
 
 		if(m_connection.getAutoCommit() == false) {
 			m_connection.commit();
 		}
 
-		if(value == 0) {
-
-			try {
-				m_statement.close();
-			} finally {
-				m_connection.close();
-			}
+		try {
+			m_statement.close();
+		} finally {
+			m_connection.close();
 		}
 	}
 
@@ -133,23 +113,14 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	public void rollbackAndRelease() throws Exception {
 
-		int value = m_refCnt.decrementAndGet();
-
-		if(value < 0) {
-			throw new Exception("internal reference counter error for `<DriverInterface>.commitAndRelease()`");
-		}
-
 		if(m_connection.getAutoCommit() == false) {
 			m_connection.rollback();
 		}
 
-		if(value == 0) {
-
-			try {
-				m_statement.close();
-			} finally {
-				m_connection.close();
-			}
+		try {
+			m_statement.close();
+		} finally {
+			m_connection.close();
 		}
 	}
 

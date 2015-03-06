@@ -23,7 +23,7 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
+	private static Map<String, DataSource> m_pool = new HashMap<String, DataSource>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -95,7 +95,7 @@ public class ConnectionPoolSingleton {
 
 		String key = jdbc_url + "@" + user;
 
-		if(m_pools.containsKey(key)) return m_pools.get(key);
+		if(m_pool.containsKey(key)) return m_pool.get(key);
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE POOL PROPERTIES                                          */
@@ -157,7 +157,7 @@ public class ConnectionPoolSingleton {
 
 		dataSource.setPoolProperties(poolProperties);
 
-		m_pools.put(key, dataSource);
+		m_pool.put(key, dataSource);
 
 		/*-----------------------------------------------------------------*/
 		/* READ SCHEMA                                                     */
@@ -182,7 +182,7 @@ public class ConnectionPoolSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(DataSource entry: m_pools.values()) {
+		for(DataSource entry: m_pool.values()) {
 
 			result.append(
 				"<row>"
