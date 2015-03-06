@@ -91,7 +91,7 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, long transactionID) throws Exception {
+	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, int transactionID) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* CHECK COMMAND                                                   */
 		/*-----------------------------------------------------------------*/

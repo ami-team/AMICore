@@ -20,23 +20,14 @@ public class GetSessionInfo extends CommandAbstractClass {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = null;
-		QueryResult queryResult = null;
+		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
-		try {
-			basicQuerier = new BasicQuerier("self");
+		QueryResult queryResult;
 
-			queryResult = basicQuerier.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "'");
+		queryResult = transactionalQuerier.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "'");
 			if(queryResult.getNumberOfRows() == 0) {
-				queryResult = basicQuerier.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_guestUser + "'");
+				queryResult = transactionalQuerier.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_guestUser + "'");
 			}
-
-		} finally {
-
-			if(basicQuerier != null) {
-				basicQuerier.rollbackAndRelease();
-			}
-		}
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

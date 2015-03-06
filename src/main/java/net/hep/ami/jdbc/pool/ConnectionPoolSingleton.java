@@ -23,7 +23,7 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, DataSource> m_pool = new HashMap<String, DataSource>();
+	private static Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -88,86 +88,85 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static synchronized DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) {
-		/*-----------------------------------------------------------------*/
-		/* GET POOL IF EXISTS                                              */
-		/*-----------------------------------------------------------------*/
+	private static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) {
 
-		String key = "::" + jdbc_url + "@" + user;
+		DataSource result;
 
-		if(m_pool.containsKey(key)) return m_pool.get(key);
+		String key = jdbc_url + "@" + user;
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE POOL PROPERTIES                                          */
-		/*-----------------------------------------------------------------*/
+		synchronized(ConnectionPoolSingleton.class) {
 
-		PoolProperties poolProperties = new PoolProperties();
+		/**/	result = m_pools.get(key);
+		/**/
+		/**/	if(result == null) {
+		/**/		/*-----------------------------------------------------*/
+		/**/		/* CREATE POOL PROPERTIES                              */
+		/**/		/*-----------------------------------------------------*/
+		/**/
+		/**/		PoolProperties poolProperties = new PoolProperties();
+		/**/
+		/**/		/*---------------------------*/
+		/**/		/* DATABASE                  */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		poolProperties.setDriverClassName(jdbc_driver);
+		/**/		poolProperties.setUrl(jdbc_url);
+		/**/		poolProperties.setUsername(user);
+		/**/		poolProperties.setPassword(pass);
+		/**/
+		/**/		/*---------------------------*/
+		/**/		/* POOL - CONTENT            */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		poolProperties.setInitialSize(initialSize);
+		/**/		poolProperties.setMaxActive(maxActive);
+		/**/		poolProperties.setMinIdle(minIdle);
+		/**/		poolProperties.setMaxIdle(maxIdle);
+		/**/
+		/**/		/*---------------------------*/
+		/**/		/* POOL - TIMING             */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		poolProperties.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+		/**/		poolProperties.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+		/**/		poolProperties.setValidationInterval(validationInterval);
+		/**/		poolProperties.setMaxWait(maxWait);
+		/**/
+		/**/		/*---------------------------*/
+		/**/		/* TESTS                     */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		poolProperties.setTestOnBorrow(true);				/* The indication of whether objects will be validated before being borrowed from the pool. */
+		/**/		poolProperties.setTestOnReturn(true);				/* The indication of whether objects will be validated after being returned to the pool. */
+		/**/		poolProperties.setTestOnConnect(false);				/* Set to true if query validation should take place the first time on a connection. */
+		/**/		poolProperties.setTestWhileIdle(true);				/* Set to true if query validation should take place while the connection is idle. */
+		/**/
+		/**/		poolProperties.setValidationQuery("SELECT 1");
+		/**/
+		/**/		/*---------------------------*/
+		/**/		/* ABANDONED CONNECTIONS     */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		poolProperties.setLogAbandoned(true);
+		/**/		poolProperties.setRemoveAbandoned(true);
+		/**/		poolProperties.setRemoveAbandonedTimeout(60);
+		/**/
+		/**/		/*-----------------------------------------------------*/
+		/**/		/* CREATE DATA SOURCE                                  */
+		/**/		/*-----------------------------------------------------*/
+		/**/
+		/**/		m_pools.put(key, result = new DataSource());
+		/**/
+		/**/		result.setPoolProperties(poolProperties);
+		/**/
+		/**/		SchemaSingleton.readSchema(result);
+		/**/
+		/**/		/*-----------------------------------------------------*/
+		/**/	}
 
-		/*---------------------------*/
-		/* DATABASE                  */
-		/*---------------------------*/
+		}
 
-		poolProperties.setDriverClassName(jdbc_driver);
-		poolProperties.setUrl(jdbc_url);
-		poolProperties.setUsername(user);
-		poolProperties.setPassword(pass);
-
-		/*---------------------------*/
-		/* POOL - CONTENT            */
-		/*---------------------------*/
-
-		poolProperties.setInitialSize(initialSize);
-		poolProperties.setMaxActive(maxActive);
-		poolProperties.setMinIdle(minIdle);
-		poolProperties.setMaxIdle(maxIdle);
-
-		/*---------------------------*/
-		/* POOL - TIMING             */
-		/*---------------------------*/
-
-		poolProperties.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-		poolProperties.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-		poolProperties.setValidationInterval(validationInterval);
-		poolProperties.setMaxWait(maxWait);
-
-		/*---------------------------*/
-		/* TESTS                     */
-		/*---------------------------*/
-
-		poolProperties.setTestOnBorrow(true);				/* The indication of whether objects will be validated before being borrowed from the pool. */
-		poolProperties.setTestOnReturn(true);				/* The indication of whether objects will be validated after being returned to the pool. */
-		poolProperties.setTestOnConnect(false);				/* Set to true if query validation should take place the first time on a connection. */
-		poolProperties.setTestWhileIdle(true);				/* Set to true if query validation should take place while the connection is idle. */
-
-		poolProperties.setValidationQuery("SELECT 1");
-
-		/*---------------------------*/
-		/* ABANDONED CONNECTIONS     */
-		/*---------------------------*/
-
-		poolProperties.setLogAbandoned(true);
-		poolProperties.setRemoveAbandoned(true);
-		poolProperties.setRemoveAbandonedTimeout(60);
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE DATA SOURCE                                              */
-		/*-----------------------------------------------------------------*/
-
-		DataSource dataSource = new DataSource();
-
-		dataSource.setPoolProperties(poolProperties);
-
-		m_pool.put(key, dataSource);
-
-		/*-----------------------------------------------------------------*/
-		/* READ SCHEMA                                                     */
-		/*-----------------------------------------------------------------*/
-
-		SchemaSingleton.readSchema(dataSource);
-
-		/*-----------------------------------------------------------------*/
-
-		return dataSource;
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -182,7 +181,7 @@ public class ConnectionPoolSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(DataSource entry: m_pool.values()) {
+		for(DataSource entry: m_pools.values()) {
 
 			result.append(
 				"<row>"

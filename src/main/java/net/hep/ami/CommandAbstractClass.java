@@ -71,10 +71,10 @@ public abstract class CommandAbstractClass {
 		/*-----------------------------------------------------------------*/
 
 		if(transactionID < 0) {
-			m_transactionID = TransactionPoolSingleton.getTransactionID();
+			m_transactionID = TransactionPoolSingleton.bookNewTransactionID();
 			m_transactionIDBooker = true;
 		} else {
-			m_transactionID = (((((((((((((((transactionID)))))))))))))));
+			m_transactionID = (((((((((((((((((transactionID)))))))))))))))));
 			m_transactionIDBooker = false;
 		}
 
@@ -83,16 +83,16 @@ public abstract class CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	protected QuerierInterface getQuerier(String catalog) throws Exception {
+	protected TransactionalQuerier getQuerier(String catalog) throws Exception {
 
-		return TransactionPoolSingleton.getConnection(catalog, m_transactionID);
+		return new TransactionalQuerier(catalog, m_transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	protected QuerierInterface getQuerier(String jdbcUrl, String user, String pass) throws Exception {
+	protected TransactionalQuerier getQuerier(String jdbcUrl, String user, String pass) throws Exception {
 
-		return TransactionPoolSingleton.getConnection(jdbcUrl, user, pass, m_transactionID);
+		return new TransactionalQuerier(jdbcUrl, user, pass, m_transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/

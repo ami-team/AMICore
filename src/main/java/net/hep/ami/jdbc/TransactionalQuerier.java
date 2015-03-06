@@ -26,7 +26,7 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public long getTransactionID() {
+	public int getTransactionID() {
 
 		return m_transactionID;
 	}

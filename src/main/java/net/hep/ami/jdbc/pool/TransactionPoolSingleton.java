@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.driver.*;
 public class TransactionPoolSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static Map<Integer, Map<String, DriverAbstractClass>> m_pool = new HashMap<Integer, Map<String, DriverAbstractClass>>();
+	private static Map<Integer, Map<String, DriverAbstractClass>> m_pools = new HashMap<Integer, Map<String, DriverAbstractClass>>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -16,7 +16,7 @@ public class TransactionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static int getTransactionID() {
+	public static int bookNewTransactionID() {
 
 		return m_cnt.getAndDecrement();
 	}
@@ -36,22 +36,32 @@ public class TransactionPoolSingleton {
 		/* WITH TRANSACTION                                                */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass result;
+		String key = catalog;
 
-		String key = "::" + catalog;
+		/*-----------------------------------------------------------------*/
+
+		Map<String, DriverAbstractClass> transaction;
+
+		DriverAbstractClass result;
 
 		synchronized(TransactionPoolSingleton.class) {
 
-		/**/	/****/ if(m_pool.containsKey(transactionID) == false) {
+		/**/	transaction = m_pools.get(transactionID);
 		/**/
-		/**/		result = m_pool.put(transactionID, new HashMap<String, DriverAbstractClass>()).put(key, CatalogSingleton.getConnection(catalog));
+		/**/	if(transaction == null) {
 		/**/
-		/**/	} else if(m_pool.get(transactionID).containsKey(key) == false) {
+		/**/		m_pools.put(transactionID, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
-		/**/		result = m_pool.get(transactionID).put(key, CatalogSingleton.getConnection(catalog));
+		/**/		transaction.put(key, result = CatalogSingleton.getConnection(catalog));
 		/**/
 		/**/	} else {
-		/**/		result = m_pool.get(transactionID).get(key);
+		/**/
+		/**/		result = transaction.get(key);
+		/**/
+		/**/		if(result == null) {
+		/**/
+		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog));
+		/**/		}
 		/**/	}
 
 		}
@@ -76,22 +86,32 @@ public class TransactionPoolSingleton {
 		/* WITH TRANSACTION                                                */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass result;
+		String key = jdbcUrl + "@" + user;
 
-		String key = "::" + jdbcUrl + "@" + user;
+		/*-----------------------------------------------------------------*/
+
+		Map<String, DriverAbstractClass> transaction;
+
+		DriverAbstractClass result;
 
 		synchronized(TransactionPoolSingleton.class) {
 
-		/**/	/****/ if(m_pool.containsKey(transactionID) == false) {
+		/**/	transaction = m_pools.get(transactionID);
 		/**/
-		/**/		result = m_pool.put(transactionID, new HashMap<String, DriverAbstractClass>()).put(key, DriverSingleton.getConnection(jdbcUrl, user, pass));
+		/**/	if(transaction == null) {
 		/**/
-		/**/	} else if(m_pool.get(transactionID).containsKey(key) == false) {
+		/**/		m_pools.put(transactionID, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
-		/**/		result = m_pool.get(transactionID).put(key, DriverSingleton.getConnection(jdbcUrl, user, pass));
+		/**/		transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
 		/**/
 		/**/	} else {
-		/**/			result = m_pool.get(transactionID).get(key);
+		/**/
+		/**/		result = transaction.get(key);
+		/**/
+		/**/		if(result == null) {
+		/**/
+		/**/			transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
+		/**/		}
 		/**/	}
 
 		}
@@ -105,30 +125,70 @@ public class TransactionPoolSingleton {
 
 	public static void commitAndRelease(int transactionID) throws Exception {
 
+		Map<String, DriverAbstractClass> transaction;
+
+		/*-----------------------------------------------------------------*/
+		/* REMOVE TRANSACTION FROM POOL                                    */
+		/*-----------------------------------------------------------------*/
+
 		synchronized(TransactionPoolSingleton.class) {
 
-			Map<String, DriverAbstractClass> map = m_pool.get(transactionID);
+		/**/	transaction = m_pools.get(transactionID);
+		/**/
+		/**/	if(transaction != null) {
+		/**/		m_pools.remove(transactionID);
+		/**/	}
 
-			for(DriverAbstractClass driver: map.values()) {
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* COMMIT AND RELEASE CONNECTIONS                                  */
+		/*-----------------------------------------------------------------*/
+
+		if(transaction != null) {
+
+			for(DriverAbstractClass driver: transaction.values()) {
 
 				driver.commitAndRelease();
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static void rollbackAndRelease(int transactionID) throws Exception {
 
+		Map<String, DriverAbstractClass> transaction;
+
+		/*-----------------------------------------------------------------*/
+		/* REMOVE TRANSACTION FROM POOL                                    */
+		/*-----------------------------------------------------------------*/
+
 		synchronized(TransactionPoolSingleton.class) {
 
-			Map<String, DriverAbstractClass> map = m_pool.get(transactionID);
+		/**/	transaction = m_pools.get(transactionID);
+		/**/
+		/**/	if(transaction != null) {
+		/**/		m_pools.remove(transactionID);
+		/**/	}
 
-			for(DriverAbstractClass driver: map.values()) {
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* ROLLBACK AND RELEASE CONNECTIONS                                */
+		/*-----------------------------------------------------------------*/
+
+		if(transaction != null) {
+
+			for(DriverAbstractClass driver: transaction.values()) {
 
 				driver.rollbackAndRelease();
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
