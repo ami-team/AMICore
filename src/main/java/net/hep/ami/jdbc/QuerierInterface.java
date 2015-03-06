@@ -1,6 +1,6 @@
 package net.hep.ami.jdbc;
 
-public interface LoaderInterface {
+public interface QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
 	public QueryResult executeQuery(String sql) throws Exception;

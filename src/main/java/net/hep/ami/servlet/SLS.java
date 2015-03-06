@@ -104,18 +104,18 @@ public class SLS extends HttpServlet {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicLoader basicLoader = null;
+		BasicQuerier basicQuerier = null;
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader("self");
+			basicQuerier = new BasicQuerier("self");
 
-			queryResult = basicLoader.executeQuery("SELECT `name`, `url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
+			queryResult = basicQuerier.executeQuery("SELECT `name`, `url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
 
 		} finally {
 
-			if(basicLoader != null) {
-				basicLoader.rollbackAndRelease();
+			if(basicQuerier != null) {
+				basicQuerier.rollbackAndRelease();
 			}
 		}
 

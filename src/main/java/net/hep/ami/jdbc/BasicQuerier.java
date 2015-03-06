@@ -2,21 +2,21 @@ package net.hep.ami.jdbc;
 
 import net.hep.ami.jdbc.driver.*;
 
-public class BasicLoader implements LoaderInterface {
+public class BasicQuerier implements QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
 	private DriverAbstractClass m_driver;
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicLoader(String catalog) throws Exception {
+	public BasicQuerier(String catalog) throws Exception {
 
 		m_driver = CatalogSingleton.getConnection(catalog);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicLoader(String jdbcUrl, String user, String pass) throws Exception {
+	public BasicQuerier(String jdbcUrl, String user, String pass) throws Exception {
 
 		m_driver = DriverSingleton.getConnection(jdbcUrl, user, pass);
 	}

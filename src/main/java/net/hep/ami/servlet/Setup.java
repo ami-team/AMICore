@@ -189,11 +189,11 @@ public class Setup extends HttpServlet {
 
 		/*-----------------------------------------------------------------*/
 
-		BasicLoader    basicLoader    = null;
+		BasicQuerier    basicQuerier    = null;
 		BufferedWriter bufferedWriter = null;
 
 		try {
-			basicLoader = new BasicLoader(jdbc_url, router_user, router_pass);
+			basicQuerier = new BasicQuerier(jdbc_url, router_user, router_pass);
 
 			bufferedWriter = new BufferedWriter(new FileWriter(fileName));
 			bufferedWriter.write(content);
@@ -215,10 +215,10 @@ public class Setup extends HttpServlet {
 		} finally {
 			/*-------------------------------------------------------------*/
 
-			if(basicLoader != null) {
+			if(basicQuerier != null) {
 
 				try {
-					basicLoader.rollbackAndRelease();
+					basicQuerier.rollbackAndRelease();
 
 				} catch(Exception e) {
 					/* IGNORE */

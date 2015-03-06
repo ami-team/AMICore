@@ -6,7 +6,7 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
-public abstract class DriverAbstractClass implements LoaderInterface {
+public abstract class DriverAbstractClass implements QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
 	protected Connection m_connection = null;

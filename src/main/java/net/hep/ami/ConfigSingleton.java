@@ -148,22 +148,22 @@ public class ConfigSingleton {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicLoader basicLoader = null;
+		BasicQuerier basicQuerier = null;
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader(
+			basicQuerier = new BasicQuerier(
 				ConfigSingleton.getProperty("jdbc_url"),
 				ConfigSingleton.getProperty("router_user"),
 				ConfigSingleton.getProperty("router_pass")
 			);
 
-			queryResult = basicLoader.executeQuery("SELECT `name`, `value` FROM `router_config`");
+			queryResult = basicQuerier.executeQuery("SELECT `name`, `value` FROM `router_config`");
 
 		} finally {
 
-			if(basicLoader != null) {
-				basicLoader.rollbackAndRelease();
+			if(basicQuerier != null) {
+				basicQuerier.rollbackAndRelease();
 			}
 		}
 

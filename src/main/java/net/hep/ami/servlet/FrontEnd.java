@@ -254,18 +254,18 @@ public class FrontEnd extends HttpServlet {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicLoader basicLoader = null;
+		BasicQuerier basicQuerier = null;
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader("self");
+			basicQuerier = new BasicQuerier("self");
 
-			queryResult = basicLoader.executeQuery("SELECT command, converter FROM router_link WHERE id = '" + linkId + "'");
+			queryResult = basicQuerier.executeQuery("SELECT command, converter FROM router_link WHERE id = '" + linkId + "'");
 
 		} finally {
 
-			if(basicLoader != null) {
-				basicLoader.rollbackAndRelease();
+			if(basicQuerier != null) {
+				basicQuerier.rollbackAndRelease();
 			}
 		}
 
@@ -297,18 +297,18 @@ public class FrontEnd extends HttpServlet {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicLoader basicLoader = null;
+		BasicQuerier basicQuerier = null;
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader("self");
+			basicQuerier = new BasicQuerier("self");
 
-			queryResult = basicLoader.executeQuery("SELECT AMIUser, AMIPass FROM router_user WHERE clientDN = '" + clientDN.replaceAll("'", "''") + "'");
+			queryResult = basicQuerier.executeQuery("SELECT AMIUser, AMIPass FROM router_user WHERE clientDN = '" + clientDN.replaceAll("'", "''") + "'");
 
 		} finally {
 
-			if(basicLoader != null) {
-				basicLoader.rollbackAndRelease();
+			if(basicQuerier != null) {
+				basicQuerier.rollbackAndRelease();
 			}
 		}
 

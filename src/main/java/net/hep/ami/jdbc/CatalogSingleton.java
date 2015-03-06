@@ -40,22 +40,22 @@ public class CatalogSingleton {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicLoader basicLoader = null;
+		BasicQuerier basicQuerier = null;
 		QueryResult queryResult = null;
 
 		try {
-			basicLoader = new BasicLoader(
+			basicQuerier = new BasicQuerier(
 				ConfigSingleton.getProperty("jdbc_url"),
 				ConfigSingleton.getProperty("router_user"),
 				ConfigSingleton.getProperty("router_pass")
 			);
 
-			queryResult = basicLoader.executeQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM router_catalogs");
+			queryResult = basicQuerier.executeQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM router_catalogs");
 
 		} finally {
 
-			if(basicLoader != null) {
-				basicLoader.rollbackAndRelease();
+			if(basicQuerier != null) {
+				basicQuerier.rollbackAndRelease();
 			}
 		}
 
@@ -81,7 +81,7 @@ public class CatalogSingleton {
 				/* CHECK CATALOG                                           */
 				/*---------------------------------------------------------*/
 
-				BasicLoader loader = new BasicLoader(
+				BasicQuerier loader = new BasicQuerier(
 					jdbcUrl,
 					user,
 					pass
@@ -117,11 +117,11 @@ public class CatalogSingleton {
 			"self"
 			,
 			new CatalogTuple(
-				basicLoader.getJdbcUrl()
+				basicQuerier.getJdbcUrl()
 				,
-				basicLoader.getUser()
+				basicQuerier.getUser()
 				,
-				basicLoader.getPass()
+				basicQuerier.getPass()
 			)
 		);
 
