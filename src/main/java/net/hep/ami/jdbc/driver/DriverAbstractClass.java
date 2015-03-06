@@ -61,10 +61,6 @@ public abstract class DriverAbstractClass implements LoaderInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract void useDB(String db) throws Exception;
-
-	/*---------------------------------------------------------------------*/
-
 	public QueryResult executeQuery(String sql) throws Exception {
 
 		return new QueryResult(m_statement.executeQuery(sql));

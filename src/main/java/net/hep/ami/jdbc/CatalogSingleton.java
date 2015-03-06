@@ -10,10 +10,10 @@ import net.hep.ami.jdbc.driver.*;
 public class CatalogSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class CatalogTuple extends Tuple4<String, String, String, String> {
+	private static class CatalogTuple extends Tuple3<String, String, String> {
 
-		public CatalogTuple(String _x, String _y, String _z, String _t) {
-			super(_x, _y, _z, _t);
+		public CatalogTuple(String _x, String _y, String _z) {
+			super(_x, _y, _z);
 		}
 	}
 
@@ -47,8 +47,7 @@ public class CatalogSingleton {
 			basicLoader = new BasicLoader(
 				ConfigSingleton.getProperty("jdbc_url"),
 				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass"),
-				ConfigSingleton.getProperty("router_name")
+				ConfigSingleton.getProperty("router_pass")
 			);
 
 			queryResult = basicLoader.executeQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM router_catalogs");
@@ -77,14 +76,12 @@ public class CatalogSingleton {
 				String jdbcUrl = queryResult.getValue(i, "jdbcUrl").trim();
 				String user    = queryResult.getValue(i, "user").trim();
 				String pass    = queryResult.getValue(i, "pass").trim();
-				String name    = queryResult.getValue(i, "name").trim();
 
 				/*---------------------------------------------------------*/
 				/* CHECK CATALOG                                           */
 				/*---------------------------------------------------------*/
 
 				BasicLoader loader = new BasicLoader(
-					catalog,
 					jdbcUrl,
 					user,
 					pass
@@ -102,8 +99,7 @@ public class CatalogSingleton {
 					new CatalogTuple(
 						jdbcUrl,
 						user,
-						pass,
-						name
+						pass
 					)
 				);
 
@@ -126,8 +122,6 @@ public class CatalogSingleton {
 				basicLoader.getUser()
 				,
 				basicLoader.getPass()
-				,
-				basicLoader.getDB()
 			)
 		);
 
@@ -155,7 +149,7 @@ public class CatalogSingleton {
 		/* CONNECTION                                                      */
 		/*-----------------------------------------------------------------*/
 
-		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.z, tuple.t);
+		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.z);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -179,7 +173,6 @@ public class CatalogSingleton {
 			String jdbcUrl = entry.getValue().x;
 			String user    = entry.getValue().y;
 			String pass    = entry.getValue().z;
-			String name    = entry.getValue().t;
 
 			user = Cryptography.encrypt(user);
 			pass = Cryptography.encrypt(pass);
@@ -194,8 +187,6 @@ public class CatalogSingleton {
 				"<field name=\"user\"><![CDATA[" + user + "]]></field>"
 				+
 				"<field name=\"pass\"><![CDATA[" + pass + "]]></field>"
-				+
-				"<field name=\"name\"><![CDATA[" + name + "]]></field>"
 				+
 				"</row>"
 			);

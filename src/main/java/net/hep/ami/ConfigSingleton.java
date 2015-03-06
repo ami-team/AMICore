@@ -59,8 +59,6 @@ public class ConfigSingleton {
 			   getProperty("jdbc_url").isEmpty()
 			   ||
 			   getProperty("router_user").isEmpty()
-			   ||
-			   getProperty("router_name").isEmpty()
 			 ) {
 				m_hasValidConfFile = false;
 				m_hasValidDataBase = false;
@@ -157,8 +155,7 @@ public class ConfigSingleton {
 			basicLoader = new BasicLoader(
 				ConfigSingleton.getProperty("jdbc_url"),
 				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass"),
-				ConfigSingleton.getProperty("router_name")
+				ConfigSingleton.getProperty("router_pass")
 			);
 
 			queryResult = basicLoader.executeQuery("SELECT `name`, `value` FROM `router_config`");

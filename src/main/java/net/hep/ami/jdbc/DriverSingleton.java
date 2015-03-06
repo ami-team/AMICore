@@ -126,17 +126,6 @@ public class DriverSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, String name) throws Exception {
-
-		DriverAbstractClass result = getConnection(jdbcUrl, user, pass);
-
-		result.useDB(name);
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static StringBuilder listDrivers() {
 
 		StringBuilder result = new StringBuilder();

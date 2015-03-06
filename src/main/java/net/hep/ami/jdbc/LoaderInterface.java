@@ -3,10 +3,6 @@ package net.hep.ami.jdbc;
 public interface LoaderInterface {
 	/*---------------------------------------------------------------------*/
 
-	public void useDB(String db) throws Exception;
-
-	/*---------------------------------------------------------------------*/
-
 	public QueryResult executeQuery(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/

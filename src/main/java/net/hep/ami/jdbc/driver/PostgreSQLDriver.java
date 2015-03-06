@@ -16,12 +16,4 @@ public class PostgreSQLDriver extends DriverAbstractClass {
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	@Override
-	public void useDB(String db) throws Exception {
-
-		/* TODO */
-	}
-
-	/*---------------------------------------------------------------------*/
 }

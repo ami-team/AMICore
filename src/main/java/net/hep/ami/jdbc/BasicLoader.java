@@ -23,20 +23,6 @@ public class BasicLoader implements LoaderInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicLoader(String jdbcUrl, String user, String pass, String name) throws Exception {
-
-		m_driver = DriverSingleton.getConnection(jdbcUrl, user, pass, name);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public void useDB(String db) throws Exception {
-
-		m_driver.useDB(db);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public QueryResult executeQuery(String sql) throws Exception {
 
 		return m_driver.executeQuery(sql);

@@ -100,12 +100,10 @@ public class Setup extends HttpServlet {
 
 		String router_pass = ConfigSingleton.getProperty("router_pass");
 
-		String router_name = ConfigSingleton.getProperty("router_name");
-
 		/*-----------------------------------------------------------------*/
 
 		try {
-			return TextFile.read(Setup.class.getResourceAsStream("/html/setup_level1.html")).replace("%%HOST%%", host).replace("%%AGENT%%", agent).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass).replace("%%GUEST_USER%%", guest_user).replace("%%GUEST_PASS%%", guest_pass).replace("%%ENCRYPTION_KEY%%", encryption_key).replace("%%JDBC_URL%%", jdbc_url).replace("%%ROUTER_USER%%", router_user).replace("%%ROUTER_PASS%%", router_pass).replace("%%ROUTER_NAME%%", router_name);
+			return TextFile.read(Setup.class.getResourceAsStream("/html/setup_level1.html")).replace("%%HOST%%", host).replace("%%AGENT%%", agent).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass).replace("%%GUEST_USER%%", guest_user).replace("%%GUEST_PASS%%", guest_pass).replace("%%ENCRYPTION_KEY%%", encryption_key).replace("%%JDBC_URL%%", jdbc_url).replace("%%ROUTER_USER%%", router_user).replace("%%ROUTER_PASS%%", router_pass);
 		} catch(Exception e) {
 			return "<html><body><![CDATA[" + e.getMessage() + "]]></body></html>";
 		}
@@ -154,9 +152,6 @@ public class Setup extends HttpServlet {
 		String router_pass = req.getParameter("router_pass");
 		router_pass = (router_pass != null) ? router_pass.trim() : "";
 
-		String router_name = req.getParameter("router_name");
-		router_name = (router_name != null) ? router_name.trim() : "";
-
 		/*-----------------------------------------------------------------*/
 		/* PATCH HOST                                                      */
 		/*-----------------------------------------------------------------*/
@@ -183,7 +178,6 @@ public class Setup extends HttpServlet {
 		                 "  <property name=\"jdbc_url\"><![CDATA[" + jdbc_url + "]]></property>\n" +
 		                 "  <property name=\"router_user\"><![CDATA[" + router_user + "]]></property>\n" +
 		                 "  <property name=\"router_pass\"><![CDATA[" + router_pass + "]]></property>\n" +
-		                 "  <property name=\"router_name\"><![CDATA[" + router_name + "]]></property>\n" +
 		                 "</properties>\n"
 		;
 
@@ -200,7 +194,6 @@ public class Setup extends HttpServlet {
 
 		try {
 			basicLoader = new BasicLoader(jdbc_url, router_user, router_pass);
-			basicLoader.useDB(router_name);
 
 			bufferedWriter = new BufferedWriter(new FileWriter(fileName));
 			bufferedWriter.write(content);

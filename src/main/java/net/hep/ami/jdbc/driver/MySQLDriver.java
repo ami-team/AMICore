@@ -16,14 +16,4 @@ public class MySQLDriver extends DriverAbstractClass {
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	@Override
-	public void useDB(String db) throws Exception {
-
-		executeUpdate("use " + db);
-
-		m_db = db;
-	}
-
-	/*---------------------------------------------------------------------*/
 }

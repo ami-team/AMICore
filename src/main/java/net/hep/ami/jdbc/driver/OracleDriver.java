@@ -16,12 +16,4 @@ public class OracleDriver extends DriverAbstractClass {
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	@Override
-	public void useDB(String db) throws Exception {
-
-		/* TODO */
-	}
-
-	/*---------------------------------------------------------------------*/
 }
