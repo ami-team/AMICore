@@ -8,22 +8,22 @@ import net.hep.ami.jdbc.driver.*;
 public class TransactionPoolSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static Map<Long, Map<String, DriverAbstractClass>> m_pool = new HashMap<Long, Map<String, DriverAbstractClass>>();
+	private static Map<Integer, Map<String, DriverAbstractClass>> m_pool = new HashMap<Integer, Map<String, DriverAbstractClass>>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static java.util.concurrent.atomic.AtomicLong m_cnt = new java.util.concurrent.atomic.AtomicLong(1);
+	private static java.util.concurrent.atomic.AtomicInteger m_cnt = new java.util.concurrent.atomic.AtomicInteger(0);
 
 	/*---------------------------------------------------------------------*/
 
-	public static long bookTransactionID() {
+	public static int getTransactionID() {
 
 		return m_cnt.getAndDecrement();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String catalog, long transactionID) throws Exception {
+	public static DriverAbstractClass getConnection(String catalog, int transactionID) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* WITHOUT TRANSACTION                                             */
 		/*-----------------------------------------------------------------*/
@@ -63,7 +63,7 @@ public class TransactionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, long transactionID) throws Exception {
+	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, int transactionID) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* WITHOUT TRANSACTION                                             */
 		/*-----------------------------------------------------------------*/
@@ -103,19 +103,31 @@ public class TransactionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void commitAndRelease(long transactionID) throws Exception {
+	public static void commitAndRelease(int transactionID) throws Exception {
 
 		synchronized(TransactionPoolSingleton.class) {
 
+			Map<String, DriverAbstractClass> map = m_pool.get(transactionID);
+
+			for(DriverAbstractClass driver: map.values()) {
+
+				driver.commitAndRelease();
+			}
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void rollbackAndRelease(long transactionID) throws Exception {
+	public static void rollbackAndRelease(int transactionID) throws Exception {
 
 		synchronized(TransactionPoolSingleton.class) {
 
+			Map<String, DriverAbstractClass> map = m_pool.get(transactionID);
+
+			for(DriverAbstractClass driver: map.values()) {
+
+				driver.rollbackAndRelease();
+			}
 		}
 	}
 

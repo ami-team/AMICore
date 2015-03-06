@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class ListDrivers extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public ListDrivers(Map<String, String> arguments, long transactionID) {
+	public ListDrivers(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 

@@ -93,7 +93,7 @@ public class ConnectionPoolSingleton {
 		/* GET POOL IF EXISTS                                              */
 		/*-----------------------------------------------------------------*/
 
-		String key = jdbc_url + "@" + user;
+		String key = "::" + jdbc_url + "@" + user;
 
 		if(m_pool.containsKey(key)) return m_pool.get(key);
 

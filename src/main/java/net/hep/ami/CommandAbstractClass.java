@@ -2,6 +2,9 @@ package net.hep.ami;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.pool.*;
+
 public abstract class CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
@@ -19,13 +22,17 @@ public abstract class CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	protected Map<String, String> m_arguments = null;
-
-	protected long m_transactionID = -1;
+	protected Map<String, String> m_arguments;
 
 	/*---------------------------------------------------------------------*/
 
-	public CommandAbstractClass(Map<String, String> arguments, long transactionID) {
+	protected int m_transactionID;
+
+	 private  boolean m_transactionIDBooker;
+
+	/*---------------------------------------------------------------------*/
+
+	public CommandAbstractClass(Map<String, String> arguments, int transactionID) {
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/
@@ -61,18 +68,53 @@ public abstract class CommandAbstractClass {
 
 		m_arguments = arguments;
 
-		m_transactionID = transactionID;
+		/*-----------------------------------------------------------------*/
+
+		if(transactionID < 0) {
+			m_transactionID = TransactionPoolSingleton.getTransactionID();
+			m_transactionIDBooker = true;
+		} else {
+			m_transactionID = (((((((((((((((transactionID)))))))))))))));
+			m_transactionIDBooker = false;
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
+	protected QuerierInterface getQuerier(String catalog) throws Exception {
+
+		return TransactionPoolSingleton.getConnection(catalog, m_transactionID);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected QuerierInterface getQuerier(String jdbcUrl, String user, String pass) throws Exception {
+
+		return TransactionPoolSingleton.getConnection(jdbcUrl, user, pass, m_transactionID);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public StringBuilder execute() throws Exception {
 
-		StringBuilder result = main();
+		StringBuilder result = null;
 
-		/* TODO */
+		try {
+			result = main();
+
+		} finally {
+
+			if(m_transactionIDBooker) {
+
+				if(result != null) {
+					TransactionPoolSingleton.commitAndRelease(m_transactionID);
+				} else {
+					TransactionPoolSingleton.rollbackAndRelease(m_transactionID);
+				}
+			}
+		}
 
 		return result;
 	}

@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class ListCatalogs extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public ListCatalogs(Map<String, String> arguments, long transactionID) {
+	public ListCatalogs(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 

@@ -6,20 +6,20 @@ import net.hep.ami.jdbc.driver.*;
 public class TransactionalQuerier implements QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
-	private long m_transactionID;
+	private int m_transactionID;
 
 	private DriverAbstractClass m_driver;
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(String catalog, long transactionID) throws Exception {
+	public TransactionalQuerier(String catalog, int transactionID) throws Exception {
 
 		m_driver = TransactionPoolSingleton.getConnection(catalog, m_transactionID = transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(String jdbcUrl, String user, String pass, long transactionID) throws Exception {
+	public TransactionalQuerier(String jdbcUrl, String user, String pass, int transactionID) throws Exception {
 
 		m_driver = TransactionPoolSingleton.getConnection(jdbcUrl, user, pass, m_transactionID = transactionID);
 	}

@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.Map.*;
 import java.lang.reflect.*;
 
-import net.hep.ami.jdbc.pool.TransactionPoolSingleton;
 import net.hep.ami.utility.*;
 
 public class CommandSingleton {
@@ -80,7 +79,14 @@ public class CommandSingleton {
 
 	public static String executeCommand(String command, Map<String, String> arguments) throws Exception {
 
-		return executeCommand(command, arguments, true, TransactionPoolSingleton.bookTransactionID());
+		return executeCommand(command, arguments, true, -1);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception {
+
+		return executeCommand(command, arguments, checkRoles, -1);
 	}
 
 	/*---------------------------------------------------------------------*/

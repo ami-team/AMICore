@@ -8,7 +8,7 @@ import net.hep.ami.*;
 public class Echo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public Echo(Map<String, String> arguments, long transactionID) {
+	public Echo(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 

@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class GetSchemas extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetSchemas(Map<String, String> arguments, long transactionID) {
+	public GetSchemas(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
