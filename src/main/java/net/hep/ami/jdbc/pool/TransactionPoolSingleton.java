@@ -105,12 +105,18 @@ public class TransactionPoolSingleton {
 
 	public static void commitAndRelease(long transactionID) throws Exception {
 
+		synchronized(TransactionPoolSingleton.class) {
+
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static void rollbackAndRelease(long transactionID) throws Exception {
 
+		synchronized(TransactionPoolSingleton.class) {
+
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
