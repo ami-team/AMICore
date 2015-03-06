@@ -81,13 +81,12 @@ public class CatalogSingleton {
 				/* CHECK CATALOG                                           */
 				/*---------------------------------------------------------*/
 
-				BasicQuerier loader = new BasicQuerier(
+				new BasicQuerier(
 					jdbcUrl,
 					user,
 					pass
-				);
 
-				loader.rollbackAndRelease();
+				).rollbackAndRelease();
 
 				/*---------------------------------------------------------*/
 				/* ADD CATALOG                                             */
