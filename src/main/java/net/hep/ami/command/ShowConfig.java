@@ -7,7 +7,7 @@ import net.hep.ami.*;
 public class ShowConfig extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public ShowConfig(Map<String, String> arguments, int transactionID) {
+	public ShowConfig(Map<String, String> arguments, int transactionID) throws Exception {
 		super(arguments, transactionID);
 	}
 

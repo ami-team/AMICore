@@ -32,7 +32,7 @@ public abstract class CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public CommandAbstractClass(Map<String, String> arguments, int transactionID) {
+	public CommandAbstractClass(Map<String, String> arguments, int transactionID) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/

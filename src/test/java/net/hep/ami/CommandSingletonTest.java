@@ -11,6 +11,7 @@ public class CommandSingletonTest {
 
 		try {
 			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments));
+			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

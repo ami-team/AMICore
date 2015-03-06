@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class GetSessionInfo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetSessionInfo(Map<String, String> arguments, int transactionID) {
+	public GetSessionInfo(Map<String, String> arguments, int transactionID) throws Exception {
 		super(arguments, transactionID);
 	}
 

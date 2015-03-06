@@ -18,22 +18,17 @@ public class TransactionPoolSingleton {
 
 	public static int bookNewTransactionID() {
 
-		return m_cnt.getAndDecrement();
+		return m_cnt.getAndIncrement();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static DriverAbstractClass getConnection(String catalog, int transactionID) throws Exception {
-		/*-----------------------------------------------------------------*/
-		/* WITHOUT TRANSACTION                                             */
-		/*-----------------------------------------------------------------*/
 
 		if(transactionID < 0) {
-			throw new Exception("invalid transaction identifier");
+			throw new Exception("invalid transaction identifier (" + transactionID + ")");
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* WITH TRANSACTION                                                */
 		/*-----------------------------------------------------------------*/
 
 		String key = catalog;
@@ -74,16 +69,11 @@ public class TransactionPoolSingleton {
 	/*---------------------------------------------------------------------*/
 
 	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, int transactionID) throws Exception {
-		/*-----------------------------------------------------------------*/
-		/* WITHOUT TRANSACTION                                             */
-		/*-----------------------------------------------------------------*/
 
 		if(transactionID < 0) {
-			throw new Exception("invalid transaction identifier");
+			throw new Exception("invalid transaction identifier (" + transactionID + ")");
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* WITH TRANSACTION                                                */
 		/*-----------------------------------------------------------------*/
 
 		String key = jdbcUrl + "@" + user;
