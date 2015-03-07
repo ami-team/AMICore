@@ -410,6 +410,8 @@ public class SchemaSingleton {
 					result.append(
 						"<row>"
 						+
+						"<field name=\"internalName\">" + entry3.getValue().m_internalName + "</field>"
+						+
 						"<field name=\"catalog\">" + entry3.getValue().m_catalog + "</field>"
 						+
 						"<field name=\"table\">" + entry3.getValue().m_table + "</field>"
