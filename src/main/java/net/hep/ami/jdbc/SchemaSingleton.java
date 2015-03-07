@@ -4,16 +4,13 @@ import java.sql.*;
 import java.util.*;
 import java.util.Map.*;
 
-import net.hep.ami.*;
-
-import org.apache.tomcat.jdbc.pool.*;
-
 public class SchemaSingleton {
 	/*---------------------------------------------------------------------*/
 
 	public static class Column {
 		/*-----------------------------------------------------------------*/
 
+		private String m_internalName;
 		private String m_catalog;
 		private String m_table;
 		private String m_name;
@@ -22,13 +19,20 @@ public class SchemaSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		public Column(String catalog, String table, String name, String type, int size) {
+		public Column(String internalName, String catalog, String table, String name, String type, int size) {
 
+			m_internalName = internalName;
 			m_catalog = catalog;
 			m_table = table;
 			m_name = name;
 			m_type = type;
 			m_size = size;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String getinternalName() {
+			return m_internalName;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -66,7 +70,7 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static class ForeignKey {
+	public static class FgnKey {
 		/*-----------------------------------------------------------------*/
 
 		private String m_catalog;
@@ -77,7 +81,7 @@ public class SchemaSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		public ForeignKey(String catalog, String fkTable, String fkColumn, String pkTable, String pkColumn) {
+		public FgnKey(String catalog, String fkTable, String fkColumn, String pkTable, String pkColumn) {
 
 			m_catalog = catalog;
 			m_fkTable = fkTable;
@@ -185,7 +189,7 @@ public class SchemaSingleton {
 	/*---------------------------------------------------------------------*/
 
 	private static Map<String, Map<String, Map<String, Column>>> m_columns = new HashMap<String, Map<String, Map<String, Column>>>();
-	private static Map<String, Map<String, List<ForeignKey>>> m_foreignKeys = new HashMap<String, Map<String, List<ForeignKey>>>();
+	private static Map<String, Map<String, List<FgnKey>>> m_fgnKeys = new HashMap<String, Map<String, List<FgnKey>>>();
 	private static Map<String, Map<String, List<Index>>> m_indices = new HashMap<String, Map<String, List<Index>>>();
 
 	/*---------------------------------------------------------------------*/
@@ -194,23 +198,19 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void readSchema(DataSource dataSource) {
-
-		Connection connection = null;
-
-		try {
-			/*-------------------------------------------------------------*/
-			/* GET CONNECTION                                              */
-			/*-------------------------------------------------------------*/
-
-			connection = dataSource.getConnection();
-
+	public static void readSchema(Connection connection, String catalog) throws SQLException {
 			/*-------------------------------------------------------------*/
 			/* READ DB METADATA                                            */
 			/*-------------------------------------------------------------*/
 
 			long t1 = System.currentTimeMillis();
-			readDBMetaData(connection.getMetaData());
+
+			m_columns.put(catalog, new HashMap<String, Map<String, Column>>());
+			m_fgnKeys.put(catalog, new HashMap<String, List<FgnKey>>());
+			m_indices.put(catalog, new HashMap<String, List<Index>>());
+
+			readMetaData(connection.getMetaData(), connection.getCatalog(), catalog);
+
 			long t2 = System.currentTimeMillis();
 
 			/*-------------------------------------------------------------*/
@@ -220,74 +220,33 @@ public class SchemaSingleton {
 			m_executionTime += t2 - t1;
 
 			/*-------------------------------------------------------------*/
-
-		} catch(SQLException e) {
-			LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
-
-		} finally {
-
-			if(connection != null) {
-
-				try {
-					connection.close();
-
-				} catch(SQLException e) {
-					LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
-				}
-			}
-		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readDBMetaData(DatabaseMetaData metaData) throws SQLException {
+	private static void readMetaData(DatabaseMetaData metaData, String internalName, String catalog) throws SQLException {
 
-		ResultSet resultSet = metaData.getCatalogs();
-
-		while(resultSet.next()) {
-
-			String name = resultSet.getString("TABLE_CAT");
-
-			if(name.equals(/****/"mysql"/*****/) == false
-			   &&
-			   name.equals("information_schema") == false
-			   &&
-			   name.equals("performance_schema") == false
-			 ) {
-				  m_columns.put(name, new HashMap<String, Map<String, Column>>());
-				  m_foreignKeys.put(name, new HashMap<String, List<ForeignKey>>());
-				  m_indices.put(name, new HashMap<String, List<Index>>());
-
-				readTableMetaData(metaData, name);
-			}
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void readTableMetaData(DatabaseMetaData metaData, String catalog) throws SQLException {
-
-		ResultSet resultSet = metaData.getTables(catalog, null, "%", null);
+		ResultSet resultSet = metaData.getTables(internalName, null, "%", null);
 
 		while(resultSet.next()) {
 
 			String name = resultSet.getString("TABLE_NAME");
 
 			m_columns.get(catalog).put(name, new LinkedHashMap<String, Column>());
-			m_foreignKeys.get(catalog).put(name, new ArrayList<ForeignKey>());
+			m_fgnKeys.get(catalog).put(name, new ArrayList<FgnKey>());
 			m_indices.get(catalog).put(name, new ArrayList<Index>());
 
-			readColumnMetaData(metaData, catalog, name);
-			readForeignKeyMetaData(metaData, catalog, name);
-			readIndexMetaData(metaData, catalog, name);
+			readColumnMetaData(metaData, internalName, catalog, name);
+			readFgnKeyMetaData(metaData, internalName, catalog, name);
+			readIndexMetaData(metaData, internalName, catalog, name);
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readColumnMetaData(DatabaseMetaData metaData, String catalog, String table) throws SQLException {
+	private static void readColumnMetaData(DatabaseMetaData metaData, String internalName, String catalog, String table) throws SQLException {
 
-		ResultSet resultSet = metaData.getColumns(catalog, null, table, null);
+		ResultSet resultSet = metaData.getColumns(internalName, null, table, null);
 
 		while(resultSet.next()) {
 
@@ -296,6 +255,7 @@ public class SchemaSingleton {
 			int size = resultSet.getInt("COLUMN_SIZE");
 
 			m_columns.get(catalog).get(table).put(name, new Column(
+				internalName,
 				catalog,
 				table,
 				name,
@@ -307,9 +267,9 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readForeignKeyMetaData(DatabaseMetaData metaData, String catalog, String table) throws SQLException {
+	private static void readFgnKeyMetaData(DatabaseMetaData metaData, String internalName, String catalog, String table) throws SQLException {
 
-		ResultSet resultSet = metaData.getExportedKeys(catalog, null, table);
+		ResultSet resultSet = metaData.getExportedKeys(internalName, null, table);
 
 		while(resultSet.next()) {
 
@@ -318,7 +278,7 @@ public class SchemaSingleton {
 			String pktable = resultSet.getString("PKTABLE_NAME");
 			String pkcolumn = resultSet.getString("PKCOLUMN_NAME");
 
-			m_foreignKeys.get(catalog).get(table).add(new ForeignKey(
+			m_fgnKeys.get(catalog).get(table).add(new FgnKey(
 				catalog,
 				fktable,
 				fkcolumn,
@@ -330,9 +290,9 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readIndexMetaData(DatabaseMetaData metaData, String catalog, String table) throws SQLException {
+	private static void readIndexMetaData(DatabaseMetaData metaData, String internalName, String catalog, String table) throws SQLException {
 
-		ResultSet resultSet = metaData.getIndexInfo(catalog, null, table, false, false);
+		ResultSet resultSet = metaData.getIndexInfo(internalName, null, table, false, false);
 
 		while(resultSet.next()) {
 
@@ -359,14 +319,14 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> getCatalogList() {
+	public static Set<String> getCatalogList() {
 
 		return m_columns.keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> getTableList(String catalog) throws Exception {
+	public static Set<String> getTableList(String catalog) throws Exception {
 
 		if(m_columns.containsKey(catalog)) {
 
@@ -395,11 +355,11 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<ForeignKey> getForeignKeys(String catalog, String table) throws Exception {
+	public static List<FgnKey> getFgnKeys(String catalog, String table) throws Exception {
 
-		if(m_foreignKeys.containsKey(catalog)) {
+		if(m_fgnKeys.containsKey(catalog)) {
 
-			Map<String, List<ForeignKey>> catalogMap = m_foreignKeys.get(catalog);
+			Map<String, List<FgnKey>> catalogMap = m_fgnKeys.get(catalog);
 
 			if(catalogMap.containsKey(table)) {
 
@@ -472,11 +432,11 @@ public class SchemaSingleton {
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Entry<String, Map<String, List<ForeignKey>>> entry1: m_foreignKeys.entrySet()) {
+		for(Entry<String, Map<String, List<FgnKey>>> entry1: m_fgnKeys.entrySet()) {
 
-			for(Entry<String, List<ForeignKey>> entry2: entry1.getValue().entrySet()) {
+			for(Entry<String, List<FgnKey>> entry2: entry1.getValue().entrySet()) {
 
-				for(ForeignKey entry3: entry2.getValue()) {
+				for(FgnKey entry3: entry2.getValue()) {
 
 					result.append(
 						"<row>"

@@ -9,17 +9,17 @@ import net.hep.ami.jdbc.driver.annotation.*;
 public abstract class DriverAbstractClass implements QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
-	protected Connection m_connection = null;
-	protected Statement m_statement = null;
+	protected Connection m_connection;
+	protected Statement m_statement;
 
 	/*---------------------------------------------------------------------*/
 
-	protected String m_jdbcProto = null;
-	protected String m_jdbcClass = null;
-	protected String m_jdbcUrl = null;
-	protected String m_user = null;
-	protected String m_pass = null;
-	protected String m_db = null;
+	protected String m_jdbcProto;
+	protected String m_jdbcClass;
+	protected String m_jdbcUrl;
+	protected String m_user;
+	protected String m_pass;
+	protected String m_db ;
 
 	/*---------------------------------------------------------------------*/
 
@@ -122,6 +122,14 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 		} finally {
 			m_connection.close();
 		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Deprecated
+	public Connection getConnection() {
+
+		return m_connection;
 	}
 
 	/*---------------------------------------------------------------------*/

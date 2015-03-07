@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
 
 import org.apache.tomcat.jdbc.pool.*;
 
@@ -158,8 +157,6 @@ public class ConnectionPoolSingleton {
 		/**/		m_pools.put(key, result = new DataSource());
 		/**/
 		/**/		result.setPoolProperties(poolProperties);
-		/**/
-		/**/		SchemaSingleton.readSchema(result);
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/	}

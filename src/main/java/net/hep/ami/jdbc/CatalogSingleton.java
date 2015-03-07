@@ -34,6 +34,8 @@ public class CatalogSingleton {
 	}
 
 	/*---------------------------------------------------------------------*/
+	@SuppressWarnings("deprecation")
+	/*---------------------------------------------------------------------*/
 
 	static void addCatalogs() throws Exception {
 		/*-----------------------------------------------------------------*/
@@ -49,6 +51,8 @@ public class CatalogSingleton {
 				ConfigSingleton.getProperty("router_user"),
 				ConfigSingleton.getProperty("router_pass")
 			);
+
+			SchemaSingleton.readSchema(basicQuerier.getDriver().getConnection(), "self");
 
 			queryResult = basicQuerier.executeSQLQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM router_catalogs");
 
@@ -78,15 +82,21 @@ public class CatalogSingleton {
 				String pass    = queryResult.getValue(i, "pass").trim();
 
 				/*---------------------------------------------------------*/
-				/* CHECK CATALOG                                           */
+				/* CHECK CATALOG AND READ SCHEMA                           */
 				/*---------------------------------------------------------*/
 
-				new BasicQuerier(
+				DriverAbstractClass driver = DriverSingleton.getConnection(
 					jdbcUrl,
 					user,
 					pass
+				);
 
-				).rollbackAndRelease();
+				try {
+					SchemaSingleton.readSchema(driver.getConnection(), catalog);
+
+				} finally {
+					driver.rollbackAndRelease();
+				}
 
 				/*---------------------------------------------------------*/
 				/* ADD CATALOG                                             */

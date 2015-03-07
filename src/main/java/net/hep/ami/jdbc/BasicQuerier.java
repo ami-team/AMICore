@@ -72,6 +72,14 @@ public class BasicQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Deprecated
+	public DriverAbstractClass getDriver() {
+
+		return m_driver;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getJdbcProto() {
 
 		return m_driver.getJdbcProto();

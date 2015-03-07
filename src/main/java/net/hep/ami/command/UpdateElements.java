@@ -56,6 +56,8 @@ public class UpdateElements extends CommandAbstractClass {
 			throw new Exception("invalid usage");
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		TransactionalQuerier transactionalQuerier = getQuerier(m_catalog);
 
 		/*-----------------------------------------------------------------*/
@@ -70,7 +72,7 @@ public class UpdateElements extends CommandAbstractClass {
 
 			for(int i = 0; i < m_fields.length; i++) {
 
-				sql = sql.concat(", `" + m_fields[i] + "`='" + m_values[i].replaceFirst("'", "''"));
+				sql = sql.concat(", `" + m_fields[i] + "`='" + m_values[i].replaceFirst("'", "''") + "'");
 			}
 		}
 
@@ -80,13 +82,15 @@ public class UpdateElements extends CommandAbstractClass {
 
 			for(int i = 0; i < m_keyFields.length; i++) {
 
-				sql = sql.concat(", `" + m_keyFields[i] + "`='" + m_keyValues[i].replaceFirst("'", "''"));
+				sql = sql.concat(", `" + m_keyFields[i] + "`='" + m_keyValues[i].replaceFirst("'", "''") + "'");
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		transactionalQuerier.executeUpdate(sql);
+
+		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
