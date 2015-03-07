@@ -16,7 +16,7 @@ public class AddUser extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public AddUser(Map<String, String> arguments, int transactionID) throws Exception {
+	public AddUser(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 //		m_firstName = arguments.get("firstName");

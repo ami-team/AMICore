@@ -22,13 +22,6 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Class<?>[] m_ctor = new Class<?>[] {
-		Map.class,
-		int.class,
-	};
-
-	/*---------------------------------------------------------------------*/
-
 	static {
 
 		ClassFinder classFinder = new ClassFinder("net.hep.ami");
@@ -67,7 +60,10 @@ public class CommandSingleton {
 				new CommandTuple(
 					clazz.getMethod("help").invoke(null).toString(),
 					clazz.getMethod("usage").invoke(null).toString(),
-					clazz.getConstructor(m_ctor)
+					clazz.getConstructor(
+						Map.class,
+						int.class
+					)
 				)
 			);
 		}
@@ -113,9 +109,10 @@ public class CommandSingleton {
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
 
-			CommandAbstractClass commandObject = m_commands.get(command).z.newInstance(new Object[] {
-				arguments, transactionID
-			});
+			CommandAbstractClass commandObject = m_commands.get(command).z.newInstance(
+				arguments,
+				transactionID
+			);
 
 			/*-------------------------------------------------------------*/
 			/* GET EXECUTION DATE                                          */

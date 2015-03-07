@@ -158,7 +158,7 @@ public class ConfigSingleton {
 				ConfigSingleton.getProperty("router_pass")
 			);
 
-			queryResult = basicQuerier.executeQuery("SELECT `name`, `value` FROM `router_config`");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `name`, `value` FROM `router_config`");
 
 		} finally {
 

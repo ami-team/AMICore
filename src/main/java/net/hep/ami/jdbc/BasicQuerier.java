@@ -23,9 +23,9 @@ public class BasicQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeQuery(String sql) throws Exception {
+	public QueryResult executeSQLQuery(String sql) throws Exception {
 
-		return m_driver.executeQuery(sql);
+		return m_driver.executeSQLQuery(sql);
 	}
 
 	/*---------------------------------------------------------------------*/

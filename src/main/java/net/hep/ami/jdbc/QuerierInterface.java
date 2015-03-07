@@ -3,7 +3,7 @@ package net.hep.ami.jdbc;
 public interface QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeQuery(String sql) throws Exception;
+	public QueryResult executeSQLQuery(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

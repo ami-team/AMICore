@@ -50,7 +50,7 @@ public class CatalogSingleton {
 				ConfigSingleton.getProperty("router_pass")
 			);
 
-			queryResult = basicQuerier.executeQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM router_catalogs");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM router_catalogs");
 
 		} finally {
 

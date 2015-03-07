@@ -25,14 +25,6 @@ public class DriverSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Class<?>[] m_ctor = new Class<?>[] {
-		String.class,
-		String.class,
-		String.class,
-	};
-
-	/*---------------------------------------------------------------------*/
-
 	static {
 
 		ClassFinder classFinder = new ClassFinder("net.hep.ami.jdbc.driver");
@@ -77,7 +69,11 @@ public class DriverSingleton {
 				new DriverTuple(
 					jdbc.clazz(),
 					clazz.getName(),
-					clazz.getConstructor(m_ctor)
+					clazz.getConstructor(
+						String.class,
+						String.class,
+						String.class
+					)
 				)
 			);
 		}
@@ -115,11 +111,11 @@ public class DriverSingleton {
 		/* CREATE DRIVER                                                   */
 		/*-----------------------------------------------------------------*/
 
-		return m_drivers.get(jdbcProto).z.newInstance(new Object[] {
+		return m_drivers.get(jdbcProto).z.newInstance(
 			jdbcUrl,
 			user,
 			pass
-		});
+		);
 
 		/*-----------------------------------------------------------------*/
 	}

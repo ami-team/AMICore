@@ -3,29 +3,23 @@ package net.hep.ami.command;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.QueryResult;
-import net.hep.ami.jdbc.TransactionalQuerier;
+import net.hep.ami.jdbc.*;
 
 public class SearchQuery extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
+	private String m_catalog;
 	private String m_sql;
 	private String m_glite;
-	private String m_catalog;
 
 	/*---------------------------------------------------------------------*/
 
-	public SearchQuery(Map<String, String> arguments, int transactionID) throws Exception {
+	public SearchQuery(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
+		m_catalog = arguments.get("catalog");
 		m_sql = arguments.get("sql");
 		m_glite = arguments.get("glite");
-		m_catalog = arguments.get("catalog");
-
-		if(m_sql == null || (m_glite == null && m_catalog == null)) {
-
-			throw new Exception("invalid usage");
-		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -33,18 +27,19 @@ public class SearchQuery extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
+		if(m_catalog == null || (m_sql == null && m_glite == null)) {
+
+			throw new Exception("invalid usage");
+		}
+
 		TransactionalQuerier transactionalQuerier = getQuerier(m_catalog);
 
 		QueryResult queryResult;
 
-		/****/ if(m_sql != null) {
-			queryResult = transactionalQuerier.executeQuery(m_sql);
-
-		} else if(m_glite != null) {
-			queryResult = transactionalQuerier.executeGLiteQuery(m_sql);
-
+		if(m_sql != null) {
+			queryResult = transactionalQuerier.executeSQLQuery(m_sql);
 		} else {
-			throw new Exception();
+			queryResult = transactionalQuerier.executeGLiteQuery(m_glite);
 		}
 
 		return queryResult.toStringBuilder();
@@ -53,7 +48,13 @@ public class SearchQuery extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "???";
+		return "Execute a simple SQL or gLite query.";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String usage() {
+		return "-catalog=\"value\" (-sql=\"value\" | -glite=\"value\")";
 	}
 
 	/*---------------------------------------------------------------------*/

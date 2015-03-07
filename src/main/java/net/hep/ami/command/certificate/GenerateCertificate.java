@@ -22,7 +22,7 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public GenerateCertificate(Map<String, String> arguments, int transactionID) throws Exception {
+	public GenerateCertificate(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		if(arguments.containsKey("country")) {

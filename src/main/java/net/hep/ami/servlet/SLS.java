@@ -110,7 +110,7 @@ public class SLS extends HttpServlet {
 		try {
 			basicQuerier = new BasicQuerier("self");
 
-			queryResult = basicQuerier.executeQuery("SELECT `name`, `url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `name`, `url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
 
 		} finally {
 

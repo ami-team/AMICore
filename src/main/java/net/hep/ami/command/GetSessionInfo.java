@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 public class GetSessionInfo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetSessionInfo(Map<String, String> arguments, int transactionID) throws Exception {
+	public GetSessionInfo(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
@@ -24,9 +24,9 @@ public class GetSessionInfo extends CommandAbstractClass {
 
 		QueryResult queryResult;
 
-		queryResult = transactionalQuerier.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "'");
+		queryResult = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "'");
 			if(queryResult.getNumberOfRows() == 0) {
-				queryResult = transactionalQuerier.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_guestUser + "'");
+				queryResult = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_guestUser + "'");
 			}
 
 		/*-----------------------------------------------------------------*/

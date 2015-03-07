@@ -57,7 +57,7 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeQuery(String sql) throws Exception {
+	public QueryResult executeSQLQuery(String sql) throws Exception {
 
 		return new QueryResult(m_statement.executeQuery(sql));
 	}
