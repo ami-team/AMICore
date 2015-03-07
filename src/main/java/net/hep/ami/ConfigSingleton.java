@@ -62,6 +62,7 @@ public class ConfigSingleton {
 			 ) {
 				m_hasValidConfFile = false;
 				m_hasValidDataBase = false;
+
 			} else {
 				Cryptography.init(getProperty("encryption_key"));
 			}
@@ -148,23 +149,19 @@ public class ConfigSingleton {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = null;
-		QueryResult queryResult = null;
+		BasicQuerier basicQuerier = new BasicQuerier(
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
+
+		QueryResult queryResult;
 
 		try {
-			basicQuerier = new BasicQuerier(
-				ConfigSingleton.getProperty("jdbc_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
-			);
-
 			queryResult = basicQuerier.executeSQLQuery("SELECT `name`, `value` FROM `router_config`");
 
 		} finally {
-
-			if(basicQuerier != null) {
-				basicQuerier.rollbackAndRelease();
-			}
+			basicQuerier.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -192,31 +189,40 @@ public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
 	public static String getConfigFileName() {
+
 		return m_configFileName;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Boolean hasValidConfFile() {
+
 		return m_hasValidConfFile;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Boolean hasValidDataBase() {
+
 		return m_hasValidDataBase;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String getProperty(String key) {
-		return m_properties.containsKey(key) ? m_properties.get(key) : "";
+
+		String value = m_properties.get(key);
+
+		return value != null ? value : "";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String getProperty(String key, String defaultValue) {
-		return m_properties.containsKey(key) ? m_properties.get(key) : defaultValue;
+
+		String value = m_properties.get(key);
+
+		return value != null ? value : defaultValue;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -225,10 +231,12 @@ public class ConfigSingleton {
 
 		int result;
 
-		if(m_properties.containsKey(key)) {
+		String value = m_properties.get(key);
+
+		if(value != null) {
 
 			try {
-				result = Integer.parseInt(m_properties.get(key));
+				result = Integer.parseInt(value);
 			} catch(NumberFormatException e) {
 				result = defaultValue;
 			}
@@ -246,10 +254,12 @@ public class ConfigSingleton {
 
 		float result;
 
-		if(m_properties.containsKey(key)) {
+		String value = m_properties.get(key);
+
+		if(value != null) {
 
 			try {
-				result = Float.parseFloat(m_properties.get(key));
+				result = Float.parseFloat(value);
 			} catch(NumberFormatException e) {
 				result = defaultValue;
 			}
@@ -267,10 +277,12 @@ public class ConfigSingleton {
 
 		double result;
 
-		if(m_properties.containsKey(key)) {
+		String value = m_properties.get(key);
+
+		if(value != null) {
 
 			try {
-				result = Double.parseDouble(m_properties.get(key));
+				result = Double.parseDouble(value);
 			} catch(NumberFormatException e) {
 				result = defaultValue;
 			}

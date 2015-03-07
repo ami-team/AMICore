@@ -8,11 +8,11 @@ import net.hep.ami.jdbc.pool.*;
 public abstract class CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	protected String m_AMIUser = "";
-	protected String m_AMIPass = "";
-	protected String m_clientDN = "";
-	protected String m_issuerDN = "";
-	protected String m_isSecure = "";
+	protected String m_AMIUser;
+	protected String m_AMIPass;
+	protected String m_clientDN;
+	protected String m_issuerDN;
+	protected String m_isSecure;
 
 	/*---------------------------------------------------------------------*/
 
@@ -40,26 +40,36 @@ public abstract class CommandAbstractClass {
 		if(arguments.containsKey("AMIUser")) {
 			m_AMIUser = arguments.get("AMIUser");
 			arguments.remove("AMIUser");
+		} else {
+			m_AMIUser = "";
 		}
 
 		if(arguments.containsKey("AMIPass")) {
 			m_AMIPass = arguments.get("AMIPass");
 			arguments.remove("AMIPass");
+		} else {
+			m_AMIPass = "";
 		}
 
 		if(arguments.containsKey("clientDN")) {
 			m_clientDN = arguments.get("clientDN");
 			arguments.remove("clientDN");
+		} else {
+			m_clientDN = "";
 		}
 
 		if(arguments.containsKey("issuerDN")) {
 			m_issuerDN = arguments.get("issuerDN");
 			arguments.remove("issuerDN");
+		} else {
+			m_issuerDN = "";
 		}
 
 		if(arguments.containsKey("isSecure")) {
 			m_isSecure = arguments.get("isSecure");
 			arguments.remove("isSecure");
+		} else {
+			m_isSecure = "";
 		}
 
 		/*-----------------------------------------------------------------*/

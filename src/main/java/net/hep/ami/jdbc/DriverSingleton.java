@@ -83,13 +83,10 @@ public class DriverSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass) throws Exception
-	{
+	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* GET PROTOCOL                                                    */
 		/*-----------------------------------------------------------------*/
-
-		jdbcUrl = jdbcUrl.trim();
 
 		int index = jdbcUrl.indexOf("://");
 
@@ -100,18 +97,20 @@ public class DriverSingleton {
 		String jdbcProto = jdbcUrl.substring(0, index);
 
 		/*-----------------------------------------------------------------*/
-		/* CHECK DRIVER                                                    */
+		/* GET DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(m_drivers.containsKey(jdbcProto) == false) {
+		DriverTuple tuple = m_drivers.get(jdbcProto);
+
+		if(tuple == null) {
 			throw new Exception("unknown JDBC protocol `" + jdbcProto + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE DRIVER                                                   */
+		/* CONNECTION                                                      */
 		/*-----------------------------------------------------------------*/
 
-		return m_drivers.get(jdbcProto).z.newInstance(
+		return tuple.z.newInstance(
 			jdbcUrl,
 			user,
 			pass

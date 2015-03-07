@@ -88,15 +88,18 @@ public class CommandSingleton {
 	/*---------------------------------------------------------------------*/
 
 	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, int transactionID) throws Exception {
-		/*-----------------------------------------------------------------*/
-		/* CHECK COMMAND                                                   */
-		/*-----------------------------------------------------------------*/
 
 		if(command.startsWith("AMI")) {
 			command = command.substring(3);
 		}
 
-		if(m_commands.containsKey(command) == false) {
+		/*-----------------------------------------------------------------*/
+		/* GET COMMAND                                                     */
+		/*-----------------------------------------------------------------*/
+
+		CommandTuple tuple = m_commands.get(command);
+
+		if(m_commands.get(command) == null) {
 			throw new Exception("command `" + command + "` not found");
 		}
 
@@ -109,7 +112,7 @@ public class CommandSingleton {
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
 
-			CommandAbstractClass commandObject = m_commands.get(command).z.newInstance(
+			CommandAbstractClass commandObject = tuple.z.newInstance(
 				arguments,
 				transactionID
 			);
@@ -166,9 +169,9 @@ public class CommandSingleton {
 			/*-------------------------------------------------------------*/
 		} else {
 			result = Templates.help(
-				m_commands.get(command).x
+				tuple.x
 				,
-				m_commands.get(command).y
+				tuple.y
 			);
 		}
 

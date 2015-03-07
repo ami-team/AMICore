@@ -17,9 +17,9 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
 	protected String m_jdbcUrl;
+	protected String m_catalog;
 	protected String m_user;
 	protected String m_pass;
-	protected String m_db ;
 
 	/*---------------------------------------------------------------------*/
 
@@ -51,6 +51,8 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 		);
 
 		m_statement = m_connection.createStatement();
+
+		m_catalog = m_connection.getCatalog();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -155,6 +157,13 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	public String getCatalog() {
+
+		return m_catalog;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getUser() {
 
 		return m_user;
@@ -165,13 +174,6 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 	public String getPass() {
 
 		return m_pass;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getDB() {
-
-		return m_db;
 	}
 
 	/*---------------------------------------------------------------------*/

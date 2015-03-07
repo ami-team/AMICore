@@ -101,18 +101,18 @@ public class ConverterSingleton {
 
 	public static String applyConverter(String fileName, Reader reader, Writer writer) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* CHECK TRANSFORM                                                 */
+		/* GET TRANSFORM                                                   */
 		/*-----------------------------------------------------------------*/
 
-		if(m_transformers.containsKey(fileName) == false) {
+		Transformer transformer = m_transformers.get(fileName);
+
+		if(transformer == null) {
 			throw new Exception("converter `" + fileName + "` not found");
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* APPLY TRANSFORM                                                 */
 		/*-----------------------------------------------------------------*/
-
-		Transformer transformer = m_transformers.get(fileName);
 
 		Source source = new StreamSource(reader);
 		Result target = new StreamResult(writer);

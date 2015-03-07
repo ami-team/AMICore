@@ -254,19 +254,15 @@ public class FrontEnd extends HttpServlet {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = null;
-		QueryResult queryResult = null;
+		BasicQuerier basicQuerier = new BasicQuerier("self");
+
+		QueryResult queryResult;
 
 		try {
-			basicQuerier = new BasicQuerier("self");
-
-			queryResult = basicQuerier.executeSQLQuery("SELECT command, converter FROM router_link WHERE id = '" + linkId + "'");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `command`, `converter` FROM `router_link` WHERE `id` = '" + linkId + "'");
 
 		} finally {
-
-			if(basicQuerier != null) {
-				basicQuerier.rollbackAndRelease();
-			}
+			basicQuerier.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -297,19 +293,15 @@ public class FrontEnd extends HttpServlet {
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = null;
-		QueryResult queryResult = null;
+		BasicQuerier basicQuerier = new BasicQuerier("self");
+
+		QueryResult queryResult;
 
 		try {
-			basicQuerier = new BasicQuerier("self");
-
-			queryResult = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM router_user WHERE clientDN = '" + clientDN.replaceAll("'", "''") + "'");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = '" + clientDN.replaceAll("'", "''") + "'");
 
 		} finally {
-
-			if(basicQuerier != null) {
-				basicQuerier.rollbackAndRelease();
-			}
+			basicQuerier.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/

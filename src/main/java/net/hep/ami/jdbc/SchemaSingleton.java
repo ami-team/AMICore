@@ -70,7 +70,7 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static class FgnKey {
+	public static class FrgnKey {
 		/*-----------------------------------------------------------------*/
 
 		private String m_catalog;
@@ -81,7 +81,7 @@ public class SchemaSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		public FgnKey(String catalog, String fkTable, String fkColumn, String pkTable, String pkColumn) {
+		public FrgnKey(String catalog, String fkTable, String fkColumn, String pkTable, String pkColumn) {
 
 			m_catalog = catalog;
 			m_fkTable = fkTable;
@@ -189,7 +189,7 @@ public class SchemaSingleton {
 	/*---------------------------------------------------------------------*/
 
 	private static Map<String, Map<String, Map<String, Column>>> m_columns = new HashMap<String, Map<String, Map<String, Column>>>();
-	private static Map<String, Map<String, List<FgnKey>>> m_fgnKeys = new HashMap<String, Map<String, List<FgnKey>>>();
+	private static Map<String, Map<String, List<FrgnKey>>> m_frgnKeys = new HashMap<String, Map<String, List<FrgnKey>>>();
 	private static Map<String, Map<String, List<Index>>> m_indices = new HashMap<String, Map<String, List<Index>>>();
 
 	/*---------------------------------------------------------------------*/
@@ -206,10 +206,14 @@ public class SchemaSingleton {
 			long t1 = System.currentTimeMillis();
 
 			m_columns.put(catalog, new HashMap<String, Map<String, Column>>());
-			m_fgnKeys.put(catalog, new HashMap<String, List<FgnKey>>());
+			m_frgnKeys.put(catalog, new HashMap<String, List<FrgnKey>>());
 			m_indices.put(catalog, new HashMap<String, List<Index>>());
 
-			readMetaData(connection.getMetaData(), connection.getCatalog(), catalog);
+			readMetaData(
+				connection.getMetaData(),
+				connection.getCatalog(),
+				catalog
+			);
 
 			long t2 = System.currentTimeMillis();
 
@@ -233,7 +237,7 @@ public class SchemaSingleton {
 			String name = resultSet.getString("TABLE_NAME");
 
 			m_columns.get(catalog).put(name, new LinkedHashMap<String, Column>());
-			m_fgnKeys.get(catalog).put(name, new ArrayList<FgnKey>());
+			m_frgnKeys.get(catalog).put(name, new ArrayList<FrgnKey>());
 			m_indices.get(catalog).put(name, new ArrayList<Index>());
 
 			readColumnMetaData(metaData, internalName, catalog, name);
@@ -278,7 +282,7 @@ public class SchemaSingleton {
 			String pktable = resultSet.getString("PKTABLE_NAME");
 			String pkcolumn = resultSet.getString("PKCOLUMN_NAME");
 
-			m_fgnKeys.get(catalog).get(table).add(new FgnKey(
+			m_frgnKeys.get(catalog).get(table).add(new FrgnKey(
 				catalog,
 				fktable,
 				fkcolumn,
@@ -328,9 +332,10 @@ public class SchemaSingleton {
 
 	public static Set<String> getTableList(String catalog) throws Exception {
 
-		if(m_columns.containsKey(catalog)) {
+		Map<String, Map<String, Column>> map = m_columns.get(catalog);
 
-			return m_columns.get(catalog).keySet();
+		if(map != null) {
+			return map.keySet();
 		}
 
 		throw new Exception("catalog not found `" + catalog + "`");
@@ -340,13 +345,15 @@ public class SchemaSingleton {
 
 	public static Map<String, Column> getColumns(String catalog, String table) throws Exception {
 
-		if(m_columns.containsKey(catalog)) {
+		Map<String, Map<String, Column>> map1 = m_columns.get(catalog);
 
-			Map<String, Map<String, Column>> catalogMap = m_columns.get(catalog);
+		if(map1 != null) {
 
-			if(catalogMap.containsKey(table)) {
+			Map<String, Column> map2 = map1.get(table);
 
-				return catalogMap.get(table);
+			if(map2 != null) {
+
+				return map2;
 			}
 		}
 
@@ -355,15 +362,17 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<FgnKey> getFgnKeys(String catalog, String table) throws Exception {
+	public static List<FrgnKey> getFgnKeys(String catalog, String table) throws Exception {
 
-		if(m_fgnKeys.containsKey(catalog)) {
+		Map<String, List<FrgnKey>> map1 = m_frgnKeys.get(catalog);
 
-			Map<String, List<FgnKey>> catalogMap = m_fgnKeys.get(catalog);
+		if(map1 != null) {
 
-			if(catalogMap.containsKey(table)) {
+			List<FrgnKey> map2 = map1.get(table);
 
-				return catalogMap.get(table);
+			if(map2 != null) {
+
+				return map2;
 			}
 		}
 
@@ -374,13 +383,15 @@ public class SchemaSingleton {
 
 	public static List<Index> getIndices(String catalog, String table) throws Exception {
 
-		if(m_indices.containsKey(catalog)) {
+		Map<String, List<Index>> map1 = m_indices.get(catalog);
 
-			Map<String, List<Index>> catalogMap = m_indices.get(catalog);
+		if(map1 != null) {
 
-			if(catalogMap.containsKey(table)) {
+			List<Index> map2 = map1.get(table);
 
-				return catalogMap.get(table);
+			if(map2 != null) {
+
+				return map2;
 			}
 		}
 
@@ -434,11 +445,11 @@ public class SchemaSingleton {
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Entry<String, Map<String, List<FgnKey>>> entry1: m_fgnKeys.entrySet()) {
+		for(Entry<String, Map<String, List<FrgnKey>>> entry1: m_frgnKeys.entrySet()) {
 
-			for(Entry<String, List<FgnKey>> entry2: entry1.getValue().entrySet()) {
+			for(Entry<String, List<FrgnKey>> entry2: entry1.getValue().entrySet()) {
 
-				for(FgnKey entry3: entry2.getValue()) {
+				for(FrgnKey entry3: entry2.getValue()) {
 
 					result.append(
 						"<row>"
@@ -500,7 +511,7 @@ public class SchemaSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + " s</info>");
+		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + " s at startup</info>");
 
 		/*-----------------------------------------------------------------*/
 

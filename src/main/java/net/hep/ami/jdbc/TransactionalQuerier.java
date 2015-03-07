@@ -54,14 +54,6 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	@Deprecated
-	public DriverAbstractClass getDriver() {
-
-		return m_driver;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public String getJdbcProto() {
 
 		return m_driver.getJdbcProto();
@@ -83,6 +75,13 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	public String getCatalog() {
+
+		return m_driver.getCatalog();
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getUser() {
 
 		return m_driver.getUser();
@@ -93,13 +92,6 @@ public class TransactionalQuerier implements QuerierInterface {
 	public String getPass() {
 
 		return m_driver.getPass();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getDB() {
-
-		return m_driver.getDB();
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -34,37 +34,31 @@ public class CatalogSingleton {
 	}
 
 	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("deprecation")
-	/*---------------------------------------------------------------------*/
 
 	static void addCatalogs() throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = null;
-		QueryResult queryResult = null;
+		DriverAbstractClass driver = DriverSingleton.getConnection(
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
+
+		QueryResult queryResult;
 
 		try {
-			basicQuerier = new BasicQuerier(
-				ConfigSingleton.getProperty("jdbc_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
-			);
+			addCatalog(driver, "self");
 
-			SchemaSingleton.readSchema(basicQuerier.getDriver().getConnection(), "self");
-
-			queryResult = basicQuerier.executeSQLQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM router_catalogs");
+			queryResult = driver.executeSQLQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `name` FROM `router_catalogs`");
 
 		} finally {
-
-			if(basicQuerier != null) {
-				basicQuerier.rollbackAndRelease();
-			}
+			driver.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF PROPERTIES                                        */
+		/* GET NUMBER OF CATALOGS                                          */
 		/*-----------------------------------------------------------------*/
 
 		final int nr = queryResult.getNumberOfRows();
@@ -76,61 +70,51 @@ public class CatalogSingleton {
 		for(int i = 0; i < nr; i++) {
 
 			try {
-				String catalog = queryResult.getValue(i, "catalog").trim();
-				String jdbcUrl = queryResult.getValue(i, "jdbcUrl").trim();
-				String user    = queryResult.getValue(i, "user").trim();
-				String pass    = queryResult.getValue(i, "pass").trim();
-
-				/*---------------------------------------------------------*/
-				/* CHECK CATALOG AND READ SCHEMA                           */
-				/*---------------------------------------------------------*/
-
-				DriverAbstractClass driver = DriverSingleton.getConnection(
-					jdbcUrl,
-					user,
-					pass
+				driver = DriverSingleton.getConnection(
+					queryResult.getValue(i, "jdbcUrl"),
+					queryResult.getValue(i, "user"),
+					queryResult.getValue(i, "pass")
 				);
 
 				try {
-					SchemaSingleton.readSchema(driver.getConnection(), catalog);
+					addCatalog(driver, queryResult.getValue(i, "catalog"));
 
 				} finally {
 					driver.rollbackAndRelease();
 				}
 
-				/*---------------------------------------------------------*/
-				/* ADD CATALOG                                             */
-				/*---------------------------------------------------------*/
-
-				m_catalogs.put(
-					catalog
-					,
-					new CatalogTuple(
-						jdbcUrl,
-						user,
-						pass
-					)
-				);
-
-				/*---------------------------------------------------------*/
 			} catch(Exception e) {
 				LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* ADD CATALOGS                                                    */
+	}
+
+	/*---------------------------------------------------------------------*/
+	@SuppressWarnings("deprecation")
+	/*---------------------------------------------------------------------*/
+
+	private static void addCatalog(DriverAbstractClass driver, String catalog) throws Exception {
+		/*-----------------------------------------------------------------*/
+		/* READ SCHEMA                                                     */
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.readSchema(driver.getConnection(), catalog);
+
+		/*-----------------------------------------------------------------*/
+		/* ADD CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
 
 		m_catalogs.put(
-			"self"
+			catalog
 			,
 			new CatalogTuple(
-				basicQuerier.getJdbcUrl()
+				driver.getJdbcUrl()
 				,
-				basicQuerier.getUser()
+				driver.getUser()
 				,
-				basicQuerier.getPass()
+				driver.getPass()
 			)
 		);
 
@@ -141,24 +125,24 @@ public class CatalogSingleton {
 
 	public static DriverAbstractClass getConnection(String catalog) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* CHECK CATALOG                                                  */
-		/*-----------------------------------------------------------------*/
-
-		if(m_catalogs.containsKey(catalog) == false) {
-			throw new Exception("unknown catalog `" + catalog + "`");
-		}
-
-		/*-----------------------------------------------------------------*/
 		/* GET CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
 
 		CatalogTuple tuple = m_catalogs.get(catalog);
 
+		if(tuple == null) {
+			throw new Exception("unknown catalog `" + catalog + "`");
+		}
+
 		/*-----------------------------------------------------------------*/
 		/* CONNECTION                                                      */
 		/*-----------------------------------------------------------------*/
 
-		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.z);
+		return DriverSingleton.getConnection(
+			tuple.x,
+			tuple.y,
+			tuple.z
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
