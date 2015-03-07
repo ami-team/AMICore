@@ -330,10 +330,6 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private String _safe(Object s) { return s != null ? (String) s : ""; }
-
-	/*---------------------------------------------------------------------*/
-
 	private void updateSessionAndCommandArgs(Map<String, String> arguments, HttpSession session, HttpServletRequest request) throws Exception {
 
 		String AMIUser;
@@ -376,12 +372,12 @@ public class FrontEnd extends HttpServlet {
 			/* CERTIFICATE LOGIN                                           */
 			/*-------------------------------------------------------------*/
 
-			AMIUser = _safe(session.getAttribute("AMIUser_certificate"));
-			AMIPass = _safe(session.getAttribute("AMIPass_certificate"));
+			AMIUser = (String) session.getAttribute("AMIUser_certificate");
+			AMIPass = (String) session.getAttribute("AMIPass_certificate");
 
-			if(AMIUser.isEmpty()
+			if(AMIUser == null || AMIUser.isEmpty()
 			   ||
-			   AMIPass.isEmpty()
+			   AMIPass == null || AMIPass.isEmpty()
 			 ) {
 				Tuple2<String, String> result = resolveCertificate(clientDN);
 
@@ -389,7 +385,7 @@ public class FrontEnd extends HttpServlet {
 				AMIPass = result.y;
 			}
 
-			if(!AMIUser.equals(m_guest_user)) {
+			if(AMIUser.equals(m_guest_user) == false) {
 				session.setAttribute("AMIUser_certificate", AMIUser);
 				session.setAttribute("AMIPass_certificate", AMIPass);
 
@@ -409,20 +405,20 @@ public class FrontEnd extends HttpServlet {
 			/* CREDENTIAL LOGIN                                            */
 			/*-------------------------------------------------------------*/
 
-			if(arguments.containsKey("AMIUser")
-			   &&
-			   arguments.containsKey("AMIPass")
+			AMIUser = arguments.get("AMIUser");
+			AMIPass = arguments.get("AMIPass");
+
+			if(AMIUser == null
+			   ||
+			   AMIPass == null
 			 ) {
-				AMIUser = arguments.get("AMIUser");
-				AMIPass = arguments.get("AMIPass");
-			} else {
-				AMIUser = _safe(session.getAttribute("AMIUser_credential"));
-				AMIPass = _safe(session.getAttribute("AMIPass_credential"));
+				AMIUser = (String) session.getAttribute("AMIUser_credential");
+				AMIPass = (String) session.getAttribute("AMIPass_credential");
 			}
 
-			if(AMIUser.isEmpty()
+			if(AMIUser == null || AMIUser.isEmpty()
 			   ||
-			   AMIPass.isEmpty()
+			   AMIPass == null || AMIPass.isEmpty()
 			 ) {
 				AMIUser = m_guest_user;
 				AMIPass = m_guest_pass;
