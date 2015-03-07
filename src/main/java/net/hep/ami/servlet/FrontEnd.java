@@ -259,7 +259,7 @@ public class FrontEnd extends HttpServlet {
 		QueryResult queryResult;
 
 		try {
-			queryResult = basicQuerier.executeSQLQuery("SELECT `command`, `converter` FROM `router_link` WHERE `id` = '" + linkId + "'");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id`='" + linkId + "'");
 
 		} finally {
 			basicQuerier.rollbackAndRelease();
@@ -298,7 +298,7 @@ public class FrontEnd extends HttpServlet {
 		QueryResult queryResult;
 
 		try {
-			queryResult = basicQuerier.executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = '" + clientDN.replaceAll("'", "''") + "'");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + Cryptography.encrypt(clientDN) + "'");
 
 		} finally {
 			basicQuerier.rollbackAndRelease();

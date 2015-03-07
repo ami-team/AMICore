@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.utility.Cryptography;
 
 public class GetSessionInfo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -17,17 +18,16 @@ public class GetSessionInfo extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
 
-		queryResult = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "'");
-			if(queryResult.getNumberOfRows() == 0) {
-				queryResult = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `valid` FROM `router_user` WHERE `AMIUser` = '" + m_guestUser + "'");
-			}
+		QueryResult queryResult = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -40,6 +40,13 @@ public class GetSessionInfo extends CommandAbstractClass {
 		String lastName = queryResult.getValue(0, "lastName");
 		String email = queryResult.getValue(0, "email");
 		String valid = queryResult.getValue(0, "valid");
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		clientDNInAMI = Cryptography.decrypt(clientDNInAMI);
+		issuerDNInAMI = Cryptography.decrypt(issuerDNInAMI);
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

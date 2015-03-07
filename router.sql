@@ -11,7 +11,7 @@ USE router;
 DROP TABLE IF EXISTS `router_config`;
 
 CREATE TABLE IF NOT EXISTS `router_config` (
- `name` varchar(64) NOT NULL,
+ `name` varchar(128) NOT NULL,
  `value` varchar(512) NOT NULL
 );
 
@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `router_node`;
 
 CREATE TABLE IF NOT EXISTS `router_node` (
  `id` int(11) NOT NULL,
- `name` varchar(64) NOT NULL,
+ `name` varchar(128) NOT NULL,
  `url` varchar(512) NOT NULL,
- `service` varchar(64) NOT NULL
+ `service` varchar(128) NOT NULL
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_node`
@@ -119,11 +119,11 @@ CREATE TABLE IF NOT EXISTS `router_user` (
  `id` int(11) NOT NULL,
  `AMIUser` varchar(128) NOT NULL,
  `AMIPass` varchar(128) NOT NULL,
- `clientDN` varchar(256) NOT NULL DEFAULT '',
- `issuerDN` varchar(256) NOT NULL DEFAULT '',
- `firstName` varchar(256) NOT NULL,
- `lastName` varchar(256) NOT NULL,
- `email` varchar(256) NOT NULL,
+ `clientDN` varchar(512) NOT NULL,
+ `issuerDN` varchar(512) NOT NULL,
+ `firstName` varchar(128) NOT NULL,
+ `lastName` varchar(128) NOT NULL,
+ `email` varchar(128) NOT NULL,
  `valid` int(1) NOT NULL
 ) AUTO_INCREMENT=1 ;
 

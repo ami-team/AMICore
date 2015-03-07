@@ -10,7 +10,7 @@ public class CommandSingletonTest {
 		Map<String, String> arguments = new HashMap<String, String>();
 
 		try {
-			System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments));
+			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

@@ -158,7 +158,7 @@ public class ConfigSingleton {
 		QueryResult queryResult;
 
 		try {
-			queryResult = basicQuerier.executeSQLQuery("SELECT `name`, `value` FROM `router_config`");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `name`,`value` FROM `router_config`");
 
 		} finally {
 			basicQuerier.rollbackAndRelease();

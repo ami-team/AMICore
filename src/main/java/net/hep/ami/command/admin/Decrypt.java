@@ -33,7 +33,7 @@ public class Decrypt extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Decode a string.";
+		return "Decrypt a string.";
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -33,7 +33,7 @@ public class Encrypt extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Encode a string.";
+		return "Encrypt a string.";
 	}
 
 	/*---------------------------------------------------------------------*/
