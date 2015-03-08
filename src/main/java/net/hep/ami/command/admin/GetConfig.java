@@ -4,10 +4,10 @@ import java.util.*;
 
 import net.hep.ami.*;
 
-public class ShowConfig extends CommandAbstractClass {
+public class GetConfig extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public ShowConfig(Map<String, String> arguments, int transactionID) {
+	public GetConfig(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
