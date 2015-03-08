@@ -150,7 +150,7 @@ public class FrontEnd extends HttpServlet {
 				/* EXECUTE COMMAND                                         */
 				/*---------------------------------------------------------*/
 
-				CommandParser.Tuple result = CommandParser.parse(command);
+				CommandParser.CommandParserTuple result = CommandParser.parse(command);
 
 				updateSessionAndCommandArgs(
 					result.y,

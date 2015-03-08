@@ -5,9 +5,9 @@ import java.util.*;
 public class CommandParser {
 	/*---------------------------------------------------------------------*/
 
-	public static class Tuple extends Tuple2<String, Map<String, String>> {
+	public static class CommandParserTuple extends Tuple2<String, Map<String, String>> {
 
-		public Tuple(String _x, Map<String, String> _y) {
+		public CommandParserTuple(String _x, Map<String, String> _y) {
 			super(_x, _y);
 		}
 	}
@@ -58,7 +58,7 @@ public class CommandParser {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple parse(String s) throws Exception {
+	public static CommandParserTuple parse(String s) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* TOKENIZE COMMAND                                                */
 		/*-----------------------------------------------------------------*/
@@ -157,7 +157,7 @@ public class CommandParser {
 		/* RETURN RESULT                                                   */
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple(command, arguments);
+		return new CommandParserTuple(command, arguments);
 
 		/*-----------------------------------------------------------------*/
 	}

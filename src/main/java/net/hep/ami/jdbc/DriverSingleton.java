@@ -12,16 +12,16 @@ import net.hep.ami.jdbc.driver.annotation.*;
 public class DriverSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class DriverTuple extends Tuple3<String, String, Constructor<DriverAbstractClass>> {
+	private static class Tuple extends Tuple3<String, String, Constructor<DriverAbstractClass>> {
 
-		public DriverTuple(String _x, String _y, Constructor<DriverAbstractClass> _z) {
+		public Tuple(String _x, String _y, Constructor<DriverAbstractClass> _z) {
 			super(_x, _y, _z);
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, DriverTuple> m_drivers = new HashMap<String, DriverTuple>();
+	private static final Map<String, Tuple> m_drivers = new HashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -66,7 +66,7 @@ public class DriverSingleton {
 			m_drivers.put(
 				jdbc.proto()
 				,
-				new DriverTuple(
+				new Tuple(
 					jdbc.clazz(),
 					clazz.getName(),
 					clazz.getConstructor(
@@ -100,7 +100,7 @@ public class DriverSingleton {
 		/* GET DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		DriverTuple tuple = m_drivers.get(jdbcProto);
+		Tuple tuple = m_drivers.get(jdbcProto);
 
 		if(tuple == null) {
 			throw new Exception("unknown JDBC protocol `" + jdbcProto + "`");
@@ -131,7 +131,7 @@ public class DriverSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, DriverTuple> entry: m_drivers.entrySet()) {
+		for(Entry<String, Tuple> entry: m_drivers.entrySet()) {
 
 			String jdbcProto = entry.getKey();
 

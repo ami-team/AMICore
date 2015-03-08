@@ -18,9 +18,9 @@ import net.hep.ami.utility.*;
 public class SLS extends HttpServlet {
 	/*---------------------------------------------------------------------*/
 
-	private static class SLSTuple extends Tuple3<Integer, String, String> {
+	private static class Tuple extends Tuple3<Integer, String, String> {
 
-		public SLSTuple(int _x, String _y, String _z) {
+		public Tuple(int _x, String _y, String _z) {
 			super(_x, _y, _z);
 		}
 	}
@@ -80,13 +80,13 @@ public class SLS extends HttpServlet {
 
 		res.setContentType("text/xml");
 
-		SLSTuple tuple;
+		Tuple tuple;
 
 		try {
 			tuple = getStatus(service, mode);
 
 		} catch(Exception e) {
-			tuple = new SLSTuple(0, "", e.getMessage());
+			tuple = new Tuple(0, "", e.getMessage());
 		}
 
 		PrintWriter writer = res.getWriter();
@@ -99,7 +99,7 @@ public class SLS extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private SLSTuple getStatus(String service, String mode) throws Exception {
+	private Tuple getStatus(String service, String mode) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
@@ -163,7 +163,7 @@ public class SLS extends HttpServlet {
 			notes = notes.substring(2);
 		}
 
-		return new SLSTuple(total, data, notes);
+		return new Tuple(total, data, notes);
 	}
 
 	/*---------------------------------------------------------------------*/

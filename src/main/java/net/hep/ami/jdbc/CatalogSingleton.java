@@ -10,16 +10,16 @@ import net.hep.ami.jdbc.driver.*;
 public class CatalogSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class CatalogTuple extends Tuple3<String, String, String> {
+	private static class Tuple extends Tuple3<String, String, String> {
 
-		public CatalogTuple(String _x, String _y, String _z) {
+		public Tuple(String _x, String _y, String _z) {
 			super(_x, _y, _z);
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, CatalogTuple> m_catalogs = new HashMap<String, CatalogTuple>();
+	private static final Map<String, Tuple> m_catalogs = new HashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -112,7 +112,7 @@ public class CatalogSingleton {
 		m_catalogs.put(
 			catalog
 			,
-			new CatalogTuple(
+			new Tuple(
 				jdbcUrl,
 				user,
 				pass
@@ -129,7 +129,7 @@ public class CatalogSingleton {
 		/* GET CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
 
-		CatalogTuple tuple = m_catalogs.get(catalog);
+		Tuple tuple = m_catalogs.get(catalog);
 
 		if(tuple == null) {
 			throw new Exception("unknown catalog `" + catalog + "`");
@@ -160,7 +160,7 @@ public class CatalogSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, CatalogTuple> entry: m_catalogs.entrySet()) {
+		for(Entry<String, Tuple> entry: m_catalogs.entrySet()) {
 
 			String catalog = entry.getKey();
 

@@ -14,7 +14,16 @@ import org.w3c.dom.*;
 public class ConverterSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Transformer> m_transformers = new HashMap<String, Transformer>();
+	private static class Tuple extends Tuple2<Transformer, String> {
+
+		public Tuple(Transformer _x, String _y) {
+			super(_x, _y);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Map<String, Tuple> m_transformers = new HashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -31,7 +40,7 @@ public class ConverterSingleton {
 			/* PARSE FILE                                                  */
 			/*-------------------------------------------------------------*/
 
-			Document document = XMLFactories.newDocument(inputStream);
+			Document document = (Document) XMLFactories.newDocument(inputStream);
 
 			/*-------------------------------------------------------------*/
 			/* READ FILE                                                   */
@@ -83,15 +92,17 @@ public class ConverterSingleton {
 
 			Transformer transformer = XMLFactories.newTransformer(inputStream);
 
-			transformer.setParameter("mime", mime);
-
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTER                                               */
 			/*-------------------------------------------------------------*/
 
 			m_transformers.put(
-				new File(xslt).getName(),
-				transformer
+				new File(xslt).getName()
+				,
+				new Tuple(
+					transformer,
+					mime
+				)
 			);
 
 			/*-------------------------------------------------------------*/
@@ -107,9 +118,9 @@ public class ConverterSingleton {
 		/* GET TRANSFORM                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Transformer transformer = m_transformers.get(fileName);
+		Tuple tuple = m_transformers.get(fileName);
 
-		if(transformer == null) {
+		if(tuple == null) {
 			throw new Exception("converter `" + fileName + "` not found");
 		}
 
@@ -120,13 +131,13 @@ public class ConverterSingleton {
 		Source source = new StreamSource(reader);
 		Result target = new StreamResult(writer);
 
-		transformer.transform(source, target);
+		tuple.x.transform(source, target);
 
 		/*-----------------------------------------------------------------*/
 		/* RETURN MIME                                                     */
 		/*-----------------------------------------------------------------*/
 
-		return transformer.getParameter("mime").toString();
+		return tuple.y;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -143,11 +154,10 @@ public class ConverterSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, Transformer> entry: m_transformers.entrySet()) {
+		for(Entry<String, Tuple> entry: m_transformers.entrySet()) {
 
 			String xslt = entry.getKey();
-			String mime = entry.getValue().
-			                    getParameter("mime").toString();
+			String mime = entry.getValue().y;
 
 			result.append(
 				"<row>"

@@ -9,16 +9,16 @@ import net.hep.ami.utility.*;
 public class CommandSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class CommandTuple extends Tuple3<String, String, Constructor<CommandAbstractClass>> {
+	private static class Tuple extends Tuple3<String, String, Constructor<CommandAbstractClass>> {
 
-		public CommandTuple(String _x, String _y, Constructor<CommandAbstractClass> _z) {
+		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z) {
 			super(_x, _y, _z);
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, CommandTuple> m_commands = new HashMap<String, CommandTuple>();
+	private static final Map<String, Tuple> m_commands = new HashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -57,7 +57,7 @@ public class CommandSingleton {
 			m_commands.put(
 				clazz.getSimpleName()
 				,
-				new CommandTuple(
+				new Tuple(
 					clazz.getMethod("help").invoke(null).toString(),
 					clazz.getMethod("usage").invoke(null).toString(),
 					clazz.getConstructor(
@@ -97,7 +97,7 @@ public class CommandSingleton {
 		/* GET COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		CommandTuple tuple = m_commands.get(command);
+		Tuple tuple = m_commands.get(command);
 
 		if(m_commands.get(command) == null) {
 			throw new Exception("command `" + command + "` not found");
@@ -192,7 +192,7 @@ public class CommandSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, CommandTuple> entry: m_commands.entrySet()) {
+		for(Entry<String, Tuple> entry: m_commands.entrySet()) {
 
 			String command = entry.getKey();
 
