@@ -55,7 +55,7 @@ public class AddOrUpdateElement extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = "INSERT INTO `.`" + m_entity + "`";
+		String sql = "INSERT INTO `" + m_entity + "`";
 
 		/*-----------------------------------------------------------------*/
 

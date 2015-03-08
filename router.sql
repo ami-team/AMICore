@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `router_user` (
  `firstName` varchar(128) NOT NULL,
  `lastName` varchar(128) NOT NULL,
  `email` varchar(128) NOT NULL,
- `valid` int(1) NOT NULL
+ `valid` int(1) NOT NULL DEFAULT '1'
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_user`
