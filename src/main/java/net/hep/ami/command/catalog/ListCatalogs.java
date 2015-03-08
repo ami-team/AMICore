@@ -1,13 +1,14 @@
-package net.hep.ami.command;
+package net.hep.ami.command.catalog;
 
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 
-public class ShowConfig extends CommandAbstractClass {
+public class ListCatalogs extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public ShowConfig(Map<String, String> arguments, int transactionID) {
+	public ListCatalogs(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
@@ -20,13 +21,13 @@ public class ShowConfig extends CommandAbstractClass {
 			throw new Exception("https connection required"); 
 		}
 
-		return ConfigSingleton.showConfig();
+		return CatalogSingleton.listCatalogs();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Show configuration.";
+		return "List catalogs.";
 	}
 
 	/*---------------------------------------------------------------------*/

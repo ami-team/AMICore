@@ -72,7 +72,7 @@ ALTER TABLE `router_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `router_role`
- ADD CONSTRAINT `ROLE_PARENT_FK` FOREIGN KEY (`parent`) REFERENCES `router_role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ ADD CONSTRAINT `ROLE_PARENT_FK` FOREIGN KEY (`parent`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 
@@ -108,8 +108,8 @@ ALTER TABLE `router_command_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `router_command_role`
- ADD CONSTRAINT `COMMAND_COMMAND_FK` FOREIGN KEY (`command`) REFERENCES `router_command` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
- ADD CONSTRAINT `COMMAND_ROLE_FK` FOREIGN KEY (`role`) REFERENCES `router_role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ ADD CONSTRAINT `COMMAND_COMMAND_FK` FOREIGN KEY (`command`) REFERENCES `router_command` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ ADD CONSTRAINT `COMMAND_ROLE_FK`   FOREIGN KEY (`role`)     REFERENCES `router_role`    (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 
@@ -150,8 +150,8 @@ ALTER TABLE `router_user_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `router_user_role`
- ADD CONSTRAINT `USER_USER_FK` FOREIGN KEY (`user`) REFERENCES `router_user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
- ADD CONSTRAINT `USER_ROLE_FK` FOREIGN KEY (`role`) REFERENCES `router_role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ ADD CONSTRAINT `USER_USER_FK` FOREIGN KEY (`user`) REFERENCES `router_user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ ADD CONSTRAINT `USER_ROLE_FK` FOREIGN KEY (`role`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 -- --------------------------------------------------------

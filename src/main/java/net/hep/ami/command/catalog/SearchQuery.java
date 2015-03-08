@@ -1,4 +1,4 @@
-package net.hep.ami.command;
+package net.hep.ami.command.catalog;
 
 import java.util.*;
 

@@ -1,11 +1,11 @@
-package net.hep.ami.command;
+package net.hep.ami.command.catalog;
 
 import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 
-public class UpdateElements extends CommandAbstractClass {
+public class RemoveElements extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -14,12 +14,11 @@ public class UpdateElements extends CommandAbstractClass {
 	private String m_keyFields[];
 	private String m_keyValues[];
 
-	private String m_fields[];
-	private String m_values[];
+	private String m_where;
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateElements(Map<String, String> arguments, int transactionID) {
+	public RemoveElements(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
@@ -29,21 +28,15 @@ public class UpdateElements extends CommandAbstractClass {
 		                                                      : ","
 		;
 
-		m_fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator)
-		                                           : new String[] {}
-		;
-
-		m_values = arguments.containsKey("values") ? arguments.get("values").split(separator)
-		                                           : new String[] {}
-		;
-
 		m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator)
-                                                         : new String[] {}
+		                                                 : new String[] {}
 		;
 
 		m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator)
-                                                         : new String[] {}
+		                                                 : new String[] {}
 		;
+
+		m_where = arguments.get("where");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -51,7 +44,7 @@ public class UpdateElements extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		if(m_catalog == null || m_entity == null || m_fields.length != m_values.length || m_keyFields.length != m_keyValues.length) {
+		if(m_catalog == null || m_entity == null || m_keyFields.length != m_keyValues.length) {
 
 			throw new Exception("invalid usage");
 		}
@@ -62,27 +55,30 @@ public class UpdateElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = "UPDATE " + m_entity;
+		String sql = "DELETE FROM `" + m_entity + "`";
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_fields.length > 0) {
-
-			sql = sql.concat(" SET ");
-
-			for(int i = 0; i < m_fields.length; i++) {
-
-				sql = sql.concat(", `" + m_fields[i] + "`='" + m_values[i].replaceFirst("'", "''") + "'");
-			}
-		}
-
 		if(m_keyFields.length > 0) {
 
-			sql = sql.concat(" WHERE ");
+			String part = "";
 
 			for(int i = 0; i < m_keyFields.length; i++) {
 
-				sql = sql.concat(", `" + m_keyFields[i] + "`='" + m_keyValues[i].replaceFirst("'", "''") + "'");
+				part = part.concat(",`" + m_keyFields[i] + "`='" + m_keyValues[i].replaceFirst("'", "''") + "'");
+			}
+
+			sql = sql.concat(" WHERE (" + part.substring(1) + ")");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_where != null && m_where.isEmpty() == false) {
+
+			if(m_keyFields.length > 0) {
+				sql = sql.concat(" AND (" + m_where + ")");
+			} else {
+				sql = sql.concat(" WHERE (" + m_where + ")");
 			}
 		}
 
@@ -98,13 +94,13 @@ public class UpdateElements extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Update elements.";
+		return "Remove elements.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
-		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? -fields=\"comma_separated_values\" -values=\"comma_separated_values\" (-keyFields=\"comma_separated_values\" -keyValues=\"comma_separated_values\")?";
+		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? (-keyFields=\"comma_separated_values\" -keyValues=\"comma_separated_values\")? (-where=\"value\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
