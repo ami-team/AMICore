@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `router_node`;
 
 CREATE TABLE IF NOT EXISTS `router_node` (
  `id` int(11) NOT NULL,
- `name` varchar(128) NOT NULL,
+ `node` varchar(128) NOT NULL,
  `url` varchar(512) NOT NULL,
  `service` varchar(128) NOT NULL
 ) AUTO_INCREMENT=1 ;
@@ -48,10 +48,10 @@ CREATE TABLE IF NOT EXISTS `router_catalog` (
  `jsonSchema` text
 ) AUTO_INCREMENT=1 ;
 
-ALTER TABLE `router_catalogs`
+ALTER TABLE `router_catalog`
  ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
-ALTER TABLE `router_catalogs`
+ALTER TABLE `router_catalog`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 -- --------------------------------------------------------
@@ -60,12 +60,12 @@ DROP TABLE IF EXISTS `router_role`;
 
 CREATE TABLE IF NOT EXISTS `router_role` (
  `id` int(11) NOT NULL,
- `parent` int(11) NOT NULL,
- `name` varchar(128) NOT NULL
+ `role` varchar(128) NOT NULL,
+ `parent` int(11) NOT NULL
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_role`
- ADD PRIMARY KEY (`name`),
+ ADD PRIMARY KEY (`role`),
  ADD UNIQUE KEY `id_UNIQUE` (`id`),
  ADD KEY `PARENT_FK_idx` (`parent`);
 
@@ -81,12 +81,12 @@ DROP TABLE IF EXISTS `router_command`;
 
 CREATE TABLE IF NOT EXISTS `router_command` (
  `id` int(11) NOT NULL,
- `name` varchar(128) NOT NULL,
+ `command` varchar(128) NOT NULL,
  `class` text NOT NULL
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_command`
- ADD PRIMARY KEY (`name`),
+ ADD PRIMARY KEY (`command`),
  ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 ALTER TABLE `router_command`

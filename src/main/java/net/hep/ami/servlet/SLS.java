@@ -109,7 +109,7 @@ public class SLS extends HttpServlet {
 		QueryResult queryResult;
 
 		try {
-			queryResult = basicQuerier.executeSQLQuery("SELECT `name`,`url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `node`,`url` FROM `router_node` WHERE `service` LIKE '" + service + "'");
 
 		} finally {
 			basicQuerier.rollbackAndRelease();
@@ -134,7 +134,7 @@ public class SLS extends HttpServlet {
 
 			int score;
 
-			String nodeName = queryResult.getValue(i, "name");
+			String nodeName = queryResult.getValue(i, "node");
 			String nodeURL = queryResult.getValue(i, "url");
 
 			try {

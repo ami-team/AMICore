@@ -4,9 +4,9 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.Cryptography;
+import net.hep.ami.utility.*;
 
-public class AddUser extends CommandAbstractClass{
+public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_login;
@@ -71,7 +71,7 @@ public class AddUser extends CommandAbstractClass{
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Add a new user.";
+		return "Add new user.";
 	}
 
 	/*---------------------------------------------------------------------*/
