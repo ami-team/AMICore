@@ -37,15 +37,14 @@ ALTER TABLE `router_node`
 
 -- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `router_catalogs`;
+DROP TABLE IF EXISTS `router_catalog`;
 
-CREATE TABLE IF NOT EXISTS `router_catalogs` (
+CREATE TABLE IF NOT EXISTS `router_catalog` (
  `id` int(11) NOT NULL,
  `catalog` varchar(128) NOT NULL,
  `jdbcUrl` varchar(512) NOT NULL,
  `user` varchar(128) NOT NULL,
  `pass` varchar(128) NOT NULL,
- `name` varchar(128) NOT NULL,
  `jsonSchema` text
 ) AUTO_INCREMENT=1 ;
 

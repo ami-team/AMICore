@@ -49,7 +49,7 @@ public class CatalogSingleton {
 		QueryResult queryResult;
 
 		try {
-			queryResult = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass`,`name` FROM `router_catalogs`");
+			queryResult = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass` FROM `router_catalog`");
 
 		} finally {
 			driver.rollbackAndRelease();
