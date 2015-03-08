@@ -12,8 +12,8 @@ import org.w3c.dom.*;
 public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static String m_configPathName;
-	private static String m_configFileName;
+	private static String m_configPathName = "/etc/ami";
+	private static String m_configFileName = "/etc/ami/AMI.xml";
 
 	/*---------------------------------------------------------------------*/
 
@@ -90,6 +90,7 @@ public class ConfigSingleton {
 		/*-----------------------------------------------------------------*/
 
 		path = System.getProperty("catalina.base");
+
 		if(path != null) {
 			m_configFileName = path.trim()
 			                   +
@@ -101,17 +102,17 @@ public class ConfigSingleton {
 		} else {
 
 			path = System.getProperty("conf.file");
+
 			if(path != null) {
 				m_configFileName = path.trim();
 
 			} else {
 
 				path = System.getProperty("user.home");
+
 				if(path != null) {
 					m_configFileName = path.trim();
 
-				} else {
-					m_configFileName = "/etc/ami"; /* deb/rpm */
 				}
 			}
 		}
