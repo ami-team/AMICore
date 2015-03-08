@@ -96,7 +96,7 @@ public class AddOrUpdateElement extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Add element.";
+		return "Add or update element.";
 	}
 
 	/*---------------------------------------------------------------------*/
