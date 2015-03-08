@@ -12,12 +12,13 @@ import org.w3c.dom.*;
 public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static String m_configFileName = System.getProperty("user.home");
+	private static String m_configPathName;
+	private static String m_configFileName;
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean m_hasValidConfFile = false;
-	private static boolean m_hasValidDataBase = false;
+	private static boolean m_hasValidConfFile;
+	private static boolean m_hasValidDataBase;
 
 	/*---------------------------------------------------------------------*/
 
@@ -26,6 +27,9 @@ public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
 	static {
+
+		m_hasValidConfFile = false;
+		m_hasValidDataBase = false;
 
 		try {
 			/*-------------------------------------------------------------*/
@@ -78,19 +82,37 @@ public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
 	private static void readFromConfFile() throws Exception {
+
+		String path;
+
 		/*-----------------------------------------------------------------*/
-		/* GET FILE NAME                                                   */
+		/* FIND CONFFILE                                                   */
 		/*-----------------------------------------------------------------*/
 
-		String tomcatPath = System.getProperty("catalina.base");
-		if(tomcatPath != null) {
-			m_configFileName = tomcatPath.trim() + File.separator + "conf";
+		path = System.getProperty("catalina.base");
+		if(path != null) {
+			m_configFileName = path.trim()
+			                   +
+			                   File.separator
+			                   +
+			                   "conf"
+			;
 
 		} else {
 
-			String customPath = System.getProperty("ami.conf_path");
-			if(customPath != null) {
-				m_configFileName = customPath.trim() /* pathname or filename */;
+			path = System.getProperty("conf.file");
+			if(path != null) {
+				m_configFileName = path.trim();
+
+			} else {
+
+				path = System.getProperty("user.home");
+				if(path != null) {
+					m_configFileName = path.trim();
+
+				} else {
+					m_configFileName = "/etc/ami"; /* deb/rpm */
+				}
 			}
 		}
 
@@ -99,6 +121,13 @@ public class ConfigSingleton {
 		if(m_configFileName.endsWith(".xml") == false) {
 			m_configFileName = m_configFileName.concat(File.separator + "AMI.xml");
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		File file = new File(m_configFileName).getAbsoluteFile();
+
+		m_configPathName = file.getParentFile().getPath();
+		m_configFileName = file.getPath();
 
 		/*-----------------------------------------------------------------*/
 		/* GET INPUT STREAM                                                */
@@ -184,6 +213,13 @@ public class ConfigSingleton {
 		}
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String getConfigPathName() {
+
+		return m_configPathName;
 	}
 
 	/*---------------------------------------------------------------------*/

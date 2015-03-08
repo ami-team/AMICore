@@ -11,43 +11,43 @@ import net.hep.ami.utility.*;
 public class GenerateCertificate extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private String m_country = "";
-	private String m_locality = "";
-	private String m_organization = "";
-	private String m_organizationalUnit = "";
-	private String m_commonName = "";
-	private String m_password = "";
+	private String m_country;
+	private String m_locality;
+	private String m_organization;
+	private String m_organizationalUnit;
+	private String m_commonName;
+	private String m_password;
 
-	private int m_validity = 1;
+	private int m_validity;
 
 	/*---------------------------------------------------------------------*/
 
 	public GenerateCertificate(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
-		if(arguments.containsKey("country")) {
-			m_country = arguments.get("country");
-		}
+		m_country = arguments.containsKey("country") ? arguments.get("country")
+		                                             : ""
+		;
 
-		if(arguments.containsKey("locality")) {
-			m_locality = arguments.get("locality");
-		}
+		m_locality = arguments.containsKey("locality") ? arguments.get("locality")
+		                                               : ""
+		;
 
-		if(arguments.containsKey("organization")) {
-			m_organization = arguments.get("organization");
-		}
+		m_organization = arguments.containsKey("organization") ? arguments.get("organization")
+		                                                       : ""
+		;
 
-		if(arguments.containsKey("organizationalUnit")) {
-			m_organizationalUnit = arguments.get("organizationalUnit");
-		}
+		m_organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
+		                                                                   : ""
+		;
 
-		if(arguments.containsKey("commonName")) {
-			m_commonName = arguments.get("commonName");
-		}
+		m_commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
+		                                                   : ""
+		;
 
-		if(arguments.containsKey("password")) {
-			m_password = arguments.get("password");
-		}
+		m_commonName = arguments.containsKey("password") ? arguments.get("password")
+		                                                 : ""
+		;
 
 		if(arguments.containsKey("validity")) {
 
@@ -55,8 +55,10 @@ public class GenerateCertificate extends CommandAbstractClass {
 				m_validity = Integer.parseInt(arguments.get("validity"));
 
 			} catch(NumberFormatException e) {
-				/* IGNORE */
+				m_validity = 1;
 			}
+		} else {
+			m_validity = 1;
 		}
 	}
 
@@ -64,23 +66,30 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 	@Override
 	public StringBuilder main() throws Exception {
-		/*-----------------------------------------------------------------*/
 
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
-		try {
-			caKey = Cryptography.loadPrivateKey(ConfigSingleton.class.getResourceAsStream("/ca.key"));
-
-		} catch(Exception e) {
-			throw new Exception("no CA crt provided");
-		}
+		/*-----------------------------------------------------------------*/
 
 		try {
-			caCrt = Cryptography.loadCertificate(ConfigSingleton.class.getResourceAsStream("/ca.crt"));
+			InputStream inputStream = new FileInputStream(ConfigSingleton.getConfigPathName() + File.separator + "ca.key");
+
+			caKey = Cryptography.loadPrivateKey(inputStream);
 
 		} catch(Exception e) {
 			throw new Exception("no CA key provided");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		try {
+			InputStream inputStream = new FileInputStream(ConfigSingleton.getConfigPathName() + File.separator + "ca.crt");
+
+			caCrt = Cryptography.loadCertificate(inputStream);
+
+		} catch(Exception e) {
+			throw new Exception("no CA crt provided");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -148,6 +157,7 @@ public class GenerateCertificate extends CommandAbstractClass {
 			result.append("<field name=\"KEYSTORE_JKS\">");
 			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
+
 		} finally {
 			output.close();
 		}
@@ -160,6 +170,7 @@ public class GenerateCertificate extends CommandAbstractClass {
 			result.append("<field name=\"KEYSTORE_P12\">");
 			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
+
 		} finally {
 			output.close();
 		}

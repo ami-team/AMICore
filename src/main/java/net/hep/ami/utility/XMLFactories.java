@@ -19,14 +19,24 @@ public class XMLFactories {
 
 	public static Document newDocument(InputStream inputStream) throws Exception {
 
-		return m_documentBuilderFactory.newDocumentBuilder().parse(inputStream);
+		try {
+			return m_documentBuilderFactory.newDocumentBuilder().parse(inputStream);
+
+		} finally {
+			inputStream.close();
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Transformer newTransformer(InputStream inputStream) throws Exception {
 
-		return m_transformerFactory.newTransformer(new StreamSource(inputStream));
+		try {
+			return m_transformerFactory.newTransformer(new StreamSource(inputStream));
+
+		} finally {
+			inputStream.close();
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

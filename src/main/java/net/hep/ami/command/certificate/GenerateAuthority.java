@@ -10,38 +10,38 @@ import net.hep.ami.utility.*;
 public class GenerateAuthority extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private String m_country = "";
-	private String m_locality = "";
-	private String m_organization = "";
-	private String m_organizationalUnit = "";
-	private String m_commonName = "";
+	private String m_country;
+	private String m_locality;
+	private String m_organization;
+	private String m_organizationalUnit;
+	private String m_commonName;
 
-	private int m_validity = 10;
+	private int m_validity;
 
 	/*---------------------------------------------------------------------*/
 
 	public GenerateAuthority(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
-		if(arguments.containsKey("country")) {
-			m_country = arguments.get("country");
-		}
+		m_country = arguments.containsKey("country") ? arguments.get("country")
+		                                             : ""
+		;
 
-		if(arguments.containsKey("locality")) {
-			m_locality = arguments.get("locality");
-		}
+		m_locality = arguments.containsKey("locality") ? arguments.get("locality")
+		                                               : ""
+		;
 
-		if(arguments.containsKey("organization")) {
-			m_organization = arguments.get("organization");
-		}
+		m_organization = arguments.containsKey("organization") ? arguments.get("organization")
+		                                                       : ""
+		;
 
-		if(arguments.containsKey("organizationalUnit")) {
-			m_organizationalUnit = arguments.get("organizationalUnit");
-		}
+		m_organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
+		                                                                   : ""
+		;
 
-		if(arguments.containsKey("commonName")) {
-			m_commonName = arguments.get("commonName");
-		}
+		m_commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
+		                                                   : ""
+		;
 
 		if(arguments.containsKey("validity")) {
 
@@ -49,8 +49,10 @@ public class GenerateAuthority extends CommandAbstractClass {
 				m_validity = Integer.parseInt(arguments.get("validity"));
 
 			} catch(NumberFormatException e) {
-				/* IGNORE */
+				m_validity = 10;
 			}
+		} else {
+			m_validity = 10;
 		}
 	}
 

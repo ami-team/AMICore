@@ -65,7 +65,12 @@ public class Cryptography {
 
 	public static X509Certificate loadCertificate(InputStream inputStream) throws Exception {
 
-		return (X509Certificate) CertificateFactory.getInstance("X509", BC).generateCertificate(inputStream);
+		try {
+			return (X509Certificate) CertificateFactory.getInstance("X509", BC).generateCertificate(inputStream);
+
+		} finally {
+			inputStream.close();
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -82,14 +87,18 @@ public class Cryptography {
 		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-		while((line = bufferedReader.readLine()) != null) {
+		try {
 
-			if(line.equals("-----END PRIVATE KEY-----")) append = false;
-			if(append) result.append(line);
-			if(line.equals("-----BEGIN PRIVATE KEY-----")) append = true;
+			while((line = bufferedReader.readLine()) != null) {
+
+				if(line.equals("-----END PRIVATE KEY-----")) append = false;
+				if(append) result.append(line);
+				if(line.equals("-----BEGIN PRIVATE KEY-----")) append = true;
+			}
+
+		} finally {
+			bufferedReader.close();
 		}
-
-		bufferedReader.close();
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD PKCS8 PRIVATE KEY                                         */
@@ -118,14 +127,18 @@ public class Cryptography {
 		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-		while((line = bufferedReader.readLine()) != null) {
+		try {
 
-			if(line.equals("-----END PUBLIC KEY-----")) append = false;
-			if(append) result.append(line);
-			if(line.equals("-----BEGIN PUBLIC KEY-----")) append = true;
+			while((line = bufferedReader.readLine()) != null) {
+
+				if(line.equals("-----END PUBLIC KEY-----")) append = false;
+				if(append) result.append(line);
+				if(line.equals("-----BEGIN PUBLIC KEY-----")) append = true;
+			}
+
+		} finally {
+			bufferedReader.close();
 		}
-
-		bufferedReader.close();
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD PKCS8 PRIVATE KEY                                         */
@@ -259,7 +272,9 @@ public class Cryptography {
 		KeyStore result = KeyStore.getInstance("JKS");
 		result.load(null, null);
 
-		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {certificate});
+		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {
+			certificate
+		});
 
 		return result;
 	}
@@ -271,7 +286,9 @@ public class Cryptography {
 		KeyStore result = KeyStore.getInstance("PKCS12");
 		result.load(null, null);
 
-		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {certificate});
+		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {
+			certificate
+		});
 
 		return result;
 	}
@@ -391,6 +408,7 @@ public class Cryptography {
 
 		try {
 			encrypt(outputStream, inputStream);
+
 		} catch(Exception e) {
 			/* IGNORE */
 		}
@@ -407,6 +425,7 @@ public class Cryptography {
 
 		try {
 			decrypt(outputStream, inputStream);
+
 		} catch(Exception e) {
 			/* IGNORE */
 		}
