@@ -1,6 +1,7 @@
 package net.hep.ami.utility;
 
 import java.util.*;
+import java.util.regex.*;
 
 public class CommandParser {
 	/*---------------------------------------------------------------------*/
@@ -11,6 +12,10 @@ public class CommandParser {
 			super(_x, _y);
 		}
 	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Pattern m_stringPattern = Pattern.compile("^[_a-zA-Z0-9]+$");
 
 	/*---------------------------------------------------------------------*/
 
@@ -104,6 +109,11 @@ public class CommandParser {
 				   token.charAt(0) == '\"'
 				 ) {
 					token = token.substring(1, token.length() - 1);
+				} else {
+
+					if(m_stringPattern.matcher(token).find() == false) {
+						throw new Exception("syntax error, unexpected token `" + token + "`");
+					}
 				}
 			}
 
