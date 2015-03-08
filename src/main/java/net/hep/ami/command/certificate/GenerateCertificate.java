@@ -45,8 +45,8 @@ public class GenerateCertificate extends CommandAbstractClass {
 		                                                   : ""
 		;
 
-		m_commonName = arguments.containsKey("password") ? arguments.get("password")
-		                                                 : ""
+		m_password = arguments.containsKey("password") ? arguments.get("password")
+		                                               : ""
 		;
 
 		if(arguments.containsKey("validity")) {
