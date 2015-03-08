@@ -74,6 +74,7 @@ public class SchemaSingleton {
 		/*-----------------------------------------------------------------*/
 
 		private String m_catalog;
+		private String m_name;
 		private String m_fkTable;
 		private String m_fkColumn;
 		private String m_pkTable;
@@ -81,9 +82,10 @@ public class SchemaSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		public FrgnKey(String catalog, String fkTable, String fkColumn, String pkTable, String pkColumn) {
+		public FrgnKey(String catalog, String name, String fkTable, String fkColumn, String pkTable, String pkColumn) {
 
 			m_catalog = catalog;
+			m_name = name;
 			m_fkTable = fkTable;
 			m_fkColumn = fkColumn;
 			m_pkTable = pkTable;
@@ -94,6 +96,12 @@ public class SchemaSingleton {
 
 		public String getCatalog() {
 			return m_catalog;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String getName() {
+			return m_name;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -188,9 +196,9 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, Map<String, Map<String, Column>>> m_columns = new HashMap<String, Map<String, Map<String, Column>>>();
-	private static Map<String, Map<String, List<FrgnKey>>> m_frgnKeys = new HashMap<String, Map<String, List<FrgnKey>>>();
-	private static Map<String, Map<String, List<Index>>> m_indices = new HashMap<String, Map<String, List<Index>>>();
+	private static final Map<String, Map<String, Map<String, Column>>> m_columns = new HashMap<String, Map<String, Map<String, Column>>>();
+	private static final Map<String, Map<String, List<FrgnKey>>> m_frgnKeys = new HashMap<String, Map<String, List<FrgnKey>>>();
+	private static final Map<String, Map<String, List<Index>>> m_indices = new HashMap<String, Map<String, List<Index>>>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -277,6 +285,7 @@ public class SchemaSingleton {
 
 		while(resultSet.next()) {
 
+			String name = resultSet.getString("FK_NAME");
 			String fktable = resultSet.getString("FKTABLE_NAME");
 			String fkcolumn = resultSet.getString("FKCOLUMN_NAME");
 			String pktable = resultSet.getString("PKTABLE_NAME");
@@ -284,6 +293,7 @@ public class SchemaSingleton {
 
 			m_frgnKeys.get(catalog).get(table).add(new FrgnKey(
 				catalog,
+				name,
 				fktable,
 				fkcolumn,
 				pktable,

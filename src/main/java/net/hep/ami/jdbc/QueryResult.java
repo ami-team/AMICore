@@ -8,17 +8,17 @@ import net.hep.ami.utility.*;
 public class QueryResult {
 	/*---------------------------------------------------------------------*/
 
-	private String[] m_tables = null;
-	private String[] m_fields = null;
-	private String[] m_types = null;
+	private String[] m_tables;
+	private String[] m_fields;
+	private String[] m_types;
 
 	/*---------------------------------------------------------------------*/
 
-	private String[][] m_rows = null;
+	private String[][] m_rows;
 
 	/*---------------------------------------------------------------------*/
 
-	private Map<String, Integer> m_fieldIndices = new HashMap<String, Integer>();
+	private final Map<String, Integer> m_fieldIndices = new HashMap<String, Integer>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -274,7 +274,7 @@ public class QueryResult {
 
 			result.append("<row>");
 
-			for(int i = 0; i < row.length; i++) result.append("<field table=\"" + m_tables[i] + "\" name=\"" + m_fields[i] + "\" type=\"" + m_types[i] + "\"><![CDATA[" + row[i] + "]]></field>");
+			final int nr = row.length; for(int i = 0; i < nr; i++) result.append("<field table=\"" + m_tables[i] + "\" name=\"" + m_fields[i] + "\" type=\"" + m_types[i] + "\"><![CDATA[" + row[i] + "]]></field>");
 
 			result.append("</row>");
 		}

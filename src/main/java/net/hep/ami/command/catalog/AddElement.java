@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 
-public class InsertElement extends CommandAbstractClass {
+public class AddElement extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -16,7 +16,7 @@ public class InsertElement extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public InsertElement(Map<String, String> arguments, int transactionID) {
+	public AddElement(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");

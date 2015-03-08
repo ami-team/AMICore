@@ -7,13 +7,13 @@ import java.util.zip.*;
 public class ClassFinder {
 	/*---------------------------------------------------------------------*/
 
-	private List<String> m_classList = new ArrayList<String>();
+	private final List<String> m_classList = new ArrayList<String>();
 
 	/*---------------------------------------------------------------------*/
 
-	private String m_filter = null;
+	private String m_filter;
 
-	private File m_base = null;
+	private File m_base;
 
 	/*---------------------------------------------------------------------*/
 
@@ -132,12 +132,14 @@ public class ClassFinder {
 	/*---------------------------------------------------------------------*/
 
 	public List<String> getClassList() {
+
 		return m_classList;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String getFilter() {
+
 		return m_filter;
 	}
 

@@ -10,9 +10,11 @@ public class PermissiveSocketFactory {
 	private static class PermissiveX509TrustManager implements X509TrustManager {
 
 		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			/* IGNORE */
 		}
 
 		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			/* IGNORE */
 		}
 
 		public X509Certificate[] getAcceptedIssuers() {
@@ -22,8 +24,8 @@ public class PermissiveSocketFactory {
 
 	/*---------------------------------------------------------------------*/
 
-	private static SSLSocketFactory m_sslSocketFactory = null;
-	private static SSLSocketFactory m_tlsSocketFactory = null;
+	private static SSLSocketFactory m_sslSocketFactory;
+	private static SSLSocketFactory m_tlsSocketFactory;
 
 	/*---------------------------------------------------------------------*/
 

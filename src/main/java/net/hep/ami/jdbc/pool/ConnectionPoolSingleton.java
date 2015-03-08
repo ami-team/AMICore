@@ -22,7 +22,7 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
+	private static final Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
 
 	/*---------------------------------------------------------------------*/
 

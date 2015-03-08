@@ -66,7 +66,9 @@ CREATE TABLE IF NOT EXISTS `router_role` (
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_role`
- ADD PRIMARY KEY (`name`), ADD UNIQUE KEY “id” (`id`), ADD KEY `PARENT_FK_idx` (`parent`);
+ ADD PRIMARY KEY (`name`),
+ ADD UNIQUE KEY `id_UNIQUE` (`id`),
+ ADD KEY `PARENT_FK_idx` (`parent`);
 
 ALTER TABLE `router_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -85,7 +87,8 @@ CREATE TABLE IF NOT EXISTS `router_command` (
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_command`
- ADD PRIMARY KEY (`name`), ADD UNIQUE KEY `id_UNIQUE` (`id`);
+ ADD PRIMARY KEY (`name`),
+ ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 ALTER TABLE `router_command`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -102,7 +105,9 @@ CREATE TABLE IF NOT EXISTS `router_command_role` (
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_command_role`
- ADD PRIMARY KEY (`command`,`role`), ADD UNIQUE KEY `id_UNIQUE` (`id`), ADD KEY `COMMAND_ROLE_FK_idx` (`role`);
+ ADD PRIMARY KEY (`command`,`role`),
+ ADD UNIQUE KEY `id_UNIQUE` (`id`),
+ ADD KEY `COMMAND_ROLE_FK_idx` (`role`);
 
 ALTER TABLE `router_command_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -128,7 +133,8 @@ CREATE TABLE IF NOT EXISTS `router_user` (
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_user`
- ADD PRIMARY KEY (`AMIUser`), ADD UNIQUE KEY `id_UNIQUE` (`id`);
+ ADD PRIMARY KEY (`AMIUser`),
+ ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 ALTER TABLE `router_user`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -144,7 +150,9 @@ CREATE TABLE IF NOT EXISTS `router_user_role` (
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_user_role`
- ADD PRIMARY KEY (`user`,`role`), ADD UNIQUE KEY `id_UNIQUE` (`id`), ADD KEY `USER_ROLE_FK_idx` (`role`);
+ ADD PRIMARY KEY (`user`,`role`),
+ ADD UNIQUE KEY `id_UNIQUE` (`id`),
+ ADD KEY `USER_ROLE_FK_idx` (`role`);
 
 ALTER TABLE `router_user_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

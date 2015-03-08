@@ -19,7 +19,7 @@ public class CatalogSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, CatalogTuple> m_catalogs = new HashMap<String, CatalogTuple>();
+	private static final Map<String, CatalogTuple> m_catalogs = new HashMap<String, CatalogTuple>();
 
 	/*---------------------------------------------------------------------*/
 

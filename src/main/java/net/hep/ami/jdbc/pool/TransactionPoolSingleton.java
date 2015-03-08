@@ -8,11 +8,11 @@ import net.hep.ami.jdbc.driver.*;
 public class TransactionPoolSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static Map<Integer, Map<String, DriverAbstractClass>> m_pools = new HashMap<Integer, Map<String, DriverAbstractClass>>();
+	private static final Map<Integer, Map<String, DriverAbstractClass>> m_pools = new HashMap<Integer, Map<String, DriverAbstractClass>>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static java.util.concurrent.atomic.AtomicInteger m_cnt = new java.util.concurrent.atomic.AtomicInteger(0);
+	private static final java.util.concurrent.atomic.AtomicInteger m_cnt = new java.util.concurrent.atomic.AtomicInteger(0);
 
 	/*---------------------------------------------------------------------*/
 

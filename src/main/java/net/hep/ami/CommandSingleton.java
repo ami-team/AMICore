@@ -18,7 +18,7 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, CommandTuple> m_commands = new HashMap<String, CommandTuple>();
+	private static final Map<String, CommandTuple> m_commands = new HashMap<String, CommandTuple>();
 
 	/*---------------------------------------------------------------------*/
 

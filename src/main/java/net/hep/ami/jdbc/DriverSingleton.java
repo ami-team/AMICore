@@ -21,7 +21,7 @@ public class DriverSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, DriverTuple> m_drivers = new HashMap<String, DriverTuple>();
+	private static final Map<String, DriverTuple> m_drivers = new HashMap<String, DriverTuple>();
 
 	/*---------------------------------------------------------------------*/
 

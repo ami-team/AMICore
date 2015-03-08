@@ -14,7 +14,7 @@ import org.w3c.dom.*;
 public class ConverterSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, Transformer> m_transformers = new HashMap<String, Transformer>();
+	private static final Map<String, Transformer> m_transformers = new HashMap<String, Transformer>();
 
 	/*---------------------------------------------------------------------*/
 

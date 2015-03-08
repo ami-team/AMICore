@@ -12,8 +12,8 @@ import org.w3c.dom.*;
 public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static String m_configPathName = "/etc/ami";
-	private static String m_configFileName = "/etc/ami/AMI.xml";
+	private static String m_configPathName = "/etc/ami";	/* for DEBs/RPMs */
+	private static String m_configFileName = "/etc/ami/AMI.xml";	/* for DEBs/RPMs */
 
 	/*---------------------------------------------------------------------*/
 
@@ -22,7 +22,7 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Map<String, String> m_properties = new HashMap<String, String>();
+	private static final Map<String, String> m_properties = new HashMap<String, String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -119,7 +119,8 @@ public class ConfigSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_configFileName.endsWith(".xml") == false) {
+		if(m_configFileName.endsWith(".xml") == false)
+		{
 			m_configFileName = m_configFileName.concat(File.separator + "AMI.xml");
 		}
 
@@ -134,7 +135,7 @@ public class ConfigSingleton {
 		/* GET INPUT STREAM                                                */
 		/*-----------------------------------------------------------------*/
 
-		InputStream inputStream = new FileInputStream(m_configFileName);
+		InputStream inputStream = new FileInputStream(file);
 
 		/*-----------------------------------------------------------------*/
 		/* PARSE FILE                                                      */

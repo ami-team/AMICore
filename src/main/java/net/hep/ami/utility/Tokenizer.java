@@ -14,7 +14,7 @@ public class Tokenizer {
 
 	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes, String escape) throws Exception {
 
-		HashSet<Character> spaceSet = new HashSet<Character>();
+		Set<Character> spaceSet = new HashSet<Character>();
 
 		List<String> result = new ArrayList<String>();
 

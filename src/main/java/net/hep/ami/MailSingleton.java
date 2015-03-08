@@ -36,6 +36,7 @@ public class MailSingleton {
 		Authenticator authenticator = new Authenticator() {
 
 			protected PasswordAuthentication getPasswordAuthentication() {
+
 				return new PasswordAuthentication(m_user, m_pass);
 			}
 		};
