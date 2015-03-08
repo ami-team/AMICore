@@ -118,4 +118,10 @@ public class GetSessionInfo extends CommandAbstractClass {
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	public static String usage() {
+		return "(-AMIUser=\"value\" -AMIPass=\"value\")?";
+	}
+
+	/*---------------------------------------------------------------------*/
 }

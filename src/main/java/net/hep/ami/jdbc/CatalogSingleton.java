@@ -49,8 +49,6 @@ public class CatalogSingleton {
 		QueryResult queryResult;
 
 		try {
-			addCatalog(driver, "self");
-
 			queryResult = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass`,`name` FROM `router_catalogs`");
 
 		} finally {
@@ -70,18 +68,12 @@ public class CatalogSingleton {
 		for(int i = 0; i < nr; i++) {
 
 			try {
-				driver = DriverSingleton.getConnection(
+				addCatalog(
 					queryResult.getValue(i, "jdbcUrl"),
 					queryResult.getValue(i, "user"),
-					queryResult.getValue(i, "pass")
+					queryResult.getValue(i, "pass"),
+					queryResult.getValue(i, "catalog")
 				);
-
-				try {
-					addCatalog(driver, queryResult.getValue(i, "catalog"));
-
-				} finally {
-					driver.rollbackAndRelease();
-				}
 
 			} catch(Exception e) {
 				LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
@@ -95,12 +87,23 @@ public class CatalogSingleton {
 	@SuppressWarnings("deprecation")
 	/*---------------------------------------------------------------------*/
 
-	private static void addCatalog(DriverAbstractClass driver, String catalog) throws Exception {
+	private static void addCatalog(String jdbcUrl, String user, String pass, String catalog) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* READ SCHEMA                                                     */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.readSchema(driver.getConnection(), catalog);
+		DriverAbstractClass driver = DriverSingleton.getConnection(
+			jdbcUrl,
+			user,
+			pass
+		);
+
+		try {
+			SchemaSingleton.readSchema(driver.getConnection(), catalog);
+
+		} finally {
+			driver.rollbackAndRelease();
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* ADD CATALOG                                                     */
@@ -110,11 +113,9 @@ public class CatalogSingleton {
 			catalog
 			,
 			new CatalogTuple(
-				driver.getJdbcUrl()
-				,
-				driver.getUser()
-				,
-				driver.getPass()
+				jdbcUrl,
+				user,
+				pass
 			)
 		);
 

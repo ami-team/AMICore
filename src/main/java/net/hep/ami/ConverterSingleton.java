@@ -89,7 +89,10 @@ public class ConverterSingleton {
 			/* ADD CONVERTER                                               */
 			/*-------------------------------------------------------------*/
 
-			m_transformers.put(new File(xslt).getName(), transformer);
+			m_transformers.put(
+				new File(xslt).getName(),
+				transformer
+			);
 
 			/*-------------------------------------------------------------*/
 		} catch(Exception e) {
