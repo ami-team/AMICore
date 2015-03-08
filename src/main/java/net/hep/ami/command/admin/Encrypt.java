@@ -23,8 +23,11 @@ public class Encrypt extends CommandAbstractClass {
 	public StringBuilder main() throws Exception {
 
 		if(m_string == null) {
-
 			throw new Exception("invalid usage");
+		}
+
+		if(m_isSecure.equals("false")) {
+			throw new Exception("https connection required"); 
 		}
 
 		return new StringBuilder("<info><![CDATA[" + Cryptography.encrypt(m_string) + "]]></info>");

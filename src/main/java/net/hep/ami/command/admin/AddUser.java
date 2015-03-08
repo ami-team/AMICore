@@ -53,6 +53,10 @@ public class AddUser extends CommandAbstractClass {
 
 		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
+		/*-----------------------------------------------------------------*/
+		/* ADD USER                                                        */
+		/*-----------------------------------------------------------------*/
+
 		String sql = String.format("INSERT INTO `router_user` (`AMIUser`,`AMIPass`,`clientDN`,`issuerDN`,`firstName`,`lastName`,`email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
 			m_login.replace("'", "''"),
 			m_password,
@@ -64,6 +68,8 @@ public class AddUser extends CommandAbstractClass {
 		);
 
 		transactionalQuerier.executeUpdate(sql);
+
+		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}

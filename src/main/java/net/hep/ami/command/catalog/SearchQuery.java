@@ -34,6 +34,8 @@ public class SearchQuery extends CommandAbstractClass {
 
 		TransactionalQuerier transactionalQuerier = getQuerier(m_catalog);
 
+		/*-----------------------------------------------------------------*/
+
 		QueryResult queryResult;
 
 		if(m_sql != null) {
@@ -41,6 +43,8 @@ public class SearchQuery extends CommandAbstractClass {
 		} else {
 			queryResult = transactionalQuerier.executeGLiteQuery(m_glite);
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return queryResult.toStringBuilder();
 	}

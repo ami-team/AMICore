@@ -17,10 +17,6 @@ public class ListCatalogs extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		if(m_isSecure.equals("false")) {
-			throw new Exception("https connection required"); 
-		}
-
 		return CatalogSingleton.listCatalogs();
 	}
 

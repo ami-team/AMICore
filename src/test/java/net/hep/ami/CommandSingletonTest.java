@@ -10,7 +10,9 @@ public class CommandSingletonTest {
 		Map<String, String> arguments = new HashMap<String, String>();
 
 		try {
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments));
+			arguments.put("role", "toto");
+			arguments.put("parent", "AMI_guest_role");
+			System.out.println(CommandSingleton.executeCommand("AddRole", arguments));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

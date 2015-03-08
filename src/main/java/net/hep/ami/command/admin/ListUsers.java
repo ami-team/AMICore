@@ -3,12 +3,11 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
 
-public class GetSchemas extends CommandAbstractClass {
+public class ListUsers extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	public GetSchemas(Map<String, String> arguments, int transactionID) {
+	public ListUsers(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
@@ -17,13 +16,17 @@ public class GetSchemas extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		return SchemaSingleton.getDBSchemas();
+		if(m_isSecure.equals("false")) {
+			throw new Exception("https connection required"); 
+		}
+
+		return getQuerier("self").executeSQLQuery("SELECT * FROM `router_user` WHERE `valid`='1'").toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Get database schemas.";
+		return "List users.";
 	}
 
 	/*---------------------------------------------------------------------*/
