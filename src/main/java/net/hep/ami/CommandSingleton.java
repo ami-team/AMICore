@@ -152,7 +152,7 @@ public class CommandSingleton {
 			stringBuilder.append("<command>" + command + "</command>");
 
 			stringBuilder.append("<arguments>");
-			for(Entry<String, String> entry: arguments.entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;") + "\"/>");
+			for(Entry<String, String> entry: arguments.entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
 			stringBuilder.append("</arguments>");
 
 			stringBuilder.append("<executionDate>" + executionDate + "</executionDate>");
