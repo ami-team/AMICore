@@ -20,11 +20,11 @@ public class MailSingleton {
 		/* CREATE PROPERTIES                                               */
 		/*-----------------------------------------------------------------*/
 
-		Properties properties = new Properties(); 
+		Properties properties = new Properties();
 
-		properties.setProperty("mail.transport.protocol", "smtp"); 
+		properties.setProperty("mail.transport.protocol", "smtp");
 
-		properties.setProperty("mail.smtp.host", m_host); 
+		properties.setProperty("mail.smtp.host", m_host);
 		properties.setProperty("mail.smtp.port", m_port);
 		properties.setProperty("mail.smtp.auth", "true");
 		properties.setProperty("mail.smtp.starttls.enable", "true");
@@ -55,7 +55,7 @@ public class MailSingleton {
 
 		message.setFrom(new InternetAddress(from));
 
-        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to)); 
+        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
 		message.setSubject(subject);
 		message.setText(text);

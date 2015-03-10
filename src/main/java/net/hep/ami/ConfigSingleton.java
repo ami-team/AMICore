@@ -102,14 +102,12 @@ public class ConfigSingleton {
 		} else {
 
 			path = System.getProperty("conf.file");
-
 			if(path != null) {
 				m_configFileName = path.trim();
 
 			} else {
 
 				path = System.getProperty("user.home");
-
 				if(path != null) {
 					m_configFileName = path.trim();
 
@@ -344,20 +342,17 @@ public class ConfigSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"status\">");
-		result.append("<row>");
+		result.append("<rowset type=\"status\"><row>");
 
 		result.append("<field name=\"configFileName\"><![CDATA[" + m_configFileName + "]]></field>");
 		result.append("<field name=\"validConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>");
 		result.append("<field name=\"validDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>");
 
-		result.append("</row>");
-		result.append("</rowset>");
+		result.append("</row></rowset>");
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"config\">");
-		result.append("<row>");
+		result.append("<rowset type=\"config\"><row>");
 
 		for(Entry<String, String> entry: m_properties.entrySet()) {
 
@@ -367,8 +362,7 @@ public class ConfigSingleton {
 			result.append("<field name=\"" + key + "\"><![CDATA[" + value + "]]></field>");
 		}
 
-		result.append("</row>");
-		result.append("</rowset>");
+		result.append("</row></rowset>");
 
 		/*-----------------------------------------------------------------*/
 

@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS `router_catalog` (
  `jdbcUrl` varchar(512) NOT NULL,
  `user` varchar(128) NOT NULL,
  `pass` varchar(128) NOT NULL,
- `jsonSchema` text
+ `archived` int(1) NOT NULL DEFAULT '0',
+ `jsonSerialization` text
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_catalog`
@@ -53,6 +54,8 @@ ALTER TABLE `router_catalog`
 
 ALTER TABLE `router_catalog`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-- date ou order
 
 -- --------------------------------------------------------
 
@@ -82,7 +85,8 @@ DROP TABLE IF EXISTS `router_command`;
 CREATE TABLE IF NOT EXISTS `router_command` (
  `id` int(11) NOT NULL,
  `command` varchar(128) NOT NULL,
- `class` text NOT NULL
+ `class` text NOT NULL,
+ `archived` int(1) NOT NULL DEFAULT '0'
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_command`
@@ -145,7 +149,8 @@ DROP TABLE IF EXISTS `router_user_role`;
 CREATE TABLE IF NOT EXISTS `router_user_role` (
  `id` int(11) NOT NULL,
  `user` int(11) NOT NULL,
- `role` int(11) NOT NULL
+ `role` int(11) NOT NULL,
+ `roleValidatorClass` text
 ) AUTO_INCREMENT=1 ;
 
 ALTER TABLE `router_user_role`

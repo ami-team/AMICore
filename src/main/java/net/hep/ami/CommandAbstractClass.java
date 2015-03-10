@@ -107,6 +107,13 @@ public abstract class CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
+	protected String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception {
+
+		return CommandSingleton.executeCommand(command, arguments, checkRoles, m_transactionID);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public StringBuilder execute() throws Exception {
 
 		StringBuilder result = null;

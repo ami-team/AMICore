@@ -10,10 +10,10 @@ import net.hep.ami.jdbc.driver.*;
 public class CatalogSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple3<String, String, String> {
+	private static class Tuple extends Tuple4<String, String, String, String> {
 
-		public Tuple(String _x, String _y, String _z) {
-			super(_x, _y, _z);
+		public Tuple(String _x, String _y, String _z, String _t) {
+			super(_x, _y, _z, _t);
 		}
 	}
 
@@ -49,7 +49,7 @@ public class CatalogSingleton {
 		QueryResult queryResult;
 
 		try {
-			queryResult = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass` FROM `router_catalog`");
+			queryResult = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass`,`archived` FROM `router_catalog`");
 
 		} finally {
 			driver.rollbackAndRelease();
@@ -69,10 +69,11 @@ public class CatalogSingleton {
 
 			try {
 				addCatalog(
+					queryResult.getValue(i, "catalog"),
 					queryResult.getValue(i, "jdbcUrl"),
-					queryResult.getValue(i, "user"),
-					queryResult.getValue(i, "pass"),
-					queryResult.getValue(i, "catalog")
+					Cryptography.decrypt(queryResult.getValue(i, "user")),
+					Cryptography.decrypt(queryResult.getValue(i, "pass")),
+					queryResult.getValue(i, "archived")
 				);
 
 			} catch(Exception e) {
@@ -87,7 +88,7 @@ public class CatalogSingleton {
 	@SuppressWarnings("deprecation")
 	/*---------------------------------------------------------------------*/
 
-	private static void addCatalog(String jdbcUrl, String user, String pass, String catalog) throws Exception {
+	private static void addCatalog(String catalog, String jdbcUrl, String user, String pass, String archived) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* READ SCHEMA                                                     */
 		/*-----------------------------------------------------------------*/
@@ -115,7 +116,8 @@ public class CatalogSingleton {
 			new Tuple(
 				jdbcUrl,
 				user,
-				pass
+				pass,
+				archived
 			)
 		);
 
@@ -164,12 +166,10 @@ public class CatalogSingleton {
 
 			String catalog = entry.getKey();
 
-			String jdbcUrl = entry.getValue().x;
-			String user    = entry.getValue().y;
-			String pass    = entry.getValue().z;
-
-			user = Cryptography.encrypt(user);
-			pass = Cryptography.encrypt(pass);
+			String jdbcUrl  = entry.getValue().x;
+			String user     = entry.getValue().y;
+			String pass     = entry.getValue().z;
+			String archived = entry.getValue().t;
 
 			result.append(
 				"<row>"
@@ -181,6 +181,8 @@ public class CatalogSingleton {
 				"<field name=\"user\"><![CDATA[" + user + "]]></field>"
 				+
 				"<field name=\"pass\"><![CDATA[" + pass + "]]></field>"
+				+
+				"<field name=\"valid\"><![CDATA[" + archived + "]]></field>"
 				+
 				"</row>"
 			);

@@ -32,36 +32,42 @@ public class SchemaSingleton {
 		/*-----------------------------------------------------------------*/
 
 		public String getinternalName() {
+
 			return m_internalName;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getCatalog() {
+
 			return m_catalog;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getTable() {
+
 			return m_table;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getName() {
+
 			return m_name;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getType() {
+
 			return m_type;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public int getSize() {
+
 			return m_size;
 		}
 
@@ -95,36 +101,42 @@ public class SchemaSingleton {
 		/*-----------------------------------------------------------------*/
 
 		public String getCatalog() {
+
 			return m_catalog;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getName() {
+
 			return m_name;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getmFKTable() {
+
 			return m_fkTable;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getFKColumn() {
+
 			return m_fkColumn;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getPKTable() {
+
 			return m_pkTable;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getPKColumn() {
+
 			return m_pkColumn;
 		}
 
@@ -158,36 +170,42 @@ public class SchemaSingleton {
 		/*-----------------------------------------------------------------*/
 
 		public String getCatalog() {
+
 			return m_catalog;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getTable() {
+
 			return m_table;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getName() {
+
 			return m_name;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getType() {
+
 			return m_type;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getColumn() {
+
 			return m_column;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public int getPosition() {
+
 			return m_position;
 		}
 

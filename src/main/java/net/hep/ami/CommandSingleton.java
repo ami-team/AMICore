@@ -4,15 +4,17 @@ import java.util.*;
 import java.util.Map.*;
 import java.lang.reflect.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.driver.*;
 
 public class CommandSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple3<String, String, Constructor<CommandAbstractClass>> {
+	private static class Tuple extends Tuple4<String, String, Constructor<CommandAbstractClass>, String> {
 
-		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z) {
-			super(_x, _y, _z);
+		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z, String _t) {
+			super(_x, _y, _z, _t);
 		}
 	}
 
@@ -24,24 +26,68 @@ public class CommandSingleton {
 
 	static {
 
-		ClassFinder classFinder = new ClassFinder("net.hep.ami");
+		try {
+			addCommands();
 
-		for(String className: classFinder.getClassList()) {
+		} catch(Exception e) {
+			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static void addCommands() throws Exception {
+		/*-----------------------------------------------------------------*/
+		/* EXECUTE QUERY                                                   */
+		/*-----------------------------------------------------------------*/
+
+		DriverAbstractClass driver = DriverSingleton.getConnection(
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
+
+		QueryResult queryResult;
+
+		try {
+			queryResult = driver.executeSQLQuery("SELECT `command`,`class`,`archived` FROM `router_command`");
+
+		} finally {
+			driver.rollbackAndRelease();
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* GET NUMBER OF CATALOGS                                          */
+		/*-----------------------------------------------------------------*/
+
+		final int nr = queryResult.getNumberOfRows();
+
+		/*-----------------------------------------------------------------*/
+		/* ADD CATALOGS                                                    */
+		/*-----------------------------------------------------------------*/
+
+		for(int i = 0; i < nr; i++) {
 
 			try {
-				addCommand(className);
+				addCommand(
+					queryResult.getValue(i, "command"),
+					queryResult.getValue(i, "class"),
+					queryResult.getValue(i, "archived")
+				);
 
 			} catch(Exception e) {
 				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommand(String className) throws Exception {
+	private static void addCommand(String commandName, String className, String archived) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
@@ -55,7 +101,7 @@ public class CommandSingleton {
 		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class)) {
 
 			m_commands.put(
-				clazz.getSimpleName()
+				commandName
 				,
 				new Tuple(
 					clazz.getMethod("help").invoke(null).toString(),
@@ -63,7 +109,8 @@ public class CommandSingleton {
 					clazz.getConstructor(
 						Map.class,
 						int.class
-					)
+					),
+					archived
 				)
 			);
 		}
@@ -199,6 +246,7 @@ public class CommandSingleton {
 			String help = entry.getValue().x.toString();
 			String usage = entry.getValue().y.toString();
 			String clazz = entry.getValue().z.getName();
+			String archived = entry.getValue().t.toString();
 
 			result.append(
 				"<row>"
@@ -210,6 +258,8 @@ public class CommandSingleton {
 				"<field name=\"usage\"><![CDATA[" + usage + "]]></field>"
 				+
 				"<field name=\"class\"><![CDATA[" + clazz + "]]></field>"
+				+
+				"<field name=\"archived\"><![CDATA[" + archived + "]]></field>"
 				+
 				"</row>"
 			);
