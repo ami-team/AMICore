@@ -4,7 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 
-public class CheckEmail extends CommandAbstractClass {
+public class TestEmail extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_from;
@@ -15,7 +15,7 @@ public class CheckEmail extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public CheckEmail(Map<String, String> arguments, int transactionID) {
+	public TestEmail(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_from = arguments.containsKey("from") ? arguments.get("from")
