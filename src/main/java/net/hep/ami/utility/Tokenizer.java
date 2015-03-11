@@ -22,7 +22,7 @@ public class Tokenizer {
 			spaceSet.add(space);
 		}
 
-		/* */ int i = 0x00000000;
+		/***/ int i = 0x00000000;
 		final int l = s.length();
 
 		String word = "";
@@ -136,12 +136,12 @@ public class Tokenizer {
 				cnt = 0;
 			} else if(s.substring(i).startsWith(escape)) {
 				i += n;
-//				if(0x00001 == 0) return i;
-				cnt += 1;
+/*				if(0x00001 == 0) return i;
+ */				cnt += 1;
 			} else {
 				i += 1;
-//				if(0x00001 == 0) return i;
-				cnt = 0;
+/*				if(0x00001 == 0) return i;
+ */				cnt = 0;
 			}
 		}
 

@@ -129,8 +129,13 @@ public class ConfigSingleton {
 				   ||
 				   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
 				 ) {
+					/*----------------------------*/
+					/* DEFAULT FOR DEBs/RPMs      */
+					/*----------------------------*/
 
 					file = _toFile("/etc/ami");
+
+					/*----------------------------*/
 				}
 			}
 		}
@@ -264,33 +269,33 @@ public class ConfigSingleton {
 			result = m_properties.put(key, value);
 		}
 
-		return result;
+		return result != null ? result : "";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String getProperty(String key) {
 
-		String value;
+		String result;
 
 		synchronized(ConfigSingleton.class) {
-			value = m_properties.get(key);
+			result = m_properties.get(key);
 		}
 
-		return value != null ? value : "";
+		return result != null ? result : "";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String getProperty(String key, String defaultValue) {
 
-		String value;
+		String result;
 
 		synchronized(ConfigSingleton.class) {
-			value = m_properties.get(key);
+			result = m_properties.get(key);
 		}
 
-		return value != null ? value : defaultValue;
+		return result != null ? result : defaultValue;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -298,16 +303,16 @@ public class ConfigSingleton {
 	public static int getProperty(String key, int defaultValue) {
 
 		int result;
-		String value;
+		String tmpValue;
 
 		synchronized(ConfigSingleton.class) {
-			value = m_properties.get(key);
+			tmpValue = m_properties.get(key);
 		}
 
-		if(value != null) {
+		if(tmpValue != null) {
 
 			try {
-				result = Integer.parseInt(value);
+				result = Integer.parseInt(tmpValue);
 			} catch(NumberFormatException e) {
 				result = defaultValue;
 			}
@@ -324,16 +329,16 @@ public class ConfigSingleton {
 	public static float getProperty(String key, float defaultValue) {
 
 		float result;
-		String value;
+		String tmpValue;
 
 		synchronized(ConfigSingleton.class) {
-			value = m_properties.get(key);
+			tmpValue = m_properties.get(key);
 		}
 
-		if(value != null) {
+		if(tmpValue != null) {
 
 			try {
-				result = Float.parseFloat(value);
+				result = Float.parseFloat(tmpValue);
 			} catch(NumberFormatException e) {
 				result = defaultValue;
 			}
@@ -350,16 +355,16 @@ public class ConfigSingleton {
 	public static double getProperty(String key, double defaultValue) {
 
 		double result;
-		String value;
+		String tmpValue;
 
 		synchronized(ConfigSingleton.class) {
-			value = m_properties.get(key);
+			tmpValue = m_properties.get(key);
 		}
 
-		if(value != null) {
+		if(tmpValue != null) {
 
 			try {
-				result = Double.parseDouble(value);
+				result = Double.parseDouble(tmpValue);
 			} catch(NumberFormatException e) {
 				result = defaultValue;
 			}
@@ -385,17 +390,26 @@ public class ConfigSingleton {
 
 		result.append("<rowset type=\"status\"><row>");
 
+		result.append("<field name=\"configPathName\"><![CDATA[" + m_configPathName + "]]></field>");
 		result.append("<field name=\"configFileName\"><![CDATA[" + m_configFileName + "]]></field>");
-		result.append("<field name=\"validConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>");
-		result.append("<field name=\"validDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>");
+		result.append("<field name=\"hasValidConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>");
+		result.append("<field name=\"hasValidDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>");
 
 		result.append("</row></rowset>");
 
 		/*-----------------------------------------------------------------*/
 
+		Map<String, String> properties;
+
+		synchronized(ConfigSingleton.class) {
+			properties = new HashMap<String, String>(m_properties);
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset type=\"config\"><row>");
 
-		for(Entry<String, String> entry: m_properties.entrySet()) {
+		for(Entry<String, String> entry: properties.entrySet()) {
 
 			String key = entry.getKey();
 			String value = entry.getValue();

@@ -8,9 +8,9 @@ import javax.mail.internet.*;
 public class MailSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static Properties m_properties = new Properties();
+	private static final Properties m_properties = new Properties();
 
-	private static Authenticator m_authenticator = new Authenticator() {
+	private static final Authenticator m_authenticator = new Authenticator() {
 
 		protected PasswordAuthentication getPasswordAuthentication() {
 
@@ -25,16 +25,23 @@ public class MailSingleton {
 
 	static {
 		/*-----------------------------------------------------------------*/
+		/* GET HOST, PORT AND MODE                                         */
+		/*-----------------------------------------------------------------*/
+
+		String host = ConfigSingleton.getProperty("email_host");
+		String port = ConfigSingleton.getProperty("email_port");
+		String mode = ConfigSingleton.getProperty("email_mode");
+
+		/*-----------------------------------------------------------------*/
 		/* CREATE PROPERTIES                                               */
 		/*-----------------------------------------------------------------*/
 
 		m_properties.setProperty("mail.transport.protocol", "smtp");
 
 		m_properties.setProperty("mail.smtp.auth", "true");
-		m_properties.setProperty("mail.smtp.host", ConfigSingleton.getProperty("email_host"));
-		m_properties.setProperty("mail.smtp.port", ConfigSingleton.getProperty("email_port"));
+		m_properties.setProperty("mail.smtp.host", (host));
+		m_properties.setProperty("mail.smtp.port", (port));
 
-		String mode = ConfigSingleton.getProperty("email_mode");
 
 		/****/ if(mode.equals("1")) {
 			m_properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");

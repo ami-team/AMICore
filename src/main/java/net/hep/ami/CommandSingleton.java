@@ -146,7 +146,7 @@ public class CommandSingleton {
 
 		Tuple tuple = m_commands.get(command);
 
-		if(m_commands.get(command) == null) {
+		if(tuple == null) {
 			throw new Exception("command `" + command + "` not found");
 		}
 
@@ -216,8 +216,7 @@ public class CommandSingleton {
 			/*-------------------------------------------------------------*/
 		} else {
 			result = Templates.help(
-				tuple.x
-				,
+				tuple.x,
 				tuple.y
 			);
 		}

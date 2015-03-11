@@ -109,6 +109,9 @@ public class ConnectionPoolSingleton {
 		/**/		/*---------------------------*/
 		/**/
 		/**/		poolProperties.setDriverClassName(jdbc_driver);
+		/**/
+		/**/		/*---------------------------*/
+		/**/
 		/**/		poolProperties.setUrl(jdbc_url);
 		/**/		poolProperties.setUsername(user);
 		/**/		poolProperties.setPassword(pass);
