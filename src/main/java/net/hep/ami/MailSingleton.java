@@ -8,44 +8,51 @@ import javax.mail.internet.*;
 public class MailSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static final String m_host = ConfigSingleton.getProperty("email_host");
-	private static final String m_port = ConfigSingleton.getProperty("email_port");
-	private static final String m_user = ConfigSingleton.getProperty("email_user");
-	private static final String m_pass = ConfigSingleton.getProperty("email_pass");
+	private static Properties m_properties = new Properties();
+
+	private static Authenticator m_authenticator = new Authenticator() {
+
+		protected PasswordAuthentication getPasswordAuthentication() {
+
+			return new PasswordAuthentication(
+				ConfigSingleton.getProperty("email_user"),
+				ConfigSingleton.getProperty("email_pass")
+			);
+		}
+	};
+
+	/*---------------------------------------------------------------------*/
+
+	static {
+		/*-----------------------------------------------------------------*/
+		/* CREATE PROPERTIES                                               */
+		/*-----------------------------------------------------------------*/
+
+		m_properties.setProperty("mail.transport.protocol", "smtp");
+
+		m_properties.setProperty("mail.smtp.auth", "true");
+		m_properties.setProperty("mail.smtp.host", ConfigSingleton.getProperty("email_host"));
+		m_properties.setProperty("mail.smtp.port", ConfigSingleton.getProperty("email_port"));
+
+		String mode = ConfigSingleton.getProperty("email_mode");
+
+		/****/ if(mode.equals("1")) {
+			m_properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		} else if(mode.equals("2")) {
+			m_properties.setProperty("mail.smtp.starttls.enable", "true");
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static void sendMessage(String from, String to, String cc, String subject, String text) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* CREATE PROPERTIES                                               */
-		/*-----------------------------------------------------------------*/
-
-		Properties properties = new Properties();
-
-		properties.setProperty("mail.transport.protocol", "smtp");
-
-		properties.setProperty("mail.smtp.host", m_host);
-		properties.setProperty("mail.smtp.port", m_port);
-		properties.setProperty("mail.smtp.auth", "true");
-		properties.setProperty("mail.smtp.starttls.enable", "true");
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE AUTHENTICATOR                                            */
-		/*-----------------------------------------------------------------*/
-
-		Authenticator authenticator = new Authenticator() {
-
-			protected PasswordAuthentication getPasswordAuthentication() {
-
-				return new PasswordAuthentication(m_user, m_pass);
-			}
-		};
-
-		/*-----------------------------------------------------------------*/
 		/* CREATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
 
-		Session session = Session.getInstance(properties, authenticator);
+		Session session = Session.getInstance(m_properties, m_authenticator);
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE MESSAGE                                                  */

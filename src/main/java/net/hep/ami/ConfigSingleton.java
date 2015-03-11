@@ -12,8 +12,8 @@ import org.w3c.dom.*;
 public class ConfigSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static String m_configPathName = "/etc/ami";	/* for DEBs/RPMs */
-	private static String m_configFileName = "/etc/ami/AMI.xml";	/* for DEBs/RPMs */
+	private static String m_configPathName;
+	private static String m_configFileName;
 
 	/*---------------------------------------------------------------------*/
 
@@ -81,6 +81,27 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
+	private static File _toFile(String configFileName) {
+		/*-----------------------------------------------------------------*/
+		/* CHECK FILENAME                                                  */
+		/*-----------------------------------------------------------------*/
+
+		if(configFileName.endsWith(".xml") == false)
+		{
+			configFileName = configFileName.concat(File.separator + "AMI.xml");
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CREATE FILE                                                     */
+		/*-----------------------------------------------------------------*/
+
+		return new File(configFileName);
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	private static void readFromConfFile() throws Exception {
 
 		String path;
@@ -89,42 +110,32 @@ public class ConfigSingleton {
 		/* FIND CONFFILE                                                   */
 		/*-----------------------------------------------------------------*/
 
-		path = System.getProperty("catalina.base");
+		File file;
 
-		if(path != null) {
-			m_configFileName = path.trim()
-			                   +
-			                   File.separator
-			                   +
-			                   "conf"
-			;
+		path = System.getProperty("ami.conffile");
+		if(path == null
+		   ||
+		   (file = _toFile(path.trim())).exists() == false
+		 ) {
 
-		} else {
-
-			path = System.getProperty("conf.file");
-			if(path != null) {
-				m_configFileName = path.trim();
-
-			} else {
+			path = System.getProperty("catalina.base");
+			if(path == null
+			   ||
+			   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
+			 ) {
 
 				path = System.getProperty("user.home");
-				if(path != null) {
-					m_configFileName = path.trim();
+				if(path == null
+				   ||
+				   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
+				 ) {
 
+					file = _toFile("/etc/ami");
 				}
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		if(m_configFileName.endsWith(".xml") == false)
-		{
-			m_configFileName = m_configFileName.concat(File.separator + "AMI.xml");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		File file = new File(m_configFileName).getAbsoluteFile();
 
 		m_configPathName = file.getParentFile().getPath();
 		m_configFileName = file.getPath();
@@ -245,9 +256,26 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
+	public static String setProperty(String key, String value) {
+
+		String result;
+
+		synchronized(ConfigSingleton.class) {
+			result = m_properties.put(key, value);
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String getProperty(String key) {
 
-		String value = m_properties.get(key);
+		String value;
+
+		synchronized(ConfigSingleton.class) {
+			value = m_properties.get(key);
+		}
 
 		return value != null ? value : "";
 	}
@@ -256,7 +284,11 @@ public class ConfigSingleton {
 
 	public static String getProperty(String key, String defaultValue) {
 
-		String value = m_properties.get(key);
+		String value;
+
+		synchronized(ConfigSingleton.class) {
+			value = m_properties.get(key);
+		}
 
 		return value != null ? value : defaultValue;
 	}
@@ -266,8 +298,11 @@ public class ConfigSingleton {
 	public static int getProperty(String key, int defaultValue) {
 
 		int result;
+		String value;
 
-		String value = m_properties.get(key);
+		synchronized(ConfigSingleton.class) {
+			value = m_properties.get(key);
+		}
 
 		if(value != null) {
 
@@ -289,8 +324,11 @@ public class ConfigSingleton {
 	public static float getProperty(String key, float defaultValue) {
 
 		float result;
+		String value;
 
-		String value = m_properties.get(key);
+		synchronized(ConfigSingleton.class) {
+			value = m_properties.get(key);
+		}
 
 		if(value != null) {
 
@@ -312,8 +350,11 @@ public class ConfigSingleton {
 	public static double getProperty(String key, double defaultValue) {
 
 		double result;
+		String value;
 
-		String value = m_properties.get(key);
+		synchronized(ConfigSingleton.class) {
+			value = m_properties.get(key);
+		}
 
 		if(value != null) {
 
