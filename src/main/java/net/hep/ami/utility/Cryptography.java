@@ -63,6 +63,46 @@ public class Cryptography {
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
+	public static boolean isProxy(X509Certificate certificate) {
+		/*-----------------------------------------------------------------*/
+		/* CHECK RFC3820 PROXY                                             */
+		/*-----------------------------------------------------------------*/
+
+		if(certificate.getExtensionValue("1.3.6.1.5.5.7.1.14") != null && certificate.getExtensionValue("1.3.6.1.5.5.7.1.14").length > 0) {
+			return true;
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK DRAFT_RFC PROXY                                           */
+		/*-----------------------------------------------------------------*/
+
+		if(certificate.getExtensionValue("1.3.6.1.4.1.3536.1.222") != null && certificate.getExtensionValue( "1.3.6.1.4.1.3536.1.222").length > 0) {
+			return true;
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK VOMS PROXY                                                */
+		/*-----------------------------------------------------------------*/
+
+		String[] parts = certificate.getSubjectX500Principal().getName().split(",");
+
+		for(String part: parts) {
+
+			if(part.equals("CN=limited proxy") == false
+			   &&
+			   part.equals(/**/"CN=proxy"/**/) == false
+			 ) {
+				return true;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return false;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static X509Certificate loadCertificate(InputStream inputStream) throws Exception {
 
 		try {
