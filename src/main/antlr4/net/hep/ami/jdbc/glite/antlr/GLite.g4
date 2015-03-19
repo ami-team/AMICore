@@ -42,10 +42,15 @@ conditionTerm
 	;
 
 conditionSubTerm
-	: '(' condition ')'                             # ConditionSubTermGroup
-	| expression COMPARISON_OPERATOR expression     # ConditionSubTermComparisonOperator
-	| expression LIKE sqlLiteral                    # ConditionSubTermLike
-	| expression IN sqlLiteralList                  # ConditionSubTermIn
+  : '!' conditionSubSubTerm
+  | conditionSubSubTerm
+  ;
+
+conditionSubSubTerm
+	: '(' condition ')'                             # ConditionSubSubTermGroup
+	| expression COMPARISON_OPERATOR expression     # ConditionSubSubTermComparisonOperator
+	| expression LIKE sqlLiteral                    # ConditionSubSubTermLike
+	| expression IN sqlLiteralList                  # ConditionSubSubTermIn
 	;
 
 /*---------------------------*/
@@ -62,7 +67,6 @@ expressionTerm
 
 expressionSubTerm
 	: '-' expressionSubSubTerm
-	| '!' expressionSubSubTerm
 	| expressionSubSubTerm
 	;
 

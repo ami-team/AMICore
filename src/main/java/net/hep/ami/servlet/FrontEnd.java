@@ -210,6 +210,13 @@ public class FrontEnd extends HttpServlet {
 
 		writer.print(data);
 
+		Enumeration<String> hh = req.getAttributeNames();
+
+		while(hh.hasMoreElements()) {
+
+			writer.print("\n" + hh.nextElement());
+		}
+
 		/*-----------------------------------------------------------------*/
 		/* CLOSE WRITER                                                    */
 		/*-----------------------------------------------------------------*/
@@ -221,30 +228,28 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private static String getClientDN(HttpServletRequest req) {
+	private static Tuple2<String, String> getDNs(HttpServletRequest req) {
 
 		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
-		if(certificates != null && certificates.length > 0) {
+		if(certificates != null) {
 
-			return Cryptography.getAMIName(certificates[0].getSubjectX500Principal());
+			for(X509Certificate certificate: certificates) {
+
+				if(Cryptography.isProxy(certificate) == false) {
+
+					return new Tuple2<String, String>(
+						Cryptography.getAMIName(certificate.getSubjectX500Principal()),
+						Cryptography.getAMIName(certificate.getIssuerX500Principal())
+					);
+				}
+			}
 		}
 
-		return "";
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static String getIssuerDN(HttpServletRequest req) {
-
-		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
-
-		if(certificates != null && certificates.length > 0) {
-
-			return Cryptography.getAMIName(certificates[0].getIssuerX500Principal());
-		}
-
-		return "";
+		return new Tuple2<String, String>(
+			"",
+			""
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -336,17 +341,15 @@ public class FrontEnd extends HttpServlet {
 		String AMIPass;
 
 		/*-----------------------------------------------------------------*/
-		/* GET CLIENT DN                                                   */
+		/* GET DNs                                                         */
 		/*-----------------------------------------------------------------*/
 
-		String clientDN = getClientDN(request);
+		Tuple2<String, String> dns = getDNs(request);
+
+		String clientDN = dns.x;
 		session.setAttribute("clientDN", clientDN);
 
-		/*-----------------------------------------------------------------*/
-		/* GET ISSUER DN                                                   */
-		/*-----------------------------------------------------------------*/
-
-		String issuerDN = getIssuerDN(request);
+		String issuerDN = dns.y;
 		session.setAttribute("issuerDN", issuerDN);
 
 		/*-----------------------------------------------------------------*/

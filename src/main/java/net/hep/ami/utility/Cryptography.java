@@ -84,7 +84,7 @@ public class Cryptography {
 
 		PEMTuple result = new PEMTuple();
 
-		StringBuilder stringBuilder = new StringBuilder();
+		StringBuilder stringBuilder = null;
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -395,6 +395,7 @@ public class Cryptography {
 	public static KeyStore generateKeyStore_JKS(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception {
 
 		KeyStore result = KeyStore.getInstance("JKS");
+
 		result.load(null, null);
 
 		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {
@@ -409,6 +410,7 @@ public class Cryptography {
 	public static KeyStore generateKeyStore_PKCS12(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception {
 
 		KeyStore result = KeyStore.getInstance("PKCS12");
+
 		result.load(null, null);
 
 		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {
@@ -473,7 +475,7 @@ public class Cryptography {
 
 		data = certificate.getExtensionValue("1.3.6.1.5.5.7.1.14");
 
-		if(data != null && data.length > 0) {System.out.println("RFC3820 PROXY");
+		if(data != null && data.length > 0) {
 			return true;
 		}
 
@@ -483,7 +485,7 @@ public class Cryptography {
 
 		data = certificate.getExtensionValue("1.3.6.1.4.1.3536.1.222");
 
-		if(data != null && data.length > 0) {System.out.println("DRAFT_RFC PROXY");
+		if(data != null && data.length > 0) {
 			return true;
 		}
 
@@ -498,7 +500,7 @@ public class Cryptography {
 			if(part.equals("CN=limited proxy")
 			   ||
 			   part.equals(/**/"CN=proxy"/**/)
-			 ) {System.out.println("VOMS PROXY");
+			 ) {
 				return true;
 			}
 		}

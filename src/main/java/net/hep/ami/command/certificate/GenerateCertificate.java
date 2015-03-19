@@ -77,8 +77,8 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 			PrivateKey[] privateKeys = Cryptography.loadPrivateKeys(inputStream);
 
-			if(privateKeys.length != 1) {
-				throw new Exception("bad CA key provided");
+			if(privateKeys.length == 0) {
+				throw new Exception("invalid CA key");
 			}
 
 			caKey = privateKeys[0];
@@ -94,8 +94,8 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 			X509Certificate[] certificates = Cryptography.loadCertificates(inputStream);
 
-			if(certificates.length != 1) {
-				throw new Exception("bad CA crt provided");
+			if(certificates.length == 0) {
+				throw new Exception("invalid CA crt");
 			}
 
 			caCrt = certificates[0];
