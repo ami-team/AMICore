@@ -12,7 +12,7 @@ options {
 /* MQL PARSER                                                              */
 /*-------------------------------------------------------------------------*/
 
-select
+selectStatement
 	: SELECT columnList (WHERE condition)? ';'?
 	;
 
@@ -25,12 +25,12 @@ columnList
 	;
 
 column
-	: ID '.' '*'					# ColumnAll
-	| expression (AS ID)?				# ColumnOne
+	: ID '.' '*'                                    # ColumnAll
+	| expression (AS ID)?                           # ColumnOne
 	;
 
 /*---------------------------*/
-/* COLUMN_LIST               */
+/* CONDITION                 */
 /*---------------------------*/
 
 condition
@@ -42,10 +42,10 @@ conditionTerm
 	;
 
 conditionSubTerm
-	: expression COMPARISON_OPERATOR expression	# ConditionSubTermComparisonOperator
-	| '(' condition ')'				# ConditionSubTermGroup
-	| expression LIKE sqlLiteral			# ConditionSubTermLike
-	| expression IN sqlLiteralList			# ConditionSubTermIn
+	: '(' condition ')'                             # ConditionSubTermGroup
+	| expression COMPARISON_OPERATOR expression     # ConditionSubTermComparisonOperator
+	| expression LIKE sqlLiteral                    # ConditionSubTermLike
+	| expression IN sqlLiteralList                  # ConditionSubTermIn
 	;
 
 /*---------------------------*/
@@ -61,10 +61,16 @@ expressionTerm
 	;
 
 expressionSubTerm
-	: sqlLiteral					# ExpressionSubTermSqlLiteral
-	| FUNCTION '(' columnList ')'			# ExpressionSubTermFunction
-	| '(' expression ')'				# ExpressionSubTermGroup
-	| ID '.' ID					# ExpressionSubTermId
+	: '-' expressionSubSubTerm
+	| '!' expressionSubSubTerm
+	| expressionSubSubTerm
+	;
+
+expressionSubSubTerm
+	: '(' expression ')'                            # ExpressionSubSubTermGroup
+	| FUNCTION '(' columnList ')'                   # ExpressionSubSubTermFunction
+	| sqlLiteral                                    # ExpressionSubSubTermSqlLiteral
+	| ID '.' ID                                     # ExpressionSubSubTermQualifiedId
 	;
 
 /*---------------------------*/
@@ -138,6 +144,7 @@ FUNCTION
 ID
 	: [a-zA-Z_] [a-zA-Z_0-9]*
 	| '`' (~'`' | '``')+ '`'
+	| '"' (~'"' | '`"')+ '"'
 	;
 
 STRING
@@ -152,7 +159,7 @@ NUMBER
 /*-------------------------------------------------------------------------*/
 
 WS
-	: [ \r\t\n]+ -> channel(HIDDEN)
+	: [ \t\n\r]+ -> channel(HIDDEN)
 	;
 
 /*-------------------------------------------------------------------------*/

@@ -75,7 +75,13 @@ public class GenerateCertificate extends CommandAbstractClass {
 		try {
 			InputStream inputStream = new FileInputStream(ConfigSingleton.getConfigPathName() + File.separator + "ca.key");
 
-			caKey = Cryptography.loadPrivateKey(inputStream);
+			PrivateKey[] privateKeys = Cryptography.loadPrivateKeys(inputStream);
+
+			if(privateKeys.length != 1) {
+				throw new Exception("bad CA key provided");
+			}
+
+			caKey = privateKeys[0];
 
 		} catch(Exception e) {
 			throw new Exception("no CA key provided");
@@ -86,7 +92,13 @@ public class GenerateCertificate extends CommandAbstractClass {
 		try {
 			InputStream inputStream = new FileInputStream(ConfigSingleton.getConfigPathName() + File.separator + "ca.crt");
 
-			caCrt = Cryptography.loadCertificate(inputStream);
+			X509Certificate[] certificates = Cryptography.loadCertificates(inputStream);
+
+			if(certificates.length != 1) {
+				throw new Exception("bad CA crt provided");
+			}
+
+			caCrt = certificates[0];
 
 		} catch(Exception e) {
 			throw new Exception("no CA crt provided");
@@ -128,8 +140,8 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 		ByteArrayOutputStream output;
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + Cryptography.getAMIShortDN(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + Cryptography.getAMIShortDN(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getSubjectX500Principal()) + "]]></field>");
+		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getIssuerX500Principal()) + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");

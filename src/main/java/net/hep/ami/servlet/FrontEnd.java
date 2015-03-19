@@ -227,7 +227,7 @@ public class FrontEnd extends HttpServlet {
 
 		if(certificates != null && certificates.length > 0) {
 
-			return Cryptography.getAMIShortDN(certificates[0].getSubjectX500Principal());
+			return Cryptography.getAMIName(certificates[0].getSubjectX500Principal());
 		}
 
 		return "";
@@ -241,7 +241,7 @@ public class FrontEnd extends HttpServlet {
 
 		if(certificates != null && certificates.length > 0) {
 
-			return Cryptography.getAMIShortDN(certificates[0].getIssuerX500Principal());
+			return Cryptography.getAMIName(certificates[0].getIssuerX500Principal());
 		}
 
 		return "";

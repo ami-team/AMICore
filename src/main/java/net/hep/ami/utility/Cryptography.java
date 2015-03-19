@@ -63,134 +63,219 @@ public class Cryptography {
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isProxy(X509Certificate certificate) {
-		/*-----------------------------------------------------------------*/
-		/* CHECK RFC3820 PROXY                                             */
-		/*-----------------------------------------------------------------*/
+	private static class PEMTuple {
 
-		if(certificate.getExtensionValue("1.3.6.1.5.5.7.1.14") != null && certificate.getExtensionValue("1.3.6.1.5.5.7.1.14").length > 0) {
-			return true;
-		}
+			public List<StringBuilder> m_certificates = new ArrayList<StringBuilder>();
 
-		/*-----------------------------------------------------------------*/
-		/* CHECK DRAFT_RFC PROXY                                           */
-		/*-----------------------------------------------------------------*/
+			public List<StringBuilder> m_privateKey = new ArrayList<StringBuilder>();
 
-		if(certificate.getExtensionValue("1.3.6.1.4.1.3536.1.222") != null && certificate.getExtensionValue( "1.3.6.1.4.1.3536.1.222").length > 0) {
-			return true;
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CHECK VOMS PROXY                                                */
-		/*-----------------------------------------------------------------*/
-
-		String[] parts = certificate.getSubjectX500Principal().getName().split(",");
-
-		for(String part: parts) {
-
-			if(part.equals("CN=limited proxy") == false
-			   &&
-			   part.equals(/**/"CN=proxy"/**/) == false
-			 ) {
-				return true;
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return false;
+			public List<StringBuilder> m_publicKey = new ArrayList<StringBuilder>();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate loadCertificate(InputStream inputStream) throws Exception {
-
-		try {
-			return (X509Certificate) CertificateFactory.getInstance("X509", BC).generateCertificate(inputStream);
-
-		} finally {
-			inputStream.close();
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static PrivateKey loadPrivateKey(InputStream inputStream) throws Exception {
-		/*-----------------------------------------------------------------*/
-		/* READ PRIVATE KEY                                                */
-		/*-----------------------------------------------------------------*/
+	private static PEMTuple loadPEM(InputStream inputStream) throws Exception {
 
 		String line;
-		Boolean append = false;
-		StringBuilder result = new StringBuilder();
 
-		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+		Boolean appendCertificate = false;
+		Boolean appendPrivateKey = false;
+		Boolean appendPublicKey = false;
+
+		PEMTuple result = new PEMTuple();
+
+		StringBuilder stringBuilder = new StringBuilder();
+
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		try {
 
 			while((line = bufferedReader.readLine()) != null) {
+				/*---------------------------------------------------------*/
 
-				if(line.equals("-----END PRIVATE KEY-----")) append = false;
-				if(append) result.append(line);
-				if(line.equals("-----BEGIN PRIVATE KEY-----")) append = true;
+				/***/ if(line.equals("-----BEGIN CERTIFICATE-----")) {
+					stringBuilder = new StringBuilder();
+					appendCertificate = true;
+				}
+				else if(line.equals("-----END CERTIFICATE-----")) {
+					result.m_certificates.add(stringBuilder);
+					appendCertificate = false;
+				}
+				else if(appendCertificate) {
+					stringBuilder.append(line);
+				}
+
+				/*---------------------------------------------------------*/
+
+				else if(line.equals("-----BEGIN PRIVATE KEY-----")) {
+					stringBuilder = new StringBuilder();
+					appendPrivateKey = true;
+				}
+				else if(line.equals("-----END PRIVATE KEY-----")) {
+					result.m_privateKey.add(stringBuilder);
+					appendPrivateKey = false;
+				}
+				else if(appendPrivateKey) {
+					stringBuilder.append(line);
+				}
+
+				/*---------------------------------------------------------*/
+
+				else if(line.equals("-----BEGIN PUBLIC KEY-----")) {
+					stringBuilder = new StringBuilder();
+					appendPublicKey = true;
+				}
+				else if(line.equals("-----END PUBLIC KEY-----")) {
+					result.m_publicKey.add(stringBuilder);
+					appendPublicKey = false;
+				}
+				else if(appendPublicKey) {
+					stringBuilder.append(line);
+				}
+
+				/*---------------------------------------------------------*/
 			}
 
 		} finally {
 			bufferedReader.close();
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* BUILD PKCS8 PRIVATE KEY                                         */
-		/*-----------------------------------------------------------------*/
+		return result;
+	}
 
-		byte[] encoded = org.bouncycastle.util.encoders.Base64.decode(result.toString());
+	/*---------------------------------------------------------------------*/
+
+	private static X509Certificate buildCertificate(byte[] encoded) throws Exception {
+
+		return (X509Certificate) CertificateFactory.getInstance("X509", BC).generateCertificate(
+
+			new ByteArrayInputStream(
+				encoded
+			)
+		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static PrivateKey buildPrivateKey(byte[] encoded) throws Exception {
 
 		return KeyFactory.getInstance("RSA", BC).generatePrivate(
-			new PKCS8EncodedKeySpec(encoded)
-		);
 
-		/*-----------------------------------------------------------------*/
+			new PKCS8EncodedKeySpec(
+				encoded
+			)
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static PublicKey loadPublicKey(InputStream inputStream) throws Exception {
+	private static PublicKey buildPublicKey(byte[] encoded) throws Exception {
+
+		return KeyFactory.getInstance("RSA", BC).generatePublic(
+
+			new PKCS8EncodedKeySpec(
+				encoded
+			)
+		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static X509Certificate[] loadCertificates(InputStream inputStream) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* READ PRIVATE KEY                                                */
+		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		String line;
-		Boolean append = false;
-		StringBuilder result = new StringBuilder();
+		PEMTuple tuple = loadPEM(inputStream);
 
-		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+		/*-----------------------------------------------------------------*/
+		/* GET NUMBER OF CERTIFICATES                                      */
+		/*-----------------------------------------------------------------*/
 
-		try {
+		final int nr = tuple.m_certificates.size();
 
-			while((line = bufferedReader.readLine()) != null) {
+		/*-----------------------------------------------------------------*/
+		/* BUILD X509 CERTIFICATES                                         */
+		/*-----------------------------------------------------------------*/
 
-				if(line.equals("-----END PUBLIC KEY-----")) append = false;
-				if(append) result.append(line);
-				if(line.equals("-----BEGIN PUBLIC KEY-----")) append = true;
-			}
+		X509Certificate[] result = new X509Certificate[nr];
 
-		} finally {
-			bufferedReader.close();
+		for(int i = 0; i < nr; i++) {
+
+			result[i] = buildCertificate(org.bouncycastle.util.encoders.Base64.decode(
+				tuple.m_certificates.get(i).toString()
+			));
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* BUILD PKCS8 PRIVATE KEY                                         */
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static PrivateKey[] loadPrivateKeys(InputStream inputStream) throws Exception {
+		/*-----------------------------------------------------------------*/
+		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		byte[] encoded = org.bouncycastle.util.encoders.Base64.decode(result.toString());
-
-		return KeyFactory.getInstance("RSA", BC).generatePublic(
-			new PKCS8EncodedKeySpec(encoded)
-		);
+		PEMTuple tuple = loadPEM(inputStream);
 
 		/*-----------------------------------------------------------------*/
+		/* GET NUMBER OF PRIVATE KEYS                                      */
+		/*-----------------------------------------------------------------*/
+
+		final int nr = tuple.m_privateKey.size();
+
+		/*-----------------------------------------------------------------*/
+		/* BUILD PRIVATE KEYS                                              */
+		/*-----------------------------------------------------------------*/
+
+		PrivateKey[] result = new PrivateKey[nr];
+
+		for(int i = 0; i < nr; i++) {
+
+			result[i] = buildPrivateKey(org.bouncycastle.util.encoders.Base64.decode(
+				tuple.m_privateKey.get(i).toString()
+			));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static PublicKey[] loadPublicKeys(InputStream inputStream) throws Exception {
+		/*-----------------------------------------------------------------*/
+		/* LOAD FILE                                                       */
+		/*-----------------------------------------------------------------*/
+
+		PEMTuple tuple = loadPEM(inputStream);
+
+		/*-----------------------------------------------------------------*/
+		/* GET NUMBER OF PUBLIC KEYS                                       */
+		/*-----------------------------------------------------------------*/
+
+		final int nr = tuple.m_publicKey.size();
+
+		/*-----------------------------------------------------------------*/
+		/* BUILD PUBLIC KEYS                                               */
+		/*-----------------------------------------------------------------*/
+
+		PublicKey[] result = new PublicKey[nr];
+
+		for(int i = 0; i < nr; i++) {
+
+			result[i] = buildPublicKey(org.bouncycastle.util.encoders.Base64.decode(
+				tuple.m_publicKey.get(i).toString()
+			));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -378,18 +463,60 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getAMIShortDN(javax.security.auth.x500.X500Principal principal) {
+	public static boolean isProxy(X509Certificate certificate) {
+
+		byte[] data;
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK RFC3820 PROXY                                             */
+		/*-----------------------------------------------------------------*/
+
+		data = certificate.getExtensionValue("1.3.6.1.5.5.7.1.14");
+
+		if(data != null && data.length > 0) {System.out.println("RFC3820 PROXY");
+			return true;
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK DRAFT_RFC PROXY                                           */
+		/*-----------------------------------------------------------------*/
+
+		data = certificate.getExtensionValue("1.3.6.1.4.1.3536.1.222");
+
+		if(data != null && data.length > 0) {System.out.println("DRAFT_RFC PROXY");
+			return true;
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK VOMS PROXY                                                */
+		/*-----------------------------------------------------------------*/
+
+		String[] parts = certificate.getSubjectX500Principal().getName().split(",");
+
+		for(String part: parts) {
+
+			if(part.equals("CN=limited proxy")
+			   ||
+			   part.equals(/**/"CN=proxy"/**/)
+			 ) {System.out.println("VOMS PROXY");
+				return true;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return false;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String getAMIName(javax.security.auth.x500.X500Principal principal) {
 
 		StringBuilder result = new StringBuilder();
 
 		for(String part: principal.getName("RFC2253").split(",")) {
 
-			if(part.equals("CN=limited proxy") == false
-			   &&
-			   part.equals(/**/"CN=proxy"/**/) == false
-			 ) {
-				result.insert(0, "/" + part);
-			}
+			result.insert(0, "/" + part);
 		}
 
 		return result.toString();

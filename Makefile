@@ -10,11 +10,16 @@ deploy:
 
 	cp target/AMICore.war tomcat/webapps/AMI.war
 
+stop:
+	./tomcat/bin/shutdown.sh
+
 start:
 	./tomcat/bin/startup.sh
 
-stop:
+restart:
 	./tomcat/bin/shutdown.sh
+	sleep 2
+	./tomcat/bin/startup.sh
 
 clean:
 	mvn clean

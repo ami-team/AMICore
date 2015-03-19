@@ -88,8 +88,8 @@ public class GenerateAuthority extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + Cryptography.getAMIShortDN(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + Cryptography.getAMIShortDN(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getSubjectX500Principal()) + "]]></field>");
+		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getIssuerX500Principal()) + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");
