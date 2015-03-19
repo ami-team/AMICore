@@ -19,11 +19,17 @@ public class CommandParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Character[] m_spaces = {' ', '\t', '\n'};
+	private static final Character[] m_spaces = {
+		' ', '\t', '\n'
+	};
 
-	private static final String[] m_kwords = {"-", "/", "="};
+	private static final String[] m_kwords = {
+		"-", "/", "="
+	};
 
-	private static final String[] m_quotes = {"\'", "\""};
+	private static final String[] m_quotes = {
+		"\'", "\""
+	};
 
 	/*---------------------------------------------------------------------*/
 

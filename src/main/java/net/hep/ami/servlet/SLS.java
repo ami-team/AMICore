@@ -181,26 +181,34 @@ public class SLS extends HttpServlet {
 			httpURLConnection = HttpConnectionFactory.openTLSConnection(nodeURL.trim() + "?Command=GetSessionInfo");
 		}
 
-		httpURLConnection.setRequestMethod("GET");
-
-		/*-----------------------------------------------------------------*/
-		/* GET INPUT STREAM                                                */
-		/*-----------------------------------------------------------------*/
-
-		InputStream inputStream = httpURLConnection.getInputStream();
-
-		/*-----------------------------------------------------------------*/
-		/* GET NODE SCORE                                                  */
-		/*-----------------------------------------------------------------*/
-
 		try {
-			XMLFactories.newDocument(inputStream);
+			/*-------------------------------------------------------------*/
+			/* SET REQUEST METHOD                                          */
+			/*-------------------------------------------------------------*/
 
+			httpURLConnection.setRequestMethod("GET");
+
+			/*-------------------------------------------------------------*/
+			/* GET INPUT STREAM                                            */
+			/*-------------------------------------------------------------*/
+
+			InputStream inputStream = httpURLConnection.getInputStream();
+
+			/*-------------------------------------------------------------*/
+			/* GET NODE SCORE                                              */
+			/*-------------------------------------------------------------*/
+
+			try {
+				XMLFactories.newDocument(inputStream);
+
+			} finally {
+				inputStream.close();
+			}
+
+			/*-------------------------------------------------------------*/
 		} finally {
-			inputStream.close();
+			httpURLConnection.disconnect();
 		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
