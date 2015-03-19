@@ -209,14 +209,14 @@ public class FrontEnd extends HttpServlet {
 		res.setContentType(mime);
 
 		writer.print(data);
-
+/*
 		Enumeration<String> hh = req.getAttributeNames();
 
 		while(hh.hasMoreElements()) {
 
 			writer.print("\n" + hh.nextElement());
 		}
-
+*/
 		/*-----------------------------------------------------------------*/
 		/* CLOSE WRITER                                                    */
 		/*-----------------------------------------------------------------*/

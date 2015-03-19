@@ -52,13 +52,13 @@ public class ConverterSingleton {
 			/* GET NUMBER OF CONVERTERS                                    */
 			/*-------------------------------------------------------------*/
 
-			final int nr = nodeList.getLength();
+			final int numberOfConverters = nodeList.getLength();
 
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTERS                                              */
 			/*-------------------------------------------------------------*/
 
-			for(int i = 0; i < nr; i++) {
+			for(int i = 0; i < numberOfConverters; i++) {
 
 				Node node = nodeList.item(i);
 

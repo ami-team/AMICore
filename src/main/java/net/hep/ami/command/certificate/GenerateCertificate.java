@@ -7,6 +7,7 @@ import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.Cryptography.PEMTuple;
 
 public class GenerateCertificate extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -72,36 +73,28 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		try {
-			InputStream inputStream = new FileInputStream(ConfigSingleton.getConfigPathName() + File.separator + "ca.key");
-
-			PrivateKey[] privateKeys = Cryptography.loadPrivateKeys(inputStream);
-
-			if(privateKeys.length == 0) {
-				throw new Exception("invalid CA key");
-			}
-
-			caKey = privateKeys[0];
-
-		} catch(Exception e) {
-			throw new Exception("no CA key provided");
-		}
+		String fileName = ConfigSingleton.getConfigPathName() + File.separator + "ca.pem";
 
 		/*-----------------------------------------------------------------*/
 
 		try {
-			InputStream inputStream = new FileInputStream(ConfigSingleton.getConfigPathName() + File.separator + "ca.crt");
+			InputStream inputStream = new FileInputStream(fileName);
 
-			X509Certificate[] certificates = Cryptography.loadCertificates(inputStream);
+			PEMTuple tuple = Cryptography.loadPEM(inputStream);
 
-			if(certificates.length == 0) {
-				throw new Exception("invalid CA crt");
+			if(tuple.x.length == 0) {
+				throw new Exception("no private key in  `" + fileName + "`");
 			}
 
-			caCrt = certificates[0];
+			if(tuple.z.length == 0) {
+				throw new Exception("no certificate in  `" + fileName + "`");
+			}
+
+			caKey = tuple.x[0];
+			caCrt = tuple.z[0];
 
 		} catch(Exception e) {
-			throw new Exception("no CA crt provided");
+			throw new Exception("could not open `" + fileName + "`: " + e.getMessage());
 		}
 
 		/*-----------------------------------------------------------------*/

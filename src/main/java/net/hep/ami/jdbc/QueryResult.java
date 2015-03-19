@@ -33,13 +33,13 @@ public class QueryResult {
 		/* INITIALIZE DATA STRUCTURES                                      */
 		/*-----------------------------------------------------------------*/
 
-		final int numberOfColumn = resultSetMetaData.getColumnCount();
+		final int numberOfColumns = resultSetMetaData.getColumnCount();
 
-		m_tables = new String[numberOfColumn];
-		m_fields = new String[numberOfColumn];
-		m_types = new String[numberOfColumn];
+		m_tables = new String[numberOfColumns];
+		m_fields = new String[numberOfColumns];
+		m_types = new String[numberOfColumns];
 
-		for(int i = 0; i < numberOfColumn; i++) {
+		for(int i = 0; i < numberOfColumns; i++) {
 
 			m_tables[i] = resultSetMetaData.getTableName(i + 1);
 			m_fields[i] = resultSetMetaData.getColumnName(i + 1);
@@ -58,9 +58,9 @@ public class QueryResult {
 
 		while(resultSet.next()) {
 
-			String[] row = new String[numberOfColumn];
+			String[] row = new String[numberOfColumns];
 
-			for(int i = 0; i < numberOfColumn; i++) {
+			for(int i = 0; i < numberOfColumns; i++) {
 
 				/****/ if(m_types[i].equals("TIME")) {
 					/*-----------------------------------------------------*/
@@ -112,7 +112,7 @@ public class QueryResult {
 
 		int i = 0;
 
-		m_rows = new String[numberOfRows][numberOfColumn];
+		m_rows = new String[numberOfRows][numberOfColumns];
 
 		for(String[] row: linkedList) {
 
@@ -274,7 +274,7 @@ public class QueryResult {
 
 			result.append("<row>");
 
-			final int nr = row.length; for(int i = 0; i < nr; i++) result.append("<field table=\"" + m_tables[i] + "\" name=\"" + m_fields[i] + "\" type=\"" + m_types[i] + "\"><![CDATA[" + row[i] + "]]></field>");
+			final int numberOfRows = row.length; for(int i = 0; i < numberOfRows; i++) result.append("<field table=\"" + m_tables[i] + "\" name=\"" + m_fields[i] + "\" type=\"" + m_types[i] + "\"><![CDATA[" + row[i] + "]]></field>");
 
 			result.append("</row>");
 		}

@@ -167,13 +167,13 @@ public class ConfigSingleton {
 		/* GET NUMBER OF PROPERTIES                                        */
 		/*-----------------------------------------------------------------*/
 
-		final int nr = nodeList.getLength();
+		final int numberOfNodes = nodeList.getLength();
 
 		/*-----------------------------------------------------------------*/
 		/* ADD PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < nr; i++) {
+		for(int i = 0; i < numberOfNodes; i++) {
 
 			Node node = nodeList.item(i);
 
@@ -213,13 +213,13 @@ public class ConfigSingleton {
 		/* GET NUMBER OF PROPERTIES                                        */
 		/*-----------------------------------------------------------------*/
 
-		final int nr = queryResult.getNumberOfRows();
+		final int numberOfRows = queryResult.getNumberOfRows();
 
 		/*-----------------------------------------------------------------*/
 		/* ADD PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < nr; i++) {
+		for(int i = 0; i < numberOfRows; i++) {
 
 			m_properties.put(
 				queryResult.getValue(i, "name").trim()

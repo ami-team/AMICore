@@ -59,13 +59,13 @@ public class CatalogSingleton {
 		/* GET NUMBER OF CATALOGS                                          */
 		/*-----------------------------------------------------------------*/
 
-		final int nr = queryResult.getNumberOfRows();
+		final int numberOfRows = queryResult.getNumberOfRows();
 
 		/*-----------------------------------------------------------------*/
 		/* ADD CATALOGS                                                    */
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < nr; i++) {
+		for(int i = 0; i < numberOfRows; i++) {
 
 			try {
 				addCatalog(

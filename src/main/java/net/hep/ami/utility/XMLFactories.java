@@ -52,9 +52,9 @@ public class XMLFactories {
 
 		NamedNodeMap attributes = node.getAttributes();
 
-		final int nr = attributes.getLength();
+		final int numberOfAttributes = attributes.getLength();
 
-		for(int i = 0; i < nr; i++) {
+		for(int i = 0; i < numberOfAttributes; i++) {
 
 			Attr attr = (Attr) attributes.item(i);
 
