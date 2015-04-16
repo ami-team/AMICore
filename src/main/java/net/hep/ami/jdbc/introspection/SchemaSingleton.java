@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc;
+package net.hep.ami.jdbc.introspection;
 
 import java.sql.*;
 import java.util.*;

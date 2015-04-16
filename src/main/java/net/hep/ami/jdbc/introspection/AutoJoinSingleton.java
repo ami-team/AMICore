@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc;
+package net.hep.ami.jdbc.introspection;
 
 import java.util.*;
 import java.util.Map.*;
