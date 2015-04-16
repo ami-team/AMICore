@@ -66,7 +66,8 @@ public class AddElement extends CommandAbstractClass {
 
 			for(int i = 0; i < m_fields.length; i++) {
 
-				part1 = part1.concat(",`" + m_fields[i]/**********************/ + "`");
+				part1 = part1.concat(",`" + m_fields[i] + "`");
+
 				part2 = part2.concat(",'" + m_values[i].replaceFirst("'", "''") + "'");
 			}
 

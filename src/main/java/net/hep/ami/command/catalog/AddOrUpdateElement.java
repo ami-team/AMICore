@@ -36,7 +36,9 @@ public class AddOrUpdateElement extends CommandAbstractClass {
 		                                           : new String[] {}
 		;
 
-		m_where = arguments.get("where");
+		m_where = arguments.containsKey("where") ? arguments.get("where").trim()
+		                                         : ""
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -55,7 +57,11 @@ public class AddOrUpdateElement extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = "INSERT INTO `" + m_entity + "`";
+		StringBuilder stringBuilder = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		stringBuilder.append("INSERT INTO `" + m_entity + "`");
 
 		/*-----------------------------------------------------------------*/
 
@@ -74,15 +80,19 @@ public class AddOrUpdateElement extends CommandAbstractClass {
 				part3 = part3.concat(",`" + m_fields[i] + "`='" + m_values[i].replaceFirst("'", "''") + "'");
 			}
 
-			sql = sql.concat(" (" + part1.substring(1) + ") VALUES (" + part2.substring(1) + ") ON DUPLICATE KEY UPDATE " + part3.substring(1));
+			stringBuilder.append(" (" + part1.substring(1) + ") VALUES (" + part2.substring(1) + ") ON DUPLICATE KEY UPDATE " + part3.substring(1));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_where != null && m_where.isEmpty() == false) {
+		if(m_where.isEmpty() == false) {
 
-			sql = sql.concat(" WHERE " + m_where);
+			stringBuilder.append(" WHERE " + m_where);
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		String sql = stringBuilder.toString();
 
 		/*-----------------------------------------------------------------*/
 
@@ -90,7 +100,7 @@ public class AddOrUpdateElement extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[\n" + sql + "]]></sql><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

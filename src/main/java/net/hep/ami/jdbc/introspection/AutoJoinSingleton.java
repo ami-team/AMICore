@@ -152,7 +152,7 @@ public class AutoJoinSingleton {
 			/*-------------------------------------------------------------*/
 
 			_getList(joins, m_nojoin).add(
-				"`" + _column.getTable() + "`.`" + column + "`='" + value + "'"
+				"`" + _column.getTable() + "`.`" + column + "`='" + value.replace("'", "''") + "'"
 			);
 
 			/*-------------------------------------------------------------*/
@@ -239,7 +239,7 @@ public class AutoJoinSingleton {
 			/*-------------------------------------------------------------*/
 
 			_getList(joins, m_nojoin).add(
-				"`" + _column.getTable() + "`.`" + column + "`='" + value + "'"
+				"`" + _column.getTable() + "`.`" + column + "`='" + value.replace("'", "''") + "'"
 			);
 
 			/*-------------------------------------------------------------*/
