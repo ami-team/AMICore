@@ -11,8 +11,8 @@ public class AddElement extends CommandAbstractClass {
 	private String m_catalog;
 	private String m_entity;
 
-	private String m_fields[];
-	private String m_values[];
+	private String[] m_fields;
+	private String[] m_values;
 
 	/*---------------------------------------------------------------------*/
 
@@ -51,7 +51,11 @@ public class AddElement extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = "INSERT INTO `" + m_entity + "`";
+		StringBuilder stringBuilder = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		stringBuilder.append("INSERT INTO `" + m_entity + "`");
 
 		/*-----------------------------------------------------------------*/
 
@@ -66,8 +70,12 @@ public class AddElement extends CommandAbstractClass {
 				part2 = part2.concat(",'" + m_values[i].replaceFirst("'", "''") + "'");
 			}
 
-			sql = sql.concat(" (" + part1.substring(1) + ") VALUES (" + part2.substring(1) + ")");
+			stringBuilder.append(" (" + part1.substring(1) + ") VALUES (" + part2.substring(1) + ")");
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		String sql = stringBuilder.toString();
 
 		/*-----------------------------------------------------------------*/
 
@@ -75,7 +83,7 @@ public class AddElement extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

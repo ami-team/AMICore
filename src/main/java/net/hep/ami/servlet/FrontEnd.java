@@ -109,6 +109,7 @@ public class FrontEnd extends HttpServlet {
 			res.setContentType("text/xml");
 
 			writer.print(Templates.info("AMI is alive."));
+
 			writer.close();
 
 			return;
@@ -209,14 +210,7 @@ public class FrontEnd extends HttpServlet {
 		res.setContentType(mime);
 
 		writer.print(data);
-/*
-		Enumeration<String> hh = req.getAttributeNames();
 
-		while(hh.hasMoreElements()) {
-
-			writer.print("\n" + hh.nextElement());
-		}
-*/
 		/*-----------------------------------------------------------------*/
 		/* CLOSE WRITER                                                    */
 		/*-----------------------------------------------------------------*/
@@ -417,14 +411,23 @@ public class FrontEnd extends HttpServlet {
 			 ) {
 				AMIUser = (String) session.getAttribute("AMIUser_credential");
 				AMIPass = (String) session.getAttribute("AMIPass_credential");
-			}
 
-			if(AMIUser == null || AMIUser.isEmpty()
-			   ||
-			   AMIPass == null || AMIPass.isEmpty()
-			 ) {
-				AMIUser = m_guest_user;
-				AMIPass = m_guest_pass;
+				if(AMIUser == null || AMIUser.isEmpty()
+				   ||
+				   AMIPass == null || AMIPass.isEmpty()
+				 ) {
+					AMIUser = m_guest_user;
+					AMIPass = m_guest_pass;
+				}
+			} else {
+
+				if(AMIUser.isEmpty()
+				   ||
+				   AMIPass.isEmpty()
+				 ) {
+					AMIUser = m_guest_user;
+					AMIPass = m_guest_pass;
+				}
 			}
 
 			session.setAttribute("AMIUser_credential", AMIUser);

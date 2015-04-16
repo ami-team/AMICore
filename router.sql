@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `router_node` (
  `node` varchar(128) NOT NULL,
  `url` varchar(512) NOT NULL,
  `service` varchar(128) NOT NULL
-) AUTO_INCREMENT=1 ;
+) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_node`
  ADD UNIQUE KEY `id_UNIQUE` (`id`);
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `router_catalog` (
  `pass` varchar(128) NOT NULL,
  `archived` int(1) NOT NULL DEFAULT '0',
  `jsonSerialization` text
-) AUTO_INCREMENT=1 ;
+) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_catalog`
  ADD UNIQUE KEY `id_UNIQUE` (`id`);
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `router_role` (
  `id` int(11) NOT NULL,
  `role` varchar(128) NOT NULL,
  `parent` int(11) NOT NULL
-) AUTO_INCREMENT=1 ;
+) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_role`
  ADD PRIMARY KEY (`role`),
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `router_command` (
  `command` varchar(128) NOT NULL,
  `class` text NOT NULL,
  `archived` int(1) NOT NULL DEFAULT '0'
-) AUTO_INCREMENT=1 ;
+) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_command`
  ADD PRIMARY KEY (`command`),
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `router_command_role` (
  `command` int(11) NOT NULL,
  `role` int(11) NOT NULL,
  `roleValidatorClass` text
-) AUTO_INCREMENT=1 ;
+) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_command_role`
  ADD PRIMARY KEY (`command`,`role`),
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `router_user` (
  `lastName` varchar(128) NOT NULL,
  `email` varchar(128) NOT NULL,
  `valid` int(1) NOT NULL DEFAULT '1'
-) AUTO_INCREMENT=1 ;
+) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_user`
  ADD PRIMARY KEY (`AMIUser`),
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `router_user_role` (
  `user` int(11) NOT NULL,
  `role` int(11) NOT NULL,
  `roleValidatorClass` text
-) AUTO_INCREMENT=1 ;
+) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_user_role`
  ADD PRIMARY KEY (`user`,`role`),
@@ -166,5 +166,22 @@ ALTER TABLE `router_user_role`
  ADD CONSTRAINT `USER_ROLE_FK` FOREIGN KEY (`role`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
--- --------------------------------------------------------
 
+DROP TABLE IF EXISTS `router_search_criteria`;
+
+CREATE TABLE IF NOT EXISTS `router_search_criteria` (
+  `interface` int(11) NOT NULL,
+  `catalog` varchar(128) NOT NULL,
+  `entity` varchar(128) NOT NULL,
+  `field` varchar(128) NOT NULL,
+  `type` int(2) NOT NULL DEFAULT '0'
+);
+
+ALTER TABLE `router_search_criteria`
+ ADD PRIMARY KEY (`catalog`,`entity`,`field`);
+
+ALTER TABLE `router_search_criteria`
+ ADD CONSTRAINT `INTERFACE_INTERFACE_FK` FOREIGN KEY ("interface") REFERENCES "router_search_interface" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- --------------------------------------------------------
+-- --------------------------------------------------------

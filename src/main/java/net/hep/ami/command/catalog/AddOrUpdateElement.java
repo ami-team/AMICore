@@ -11,8 +11,8 @@ public class AddOrUpdateElement extends CommandAbstractClass {
 	private String m_catalog;
 	private String m_entity;
 
-	private String m_fields[];
-	private String m_values[];
+	private String[] m_fields;
+	private String[] m_values;
 
 	private String m_where;
 

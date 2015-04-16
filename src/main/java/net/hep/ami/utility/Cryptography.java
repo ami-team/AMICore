@@ -13,6 +13,7 @@ import org.bouncycastle.cert.*;
 import org.bouncycastle.cert.jcajce.*;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
+
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
@@ -360,7 +361,7 @@ public class Cryptography {
 		/* CREATE X509 BUILDER                                             */
 		/*-----------------------------------------------------------------*/
 
-		javax.security.auth.x500.X500Principal x500clientDN = new javax.security.auth.x500.X500Principal(subject);
+		javax.security.auth.x500.X500Principal clientDN = new javax.security.auth.x500.X500Principal(subject);
 
 		BigInteger serial = BigInteger.valueOf(System.currentTimeMillis());
 
@@ -371,11 +372,11 @@ public class Cryptography {
 		Date date2 = calendar.getTime();
 
 		X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(
-			x500clientDN,
+			clientDN,
 			serial,
 			date1,
 			date2,
-			x500clientDN,
+			clientDN,
 			publicKey
 		);
 
@@ -404,12 +405,12 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate generateCertificate(PrivateKey CAKey, X509Certificate CACrt, PublicKey publicKey, String subject, int validity) throws Exception {
+	public static X509Certificate generateCertificate(PrivateKey CAPrivateKey, X509Certificate CACertificate, PublicKey publicKey, String subject, int validity) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 BUILDER                                             */
 		/*-----------------------------------------------------------------*/
 
-		javax.security.auth.x500.X500Principal x500clientDN = new javax.security.auth.x500.X500Principal(subject);
+		javax.security.auth.x500.X500Principal clientDN = new javax.security.auth.x500.X500Principal(subject);
 
 		BigInteger serial = BigInteger.valueOf(System.currentTimeMillis());
 
@@ -420,11 +421,11 @@ public class Cryptography {
 		Date date2 = calendar.getTime();
 
 		X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(
-			CACrt,
+			CACertificate,
 			serial,
 			date1,
 			date2,
-			x500clientDN,
+			clientDN,
 			publicKey
 		);
 
@@ -435,17 +436,17 @@ public class Cryptography {
 		// Basic Constraints
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(false));
 
-		// Authority Key Identifier
-		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(CACrt));
-
 		// Subject Key Identifier
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.14"), false, new JcaX509ExtensionUtils().createSubjectKeyIdentifier(publicKey));
+
+		// Authority Key Identifier
+		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(CACertificate));
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 CERTIFICATE                                         */
 		/*-----------------------------------------------------------------*/
 
-		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider(BC).build(CAKey);
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider(BC).build(CAPrivateKey);
 
 		return new JcaX509CertificateConverter().setProvider(BC).getCertificate(
 			builder.build(contentSigner)
@@ -514,12 +515,13 @@ public class Cryptography {
 				result.append("\n");
 
 				break;
+
+			} else {
+				result.append(string.substring(i, j));
+				result.append("\n");
+
+				i = j;
 			}
-
-			result.append(string.substring(i, j));
-			result.append("\n");
-
-			i = j;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -544,7 +546,7 @@ public class Cryptography {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CHECK DRAFT_RFC PROXY                                           */
+		/* CHECK RFC_DRAFT PROXY                                           */
 		/*-----------------------------------------------------------------*/
 
 		data = certificate.getExtensionValue("1.3.6.1.4.1.3536.1.222");
@@ -557,7 +559,7 @@ public class Cryptography {
 		/* CHECK VOMS PROXY                                                */
 		/*-----------------------------------------------------------------*/
 
-		String[] parts = certificate.getSubjectX500Principal().getName().split(",");
+		String[] parts = certificate.getSubjectX500Principal().getName("RFC2253").split(",");
 
 		for(String part: parts) {
 
@@ -580,7 +582,9 @@ public class Cryptography {
 
 		StringBuilder result = new StringBuilder();
 
-		for(String part: principal.getName("RFC2253").split(",")) {
+		String[] parts = principal.getName("RFC2253").split(",");
+
+		for(String part: parts) {
 
 			result.insert(0, "/" + part);
 		}

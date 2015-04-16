@@ -5,23 +5,19 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 
-public class SearchQuery extends CommandAbstractClass {
+public class ListFields extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
-
-	private String m_sql;
-	private String m_glite;
+	private String m_entity;
 
 	/*---------------------------------------------------------------------*/
 
-	public SearchQuery(Map<String, String> arguments, int transactionID) {
+	public ListFields(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
-
-		m_sql = arguments.get("sql");
-		m_glite = arguments.get("glite");
+		m_entity = arguments.get("entity");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -29,38 +25,51 @@ public class SearchQuery extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		if(m_catalog == null || (m_sql == null && m_glite == null)) {
-
+		if(m_catalog == null
+		   ||
+		   m_entity == null
+		 ) {
 			throw new Exception("invalid usage");
 		}
 
-		TransactionalQuerier transactionalQuerier = getQuerier(m_catalog);
+		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult;
+		result.append("<Result><rowset>");
 
-		if(m_sql != null) {
-			queryResult = transactionalQuerier.executeSQLQuery(m_sql);
-		} else {
-			queryResult = transactionalQuerier.executeGLiteQuery(m_glite);
+		/*-----------------------------------------------------------------*/
+
+		for(String field: SchemaSingleton.getColumnNames(m_catalog, m_entity)) {
+
+			result.append(
+				"<row>"
+				+
+				"<field name=\"field\">" + field + "</field>"
+				+
+				"</row>"
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return queryResult.toStringBuilder();
+		result.append("</rowset></Result>");
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "Execute a simple SQL or gLite query.";
+		return "List fields.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
-		return "-catalog=\"value\" (-sql=\"value\" | -glite=\"value\")";
+		return "-catalog=\"value\" -entity=\"value\"";
 	}
 
 	/*---------------------------------------------------------------------*/

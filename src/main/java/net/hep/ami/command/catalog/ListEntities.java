@@ -3,7 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.SchemaSingleton;
+import net.hep.ami.jdbc.*;
 
 public class ListEntities extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -28,10 +28,6 @@ public class ListEntities extends CommandAbstractClass {
 			throw new Exception("invalid usage");
 		}
 
-		if(m_catalog.equals("self")) {
-
-		}
-
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -40,7 +36,7 @@ public class ListEntities extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(String entity: SchemaSingleton.getTableList(m_catalog)) {
+		for(String entity: SchemaSingleton.getTableNames(m_catalog)) {
 
 			result.append(
 				"<row>"
@@ -63,7 +59,7 @@ public class ListEntities extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
-		return "List Entities.";
+		return "List entities.";
 	}
 
 	/*---------------------------------------------------------------------*/

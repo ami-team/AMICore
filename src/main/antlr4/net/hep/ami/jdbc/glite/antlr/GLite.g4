@@ -66,7 +66,7 @@ expressionTerm
 	;
 
 expressionSubTerm
-	: '-' expressionSubSubTerm
+	: ('+' | '-') expressionSubSubTerm
 	| expressionSubSubTerm
 	;
 

@@ -58,7 +58,6 @@ public class TransactionPoolSingleton {
 		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog));
 		/**/		}
 		/**/	}
-
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -103,7 +102,6 @@ public class TransactionPoolSingleton {
 		/**/			transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
 		/**/		}
 		/**/	}
-
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -128,7 +126,6 @@ public class TransactionPoolSingleton {
 		/**/	if(transaction != null) {
 		/**/		m_pools.remove(transactionID);
 		/**/	}
-
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -163,7 +160,6 @@ public class TransactionPoolSingleton {
 		/**/	if(transaction != null) {
 		/**/		m_pools.remove(transactionID);
 		/**/	}
-
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -11,8 +11,8 @@ public class RemoveElements extends CommandAbstractClass {
 	private String m_catalog;
 	private String m_entity;
 
-	private String m_keyFields[];
-	private String m_keyValues[];
+	private String[] m_keyFields;
+	private String[] m_keyValues;
 
 	private String m_where;
 
@@ -36,7 +36,9 @@ public class RemoveElements extends CommandAbstractClass {
 		                                                 : new String[] {}
 		;
 
-		m_where = arguments.get("where");
+		m_where = arguments.containsKey("where") ? arguments.get("where").trim()
+		                                         : ""
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -55,32 +57,59 @@ public class RemoveElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = "DELETE FROM `" + m_entity + "`";
+		StringBuilder stringBuilder = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
+
+		stringBuilder.append("DELETE FROM `" + m_entity + "`");
+
+		/*-----------------------------------------------------------------*/
+
+		boolean wherePresent = false;
 
 		if(m_keyFields.length > 0) {
 
-			String part = "";
+			Map<String, List<String>> joins = new HashMap<String, List<String>>();
 
 			for(int i = 0; i < m_keyFields.length; i++) {
 
-				part = part.concat(",`" + m_keyFields[i] + "`='" + m_keyValues[i].replaceFirst("'", "''") + "'");
+				AutoJoinSingleton.resolveWithNestedSelect(
+					joins,
+					m_catalog,
+					m_entity,
+					m_keyFields[i],
+					m_keyValues[i]
+				);
 			}
 
-			sql = sql.concat(" WHERE (" + part.substring(1) + ")");
+			/*-------------------------------------------------------------*/
+
+			String where = AutoJoinSingleton.joinsToSQL(joins).where;
+
+			if(where.isEmpty() == false) {
+
+				stringBuilder.append(" WHERE " + where);
+
+				wherePresent = true;
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_where != null && m_where.isEmpty() == false) {
+		if(m_where.isEmpty() == false) {
 
-			if(m_keyFields.length > 0) {
-				sql = sql.concat(" AND (" + m_where + ")");
+			if(wherePresent) {
+				stringBuilder.append(" AND (" + m_where + ")");
 			} else {
-				sql = sql.concat(" WHERE (" + m_where + ")");
+				stringBuilder.append(" WHERE (" + m_where + ")");
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		String sql = stringBuilder.toString();
 
 		/*-----------------------------------------------------------------*/
 
@@ -88,7 +117,7 @@ public class RemoveElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

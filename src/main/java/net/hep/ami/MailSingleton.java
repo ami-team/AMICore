@@ -69,8 +69,8 @@ public class MailSingleton {
 
 		message.setFrom(new InternetAddress(from));
 
-        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-        message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+		message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+		message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
 		message.setSubject(subject);
 		message.setText(text);
 
