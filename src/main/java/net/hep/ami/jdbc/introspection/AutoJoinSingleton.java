@@ -220,11 +220,11 @@ public class AutoJoinSingleton {
 					/*-----------------------------------------------------*/
 
 					_getList(joins, m_nojoin).add(
-							"`" + frgnKey.m_fkTable + "`.`" + frgnKey.m_fkColumn + "`"
-							+ "="
-							+ "("
-							+ "SELECT `" + frgnKey.m_pkTable + "`.`" + frgnKey.m_pkColumn + "` FROM `" + frgnKey.m_pkTable + "`" + sqlParts.from + " WHERE " + sqlParts.where
-							+ ")"
+						"`" + frgnKey.m_fkTable + "`.`" + frgnKey.m_fkColumn + "`"
+						+ "="
+						+ "("
+						+ "SELECT `" + frgnKey.m_pkTable + "`.`" + frgnKey.m_pkColumn + "` FROM `" + frgnKey.m_pkTable + "`" + sqlParts.from + " WHERE " + sqlParts.where
+						+ ")"
 					);
 
 					/*-----------------------------------------------------*/
