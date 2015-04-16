@@ -23,6 +23,19 @@ public class AutoJoinSingleton {
 
 	/*---------------------------------------------------------------------*/
 
+	public static class ColVal {
+
+		public String column;
+		public String value;
+
+		public ColVal(String _column, String _value) {
+			column = _column;
+			value = _value;
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static SQLParts joinsToSQL(Map<String, List<String>> joins) {
 
 		/**/ String  joinKey;
@@ -70,7 +83,6 @@ public class AutoJoinSingleton {
 		/*-----------------------------------------------------------------*/
 
 		if(level > maxLevel) {
-
 			return false;
 		}
 
@@ -95,13 +107,9 @@ public class AutoJoinSingleton {
 			String joinKey;
 			String joinValue;
 
-			SchemaSingleton.FrgnKey frgnKey;
-
 			Map<String, List<String>> tempJoins;
 
-			for(Entry<String, SchemaSingleton.FrgnKey> entry: fgnKeys.entrySet()) {
-
-				frgnKey = entry.getValue();
+			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values()) {
 
 				tempJoins = new HashMap<String, List<String>>();
 
@@ -174,7 +182,6 @@ public class AutoJoinSingleton {
 		/*-----------------------------------------------------------------*/
 
 		if(level > maxLevel) {
-
 			return false;
 		}
 
@@ -198,13 +205,9 @@ public class AutoJoinSingleton {
 		 ) {
 			SQLParts sqlParts;
 
-			SchemaSingleton.FrgnKey frgnKey;
-
 			Map<String, List<String>> tempJoins;
 
-			for(Entry<String, SchemaSingleton.FrgnKey> entry: fgnKeys.entrySet()) {
-
-				frgnKey = entry.getValue();
+			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values()) {
 
 				tempJoins = new HashMap<String, List<String>>();
 
@@ -302,6 +305,19 @@ public class AutoJoinSingleton {
 				throw new Exception("could not resolve foreign key");
 			}
 		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static ColVal resolveID(String catalog, String table, String column, String value) throws Exception {
+
+		Map<String, List<String>> joins = new HashMap<String, List<String>>();
+
+		resolveWithNestedSelect(joins, catalog, table, column, value, 10);
+
+ 		String[] colVal = joins.get(m_nojoin).get(0).split("=", 2);
+
+		return new ColVal(colVal[0], colVal[1]);
 	}
 
 	/*---------------------------------------------------------------------*/

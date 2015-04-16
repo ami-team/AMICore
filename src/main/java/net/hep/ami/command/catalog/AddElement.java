@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.introspection.*;
 
 public class AddElement extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -64,11 +65,15 @@ public class AddElement extends CommandAbstractClass {
 			String part1 = "";
 			String part2 = "";
 
+			AutoJoinSingleton.ColVal colVal;
+
 			for(int i = 0; i < m_fields.length; i++) {
 
-				part1 = part1.concat(",`" + m_fields[i] + "`");
+				colVal = AutoJoinSingleton.resolveID(m_catalog, m_entity, m_fields[i], m_values[i]);
 
-				part2 = part2.concat(",'" + m_values[i].replaceFirst("'", "''") + "'");
+				part1 = part1.concat("," + colVal.column);
+
+				part2 = part2.concat("," + colVal.value);
 			}
 
 			stringBuilder.append(" (" + part1.substring(1) + ") VALUES (" + part2.substring(1) + ")");
