@@ -17,6 +17,7 @@
 
   <properties>
     <mail.version>1.5.2</mail.version>
+    <saxon.version>9.6.0-5</saxon.version>
     <bouncycastle.version>1.51</bouncycastle.version>
     <antlr.version>4.5</antlr.version>
     <mysql.version>5.1.34</mysql.version>
@@ -46,6 +47,14 @@
 
       </exclusions>
 
+    </dependency>
+
+    <!--******************************************************************-->
+
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>${saxon.version}</version>
     </dependency>
 
     <!--******************************************************************-->

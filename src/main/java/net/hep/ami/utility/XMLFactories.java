@@ -4,8 +4,10 @@ import java.io.*;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
 import javax.xml.transform.stream.*;
+
+import net.sf.saxon.*;
+import net.sf.saxon.dom.*;
 
 import org.w3c.dom.*;
 
@@ -14,10 +16,10 @@ public class XMLFactories {
 
 	public static Document newDocument(InputStream inputStream) throws Exception {
 
-		try {
-			DocumentBuilderFactory documentBuilderFactory = (DocumentBuilderFactory) DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilderFactory = new DocumentBuilderImpl();
 
-			return documentBuilderFactory.newDocumentBuilder().parse(inputStream);
+		try {
+			return documentBuilderFactory.parse(inputStream);
 
 		} finally {
 			inputStream.close();
@@ -28,9 +30,9 @@ public class XMLFactories {
 
 	public static Templates newTemplates(InputStream inputStream) throws Exception {
 
-		try {
-			SAXTransformerFactory transformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
+		TransformerFactory transformerFactory = new TransformerFactoryImpl();
 
+		try {
 			return transformerFactory.newTemplates(new StreamSource(inputStream));
 
 		} finally {
@@ -42,35 +44,28 @@ public class XMLFactories {
 
 	public static String getAttribute(Node node, String name) {
 
-		return getAttribute(node, name, "");
+		Node attr = node.getAttributes().getNamedItem(name);
+
+		return attr != null ? attr.getNodeValue()
+		                    : ""
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String getAttribute(Node node, String name, String defaultValue) {
 
-		NamedNodeMap attributes = node.getAttributes();
+		Node attr = node.getAttributes().getNamedItem(name);
 
-		final int numberOfAttributes = attributes.getLength();
-
-		for(int i = 0; i < numberOfAttributes; i++) {
-
-			Attr attr = (Attr) attributes.item(i);
-
-			String attrName = attr.getNodeName().trim();
-			String attrValue = attr.getNodeValue().trim();
-
-			if(attrName.equals(name)) {
-				return attrValue;
-			}
-		}
-
-		return defaultValue;
+		return attr != null ? attr.getNodeValue()
+		                    : defaultValue
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String getContent(Node node) {
+
 		return node.getTextContent().trim();
 	}
 
