@@ -3,7 +3,7 @@ package net.hep.ami.jdbc.introspection;
 import java.util.*;
 import java.util.Map.*;
 
-import net.hep.ami.ConfigSingleton;
+import net.hep.ami.*;
 
 public class AutoJoinSingleton {
 	/*---------------------------------------------------------------------*/
@@ -81,7 +81,7 @@ public class AutoJoinSingleton {
 
 	private static boolean _resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, String value, int level, int maxLevel) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* CHECK LEVEL                                                     */
 		/*-----------------------------------------------------------------*/
 
 		if(level > maxLevel) {
@@ -89,14 +89,14 @@ public class AutoJoinSingleton {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET COLUMNS AND FOREIGN KEYS                                    */
 		/*-----------------------------------------------------------------*/
 
 		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(catalog, table);
 		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(catalog, table);
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		SchemaSingleton.Column _column = columns.get(column);
@@ -106,13 +106,13 @@ public class AutoJoinSingleton {
 			String joinKey;
 			String joinValue;
 
-			Map<String, List<String>> tempJoins;
+			Map<String, List<String>> temp;
 
 			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values()) {
 
-				tempJoins = new HashMap<String, List<String>>();
+				temp = new HashMap<String, List<String>>();
 
-				if(_resolveWithInnerJoins(tempJoins, catalog, frgnKey.m_pkTable, column, value, level + 1, maxLevel)) {
+				if(_resolveWithInnerJoins(temp, catalog, frgnKey.m_pkTable, column, value, level + 1, maxLevel)) {
 					/*-----------------------------------------------------*/
 					/*                                                     */
 					/*-----------------------------------------------------*/
@@ -140,7 +140,7 @@ public class AutoJoinSingleton {
 					/*                                                     */
 					/*-----------------------------------------------------*/
 
-					for(Entry<String, List<String>> entry2: tempJoins.entrySet()) {
+					for(Entry<String, List<String>> entry2: temp.entrySet()) {
 
 						_getList(joins, entry2.getKey()).addAll(
 							entry2.getValue()
@@ -155,7 +155,7 @@ public class AutoJoinSingleton {
 
 		} else {
 			/*-------------------------------------------------------------*/
-			/*                                                             */
+			/* TRIVIAL CASE                                                */
 			/*-------------------------------------------------------------*/
 
 			_getList(joins, "@").add(
@@ -177,7 +177,7 @@ public class AutoJoinSingleton {
 	private static boolean _resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, String value, int level, int maxLevel) throws Exception {
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* CHECK LEVEL                                                     */
 		/*-----------------------------------------------------------------*/
 
 		if(level > maxLevel) {
@@ -185,14 +185,14 @@ public class AutoJoinSingleton {
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET COLUMNS AND FOREIGN KEYS                                    */
 		/*-----------------------------------------------------------------*/
 
 		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(catalog, table);
 		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(catalog, table);
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		SchemaSingleton.Column _column = columns.get(column);
@@ -201,18 +201,18 @@ public class AutoJoinSingleton {
 
 			SQLJoins sqlParts;
 
-			Map<String, List<String>> tempJoins;
+			Map<String, List<String>> temp;
 
 			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values()) {
 
-				tempJoins = new HashMap<String, List<String>>();
+				temp = new HashMap<String, List<String>>();
 
-				if(_resolveWithInnerJoins(tempJoins, catalog, frgnKey.m_pkTable, column, value, level + 1, maxLevel)) {
+				if(_resolveWithInnerJoins(temp, catalog, frgnKey.m_pkTable, column, value, level + 1, maxLevel)) {
 					/*-----------------------------------------------------*/
 					/*                                                     */
 					/*-----------------------------------------------------*/
 
-					sqlParts = joinsToSQL(tempJoins);
+					sqlParts = joinsToSQL(temp);
 
 					/*-----------------------------------------------------*/
 					/*                                                     */
@@ -234,7 +234,7 @@ public class AutoJoinSingleton {
 
 		} else {
 			/*-------------------------------------------------------------*/
-			/*                                                             */
+			/* TRIVIAL CASE                                                */
 			/*-------------------------------------------------------------*/
 
 			_getList(joins, "@").add(
@@ -279,15 +279,24 @@ public class AutoJoinSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static SQLFieldValue resolveID(String catalog, String table, String column, String value, int maxLevel) throws Exception {
+	public static SQLFieldValue resolveFieldValue(String catalog, String table, String column, String value, int maxLevel) throws Exception {
+		/*-----------------------------------------------------------------*/
+		/* RESOLVE JOINS                                                   */
+		/*-----------------------------------------------------------------*/
 
 		Map<String, List<String>> joins = new HashMap<String, List<String>>();
 
 		resolveWithNestedSelect(joins, catalog, table, column, value, maxLevel);
 
+		/*-----------------------------------------------------------------*/
+		/* EXTRACT FIELD AND VALUE                                         */
+		/*-----------------------------------------------------------------*/
+
  		String[] colVal = joins.get("@").get(0).split("=", 2);
 
 		return new SQLFieldValue(colVal[0], colVal[1]);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -308,7 +317,7 @@ public class AutoJoinSingleton {
 
 	public static SQLFieldValue resolveFieldValue(String catalog, String table, String column, String value) throws Exception {
 
-		return resolveID(catalog, table, column, value, m_maxLevel);
+		return resolveFieldValue(catalog, table, column, value, m_maxLevel);
 	}
 
 	/*---------------------------------------------------------------------*/
