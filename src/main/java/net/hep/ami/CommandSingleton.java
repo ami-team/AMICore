@@ -215,7 +215,7 @@ public class CommandSingleton {
 
 			/*-------------------------------------------------------------*/
 		} else {
-			result = Templates.help(
+			result = XMLTemplates.help(
 				tuple.x,
 				tuple.y
 			);

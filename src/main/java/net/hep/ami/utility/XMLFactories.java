@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
+import javax.xml.transform.sax.*;
 import javax.xml.transform.stream.*;
 
 import org.w3c.dom.*;
@@ -11,16 +12,12 @@ import org.w3c.dom.*;
 public class XMLFactories {
 	/*---------------------------------------------------------------------*/
 
-	private static final DocumentBuilderFactory m_documentBuilderFactory = DocumentBuilderFactory.newInstance();
-
-	private static final   TransformerFactory     m_transformerFactory   =   TransformerFactory.newInstance()  ;
-
-	/*---------------------------------------------------------------------*/
-
 	public static Document newDocument(InputStream inputStream) throws Exception {
 
 		try {
-			return m_documentBuilderFactory.newDocumentBuilder().parse(inputStream);
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+
+			return documentBuilderFactory.newDocumentBuilder().parse(inputStream);
 
 		} finally {
 			inputStream.close();
@@ -29,10 +26,12 @@ public class XMLFactories {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Transformer newTransformer(InputStream inputStream) throws Exception {
+	public static Templates newTemplates(InputStream inputStream) throws Exception {
 
 		try {
-			return m_transformerFactory.newTransformer(new StreamSource(inputStream));
+			SAXTransformerFactory transformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
+
+			return transformerFactory.newTemplates(new StreamSource(inputStream));
 
 		} finally {
 			inputStream.close();

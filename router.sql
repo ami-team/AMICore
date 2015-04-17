@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `router_search_criteria` (
 );
 
 ALTER TABLE `router_search_criteria`
- ADD PRIMARY KEY (`catalog`,`entity`,`field`);
+ ADD PRIMARY KEY (`interfaceFK`,`catalog`,`entity`,`field`);
 
 ALTER TABLE `router_search_criteria`
  ADD CONSTRAINT `INTERFACE_INTERFACE_FK` FOREIGN KEY ("interfaceFK") REFERENCES "router_search_interface" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

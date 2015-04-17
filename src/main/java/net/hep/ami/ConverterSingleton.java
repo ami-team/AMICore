@@ -14,9 +14,9 @@ import org.w3c.dom.*;
 public class ConverterSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple2<Transformer, String> {
+	private static class Tuple extends Tuple2<Templates, String> {
 
-		public Tuple(Transformer _x, String _y) {
+		public Tuple(Templates _x, String _y) {
 			super(_x, _y);
 		}
 	}
@@ -90,7 +90,7 @@ public class ConverterSingleton {
 			/* PARSE FILE                                                  */
 			/*-------------------------------------------------------------*/
 
-			Transformer transformer = XMLFactories.newTransformer(inputStream);
+			Templates templates = XMLFactories.newTemplates(inputStream);
 
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTER                                               */
@@ -100,7 +100,7 @@ public class ConverterSingleton {
 				new File(xslt).getName()
 				,
 				new Tuple(
-					transformer,
+					templates,
 					mime
 				)
 			);
@@ -131,7 +131,7 @@ public class ConverterSingleton {
 		Source source = new StreamSource(reader);
 		Result target = new StreamResult(writer);
 
-		tuple.x.transform(source, target);
+		tuple.x.newTransformer().transform(source, target);
 
 		/*-----------------------------------------------------------------*/
 		/* RETURN MIME                                                     */

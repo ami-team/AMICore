@@ -1,6 +1,6 @@
 package net.hep.ami;
 
-public class Templates {
+public class XMLTemplates {
 	/*---------------------------------------------------------------------*/
 
 	public static String info(String message) {
