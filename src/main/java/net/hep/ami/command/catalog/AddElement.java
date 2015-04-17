@@ -65,13 +65,13 @@ public class AddElement extends CommandAbstractClass {
 			String part1 = "";
 			String part2 = "";
 
-			AutoJoinSingleton.ColVal colVal;
+			AutoJoinSingleton.SQLFieldValue colVal;
 
 			for(int i = 0; i < m_fields.length; i++) {
 
-				colVal = AutoJoinSingleton.resolveID(m_catalog, m_entity, m_fields[i], m_values[i]);
+				colVal = AutoJoinSingleton.resolveFieldValue(m_catalog, m_entity, m_fields[i], m_values[i]);
 
-				part1 = part1.concat("," + colVal.column);
+				part1 = part1.concat("," + colVal.field);
 
 				part2 = part2.concat("," + colVal.value);
 			}

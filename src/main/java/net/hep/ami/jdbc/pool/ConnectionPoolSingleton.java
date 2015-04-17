@@ -10,15 +10,15 @@ import org.apache.tomcat.jdbc.pool.*;
 public class ConnectionPoolSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static final int m_initialSizeDefault = 10;
-	private static final int m_maxActiveDefault = 100;
-	private static final int m_minIdleDefault = 10;
-	private static final int m_maxIdleDefault = 100;
+	private static final int m_initialSize = ConfigSingleton.getProperty("initial_size", 10);
+	private static final int m_maxActive = ConfigSingleton.getProperty("max_active", 100);
+	private static final int m_minIdle = ConfigSingleton.getProperty("min_idle", 10);
+	private static final int m_maxIdle = ConfigSingleton.getProperty("max_idle", 100);
 
-	private static final int m_timeBetweenEvictionRunsMillisDefault = 5000;
-	private static final int m_minEvictableIdleTimeMillisDefault = 30000;
-	private static final int m_validationIntervalDefault = 30000;
-	private static final int m_maxWaitDefault = 10000;
+	private static final int m_timeBetweenEvictionRunsMillis = ConfigSingleton.getProperty("time_between_eviction_runs_millis", 5000);
+	private static final int m_minEvictableIdleTimeMillis = ConfigSingleton.getProperty("min_evictable_idle_time_millis", 30000);
+	private static final int m_validationInterval = ConfigSingleton.getProperty("validation_interval", 30000);
+	private static final int m_maxWait = ConfigSingleton.getProperty("max_wait", 10000);
 
 	/*---------------------------------------------------------------------*/
 
@@ -29,13 +29,23 @@ public class ConnectionPoolSingleton {
 	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass) throws Exception {
 
 		return getDataSource(
-			/* DATABASE */
-			jdbc_driver,
-			jdbc_url,
-			user,
-			pass
+				/* DATABASE */
+				jdbc_driver,
+				jdbc_url,
+				user,
+				pass,
+				/* POOL - CONTENT */
+				m_initialSize,
+				m_maxActive,
+				m_minIdle,
+				m_maxIdle,
+				/* POOL - TIMING */
+				m_timeBetweenEvictionRunsMillis,
+				m_minEvictableIdleTimeMillis,
+				m_validationInterval,
+				m_maxWait
 
-		).getConnection();
+			).getConnection();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -73,15 +83,15 @@ public class ConnectionPoolSingleton {
 			user,
 			pass,
 			/* POOL - CONTENT */
-			ConfigSingleton.getProperty("initial_size", m_initialSizeDefault),
-			ConfigSingleton.getProperty("max_active", m_maxActiveDefault),
-			ConfigSingleton.getProperty("min_idle", m_minIdleDefault),
-			ConfigSingleton.getProperty("max_idle", m_maxIdleDefault),
+			m_initialSize,
+			m_maxActive,
+			m_minIdle,
+			m_maxIdle,
 			/* POOL - TIMING */
-			ConfigSingleton.getProperty("time_between_eviction_runs_millis", m_timeBetweenEvictionRunsMillisDefault),
-			ConfigSingleton.getProperty("min_evictable_idle_time_millis", m_minEvictableIdleTimeMillisDefault),
-			ConfigSingleton.getProperty("validation_interval", m_validationIntervalDefault),
-			ConfigSingleton.getProperty("max_wait", m_maxWaitDefault)
+			m_timeBetweenEvictionRunsMillis,
+			m_minEvictableIdleTimeMillis,
+			m_validationInterval,
+			m_maxWait
 		);
 	}
 

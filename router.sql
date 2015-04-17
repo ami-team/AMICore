@@ -55,28 +55,25 @@ ALTER TABLE `router_catalog`
 ALTER TABLE `router_catalog`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
--- date ou order
-
 -- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `router_role`;
 
 CREATE TABLE IF NOT EXISTS `router_role` (
  `id` int(11) NOT NULL,
- `role` varchar(128) NOT NULL,
- `parent` int(11) NOT NULL
+ `parentFK` int(11) NOT NULL,
+ `role` varchar(128) NOT NULL
 ) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_role`
  ADD PRIMARY KEY (`role`),
- ADD UNIQUE KEY `id_UNIQUE` (`id`),
- ADD KEY `PARENT_FK_idx` (`parent`);
+ ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 ALTER TABLE `router_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `router_role`
- ADD CONSTRAINT `ROLE_PARENT_FK` FOREIGN KEY (`parent`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ ADD CONSTRAINT `ROLE_PARENT_FK` FOREIGN KEY (`parentFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 
@@ -102,22 +99,21 @@ DROP TABLE IF EXISTS `router_command_role`;
 
 CREATE TABLE IF NOT EXISTS `router_command_role` (
  `id` int(11) NOT NULL,
- `command` int(11) NOT NULL,
- `role` int(11) NOT NULL,
+ `commandFK` int(11) NOT NULL,
+ `roleFK` int(11) NOT NULL,
  `roleValidatorClass` text
 ) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_command_role`
- ADD PRIMARY KEY (`command`,`role`),
- ADD UNIQUE KEY `id_UNIQUE` (`id`),
- ADD KEY `COMMAND_ROLE_FK_idx` (`role`);
+ ADD PRIMARY KEY (`commandFK`,`roleFK`),
+ ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 ALTER TABLE `router_command_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `router_command_role`
- ADD CONSTRAINT `COMMAND_COMMAND_FK` FOREIGN KEY (`command`) REFERENCES `router_command` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
- ADD CONSTRAINT `COMMAND_ROLE_FK`   FOREIGN KEY (`role`)     REFERENCES `router_role`    (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ ADD CONSTRAINT `COMMAND_COMMAND_FK` FOREIGN KEY (`commandFK`) REFERENCES `router_command` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ ADD CONSTRAINT `COMMAND_ROLE_FK`    FOREIGN KEY (`roleFK`)    REFERENCES `router_role`    (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 
@@ -148,29 +144,28 @@ DROP TABLE IF EXISTS `router_user_role`;
 
 CREATE TABLE IF NOT EXISTS `router_user_role` (
  `id` int(11) NOT NULL,
- `user` int(11) NOT NULL,
- `role` int(11) NOT NULL,
+ `userFK` int(11) NOT NULL,
+ `roleFK` int(11) NOT NULL,
  `roleValidatorClass` text
 ) AUTO_INCREMENT=1;
 
 ALTER TABLE `router_user_role`
- ADD PRIMARY KEY (`user`,`role`),
- ADD UNIQUE KEY `id_UNIQUE` (`id`),
- ADD KEY `USER_ROLE_FK_idx` (`role`);
+ ADD PRIMARY KEY (`userFK`,`roleFK`),
+ ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 ALTER TABLE `router_user_role`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `router_user_role`
- ADD CONSTRAINT `USER_USER_FK` FOREIGN KEY (`user`) REFERENCES `router_user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
- ADD CONSTRAINT `USER_ROLE_FK` FOREIGN KEY (`role`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ ADD CONSTRAINT `USER_USER_FK` FOREIGN KEY (`userFK`) REFERENCES `router_user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ ADD CONSTRAINT `USER_ROLE_FK` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `router_search_criteria`;
 
 CREATE TABLE IF NOT EXISTS `router_search_criteria` (
-  `interface` int(11) NOT NULL,
+  `interfaceFK` int(11) NOT NULL,
   `catalog` varchar(128) NOT NULL,
   `entity` varchar(128) NOT NULL,
   `field` varchar(128) NOT NULL,
@@ -181,7 +176,7 @@ ALTER TABLE `router_search_criteria`
  ADD PRIMARY KEY (`catalog`,`entity`,`field`);
 
 ALTER TABLE `router_search_criteria`
- ADD CONSTRAINT `INTERFACE_INTERFACE_FK` FOREIGN KEY ("interface") REFERENCES "router_search_interface" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ ADD CONSTRAINT `INTERFACE_INTERFACE_FK` FOREIGN KEY ("interfaceFK") REFERENCES "router_search_interface" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 -- --------------------------------------------------------
