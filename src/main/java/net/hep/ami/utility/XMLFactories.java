@@ -15,7 +15,7 @@ public class XMLFactories {
 	public static Document newDocument(InputStream inputStream) throws Exception {
 
 		try {
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory documentBuilderFactory = (DocumentBuilderFactory) DocumentBuilderFactory.newInstance();
 
 			return documentBuilderFactory.newDocumentBuilder().parse(inputStream);
 

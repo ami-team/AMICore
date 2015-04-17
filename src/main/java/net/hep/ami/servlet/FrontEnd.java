@@ -108,7 +108,7 @@ public class FrontEnd extends HttpServlet {
 
 			res.setContentType("text/xml");
 
-			writer.print(Templates.info("AMI is alive."));
+			writer.print(XMLTemplates.info("AMI is alive."));
 
 			writer.close();
 
@@ -166,12 +166,12 @@ public class FrontEnd extends HttpServlet {
 
 				/*---------------------------------------------------------*/
 			} catch(Exception e) {
-				data = Templates.error(
+				data = XMLTemplates.error(
 					e.getMessage()
 				);
 			}
 		} else {
-			data = Templates.error(
+			data = XMLTemplates.error(
 				"config error"
 			);
 		}
@@ -193,7 +193,7 @@ public class FrontEnd extends HttpServlet {
 				data = stringWriter.toString();
 
 			} catch(Exception e) {
-				data = Templates.error(
+				data = XMLTemplates.error(
 					e.getMessage()
 				);
 
