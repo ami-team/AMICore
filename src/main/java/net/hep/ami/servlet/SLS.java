@@ -176,9 +176,9 @@ public class SLS extends HttpServlet {
 		HttpURLConnection httpURLConnection;
 
 		if(mode.equals("soft")) {
-			httpURLConnection = HttpConnectionFactory.openTLSConnection(nodeURL.trim() + "?Command=" + "Ping" + "");
+			httpURLConnection = HttpConnectionFactory.tlsConnection(nodeURL.trim() + "?Command=" + "Ping" + "");
 		} else {
-			httpURLConnection = HttpConnectionFactory.openTLSConnection(nodeURL.trim() + "?Command=GetSessionInfo");
+			httpURLConnection = HttpConnectionFactory.tlsConnection(nodeURL.trim() + "?Command=GetSessionInfo");
 		}
 
 		try {

@@ -124,12 +124,14 @@ public class RemoveElements extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Remove elements.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? (-keyFields=\"comma_separated_values\" -keyValues=\"comma_separated_values\")? (-where=\"value\")?";
 	}
 

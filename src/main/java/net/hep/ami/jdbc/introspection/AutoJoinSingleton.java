@@ -112,20 +112,20 @@ public class AutoJoinSingleton {
 
 				temp = new HashMap<String, List<String>>();
 
-				if(_resolveWithInnerJoins(temp, catalog, frgnKey.m_pkTable, column, value, level + 1, maxLevel)) {
+				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, value, level + 1, maxLevel)) {
 					/*-----------------------------------------------------*/
 					/*                                                     */
 					/*-----------------------------------------------------*/
 
-					joinKey = " INNER JOIN `" + frgnKey.m_pkTable + "`";
+					joinKey = " INNER JOIN `" + frgnKey.pkTable + "`";
 
 					/*-----------------------------------------------------*/
 					/*                                                     */
 					/*-----------------------------------------------------*/
 
-					joinValue = "`" + frgnKey.m_fkTable + "`.`" + frgnKey.m_fkColumn + "`"
+					joinValue = "`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`"
 					            + "=" +
-					            "`" + frgnKey.m_pkTable + "`.`" + frgnKey.m_pkColumn + "`"
+					            "`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`"
 					;
 
 					/*-----------------------------------------------------*/
@@ -159,7 +159,7 @@ public class AutoJoinSingleton {
 			/*-------------------------------------------------------------*/
 
 			_getList(joins, "@").add(
-				"`" + _column.getTable() + "`.`" + column + "`='" + value.replace("'", "''") + "'"
+				"`" + _column.table + "`.`" + column + "`='" + value.replace("'", "''") + "'"
 			);
 
 			/*-------------------------------------------------------------*/
@@ -207,7 +207,7 @@ public class AutoJoinSingleton {
 
 				temp = new HashMap<String, List<String>>();
 
-				if(_resolveWithInnerJoins(temp, catalog, frgnKey.m_pkTable, column, value, level + 1, maxLevel)) {
+				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, value, level + 1, maxLevel)) {
 					/*-----------------------------------------------------*/
 					/*                                                     */
 					/*-----------------------------------------------------*/
@@ -219,10 +219,10 @@ public class AutoJoinSingleton {
 					/*-----------------------------------------------------*/
 
 					_getList(joins, "@").add(
-						"`" + frgnKey.m_fkTable + "`.`" + frgnKey.m_fkColumn + "`"
+						"`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`"
 						+ "="
 						+ "("
-						+ "SELECT `" + frgnKey.m_pkTable + "`.`" + frgnKey.m_pkColumn + "` FROM `" + frgnKey.m_pkTable + "`" + sqlParts.from + " WHERE " + sqlParts.where
+						+ "SELECT `" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "` FROM `" + frgnKey.pkTable + "`" + sqlParts.from + " WHERE " + sqlParts.where
 						+ ")"
 					);
 
@@ -238,7 +238,7 @@ public class AutoJoinSingleton {
 			/*-------------------------------------------------------------*/
 
 			_getList(joins, "@").add(
-				"`" + _column.getTable() + "`.`" + column + "`='" + value.replace("'", "''") + "'"
+				"`" + _column.table + "`.`" + column + "`='" + value.replace("'", "''") + "'"
 			);
 
 			/*-------------------------------------------------------------*/

@@ -6,10 +6,17 @@ import java.util.regex.*;
 public class CommandParser {
 	/*---------------------------------------------------------------------*/
 
-	public static class CommandParserTuple extends Tuple2<String, Map<String, String>> {
+	public static class CommandParserTuple {
 
-		public CommandParserTuple(String _x, Map<String, String> _y) {
-			super(_x, _y);
+		public String command;
+
+		public Map<String, String> arguments;
+
+		public CommandParserTuple(String _command, Map<String, String> _arguments) {
+
+			command = _command;
+
+			arguments = _arguments;
 		}
 	}
 

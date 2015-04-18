@@ -54,12 +54,14 @@ public class SearchQuery extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Execute a simple SQL or gLite query.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-catalog=\"value\" (-sql=\"value\" | -glite=\"value\")";
 	}
 

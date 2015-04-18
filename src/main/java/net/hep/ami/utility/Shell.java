@@ -5,10 +5,19 @@ import java.io.*;
 public class Shell {
 	/*---------------------------------------------------------------------*/
 
-	public static class ShellTuple extends Tuple3<Integer, StringBuilder, StringBuilder> {
+	public static class ShellTuple {
 
-		public ShellTuple(int _x, StringBuilder _y, StringBuilder _z) {
-			super(_x, _y, _z);
+		public Integer errorCode;
+
+		public StringBuilder inputStringBuilder;
+		public StringBuilder errorStringBuilder;
+
+		public ShellTuple(int _errorCode, StringBuilder _inputStringBuilder, StringBuilder _errorStringBuilder) {
+
+			errorCode = _errorCode;
+
+			inputStringBuilder = _inputStringBuilder;
+			errorStringBuilder = _errorStringBuilder;
 		}
 	}
 

@@ -48,6 +48,7 @@ public class FindCommands extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Find commands by introspection";
 	}
 

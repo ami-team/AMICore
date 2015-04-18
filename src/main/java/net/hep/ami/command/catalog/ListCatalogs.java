@@ -23,6 +23,7 @@ public class ListCatalogs extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "List catalogs.";
 	}
 

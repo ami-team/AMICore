@@ -63,12 +63,14 @@ public class ListFields extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "List fields.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-catalog=\"value\" -entity=\"value\"";
 	}
 

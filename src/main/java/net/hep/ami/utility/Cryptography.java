@@ -275,10 +275,19 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static class PEMTuple extends Tuple3<PrivateKey[], PublicKey[], X509Certificate[]>{
+	public static class PEMTuple {
 
-		public PEMTuple(PrivateKey[] _x, PublicKey[] _y, X509Certificate[] _z) {
-			super(_x, _y, _z);
+		public PrivateKey[] privateKeys;
+		public PublicKey[] publicKeys;
+
+		public X509Certificate[] x509Certificates;
+
+		public PEMTuple(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates) {
+
+			privateKeys = _privateKeys;
+			publicKeys = _publicKeys;
+
+			x509Certificates = _x509Certificates;
 		}
 	}
 

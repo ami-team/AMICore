@@ -121,12 +121,14 @@ public class GenerateAuthority extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Generate CA certificates.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-country=\"value\" -locality=\"value\" -organization=\"value\" -organizationalUnit=\"value\" -commonName=\"value\"";
 	}
 

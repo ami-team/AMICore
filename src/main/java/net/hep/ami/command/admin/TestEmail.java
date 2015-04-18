@@ -44,12 +44,14 @@ public class TestEmail extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Check email.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "(-from=\"value\")? (-to=\"value\")? (-cc=\"value\")?";
 	}
 

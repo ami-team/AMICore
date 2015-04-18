@@ -7,7 +7,7 @@ import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.Cryptography.PEMTuple;
+import net.hep.ami.utility.Cryptography.*;
 
 public class GenerateCertificate extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -82,16 +82,16 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 			PEMTuple tuple = Cryptography.loadPEM(inputStream);
 
-			if(tuple.x.length == 0) {
+			if(tuple.privateKeys.length == 0) {
 				throw new Exception("no private key in  `" + fileName + "`");
 			}
 
-			if(tuple.z.length == 0) {
+			if(tuple.x509Certificates.length == 0) {
 				throw new Exception("no certificate in  `" + fileName + "`");
 			}
 
-			caKey = tuple.x[0];
-			caCrt = tuple.z[0];
+			caKey = tuple.privateKeys[0];
+			caCrt = tuple.x509Certificates[0];
 
 		} catch(Exception e) {
 			throw new Exception("could not open `" + fileName + "`: " + e.getMessage());
@@ -192,12 +192,14 @@ public class GenerateCertificate extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Generate client or server certificates.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-country=\"value\" -locality=\"value\" -organization=\"value\" -organizationalUnit=\"value\" -commonName=\"value\" -password=\"value\"";
 	}
 

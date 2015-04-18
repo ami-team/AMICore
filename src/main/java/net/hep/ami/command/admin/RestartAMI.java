@@ -29,6 +29,7 @@ public class RestartAMI extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Restart AMI.";
 	}
 

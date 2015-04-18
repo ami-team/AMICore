@@ -114,6 +114,7 @@ public class GetSessionInfo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Get session information.";
 	}
 

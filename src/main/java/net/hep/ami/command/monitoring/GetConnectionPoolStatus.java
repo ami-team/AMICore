@@ -27,6 +27,7 @@ public class GetConnectionPoolStatus extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Get connection pool status.";
 	}
 

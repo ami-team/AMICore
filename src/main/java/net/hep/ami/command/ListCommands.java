@@ -22,6 +22,7 @@ public class ListCommands extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "List commands.";
 	}
 

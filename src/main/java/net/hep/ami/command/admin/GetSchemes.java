@@ -23,6 +23,7 @@ public class GetSchemes extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Get database schemas.";
 	}
 

@@ -143,7 +143,7 @@ public class ConfigSingleton {
 		/*-----------------------------------------------------------------*/
 
 		m_configPathName = file.getParentFile().getPath();
-		m_configFileName = file.getPath();
+		m_configFileName = file        .        getPath();
 
 		/*-----------------------------------------------------------------*/
 		/* GET INPUT STREAM                                                */

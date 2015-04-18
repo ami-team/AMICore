@@ -59,12 +59,14 @@ public class ListEntities extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "List entities.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-catalog=\"value\"";
 	}
 

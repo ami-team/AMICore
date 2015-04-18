@@ -77,6 +77,7 @@ public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Add new user.";
 	}
 

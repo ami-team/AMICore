@@ -7,7 +7,7 @@ import javax.net.ssl.*;
 public class HttpConnectionFactory {
 	/*---------------------------------------------------------------------*/
 
-	public static HttpURLConnection openSSLConnection(String spec) throws Exception {
+	public static HttpURLConnection sslConnection(String spec) throws Exception {
 
 		URL url = new URL(spec);
 
@@ -23,7 +23,7 @@ public class HttpConnectionFactory {
 
 	/*---------------------------------------------------------------------*/
 
-	public static HttpURLConnection openTLSConnection(String spec) throws Exception {
+	public static HttpURLConnection tlsConnection(String spec) throws Exception {
 
 		URL url = new URL(spec);
 

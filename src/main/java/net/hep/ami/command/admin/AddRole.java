@@ -71,12 +71,14 @@ public class AddRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Add role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-role=\"value\" (-parent=\"value\")?";
 	}
 

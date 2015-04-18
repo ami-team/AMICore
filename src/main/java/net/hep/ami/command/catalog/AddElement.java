@@ -65,15 +65,15 @@ public class AddElement extends CommandAbstractClass {
 			String part1 = "";
 			String part2 = "";
 
-			AutoJoinSingleton.SQLFieldValue colVal;
+			AutoJoinSingleton.SQLFieldValue fieldValue;
 
 			for(int i = 0; i < m_fields.length; i++) {
 
-				colVal = AutoJoinSingleton.resolveFieldValue(m_catalog, m_entity, m_fields[i], m_values[i]);
+				fieldValue = AutoJoinSingleton.resolveFieldValue(m_catalog, m_entity, m_fields[i], m_values[i]);
 
-				part1 = part1.concat("," + colVal.field);
+				part1 = part1.concat("," + fieldValue.field);
 
-				part2 = part2.concat("," + colVal.value);
+				part2 = part2.concat("," + fieldValue.value);
 			}
 
 			stringBuilder.append(" (" + part1.substring(1) + ") VALUES (" + part2.substring(1) + ")");
@@ -95,12 +95,14 @@ public class AddElement extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Add element.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? -fields=\"comma_separated_values\" -values=\"comma_separated_values\"";
 	}
 

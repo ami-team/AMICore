@@ -8,208 +8,67 @@ public class SchemaSingleton {
 	/*---------------------------------------------------------------------*/
 
 	public static class Column {
-		/*-----------------------------------------------------------------*/
 
-		public String m_internalName;
-		public String m_catalog;
-		public String m_table;
-		public String m_name;
-		public String m_type;
-		public int m_size;
+		public String internalName;
+		public String catalog;
+		public String table;
+		public String name;
+		public String type;
+		public int size;
 
-		/*-----------------------------------------------------------------*/
+		public Column(String _internalName, String _catalog, String _table, String _name, String _type, int _size) {
 
-		public Column(String internalName, String catalog, String table, String name, String type, int size) {
-
-			m_internalName = internalName;
-			m_catalog = catalog;
-			m_table = table;
-			m_name = name;
-			m_type = type;
-			m_size = size;
+			internalName = _internalName;
+			catalog = _catalog;
+			table = _table;
+			name = _name;
+			type = _type;
+			size = _size;
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getinternalName() {
-
-			return m_internalName;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getCatalog() {
-
-			return m_catalog;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getTable() {
-
-			return m_table;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getName() {
-
-			return m_name;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getType() {
-
-			return m_type;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public int getSize() {
-
-			return m_size;
-		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static class FrgnKey {
-		/*-----------------------------------------------------------------*/
 
-		public String m_catalog;
-		public String m_name;
-		public String m_fkTable;
-		public String m_fkColumn;
-		public String m_pkTable;
-		public String m_pkColumn;
+		public String catalog;
+		public String name;
+		public String fkTable;
+		public String fkColumn;
+		public String pkTable;
+		public String pkColumn;
 
-		/*-----------------------------------------------------------------*/
+		public FrgnKey(String _catalog, String _name, String _fkTable, String _fkColumn, String _pkTable, String _pkColumn) {
 
-		public FrgnKey(String catalog, String name, String fkTable, String fkColumn, String pkTable, String pkColumn) {
-
-			m_catalog = catalog;
-			m_name = name;
-			m_fkTable = fkTable;
-			m_fkColumn = fkColumn;
-			m_pkTable = pkTable;
-			m_pkColumn = pkColumn;
+			catalog = _catalog;
+			name = _name;
+			fkTable = _fkTable;
+			fkColumn = _fkColumn;
+			pkTable = _pkTable;
+			pkColumn = _pkColumn;
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getCatalog() {
-
-			return m_catalog;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getName() {
-
-			return m_name;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getmFKTable() {
-
-			return m_fkTable;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getFKColumn() {
-
-			return m_fkColumn;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getPKTable() {
-
-			return m_pkTable;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getPKColumn() {
-
-			return m_pkColumn;
-		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static class Index {
-		/*-----------------------------------------------------------------*/
 
-		public String m_catalog;
-		public String m_table;
-		public String m_name;
-		public String m_type;
-		public String m_column;
-		public int m_position;
+		public String catalog;
+		public String table;
+		public String name;
+		public String type;
+		public String column;
+		public int position;
 
-		/*-----------------------------------------------------------------*/
+		public Index(String _catalog, String _table, String _name, String _type, String _column, int _position) {
 
-		public Index(String catalog, String table, String name, String type, String column, int position) {
-
-			m_catalog = catalog;
-			m_table = table;
-			m_name = name;
-			m_type = type;
-			m_column = column;
-			m_position = position;
+			catalog = _catalog;
+			table = _table;
+			name = _name;
+			type = _type;
+			column = _column;
+			position = _position;
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getCatalog() {
-
-			return m_catalog;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getTable() {
-
-			return m_table;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getName() {
-
-			return m_name;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getType() {
-
-			return m_type;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String getColumn() {
-
-			return m_column;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public int getPosition() {
-
-			return m_position;
-		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -479,17 +338,17 @@ public class SchemaSingleton {
 					result.append(
 						"<row>"
 						+
-						"<field name=\"internalName\">" + entry3.getValue().m_internalName + "</field>"
+						"<field name=\"internalName\">" + entry3.getValue().internalName + "</field>"
 						+
-						"<field name=\"catalog\">" + entry3.getValue().m_catalog + "</field>"
+						"<field name=\"catalog\">" + entry3.getValue().catalog + "</field>"
 						+
-						"<field name=\"table\">" + entry3.getValue().m_table + "</field>"
+						"<field name=\"table\">" + entry3.getValue().table + "</field>"
 						+
-						"<field name=\"name\">" + entry3.getValue().m_name + "</field>"
+						"<field name=\"name\">" + entry3.getValue().name + "</field>"
 						+
-						"<field name=\"type\">" + entry3.getValue().m_type + "</field>"
+						"<field name=\"type\">" + entry3.getValue().type + "</field>"
 						+
-						"<field name=\"size\">" + entry3.getValue().m_size + "</field>"
+						"<field name=\"size\">" + entry3.getValue().size + "</field>"
 						+
 						"</row>"
 					);
@@ -512,15 +371,15 @@ public class SchemaSingleton {
 					result.append(
 						"<row>"
 						+
-						"<field name=\"catalog\">" + entry3.getValue().m_catalog + "</field>"
+						"<field name=\"catalog\">" + entry3.getValue().catalog + "</field>"
 						+
-						"<field name=\"fkTable\">" + entry3.getValue().m_fkTable + "</field>"
+						"<field name=\"fkTable\">" + entry3.getValue().fkTable + "</field>"
 						+
-						"<field name=\"fkColumn\">" + entry3.getValue().m_fkColumn + "</field>"
+						"<field name=\"fkColumn\">" + entry3.getValue().fkColumn + "</field>"
 						+
-						"<field name=\"pkTable\">" + entry3.getValue().m_pkTable + "</field>"
+						"<field name=\"pkTable\">" + entry3.getValue().pkTable + "</field>"
 						+
-						"<field name=\"pkColumn\">" + entry3.getValue().m_pkColumn + "</field>"
+						"<field name=\"pkColumn\">" + entry3.getValue().pkColumn + "</field>"
 						+
 						"</row>"
 					);
@@ -543,17 +402,17 @@ public class SchemaSingleton {
 					result.append(
 						"<row>"
 						+
-						"<field name=\"catalog\">" + entry3.m_catalog + "</field>"
+						"<field name=\"catalog\">" + entry3.catalog + "</field>"
 						+
-						"<field name=\"table\">" + entry3.m_table + "</field>"
+						"<field name=\"table\">" + entry3.table + "</field>"
 						+
-						"<field name=\"name\">" + entry3.m_name + "</field>"
+						"<field name=\"name\">" + entry3.name + "</field>"
 						+
-						"<field name=\"type\">" + entry3.m_type + "</field>"
+						"<field name=\"type\">" + entry3.type + "</field>"
 						+
-						"<field name=\"column\">" + entry3.m_column + "</field>"
+						"<field name=\"column\">" + entry3.column + "</field>"
 						+
-						"<field name=\"position\">" + entry3.m_position + "</field>"
+						"<field name=\"position\">" + entry3.position + "</field>"
 						+
 						"</row>"
 					);

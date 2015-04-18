@@ -154,14 +154,14 @@ public class FrontEnd extends HttpServlet {
 				CommandParser.CommandParserTuple result = CommandParser.parse(command);
 
 				updateSessionAndCommandArgs(
-					result.y,
+					result.arguments,
 					session,
 					req
 				);
 
 				data = CommandSingleton.executeCommand(
-					result.x,
-					result.y
+					result.command,
+					result.arguments
 				);
 
 				/*---------------------------------------------------------*/

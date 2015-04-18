@@ -26,6 +26,7 @@ public class GetConfig extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Show configuration.";
 	}
 

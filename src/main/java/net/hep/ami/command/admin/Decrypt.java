@@ -6,6 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
 public class Decrypt extends CommandAbstractClass {
+	/*---------------------------------------------------------------------*/
 
 	private String m_string;
 
@@ -36,12 +37,14 @@ public class Decrypt extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
+
 		return "Decrypt a string.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
+
 		return "-string=\"value\"";
 	}
 
