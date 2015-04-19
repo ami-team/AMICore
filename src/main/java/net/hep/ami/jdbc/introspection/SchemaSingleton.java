@@ -9,16 +9,16 @@ public class SchemaSingleton {
 
 	public static class Column {
 
-		public String internalName;
+		public String internalCatalogName;
 		public String catalog;
 		public String table;
 		public String name;
 		public String type;
 		public int size;
 
-		public Column(String _internalName, String _catalog, String _table, String _name, String _type, int _size) {
+		public Column(String _internalCatalogName, String _catalog, String _table, String _name, String _type, int _size) {
 
-			internalName = _internalName;
+			internalCatalogName = _internalCatalogName;
 			catalog = _catalog;
 			table = _table;
 			name = _name;
@@ -338,7 +338,7 @@ public class SchemaSingleton {
 					result.append(
 						"<row>"
 						+
-						"<field name=\"internalName\">" + entry3.getValue().internalName + "</field>"
+						"<field name=\"internalName\">" + entry3.getValue().internalCatalogName + "</field>"
 						+
 						"<field name=\"catalog\">" + entry3.getValue().catalog + "</field>"
 						+
