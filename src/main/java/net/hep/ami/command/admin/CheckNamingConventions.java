@@ -55,7 +55,7 @@ public class CheckNamingConventions extends CommandAbstractClass {
 					   &&
 					   m_regex.matcher(column.name).matches() == false
 					 ) {
-						result.append("Column name `" + column.table + "`.`" + column.name + "` should be in Kamel caps.\\n");
+						result.append("Column name `" + column.table + "`.`" + column.name + "` should be in lowerCamelCase.\\n");
 					} else {
 						score1++;
 					}
