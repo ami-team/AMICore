@@ -9,23 +9,23 @@ import net.hep.ami.utility.*;
 public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private String m_login;
-	private String m_password;
+	private static final String m_emptyDN = Cryptography.encrypt("");
+
+	/*---------------------------------------------------------------------*/
+
+	private String m_amiLogin;
+	private String m_amiPassword;
 	private String m_firstName;
 	private String m_lastName;
 	private String m_email;
 
 	/*---------------------------------------------------------------------*/
 
-	private static final String m_emptyDN = Cryptography.encrypt("");
-
-	/*---------------------------------------------------------------------*/
-
 	public AddUser(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
-		m_login = arguments.get("amiLogin");
-		m_password = arguments.get("amiPassword");
+		m_amiLogin = arguments.get("amiLogin");
+		m_amiPassword = arguments.get("amiPassword");
 		m_firstName = arguments.get("firstName");
 		m_lastName = arguments.get("lastName");
 		m_email = arguments.get("email");
@@ -36,30 +36,30 @@ public class AddUser extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		if(m_login.isEmpty()
+		if(m_amiLogin == null
 		   ||
-		   m_password.isEmpty()
+		   m_amiPassword == null
 		   ||
-		   m_firstName.isEmpty()
+		   m_firstName == null
 		   ||
-		   m_lastName.isEmpty()
+		   m_lastName == null
 		   ||
-		   m_email.isEmpty()
+		   m_email == null
 		 ) {
 			throw new Exception("invalid usage");
 		}
 
-		m_password = Cryptography.encrypt(m_password);
+		/*-----------------------------------------------------------------*/
 
 		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
-		/* ADD USER                                                        */
-		/*-----------------------------------------------------------------*/
+
+		m_amiPassword = Cryptography.encrypt(m_amiPassword);
 
 		String sql = String.format("INSERT INTO `router_user` (`AMIUser`,`AMIPass`,`clientDN`,`issuerDN`,`firstName`,`lastName`,`email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
-			m_login.replace("'", "''"),
-			m_password,
+			m_amiLogin.replace("'", "''"),
+			m_amiPassword.replace("'", "''"),
 			m_emptyDN,
 			m_emptyDN,
 			m_firstName.replace("'", "''"),
@@ -79,6 +79,13 @@ public class AddUser extends CommandAbstractClass {
 	public static String help() {
 
 		return "Add new user.";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String usage() {
+
+		return "-amiLogin=\"value\" -amiPassword=\"value\" -firstName=\"value\" -lastName=\"value\" -email=\"value\"";
 	}
 
 	/*---------------------------------------------------------------------*/

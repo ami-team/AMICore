@@ -162,6 +162,10 @@ ALTER TABLE `router_user_role`
 
 -- --------------------------------------------------------
 
+
+
+-- --------------------------------------------------------
+
 DROP TABLE IF EXISTS `router_search_criteria`;
 
 CREATE TABLE IF NOT EXISTS `router_search_criteria` (

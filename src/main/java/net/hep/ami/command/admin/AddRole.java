@@ -8,19 +8,19 @@ import net.hep.ami.jdbc.*;
 public class AddRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private String m_role;
 	private String m_parent;
+	private String m_role;
 
 	/*---------------------------------------------------------------------*/
 
 	public AddRole(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
-		m_role = arguments.get("role");
-
 		m_parent = arguments.containsKey("parent") ? arguments.get("parent")
 		                                           : "AMI_guest_role"
 		;
+
+		m_role = arguments.get("role");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -28,11 +28,11 @@ public class AddRole extends CommandAbstractClass {
 	@Override
 	public StringBuilder main() throws Exception {
 
-		if(m_role.isEmpty()) {
+		if(m_role == null) {
 			throw new Exception("invalid usage");
 		}
 
-		String sql;
+		/*-----------------------------------------------------------------*/
 
 		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
@@ -40,28 +40,28 @@ public class AddRole extends CommandAbstractClass {
 		/* GET PARENT ID                                                   */
 		/*-----------------------------------------------------------------*/
 
-		sql = String.format("SELECT `id` FROM `router_role` WHERE `role`='%s'",
+		String sql1 = String.format("SELECT `id` FROM `router_role` WHERE `role`='%s'",
 			m_parent.replace("'", "''")
 		);
 
-		QueryResult queryResult = transactionalQuerier.executeSQLQuery(sql);
+		QueryResult queryResult = transactionalQuerier.executeSQLQuery(sql1);
 
 		if(queryResult.getNumberOfRows() != 1) {
 			throw new Exception("unknown role `" + m_parent + "`");
 		}
 
-		String id = queryResult.getValue(0, 0);
+		String parentID = queryResult.getValue(0, 0);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		sql = String.format("INSERT INTO `router_role` (`role`,`parent`) VALUES ('%s',%s)",
-			m_role.replace("'", "''"),
-			id
+		String sql2 = String.format("INSERT INTO `router_role` (`parentFK`,`role`) VALUES ('%s','%s')",
+			parentID.replace("'", "''"),
+			m_role.replace("'", "''")
 		);
 
-		transactionalQuerier.executeUpdate(sql);
+		transactionalQuerier.executeUpdate(sql2);
 
 		/*-----------------------------------------------------------------*/
 
@@ -79,7 +79,7 @@ public class AddRole extends CommandAbstractClass {
 
 	public static String usage() {
 
-		return "-role=\"value\" (-parent=\"value\")?";
+		return "(-parent=\"value\")? -role=\"value\"";
 	}
 
 	/*---------------------------------------------------------------------*/
