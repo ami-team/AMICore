@@ -162,7 +162,19 @@ ALTER TABLE `router_user_role`
 
 -- --------------------------------------------------------
 
+DROP TABLE IF EXISTS `router_search_interface`;
 
+CREATE TABLE "router_search_interface" (
+  `id` int(11) NOT NULL,
+  `interface` varchar(128) NOT NULL,
+  `catalog` varchar(128) NOT NULL,
+  `entity` varchar(128) NOT NULL,
+  `archived` int(1) NOT NULL DEFAULT '0',
+);
+
+ALTER TABLE `router_search_interface`
+ ADD PRIMARY KEY ("interface"),
+ ADD UNIQUE KEY "id_UNIQUE" ("id");
 
 -- --------------------------------------------------------
 
