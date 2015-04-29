@@ -13,7 +13,7 @@ options {
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT columnList (WHERE condition)? ';'?
+	: SELECT columns=columnList (WHERE expression=expressionOr)? ';'?
 	;
 
 /*---------------------------*/
@@ -25,68 +25,62 @@ columnList
 	;
 
 column
-	: ID '.' '*'                                    # ColumnAll
-	| expression (AS ID)?                           # ColumnOne
+	: tableName=ID '.' '*'                                                     # ColumnWildcard
+	| expression=expressionOr (AS alias=ID)?                                   # ColumnExpression
 	;
 
 /*---------------------------*/
-/* CONDITION                 */
+/* expressionOr              */
 /*---------------------------*/
 
-condition
-	: conditionTerm (OR conditionTerm)*
-	;
-
-conditionTerm
-	: conditionSubTerm (AND conditionSubTerm)*
-	;
-
-conditionSubTerm
-  : '!' conditionSubSubTerm
-  | conditionSubSubTerm
+expressionOr
+  : expressionAnd (OR expressionAnd)*
   ;
 
-conditionSubSubTerm
-	: '(' condition ')'                             # ConditionSubSubTermGroup
-	| expression COMPARISON_OPERATOR expression     # ConditionSubSubTermComparisonOperator
-	| expression LIKE sqlLiteral                    # ConditionSubSubTermLike
-	| expression IN sqlLiteralList                  # ConditionSubSubTermIn
-	;
+expressionAnd
+  : expressionComp (AND expressionComp)*
+  ;
 
-/*---------------------------*/
-/* EXPRESSION                */
-/*---------------------------*/
+expressionComp
+  : expressionAddSub (operator=COMP expressionAddSub)*
+  ;
 
-expression
-	: expressionTerm (('+' | '-') expressionTerm)*
-	;
+expressionAddSub
+  : expressionMulDiv (operator=('+' | '-') expressionMulDiv)*
+  ;
 
-expressionTerm
-	: expressionSubTerm (('*' | '/') expressionSubTerm)*
-	;
+expressionMulDiv
+  : expressionNotMinusPlus (operator=('*' | '/' | '%') expressionNotMinusPlus)*
+  ;
 
-expressionSubTerm
-	: ('+' | '-') expressionSubSubTerm
-	| expressionSubSubTerm
-	;
+expressionNotMinusPlus
+  : operator=('!' | '-' | '+')? expressionX
+  ;
 
-expressionSubSubTerm
-	: '(' expression ')'                            # ExpressionSubSubTermGroup
-	| FUNCTION '(' columnList ')'                   # ExpressionSubSubTermFunction
-	| sqlLiteral                                    # ExpressionSubSubTermSqlLiteral
-	| ID '.' ID                                     # ExpressionSubSubTermQualifiedId
-	;
+expressionX
+  : '(' expression=expressionOr ')'                                          # ExpressionGroup
+  | functionName=FUNCTION '(' expression=expressionOr ')'                    # ExpressionFunction
+  | literal=sqlLiteral                                                       # ExpressionLiteral
+  | tableName=ID '.' columnName=ID                                           # ExpressionQualifiedId
+  ;
+
+/*
+	| expression=expressionAddSub
+	                LIKE literal=sqlLiteral                                    # conditionLike
+	| expression=expressionAddSub
+	                 IN  '(' literals=sqlLiteralList ')'                       # conditionIn
+*/
 
 /*---------------------------*/
 /* SQL_LITERAL_LIST          */
 /*---------------------------*/
 
 sqlLiteralList
-	: '(' sqlLiteral (',' sqlLiteral)* ')'
+	: sqlLiteral (',' sqlLiteral)*
 	;
 
 sqlLiteral
-	: STRING | NUMBER | NULL
+	: NUMBER | STRING | NULL
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -131,8 +125,8 @@ NULL
 	: N U L L
 	;
 
-COMPARISON_OPERATOR
-	: '=' | '!=' | '^=' | '<>' | '<' | '>' | '<=' | '>='
+COMP
+	: '=' | '!=' | '^='| '<>' | '<' | '>' | '<=' | '>='
 	;
 
 FUNCTION
@@ -142,23 +136,23 @@ FUNCTION
 	;
 
 /*---------------------------*/
-/* TOKENS                    */
+/* LITERALS                  */
 /*---------------------------*/
 
-ID
-	: [a-zA-Z_] [a-zA-Z_0-9]*
-	| '`' (~'`' | '``')+ '`'
-	| '"' (~'"' | '`"')+ '"'
-	;
+NUMBER
+  : DIGIT+ ('.' DIGIT*)? (E [-+]? DIGIT+)?
+  | '.' DIGIT+ (E [-+]? DIGIT+)?
+  ;
 
 STRING
 	: '\'' (~'\'' | '\'\'')* '\''
 	;
 
-NUMBER
-	: DIGIT+ ('.' DIGIT*)? (E [-+]? DIGIT+)?
-	| '.' DIGIT+ (E [-+]? DIGIT+)?
-	;
+ID
+  : [a-zA-Z_] [a-zA-Z_0-9]*
+  | '`' (~'`' | '``')+ '`'
+  | '"' (~'"' | '""')+ '"'
+  ;
 
 /*-------------------------------------------------------------------------*/
 

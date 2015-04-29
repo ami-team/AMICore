@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.glite.*;
 
 public class SearchQuery extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -43,7 +44,7 @@ public class SearchQuery extends CommandAbstractClass {
 		if(m_sql != null) {
 			queryResult = transactionalQuerier.executeSQLQuery(m_sql);
 		} else {
-			queryResult = transactionalQuerier.executeGLiteQuery(m_glite);
+			queryResult = transactionalQuerier.executeGLiteQuery(Parser.parse(m_glite));
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -73,7 +73,7 @@ public class UpdateElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("UPDATE `" + m_entity + "`");
+		stringBuilder.append("UPDATE `" + m_entity + "` SET ");
 
 		/*-----------------------------------------------------------------*/
 
@@ -86,7 +86,7 @@ public class UpdateElements extends CommandAbstractClass {
 				part = part.concat(",`" + m_fields[i] + "`='" + m_values[i].replaceFirst("'", "''") + "'");
 			}
 
-			stringBuilder.append(" SET " + part.substring(1));
+			stringBuilder.append(part.substring(1));
 		}
 
 		/*-----------------------------------------------------------------*/
