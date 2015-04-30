@@ -1,4 +1,4 @@
-all: stop clean build deploy start
+all: stop build deploy start
 	echo "done"
 
 build:
@@ -8,8 +8,8 @@ deploy:
 	rm -fr tomcat/logs/*
 	rm -fr tomcat/webapps/*
 
-	cp target/AMICore.war tomcat/webapps/AMI.war
-	cp ../QR/target/QRCode.war tomcat/webapps/QRCode.war
+	cp AMIWebCore/target/AMIWebCore-*.war tomcat/webapps/AMI.war
+#	cp ../QR/target/QRCode.war tomcat/webapps/QRCode.war
 
 stop:
 	./tomcat/bin/shutdown.sh
