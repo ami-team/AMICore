@@ -9,6 +9,7 @@ deploy:
 	rm -fr tomcat/webapps/*
 
 	cp target/AMICore.war tomcat/webapps/AMI.war
+	cp ../QR/target/QRCode.war tomcat/webapps/QRCode.war
 
 stop:
 	./tomcat/bin/shutdown.sh

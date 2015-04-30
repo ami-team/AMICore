@@ -3,13 +3,7 @@ package net.hep.ami.jdbc.introspection;
 import java.util.*;
 import java.util.Map.*;
 
-import net.hep.ami.*;
-
 public class AutoJoinSingleton {
-	/*---------------------------------------------------------------------*/
-
-	private static final int m_maxLevel = ConfigSingleton.getProperty("auto_join_max_level", 10);
-
 	/*---------------------------------------------------------------------*/
 
 	public static class SQLJoins {
@@ -69,6 +63,7 @@ public class AutoJoinSingleton {
 		List<String> result = map.get(key);
 
 		if(result == null) {
+
 			result = new ArrayList<String>();
 
 			map.put(key, result);
@@ -79,14 +74,18 @@ public class AutoJoinSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean _resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, String value, int level, int maxLevel) throws Exception {
+	private static boolean _resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, String value, Set<String> done) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* CHECK LEVEL                                                     */
+		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
 
-		if(level > maxLevel) {
+		String key = table + '.' + column;
+
+		if(done.contains(key)) {
 			return false;
 		}
+
+		done.add(key);
 
 		/*-----------------------------------------------------------------*/
 		/* GET COLUMNS AND FOREIGN KEYS                                    */
@@ -112,7 +111,7 @@ public class AutoJoinSingleton {
 
 				temp = new HashMap<String, List<String>>();
 
-				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, value, level + 1, maxLevel)) {
+				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, value, done)) {
 					/*-----------------------------------------------------*/
 					/*                                                     */
 					/*-----------------------------------------------------*/
@@ -174,15 +173,18 @@ public class AutoJoinSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean _resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, String value, int level, int maxLevel) throws Exception {
-
+	private static boolean _resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, String value, Set<String> done) throws Exception {
 		/*-----------------------------------------------------------------*/
-		/* CHECK LEVEL                                                     */
+		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
 
-		if(level > maxLevel) {
+		String key = table + '.' + column;
+
+		if(done.contains(key)) {
 			return false;
 		}
+
+		done.add(key);
 
 		/*-----------------------------------------------------------------*/
 		/* GET COLUMNS AND FOREIGN KEYS                                    */
@@ -207,7 +209,7 @@ public class AutoJoinSingleton {
 
 				temp = new HashMap<String, List<String>>();
 
-				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, value, level + 1, maxLevel)) {
+				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, value, done)) {
 					/*-----------------------------------------------------*/
 					/*                                                     */
 					/*-----------------------------------------------------*/
@@ -253,11 +255,13 @@ public class AutoJoinSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, String value, int maxLevel) throws Exception {
+	public static void resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, String value) throws Exception {
 
 		if(column.isEmpty() == false) {
 
-			if(_resolveWithInnerJoins(joins, catalog, table, column, value, 0, maxLevel) == false) {
+			Set<String> done = new HashSet<String>();
+
+			if(_resolveWithInnerJoins(joins, catalog, table, column, value, done) == false) {
 
 				throw new Exception("could not resolve foreign key");
 			}
@@ -266,11 +270,13 @@ public class AutoJoinSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, String value, int maxLevel) throws Exception {
+	public static void resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, String value) throws Exception {
 
 		if(column.isEmpty() == false) {
 
-			if(_resolveWithNestedSelect(joins, catalog, table, column, value, 0, maxLevel) == false) {
+			Set<String> done = new HashSet<String>();
+
+			if(_resolveWithNestedSelect(joins, catalog, table, column, value, done) == false) {
 
 				throw new Exception("could not resolve foreign key");
 			}
@@ -279,14 +285,14 @@ public class AutoJoinSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static SQLFieldValue resolveFieldValue(String catalog, String table, String column, String value, int maxLevel) throws Exception {
+	public static SQLFieldValue resolveFieldValue(String catalog, String table, String column, String value) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		Map<String, List<String>> joins = new HashMap<String, List<String>>();
 
-		resolveWithNestedSelect(joins, catalog, table, column, value, maxLevel);
+		resolveWithNestedSelect(joins, catalog, table, column, value);
 
 		/*-----------------------------------------------------------------*/
 		/* EXTRACT FIELD AND VALUE                                         */
@@ -297,27 +303,6 @@ public class AutoJoinSingleton {
 		return new SQLFieldValue(colVal[0], colVal[1]);
 
 		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, String value) throws Exception {
-
-		resolveWithInnerJoins(joins, catalog, table, column, value, m_maxLevel);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, String value) throws Exception {
-
-		resolveWithNestedSelect(joins, catalog, table, column, value, m_maxLevel);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static SQLFieldValue resolveFieldValue(String catalog, String table, String column, String value) throws Exception {
-
-		return resolveFieldValue(catalog, table, column, value, m_maxLevel);
 	}
 
 	/*---------------------------------------------------------------------*/

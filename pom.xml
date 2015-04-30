@@ -7,13 +7,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.hep.ami</groupId>
-  <artifactId>AMICore</artifactId>
-
-  <name>AMICore</name>
+  <artifactId>AMI</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
+  <name>AMI</name>
   <url>http://www.cern.ch/ami/</url>
 
-  <packaging>war</packaging>
+  <packaging>pom</packaging>
 
   <properties>
     <mail.version>1.5.2</mail.version>
@@ -23,9 +23,6 @@
     <mysql.version>5.1.34</mysql.version>
     <sqlite.version>3.8.7</sqlite.version>
     <tomcat.version>8.0.18</tomcat.version>
-
-    <antlr4.visitor>true</antlr4.visitor>
-    <antlr4.listener>false</antlr4.listener>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -39,12 +36,10 @@
       <version>${mail.version}</version>
 
       <exclusions>
-
         <exclusion>
           <groupId>javax.activation</groupId>
           <artifactId>activation</artifactId>
         </exclusion>
-
       </exclusions>
 
     </dependency>
@@ -73,12 +68,10 @@
       <version>${antlr.version}</version>
 
       <exclusions>
-
         <exclusion>
           <groupId>org.abego.treelayout</groupId>
           <artifactId>org.abego.treelayout.core</artifactId>
         </exclusion>
-
       </exclusions>
 
     </dependency>
@@ -108,76 +101,11 @@
     </dependency>
 
     <!--******************************************************************-->
-
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-servlet-api</artifactId>
-      <version>${tomcat.version}</version>
-    </dependency>
-
-    <!--******************************************************************-->
   </dependencies>
 
-  <build>
-    <finalName>AMICore</finalName>
-
-    <plugins>
-      <!--****************************************************************-->
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
-
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-
-      </plugin>
-
-      <!--****************************************************************-->
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.6</version>
-
-        <configuration>
-          <packagingExcludes>WEB-INF/lib/tomcat-*.jar</packagingExcludes>
-        </configuration>
-
-      </plugin>
-
-      <!--****************************************************************-->
-
-      <plugin>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-maven-plugin</artifactId>
-        <version>${antlr.version}</version>
-
-        <executions>
-          <execution>
-            <id>antlr</id>
-            <goals>
-              <goal>antlr4</goal>
-            </goals>
-          </execution>
-        </executions>
-
-        <configuration>
-          <outputDirectory>${project.build.directory}/antlr4</outputDirectory>
-        </configuration>
-
-      </plugin>
-
-      <!--****************************************************************-->
-    </plugins>
-
-  </build>
+  <modules>
+    <module>AMICore</module>
+    <module>AMIWebCore</module>
+  </modules>
 
 </project>

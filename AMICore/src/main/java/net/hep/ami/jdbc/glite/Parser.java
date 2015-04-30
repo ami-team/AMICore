@@ -64,27 +64,16 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 		table = unescapeId(table);
 
-		if(m_fields.containsKey(table) == false) {
-			/*-------------------------------------------------------------*/
-			/* ADD TABLE                                                   */
-			/*-------------------------------------------------------------*/
+		Set<String> result = m_fields.get(table);
 
-			Set<String> result = new HashSet<String>();
+		if(result == null) {
+
+			result = new HashSet<String>();
 
 			m_fields.put(table, result);
-
-			return result;
-
-			/*-------------------------------------------------------------*/
-		} else {
-			/*-------------------------------------------------------------*/
-			/* GET TABLE                                                   */
-			/*-------------------------------------------------------------*/
-
-			return m_fields.get(table);
-
-			/*-------------------------------------------------------------*/
 		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
