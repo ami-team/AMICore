@@ -104,8 +104,8 @@
   </dependencies>
 
   <modules>
-    <module>AMICore</module>
-    <module>AMIWebCore</module>
+    <module>ModuleCore</module>
+    <module>ModuleWebCore</module>
   </modules>
 
 </project>
