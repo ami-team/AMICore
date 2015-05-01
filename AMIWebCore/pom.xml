@@ -17,7 +17,7 @@
 
   <parent>
     <groupId>net.hep.ami</groupId>
-    <artifactId>AMI</artifactId>
+    <artifactId>AMICore</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>

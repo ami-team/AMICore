@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.hep.ami</groupId>
-  <artifactId>AMI</artifactId>
+  <artifactId>AMICore</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <name>AMI</name>
+  <name>AMICore</name>
   <url>http://www.cern.ch/ami/</url>
 
   <packaging>pom</packaging>
