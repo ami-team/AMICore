@@ -27,7 +27,7 @@
 
     <dependency>
       <groupId>net.hep.ami</groupId>
-      <artifactId>AMICore</artifactId>
+      <artifactId>AMIJavaCore</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
