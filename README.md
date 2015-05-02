@@ -9,8 +9,9 @@ Compiling AMI
 1. Requierments
 
   Make sure that [Apache Maven 3](http://maven.apache.org/) is installed:
-
+	```
 	mvn --version
+	```
 
 2. Installing Orache JDBC driver 12c
 
