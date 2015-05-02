@@ -15,7 +15,7 @@ mvn --version
 
 2. Installing Orache JDBC driver 12c
 
-  Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html). Edit OracleMaven.sh and change the JAR version:
+  Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html). Edit OracleMaven.sh and set the proper JAR version:
 	```
 #!/bin/bash
 
