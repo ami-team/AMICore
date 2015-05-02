@@ -1,6 +1,6 @@
 .DS_Store
 /bin/
 /AMICore/myData.sql
-/AMICore/target/
+/AMIJavaCore/target/
 /AMIWebCore/target/
 /tomcat/
