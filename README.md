@@ -6,4 +6,27 @@ The [ATLAS Metadata Interface (AMI)](http://www.cern.ch/ami/) is a generic high 
 Compiling AMI
 =============
 
+1. Requierments
 
+Make sure that [Apache Maven 3](http://maven.apache.org/) is installed:
+	mvn --version
+
+2. Installing Orache JDBC driver 12c
+
+Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html). Edit OracleMaven.sh and set the version:
+
+	#!/bin/bash
+
+	JAR=ojdbc7.jar
+	VERSION=12.1.0.1.0
+
+	mvn install:install-file \
+		-DgeneratePom=true \
+		-DgroupId=com.oracle -DartifactId=ojdbc7 \
+		-Dpackaging=jar -Dfile=$JAR -Dversion=$VERSION
+
+Run OracheMaven.sh
+
+3. Compiling AMI
+
+	mvn install
