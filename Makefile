@@ -1,4 +1,7 @@
-all: stop build deploy start
+all: build
+	echo "done"
+
+install: stop build deploy start
 	echo "done"
 
 build:

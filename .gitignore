@@ -1,6 +1,7 @@
 .DS_Store
-/bin/
-/AMICore/myData.sql
+.settings
+.classpath
 /AMIJavaCore/target/
 /AMIWebCore/target/
 /tomcat/
+/ojdbc*.jar
