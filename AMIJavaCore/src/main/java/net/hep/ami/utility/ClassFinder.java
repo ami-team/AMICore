@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 
-import net.hep.ami.LogSingleton;
-
 public class ClassFinder {
 	/*---------------------------------------------------------------------*/
 
@@ -29,20 +27,18 @@ public class ClassFinder {
 
 		path = path.substring(0, path.indexOf(name));
 
-		/*----------------*/
-		/* PACTH FOR JARs */
-		/*----------------*/
-
-		final int l = path.length() - 1;
-
-		if(path.startsWith("file:")) {
-			path = path.substring(5, l - 0);
+		if(path.startsWith("file:")
+		   &&
+		   (
+				path.endsWith(".jar!")
+				||
+				path.endsWith(".war!")
+				||
+				path.endsWith(".ear!")
+		   )
+		 ) {
+			path = path.substring(5, path.length() - 1);
 		}
-		if(path.endsWith("!")) {
-			path = path.substring(0, l - 1);
-		}
-
-		/*----------------*/
 
 		dispatch(m_base = new File(path));
 	}
@@ -67,11 +63,11 @@ public class ClassFinder {
 		} else {
 			String fileName = file.getName().toLowerCase();
 
-			if(fileName.endsWith(".ear")
-			   ||
-			   fileName.endsWith(".jar")
+			if(fileName.endsWith(".jar")
 			   ||
 			   fileName.endsWith(".war")
+			   ||
+			   fileName.endsWith(".ear")
 			 ) {
 				addZip(file);
 			} else {
@@ -139,8 +135,6 @@ public class ClassFinder {
 			                     .replace('\\', '.')
 			                     .replace('/', '.')
 			;
-
-			LogSingleton.log(LogSingleton.LogLevel.CRITICAL, m_filter);
 
 			if(className.startsWith(m_filter)) {
 				m_classList.add(className);
