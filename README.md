@@ -13,7 +13,7 @@ Make sure that [Apache Maven 3](http://maven.apache.org/) is installed:
 
 2. Installing Orache JDBC driver 12c
 
-Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html). Edit OracleMaven.sh and set the version:
+Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html). Edit OracleMaven.sh and change the version:
 
 	#!/bin/bash
 
