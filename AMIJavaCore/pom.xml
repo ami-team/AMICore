@@ -19,7 +19,7 @@
   </parent>
 
   <properties>
-    <antlr4.visitor>true</antlr4.visitor>
+    <antlr4.visitor>false</antlr4.visitor>
     <antlr4.listener>false</antlr4.listener>
   </properties>
 

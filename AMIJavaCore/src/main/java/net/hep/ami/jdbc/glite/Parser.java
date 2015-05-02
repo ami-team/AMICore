@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.glite.antlr.*;
 
-public class Parser extends GLiteBaseVisitor<StringBuilder> {
+public class Parser {
 	/*---------------------------------------------------------------------*/
 
 	private Map<String, Set<String>> m_fields = new HashMap<String, Set<String>>();
@@ -20,16 +20,14 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 		GLiteParser parser = new GLiteParser(new CommonTokenStream(lexer));
 
-		ParseTree tree = parser.selectStatement();
-
-		return new Parser().visit(tree).toString();
+		return new Parser().visitSelectStatement(parser.selectStatement()).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static void main(String[] args) {
 
-		System.out.println(parse("SELECT `a`.*, foo.bar, `foo`.`bar` AS foobar, (1 + 1) * (1 + 1) * 333 + 4 + 4 <> 1 <> 0 AS expr WHERE foo.bar > 4"));
+		System.out.println(parse("SELECT `a`.*, foo.bar, `foo`.`bar` AS foobar, (1 + 1) * (1 + 1) * 333 + 4 + 4 <> 1 <> 0 AS expr WHERE foo.bar > 4 AND toto.toto LIKE 'string'"));
 
 		System.out.println("done.");
 
@@ -85,7 +83,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitSelectStatement(GLiteParser.SelectStatementContext ctx) {
+	/*@Override*/ public StringBuilder visitSelectStatement(GLiteParser.SelectStatementContext ctx) {
 
 		StringBuilder select = new StringBuilder();
 		StringBuilder from = new StringBuilder();
@@ -151,7 +149,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitColumnList(GLiteParser.ColumnListContext ctx) {
+	/*@Override*/ public StringBuilder visitColumnList(GLiteParser.ColumnListContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -184,7 +182,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitColumnWildcard(GLiteParser.ColumnWildcardContext ctx) {
+	/*@Override*/ public StringBuilder visitColumnWildcard(GLiteParser.ColumnWildcardContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -203,7 +201,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitColumnExpression(GLiteParser.ColumnExpressionContext ctx) {
+	/*@Override*/ public StringBuilder visitColumnExpression(GLiteParser.ColumnExpressionContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -222,7 +220,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionOr(GLiteParser.ExpressionOrContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionOr(GLiteParser.ExpressionOrContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -239,7 +237,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 			/****/ if(child instanceof GLiteParser.ExpressionAndContext) {
 				result.append(visitExpressionAnd((GLiteParser.ExpressionAndContext) child));
 			} else if(child instanceof TerminalNode) {
-				result.append(child.getText());
+				result.append(" OR ");
 			}
 		}
 
@@ -250,7 +248,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionAnd(GLiteParser.ExpressionAndContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionAnd(GLiteParser.ExpressionAndContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -267,7 +265,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 			/****/ if(child instanceof GLiteParser.ExpressionCompContext) {
 				result.append(visitExpressionComp((GLiteParser.ExpressionCompContext) child));
 			} else if(child instanceof TerminalNode) {
-				result.append(child.getText());
+				result.append(" AND ");
 			}
 		}
 
@@ -292,7 +290,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionComp(GLiteParser.ExpressionCompContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionComp(GLiteParser.ExpressionCompContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -320,7 +318,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionAddSub(GLiteParser.ExpressionAddSubContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionAddSub(GLiteParser.ExpressionAddSubContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -348,7 +346,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionMulDiv(GLiteParser.ExpressionMulDivContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionMulDiv(GLiteParser.ExpressionMulDivContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -376,7 +374,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionNotMinusPlus(GLiteParser.ExpressionNotMinusPlusContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionNotMinusPlus(GLiteParser.ExpressionNotMinusPlusContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -398,10 +396,12 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 				result.append(visitExpressionGroup((GLiteParser.ExpressionGroupContext) child));
 			} else if(child instanceof GLiteParser.ExpressionFunctionContext) {
 				result.append(visitExpressionFunction((GLiteParser.ExpressionFunctionContext) child));
+			} else if(child instanceof GLiteParser.ExpressionLikeContext) {
+				result.append(visitExpressionLike((GLiteParser.ExpressionLikeContext) child));
+			} else if(child instanceof GLiteParser.ExpressionQIdContext) {
+				result.append(visitExpressionQId((GLiteParser.ExpressionQIdContext) child));
 			} else if(child instanceof GLiteParser.ExpressionLiteralContext) {
 				result.append(visitExpressionLiteral((GLiteParser.ExpressionLiteralContext) child));
-			} else if(child instanceof GLiteParser.ExpressionQualifiedIdContext) {
-				result.append(visitExpressionQualifiedId((GLiteParser.ExpressionQualifiedIdContext) child));
 			}
 		}
 
@@ -412,7 +412,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionGroup(GLiteParser.ExpressionGroupContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionGroup(GLiteParser.ExpressionGroupContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -429,7 +429,7 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionFunction(GLiteParser.ExpressionFunctionContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionFunction(GLiteParser.ExpressionFunctionContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -447,13 +447,15 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionLiteral(GLiteParser.ExpressionLiteralContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionLike(GLiteParser.ExpressionLikeContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(ctx.literal.getText());
+		result.append(visitSqlQId(ctx.qId));
+		result.append(" LIKE ");
+		result.append(visitSqlLiteral(ctx.literal));
 
 		/*-----------------------------------------------------------------*/
 
@@ -462,7 +464,21 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 
 	/*---------------------------------------------------------------------*/
 
-	@Override public StringBuilder visitExpressionQualifiedId(GLiteParser.ExpressionQualifiedIdContext ctx) {
+	/*@Override*/ public StringBuilder visitExpressionQId(GLiteParser.ExpressionQIdContext ctx) {
+
+		return visitSqlQId(ctx.qId);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	/*@Override*/ public StringBuilder visitExpressionLiteral(GLiteParser.ExpressionLiteralContext ctx) {
+
+		return visitSqlLiteral(ctx.literal);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	/*@Override*/ public StringBuilder visitSqlQId(GLiteParser.SqlQIdContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -476,6 +492,21 @@ public class Parser extends GLiteBaseVisitor<StringBuilder> {
 		result.append(escapeId(columnName));
 
 		addColumn(tableName, columnName);
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	/*@Override*/ public StringBuilder visitSqlLiteral(GLiteParser.SqlLiteralContext ctx) {
+
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		result.append(ctx.getText());
 
 		/*-----------------------------------------------------------------*/
 

@@ -60,24 +60,22 @@ expressionNotMinusPlus
 expressionX
   : '(' expression=expressionOr ')'                                          # ExpressionGroup
   | functionName=FUNCTION '(' expression=expressionOr ')'                    # ExpressionFunction
+  | qId=sqlQId LIKE literal=sqlLiteral                                       # ExpressionLike
+  | qId=sqlQId                                                               # ExpressionQId
   | literal=sqlLiteral                                                       # ExpressionLiteral
-  | tableName=ID '.' columnName=ID                                           # ExpressionQualifiedId
   ;
 
-/*
-	| expression=expressionAddSub
-	                LIKE literal=sqlLiteral                                    # conditionLike
-	| expression=expressionAddSub
-	                 IN  '(' literals=sqlLiteralList ')'                       # conditionIn
-*/
-
 /*---------------------------*/
-/* SQL_LITERAL_LIST          */
+/* SQL_QID                   */
 /*---------------------------*/
 
-sqlLiteralList
-	: sqlLiteral (',' sqlLiteral)*
-	;
+sqlQId
+  : tableName=ID '.' columnName=ID
+  ;
+
+/*---------------------------*/
+/* SQL_LITERAL               */
+/*---------------------------*/
 
 sqlLiteral
 	: NUMBER | STRING | NULL
