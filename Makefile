@@ -1,11 +1,14 @@
-all: build
+all: stop install deploy start
 	echo "done"
 
-install: stop build deploy start
-	echo "done"
+compile:
+	mvn compile
 
-build:
-	mvn --update-snapshots install
+install:
+	mvn install
+
+update-versions:
+	mvn release:update-versions
 
 deploy:
 	rm -fr tomcat/logs/*
@@ -15,13 +18,13 @@ deploy:
 #	cp ../QR/target/QRCode.war tomcat/webapps/QRCode.war
 
 stop:
-	./tomcat/bin/shutdown.sh
+	./tomcat/bin/shutdown.sh &> /dev/null
 
 start:
 	./tomcat/bin/startup.sh
 
 restart:
-	./tomcat/bin/shutdown.sh
+	./tomcat/bin/shutdown.sh &> /dev/null
 	sleep 2
 	./tomcat/bin/startup.sh
 
