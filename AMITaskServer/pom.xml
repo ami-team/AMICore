@@ -18,8 +18,17 @@
     <relativePath>..</relativePath>
   </parent>
 
-  <properties>
-  </properties>
+  <dependencies>
+    <!--******************************************************************-->
+
+    <dependency>
+      <groupId>net.hep.ami</groupId>
+      <artifactId>AMIJavaCore</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!--******************************************************************-->
+  </dependencies>
 
   <build>
 

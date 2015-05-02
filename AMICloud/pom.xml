@@ -19,7 +19,28 @@
   </parent>
 
   <properties>
+    <jclouds.version>1.9.0</jclouds.version>
   </properties>
+
+  <dependencies>
+    <!--******************************************************************-->
+
+    <dependency>
+      <groupId>net.hep.ami</groupId>
+      <artifactId>AMIJavaCore</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!--******************************************************************-->
+
+    <dependency>
+      <groupId>org.apache.jclouds</groupId>
+      <artifactId>jclouds-core</artifactId>
+      <version>${jclouds.version}</version>
+    </dependency>
+
+    <!--******************************************************************-->
+  </dependencies>
 
   <build>
 
