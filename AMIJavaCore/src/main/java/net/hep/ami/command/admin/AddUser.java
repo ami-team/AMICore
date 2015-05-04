@@ -9,13 +9,13 @@ import net.hep.ami.utility.*;
 public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private static final UserValidatorInterface m_userValidator = _getUserValidator();
+	private static final UserRoleValidatorInterface m_userValidator = _getUserValidator();
 
 	/*---------------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	static UserValidatorInterface _getUserValidator() {
+	static UserRoleValidatorInterface _getUserValidator() {
 		/*-----------------------------------------------------------------*/
 		/* GET USER VALIDATOR CLASS NAME                                   */
 		/*-----------------------------------------------------------------*/
@@ -29,9 +29,9 @@ public class AddUser extends CommandAbstractClass {
 		if(userValidatorClass != null) {
 
 			try {
-				Class<UserValidatorInterface> clazz = (Class<UserValidatorInterface>) Class.forName(userValidatorClass);
+				Class<UserRoleValidatorInterface> clazz = (Class<UserRoleValidatorInterface>) Class.forName(userValidatorClass);
 
-				if(ClassFinder.extendsClass(clazz, UserValidatorInterface.class)) {
+				if(ClassFinder.extendsClass(clazz, UserRoleValidatorInterface.class)) {
 
 					return clazz.newInstance();
 				}
@@ -45,7 +45,7 @@ public class AddUser extends CommandAbstractClass {
 		/* PERMISSIVE CASE                                                 */
 		/*-----------------------------------------------------------------*/
 
-		return new UserValidatorInterface() {
+		return new UserRoleValidatorInterface() {
 
 			public boolean check(
 				String AMIUser,
