@@ -5,6 +5,7 @@ import java.sql.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.jdbc.glite.Parser;
 
 public abstract class DriverAbstractClass implements QuerierInterface {
 	/*---------------------------------------------------------------------*/
@@ -70,9 +71,9 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeGLiteQuery(String sql) throws Exception {
+	public QueryResult executeGLiteQuery(String mql) throws Exception {
 
-		return new QueryResult(m_statement.executeQuery(sql));
+		return new QueryResult(m_statement.executeQuery(Parser.parse(mql, m_catalog)));
 	}
 
 	/*---------------------------------------------------------------------*/

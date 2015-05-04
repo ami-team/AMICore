@@ -50,10 +50,10 @@ expressionAddSub
   ;
 
 expressionMulDiv
-  : expressionNotMinusPlus (operator=('*' | '/' | '%') expressionNotMinusPlus)*
+  : expressionNotPlusMinus (operator=('*' | '/' | '%') expressionNotPlusMinus)*
   ;
 
-expressionNotMinusPlus
+expressionNotPlusMinus
   : operator=('!' | '-' | '+')? expressionX
   ;
 

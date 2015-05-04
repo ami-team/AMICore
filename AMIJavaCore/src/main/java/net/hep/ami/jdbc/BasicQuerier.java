@@ -30,9 +30,9 @@ public class BasicQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeGLiteQuery(String sql) throws Exception {
+	public QueryResult executeGLiteQuery(String mql) throws Exception {
 
-		return m_driver.executeGLiteQuery(sql);
+		return m_driver.executeGLiteQuery(mql);
 	}
 
 	/*---------------------------------------------------------------------*/
