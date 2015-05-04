@@ -8,7 +8,7 @@ Compiling AMI
 
 1. Requierments
 
-  Make sure that [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Apache Maven 3](http://maven.apache.org/) are installed:
+  Make sure that [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Maven 3](http://maven.apache.org/) are installed:
 	```bash
 java -version
 mvn -version
