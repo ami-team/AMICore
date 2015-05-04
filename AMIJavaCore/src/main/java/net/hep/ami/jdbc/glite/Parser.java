@@ -5,9 +5,9 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.jdbc.CatalogSingleton;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.glite.antlr.*;
-import net.hep.ami.jdbc.introspection.SchemaSingleton;
+import net.hep.ami.jdbc.introspection.*;
 
 public class Parser {
 	/*---------------------------------------------------------------------*/

@@ -30,7 +30,7 @@ column
 	;
 
 /*---------------------------*/
-/* expressionOr              */
+/* EXPRESSION                */
 /*---------------------------*/
 
 expressionOr
