@@ -1,46 +1,19 @@
 package net.hep.ami.utility;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-import org.jclouds.ContextBuilder;
-import org.jclouds.compute.domain.SecurityGroup;
-import org.jclouds.net.domain.IpProtocol;
-import org.jclouds.openstack.nova.v2_0.NovaApi;
-import org.jclouds.openstack.nova.v2_0.domain.Flavor;
-import org.jclouds.openstack.nova.v2_0.domain.FloatingIP;
-import org.jclouds.openstack.nova.v2_0.domain.Image;
-import org.jclouds.openstack.nova.v2_0.domain.Ingress;
-import org.jclouds.openstack.nova.v2_0.domain.Network;
-import org.jclouds.openstack.nova.v2_0.domain.RebootType;
-import org.jclouds.openstack.nova.v2_0.domain.SecurityGroupRule;
-import org.jclouds.openstack.nova.v2_0.domain.SecurityGroupRule.Cidr;
-import org.jclouds.openstack.nova.v2_0.domain.Server;
-import org.jclouds.openstack.nova.v2_0.domain.ServerCreated;
-import org.jclouds.openstack.nova.v2_0.domain.TenantIdAndName;
-import org.jclouds.openstack.nova.v2_0.extensions.FloatingIPApi;
-import org.jclouds.openstack.nova.v2_0.extensions.SecurityGroupApi;
-import org.jclouds.openstack.nova.v2_0.features.FlavorApi;
-import org.jclouds.openstack.nova.v2_0.features.ImageApi;
-import org.jclouds.openstack.nova.v2_0.features.ServerApi;
-import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
-import org.jclouds.openstack.nova.v2_0.options.RebuildServerOptions;
+import org.jclouds.*;
+import org.jclouds.openstack.nova.v2_0.*;
+import org.jclouds.openstack.nova.v2_0.domain.*;
+import org.jclouds.openstack.nova.v2_0.options.*;
+import org.jclouds.openstack.nova.v2_0.features.*;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Closeables;
-import com.google.inject.Module;
+import com.google.common.io.*;
+import com.google.common.collect.*;
 
-
-
-public class Cloud {
-
+public class Cloud implements Closeable {
+	/*---------------------------------------------------------------------*/
 
 	public static class CloudServer {
 
@@ -48,15 +21,21 @@ public class Cloud {
 		public String serverID;
 		public String serverLabel;
 
-		public CloudServer(String _region, String _serverID, String _serverLabel){
+		public CloudServer(String _region, String _serverID, String _serverLabel) {
+
 			region = _region;
-			serverID= _serverID;
+			serverID = _serverID;
 		}
 
 		public String toString() {
-			return region + "," + serverID + "," + serverLabel;
+
+			return String.format("region: %s, serverID: %s, serverLabel: %s",
+				region, serverID, serverLabel
+			);
 		}
 	}
+
+	/*---------------------------------------------------------------------*/
 
 	public static class CloudFlavor {
 
@@ -64,16 +43,21 @@ public class Cloud {
 		public String flavorID;
 		public String flavorLabel;
 
-		public CloudFlavor(String _region, String _flavorID, String _flavorLabel){
+		public CloudFlavor(String _region, String _flavorID, String _flavorLabel) {
 			region = _region;
 			flavorID = _flavorID;
 			flavorLabel = _flavorLabel;
 		}
 
-		public String toString() {
-			return region + "," + flavorID + "," + flavorLabel;
+ 		public String toString() {
+
+			return String.format("region: %s, flavorID: %s, flavorLabel: %s",
+				region, flavorID, flavorLabel
+			);
 		}
 	}
+
+	/*---------------------------------------------------------------------*/
 
 	public static class CloudImage {
 
@@ -88,156 +72,225 @@ public class Cloud {
 		}
 
 		public String toString() {
-			return region + "," + imageID + "," + imageLabel;
+
+			return String.format("region: %s, imageID: %s, imageLabel: %s",
+				region, imageID, imageLabel
+			);
 		}
 	}
 
+	/*---------------------------------------------------------------------*/
+
+	private NovaApi m_novaApi;
+
+	private Set<String> m_regions;
 
 	/*---------------------------------------------------------------------*/
 
-	/* TODO */
+	public Cloud(String endpoint, String identity, String credential) throws Exception {
 
-	/*---------------------------------------------------------------------*/
+		m_novaApi = ContextBuilder.newBuilder("openstack-nova")
+		                          .endpoint(endpoint)
+		                          .credentials(identity, credential)
+		                          .buildApi(NovaApi.class)
+		;
 
-	private  NovaApi novaApi;
-	private  Set<String> m_regions;
-	private  String m_networUUID;
-
-
-	public Cloud(String _identity, String _endpoint, String _credential, String _networkUuid)
-	{
-		novaApi = ContextBuilder.newBuilder("openstack-nova")
-				.endpoint(_endpoint)
-				.credentials(_identity, _credential).buildApi(NovaApi.class);
-
-		m_regions = novaApi.getConfiguredRegions();	
-		m_networUUID = _networkUuid;
+		m_regions = m_novaApi.getConfiguredRegions();
 	}
 
+	/*---------------------------------------------------------------------*/
 
-	public Set<String> listRegions()
-	{
+	public void close() throws IOException {
+
+		Closeables.close(m_novaApi, true);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Set<String> listRegions() {
+
 		return m_regions;
 	}
 
-	public List<CloudServer> listServers()
+	/*---------------------------------------------------------------------*/
+
+	public Set<CloudServer> listServers()
 	{
-		List<CloudServer> result = new ArrayList<CloudServer>();
+		Set<CloudServer> result = new HashSet<CloudServer>();
 
-		for (String region : m_regions)
-		{
+		/*-----------------------------------------------------------------*/
 
-			ServerApi serverApi = novaApi.getServerApi(region);
+		ServerApi serverApi;
 
-			for (Server server : serverApi.listInDetail().concat())
-			{
+		for(String region : m_regions) {
+
+			serverApi = m_novaApi.getServerApi(region);
+
+			for(Server server : serverApi.listInDetail().concat()) {
+
 				result.add(new CloudServer(
-						region,
-						server.getId(),
-						server.getKeyName()
-						));
+					region,
+					server.getId(),
+					server.getKeyName()
+				));
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
 
-	public List<CloudFlavor> listFlavors()
+	/*---------------------------------------------------------------------*/
+
+	public Set<CloudFlavor> listFlavors() {
+
+		Set <CloudFlavor> result = new HashSet<CloudFlavor>();
+
+		/*-----------------------------------------------------------------*/
+
+		FlavorApi flavorApi;
+
+		for(String region : m_regions) {
+
+			flavorApi = m_novaApi.getFlavorApi(region);
+
+			for(Flavor flavor : flavorApi.listInDetail().concat()) {
+
+				result.add(new CloudFlavor(
+					region,
+					flavor.getId(),
+					flavor.getName()
+				));
+			}
+
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Set<CloudImage> listImages()
 	{
-		ArrayList <CloudFlavor> result = new ArrayList <CloudFlavor>();
+		Set <CloudImage> result = new HashSet<CloudImage>();
 
-		for (String region : m_regions)
-		{
-			ArrayList<CloudFlavor> flavors = new ArrayList<CloudFlavor>();
+		/*-----------------------------------------------------------------*/
 
-			FlavorApi flavorApi = novaApi.getFlavorApi(region);
+		ImageApi imageApi;
 
-			for (Flavor flavor : flavorApi.listInDetail().concat())
+		for(String region : m_regions) {
+
+			imageApi = m_novaApi.getImageApi(region);
+
+			for(Image image : imageApi.listInDetail().concat())
 			{
-				result.add(new CloudFlavor(region,flavor.getId(),flavor.getName()));
-			}
-
-		}
-		return result;
-	}
-
-	public List<CloudImage> listImages()
-	{
-		ArrayList <CloudImage> result = new ArrayList <CloudImage>();
-
-		for (String region : m_regions)
-		{
-			ArrayList<CloudImage> images = new ArrayList<CloudImage>();
-
-			ImageApi imageApi = novaApi.getImageApi(region);
-
-			for (Image image : imageApi.listInDetail().concat())
-			{
-				result.add(new CloudImage(region,image.getId(),image.getName()));
+				result.add(new CloudImage(
+					region,
+					image.getId(),
+					image.getName()
+				));
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
+
 		return result;
 	}
 
 
-	public String bootServer(String region, String name, String imageId, String flavorId,
-			String keypair, String network, Iterable<String> secGroup, String userData,String fixedIp)
-	{
-		ServerApi serverApi = novaApi.getServerApi(region);
+	/*---------------------------------------------------------------------*/
 
-		CreateServerOptions options = CreateServerOptions.Builder
-				.keyPairName(keypair).novaNetworks(ImmutableSet.of(
-						Network.builder()
-						.networkUuid(m_networUUID)
-						.fixedIp(fixedIp)
-						.build()));
+	public void serverHardReboot(String region, String serverID) {
 
-		System.out.println(options.toString());
-		ServerCreated ser = serverApi.create(name, imageId, flavorId, options);
-		return ser.getId();
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		serverApi.reboot(serverID, RebootType.HARD);
 	}
 
-	public boolean deleteServer(String region, String instanceId)
-	{
-		ServerApi serverApi = novaApi.getServerApi(region);
-		return serverApi.delete(instanceId);
+	/*---------------------------------------------------------------------*/
+
+	public void serverSoftReboot(String region, String serverID) {
+
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		serverApi.reboot(serverID, RebootType.SOFT);
 	}
 
-	public void rebootServer(String region, String serverId, RebootType type)
-	{
-		ServerApi serverApi = novaApi.getServerApi(region);
-		serverApi.reboot(serverId, type);
+	/*---------------------------------------------------------------------*/
+
+	public String bootServer(
+		String region,
+		String name,
+		String imageID,
+		String flavorID,
+		String keypair,
+		String networUUID,
+		String fixedIP
+	 ) {
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		CreateServerOptions options = CreateServerOptions.Builder.keyPairName(
+			keypair
+		).novaNetworks(
+			ImmutableSet.of(
+				Network.builder().networkUuid(networUUID).fixedIp(fixedIP).build()
+			)
+		);
+
+		return serverApi.create(name, imageID, flavorID, options).getId();
 	}
 
-	public String createImageFromServer(String region, String imageName, String serverId)
+	/*---------------------------------------------------------------------*/
+
+	public void rebuildServer(String region, String serverID, String imageID)
 	{
-		ServerApi serverApi = novaApi.getServerApi(region);
-		return serverApi.createImageFromServer(imageName, serverId);
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		RebuildServerOptions options = RebuildServerOptions.Builder.withImage(
+			imageID
+		);
+
+		serverApi.rebuild(serverID, options);
 	}
 
-	public void rebuildServer(String region, String serverId, String imageId)
-	{
-		ServerApi serverApi = novaApi.getServerApi(region);
-		RebuildServerOptions options = RebuildServerOptions.Builder
-				.withImage(imageId);
-		serverApi.rebuild(serverId, options);
+	/*---------------------------------------------------------------------*/
+
+	public String createImageFromServer(String region, String imageName, String serverID) {
+
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		return serverApi.createImageFromServer(imageName, serverID);
 	}
 
-	public void deleteImage(String region, String imageId)
-	{
-		ImageApi imageApi = novaApi.getImageApi(region);
-		imageApi.delete(imageId);
+	/*---------------------------------------------------------------------*/
+
+	public void deleteServer(String region, String serverID) {
+
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		serverApi.delete(serverID);
 	}
 
-	public void close() throws IOException
-	{
-		Closeables.close(novaApi, true);
+	/*---------------------------------------------------------------------*/
+
+	public void deleteFlavor(String region, String flavorID) {
+
+		FlavorApi flavorApi = m_novaApi.getFlavorApi(region);
+
+		flavorApi.delete(flavorID);
 	}
 
+	/*---------------------------------------------------------------------*/
 
+	public void deleteImage(String region, String imageID) {
 
+		ImageApi imageApi = m_novaApi.getImageApi(region);
 
+		imageApi.delete(imageID);
+	}
 
-
-
+	/*---------------------------------------------------------------------*/
 }
