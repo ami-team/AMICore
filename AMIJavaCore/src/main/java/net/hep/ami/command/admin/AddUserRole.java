@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.utility.*;
 
 public class AddUserRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -32,6 +33,16 @@ public class AddUserRole extends CommandAbstractClass {
 		   m_role == null
 		 ) {
 			throw new Exception("invalid usage");
+		}
+
+		if(m_roleValidatorClass != null) {
+
+			Class<?> clazz = Class.forName(m_roleValidatorClass);
+
+			if(ClassFinder.extendsClass(clazz, CommandRoleValidatorInterface.class) == false) {
+
+				throw new Exception("class `" + m_roleValidatorClass + "` must implement `" + CommandRoleValidatorInterface.class.getName() + "`");
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -8,14 +8,15 @@ Compiling AMI
 
 1. Requierments
 
-  Make sure that [Apache Maven 3](http://maven.apache.org/) is installed:
+  Make sure that [Java 8](http://www.oracle.com/technetwork/java/javase/) and [Maven 3](http://maven.apache.org/) are installed:
 	```bash
-mvn --version
+java -version
+mvn -version
 ```
 
 2. Installing Orache JDBC driver 12c
 
-  Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html). Edit OracleMaven.sh and set the proper JAR version:
+  Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/). Edit OracleMaven.sh and set the proper JAR version:
 	```bash
 #!/bin/bash
 
