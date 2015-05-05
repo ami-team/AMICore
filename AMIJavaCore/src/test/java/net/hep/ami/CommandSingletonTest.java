@@ -12,9 +12,9 @@ public class CommandSingletonTest {
 		Map<String, String> arguments = new HashMap<String, String>();
 
 		try {
-			System.out.println(CatalogSingleton.listCatalogs());
+			/*System.out.println(*/CatalogSingleton.listCatalogs()/*)*/;
 
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments));
+			System.out.println(CommandSingleton.executeCommand("FindCommands", arguments));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

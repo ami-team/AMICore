@@ -29,7 +29,7 @@ public class DriverSingleton {
 
 		ClassFinder classFinder = new ClassFinder("net.hep.ami.jdbc.driver");
 
-		for(String className: classFinder.getClassList()) {
+		for(String className: classFinder.getClasses()) {
 
 			try {
 				addDriver(className);

@@ -20,17 +20,20 @@ public class Cloud implements Closeable {
 		public String region;
 		public String serverID;
 		public String serverLabel;
+		public String serverStatus;
 
-		public CloudServer(String _region, String _serverID, String _serverLabel) {
+		public CloudServer(String _region, String _serverID, String _serverLabel, String _serverStatus) {
 
 			region = _region;
 			serverID = _serverID;
+			serverLabel = _serverLabel;
+			serverStatus = _serverStatus;
 		}
 
 		public String toString() {
 
-			return String.format("region: %s, serverID: %s, serverLabel: %s",
-				region, serverID, serverLabel
+			return String.format("region: %s, serverID: %s, serverLabel: %s, serverStatus: %s",
+				region, serverID, serverLabel, serverStatus
 			);
 		}
 	}
@@ -44,6 +47,7 @@ public class Cloud implements Closeable {
 		public String flavorLabel;
 
 		public CloudFlavor(String _region, String _flavorID, String _flavorLabel) {
+
 			region = _region;
 			flavorID = _flavorID;
 			flavorLabel = _flavorLabel;
@@ -65,7 +69,8 @@ public class Cloud implements Closeable {
 		public String imageID;
 		public String imageLabel;
 
-		public CloudImage(String _region, String _imageID, String _imageLabel){
+		public CloudImage(String _region, String _imageID, String _imageLabel) {
+
 			region = _region;
 			imageID = _imageID;
 			imageLabel = _imageLabel;
@@ -114,7 +119,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<CloudServer> listServers()
+	public Set<CloudServer> getServers()
 	{
 		Set<CloudServer> result = new HashSet<CloudServer>();
 
@@ -131,7 +136,8 @@ public class Cloud implements Closeable {
 				result.add(new CloudServer(
 					region,
 					server.getId(),
-					server.getKeyName()
+					server.getKeyName(),
+					server.getStatus().toString() 
 				));
 			}
 		}
@@ -143,7 +149,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<CloudFlavor> listFlavors() {
+	public Set<CloudFlavor> getFlavors() {
 
 		Set <CloudFlavor> result = new HashSet<CloudFlavor>();
 
@@ -172,7 +178,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<CloudImage> listImages()
+	public Set<CloudImage> getImages()
 	{
 		Set <CloudImage> result = new HashSet<CloudImage>();
 
@@ -201,7 +207,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public void serverStart(String region, String serverID) {
+	public void startServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
@@ -210,7 +216,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public void serverStop(String region, String serverID) {
+	public void stopServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
@@ -219,7 +225,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public void serverHardReboot(String region, String serverID) {
+	public void hardRebootServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
@@ -228,7 +234,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public void serverSoftReboot(String region, String serverID) {
+	public void softRebootServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
@@ -237,9 +243,9 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public String bootServer(
+	public String buildServer(
 		String region,
-		String name,
+		String label,
 		String imageID,
 		String flavorID,
 		String keypair,
@@ -248,26 +254,24 @@ public class Cloud implements Closeable {
 	 ) {
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
-		CreateServerOptions options = CreateServerOptions.Builder.keyPairName(
-			keypair
-		).novaNetworks(
-			ImmutableSet.of(
-				Network.builder().networkUuid(networUUID).fixedIp(fixedIP).build()
-			)
+		ImmutableSet<Network> networks = ImmutableSet.of(
+			Network.builder().networkUuid(networUUID).fixedIp(fixedIP).build()
 		);
 
-		return serverApi.create(name, imageID, flavorID, options).getId();
+		CreateServerOptions options = CreateServerOptions.Builder.keyPairName(keypair)
+		                                                         .novaNetworks(networks)
+		;
+
+		return serverApi.create(label, imageID, flavorID, options).getId();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void rebuildServer(String region, String serverID, String imageID)
-	{
+	public void rebuildServer(String region, String serverID, String imageID) {
+
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
-		RebuildServerOptions options = RebuildServerOptions.Builder.withImage(
-			imageID
-		);
+		RebuildServerOptions options = RebuildServerOptions.Builder.withImage(imageID);
 
 		serverApi.rebuild(serverID, options);
 	}

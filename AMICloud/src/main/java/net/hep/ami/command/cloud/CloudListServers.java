@@ -53,7 +53,7 @@ public class CloudListServers extends CommandAbstractClass {
 		Set<Cloud.CloudServer> servers;
 
 		try {
-			servers = cloud.listServers();
+			servers = cloud.getServers();
 
 		} finally {
 			cloud.close();
@@ -75,6 +75,8 @@ public class CloudListServers extends CommandAbstractClass {
 				"<field name=\"serverID\">" + server.serverID + "</field>"
 				+
 				"<field name=\"serverLabel\">" + server.serverLabel + "</field>"
+				+
+				"<field name=\"serverStatus\">" + server.serverStatus + "</field>"
 				+
 				"</row>"
 			);

@@ -58,7 +58,7 @@ public class CloudServerHardReboot extends CommandAbstractClass {
 		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
 
 		try {
-			cloud.serverHardReboot(m_region, m_serverID);
+			cloud.hardRebootServer(m_region, m_serverID);
 
 		} finally {
 			cloud.close();

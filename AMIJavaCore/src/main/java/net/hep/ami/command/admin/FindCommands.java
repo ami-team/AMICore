@@ -27,22 +27,26 @@ public class FindCommands extends CommandAbstractClass {
 		/* FIND COMMANDS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		ClassFinder classFinder = new ClassFinder("net.hep.ami");
+		List<String> classes = new ArrayList<String>(
+			new ClassFinder("net.hep.ami").getClasses()
+		);
 
-		Collections.sort(classFinder.getClassList());
+		Collections.sort(classes);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD COMMANDS                                                    */
 		/*-----------------------------------------------------------------*/
 
-		for(String className: classFinder.getClassList()) {
+		Set<String> commands = new HashSet<String>();
 
-			addCommand(transactionalQuerier, className);
+		for(String className: classes) {
+
+			addCommand(transactionalQuerier, commands, className);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success, " + commands + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -56,7 +60,7 @@ public class FindCommands extends CommandAbstractClass {
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	private void addCommand(TransactionalQuerier transactionalQuerier, String className) throws Exception {
+	private void addCommand(TransactionalQuerier transactionalQuerier, Set<String> commands, String className) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
@@ -79,6 +83,8 @@ public class FindCommands extends CommandAbstractClass {
 			);
 
 			transactionalQuerier.executeUpdate(sql);
+
+			commands.add(name);
 		}
 	}
 

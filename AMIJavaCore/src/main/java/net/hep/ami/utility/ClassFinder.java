@@ -7,7 +7,7 @@ import java.util.zip.*;
 public class ClassFinder {
 	/*---------------------------------------------------------------------*/
 
-	private final List<String> m_classList = new ArrayList<String>();
+	private final Set<String> m_classes = new HashSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -37,10 +37,12 @@ public class ClassFinder {
 				path.endsWith(".ear!")
 		   )
 		 ) {
-			path = path.substring(5, path.length() - 1);
+			m_base = new File(path.substring(5, path.length() - 1)).getParentFile();
+		} else {
+			m_base = new File(path);
 		}
 
-		dispatch(m_base = new File(path));
+		dispatch(m_base);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -137,16 +139,16 @@ public class ClassFinder {
 			;
 
 			if(className.startsWith(m_filter)) {
-				m_classList.add(className);
+				m_classes.add(className);
 			}
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public List<String> getClassList() {
+	public Set<String> getClasses() {
 
-		return m_classList;
+		return m_classes;
 	}
 
 	/*---------------------------------------------------------------------*/

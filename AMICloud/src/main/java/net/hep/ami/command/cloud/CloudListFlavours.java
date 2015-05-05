@@ -53,7 +53,7 @@ public class CloudListFlavours extends CommandAbstractClass {
 		Set<Cloud.CloudFlavor> flavors;
 
 		try {
-			flavors = cloud.listFlavors();
+			flavors = cloud.getFlavors();
 
 		} finally {
 			cloud.close();

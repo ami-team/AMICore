@@ -58,7 +58,7 @@ public class CloudServerStop extends CommandAbstractClass {
 		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
 
 		try {
-			cloud.serverStop(m_region, m_serverID);
+			cloud.stopServer(m_region, m_serverID);
 
 		} finally {
 			cloud.close();

@@ -53,7 +53,7 @@ public class CloudListImages extends CommandAbstractClass {
 		Set<Cloud.CloudImage> images;
 
 		try {
-			images = cloud.listImages();
+			images = cloud.getImages();
 
 		} finally {
 			cloud.close();
