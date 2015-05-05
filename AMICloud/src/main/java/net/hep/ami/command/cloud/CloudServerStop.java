@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
-public class CloudHardReboot extends CommandAbstractClass {
+public class CloudServerStop extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_endpoint;
@@ -16,7 +16,7 @@ public class CloudHardReboot extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public CloudHardReboot(Map<String, String> arguments, int transactionID) {
+	public CloudServerStop(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_endpoint = arguments.containsKey("endpoint") ? arguments.get("endpoint")
@@ -28,7 +28,7 @@ public class CloudHardReboot extends CommandAbstractClass {
 		;
 
 		m_credential = arguments.containsKey("credential") ? arguments.get("credential")
-		                                                 : ConfigSingleton.getProperty("cloud_credential", null)
+		                                                   : ConfigSingleton.getProperty("cloud_credential", null)
 		;
 
 		m_region = arguments.get("region");
@@ -58,7 +58,7 @@ public class CloudHardReboot extends CommandAbstractClass {
 		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
 
 		try {
-			cloud.serverHardReboot(m_region, m_serverID);
+			cloud.serverStop(m_region, m_serverID);
 
 		} finally {
 			cloud.close();
@@ -73,7 +73,7 @@ public class CloudHardReboot extends CommandAbstractClass {
 
 	public static String help() {
 
-		return "Reboot (hard) a server on the cloud.";
+		return "Stop a server on the cloud.";
 	}
 
 	/*---------------------------------------------------------------------*/

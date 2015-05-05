@@ -163,7 +163,6 @@ public class Cloud implements Closeable {
 					flavor.getName()
 				));
 			}
-
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -200,6 +199,23 @@ public class Cloud implements Closeable {
 		return result;
 	}
 
+	/*---------------------------------------------------------------------*/
+
+	public void serverStart(String region, String serverID) {
+
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		serverApi.start(serverID);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public void serverStop(String region, String serverID) {
+
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		serverApi.stop(serverID);
+	}
 
 	/*---------------------------------------------------------------------*/
 

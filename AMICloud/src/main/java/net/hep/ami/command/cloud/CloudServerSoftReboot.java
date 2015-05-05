@@ -5,16 +5,18 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
-public class CloudListImages extends CommandAbstractClass {
+public class CloudServerSoftReboot extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_endpoint;
 	private String m_identity;
 	private String m_credential;
+	private String m_region;
+	private String m_serverID;
 
 	/*---------------------------------------------------------------------*/
 
-	public CloudListImages(Map<String, String> arguments, int transactionID) {
+	public CloudServerSoftReboot(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_endpoint = arguments.containsKey("endpoint") ? arguments.get("endpoint")
@@ -28,6 +30,9 @@ public class CloudListImages extends CommandAbstractClass {
 		m_credential = arguments.containsKey("credential") ? arguments.get("credential")
 		                                                   : ConfigSingleton.getProperty("cloud_credential", null)
 		;
+
+		m_region = arguments.get("region");
+		m_serverID = arguments.get("serverID");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -40,20 +45,20 @@ public class CloudListImages extends CommandAbstractClass {
 		   m_identity == null
 		   ||
 		   m_credential == null
+		   ||
+		   m_region == null
+		   ||
+		   m_serverID == null
 		 ) {
 			throw new Exception("invalid usage");
 		}
-
-		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
 		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud.CloudImage> images;
-
 		try {
-			images = cloud.listImages();
+			cloud.serverSoftReboot(m_region, m_serverID);
 
 		} finally {
 			cloud.close();
@@ -61,46 +66,21 @@ public class CloudListImages extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<Result><rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		for(Cloud.CloudImage image : images) {
-
-			result.append(
-				"<row>"
-				+
-				"<field name=\"region\">" + image.region + "</field>"
-				+
-				"<field name=\"imageID\">" + image.imageID + "</field>"
-				+
-				"<field name=\"imageLabel\">" + image.imageLabel + "</field>"
-				+
-				"</row>"
-			);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</rowset></Result>");
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help() {
 
-		return "List the images on the cloud.";
+		return "Reboot (soft) a server on the cloud.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage() {
 
-		return "(-endpoint=\"value\")? (-identity=\"value\")? (-credential=\"value\")?";
+		return "(-endpoint=\"value\")? (-identity=\"value\")? (-credential=\"value\")? -region=\"value\" -serverID=\"value\"";
 	}
 
 	/*---------------------------------------------------------------------*/

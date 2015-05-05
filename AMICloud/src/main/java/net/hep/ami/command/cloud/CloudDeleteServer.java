@@ -28,7 +28,7 @@ public class CloudDeleteServer extends CommandAbstractClass {
 		;
 
 		m_credential = arguments.containsKey("credential") ? arguments.get("credential")
-		                                                 : ConfigSingleton.getProperty("cloud_credential", null)
+		                                                   : ConfigSingleton.getProperty("cloud_credential", null)
 		;
 
 		m_region = arguments.get("region");
