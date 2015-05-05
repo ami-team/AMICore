@@ -236,23 +236,7 @@ public class Cloud {
 
 
 
-	public static void main(String[] args)
-	{
 
-		String identity = "ami:jfulachi";
-		String endpoint = "https://cckeystone.in2p3.fr:5000/v2.0/";
-		String credential = "22a6d2bb-395d-4267-92c5-adf3b57ec034";
-		String networkUuid = "2975c1fd-1705-4e13-abb4-da336e5abd12";
-
-		String defaultZone = "regionOne";
-
-		Cloud testCloud = new Cloud(identity,endpoint,credential,networkUuid);
-
-		System.out.println(testCloud.listRegions());
-		System.out.println(testCloud.listServers());
-		System.out.println(testCloud.listFlavors());
-		System.out.println(testCloud.listImages());
-	}
 
 
 
