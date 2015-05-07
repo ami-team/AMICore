@@ -3,6 +3,9 @@ package net.hep.ami.utility;
 import java.io.*;
 import java.util.*;
 
+import net.hep.ami.CommandSingleton;
+import net.hep.ami.jdbc.CatalogSingleton;
+
 import org.jclouds.*;
 import org.jclouds.openstack.nova.v2_0.*;
 import org.jclouds.openstack.nova.v2_0.domain.*;
@@ -145,21 +148,21 @@ public class Cloud implements Closeable {
 
 		ServerApi serverApi;
 
-		String IPsv4 = "";
-		String IPsv6 = "";
-
 		for(String region : m_regions) {
 
 			serverApi = m_novaApi.getServerApi(region);
 
 			for(Server server : serverApi.listInDetail().concat()) {
 
+				String IPsv4 = "";
+				String IPsv6 = "";
+
 				for(Address address : server.getAddresses().values()) {
 
 					/****/ if(address.getVersion() == 4) {
-						IPsv4 = IPsv4.concat("," + address.getAddr());
+						IPsv4 += "," + address.getAddr();
 					} else if(address.getVersion() == 6) {
-						IPsv6 = IPsv6.concat("," + address.getAddr());
+						IPsv6 += "," + address.getAddr();
 					}
 				}
 
@@ -357,6 +360,28 @@ public class Cloud implements Closeable {
 		ImageApi imageApi = m_novaApi.getImageApi(region);
 
 		imageApi.delete(imageID);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void main(String[] args) throws Exception {
+
+		Map<String, String> arguments = new HashMap<String, String>();
+
+		try {
+			/*System.out.println(*/CatalogSingleton.listCatalogs()/*)*/;
+
+			arguments.put("endpoint", "https://cckeystone.in2p3.fr:5000/v2.0/");
+			arguments.put("identity", "ami:jfulachi");
+			arguments.put("credential", "22a6d2bb-395d-4267-92c5-adf3b57ec034");
+
+			System.out.println(CommandSingleton.executeCommand("CloudListServers", arguments).replace(">", ">\n"));
+
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/
