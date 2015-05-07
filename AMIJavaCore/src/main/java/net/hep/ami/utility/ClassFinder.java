@@ -1,6 +1,7 @@
 package net.hep.ami.utility;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.zip.*;
 
@@ -11,36 +12,30 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	private String m_filter;
-
 	private File m_base;
+
+	private String m_filter;
 
 	/*---------------------------------------------------------------------*/
 
 	public ClassFinder(String filter) {
 
-		m_filter = filter;
-
 		String name = "/net/hep/ami/utility/ClassFinder.class";
 
-		String path = ClassFinder.class.getResource(name).getPath();
+		URL url = ClassFinder.class.getResource(name);
 
-		path = path.substring(0, path.indexOf(name));
+		String protocol = url.getProtocol();
+		String path     = url.getPath    ();
 
-		if(path.startsWith("file:")
-		   &&
-		   (
-				path.endsWith(".jar!")
-				||
-				path.endsWith(".war!")
-				||
-				path.endsWith(".ear!")
-		   )
-		 ) {
-			m_base = new File(path.substring(5, path.length() - 1)).getParentFile();
+		if(protocol.equals("jar")) {
+			path = path.substring(5, path.indexOf("!"));
+			m_base = new File(path).getParentFile();
 		} else {
-			m_base = new File(path);
+			path = path.substring(0, path.indexOf(name));
+			m_base = new File(path).getAbsoluteFile();
 		}
+
+		m_filter = filter;
 
 		dispatch(m_base);
 	}
@@ -63,14 +58,8 @@ public class ClassFinder {
 			addDirectory(file);
 
 		} else {
-			String fileName = file.getName().toLowerCase();
 
-			if(fileName.endsWith(".jar")
-			   ||
-			   fileName.endsWith(".war")
-			   ||
-			   fileName.endsWith(".ear")
-			 ) {
+			if(file.getName().toLowerCase().endsWith(".jar")) {
 				addZip(file);
 			} else {
 				addFile(file);
@@ -118,7 +107,7 @@ public class ClassFinder {
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+  	/*---------------------------------------------------------------------*/
 
 	private void addFile(File file) {
 
@@ -146,9 +135,9 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> getClasses() {
+	public File getBase() {
 
-		return m_classes;
+		return m_base;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -160,6 +149,13 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
+	public Set<String> getClasses() {
+
+		return m_classes;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static boolean extendsClass(Class<?> child, Class<?> parent) {
 
 		boolean result = false;
@@ -167,6 +163,7 @@ public class ClassFinder {
 		while((child = child.getSuperclass()) != null) {
 
 			if(child == parent) {
+
 				result = true;
 				break;
 			}

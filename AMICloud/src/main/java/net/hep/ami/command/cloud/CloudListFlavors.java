@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
-public class CloudListFlavours extends CommandAbstractClass {
+public class CloudListFlavors extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_endpoint;
@@ -14,7 +14,7 @@ public class CloudListFlavours extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public CloudListFlavours(Map<String, String> arguments, int transactionID) {
+	public CloudListFlavors(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_endpoint = arguments.containsKey("endpoint") ? arguments.get("endpoint")
@@ -75,6 +75,12 @@ public class CloudListFlavours extends CommandAbstractClass {
 				"<field name=\"flavorID\">" + flavor.flavorID + "</field>"
 				+
 				"<field name=\"flavorLabel\">" + flavor.flavorLabel + "</field>"
+				+
+				"<field name=\"flavorCPU\">" + flavor.flavorCPU + "</field>"
+				+
+				"<field name=\"flavorRAM\">" + flavor.flavorRAM + "</field>"
+				+
+				"<field name=\"flavorDisk\">" + flavor.flavorDisk + "</field>"
 				+
 				"</row>"
 			);

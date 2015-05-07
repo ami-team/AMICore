@@ -20,20 +20,24 @@ public class Cloud implements Closeable {
 		public String region;
 		public String serverID;
 		public String serverLabel;
+		public String serverIPv4;
+		public String serverIPv6;
 		public String serverStatus;
 
-		public CloudServer(String _region, String _serverID, String _serverLabel, String _serverStatus) {
+		public CloudServer(String _region, String _serverID, String _serverLabel, String _serverIPv4, String _serverIPv6, String _serverStatus) {
 
 			region = _region;
 			serverID = _serverID;
 			serverLabel = _serverLabel;
+			serverIPv4 = _serverIPv4;
+			serverIPv6 = _serverIPv6;
 			serverStatus = _serverStatus;
 		}
 
 		public String toString() {
 
-			return String.format("region: %s, serverID: %s, serverLabel: %s, serverStatus: %s",
-				region, serverID, serverLabel, serverStatus
+			return String.format("region: %s, serverID: %s, serverLabel: %s, serverIPv4: %s, serverIPv6: %s, serverStatus: %s",
+				region, serverID, serverLabel, serverIPv4, serverIPv6, serverStatus
 			);
 		}
 	}
@@ -45,18 +49,24 @@ public class Cloud implements Closeable {
 		public String region;
 		public String flavorID;
 		public String flavorLabel;
+		public int flavorCPU;
+		public int flavorRAM;
+		public int flavorDisk;
 
-		public CloudFlavor(String _region, String _flavorID, String _flavorLabel) {
+		public CloudFlavor(String _region, String _flavorID, String _flavorLabel, int _flavorCPU, int _flavorRAM, int _flavorDisk) {
 
 			region = _region;
 			flavorID = _flavorID;
 			flavorLabel = _flavorLabel;
+			flavorCPU = _flavorCPU;
+			flavorRAM = _flavorRAM;
+			flavorDisk = _flavorDisk;
 		}
 
  		public String toString() {
 
-			return String.format("region: %s, flavorID: %s, flavorLabel: %s",
-				region, flavorID, flavorLabel
+			return String.format("region: %s, flavorID: %s, flavorLabel: %s, flavorCPU: %d, flavorRAM: %d, flavorDisk: %d",
+				region, flavorID, flavorLabel, flavorCPU, flavorRAM, flavorDisk
 			);
 		}
 	}
@@ -68,18 +78,22 @@ public class Cloud implements Closeable {
 		public String region;
 		public String imageID;
 		public String imageLabel;
+		public int minRam;
+		public int minDisk;
 
-		public CloudImage(String _region, String _imageID, String _imageLabel) {
+		public CloudImage(String _region, String _imageID, String _imageLabel, int _minRam, int _minDisk) {
 
 			region = _region;
 			imageID = _imageID;
 			imageLabel = _imageLabel;
+			minRam = _minRam;
+			minDisk = _minDisk;
 		}
 
 		public String toString() {
 
-			return String.format("region: %s, imageID: %s, imageLabel: %s",
-				region, imageID, imageLabel
+			return String.format("region: %s, imageID: %s, imageLabel: %s, minRam: %d, minDisk: %d",
+				region, imageID, imageLabel, minRam, minDisk
 			);
 		}
 	}
@@ -119,8 +133,8 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<CloudServer> getServers()
-	{
+	public Set<CloudServer> getServers() {
+
 		Set<CloudServer> result = new HashSet<CloudServer>();
 
 		/*-----------------------------------------------------------------*/
@@ -136,8 +150,10 @@ public class Cloud implements Closeable {
 				result.add(new CloudServer(
 					region,
 					server.getId(),
-					server.getKeyName(),
-					server.getStatus().toString() 
+					server.getName(),
+					server.getAccessIPv4(),
+					server.getAccessIPv6(),
+					server.getStatus().toString()
 				));
 			}
 		}
@@ -166,7 +182,10 @@ public class Cloud implements Closeable {
 				result.add(new CloudFlavor(
 					region,
 					flavor.getId(),
-					flavor.getName()
+					flavor.getName(),
+					flavor.getVcpus(),
+					flavor.getRam(),
+					flavor.getDisk()
 				));
 			}
 		}
@@ -178,8 +197,8 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<CloudImage> getImages()
-	{
+	public Set<CloudImage> getImages() {
+
 		Set <CloudImage> result = new HashSet<CloudImage>();
 
 		/*-----------------------------------------------------------------*/
@@ -190,12 +209,14 @@ public class Cloud implements Closeable {
 
 			imageApi = m_novaApi.getImageApi(region);
 
-			for(Image image : imageApi.listInDetail().concat())
-			{
+			for(Image image : imageApi.listInDetail().concat()) {
+
 				result.add(new CloudImage(
 					region,
 					image.getId(),
-					image.getName()
+					image.getName(),
+					image.getMinRam(),
+					image.getMinDisk()
 				));
 			}
 		}

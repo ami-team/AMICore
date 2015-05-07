@@ -76,6 +76,10 @@ public class CloudListImages extends CommandAbstractClass {
 				+
 				"<field name=\"imageLabel\">" + image.imageLabel + "</field>"
 				+
+				"<field name=\"minRam\">" + image.minRam + "</field>"
+				+
+				"<field name=\"minDisk\">" + image.minDisk + "</field>"
+				+
 				"</row>"
 			);
 		}
