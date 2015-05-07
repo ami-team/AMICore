@@ -70,21 +70,21 @@ public class CloudListServers extends CommandAbstractClass {
 			result.append(
 				"<row>"
 				+
+				"<field name=\"ID\">" + server.ID + "</field>"
+				+
+				"<field name=\"name\">" + server.name + "</field>"
+				+
 				"<field name=\"region\">" + server.region + "</field>"
 				+
-				"<field name=\"serverID\">" + server.serverID + "</field>"
+				"<field name=\"flavor\">" + server.flavorID + "</field>"
 				+
-				"<field name=\"serverName\">" + server.serverName + "</field>"
+				"<field name=\"image\">" + server.imageID + "</field>"
 				+
-				"<field name=\"serverFlavor\">" + server.serverFlavorID + "</field>"
+				"<field name=\"status\">" + server.status + "</field>"
 				+
-				"<field name=\"serverImage\">" + server.serverImageID + "</field>"
+				"<field name=\"IPv4List\">" + server.IPv4List + "</field>"
 				+
-				"<field name=\"serverStatus\">" + server.serverStatus + "</field>"
-				+
-				"<field name=\"serverIPsv4\">" + server.serverIPsv4 + "</field>"
-				+
-				"<field name=\"serverIPsv6\">" + server.serverIPsv6 + "</field>"
+				"<field name=\"IPv6List\">" + server.IPv6List + "</field>"
 				+
 				"</row>"
 			);

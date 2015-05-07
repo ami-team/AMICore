@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
-public class CloudListFlavors extends CommandAbstractClass {
+public class CloudListSecurityRules extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_endpoint;
@@ -14,7 +14,7 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public CloudListFlavors(Map<String, String> arguments, int transactionID) {
+	public CloudListSecurityRules(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_endpoint = arguments.containsKey("endpoint") ? arguments.get("endpoint")
@@ -50,10 +50,10 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud.CloudFlavor> flavors;
+		Set<Cloud.CloudSecurityRule> securityGroups;
 
 		try {
-			flavors = cloud.getFlavors();
+			securityGroups = cloud.getSecurityRules();
 
 		} finally {
 			cloud.close();
@@ -65,22 +65,20 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud.CloudFlavor flavor : flavors) {
+		for(Cloud.CloudSecurityRule securityGroup : securityGroups) {
 
 			result.append(
 				"<row>"
 				+
-				"<field name=\"ID\">" + flavor.ID + "</field>"
+				"<field name=\"region\">" + securityGroup.region + "</field>"
 				+
-				"<field name=\"name\">" + flavor.name + "</field>"
+				"<field name=\"protocol\">" + securityGroup.protocol + "</field>"
 				+
-				"<field name=\"region\">" + flavor.region + "</field>"
+				"<field name=\"fromPort\">" + securityGroup.fromPort + "</field>"
 				+
-				"<field name=\"cpu\">" + flavor.cpu + "</field>"
+				"<field name=\"toPort\">" + securityGroup.toPort + "</field>"
 				+
-				"<field name=\"ram\">" + flavor.ram + "</field>"
-				+
-				"<field name=\"disk\">" + flavor.disk + "</field>"
+				"<field name=\"IPRange\">" + securityGroup.IPRange + "</field>"
 				+
 				"</row>"
 			);
@@ -99,7 +97,7 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 	public static String help() {
 
-		return "List the flavors on the cloud.";
+		return "List the security rules on the cloud.";
 	}
 
 	/*---------------------------------------------------------------------*/

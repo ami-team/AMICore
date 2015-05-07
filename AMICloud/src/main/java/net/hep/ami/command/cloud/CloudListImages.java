@@ -70,11 +70,11 @@ public class CloudListImages extends CommandAbstractClass {
 			result.append(
 				"<row>"
 				+
+				"<field name=\"ID\">" + image.ID + "</field>"
+				+
+				"<field name=\"name\">" + image.name + "</field>"
+				+
 				"<field name=\"region\">" + image.region + "</field>"
-				+
-				"<field name=\"imageID\">" + image.imageID + "</field>"
-				+
-				"<field name=\"imageLabel\">" + image.imageLabel + "</field>"
 				+
 				"<field name=\"minRam\">" + image.minRam + "</field>"
 				+

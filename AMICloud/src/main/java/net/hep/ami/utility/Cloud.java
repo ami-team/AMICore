@@ -3,14 +3,12 @@ package net.hep.ami.utility;
 import java.io.*;
 import java.util.*;
 
-import net.hep.ami.CommandSingleton;
-import net.hep.ami.jdbc.CatalogSingleton;
-
 import org.jclouds.*;
 import org.jclouds.openstack.nova.v2_0.*;
 import org.jclouds.openstack.nova.v2_0.domain.*;
 import org.jclouds.openstack.nova.v2_0.options.*;
 import org.jclouds.openstack.nova.v2_0.features.*;
+import org.jclouds.openstack.nova.v2_0.extensions.*;
 
 import com.google.common.io.*;
 import com.google.common.collect.*;
@@ -20,31 +18,31 @@ public class Cloud implements Closeable {
 
 	public static class CloudServer {
 
+		public String ID;
+		public String name;
 		public String region;
-		public String serverID;
-		public String serverName;
-		public String serverFlavorID;
-		public String serverImageID;
-		public String serverStatus;
-		public String serverIPsv4;
-		public String serverIPsv6;
+		public String flavorID;
+		public String imageID;
+		public String status;
+		public String IPv4List;
+		public String IPv6List;
 
-		public CloudServer(String _region, String _serverID, String _serverLabel, String _serverFlavorID, String _serverImageID, String _serverStatus, String _serverIPsv4, String _serverIPsv6) {
+		public CloudServer(String _ID, String _name, String _region, String _flavorID, String _imageID, String _status, String _IPv4List, String _IPv6List) {
 
+			ID = _ID;
+			name = _name;
 			region = _region;
-			serverID = _serverID;
-			serverName = _serverLabel;
-			serverFlavorID = _serverFlavorID;
-			serverImageID = _serverImageID;
-			serverStatus = _serverStatus;
-			serverIPsv4 = _serverIPsv4;
-			serverIPsv6 = _serverIPsv6;
+			flavorID = _flavorID;
+			imageID = _imageID;
+			status = _status;
+			IPv4List = _IPv4List;
+			IPv6List = _IPv6List;
 		}
 
 		public String toString() {
 
-			return String.format("region: %s, serverID: %s, serverLabel: %s, serverFlavorID: %s, serverImageID: %s, serverStatus: %s, serverIPsv4: %s, serverIPsv6: %s",
-				region, serverID, serverName, serverFlavorID, serverImageID, serverStatus, serverIPsv4, serverIPsv6
+			return String.format("ID: %s, name: %s, region: %s, flavorID: %s, imageID: %s, status: %s, IPv4List: %s, IPv6List: %s",
+				ID, name, region, flavorID, imageID, status, IPv4List, IPv6List
 			);
 		}
 	}
@@ -53,27 +51,27 @@ public class Cloud implements Closeable {
 
 	public static class CloudFlavor {
 
+		public String ID;
+		public String name;
 		public String region;
-		public String flavorID;
-		public String flavorLabel;
-		public int flavorCPU;
-		public int flavorRAM;
-		public int flavorDisk;
+		public int cpu;
+		public int ram;
+		public int disk;
 
-		public CloudFlavor(String _region, String _flavorID, String _flavorLabel, int _flavorCPU, int _flavorRAM, int _flavorDisk) {
+		public CloudFlavor(String _ID, String _name, String _region, int _cpu, int _ram, int _disk) {
 
+			ID = _ID;
+			name = _name;
 			region = _region;
-			flavorID = _flavorID;
-			flavorLabel = _flavorLabel;
-			flavorCPU = _flavorCPU;
-			flavorRAM = _flavorRAM;
-			flavorDisk = _flavorDisk;
+			cpu = _cpu;
+			ram = _ram;
+			disk = _disk;
 		}
 
  		public String toString() {
 
-			return String.format("region: %s, flavorID: %s, flavorLabel: %s, flavorCPU: %d, flavorRAM: %d, flavorDisk: %d",
-				region, flavorID, flavorLabel, flavorCPU, flavorRAM, flavorDisk
+			return String.format("ID: %s, name: %s, region: %s, cpu: %d, ram: %d, disk: %d",
+				ID, name, region, cpu, ram, disk
 			);
 		}
 	}
@@ -82,25 +80,52 @@ public class Cloud implements Closeable {
 
 	public static class CloudImage {
 
+		public String ID;
+		public String name;
 		public String region;
-		public String imageID;
-		public String imageLabel;
 		public int minRam;
 		public int minDisk;
 
-		public CloudImage(String _region, String _imageID, String _imageLabel, int _minRam, int _minDisk) {
+		public CloudImage(String _ID, String _name, String _region, int _minRam, int _minDisk) {
 
+			ID = _ID;
+			name = _name;
 			region = _region;
-			imageID = _imageID;
-			imageLabel = _imageLabel;
 			minRam = _minRam;
 			minDisk = _minDisk;
 		}
 
 		public String toString() {
 
-			return String.format("region: %s, imageID: %s, imageLabel: %s, minRam: %d, minDisk: %d",
-				region, imageID, imageLabel, minRam, minDisk
+			return String.format("ID: %s, name: %s, region: %s, minRam: %d, minDisk: %d",
+				ID, name, region, minRam, minDisk
+			);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static class CloudSecurityRule {
+
+		public String region;
+		public String protocol;
+		public int fromPort;
+		public int toPort;
+		public String IPRange;
+
+		public CloudSecurityRule(String _region, String _protocol, int _fromPort, int _toPort, String _IPRange) {
+
+			region = _region;
+			protocol = _protocol;
+			fromPort = _fromPort;
+			toPort = _toPort;
+			IPRange = _IPRange;
+		}
+
+		public String toString() {
+
+			return String.format("region: %s, protocol: %s, fromPort: %d, toPort: %d, IPRange: %d",
+					region, protocol, fromPort, toPort, IPRange
 			);
 		}
 	}
@@ -175,9 +200,9 @@ public class Cloud implements Closeable {
 				}
 
 				result.add(new CloudServer(
-					region,
 					server.getId(),
 					server.getName(),
+					region,
 					server.getFlavor().getId(),
 					server.getImage().getId(),
 					server.getStatus().toString(),
@@ -196,7 +221,7 @@ public class Cloud implements Closeable {
 
 	public Set<CloudFlavor> getFlavors() {
 
-		Set <CloudFlavor> result = new HashSet<CloudFlavor>();
+		Set<CloudFlavor> result = new HashSet<CloudFlavor>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -209,9 +234,9 @@ public class Cloud implements Closeable {
 			for(Flavor flavor : flavorApi.listInDetail().concat()) {
 
 				result.add(new CloudFlavor(
-					region,
 					flavor.getId(),
 					flavor.getName(),
+					region,
 					flavor.getVcpus(),
 					flavor.getRam(),
 					flavor.getDisk()
@@ -241,12 +266,46 @@ public class Cloud implements Closeable {
 			for(Image image : imageApi.listInDetail().concat()) {
 
 				result.add(new CloudImage(
-					region,
 					image.getId(),
 					image.getName(),
+					region,
 					image.getMinRam(),
 					image.getMinDisk()
 				));
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Set<CloudSecurityRule> getSecurityRules() {
+
+		Set<CloudSecurityRule> result = new HashSet<CloudSecurityRule>();
+
+		/*-----------------------------------------------------------------*/
+
+		com.google.common.base.Optional<SecurityGroupApi> securityGroupApi;
+
+		for(String region : m_regions) {
+
+			securityGroupApi = m_novaApi.getSecurityGroupApi(region);
+
+			if(securityGroupApi.isPresent()) for(SecurityGroup securityGroup: securityGroupApi.get().list()) {
+
+				for(SecurityGroupRule rule : securityGroup.getRules()) {
+
+					result.add(new CloudSecurityRule(
+						region,
+						rule.getIpProtocol().name(),
+						rule.getFromPort(),
+						rule.getToPort(),
+						rule.getIpRange()
+					));
+				}
 			}
 		}
 
@@ -360,28 +419,6 @@ public class Cloud implements Closeable {
 		ImageApi imageApi = m_novaApi.getImageApi(region);
 
 		imageApi.delete(imageID);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void main(String[] args) throws Exception {
-
-		Map<String, String> arguments = new HashMap<String, String>();
-
-		try {
-			/*System.out.println(*/CatalogSingleton.listCatalogs()/*)*/;
-
-			arguments.put("endpoint", "https://cckeystone.in2p3.fr:5000/v2.0/");
-			arguments.put("identity", "ami:jfulachi");
-			arguments.put("credential", "22a6d2bb-395d-4267-92c5-adf3b57ec034");
-
-			System.out.println(CommandSingleton.executeCommand("CloudListServers", arguments).replace(">", ">\n"));
-
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-
-		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/
