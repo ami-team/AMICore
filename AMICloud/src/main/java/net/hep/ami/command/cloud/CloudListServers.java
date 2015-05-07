@@ -74,13 +74,15 @@ public class CloudListServers extends CommandAbstractClass {
 				+
 				"<field name=\"serverID\">" + server.serverID + "</field>"
 				+
-				"<field name=\"serverLabel\">" + server.serverLabel + "</field>"
+				"<field name=\"serverName\">" + server.serverName + "</field>"
 				+
-				"<field name=\"serverIPv4\">" + server.serverIPv4 + "</field>"
+				"<field name=\"serverFlavor\">" + server.serverFlavorID + "</field>"
 				+
-				"<field name=\"serverIPv6\">" + server.serverIPv6 + "</field>"
+				"<field name=\"serverImage\">" + server.serverImageID + "</field>"
 				+
 				"<field name=\"serverStatus\">" + server.serverStatus + "</field>"
+				+
+				"<field name=\"serverAddresses\">" + server.serverIPsv4 + "</field>"
 				+
 				"</row>"
 			);

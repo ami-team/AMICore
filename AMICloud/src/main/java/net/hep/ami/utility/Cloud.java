@@ -19,25 +19,29 @@ public class Cloud implements Closeable {
 
 		public String region;
 		public String serverID;
-		public String serverLabel;
-		public String serverIPv4;
-		public String serverIPv6;
+		public String serverName;
+		public String serverFlavorID;
+		public String serverImageID;
 		public String serverStatus;
+		public String serverIPsv4;
+		public String serverIPsv6;
 
-		public CloudServer(String _region, String _serverID, String _serverLabel, String _serverIPv4, String _serverIPv6, String _serverStatus) {
+		public CloudServer(String _region, String _serverID, String _serverLabel, String _serverFlavorID, String _serverImageID, String _serverStatus, String _serverIPsv4, String _serverIPsv6) {
 
 			region = _region;
 			serverID = _serverID;
-			serverLabel = _serverLabel;
-			serverIPv4 = _serverIPv4;
-			serverIPv6 = _serverIPv6;
+			serverName = _serverLabel;
+			serverFlavorID = _serverFlavorID;
+			serverImageID = _serverImageID;
 			serverStatus = _serverStatus;
+			serverIPsv4 = _serverIPsv4;
+			serverIPsv6 = _serverIPsv6;
 		}
 
 		public String toString() {
 
-			return String.format("region: %s, serverID: %s, serverLabel: %s, serverIPv4: %s, serverIPv6: %s, serverStatus: %s",
-				region, serverID, serverLabel, serverIPv4, serverIPv6, serverStatus
+			return String.format("region: %s, serverID: %s, serverLabel: %s, serverFlavorID: %s, serverImageID: %s, serverStatus: %s, serverIPsv4: %s, serverIPsv6: %s",
+				region, serverID, serverName, serverFlavorID, serverImageID, serverStatus, serverIPsv4, serverIPsv6
 			);
 		}
 	}
@@ -141,19 +145,41 @@ public class Cloud implements Closeable {
 
 		ServerApi serverApi;
 
+		String IPsv4 = "";
+		String IPsv6 = "";
+
 		for(String region : m_regions) {
 
 			serverApi = m_novaApi.getServerApi(region);
 
 			for(Server server : serverApi.listInDetail().concat()) {
 
+				for(Address address : server.getAddresses().values()) {
+
+					/****/ if(address.getVersion() == 4) {
+						IPsv4 = IPsv4.concat("," + address.getAddr());
+					} else if(address.getVersion() == 6) {
+						IPsv6 = IPsv6.concat("," + address.getAddr());
+					}
+				}
+
+				if(IPsv4.isEmpty() == false) {
+					IPsv4 = IPsv4.substring(1);
+				}
+
+				if(IPsv6.isEmpty() == false) {
+					IPsv6 = IPsv6.substring(1);
+				}
+
 				result.add(new CloudServer(
 					region,
 					server.getId(),
 					server.getName(),
-					server.getAccessIPv4(),
-					server.getAccessIPv6(),
-					server.getStatus().toString()
+					server.getFlavor().getId(),
+					server.getImage().getId(),
+					server.getStatus().toString(),
+					IPsv4,
+					IPsv6
 				));
 			}
 		}
