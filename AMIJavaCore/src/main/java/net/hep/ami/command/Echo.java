@@ -3,8 +3,6 @@ package net.hep.ami.command;
 import java.util.*;
 import java.util.Map.*;
 
-import net.hep.ami.*;
-
 public class Echo extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 

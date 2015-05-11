@@ -1,9 +1,7 @@
 package net.hep.ami.role;
 
-public interface CommandRoleValidatorInterface {
+public class RoleSingleton {
 	/*---------------------------------------------------------------------*/
-
-	/* TODO */
 
 	/*---------------------------------------------------------------------*/
 }

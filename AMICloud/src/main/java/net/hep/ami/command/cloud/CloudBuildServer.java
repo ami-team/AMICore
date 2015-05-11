@@ -3,6 +3,7 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.utility.*;
 
 public class CloudBuildServer extends CommandAbstractClass {
@@ -77,7 +78,7 @@ public class CloudBuildServer extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
+		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
 
 		try {
 			cloud.buildServer(m_region, m_name, m_flavorID, m_imageID, m_keypair, m_fixedIP, m_portUUID, m_networUUID);

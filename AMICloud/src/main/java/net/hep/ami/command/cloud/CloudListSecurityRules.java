@@ -3,6 +3,7 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.utility.*;
 
 public class CloudListSecurityRules extends CommandAbstractClass {
@@ -48,9 +49,9 @@ public class CloudListSecurityRules extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
+		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud.CloudSecurityRule> securityGroups;
+		Set<Cloud_OpenStack.CloudSecurityRule> securityGroups;
 
 		try {
 			securityGroups = cloud.getSecurityRules();
@@ -65,7 +66,7 @@ public class CloudListSecurityRules extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud.CloudSecurityRule securityGroup : securityGroups) {
+		for(Cloud_OpenStack.CloudSecurityRule securityGroup : securityGroups) {
 
 			result.append(
 				"<row>"

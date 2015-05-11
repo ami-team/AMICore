@@ -3,6 +3,7 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.utility.*;
 
 public class CloudListFlavors extends CommandAbstractClass {
@@ -48,9 +49,9 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
+		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud.CloudFlavor> flavors;
+		Set<Cloud_OpenStack.CloudFlavor> flavors;
 
 		try {
 			flavors = cloud.getFlavors();
@@ -65,7 +66,7 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud.CloudFlavor flavor : flavors) {
+		for(Cloud_OpenStack.CloudFlavor flavor : flavors) {
 
 			result.append(
 				"<row>"

@@ -13,7 +13,7 @@ import org.jclouds.openstack.nova.v2_0.extensions.*;
 import com.google.common.io.*;
 import com.google.common.collect.*;
 
-public class Cloud implements CloudInterface {
+public class Cloud_OpenStack implements CloudInterface {
 	/*---------------------------------------------------------------------*/
 
 	private NovaApi m_novaApi;
@@ -22,7 +22,7 @@ public class Cloud implements CloudInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public Cloud(String endpoint, String identity, String credential) throws Exception {
+	public Cloud_OpenStack(String endpoint, String identity, String credential) throws Exception {
 
 		m_novaApi = ContextBuilder.newBuilder("openstack-nova")
 		                          .endpoint(endpoint)

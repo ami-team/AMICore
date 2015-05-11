@@ -4,7 +4,7 @@ import java.util.*;
 import java.security.*;
 import java.security.cert.*;
 
-import net.hep.ami.*;
+import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
 public class GenerateAuthority extends CommandAbstractClass {

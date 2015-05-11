@@ -1,7 +1,9 @@
-package net.hep.ami;
+package net.hep.ami.command;
 
 import java.util.*;
 
+import net.hep.ami.CommandSingleton;
+import net.hep.ami.ConfigSingleton;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 

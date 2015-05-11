@@ -6,6 +6,7 @@ import java.security.*;
 import java.security.cert.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.Cryptography.*;
 

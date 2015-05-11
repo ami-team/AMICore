@@ -2,7 +2,7 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
-import net.hep.ami.*;
+import net.hep.ami.command.*;
 import net.hep.ami.jdbc.introspection.*;
 
 public class ListFields extends CommandAbstractClass {

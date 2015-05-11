@@ -3,6 +3,7 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.utility.*;
 
 public class CloudListServers extends CommandAbstractClass {
@@ -48,9 +49,9 @@ public class CloudListServers extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
+		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud.CloudServer> servers;
+		Set<Cloud_OpenStack.CloudServer> servers;
 
 		try {
 			servers = cloud.getServers();
@@ -65,7 +66,7 @@ public class CloudListServers extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud.CloudServer server : servers) {
+		for(Cloud_OpenStack.CloudServer server : servers) {
 
 			result.append(
 				"<row>"

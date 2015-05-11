@@ -3,6 +3,7 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.utility.*;
 
 public class CloudListImages extends CommandAbstractClass {
@@ -48,9 +49,9 @@ public class CloudListImages extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud cloud = new Cloud(m_endpoint, m_identity, m_credential);
+		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud.CloudImage> images;
+		Set<Cloud_OpenStack.CloudImage> images;
 
 		try {
 			images = cloud.getImages();
@@ -65,7 +66,7 @@ public class CloudListImages extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud.CloudImage image : images) {
+		for(Cloud_OpenStack.CloudImage image : images) {
 
 			result.append(
 				"<row>"

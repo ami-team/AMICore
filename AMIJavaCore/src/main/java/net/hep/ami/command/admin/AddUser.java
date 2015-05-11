@@ -3,8 +3,9 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.role.UserRoleValidatorInterface;
+import net.hep.ami.role.userValidator.UserRoleValidatorInterface;
 import net.hep.ami.utility.*;
 
 public class AddUser extends CommandAbstractClass {

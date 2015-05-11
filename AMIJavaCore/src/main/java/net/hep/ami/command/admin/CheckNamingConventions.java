@@ -3,7 +3,7 @@ package net.hep.ami.command.admin;
 import java.util.*;
 import java.util.regex.*;
 
-import net.hep.ami.*;
+import net.hep.ami.command.*;
 import net.hep.ami.jdbc.introspection.*;
 
 public class CheckNamingConventions extends CommandAbstractClass {

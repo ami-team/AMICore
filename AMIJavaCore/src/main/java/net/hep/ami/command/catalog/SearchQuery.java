@@ -2,8 +2,8 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
-import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.command.*;
 
 public class SearchQuery extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/

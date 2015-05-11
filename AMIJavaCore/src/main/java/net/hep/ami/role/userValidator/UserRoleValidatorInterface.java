@@ -1,4 +1,4 @@
-package net.hep.ami.role;
+package net.hep.ami.role.userValidator;
 
 public interface UserRoleValidatorInterface {
 	/*---------------------------------------------------------------------*/

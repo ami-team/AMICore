@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.*;
 import java.lang.reflect.*;
 
+import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;

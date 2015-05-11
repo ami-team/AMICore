@@ -2,7 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
-import net.hep.ami.*;
+import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
 public class Decrypt extends CommandAbstractClass {

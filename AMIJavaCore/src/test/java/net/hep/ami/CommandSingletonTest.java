@@ -14,7 +14,7 @@ public class CommandSingletonTest {
 		try {
 			/*System.out.println(*/CatalogSingleton.listCatalogs()/*)*/;
 
-			System.out.println(CommandSingleton.executeCommand("FindCommands", arguments));
+			System.out.println(CommandSingleton.executeCommand("Echo", arguments));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
