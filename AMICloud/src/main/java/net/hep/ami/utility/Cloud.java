@@ -13,123 +13,7 @@ import org.jclouds.openstack.nova.v2_0.extensions.*;
 import com.google.common.io.*;
 import com.google.common.collect.*;
 
-public class Cloud implements Closeable {
-	/*---------------------------------------------------------------------*/
-
-	public static class CloudServer {
-
-		public String ID;
-		public String name;
-		public String region;
-		public String flavorID;
-		public String imageID;
-		public String status;
-		public String IPv4List;
-		public String IPv6List;
-
-		public CloudServer(String _ID, String _name, String _region, String _flavorID, String _imageID, String _status, String _IPv4List, String _IPv6List) {
-
-			ID = _ID;
-			name = _name;
-			region = _region;
-			flavorID = _flavorID;
-			imageID = _imageID;
-			status = _status;
-			IPv4List = _IPv4List;
-			IPv6List = _IPv6List;
-		}
-
-		public String toString() {
-
-			return String.format("ID: %s, name: %s, region: %s, flavorID: %s, imageID: %s, status: %s, IPv4List: %s, IPv6List: %s",
-				ID, name, region, flavorID, imageID, status, IPv4List, IPv6List
-			);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static class CloudFlavor {
-
-		public String ID;
-		public String name;
-		public String region;
-		public int cpu;
-		public int ram;
-		public int disk;
-
-		public CloudFlavor(String _ID, String _name, String _region, int _cpu, int _ram, int _disk) {
-
-			ID = _ID;
-			name = _name;
-			region = _region;
-			cpu = _cpu;
-			ram = _ram;
-			disk = _disk;
-		}
-
- 		public String toString() {
-
-			return String.format("ID: %s, name: %s, region: %s, cpu: %d, ram: %d, disk: %d",
-				ID, name, region, cpu, ram, disk
-			);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static class CloudImage {
-
-		public String ID;
-		public String name;
-		public String region;
-		public int minRam;
-		public int minDisk;
-
-		public CloudImage(String _ID, String _name, String _region, int _minRam, int _minDisk) {
-
-			ID = _ID;
-			name = _name;
-			region = _region;
-			minRam = _minRam;
-			minDisk = _minDisk;
-		}
-
-		public String toString() {
-
-			return String.format("ID: %s, name: %s, region: %s, minRam: %d, minDisk: %d",
-				ID, name, region, minRam, minDisk
-			);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static class CloudSecurityRule {
-
-		public String region;
-		public String protocol;
-		public int fromPort;
-		public int toPort;
-		public String IPRange;
-
-		public CloudSecurityRule(String _region, String _protocol, int _fromPort, int _toPort, String _IPRange) {
-
-			region = _region;
-			protocol = _protocol;
-			fromPort = _fromPort;
-			toPort = _toPort;
-			IPRange = _IPRange;
-		}
-
-		public String toString() {
-
-			return String.format("region: %s, protocol: %s, fromPort: %d, toPort: %d, IPRange: %d",
-					region, protocol, fromPort, toPort, IPRange
-			);
-		}
-	}
-
+public class Cloud implements CloudInterface {
 	/*---------------------------------------------------------------------*/
 
 	private NovaApi m_novaApi;
@@ -158,7 +42,7 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> listRegions() {
+	public Set<String> getRegions() {
 
 		return m_regions;
 	}
@@ -179,25 +63,31 @@ public class Cloud implements Closeable {
 
 			for(Server server : serverApi.listInDetail().concat()) {
 
-				String IPsv4 = "";
-				String IPsv6 = "";
+				/*--------------*/
+				/* IP ADDRESSES */
+				/*--------------*/
+
+				String IPv4List = "";
+				String IPv6List = "";
 
 				for(Address address : server.getAddresses().values()) {
 
 					/****/ if(address.getVersion() == 4) {
-						IPsv4 += "," + address.getAddr();
+						IPv4List = IPv4List.concat("," + address.getAddr());
 					} else if(address.getVersion() == 6) {
-						IPsv6 += "," + address.getAddr();
+						IPv6List = IPv4List.concat("," + address.getAddr());
 					}
 				}
 
-				if(IPsv4.isEmpty() == false) {
-					IPsv4 = IPsv4.substring(1);
+				if(IPv4List.isEmpty() == false) {
+					IPv4List = IPv4List.substring(1);
 				}
 
-				if(IPsv6.isEmpty() == false) {
-					IPsv6 = IPsv6.substring(1);
+				if(IPv6List.isEmpty() == false) {
+					IPv6List = IPv6List.substring(1);
 				}
+
+				/*--------------*/
 
 				result.add(new CloudServer(
 					server.getId(),
@@ -206,8 +96,8 @@ public class Cloud implements Closeable {
 					server.getFlavor().getId(),
 					server.getImage().getId(),
 					server.getStatus().toString(),
-					IPsv4,
-					IPsv6
+					IPv4List,
+					IPv6List
 				));
 			}
 		}
@@ -294,17 +184,20 @@ public class Cloud implements Closeable {
 
 			securityGroupApi = m_novaApi.getSecurityGroupApi(region);
 
-			if(securityGroupApi.isPresent()) for(SecurityGroup securityGroup: securityGroupApi.get().list()) {
+			if(securityGroupApi.isPresent()) {
 
-				for(SecurityGroupRule rule : securityGroup.getRules()) {
+				for(SecurityGroup securityGroup : securityGroupApi.get().list()) {
 
-					result.add(new CloudSecurityRule(
-						region,
-						rule.getIpProtocol().name(),
-						rule.getFromPort(),
-						rule.getToPort(),
-						rule.getIpRange()
-					));
+					for(SecurityGroupRule securityGroupRule : securityGroup.getRules()) {
+
+						result.add(new CloudSecurityRule(
+							region,
+							securityGroupRule.getIpProtocol().name(),
+							securityGroupRule.getFromPort(),
+							securityGroupRule.getToPort(),
+							securityGroupRule.getIpRange()
+						));
+					}
 				}
 			}
 		}
@@ -334,15 +227,6 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public void hardRebootServer(String region, String serverID) {
-
-		ServerApi serverApi = m_novaApi.getServerApi(region);
-
-		serverApi.reboot(serverID, RebootType.HARD);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public void softRebootServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -352,26 +236,49 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public String buildServer(
-		String region,
-		String label,
-		String imageID,
-		String flavorID,
-		String keypair,
-		String networUUID,
-		String fixedIP
-	 ) {
+	public void hardRebootServer(String region, String serverID) {
+
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
+		serverApi.reboot(serverID, RebootType.HARD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String buildServer(String region, String name, String flavorID, String imageID, String keypair, String fixedIP, String portUUID, String networUUID) {
+
+		ServerApi serverApi = m_novaApi.getServerApi(region);
+
+		/*-------------*/
+		/*   NETWORK   */
+		/*-------------*/
+
+		Network.Builder builder =
+						Network.builder();
+
+		if(fixedIP != null) {
+			builder = builder.fixedIp(fixedIP);
+		}
+
+		if(portUUID != null) {
+			builder = builder.portUuid(portUUID);
+		}
+
+		if(networUUID != null) {
+			builder = builder.networkUuid(networUUID);
+		}
+
 		ImmutableSet<Network> networks = ImmutableSet.of(
-			Network.builder().networkUuid(networUUID).fixedIp(fixedIP).build()
+			builder.build()
 		);
+
+		/*-------------*/
 
 		CreateServerOptions options = CreateServerOptions.Builder.keyPairName(keypair)
 		                                                         .novaNetworks(networks)
 		;
 
-		return serverApi.create(label, imageID, flavorID, options).getId();
+		return serverApi.create(name, imageID, flavorID, options).getId();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -387,11 +294,11 @@ public class Cloud implements Closeable {
 
 	/*---------------------------------------------------------------------*/
 
-	public String createImageFromServer(String region, String imageName, String serverID) {
+	public String createImageFromServer(String region, String name, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
 
-		return serverApi.createImageFromServer(imageName, serverID);
+		return serverApi.createImageFromServer(name, serverID);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.role.CommandRoleValidatorInterface;
 import net.hep.ami.utility.*;
 
 public class AddCommandRole extends CommandAbstractClass {
