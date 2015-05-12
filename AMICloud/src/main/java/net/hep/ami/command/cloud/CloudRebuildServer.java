@@ -3,8 +3,9 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.cloud.*;
+import net.hep.ami.cloud.driver.OpenStackDriver;
 import net.hep.ami.command.CommandAbstractClass;
-import net.hep.ami.utility.*;
 
 public class CloudRebuildServer extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -60,7 +61,7 @@ public class CloudRebuildServer extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
+		OpenStackDriver cloud = new OpenStackDriver(m_endpoint, m_identity, m_credential);
 
 		try {
 			cloud.rebuildServer(m_region, m_serverID, m_imageID);

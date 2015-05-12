@@ -3,8 +3,9 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.cloud.*;
+import net.hep.ami.cloud.driver.OpenStackDriver;
 import net.hep.ami.command.CommandAbstractClass;
-import net.hep.ami.utility.*;
 
 public class CloudListFlavors extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -49,9 +50,9 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
+		OpenStackDriver cloud = new OpenStackDriver(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud_OpenStack.CloudFlavor> flavors;
+		Set<OpenStackDriver.CloudFlavor> flavors;
 
 		try {
 			flavors = cloud.getFlavors();
@@ -66,7 +67,7 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud_OpenStack.CloudFlavor flavor : flavors) {
+		for(OpenStackDriver.CloudFlavor flavor: flavors) {
 
 			result.append(
 				"<row>"

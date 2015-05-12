@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc;
+package net.hep.ami.cloud;
 
 import java.util.*;
 import java.util.Map.*;
@@ -6,16 +6,16 @@ import java.lang.reflect.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.cloud.driver.*;
+import net.hep.ami.cloud.driver.annotation.*;
 
-public class DriverSingleton {
+public class CloudSingleton {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple3<String, String, Constructor<DriverAbstractClass>> {
+	private static class Tuple extends Tuple2<String, Constructor<DriverInterface>> {
 
-		public Tuple(String _x, String _y, Constructor<DriverAbstractClass> _z) {
-			super(_x, _y, _z);
+		public Tuple(String _x, Constructor<DriverInterface> _y) {
+			super(_x, _y);
 		}
 	}
 
@@ -27,9 +27,9 @@ public class DriverSingleton {
 
 	static {
 
-		Set<String> classeNames = ClassFinder.findClassNames("net.hep.ami.jdbc.driver");
+		Set<String> classNames = ClassFinder.findClassNames("net.hep.ami.cloud.driver");
 
-		for(String className: classeNames) {
+		for(String className: classNames) {
 
 			try {
 				addDriver(className);
@@ -49,25 +49,24 @@ public class DriverSingleton {
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<DriverAbstractClass> clazz = (Class<DriverAbstractClass>) Class.forName(className);
+		Class<DriverInterface> clazz = (Class<DriverInterface>) Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassFinder.extendsClass(clazz, DriverAbstractClass.class)) {
+		if(ClassFinder.implementsInterface(clazz, DriverInterface.class)) {
 
-			Jdbc jdbc = clazz.getAnnotation(Jdbc.class);
+			Engine engine = clazz.getAnnotation(Engine.class);
 
-			if(jdbc == null) {
-				throw new Exception("no `Jdbc` annotation for driver `" + clazz.getName() + "`");
+			if(engine == null) {
+				throw new Exception("no `Engine` annotation for driver `" + clazz.getName() + "`");
 			}
 
 			m_drivers.put(
-				jdbc.proto()
+				engine.name()
 				,
 				new Tuple(
-					jdbc.clazz(),
 					clazz.getName(),
 					clazz.getConstructor(
 						String.class,
@@ -83,37 +82,25 @@ public class DriverSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass) throws Exception {
-		/*-----------------------------------------------------------------*/
-		/* GET PROTOCOL                                                    */
-		/*-----------------------------------------------------------------*/
-
-		int index = jdbcUrl.indexOf("://");
-
-		if(index < 0) {
-			throw new Exception("invalid JDBC URL `" + jdbcUrl + "`");
-		}
-
-		String jdbcProto = jdbcUrl.substring(0, index);
-
+	public static DriverInterface getConnection(String name, String endpoint, String identity, String credential) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* GET DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple = m_drivers.get(jdbcProto);
+		Tuple tuple = m_drivers.get(name);
 
 		if(tuple == null) {
-			throw new Exception("unknown JDBC protocol `" + jdbcProto + "`");
+			throw new Exception("unknown engine name `" + name + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* CONNECTION                                                      */
 		/*-----------------------------------------------------------------*/
 
-		return tuple.z.newInstance(
-			jdbcUrl,
-			user,
-			pass
+		return tuple.y.newInstance(
+			endpoint,
+			identity,
+			credential
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -133,19 +120,16 @@ public class DriverSingleton {
 
 		for(Entry<String, Tuple> entry: m_drivers.entrySet()) {
 
-			String jdbcProto = entry.getKey();
+			String engineName = entry.getKey();
 
-			String jdbcClass = entry.getValue().x;
-			String driverClass = entry.getValue().y;
+			String engineClass = entry.getValue().x;
 
 			result.append(
 				"<row>"
 				+
-				"<field name=\"jdbcProto\"><![CDATA[" + jdbcProto + "]]></field>"
+				"<field name=\"engineName\"><![CDATA[" + engineName + "]]></field>"
 				+
-				"<field name=\"jdbcClass\"><![CDATA[" + jdbcClass + "]]></field>"
-				+
-				"<field name=\"driverClass\"><![CDATA[" + driverClass + "]]></field>"
+				"<field name=\"engineClass\"><![CDATA[" + engineClass + "]]></field>"
 				+
 				"</row>"
 			);

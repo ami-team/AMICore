@@ -1,9 +1,9 @@
-package net.hep.ami.utility;
+package net.hep.ami.cloud.driver;
 
 import java.io.*;
 import java.util.*;
 
-public interface CloudInterface extends Closeable {
+public interface DriverInterface extends Closeable {
 	/*---------------------------------------------------------------------*/
 
 	public static class CloudServer {

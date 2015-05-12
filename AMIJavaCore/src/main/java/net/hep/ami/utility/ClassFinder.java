@@ -1,75 +1,90 @@
 package net.hep.ami.utility;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 import java.util.zip.*;
 
 public class ClassFinder {
 	/*---------------------------------------------------------------------*/
 
-	private final Set<String> m_classes = new HashSet<String>();
+	private static final Set<String> m_classNames = new HashSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
-	private File m_base;
+	static {
+		/*-----------------------------------------------------------------*/
+		/* GET PATHS                                                       */
+		/*-----------------------------------------------------------------*/
 
-	private String m_filter;
+		Set<String> classPaths = new HashSet<String>(Arrays.asList(System.getProperty("java.class.path").split(":")));
 
-	/*---------------------------------------------------------------------*/
-
-	public ClassFinder(String filter) {
+		/*-----------------------------------------------------------------*/
 
 		String name = "/net/hep/ami/utility/ClassFinder.class";
 
-		URL url = ClassFinder.class.getResource(name);
+		String path = ClassFinder.class.getResource(name).getPath();
 
-		String protocol = url.getProtocol();
-		String path     = url.getPath    ();
+		path = path.substring(0, path.indexOf(name));
 
-		if(protocol.equals("jar")) {
-			path = path.substring(5, path.indexOf("!"));
-			m_base = new File(path).getParentFile();
-		} else {
-			path = path.substring(0, path.indexOf(name));
-			m_base = new File(path).getAbsoluteFile();
+		/**/
+
+		if(path.startsWith("file:")) {
+			path = new File(path.substring(5)).getParent();
 		}
 
-		m_filter = filter;
+		/**/
 
-		dispatch(m_base);
+		classPaths.add(path);
+
+		/*-----------------------------------------------------------------*/
+		/* WALK                                                            */
+		/*-----------------------------------------------------------------*/
+
+		File file;
+
+		for(String classPath: classPaths) {
+
+			file = new File(classPath);
+
+			walk(file, file);
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private void addDirectory(File FILE) {
-
-		for(File file: FILE.listFiles()) {
-
-			dispatch(file);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private void dispatch(File file) {
+	private static void walk(File base, File file) {
 
 		if(file.isDirectory()) {
-			addDirectory(file);
+			/*-------------------------------------------------------------*/
+			/* DIRECTORY                                                   */
+			/*-------------------------------------------------------------*/
 
+			for(File FILE: file.listFiles()) {
+
+				walk(base, FILE);
+			}
+
+			/*-------------------------------------------------------------*/
 		} else {
+			/*-------------------------------------------------------------*/
+			/* FILE                                                        */
+			/*-------------------------------------------------------------*/
 
 			if(file.getName().toLowerCase().endsWith(".jar")) {
-				addZip(file);
+				addJar(file);
 			} else {
-				addFile(file);
+				addFile(base, file);
 			}
+
+			/*-------------------------------------------------------------*/
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private void addZip(File file) {
+	private static void addJar(File file) {
 
 		try {
 			/*-------------------------------------------------------------*/
@@ -92,7 +107,7 @@ public class ClassFinder {
 
 				String className = entries.nextElement().getName();
 
-				addClass(className);
+				addClassName(className);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -107,69 +122,73 @@ public class ClassFinder {
 		}
 	}
 
-  	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
 
-	private void addFile(File file) {
+	private static void addFile(File base, File file) {
 
-		String className = m_base.toURI().relativize(file.toURI()).getPath();
+		String className = base.toURI().relativize(file.toURI()).getPath();
 
-		addClass(className);
+		addClassName(className);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private void addClass(String className) {
+	private static void addClassName(String className) {
 
-		if(className.endsWith(".class")) {
+		if(className.endsWith(".class") && className.contains("$") == false) {
 
 			className = className.substring(0, className.length() - 6)
 			                     .replace('\\', '.')
 			                     .replace('/', '.')
 			;
 
-			if(className.startsWith(m_filter)) {
-				m_classes.add(className);
-			}
+			m_classNames.add(className);
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public File getBase() {
+	public static Set<String> findClassNames(String filter) {
 
-		return m_base;
-	}
+		Set<String> result = new HashSet<String>();
 
-	/*---------------------------------------------------------------------*/
+		for(String className: m_classNames) {
 
-	public String getFilter() {
+			if(className.startsWith(filter)) {
 
-		return m_filter;
-	}
+				result.add(className);
+			}
+		}
 
-	/*---------------------------------------------------------------------*/
-
-	public Set<String> getClasses() {
-
-		return m_classes;
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static boolean extendsClass(Class<?> child, Class<?> parent) {
 
-		boolean result = false;
-
 		while((child = child.getSuperclass()) != null) {
 
 			if(child == parent) {
-
-				result = true;
-				break;
+				return true;
 			}
 		}
 
-		return result;
+		return false;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static boolean implementsInterface(Class<?> child, Class<?> parent) {
+
+		for(Class<?> clazz: child.getInterfaces()) {
+
+			if(clazz == parent) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/*---------------------------------------------------------------------*/

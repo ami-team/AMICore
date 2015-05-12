@@ -3,8 +3,9 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.cloud.*;
+import net.hep.ami.cloud.driver.OpenStackDriver;
 import net.hep.ami.command.CommandAbstractClass;
-import net.hep.ami.utility.*;
 
 public class CloudListSecurityRules extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -49,9 +50,9 @@ public class CloudListSecurityRules extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
+		OpenStackDriver cloud = new OpenStackDriver(m_endpoint, m_identity, m_credential);
 
-		Set<Cloud_OpenStack.CloudSecurityRule> securityGroups;
+		Set<OpenStackDriver.CloudSecurityRule> securityGroups;
 
 		try {
 			securityGroups = cloud.getSecurityRules();
@@ -66,7 +67,7 @@ public class CloudListSecurityRules extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud_OpenStack.CloudSecurityRule securityGroup : securityGroups) {
+		for(OpenStackDriver.CloudSecurityRule securityGroup: securityGroups) {
 
 			result.append(
 				"<row>"

@@ -27,9 +27,7 @@ public class FindCommands extends CommandAbstractClass {
 		/* FIND COMMANDS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		List<String> classes = new ArrayList<String>(
-			new ClassFinder("net.hep.ami").getClasses()
-		);
+		List<String> classes = new ArrayList<String>(ClassFinder.findClassNames("net.hep.ami.jdbc.driver"));
 
 		Collections.sort(classes);
 

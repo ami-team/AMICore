@@ -3,8 +3,9 @@ package net.hep.ami.command.cloud;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.command.CommandAbstractClass;
-import net.hep.ami.utility.*;
+import net.hep.ami.cloud.*;
+import net.hep.ami.cloud.driver.*;
+import net.hep.ami.command.*;
 
 public class CloudListServers extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -49,9 +50,9 @@ public class CloudListServers extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		Cloud_OpenStack cloud = new Cloud_OpenStack(m_endpoint, m_identity, m_credential);
+		DriverInterface cloud = CloudSingleton.getConnection("openstack", m_endpoint, m_identity, m_credential);
 
-		Set<Cloud_OpenStack.CloudServer> servers;
+		Set<DriverInterface.CloudServer> servers;
 
 		try {
 			servers = cloud.getServers();
@@ -66,7 +67,7 @@ public class CloudListServers extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Cloud_OpenStack.CloudServer server : servers) {
+		for(DriverInterface.CloudServer server: servers) {
 
 			result.append(
 				"<row>"

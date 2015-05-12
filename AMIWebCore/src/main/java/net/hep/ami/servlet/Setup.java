@@ -6,8 +6,9 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
+import net.hep.ami.cloud.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.*;
+import net.hep.ami.utility.TextFile;
 
 @WebServlet(
 	name = "Setup",

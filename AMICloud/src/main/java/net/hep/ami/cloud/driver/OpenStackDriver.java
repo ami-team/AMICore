@@ -1,4 +1,4 @@
-package net.hep.ami.utility;
+package net.hep.ami.cloud.driver;
 
 import java.io.*;
 import java.util.*;
@@ -13,7 +13,13 @@ import org.jclouds.openstack.nova.v2_0.extensions.*;
 import com.google.common.io.*;
 import com.google.common.collect.*;
 
-public class Cloud_OpenStack implements CloudInterface {
+import net.hep.ami.cloud.driver.annotation.*;
+
+@Engine(
+	name = "openstack"
+)
+
+public class OpenStackDriver implements DriverInterface {
 	/*---------------------------------------------------------------------*/
 
 	private NovaApi m_novaApi;
@@ -22,7 +28,7 @@ public class Cloud_OpenStack implements CloudInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public Cloud_OpenStack(String endpoint, String identity, String credential) throws Exception {
+	public OpenStackDriver(String endpoint, String identity, String credential) throws Exception {
 
 		m_novaApi = ContextBuilder.newBuilder("openstack-nova")
 		                          .endpoint(endpoint)
@@ -57,11 +63,11 @@ public class Cloud_OpenStack implements CloudInterface {
 
 		ServerApi serverApi;
 
-		for(String region : m_regions) {
+		for(String region: m_regions) {
 
 			serverApi = m_novaApi.getServerApi(region);
 
-			for(Server server : serverApi.listInDetail().concat()) {
+			for(Server server: serverApi.listInDetail().concat()) {
 
 				/*--------------*/
 				/* IP ADDRESSES */
@@ -70,7 +76,7 @@ public class Cloud_OpenStack implements CloudInterface {
 				String IPv4List = "";
 				String IPv6List = "";
 
-				for(Address address : server.getAddresses().values()) {
+				for(Address address: server.getAddresses().values()) {
 
 					/****/ if(address.getVersion() == 4) {
 						IPv4List = IPv4List.concat("," + address.getAddr());
@@ -117,11 +123,11 @@ public class Cloud_OpenStack implements CloudInterface {
 
 		FlavorApi flavorApi;
 
-		for(String region : m_regions) {
+		for(String region: m_regions) {
 
 			flavorApi = m_novaApi.getFlavorApi(region);
 
-			for(Flavor flavor : flavorApi.listInDetail().concat()) {
+			for(Flavor flavor: flavorApi.listInDetail().concat()) {
 
 				result.add(new CloudFlavor(
 					flavor.getId(),
@@ -149,11 +155,11 @@ public class Cloud_OpenStack implements CloudInterface {
 
 		ImageApi imageApi;
 
-		for(String region : m_regions) {
+		for(String region: m_regions) {
 
 			imageApi = m_novaApi.getImageApi(region);
 
-			for(Image image : imageApi.listInDetail().concat()) {
+			for(Image image: imageApi.listInDetail().concat()) {
 
 				result.add(new CloudImage(
 					image.getId(),
@@ -180,15 +186,15 @@ public class Cloud_OpenStack implements CloudInterface {
 
 		com.google.common.base.Optional<SecurityGroupApi> securityGroupApi;
 
-		for(String region : m_regions) {
+		for(String region: m_regions) {
 
 			securityGroupApi = m_novaApi.getSecurityGroupApi(region);
 
 			if(securityGroupApi.isPresent()) {
 
-				for(SecurityGroup securityGroup : securityGroupApi.get().list()) {
+				for(SecurityGroup securityGroup: securityGroupApi.get().list()) {
 
-					for(SecurityGroupRule securityGroupRule : securityGroup.getRules()) {
+					for(SecurityGroupRule securityGroupRule: securityGroup.getRules()) {
 
 						result.add(new CloudSecurityRule(
 							region,
