@@ -4,8 +4,8 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.cloud.*;
-import net.hep.ami.cloud.driver.OpenStackDriver;
-import net.hep.ami.command.CommandAbstractClass;
+import net.hep.ami.cloud.driver.*;
+import net.hep.ami.command.*;
 
 public class CloudDeleteServer extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -57,7 +57,7 @@ public class CloudDeleteServer extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		OpenStackDriver cloud = new OpenStackDriver(m_endpoint, m_identity, m_credential);
+		DriverInterface cloud = CloudSingleton.getConnection("openstack", m_endpoint, m_identity, m_credential);
 
 		try {
 			cloud.deleteServer(m_region, m_serverID);

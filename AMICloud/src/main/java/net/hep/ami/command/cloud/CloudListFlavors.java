@@ -4,8 +4,8 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.cloud.*;
-import net.hep.ami.cloud.driver.OpenStackDriver;
-import net.hep.ami.command.CommandAbstractClass;
+import net.hep.ami.cloud.driver.*;
+import net.hep.ami.command.*;
 
 public class CloudListFlavors extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -50,7 +50,7 @@ public class CloudListFlavors extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		OpenStackDriver cloud = new OpenStackDriver(m_endpoint, m_identity, m_credential);
+		DriverInterface cloud = CloudSingleton.getConnection("openstack", m_endpoint, m_identity, m_credential);
 
 		Set<OpenStackDriver.CloudFlavor> flavors;
 
