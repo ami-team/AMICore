@@ -1,9 +1,14 @@
 package net.hep.ami.role;
 
+import java.util.*;
+
 public interface ValidatorInterface {
 	/*---------------------------------------------------------------------*/
 
-	/* TODO */
+	public boolean check(
+		String command,
+		Map<String, String> arguments
+	);
 
 	/*---------------------------------------------------------------------*/
 }
