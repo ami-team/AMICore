@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.glite;
+package net.hep.ami.jdbc.mql;
 
 import java.util.*;
 
@@ -6,10 +6,10 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.glite.antlr.*;
+import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.introspection.*;
 
-public class Parser {
+public class SelectParser {
 	/*---------------------------------------------------------------------*/
 
 	private Map<String, Set<String>> m_fields = new HashMap<String, Set<String>>();
@@ -18,7 +18,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	public Parser(String catalog) {
+	public SelectParser(String catalog) {
 
 		m_catalog = catalog;
 	}
@@ -30,9 +30,9 @@ public class Parser {
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		GLiteLexer lexer = new GLiteLexer(new ANTLRInputStream(query));
+		MQLSelectLexer lexer = new MQLSelectLexer(new ANTLRInputStream(query));
 
-		GLiteParser parser = new GLiteParser(new CommonTokenStream(lexer));
+		MQLSelectParser parser = new MQLSelectParser(new CommonTokenStream(lexer));
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -45,7 +45,7 @@ public class Parser {
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		return new Parser(catalog).visitSelectStatement(parser.selectStatement()).toString();
+		return new SelectParser(catalog).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -108,7 +108,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSelectStatement(GLiteParser.SelectStatementContext ctx) {
+	private StringBuilder visitSelectStatement(MQLSelectParser.SelectStatementContext ctx) {
 
 		StringBuilder select = new StringBuilder();
 		StringBuilder from = new StringBuilder();
@@ -174,7 +174,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnList(GLiteParser.ColumnListContext ctx) {
+	private StringBuilder visitColumnList(MQLSelectParser.ColumnListContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -190,13 +190,13 @@ public class Parser {
 
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof GLiteParser.ColumnWildcardContext) {
+			/****/ if(child instanceof MQLSelectParser.ColumnWildcardContext) {
 				if(cnt++ > 0) result.append(", ");
-				result.append(visitColumnWildcard((GLiteParser.ColumnWildcardContext) child));
+				result.append(visitColumnWildcard((MQLSelectParser.ColumnWildcardContext) child));
 
-			} else if(child instanceof GLiteParser.ColumnExpressionContext) {
+			} else if(child instanceof MQLSelectParser.ColumnExpressionContext) {
 				if(cnt++ > 0) result.append(", ");
-				result.append(visitColumnExpression((GLiteParser.ColumnExpressionContext) child));
+				result.append(visitColumnExpression((MQLSelectParser.ColumnExpressionContext) child));
 			}
 		}
 
@@ -207,7 +207,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnWildcard(GLiteParser.ColumnWildcardContext ctx) {
+	private StringBuilder visitColumnWildcard(MQLSelectParser.ColumnWildcardContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -259,7 +259,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnExpression(GLiteParser.ColumnExpressionContext ctx) {
+	private StringBuilder visitColumnExpression(MQLSelectParser.ColumnExpressionContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -278,7 +278,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(GLiteParser.ExpressionOrContext ctx) {
+	private StringBuilder visitExpressionOr(MQLSelectParser.ExpressionOrContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -292,8 +292,8 @@ public class Parser {
 
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof GLiteParser.ExpressionAndContext) {
-				result.append(visitExpressionAnd((GLiteParser.ExpressionAndContext) child));
+			/****/ if(child instanceof MQLSelectParser.ExpressionAndContext) {
+				result.append(visitExpressionAnd((MQLSelectParser.ExpressionAndContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(" OR ");
 			}
@@ -306,7 +306,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAnd(GLiteParser.ExpressionAndContext ctx) {
+	private StringBuilder visitExpressionAnd(MQLSelectParser.ExpressionAndContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -320,8 +320,8 @@ public class Parser {
 
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof GLiteParser.ExpressionCompContext) {
-				result.append(visitExpressionComp((GLiteParser.ExpressionCompContext) child));
+			/****/ if(child instanceof MQLSelectParser.ExpressionCompContext) {
+				result.append(visitExpressionComp((MQLSelectParser.ExpressionCompContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(" AND ");
 			}
@@ -348,7 +348,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionComp(GLiteParser.ExpressionCompContext ctx) {
+	private StringBuilder visitExpressionComp(MQLSelectParser.ExpressionCompContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -362,8 +362,8 @@ public class Parser {
 
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof GLiteParser.ExpressionAddSubContext) {
-				result.append(visitExpressionAddSub((GLiteParser.ExpressionAddSubContext) child));
+			/****/ if(child instanceof MQLSelectParser.ExpressionAddSubContext) {
+				result.append(visitExpressionAddSub((MQLSelectParser.ExpressionAddSubContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(_patchNEOperator(child.getText()));
 			}
@@ -376,7 +376,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(GLiteParser.ExpressionAddSubContext ctx) {
+	private StringBuilder visitExpressionAddSub(MQLSelectParser.ExpressionAddSubContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -390,8 +390,8 @@ public class Parser {
 
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof GLiteParser.ExpressionMulDivContext) {
-				result.append(visitExpressionMulDiv((GLiteParser.ExpressionMulDivContext) child));
+			/****/ if(child instanceof MQLSelectParser.ExpressionMulDivContext) {
+				result.append(visitExpressionMulDiv((MQLSelectParser.ExpressionMulDivContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(child.getText());
 			}
@@ -404,7 +404,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(GLiteParser.ExpressionMulDivContext ctx) {
+	private StringBuilder visitExpressionMulDiv(MQLSelectParser.ExpressionMulDivContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -418,8 +418,8 @@ public class Parser {
 
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof GLiteParser.ExpressionNotPlusMinusContext) {
-				result.append(visitExpressionNotPlusMinus((GLiteParser.ExpressionNotPlusMinusContext) child));
+			/****/ if(child instanceof MQLSelectParser.ExpressionNotPlusMinusContext) {
+				result.append(visitExpressionNotPlusMinus((MQLSelectParser.ExpressionNotPlusMinusContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(child.getText());
 			}
@@ -432,7 +432,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(GLiteParser.ExpressionNotPlusMinusContext ctx) {
+	private StringBuilder visitExpressionNotPlusMinus(MQLSelectParser.ExpressionNotPlusMinusContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -450,16 +450,16 @@ public class Parser {
 
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof GLiteParser.ExpressionGroupContext) {
-				result.append(visitExpressionGroup((GLiteParser.ExpressionGroupContext) child));
-			} else if(child instanceof GLiteParser.ExpressionFunctionContext) {
-				result.append(visitExpressionFunction((GLiteParser.ExpressionFunctionContext) child));
-			} else if(child instanceof GLiteParser.ExpressionLikeContext) {
-				result.append(visitExpressionLike((GLiteParser.ExpressionLikeContext) child));
-			} else if(child instanceof GLiteParser.ExpressionQIdContext) {
-				result.append(visitExpressionQId((GLiteParser.ExpressionQIdContext) child));
-			} else if(child instanceof GLiteParser.ExpressionLiteralContext) {
-				result.append(visitExpressionLiteral((GLiteParser.ExpressionLiteralContext) child));
+			/****/ if(child instanceof MQLSelectParser.ExpressionGroupContext) {
+				result.append(visitExpressionGroup((MQLSelectParser.ExpressionGroupContext) child));
+			} else if(child instanceof MQLSelectParser.ExpressionFunctionContext) {
+				result.append(visitExpressionFunction((MQLSelectParser.ExpressionFunctionContext) child));
+			} else if(child instanceof MQLSelectParser.ExpressionLikeContext) {
+				result.append(visitExpressionLike((MQLSelectParser.ExpressionLikeContext) child));
+			} else if(child instanceof MQLSelectParser.ExpressionQIdContext) {
+				result.append(visitExpressionQId((MQLSelectParser.ExpressionQIdContext) child));
+			} else if(child instanceof MQLSelectParser.ExpressionLiteralContext) {
+				result.append(visitExpressionLiteral((MQLSelectParser.ExpressionLiteralContext) child));
 			}
 		}
 
@@ -470,7 +470,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(GLiteParser.ExpressionGroupContext ctx) {
+	private StringBuilder visitExpressionGroup(MQLSelectParser.ExpressionGroupContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -487,7 +487,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(GLiteParser.ExpressionFunctionContext ctx) {
+	private StringBuilder visitExpressionFunction(MQLSelectParser.ExpressionFunctionContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -505,7 +505,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLike(GLiteParser.ExpressionLikeContext ctx) {
+	private StringBuilder visitExpressionLike(MQLSelectParser.ExpressionLikeContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -522,21 +522,21 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(GLiteParser.ExpressionQIdContext ctx) {
+	private StringBuilder visitExpressionQId(MQLSelectParser.ExpressionQIdContext ctx) {
 
 		return visitSqlQId(ctx.qId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(GLiteParser.ExpressionLiteralContext ctx) {
+	private StringBuilder visitExpressionLiteral(MQLSelectParser.ExpressionLiteralContext ctx) {
 
 		return visitSqlLiteral(ctx.literal);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlQId(GLiteParser.SqlQIdContext ctx) {
+	private StringBuilder visitSqlQId(MQLSelectParser.SqlQIdContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 
@@ -558,7 +558,7 @@ public class Parser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlLiteral(GLiteParser.SqlLiteralContext ctx) {
+	private StringBuilder visitSqlLiteral(MQLSelectParser.SqlLiteralContext ctx) {
 
 		StringBuilder result = new StringBuilder();
 

@@ -1,6 +1,6 @@
-package net.hep.ami.role.userValidator;
+package net.hep.ami.role;
 
-public interface UserRoleValidatorInterface {
+public interface UserValidatorInterface {
 	/*---------------------------------------------------------------------*/
 
 	public boolean check(

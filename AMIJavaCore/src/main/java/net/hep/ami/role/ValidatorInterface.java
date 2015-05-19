@@ -1,6 +1,6 @@
-package net.hep.ami.role.commandValidator;
+package net.hep.ami.role;
 
-public interface CommandRoleValidatorInterface {
+public interface ValidatorInterface {
 	/*---------------------------------------------------------------------*/
 
 	/* TODO */

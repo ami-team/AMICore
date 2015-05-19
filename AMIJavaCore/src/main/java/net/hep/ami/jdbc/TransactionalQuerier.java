@@ -33,6 +33,7 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public QueryResult executeSQLQuery(String sql) throws Exception {
 
 		return m_driver.executeSQLQuery(sql);
@@ -40,20 +41,31 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeGLiteQuery(String mql) throws Exception {
+	@Override
+	public QueryResult executeMQLQuery(String mql) throws Exception {
 
-		return m_driver.executeGLiteQuery(mql);
+		return m_driver.executeMQLQuery(mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void executeUpdate(String sql) throws Exception {
+	@Override
+	public void executeSQLUpdate(String sql) throws Exception {
 
-		m_driver.executeUpdate(sql);
+		m_driver.executeSQLUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
+	public void executeMQLUpdate(String mql) throws Exception {
+
+		m_driver.executeMQLUpdate(mql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String getJdbcProto() {
 
 		return m_driver.getJdbcProto();
@@ -61,6 +73,7 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getJdbcClass() {
 
 		return m_driver.getJdbcClass();
@@ -68,6 +81,7 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getJdbcUrl() {
 
 		return m_driver.getJdbcUrl();
@@ -75,6 +89,7 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getCatalog() {
 
 		return m_driver.getCatalog();
@@ -82,6 +97,7 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getUser() {
 
 		return m_driver.getUser();
@@ -89,6 +105,7 @@ public class TransactionalQuerier implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getPass() {
 
 		return m_driver.getPass();

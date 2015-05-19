@@ -139,7 +139,7 @@ public class UpdateElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		transactionalQuerier.executeUpdate(sql);
+		transactionalQuerier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

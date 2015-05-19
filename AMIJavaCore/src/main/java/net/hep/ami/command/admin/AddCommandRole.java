@@ -3,9 +3,9 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.role.commandValidator.*;
 
 public class AddCommandRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
@@ -40,9 +40,9 @@ public class AddCommandRole extends CommandAbstractClass {
 
 			Class<?> clazz = Class.forName(m_roleValidatorClass);
 
-			if(ClassFinder.extendsClass(clazz, CommandRoleValidatorInterface.class) == false) {
+			if(ClassFinder.extendsClass(clazz, ValidatorInterface.class) == false) {
 
-				throw new Exception("class `" + m_roleValidatorClass + "` must implement `" + CommandRoleValidatorInterface.class.getName() + "`");
+				throw new Exception("class `" + m_roleValidatorClass + "` must implement `" + ValidatorInterface.class.getName() + "`");
 			}
 		}
 
@@ -101,7 +101,7 @@ public class AddCommandRole extends CommandAbstractClass {
 			);
 		}
 
-		transactionalQuerier.executeUpdate(sql3);
+		transactionalQuerier.executeSQLUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 

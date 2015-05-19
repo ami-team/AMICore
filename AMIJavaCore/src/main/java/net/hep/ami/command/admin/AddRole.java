@@ -61,7 +61,7 @@ public class AddRole extends CommandAbstractClass {
 			m_role.replace("'", "''")
 		);
 
-		transactionalQuerier.executeUpdate(sql2);
+		transactionalQuerier.executeSQLUpdate(sql2);
 
 		/*-----------------------------------------------------------------*/
 

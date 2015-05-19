@@ -3,16 +3,16 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.role.commandValidator.*;
 
 public class AddUserRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_user;
 	private String m_role;
-	private String m_roleValidatorClass;
+	private String m_validatorClass;
 
 	/*---------------------------------------------------------------------*/
 
@@ -21,7 +21,7 @@ public class AddUserRole extends CommandAbstractClass {
 
 		m_user = arguments.get("user");
 		m_role = arguments.get("role");
-		m_roleValidatorClass = arguments.get("roleValidatorClass");
+		m_validatorClass = arguments.get("validatorClass");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -36,13 +36,13 @@ public class AddUserRole extends CommandAbstractClass {
 			throw new Exception("invalid usage");
 		}
 
-		if(m_roleValidatorClass != null) {
+		if(m_validatorClass != null) {
 
-			Class<?> clazz = Class.forName(m_roleValidatorClass);
+			Class<?> clazz = Class.forName(m_validatorClass);
 
-			if(ClassFinder.extendsClass(clazz, CommandRoleValidatorInterface.class) == false) {
+			if(ClassFinder.extendsClass(clazz, ValidatorInterface.class) == false) {
 
-				throw new Exception("class `" + m_roleValidatorClass + "` must implement `" + CommandRoleValidatorInterface.class.getName() + "`");
+				throw new Exception("class `" + m_validatorClass + "` must implement `" + ValidatorInterface.class.getName() + "`");
 			}
 		}
 
@@ -88,7 +88,7 @@ public class AddUserRole extends CommandAbstractClass {
 
 		String sql3;
 
-		if(m_roleValidatorClass == null) {
+		if(m_validatorClass == null) {
 			sql3 = String.format("INSERT INTO `router_user_role` (`userFK`,`roleFK`) VALUES ('%s','%s')",
 				userID,
 				roleID
@@ -97,11 +97,11 @@ public class AddUserRole extends CommandAbstractClass {
 			sql3 = String.format("INSERT INTO `router_user_role` (`userFK`,`roleFK`,`roleValidatorClass`) VALUES ('%s','%s','%s')",
 				userID,
 				roleID,
-				m_roleValidatorClass.replace("'", "''")
+				m_validatorClass.replace("'", "''")
 			);
 		}
 
-		transactionalQuerier.executeUpdate(sql3);
+		transactionalQuerier.executeSQLUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 

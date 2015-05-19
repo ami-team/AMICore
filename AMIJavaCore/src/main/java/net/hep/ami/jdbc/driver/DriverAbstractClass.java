@@ -3,11 +3,11 @@ package net.hep.ami.jdbc.driver;
 import java.sql.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.mql.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.annotation.*;
-import net.hep.ami.jdbc.glite.Parser;
 
-public abstract class DriverAbstractClass implements QuerierInterface {
+public abstract class DriverAbstractClass implements QuerierInterface, DriverInterface {
 	/*---------------------------------------------------------------------*/
 
 	protected Connection m_connection;
@@ -64,21 +64,40 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public QueryResult executeSQLQuery(String sql) throws Exception {
 
-		return new QueryResult(m_statement.executeQuery(sql));
+		return new QueryResult(
+			m_statement.executeQuery(sql)
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeGLiteQuery(String mql) throws Exception {
+	@Override
+	public QueryResult executeMQLQuery(String mql) throws Exception {
 
-		return new QueryResult(m_statement.executeQuery(Parser.parse(mql, m_catalog)));
+		String sql = SelectParser.parse(mql, m_catalog);
+
+		return new QueryResult(
+			m_statement.executeQuery(sql)
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void executeUpdate(String sql) throws Exception {
+	@Override
+	public void executeSQLUpdate(String sql) throws Exception {
+
+		m_statement.executeUpdate(sql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public void executeMQLUpdate(String mql) throws Exception {
+
+		String sql = UpdateParser.parse(mql, this);
 
 		m_statement.executeUpdate(sql);
 	}
@@ -105,14 +124,19 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	public void commitAndRelease() throws Exception {
 
-		if(m_connection.getAutoCommit() == false) {
-			m_connection.commit();
-		}
-
 		try {
-			m_statement.close();
+
+			if(m_connection.getAutoCommit() == false) {
+				m_connection.commit();
+			}
+
 		} finally {
-			m_connection.close();
+
+			try {
+				m_statement.close();
+			} finally {
+				m_connection.close();
+			}
 		}
 	}
 
@@ -120,14 +144,19 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	public void rollbackAndRelease() throws Exception {
 
-		if(m_connection.getAutoCommit() == false) {
-			m_connection.rollback();
-		}
-
 		try {
-			m_statement.close();
+
+			if(m_connection.getAutoCommit() == false) {
+				m_connection.rollback();
+			}
+
 		} finally {
-			m_connection.close();
+
+			try {
+				m_statement.close();
+			} finally {
+				m_connection.close();
+			}
 		}
 	}
 
@@ -141,6 +170,7 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getJdbcProto() {
 
 		return m_jdbcProto;
@@ -148,6 +178,7 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getJdbcClass() {
 
 		return m_jdbcClass;
@@ -155,6 +186,7 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getJdbcUrl() {
 
 		return m_jdbcUrl;
@@ -162,6 +194,7 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getCatalog() {
 
 		return m_catalog;
@@ -169,6 +202,7 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getUser() {
 
 		return m_user;
@@ -176,6 +210,7 @@ public abstract class DriverAbstractClass implements QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String getPass() {
 
 		return m_pass;

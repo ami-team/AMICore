@@ -7,11 +7,15 @@ public interface QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeGLiteQuery(String mql) throws Exception;
+	public QueryResult executeMQLQuery(String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public void executeUpdate(String sql) throws Exception;
+	public void executeSQLUpdate(String sql) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public void executeMQLUpdate(String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class SearchQuery extends CommandAbstractClass {
+public class BrowseQuery extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -15,7 +15,7 @@ public class SearchQuery extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public SearchQuery(Map<String, String> arguments, int transactionID) {
+	public BrowseQuery(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");

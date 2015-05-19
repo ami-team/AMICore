@@ -3,21 +3,21 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.command.CommandAbstractClass;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.role.userValidator.UserRoleValidatorInterface;
+import net.hep.ami.role.*;
+import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
 public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
-	private static final UserRoleValidatorInterface m_userValidator = _getUserValidator();
+	private static final UserValidatorInterface m_userValidator = _getUserValidator();
 
 	/*---------------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	static UserRoleValidatorInterface _getUserValidator() {
+	static UserValidatorInterface _getUserValidator() {
 		/*-----------------------------------------------------------------*/
 		/* GET USER VALIDATOR CLASS NAME                                   */
 		/*-----------------------------------------------------------------*/
@@ -31,9 +31,9 @@ public class AddUser extends CommandAbstractClass {
 		if(userValidatorClass != null) {
 
 			try {
-				Class<UserRoleValidatorInterface> clazz = (Class<UserRoleValidatorInterface>) Class.forName(userValidatorClass);
+				Class<UserValidatorInterface> clazz = (Class<UserValidatorInterface>) Class.forName(userValidatorClass);
 
-				if(ClassFinder.extendsClass(clazz, UserRoleValidatorInterface.class)) {
+				if(ClassFinder.extendsClass(clazz, UserValidatorInterface.class)) {
 
 					return clazz.newInstance();
 				}
@@ -47,7 +47,7 @@ public class AddUser extends CommandAbstractClass {
 		/* PERMISSIVE CASE                                                 */
 		/*-----------------------------------------------------------------*/
 
-		return new UserRoleValidatorInterface() {
+		return new UserValidatorInterface() {
 
 			public boolean check(
 				String AMIUser,
@@ -147,7 +147,7 @@ public class AddUser extends CommandAbstractClass {
 			m_email.replace("'", "''")
 		);
 
-		transactionalQuerier.executeUpdate(sql);
+		transactionalQuerier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
