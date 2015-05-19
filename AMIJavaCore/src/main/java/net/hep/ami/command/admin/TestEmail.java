@@ -3,7 +3,7 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.command.CommandAbstractClass;
+import net.hep.ami.command.*;
 
 public class TestEmail extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/

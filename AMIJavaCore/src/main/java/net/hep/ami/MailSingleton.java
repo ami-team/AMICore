@@ -12,6 +12,7 @@ public class MailSingleton {
 
 	private static final Authenticator m_authenticator = new Authenticator() {
 
+		@Override
 		protected PasswordAuthentication getPasswordAuthentication() {
 
 			return new PasswordAuthentication(

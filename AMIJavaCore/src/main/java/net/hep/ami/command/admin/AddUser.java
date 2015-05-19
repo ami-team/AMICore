@@ -49,6 +49,7 @@ public class AddUser extends CommandAbstractClass {
 
 		return new UserValidatorInterface() {
 
+			@Override
 			public boolean check(
 				String AMIUser,
 				String AMIPass,

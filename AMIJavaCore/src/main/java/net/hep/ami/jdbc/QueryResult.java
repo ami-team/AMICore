@@ -290,6 +290,7 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String toString() {
 
 		return toStringBuilder().toString();
