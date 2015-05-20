@@ -108,9 +108,17 @@ public class BasicQuerier implements QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getCatalog() {
+	public String getInternalCatalog() {
 
-		return m_driver.getCatalog();
+		return m_driver.getInternalCatalog();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String getExternalCatalog() {
+
+		return m_driver.getExternalCatalog();
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -14,7 +14,11 @@ public class CommandSingletonTest {
 		try {
 			/*System.out.println(*/CatalogSingleton.listCatalogs()/*)*/;
 
-			System.out.println(CommandSingleton.executeCommand("CloudListServers", arguments));
+			//System.out.println(CommandSingleton.executeCommand("CloudListServers", arguments));
+
+			arguments.put("catalog", "self");
+			arguments.put("glite", "SELECT `router_command`.* WHERE (`router_command`.`command`='GetSessionInfo')");
+			System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

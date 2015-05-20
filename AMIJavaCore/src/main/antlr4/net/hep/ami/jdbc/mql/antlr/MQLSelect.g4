@@ -13,7 +13,7 @@ options {
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT columns=columnList (WHERE expression=expressionOr)? ';'?
+	: SELECT columns=columnList (WHERE expression=expressionOr)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
 	;
 
 /*---------------------------*/
@@ -97,6 +97,14 @@ WHERE
 	: W H E R E
 	;
 
+LIMIT
+  : L I M I T
+  ;
+
+OFFSET
+  : O F F S E T
+  ;
+
 AS
 	: A S
 	;
@@ -131,6 +139,7 @@ FUNCTION
 	: A B S | C O S | L O G | M O D | P O W | R N D | S I N | S Q R T
 	| C O N C A T | L O W E R | L E N G T H | S U B S T R | U P P E R
 	| A V G | C O U N T | M I N | M A X | S U M
+	| D I S T I N C T
 	;
 
 /*---------------------------*/

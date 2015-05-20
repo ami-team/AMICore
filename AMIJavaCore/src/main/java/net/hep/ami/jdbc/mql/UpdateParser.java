@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.mql;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.DriverInterface;
 
 public class UpdateParser {
 	/*---------------------------------------------------------------------*/

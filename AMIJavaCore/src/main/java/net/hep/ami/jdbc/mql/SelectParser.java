@@ -54,10 +54,12 @@ public class SelectParser {
 
 	public static void main(String[] args) {
 
-		System.out.println(CatalogSingleton.listCatalogs());
+		CatalogSingleton.listCatalogs();
 
 		try {
-			System.out.println(parse("SELECT `router_user`.*, foo.bar, `foo`.`bar` AS foobar, (1 + 1) * (1 + 1) * 333 + 4 + 4 <> 1 <> 0 AS expr WHERE foo.bar > 4 AND toto.toto LIKE 'string'", "self"));
+			//System.out.println(parse("SELECT `router_user`.*, foo.bar, `foo`.`bar` AS foobar, (1 + 1) * (1 + 1) * 333 + 4 + 4 <> 1 <> 0 AS expr WHERE foo.bar > 4 AND toto.toto LIKE 'string'", "self"));
+			//System.out.println(parse("SELECT DISTINCT(`router_command`.`command`) WHERE (1=1) LIMIT 10 OFFSET 0", "self"));
+			System.out.println(parse("SELECT `router_command`.* WHERE (`router_command`.`command`='GetSessionInfo')", "self"));
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -126,6 +128,20 @@ public class SelectParser {
 		if(ctx.expression != null) {
 			where.append(" WHERE ");
 			where.append(visitExpressionOr(ctx.expression));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(ctx.limit != null) {
+
+			where.append(" LIMIT ");
+			where.append(ctx.limit.getText());
+
+			if(ctx.offset != null) {
+
+				where.append(" OFFSET ");
+				where.append(ctx.offset.getText());
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

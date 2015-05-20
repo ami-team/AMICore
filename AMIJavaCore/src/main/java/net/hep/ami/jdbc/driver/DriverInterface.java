@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.mql;
+package net.hep.ami.jdbc.driver;
 
 public interface DriverInterface {
 	/*---------------------------------------------------------------------*/

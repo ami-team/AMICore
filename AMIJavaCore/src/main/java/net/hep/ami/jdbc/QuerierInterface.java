@@ -31,7 +31,11 @@ public interface QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getCatalog();
+	public String getInternalCatalog();
+
+	/*---------------------------------------------------------------------*/
+
+	public String getExternalCatalog();
 
 	/*---------------------------------------------------------------------*/
 

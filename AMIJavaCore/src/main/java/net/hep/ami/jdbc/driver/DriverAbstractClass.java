@@ -5,6 +5,7 @@ import java.sql.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.mql.*;
 import net.hep.ami.jdbc.pool.*;
+import net.hep.ami.jdbc.introspection.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 public abstract class DriverAbstractClass implements QuerierInterface, DriverInterface {
@@ -18,7 +19,8 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
 	protected String m_jdbcUrl;
-	protected String m_catalog;
+	protected String m_internalCatalog;
+	protected String m_externalCatalog;
 	protected String m_user;
 	protected String m_pass;
 
@@ -57,7 +59,14 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 		m_statement = m_connection.createStatement();
 
-		m_catalog = m_connection.getCatalog();
+		m_internalCatalog = m_connection.getCatalog();
+
+		try {
+			m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog);
+
+		} catch(Exception e) {
+			/* IGNORE */
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -77,7 +86,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public QueryResult executeMQLQuery(String mql) throws Exception {
 
-		String sql = SelectParser.parse(mql, m_catalog);
+		String sql = SelectParser.parse(mql, m_externalCatalog);
 
 		return new QueryResult(
 			m_statement.executeQuery(sql)
@@ -195,9 +204,17 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getCatalog() {
+	public String getInternalCatalog() {
 
-		return m_catalog;
+		return m_internalCatalog;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String getExternalCatalog() {
+
+		return m_externalCatalog;
 	}
 
 	/*---------------------------------------------------------------------*/

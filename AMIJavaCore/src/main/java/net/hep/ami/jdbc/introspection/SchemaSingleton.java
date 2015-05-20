@@ -9,16 +9,16 @@ public class SchemaSingleton {
 
 	public static class Column {
 
-		public String internalCatalogName;
+		public String internalCatalog;
 		public String catalog;
 		public String table;
 		public String name;
 		public String type;
 		public int size;
 
-		public Column(String _internalCatalogName, String _catalog, String _table, String _name, String _type, int _size) {
+		public Column(String _internalCatalog, String _catalog, String _table, String _name, String _type, int _size) {
 
-			internalCatalogName = _internalCatalogName;
+			internalCatalog = _internalCatalog;
 			catalog = _catalog;
 			table = _table;
 			name = _name;
@@ -73,6 +73,11 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
+	private static final Map<String, String> m_internalCatalogToExternalCatalog = new HashMap<String, String>();
+	private static final Map<String, String> m_externalCatalogToInternalCatalog = new HashMap<String, String>();
+
+	/*---------------------------------------------------------------------*/
+
 	private static final Map<String, Map<String, Map<String, Column>>> m_columns = new HashMap<String, Map<String, Map<String, Column>>>();
 	private static final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys = new HashMap<String, Map<String, Map<String, FrgnKey>>>();
 	private static final Map<String, Map<String, List<Index>>> m_indices = new HashMap<String, Map<String, List<Index>>>();
@@ -113,12 +118,20 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readMetaData(DatabaseMetaData metaData, String internalCatalogName, String catalog) throws SQLException {
+	private static void readMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog) throws SQLException {
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* INTERNAL/EXTERNAL CATALOG BIJECTION                             */
 		/*-----------------------------------------------------------------*/
 
-		ResultSet resultSet = metaData.getTables(internalCatalogName, null, "%", null);
+		m_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
+
+		m_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
+
+		/*-----------------------------------------------------------------*/
+		/* INITIALIZE STRUCTURES                                           */
+		/*-----------------------------------------------------------------*/
+
+		ResultSet resultSet = metaData.getTables(internalCatalog, null, "%", null);
 
 		List<String> names = new ArrayList<String>();
 
@@ -126,21 +139,21 @@ public class SchemaSingleton {
 
 			String name = resultSet.getString("TABLE_NAME");
 
-			m_columns.get(catalog).put(name, new LinkedHashMap<String, Column>());
-			m_frgnKeys.get(catalog).put(name, new LinkedHashMap<String, FrgnKey>());
-			m_indices.get(catalog).put(name, new ArrayList<Index>());
+			m_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
+			m_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
+			m_indices.get(externalCatalog).put(name, new ArrayList<Index>());
 
 			names.add(name);
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* READ METADATA                                                   */
 		/*-----------------------------------------------------------------*/
 
 		for(String name: names) {
-			readColumnMetaData(metaData, internalCatalogName, catalog, name);
-			readFgnKeyMetaData(metaData, internalCatalogName, catalog, name);
-			readIndexMetaData(metaData, internalCatalogName, catalog, name);
+			readColumnMetaData(metaData, internalCatalog, externalCatalog, name);
+			readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
+			readIndexMetaData(metaData, internalCatalog, externalCatalog, name);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -148,9 +161,9 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readColumnMetaData(DatabaseMetaData metaData, String internalCatalogName, String catalog, String table) throws SQLException {
+	private static void readColumnMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException {
 
-		ResultSet resultSet = metaData.getColumns(internalCatalogName, null, table, null);
+		ResultSet resultSet = metaData.getColumns(internalCatalog, null, table, null);
 
 		while(resultSet.next()) {
 
@@ -158,9 +171,9 @@ public class SchemaSingleton {
 			String type = resultSet.getString("TYPE_NAME");
 			int size = resultSet.getInt("COLUMN_SIZE");
 
-			m_columns.get(catalog).get(table).put(name, new Column(
-				internalCatalogName,
-				catalog,
+			m_columns.get(externalCatalog).get(table).put(name, new Column(
+				internalCatalog,
+				externalCatalog,
 				table,
 				name,
 				type,
@@ -171,9 +184,9 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFgnKeyMetaData(DatabaseMetaData metaData, String internalCatalogName, String catalog, String table) throws SQLException {
+	private static void readFgnKeyMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException {
 
-		ResultSet resultSet = metaData.getExportedKeys(internalCatalogName, null, table);
+		ResultSet resultSet = metaData.getExportedKeys(internalCatalog, null, table);
 
 		while(resultSet.next()) {
 
@@ -183,8 +196,8 @@ public class SchemaSingleton {
 			String pktable = resultSet.getString("PKTABLE_NAME");
 			String pkcolumn = resultSet.getString("PKCOLUMN_NAME");
 
-			m_frgnKeys.get(catalog).get(fktable).put(fkcolumn, new FrgnKey(
-				catalog,
+			m_frgnKeys.get(externalCatalog).get(fktable).put(fkcolumn, new FrgnKey(
+				externalCatalog,
 				name,
 				fktable,
 				fkcolumn,
@@ -196,9 +209,9 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readIndexMetaData(DatabaseMetaData metaData, String internalCatalogName, String catalog, String table) throws SQLException {
+	private static void readIndexMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException {
 
-		ResultSet resultSet = metaData.getIndexInfo(internalCatalogName, null, table, false, false);
+		ResultSet resultSet = metaData.getIndexInfo(internalCatalog, null, table, false, false);
 
 		while(resultSet.next()) {
 
@@ -212,8 +225,8 @@ public class SchemaSingleton {
 			                                              : "INDEX"
 			;
 
-			m_indices.get(catalog).get(table).add(new Index(
-				catalog,
+			m_indices.get(externalCatalog).get(table).add(new Index(
+				externalCatalog,
 				table,
 				name,
 				type,
@@ -221,6 +234,32 @@ public class SchemaSingleton {
 				position
 			));
 		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String internalCatalogToExternalCatalog(String catalog) throws Exception {
+
+		String result = m_internalCatalogToExternalCatalog.get(catalog);
+
+		if(result != null) {
+			return result;
+		}
+
+		throw new Exception("internal catalog not found `" + catalog + "`");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String externalCatalogToInternalCatalog(String catalog) throws Exception {
+
+		String result = m_externalCatalogToInternalCatalog.get(catalog);
+
+		if(result != null) {
+			return result;
+		}
+
+		throw new Exception("external catalog not found `" + catalog + "`");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -338,9 +377,9 @@ public class SchemaSingleton {
 					result.append(
 						"<row>"
 						+
-						"<field name=\"internalName\">" + entry3.getValue().internalCatalogName + "</field>"
+						"<field name=\"internalCatalog\">" + entry3.getValue().internalCatalog + "</field>"
 						+
-						"<field name=\"catalog\">" + entry3.getValue().catalog + "</field>"
+						"<field name=\"externalCatalog\">" + entry3.getValue().catalog + "</field>"
 						+
 						"<field name=\"table\">" + entry3.getValue().table + "</field>"
 						+
