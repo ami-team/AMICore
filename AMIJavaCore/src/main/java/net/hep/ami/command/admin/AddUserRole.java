@@ -3,16 +3,13 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.role.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class AddUserRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private String m_user;
 	private String m_role;
-	private String m_validatorClass;
 
 	/*---------------------------------------------------------------------*/
 
@@ -21,7 +18,6 @@ public class AddUserRole extends CommandAbstractClass {
 
 		m_user = arguments.get("user");
 		m_role = arguments.get("role");
-		m_validatorClass = arguments.get("validatorClass");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -34,16 +30,6 @@ public class AddUserRole extends CommandAbstractClass {
 		   m_role == null
 		 ) {
 			throw new Exception("invalid usage");
-		}
-
-		if(m_validatorClass != null) {
-
-			Class<?> clazz = Class.forName(m_validatorClass);
-
-			if(ClassFinder.extendsClass(clazz, RoleValidatorInterface.class) == false) {
-
-				throw new Exception("class `" + m_validatorClass + "` must implement `" + RoleValidatorInterface.class.getName() + "`");
-			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -86,20 +72,10 @@ public class AddUserRole extends CommandAbstractClass {
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		String sql3;
-
-		if(m_validatorClass == null) {
-			sql3 = String.format("INSERT INTO `router_user_role` (`userFK`,`roleFK`) VALUES ('%s','%s')",
-				userID,
-				roleID
-			);
-		} else {
-			sql3 = String.format("INSERT INTO `router_user_role` (`userFK`,`roleFK`,`roleValidatorClass`) VALUES ('%s','%s','%s')",
-				userID,
-				roleID,
-				m_validatorClass.replace("'", "''")
-			);
-		}
+		String sql3 = String.format("INSERT INTO `router_user_role` (`userFK`,`roleFK`) VALUES ('%s','%s')",
+			userID,
+			roleID
+		);
 
 		transactionalQuerier.executeSQLUpdate(sql3);
 
@@ -119,7 +95,7 @@ public class AddUserRole extends CommandAbstractClass {
 
 	public static String usage() {
 
-		return "-user=\"value\" -role=\"value\" (-roleValidatorClass=\"value\")?";
+		return "-user=\"value\" -role=\"value\"";
 	}
 
 	/*---------------------------------------------------------------------*/
