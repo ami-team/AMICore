@@ -40,9 +40,9 @@ public class AddUserRole extends CommandAbstractClass {
 
 			Class<?> clazz = Class.forName(m_validatorClass);
 
-			if(ClassFinder.extendsClass(clazz, ValidatorInterface.class) == false) {
+			if(ClassFinder.extendsClass(clazz, RoleValidatorInterface.class) == false) {
 
-				throw new Exception("class `" + m_validatorClass + "` must implement `" + ValidatorInterface.class.getName() + "`");
+				throw new Exception("class `" + m_validatorClass + "` must implement `" + RoleValidatorInterface.class.getName() + "`");
 			}
 		}
 
