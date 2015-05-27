@@ -217,12 +217,12 @@ public class SchemaSingleton {
 
 			String name = resultSet.getString("INDEX_NAME");
 			String column = resultSet.getString("COLUMN_NAME");
-			int position = resultSet.getInt("ORDINAL_POSITION");
-			boolean unique = !resultSet.getBoolean("NON_UNIQUE");
+			int ordinalPosition = resultSet.getInt("ORDINAL_POSITION");
+			boolean nonUnique = resultSet.getBoolean("NON_UNIQUE");
 
-			String type = unique ? name.equals("PRIMARY") ? "PRIMARY"
-			                                              : "UNIQUE"
-			                                              : "INDEX"
+			String type = (nonUnique == false) ? name.equals("PRIMARY") ? "PRIMARY"
+			                                                            : "UNIQUE"
+			                                                            : "INDEX"
 			;
 
 			m_indices.get(externalCatalog).get(table).add(new Index(
@@ -231,7 +231,7 @@ public class SchemaSingleton {
 				name,
 				type,
 				column,
-				position
+				ordinalPosition
 			));
 		}
 	}

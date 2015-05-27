@@ -6,14 +6,14 @@ import java.util.regex.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.introspection.*;
 
-public class CheckNamingConventions extends CommandAbstractClass {
+public class CheckDBRules extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	private static final Pattern m_regex = Pattern.compile("[a-z][a-zA-Za-z0-9]*");
 
 	/*---------------------------------------------------------------------*/
 
-	public CheckNamingConventions(Map<String, String> arguments, int transactionID) {
+	public CheckDBRules(Map<String, String> arguments, int transactionID) {
 		super(arguments, transactionID);
 	}
 
