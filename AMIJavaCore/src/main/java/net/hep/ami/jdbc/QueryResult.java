@@ -5,7 +5,8 @@ import java.util.*;
 
 import net.hep.ami.utility.*;
 
-public class QueryResult {
+public class QueryResult
+{
 	/*---------------------------------------------------------------------*/
 
 	private String[] m_tables;
@@ -22,7 +23,8 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult(ResultSet resultSet) throws Exception {
+	public QueryResult(ResultSet resultSet) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET METADATA                                                    */
 		/*-----------------------------------------------------------------*/
@@ -39,8 +41,8 @@ public class QueryResult {
 		m_fields = new String[numberOfColumns];
 		m_types = new String[numberOfColumns];
 
-		for(int i = 0; i < numberOfColumns; i++) {
-
+		for(int i = 0; i < numberOfColumns; i++)
+		{
 			m_tables[i] = resultSetMetaData.getTableName(i + 1);
 			m_fields[i] = resultSetMetaData.getColumnName(i + 1);
 			m_types[i] = resultSetMetaData.getColumnTypeName(i + 1);
@@ -54,15 +56,16 @@ public class QueryResult {
 
 		int numberOfRows = 0;
 
-		List<String[]> linkedList = new LinkedList<String[]>();
+		List<String[]> list = new LinkedList<String[]>();
 
-		while(resultSet.next()) {
-
+		while(resultSet.next())
+		{
 			String[] row = new String[numberOfColumns];
 
-			for(int i = 0; i < numberOfColumns; i++) {
-
-				/****/ if(m_types[i].equals("TIME")) {
+			for(int i = 0; i < numberOfColumns; i++)
+			{
+				/**/ if(m_types[i].equals("TIME"))
+				{
 					/*-----------------------------------------------------*/
 					/* TIME                                                */
 					/*-----------------------------------------------------*/
@@ -70,29 +73,39 @@ public class QueryResult {
 					row[i] = resultSet.getTime(i + 1).toString();
 
 					/*-----------------------------------------------------*/
-				} else if(m_types[i].equals("DATE")) {
+				}
+				else if(m_types[i].equals("DATE"))
+				{
 					/*-----------------------------------------------------*/
 					/* DATE                                                */
 					/*-----------------------------------------------------*/
 
 					row[i] = DateFormater.format(resultSet.getDate(i + 1));
-					if(row[i] == null) {
+
+					if(row[i] == null)
+					{
 						row[i] = resultSet.getString(i + 1);
 					}
 
 					/*-----------------------------------------------------*/
-				} else if(m_types[i].equals("TIMESTAMP")) {
+				}
+				else if(m_types[i].equals("TIMESTAMP"))
+				{
 					/*-----------------------------------------------------*/
 					/* TIMESTAMP                                           */
 					/*-----------------------------------------------------*/
 
 					row[i] = DateFormater.format(resultSet.getTimestamp(i + 1));
-					if(row[i] == null) {
+
+					if(row[i] == null)
+					{
 						row[i] = resultSet.getString(i + 1);
 					}
 
 					/*-----------------------------------------------------*/
-				} else {
+				}
+				else
+				{
 					/*-----------------------------------------------------*/
 					/* DEFAULT                                             */
 					/*-----------------------------------------------------*/
@@ -103,7 +116,7 @@ public class QueryResult {
 				}
 			}
 
-			linkedList.add(row);
+			list.add(row);
 
 			numberOfRows++;
 		}
@@ -114,8 +127,8 @@ public class QueryResult {
 
 		m_rows = new String[numberOfRows][numberOfColumns];
 
-		for(String[] row: linkedList) {
-
+		for(String[] row: list)
+		{
 			m_rows[i++] = row;
 		}
 
@@ -124,60 +137,61 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public String[] getFields() {
-
+	public String[] getFields()
+	{
 		return m_fields;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String[] getTables() {
-
+	public String[] getTables()
+	{
 		return m_tables;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String[] getTypes() {
-
+	public String[] getTypes()
+	{
 		return m_types;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public int getNumberOfFields() {
-
+	public int getNumberOfFields()
+	{
 		return m_fields.length;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public int getNumberOfTables() {
-
+	public int getNumberOfTables()
+	{
 		return m_tables.length;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public int getNumberOfTypes() {
-
+	public int getNumberOfTypes()
+	{
 		return m_types.length;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public int getNumberOfRows() {
-
+	public int getNumberOfRows()
+	{
 		return m_rows.length;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean isATable(String tableName) {
-
-		for(String table: m_tables) {
-
-			if(table.equals(tableName)) {
+	public boolean isATable(String tableName)
+	{
+		for(String table: m_tables)
+		{
+			if(table.equals(tableName))
+			{
 				return true;
 			}
 		}
@@ -187,11 +201,12 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean isAField(String fieldName) {
-
-		for(String field: m_fields) {
-
-			if(field.equals(fieldName)) {
+	public boolean isAField(String fieldName)
+	{
+		for(String field: m_fields)
+		{
+			if(field.equals(fieldName))
+			{
 				return true;
 			}
 		}
@@ -201,11 +216,12 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean isAType(String typeName) {
-
-		for(String type: m_types) {
-
-			if(type.equals(typeName)) {
+	public boolean isAType(String typeName)
+	{
+		for(String type: m_types)
+		{
+			if(type.equals(typeName))
+			{
 				return true;
 			}
 		}
@@ -215,8 +231,8 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getTableForColumn(int columnIndex) {
-
+	public String getTableForColumn(int columnIndex)
+	{
 		return (columnIndex < m_tables.length) ? m_tables[columnIndex]
 		                                       : null
 		;
@@ -224,8 +240,8 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldForColumn(int columnIndex) {
-
+	public String getFieldForColumn(int columnIndex)
+	{
 		return (columnIndex < m_fields.length) ? m_fields[columnIndex]
 		                                       : null
 		;
@@ -233,8 +249,8 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getTypeForColumn(int columnIndex) {
-
+	public String getTypeForColumn(int columnIndex)
+	{
 		return (columnIndex < m_types.length) ? m_types[columnIndex]
 		                                      : null
 		;
@@ -242,8 +258,8 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(int rowIndex, int fieldIndex) {
-
+	public String getValue(int rowIndex, int fieldIndex)
+	{
 		return (rowIndex < m_rows.length && fieldIndex < m_fields.length) ? m_rows[rowIndex][fieldIndex]
 		                                                                  : null
 		;
@@ -251,8 +267,8 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(int rowIndex, String fieldName) {
-
+	public String getValue(int rowIndex, String fieldName)
+	{
 		return (rowIndex < m_rows.length && m_fieldIndices.containsKey(fieldName)) ? m_rows[rowIndex][m_fieldIndices.get(fieldName)]
 		                                                                           : null
 		;
@@ -260,8 +276,8 @@ public class QueryResult {
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuilder toStringBuilder() {
-
+	public StringBuilder toStringBuilder()
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -270,11 +286,16 @@ public class QueryResult {
 
 		/*-----------------------------------------------------------------*/
 
-		for(String[] row: m_rows) {
-
+		for(String[] row: m_rows)
+		{
 			result.append("<row>");
 
-			final int numberOfRows = row.length; for(int i = 0; i < numberOfRows; i++) result.append("<field table=\"" + m_tables[i] + "\" name=\"" + m_fields[i] + "\" type=\"" + m_types[i] + "\"><![CDATA[" + row[i] + "]]></field>");
+			final int numberOfRows = row.length;
+
+			for(int i = 0; i < numberOfRows; i++)
+			{
+				result.append("<field table=\"" + m_tables[i] + "\" name=\"" + m_fields[i] + "\" type=\"" + m_types[i] + "\"><![CDATA[" + row[i] + "]]></field>");
+			}
 
 			result.append("</row>");
 		}
@@ -291,8 +312,8 @@ public class QueryResult {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String toString() {
-
+	public String toString()
+	{
 		return toStringBuilder().toString();
 	}
 

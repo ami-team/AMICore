@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.introspection.*;
 
-public class ListFields extends CommandAbstractClass {
+public class ListFields extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -13,7 +14,8 @@ public class ListFields extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public ListFields(Map<String, String> arguments, int transactionID) {
+	public ListFields(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
@@ -23,8 +25,8 @@ public class ListFields extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
+	public StringBuilder main() throws Exception
+	{
 		if(m_catalog == null
 		   ||
 		   m_entity == null
@@ -40,8 +42,8 @@ public class ListFields extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(String field: SchemaSingleton.getColumnNames(m_catalog, m_entity)) {
-
+		for(String field: SchemaSingleton.getColumnNames(m_catalog, m_entity))
+		{
 			result.append(
 				"<row>"
 				+
@@ -62,15 +64,15 @@ public class ListFields extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "List fields.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-catalog=\"value\" -entity=\"value\"";
 	}
 

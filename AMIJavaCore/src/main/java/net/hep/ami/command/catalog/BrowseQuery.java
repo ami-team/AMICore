@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class BrowseQuery extends CommandAbstractClass {
+public class BrowseQuery extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -15,7 +16,8 @@ public class BrowseQuery extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public BrowseQuery(Map<String, String> arguments, int transactionID) {
+	public BrowseQuery(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
@@ -27,10 +29,10 @@ public class BrowseQuery extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_catalog == null || (m_sql == null && m_glite == null)) {
-
+	public StringBuilder main() throws Exception
+	{
+		if(m_catalog == null || (m_sql == null && m_glite == null))
+		{
 			throw new Exception("invalid usage");
 		}
 
@@ -40,9 +42,12 @@ public class BrowseQuery extends CommandAbstractClass {
 
 		QueryResult queryResult;
 
-		if(m_sql != null) {
+		if(m_sql != null)
+		{
 			queryResult = transactionalQuerier.executeSQLQuery(m_sql);
-		} else {
+		}
+		else
+		{
 			queryResult = transactionalQuerier.executeMQLQuery(m_glite);
 		}
 
@@ -53,15 +58,15 @@ public class BrowseQuery extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Execute a simple SQL or gLite query.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-catalog=\"value\" (-sql=\"value\" | -glite=\"value\")";
 	}
 

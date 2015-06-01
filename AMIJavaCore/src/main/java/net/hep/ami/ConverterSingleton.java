@@ -11,12 +11,14 @@ import net.hep.ami.utility.*;
 
 import org.w3c.dom.*;
 
-public class ConverterSingleton {
+public class ConverterSingleton
+{
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple2<Templates, String> {
-
-		public Tuple(Templates _x, String _y) {
+	private static class Tuple extends Tuple2<Templates, String>
+	{
+		public Tuple(Templates _x, String _y)
+		{
 			super(_x, _y);
 		}
 	}
@@ -27,9 +29,10 @@ public class ConverterSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	static {
-
-		try {
+	static
+	{
+		try
+		{
 			/*-------------------------------------------------------------*/
 			/* GET INPUT STREAM                                            */
 			/*-------------------------------------------------------------*/
@@ -58,8 +61,8 @@ public class ConverterSingleton {
 			/* ADD CONVERTERS                                              */
 			/*-------------------------------------------------------------*/
 
-			for(int i = 0; i < numberOfConverters; i++) {
-
+			for(int i = 0; i < numberOfConverters; i++)
+			{
 				Node node = nodeList.item(i);
 
 				addConverter(
@@ -70,16 +73,19 @@ public class ConverterSingleton {
 			}
 
 			/*-------------------------------------------------------------*/
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addConverter(String xslt, String mime) {
-
-		try {
+	private static void addConverter(String xslt, String mime)
+	{
+		try
+		{
 			/*-------------------------------------------------------------*/
 			/* GET INPUT STREAM                                            */
 			/*-------------------------------------------------------------*/
@@ -106,21 +112,25 @@ public class ConverterSingleton {
 			);
 
 			/*-------------------------------------------------------------*/
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String applyConverter(String fileName, Reader reader, Writer writer) throws Exception {
+	public static String applyConverter(String fileName, Reader reader, Writer writer) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET TRANSFORM                                                   */
 		/*-----------------------------------------------------------------*/
 
 		Tuple tuple = m_transformers.get(fileName);
 
-		if(tuple == null) {
+		if(tuple == null)
+		{
 			throw new Exception("converter `" + fileName + "` not found");
 		}
 
@@ -144,8 +154,8 @@ public class ConverterSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder listConverters() {
-
+	public static StringBuilder listConverters()
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -154,8 +164,8 @@ public class ConverterSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, Tuple> entry: m_transformers.entrySet()) {
-
+		for(Entry<String, Tuple> entry: m_transformers.entrySet())
+		{
 			String xslt = entry.getKey();
 			String mime = entry.getValue().y;
 

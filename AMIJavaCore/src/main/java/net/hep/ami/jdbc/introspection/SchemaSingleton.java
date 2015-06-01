@@ -4,11 +4,12 @@ import java.sql.*;
 import java.util.*;
 import java.util.Map.*;
 
-public class SchemaSingleton {
+public class SchemaSingleton
+{
 	/*---------------------------------------------------------------------*/
 
-	public static class Column {
-
+	public static class Column
+	{
 		public String internalCatalog;
 		public String catalog;
 		public String table;
@@ -16,8 +17,8 @@ public class SchemaSingleton {
 		public String type;
 		public int size;
 
-		public Column(String _internalCatalog, String _catalog, String _table, String _name, String _type, int _size) {
-
+		public Column(String _internalCatalog, String _catalog, String _table, String _name, String _type, int _size)
+		{
 			internalCatalog = _internalCatalog;
 			catalog = _catalog;
 			table = _table;
@@ -29,8 +30,8 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static class FrgnKey {
-
+	public static class FrgnKey
+	{
 		public String catalog;
 		public String name;
 		public String fkTable;
@@ -38,8 +39,8 @@ public class SchemaSingleton {
 		public String pkTable;
 		public String pkColumn;
 
-		public FrgnKey(String _catalog, String _name, String _fkTable, String _fkColumn, String _pkTable, String _pkColumn) {
-
+		public FrgnKey(String _catalog, String _name, String _fkTable, String _fkColumn, String _pkTable, String _pkColumn)
+		{
 			catalog = _catalog;
 			name = _name;
 			fkTable = _fkTable;
@@ -51,8 +52,8 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static class Index {
-
+	public static class Index
+	{
 		public String catalog;
 		public String table;
 		public String name;
@@ -60,8 +61,8 @@ public class SchemaSingleton {
 		public String column;
 		public int position;
 
-		public Index(String _catalog, String _table, String _name, String _type, String _column, int _position) {
-
+		public Index(String _catalog, String _table, String _name, String _type, String _column, int _position)
+		{
 			catalog = _catalog;
 			table = _table;
 			name = _name;
@@ -88,37 +89,39 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void readSchema(Connection connection, String catalog) throws SQLException {
-			/*-------------------------------------------------------------*/
-			/* READ DB METADATA                                            */
-			/*-------------------------------------------------------------*/
+	public static void readSchema(Connection connection, String catalog) throws SQLException
+	{
+		/*-----------------------------------------------------------------*/
+		/* READ DB METADATA                                                */
+		/*-----------------------------------------------------------------*/
 
-			long t1 = System.currentTimeMillis();
+		long t1 = System.currentTimeMillis();
 
-			m_columns.put(catalog, new HashMap<String, Map<String, Column>>());
-			m_frgnKeys.put(catalog, new HashMap<String, Map<String, FrgnKey>>());
-			m_indices.put(catalog, new HashMap<String, List<Index>>());
+		m_columns.put(catalog, new HashMap<String, Map<String, Column>>());
+		m_frgnKeys.put(catalog, new HashMap<String, Map<String, FrgnKey>>());
+		m_indices.put(catalog, new HashMap<String, List<Index>>());
 
-			readMetaData(
-				connection.getMetaData(),
-				connection.getCatalog(),
-				catalog
-			);
+		readMetaData(
+			connection.getMetaData(),
+			connection.getCatalog(),
+			catalog
+		);
 
-			long t2 = System.currentTimeMillis();
+		long t2 = System.currentTimeMillis();
 
-			/*-------------------------------------------------------------*/
-			/* UPDATE EXECUTION TIME                                       */
-			/*-------------------------------------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* UPDATE EXECUTION TIME                                           */
+		/*-----------------------------------------------------------------*/
 
-			m_executionTime += t2 - t1;
+		m_executionTime += t2 - t1;
 
-			/*-------------------------------------------------------------*/
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog) throws SQLException {
+	private static void readMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog) throws SQLException
+	{
 		/*-----------------------------------------------------------------*/
 		/* INTERNAL/EXTERNAL CATALOG BIJECTION                             */
 		/*-----------------------------------------------------------------*/
@@ -135,8 +138,8 @@ public class SchemaSingleton {
 
 		List<String> names = new ArrayList<String>();
 
-		while(resultSet.next()) {
-
+		while(resultSet.next())
+		{
 			String name = resultSet.getString("TABLE_NAME");
 
 			m_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
@@ -150,7 +153,8 @@ public class SchemaSingleton {
 		/* READ METADATA                                                   */
 		/*-----------------------------------------------------------------*/
 
-		for(String name: names) {
+		for(String name: names)
+		{
 			readColumnMetaData(metaData, internalCatalog, externalCatalog, name);
 			readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
 			readIndexMetaData(metaData, internalCatalog, externalCatalog, name);
@@ -161,12 +165,12 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readColumnMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException {
-
+	private static void readColumnMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException
+	{
 		ResultSet resultSet = metaData.getColumns(internalCatalog, null, table, null);
 
-		while(resultSet.next()) {
-
+		while(resultSet.next())
+		{
 			String name = resultSet.getString("COLUMN_NAME");
 			String type = resultSet.getString("TYPE_NAME");
 			int size = resultSet.getInt("COLUMN_SIZE");
@@ -184,12 +188,12 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFgnKeyMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException {
-
+	private static void readFgnKeyMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException
+	{
 		ResultSet resultSet = metaData.getExportedKeys(internalCatalog, null, table);
 
-		while(resultSet.next()) {
-
+		while(resultSet.next())
+		{
 			String name = resultSet.getString("FK_NAME");
 			String fktable = resultSet.getString("FKTABLE_NAME");
 			String fkcolumn = resultSet.getString("FKCOLUMN_NAME");
@@ -209,12 +213,12 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readIndexMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException {
-
+	private static void readIndexMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String table) throws SQLException
+	{
 		ResultSet resultSet = metaData.getIndexInfo(internalCatalog, null, table, false, false);
 
-		while(resultSet.next()) {
-
+		while(resultSet.next())
+		{
 			String name = resultSet.getString("INDEX_NAME");
 			String column = resultSet.getString("COLUMN_NAME");
 			int ordinalPosition = resultSet.getInt("ORDINAL_POSITION");
@@ -238,11 +242,12 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog(String catalog) throws Exception {
-
+	public static String internalCatalogToExternalCatalog(String catalog) throws Exception
+	{
 		String result = m_internalCatalogToExternalCatalog.get(catalog);
 
-		if(result != null) {
+		if(result != null)
+		{
 			return result;
 		}
 
@@ -251,11 +256,12 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog(String catalog) throws Exception {
-
+	public static String externalCatalogToInternalCatalog(String catalog) throws Exception
+	{
 		String result = m_externalCatalogToInternalCatalog.get(catalog);
 
-		if(result != null) {
+		if(result != null)
+		{
 			return result;
 		}
 
@@ -264,15 +270,15 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getCatalogNames() {
-
+	public static Set<String> getCatalogNames()
+	{
 		return m_columns.keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getTableNames(String catalog) throws Exception {
-
+	public static Set<String> getTableNames(String catalog) throws Exception
+	{
 		Map<String, Map<String, Column>> map = m_columns.get(catalog);
 
 		if(map != null) {
@@ -284,15 +290,16 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getColumnNames(String catalog, String table) throws Exception {
-
+	public static Set<String> getColumnNames(String catalog, String table) throws Exception
+	{
 		Map<String, Map<String, Column>> map1 = m_columns.get(catalog);
 
-		if(map1 != null) {
-
+		if(map1 != null)
+		{
 			Map<String, Column> map2 = map1.get(table);
 
-			if(map2 != null) {
+			if(map2 != null)
+			{
 				return map2.keySet();
 			}
 		}
@@ -302,15 +309,16 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Column> getColumns(String catalog, String table) throws Exception {
-
+	public static Map<String, Column> getColumns(String catalog, String table) throws Exception
+	{
 		Map<String, Map<String, Column>> map1 = m_columns.get(catalog);
 
-		if(map1 != null) {
-
+		if(map1 != null)
+		{
 			Map<String, Column> map2 = map1.get(table);
 
-			if(map2 != null) {
+			if(map2 != null)
+			{
 				return map2;
 			}
 		}
@@ -320,15 +328,16 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKey> getFgnKeys(String catalog, String table) throws Exception {
-
+	public static Map<String, FrgnKey> getFgnKeys(String catalog, String table) throws Exception
+	{
 		Map<String, Map<String, FrgnKey>> map1 = m_frgnKeys.get(catalog);
 
-		if(map1 != null) {
-
+		if(map1 != null)
+		{
 			Map<String, FrgnKey> map2 = map1.get(table);
 
-			if(map2 != null) {
+			if(map2 != null)
+			{
 				return map2;
 			}
 		}
@@ -338,15 +347,16 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Index> getIndices(String catalog, String table) throws Exception {
-
+	public static List<Index> getIndices(String catalog, String table) throws Exception
+	{
 		Map<String, List<Index>> map1 = m_indices.get(catalog);
 
-		if(map1 != null) {
-
+		if(map1 != null)
+		{
 			List<Index> map2 = map1.get(table);
 
-			if(map2 != null) {
+			if(map2 != null)
+			{
 				return map2;
 			}
 		}
@@ -356,8 +366,8 @@ public class SchemaSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder getDBSchemas() {
-
+	public static StringBuilder getDBSchemas()
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -368,12 +378,12 @@ public class SchemaSingleton {
 
 		result.append("<rowset type=\"columns\">");
 
-		for(Entry<String, Map<String, Map<String, Column>>> entry1: m_columns.entrySet()) {
-
-			for(Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet()) {
-
-				for(Entry<String, Column> entry3: entry2.getValue().entrySet()) {
-
+		for(Entry<String, Map<String, Map<String, Column>>> entry1: m_columns.entrySet())
+		{
+			for(Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
+			{
+				for(Entry<String, Column> entry3: entry2.getValue().entrySet())
+				{
 					result.append(
 						"<row>"
 						+
@@ -401,12 +411,12 @@ public class SchemaSingleton {
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Entry<String, Map<String, Map<String, FrgnKey>>> entry1: m_frgnKeys.entrySet()) {
-
-			for(Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet()) {
-
-				for(Entry<String, FrgnKey> entry3: entry2.getValue().entrySet()) {
-
+		for(Entry<String, Map<String, Map<String, FrgnKey>>> entry1: m_frgnKeys.entrySet())
+		{
+			for(Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet())
+			{
+				for(Entry<String, FrgnKey> entry3: entry2.getValue().entrySet())
+				{
 					result.append(
 						"<row>"
 						+
@@ -432,12 +442,12 @@ public class SchemaSingleton {
 
 		result.append("<rowset type=\"indices\">");
 
-		for(Entry<String, Map<String, List<Index>>> entry1: m_indices.entrySet()) {
-
-			for(Entry<String, List<Index>> entry2: entry1.getValue().entrySet()) {
-
-				for(Index entry3: entry2.getValue()) {
-
+		for(Entry<String, Map<String, List<Index>>> entry1: m_indices.entrySet())
+		{
+			for(Entry<String, List<Index>> entry2: entry1.getValue().entrySet())
+			{
+				for(Index entry3: entry2.getValue()) 
+				{
 					result.append(
 						"<row>"
 						+

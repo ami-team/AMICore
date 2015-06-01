@@ -9,7 +9,8 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.introspection.*;
 
-public class SelectParser {
+public class SelectParser
+{
 	/*---------------------------------------------------------------------*/
 
 	private Map<String, Set<String>> m_fields = new HashMap<String, Set<String>>();
@@ -18,14 +19,15 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectParser(String catalog) {
-
+	public SelectParser(String catalog)
+	{
 		m_catalog = catalog;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, String catalog) throws Exception {
+	public static String parse(String query, String catalog) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
@@ -52,16 +54,18 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args)
+	{
 		CatalogSingleton.listCatalogs();
 
-		try {
+		try
+		{
 			//System.out.println(parse("SELECT `router_user`.*, foo.bar, `foo`.`bar` AS foobar, (1 + 1) * (1 + 1) * 333 + 4 + 4 <> 1 <> 0 AS expr WHERE foo.bar > 4 AND toto.toto LIKE 'string'", "self"));
 			//System.out.println(parse("SELECT DISTINCT(`router_command`.`command`) WHERE (1=1) LIMIT 10 OFFSET 0", "self"));
 			System.out.println(parse("SELECT `router_command`.* WHERE (`router_command`.`command`='GetSessionInfo')", "self"));
-
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			System.out.println(e.getMessage());
 		}
 
@@ -72,9 +76,10 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private String unescapeId(String id) {
-
-		if(id.charAt(0) == '`') {
+	private String unescapeId(String id)
+	{
+		if(id.charAt(0) == '`')
+		{
 			return id.substring(1, id.length() - 1);
 		}
 
@@ -83,9 +88,10 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private String escapeId(String id) {
-
-		if(id.charAt(0) != '`') {
+	private String escapeId(String id)
+	{
+		if(id.charAt(0) != '`')
+		{
 			return '`' + id + '`';
 		}
 
@@ -94,12 +100,12 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private void addColumn(String table, String column) {
-
+	private void addColumn(String table, String column)
+	{
 		Set<String> result = m_fields.get(table);
 
-		if(result == null) {
-
+		if(result == null)
+		{
 			result = new HashSet<String>();
 
 			m_fields.put(table, result);
@@ -110,35 +116,37 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSelectStatement(MQLSelectParser.SelectStatementContext ctx) {
-
+	private StringBuilder visitSelectStatement(MQLSelectParser.SelectStatementContext ctx)
+	{
 		StringBuilder select = new StringBuilder();
 		StringBuilder from = new StringBuilder();
 		StringBuilder where = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		if(ctx.columns != null) {
+		if(ctx.columns != null)
+		{
 			select.append("SELECT ");
 			select.append(visitColumnList(ctx.columns));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		if(ctx.expression != null) {
+		if(ctx.expression != null)
+		{
 			where.append(" WHERE ");
 			where.append(visitExpressionOr(ctx.expression));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		if(ctx.limit != null) {
-
+		if(ctx.limit != null)
+		{
 			where.append(" LIMIT ");
 			where.append(ctx.limit.getText());
 
-			if(ctx.offset != null) {
-
+			if(ctx.offset != null)
+			{
 				where.append(" OFFSET ");
 				where.append(ctx.offset.getText());
 			}
@@ -148,7 +156,8 @@ public class SelectParser {
 
 		Set<String> fields = m_fields.keySet();
 
-		if(fields.isEmpty() == false) {
+		if(fields.isEmpty() == false)
+		{
 			/*-------------------------------------------------------------*/
 			/* FROM PART                                                   */
 			/*-------------------------------------------------------------*/
@@ -157,9 +166,10 @@ public class SelectParser {
 
 			from.append(" FROM ");
 
-			for(String table: m_fields.keySet()) {
-
-				if(cnt++ > 0) {
+			for(String table: m_fields.keySet())
+			{
+				if(cnt++ > 0)
+				{
 					from.append(", ");
 				}
 
@@ -190,8 +200,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnList(MQLSelectParser.ColumnListContext ctx) {
-
+	private StringBuilder visitColumnList(MQLSelectParser.ColumnListContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -202,8 +212,8 @@ public class SelectParser {
 
 		final int nb = ctx.getChildCount();
 
-		for(int i = 0; i < nb; i++) {
-
+		for(int i = 0; i < nb; i++)
+		{
 			child = ctx.getChild(i);
 
 			/****/ if(child instanceof MQLSelectParser.ColumnWildcardContext) {
@@ -223,13 +233,14 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnWildcard(MQLSelectParser.ColumnWildcardContext ctx) {
-
+	private StringBuilder visitColumnWildcard(MQLSelectParser.ColumnWildcardContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		try {
+		try
+		{
 			/*-------------------------------------------------------------*/
 			/* GET COLUMN NAMES                                            */
 			/*-------------------------------------------------------------*/
@@ -248,12 +259,13 @@ public class SelectParser {
 			String escapeColumnName;
 			String unescapeColumnName;
 
-			for(String columnName: columnNames) {
-
+			for(String columnName: columnNames)
+			{
 				escapeColumnName = escapeId(columnName);
 				unescapeColumnName = unescapeId(columnName);
 
-				if(cnt++ > 0) {
+				if(cnt++ > 0)
+				{
 					result.append(",");
 				}
 
@@ -263,7 +275,9 @@ public class SelectParser {
 			}
 
 			/*-------------------------------------------------------------*/
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			System.out.println(e.getMessage());
 			/* TODO */
 		}
@@ -275,8 +289,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnExpression(MQLSelectParser.ColumnExpressionContext ctx) {
-
+	private StringBuilder visitColumnExpression(MQLSelectParser.ColumnExpressionContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -294,8 +308,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLSelectParser.ExpressionOrContext ctx) {
-
+	private StringBuilder visitExpressionOr(MQLSelectParser.ExpressionOrContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -304,8 +318,8 @@ public class SelectParser {
 
 		final int nb = ctx.getChildCount();
 
-		for(int i = 0; i < nb; i++) {
-
+		for(int i = 0; i < nb; i++)
+		{
 			child = ctx.getChild(i);
 
 			/****/ if(child instanceof MQLSelectParser.ExpressionAndContext) {
@@ -322,8 +336,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAnd(MQLSelectParser.ExpressionAndContext ctx) {
-
+	private StringBuilder visitExpressionAnd(MQLSelectParser.ExpressionAndContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -332,8 +346,8 @@ public class SelectParser {
 
 		final int nb = ctx.getChildCount();
 
-		for(int i = 0; i < nb; i++) {
-
+		for(int i = 0; i < nb; i++)
+		{
 			child = ctx.getChild(i);
 
 			/****/ if(child instanceof MQLSelectParser.ExpressionCompContext) {
@@ -350,8 +364,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private String _patchNEOperator(String operator) {
-
+	private String _patchNEOperator(String operator)
+	{
 		if(operator.equals("^=")
 		   ||
 		   operator.equals("<>")
@@ -364,8 +378,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionComp(MQLSelectParser.ExpressionCompContext ctx) {
-
+	private StringBuilder visitExpressionComp(MQLSelectParser.ExpressionCompContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -374,8 +388,8 @@ public class SelectParser {
 
 		final int nb = ctx.getChildCount();
 
-		for(int i = 0; i < nb; i++) {
-
+		for(int i = 0; i < nb; i++)
+		{
 			child = ctx.getChild(i);
 
 			/****/ if(child instanceof MQLSelectParser.ExpressionAddSubContext) {
@@ -392,8 +406,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLSelectParser.ExpressionAddSubContext ctx) {
-
+	private StringBuilder visitExpressionAddSub(MQLSelectParser.ExpressionAddSubContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -402,8 +416,8 @@ public class SelectParser {
 
 		final int nb = ctx.getChildCount();
 
-		for(int i = 0; i < nb; i++) {
-
+		for(int i = 0; i < nb; i++)
+		{
 			child = ctx.getChild(i);
 
 			/****/ if(child instanceof MQLSelectParser.ExpressionMulDivContext) {
@@ -420,8 +434,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLSelectParser.ExpressionMulDivContext ctx) {
-
+	private StringBuilder visitExpressionMulDiv(MQLSelectParser.ExpressionMulDivContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -430,8 +444,8 @@ public class SelectParser {
 
 		final int nb = ctx.getChildCount();
 
-		for(int i = 0; i < nb; i++) {
-
+		for(int i = 0; i < nb; i++)
+		{
 			child = ctx.getChild(i);
 
 			/****/ if(child instanceof MQLSelectParser.ExpressionNotPlusMinusContext) {
@@ -448,8 +462,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLSelectParser.ExpressionNotPlusMinusContext ctx) {
-
+	private StringBuilder visitExpressionNotPlusMinus(MQLSelectParser.ExpressionNotPlusMinusContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -462,8 +476,8 @@ public class SelectParser {
 
 		final int nb = ctx.getChildCount();
 
-		for(int i = 0; i < nb; i++) {
-
+		for(int i = 0; i < nb; i++)
+		{
 			child = ctx.getChild(i);
 
 			/****/ if(child instanceof MQLSelectParser.ExpressionGroupContext) {
@@ -486,8 +500,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLSelectParser.ExpressionGroupContext ctx) {
-
+	private StringBuilder visitExpressionGroup(MQLSelectParser.ExpressionGroupContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -503,8 +517,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLSelectParser.ExpressionFunctionContext ctx) {
-
+	private StringBuilder visitExpressionFunction(MQLSelectParser.ExpressionFunctionContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -521,8 +535,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLike(MQLSelectParser.ExpressionLikeContext ctx) {
-
+	private StringBuilder visitExpressionLike(MQLSelectParser.ExpressionLikeContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -538,22 +552,22 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLSelectParser.ExpressionQIdContext ctx) {
-
+	private StringBuilder visitExpressionQId(MQLSelectParser.ExpressionQIdContext ctx)
+	{
 		return visitSqlQId(ctx.qId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLSelectParser.ExpressionLiteralContext ctx) {
-
+	private StringBuilder visitExpressionLiteral(MQLSelectParser.ExpressionLiteralContext ctx)
+	{
 		return visitSqlLiteral(ctx.literal);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlQId(MQLSelectParser.SqlQIdContext ctx) {
-
+	private StringBuilder visitSqlQId(MQLSelectParser.SqlQIdContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -574,8 +588,8 @@ public class SelectParser {
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlLiteral(MQLSelectParser.SqlLiteralContext ctx) {
-
+	private StringBuilder visitSqlLiteral(MQLSelectParser.SqlLiteralContext ctx)
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/

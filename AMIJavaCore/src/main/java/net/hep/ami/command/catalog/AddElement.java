@@ -6,7 +6,8 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.introspection.*;
 import net.hep.ami.command.*;
 
-public class AddElement extends CommandAbstractClass {
+public class AddElement extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -17,7 +18,8 @@ public class AddElement extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public AddElement(Map<String, String> arguments, int transactionID) {
+	public AddElement(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
@@ -39,10 +41,10 @@ public class AddElement extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_catalog == null || m_entity == null || m_fields.length != m_values.length) {
-
+	public StringBuilder main() throws Exception
+	{
+		if(m_catalog == null || m_entity == null || m_fields.length != m_values.length)
+		{
 			throw new Exception("invalid usage");
 		}
 
@@ -60,15 +62,15 @@ public class AddElement extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_fields.length > 0) {
-
+		if(m_fields.length > 0)
+		{
 			String part1 = "";
 			String part2 = "";
 
 			AutoJoinSingleton.SQLFieldValue fieldValue;
 
-			for(int i = 0; i < m_fields.length; i++) {
-
+			for(int i = 0; i < m_fields.length; i++)
+			{
 				fieldValue = AutoJoinSingleton.resolveFieldValue(m_catalog, m_entity, m_fields[i], m_values[i]);
 
 				part1 = part1.concat("," + fieldValue.field);
@@ -94,15 +96,15 @@ public class AddElement extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Add element.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? -fields=\"comma_separated_values\" -values=\"comma_separated_values\"";
 	}
 

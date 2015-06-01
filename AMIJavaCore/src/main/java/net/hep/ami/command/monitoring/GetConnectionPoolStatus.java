@@ -5,18 +5,20 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
 
-public class GetConnectionPoolStatus extends CommandAbstractClass {
+public class GetConnectionPoolStatus extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
-	public GetConnectionPoolStatus(Map<String, String> arguments, int transactionID) {
+	public GetConnectionPoolStatus(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
+	public StringBuilder main() throws Exception
+	{
 		StringBuilder result = new StringBuilder();
 
 		result.append(ConnectionPoolSingleton.getStatus());
@@ -26,8 +28,8 @@ public class GetConnectionPoolStatus extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Get connection pool status.";
 	}
 

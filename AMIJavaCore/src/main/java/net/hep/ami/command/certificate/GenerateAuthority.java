@@ -7,7 +7,8 @@ import java.security.cert.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-public class GenerateAuthority extends CommandAbstractClass {
+public class GenerateAuthority extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_country;
@@ -20,7 +21,8 @@ public class GenerateAuthority extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public GenerateAuthority(Map<String, String> arguments, int transactionID) {
+	public GenerateAuthority(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_country = arguments.containsKey("country") ? arguments.get("country")
@@ -43,15 +45,19 @@ public class GenerateAuthority extends CommandAbstractClass {
 		                                                   : ""
 		;
 
-		if(arguments.containsKey("validity")) {
-
-			try {
+		if(arguments.containsKey("validity"))
+		{
+			try
+			{
 				m_validity = Integer.parseInt(arguments.get("validity"));
-
-			} catch(NumberFormatException e) {
+			}
+			catch(NumberFormatException e)
+			{
 				m_validity = 10;
 			}
-		} else {
+		}
+		else
+		{
 			m_validity = 10;
 		}
 	}
@@ -59,7 +65,8 @@ public class GenerateAuthority extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
+	public StringBuilder main() throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 
 		KeyPair keyPair = Cryptography.generateKeyPair(2048);
@@ -120,15 +127,15 @@ public class GenerateAuthority extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Generate CA certificates.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-country=\"value\" -locality=\"value\" -organization=\"value\" -organizationalUnit=\"value\" -commonName=\"value\"";
 	}
 

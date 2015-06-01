@@ -5,14 +5,16 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-public class Encrypt extends CommandAbstractClass {
+public class Encrypt extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_string;
 
 	/*---------------------------------------------------------------------*/
 
-	public Encrypt(Map<String, String> arguments, int transactionID) {
+	public Encrypt(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_string = arguments.get("string");
@@ -21,13 +23,15 @@ public class Encrypt extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_string == null) {
+	public StringBuilder main() throws Exception
+	{
+		if(m_string == null)
+		{
 			throw new Exception("invalid usage");
 		}
 
-		if(m_isSecure.equals("false")) {
+		if(m_isSecure.equals("false"))
+		{
 			throw new Exception("https connection required"); 
 		}
 
@@ -36,15 +40,15 @@ public class Encrypt extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Encrypt a string.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-string=\"value\"";
 	}
 

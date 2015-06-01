@@ -2,23 +2,25 @@ package net.hep.ami.utility;
 
 import java.util.*;
 
-public class Tokenizer {
+public class Tokenizer
+{
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes) throws Exception {
-
+	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes) throws Exception
+	{
 		return tokenize(s, spaces, kwords, quotes, "\\");
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes, String escape) throws Exception {
-
+	public static List<String> tokenize(String s, Character[] spaces, String[] kwords, String[] quotes, String escape) throws Exception
+	{
 		Set<Character> spaceSet = new HashSet<Character>();
 
 		List<String> result = new ArrayList<String>();
 
-		for(Character space: spaces) {
+		for(Character space: spaces)
+		{
 			spaceSet.add(space);
 		}
 
@@ -28,14 +30,16 @@ public class Tokenizer {
 		String word = "";
 		boolean found;
 
-		while(i < l) {
+		while(i < l)
+		{
 			/*-------------------------------------------------------------*/
 			/* EAT SPACES                                                  */
 			/*-------------------------------------------------------------*/
 
-			if(spaceSet.contains(s.charAt(i))) {
-
-				if(word.isEmpty() == false) {
+			if(spaceSet.contains(s.charAt(i)))
+			{
+				if(word.isEmpty() == false)
+				{
 					result.add(word);
 					word = "";
 				}
@@ -51,11 +55,12 @@ public class Tokenizer {
 
 			found = false;
 
-			for(String kword: kwords) {
-
-				if(s.substring(i).startsWith(kword)) {
-
-					if(word.isEmpty() == false) {
+			for(String kword: kwords)
+			{
+				if(s.substring(i).startsWith(kword))
+				{
+					if(word.isEmpty() == false)
+					{
 						result.add(word);
 						word = "";
 					}
@@ -69,7 +74,8 @@ public class Tokenizer {
 				}
 			}
 
-			if(found) {
+			if(found)
+			{
 				continue;
 			}
 
@@ -79,11 +85,12 @@ public class Tokenizer {
 
 			found = false;
 
-			for(String quote: quotes) {
-
-				if(s.substring(i).startsWith(quote)) {
-
-					if(word.isEmpty() == false) {
+			for(String quote: quotes)
+			{
+				if(s.substring(i).startsWith(quote))
+				{
+					if(word.isEmpty() == false)
+					{
 						result.add(word);
 						word = "";
 					}
@@ -97,7 +104,8 @@ public class Tokenizer {
 				}
 			}
 
-			if(found) {
+			if(found)
+			{
 				continue;
 			}
 
@@ -110,7 +118,8 @@ public class Tokenizer {
 			/*-------------------------------------------------------------*/
 		}
 
-		if(word.isEmpty() == false) {
+		if(word.isEmpty() == false)
+		{
 			result.add(word);
 		}
 
@@ -119,8 +128,8 @@ public class Tokenizer {
 
 	/*---------------------------------------------------------------------*/
 
-	private static int shift(String s, String quote, String escape) throws Exception {
-
+	private static int shift(String s, String quote, String escape) throws Exception
+	{
 		final int l = s.length();
 		final int m = quote.length();
 		final int n = escape.length();
@@ -128,17 +137,22 @@ public class Tokenizer {
 		int i = m;
 		int cnt = 0;
 
-		while(i < l) {
-
-			/*  */ if(s.substring(i).startsWith(quote)) {
+		while(i < l)
+		{
+			/**/ if(s.substring(i).startsWith(quote))
+			{
 				i += m;
 				if(cnt % 2 == 0) return i;
 				cnt = 0;
-			} else if(s.substring(i).startsWith(escape)) {
+			}
+			else if(s.substring(i).startsWith(escape))
+			{
 				i += n;
 /*				if(0x00001 == 0) return i;
  */				cnt += 1;
-			} else {
+			}
+			else
+			{
 				i += 1;
 /*				if(0x00001 == 0) return i;
  */				cnt = 0;

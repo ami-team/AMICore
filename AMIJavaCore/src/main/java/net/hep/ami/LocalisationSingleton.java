@@ -5,16 +5,17 @@ import java.math.*;
 
 import net.hep.ami.jdbc.*;
 
-public class LocalisationSingleton {
+public class LocalisationSingleton
+{
 	/*---------------------------------------------------------------------*/
 
-	public static class Localisation {
-
+	public static class Localisation
+	{
 		public String continentCode;
 		public String countryCode;
 
-		public Localisation(String _continentCode, String _countryCode) {
-
+		public Localisation(String _continentCode, String _countryCode)
+		{
 			continentCode = _continentCode;
 			countryCode = _countryCode;
 		}
@@ -28,22 +29,23 @@ public class LocalisationSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv4ToInteger(String ip) throws UnknownHostException {
-
+	public static BigInteger ipv4ToInteger(String ip) throws UnknownHostException
+	{
 		return ipv4ToInteger((Inet4Address) InetAddress.getByName(ip));
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv4ToInteger(Inet4Address ip) throws UnknownHostException {
-
+	public static BigInteger ipv4ToInteger(Inet4Address ip) throws UnknownHostException
+	{
 		byte[] parts = ip.getAddress();
 
 		final int length = parts.length;
 
 		BigInteger result = BigInteger.ZERO;
 
-		for(int i = 0; i < length; i++) {
+		for(int i = 0; i < length; i++)
+		{
 			result = result.shiftLeft(8).or(BigInteger.valueOf(parts[i]));
 		}
 
@@ -52,22 +54,23 @@ public class LocalisationSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv6ToInteger(String ip) throws UnknownHostException {
-
+	public static BigInteger ipv6ToInteger(String ip) throws UnknownHostException
+	{
 		return ipv6ToInteger((Inet6Address) InetAddress.getByName(ip));
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv6ToInteger(Inet6Address ip) throws UnknownHostException {
-
+	public static BigInteger ipv6ToInteger(Inet6Address ip) throws UnknownHostException
+	{
 		byte[] parts = ip.getAddress();
 
 		final int length = parts.length;
 
 		BigInteger result = BigInteger.ZERO;
 
-		for(int i = 0; i < length; i++) {
+		for(int i = 0; i < length; i++)
+		{
 			result = result.shiftLeft(8).or(BigInteger.valueOf(parts[i]));
 		}
 
@@ -76,7 +79,8 @@ public class LocalisationSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localisation getCountryIPv4(String ip) throws Exception {
+	public static Localisation getCountryIPv4(String ip) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
 		/*-----------------------------------------------------------------*/
@@ -95,10 +99,12 @@ public class LocalisationSingleton {
 
 		QueryResult queryResult;
 
-		try {
+		try
+		{
 			queryResult = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
-
-		} finally {
+		}
+		finally
+		{
 			basicQuerier.rollbackAndRelease();
 		}
 
@@ -106,8 +112,8 @@ public class LocalisationSingleton {
 		/* CHECK AND RETURN RESULT                                         */
 		/*-----------------------------------------------------------------*/
 
-		if(queryResult.getNumberOfRows() == 1) {
-
+		if(queryResult.getNumberOfRows() == 1)
+		{
 			return new Localisation(
 				queryResult.getValue(0, "continentCode"),
 				queryResult.getValue(0, "countryCode")
@@ -125,7 +131,8 @@ public class LocalisationSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localisation getCountryIPv6(String ip) throws Exception {
+	public static Localisation getCountryIPv6(String ip) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
 		/*-----------------------------------------------------------------*/
@@ -144,10 +151,12 @@ public class LocalisationSingleton {
 
 		QueryResult queryResult;
 
-		try {
+		try
+		{
 			queryResult = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
-
-		} finally {
+		}
+		finally
+		{
 			basicQuerier.rollbackAndRelease();
 		}
 
@@ -155,8 +164,8 @@ public class LocalisationSingleton {
 		/* CHECK AND RETURN RESULT                                         */
 		/*-----------------------------------------------------------------*/
 
-		if(queryResult.getNumberOfRows() == 1) {
-
+		if(queryResult.getNumberOfRows() == 1)
+		{
 			return new Localisation(
 				queryResult.getValue(0, "continentCode"),
 				queryResult.getValue(0, "countryCode")

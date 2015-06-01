@@ -7,7 +7,8 @@ import net.hep.ami.*;
 
 import org.apache.tomcat.jdbc.pool.*;
 
-public class ConnectionPoolSingleton {
+public class ConnectionPoolSingleton
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final int m_initialSize = ConfigSingleton.getProperty("initial_size", 10);
@@ -26,32 +27,32 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass) throws Exception {
-
+	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass) throws Exception
+	{
 		return getDataSource(
-				/* DATABASE */
-				jdbc_driver,
-				jdbc_url,
-				user,
-				pass,
-				/* POOL - CONTENT */
-				m_initialSize,
-				m_maxActive,
-				m_minIdle,
-				m_maxIdle,
-				/* POOL - TIMING */
-				m_timeBetweenEvictionRunsMillis,
-				m_minEvictableIdleTimeMillis,
-				m_validationInterval,
-				m_maxWait
+			/* DATABASE */
+			jdbc_driver,
+			jdbc_url,
+			user,
+			pass,
+			/* POOL - CONTENT */
+			m_initialSize,
+			m_maxActive,
+			m_minIdle,
+			m_maxIdle,
+			/* POOL - TIMING */
+			m_timeBetweenEvictionRunsMillis,
+			m_minEvictableIdleTimeMillis,
+			m_validationInterval,
+			m_maxWait
 
-			).getConnection();
+		).getConnection();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) throws Exception {
-
+	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) throws Exception
+	{
 		return getDataSource(
 			/* DATABASE */
 			jdbc_driver,
@@ -74,8 +75,8 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass) {
-
+	public static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass)
+	{
 		return getDataSource(
 			/* DATABASE */
 			jdbc_driver,
@@ -97,17 +98,18 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) {
-
+	private static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait)
+	{
 		DataSource result;
 
 		String key = jdbc_url + "@" + user;
 
-		synchronized(ConnectionPoolSingleton.class) {
-
+		synchronized(ConnectionPoolSingleton.class)
+		{
 		/**/	result = m_pools.get(key);
 		/**/
-		/**/	if(result == null) {
+		/**/	if(result == null)
+		/**/	{
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE POOL PROPERTIES                              */
 		/**/		/*-----------------------------------------------------*/
@@ -173,7 +175,6 @@ public class ConnectionPoolSingleton {
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/	}
-
 		}
 
 		return result;
@@ -181,8 +182,8 @@ public class ConnectionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getStatus() {
-
+	public static String getStatus()
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -191,8 +192,8 @@ public class ConnectionPoolSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(DataSource entry: m_pools.values()) {
-
+		for(DataSource entry: m_pools.values())
+		{
 			result.append(
 				"<row>"
 				+

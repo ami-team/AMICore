@@ -1,6 +1,7 @@
 package net.hep.ami.utility;
 
-public class Tuple4<A, B, C, D> {
+public class Tuple4<A, B, C, D>
+{
 	/*---------------------------------------------------------------------*/
 
 	public A x;
@@ -10,7 +11,8 @@ public class Tuple4<A, B, C, D> {
 
 	/*---------------------------------------------------------------------*/
 
-	public Tuple4(A _x, B _y, C _z, D _t) {
+	public Tuple4(A _x, B _y, C _z, D _t)
+	{
 		x = _x;
 		y = _y;
 		z = _z;

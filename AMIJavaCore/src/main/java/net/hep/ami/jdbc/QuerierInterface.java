@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc;
 
-public interface QuerierInterface {
+public interface QuerierInterface
+{
 	/*---------------------------------------------------------------------*/
 
 	public QueryResult executeSQLQuery(String sql) throws Exception;
@@ -19,6 +20,14 @@ public interface QuerierInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	public String getInternalCatalog();
+
+	/*---------------------------------------------------------------------*/
+
+	public String getExternalCatalog();
+
+	/*---------------------------------------------------------------------*/
+
 	public String getJdbcProto();
 
 	/*---------------------------------------------------------------------*/
@@ -28,14 +37,6 @@ public interface QuerierInterface {
 	/*---------------------------------------------------------------------*/
 
 	public String getJdbcUrl();
-
-	/*---------------------------------------------------------------------*/
-
-	public String getInternalCatalog();
-
-	/*---------------------------------------------------------------------*/
-
-	public String getExternalCatalog();
 
 	/*---------------------------------------------------------------------*/
 

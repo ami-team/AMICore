@@ -2,26 +2,30 @@ package net.hep.ami.utility;
 
 import java.io.*;
 
-public class TextFile {
+public class TextFile
+{
 	/*---------------------------------------------------------------------*/
 
-	public static String read(InputStream inputStream) throws Exception {
-
+	public static String read(InputStream inputStream) throws Exception
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		try {
+		try
+		{
 			String line;
 
-			while((line = bufferedReader.readLine()) != null) {
+			while((line = bufferedReader.readLine()) != null)
+			{
 				result.append(line);
 				result.append('\n');
 			}
-
-		} finally {
+		}
+		finally
+		{
 			bufferedReader.close();
 		}
 
@@ -32,14 +36,16 @@ public class TextFile {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void save(OutputStream outputStream, String content) throws Exception {
-
+	public static void save(OutputStream outputStream, String content) throws Exception
+	{
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
 
-		try {
+		try
+		{
 			bufferedWriter.write(content);
-
-		} finally {
+		}
+		finally
+		{
 			bufferedWriter.close();
 		}
 	}

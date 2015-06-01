@@ -9,7 +9,8 @@ import net.hep.ami.utility.*;
 
 import org.w3c.dom.*;
 
-public class ConfigSingleton {
+public class ConfigSingleton
+{
 	/*---------------------------------------------------------------------*/
 
 	private static String m_configPathName;
@@ -26,12 +27,13 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	static {
-
+	static
+	{
 		m_hasValidConfFile = false;
 		m_hasValidDataBase = false;
 
-		try {
+		try
+		{
 			/*-------------------------------------------------------------*/
 			/* READ FROM CONFFILE                                          */
 			/*-------------------------------------------------------------*/
@@ -66,13 +68,16 @@ public class ConfigSingleton {
 			 ) {
 				m_hasValidConfFile = false;
 				m_hasValidDataBase = false;
-
-			} else {
+			}
+			else
+			{
 				Cryptography.init(getProperty("encryption_key"));
 			}
 
 			/*-------------------------------------------------------------*/
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 		}
 
@@ -81,14 +86,15 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static File _toFile(String configFileName) {
+	private static File _toFile(String configFileName)
+	{
 		/*-----------------------------------------------------------------*/
 		/* CHECK FILENAME                                                  */
 		/*-----------------------------------------------------------------*/
 
 		if(configFileName.endsWith(".xml") == false)
 		{
-			configFileName = configFileName.concat(File.separator + "AMI.xml");
+			configFileName = configFileName.concat(File.separator).concat("AMI.xml");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -102,8 +108,8 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromConfFile() throws Exception {
-
+	private static void readFromConfFile() throws Exception
+	{
 		String path;
 
 		/*-----------------------------------------------------------------*/
@@ -113,18 +119,21 @@ public class ConfigSingleton {
 		File file;
 
 		path = System.getProperty("ami.conffile");
+
 		if(path == null
 		   ||
 		   (file = _toFile(path.trim())).exists() == false
 		 ) {
 
 			path = System.getProperty("catalina.base");
+
 			if(path == null
 			   ||
 			   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
 			 ) {
 
 				path = System.getProperty("user.home");
+
 				if(path == null
 				   ||
 				   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
@@ -173,8 +182,8 @@ public class ConfigSingleton {
 		/* ADD PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < numberOfNodes; i++) {
-
+		for(int i = 0; i < numberOfNodes; i++)
+		{
 			Node node = nodeList.item(i);
 
 			m_properties.put(
@@ -189,7 +198,8 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromDataBase() throws Exception {
+	private static void readFromDataBase() throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
@@ -202,10 +212,12 @@ public class ConfigSingleton {
 
 		QueryResult queryResult;
 
-		try {
+		try
+		{
 			queryResult = basicQuerier.executeSQLQuery("SELECT `name`,`value` FROM `router_config`");
-
-		} finally {
+		}
+		finally
+		{
 			basicQuerier.rollbackAndRelease();
 		}
 
@@ -219,8 +231,8 @@ public class ConfigSingleton {
 		/* ADD PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < numberOfRows; i++) {
-
+		for(int i = 0; i < numberOfRows; i++)
+		{
 			m_properties.put(
 				queryResult.getValue(i, "name").trim()
 				,
@@ -233,39 +245,40 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getConfigPathName() {
-
+	public static String getConfigPathName()
+	{
 		return m_configPathName;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getConfigFileName() {
-
+	public static String getConfigFileName()
+	{
 		return m_configFileName;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Boolean hasValidConfFile() {
-
+	public static Boolean hasValidConfFile()
+	{
 		return m_hasValidConfFile;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Boolean hasValidDataBase() {
-
+	public static Boolean hasValidDataBase()
+	{
 		return m_hasValidDataBase;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String setProperty(String key, String value) {
-
+	public static String setProperty(String key, String value)
+	{
 		String result;
 
-		synchronized(ConfigSingleton.class) {
+		synchronized(ConfigSingleton.class)
+		{
 			result = m_properties.put(key, value);
 		}
 
@@ -274,11 +287,12 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getProperty(String key) {
-
+	public static String getProperty(String key)
+	{
 		String result;
 
-		synchronized(ConfigSingleton.class) {
+		synchronized(ConfigSingleton.class)
+		{
 			result = m_properties.get(key);
 		}
 
@@ -287,11 +301,12 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getProperty(String key, String defaultValue) {
-
+	public static String getProperty(String key, String defaultValue)
+	{
 		String result;
 
-		synchronized(ConfigSingleton.class) {
+		synchronized(ConfigSingleton.class)
+		{
 			result = m_properties.get(key);
 		}
 
@@ -300,24 +315,29 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static int getProperty(String key, int defaultValue) {
-
+	public static int getProperty(String key, int defaultValue)
+	{
 		int result;
 		String tmpValue;
 
-		synchronized(ConfigSingleton.class) {
+		synchronized(ConfigSingleton.class)
+		{
 			tmpValue = m_properties.get(key);
 		}
 
-		if(tmpValue != null) {
-
-			try {
+		if(tmpValue != null)
+		{
+			try
+			{
 				result = Integer.parseInt(tmpValue);
-			} catch(NumberFormatException e) {
+			}
+			catch(NumberFormatException e)
+			{
 				result = defaultValue;
 			}
-
-		} else {
+		}
+		else
+		{
 			result = defaultValue;
 		}
 
@@ -326,24 +346,29 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static float getProperty(String key, float defaultValue) {
-
+	public static float getProperty(String key, float defaultValue)
+	{
 		float result;
 		String tmpValue;
 
-		synchronized(ConfigSingleton.class) {
+		synchronized(ConfigSingleton.class)
+		{
 			tmpValue = m_properties.get(key);
 		}
 
-		if(tmpValue != null) {
-
-			try {
+		if(tmpValue != null)
+		{
+			try
+			{
 				result = Float.parseFloat(tmpValue);
-			} catch(NumberFormatException e) {
+			}
+			catch(NumberFormatException e)
+			{
 				result = defaultValue;
 			}
-
-		} else {
+		}
+		else
+		{
 			result = defaultValue;
 		}
 
@@ -352,24 +377,29 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static double getProperty(String key, double defaultValue) {
-
+	public static double getProperty(String key, double defaultValue)
+	{
 		double result;
 		String tmpValue;
 
-		synchronized(ConfigSingleton.class) {
+		synchronized(ConfigSingleton.class)
+		{
 			tmpValue = m_properties.get(key);
 		}
 
-		if(tmpValue != null) {
-
-			try {
+		if(tmpValue != null)
+		{
+			try
+			{
 				result = Double.parseDouble(tmpValue);
-			} catch(NumberFormatException e) {
+			}
+			catch(NumberFormatException e)
+			{
 				result = defaultValue;
 			}
-
-		} else {
+		}
+		else
+		{
 			result = defaultValue;
 		}
 
@@ -378,8 +408,8 @@ public class ConfigSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder showConfig() {
-
+	public static StringBuilder showConfig()
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -401,7 +431,8 @@ public class ConfigSingleton {
 
 		Map<String, String> properties;
 
-		synchronized(ConfigSingleton.class) {
+		synchronized(ConfigSingleton.class)
+		{
 			properties = new HashMap<String, String>(m_properties);
 		}
 
@@ -409,8 +440,8 @@ public class ConfigSingleton {
 
 		result.append("<rowset type=\"config\"><row>");
 
-		for(Entry<String, String> entry: properties.entrySet()) {
-
+		for(Entry<String, String> entry: properties.entrySet())
+		{
 			String key = entry.getKey();
 			String value = entry.getValue();
 

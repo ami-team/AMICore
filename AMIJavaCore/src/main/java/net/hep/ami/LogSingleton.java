@@ -2,10 +2,12 @@ package net.hep.ami;
 
 import java.util.logging.*;
 
-public class LogSingleton {
+public class LogSingleton
+{
 	/*---------------------------------------------------------------------*/
 
-	public static enum LogLevel {
+	public static enum LogLevel
+	{
 		INFO,
 		WARN,
 		ERROR,
@@ -30,9 +32,10 @@ public class LogSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void log(LogLevel logLevel, String message) {
-
-		if(m_logLevel <= logLevel.ordinal()) {
+	public static void log(LogLevel logLevel, String message)
+	{
+		if(m_logLevel <= logLevel.ordinal())
+		{
 			/*-------------------------------------------------------------*/
 			/* GET CLASS NAME AND METHOD NAME                              */
 			/*-------------------------------------------------------------*/
@@ -46,8 +49,8 @@ public class LogSingleton {
 			/* WRITE MESSAGE                                               */
 			/*-------------------------------------------------------------*/
 
-			switch(logLevel) {
-
+			switch(logLevel)
+			{
 				case INFO:
 					m_logger.logp(Level.INFO, className, methodName, message);
 					break;
@@ -68,10 +71,12 @@ public class LogSingleton {
 					   m_cc.isEmpty() == false
 					 ) {
 
-						try {
+						try
+						{
 							MailSingleton.sendMessage(m_from, m_to, m_cc, String.format("CRITICAL ERROR (%s.%s)", className, methodName), message);
-
-						} catch(Exception e) {
+						}
+						catch(Exception e)
+						{
 							log(LogLevel.ERROR, e.getMessage());
 						}
 					}

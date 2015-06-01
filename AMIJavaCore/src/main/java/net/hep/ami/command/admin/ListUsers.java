@@ -4,19 +4,22 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 
-public class ListUsers extends CommandAbstractClass {
+public class ListUsers extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
-	public ListUsers(Map<String, String> arguments, int transactionID) {
+	public ListUsers(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_isSecure.equals("false")) {
+	public StringBuilder main() throws Exception
+	{
+		if(m_isSecure.equals("false"))
+		{
 			throw new Exception("https connection required"); 
 		}
 
@@ -25,8 +28,8 @@ public class ListUsers extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "List users.";
 	}
 

@@ -1,6 +1,7 @@
 package net.hep.ami.utility;
 
-public class Tuple3<A, B, C> {
+public class Tuple3<A, B, C>
+{
 	/*---------------------------------------------------------------------*/
 
 	public A x;
@@ -9,7 +10,8 @@ public class Tuple3<A, B, C> {
 
 	/*---------------------------------------------------------------------*/
 
-	public Tuple3(A _x, B _y, C _z) {
+	public Tuple3(A _x, B _y, C _z)
+	{
 		x = _x;
 		y = _y;
 		z = _z;

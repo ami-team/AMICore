@@ -7,7 +7,8 @@ import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-public class AddRole extends CommandAbstractClass {
+public class AddRole extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_parent;
@@ -16,7 +17,8 @@ public class AddRole extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public AddRole(Map<String, String> arguments, int transactionID) {
+	public AddRole(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_parent = arguments.containsKey("parent") ? arguments.get("parent")
@@ -31,18 +33,19 @@ public class AddRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_role == null) {
+	public StringBuilder main() throws Exception
+	{
+		if(m_role == null)
+		{
 			throw new Exception("invalid usage");
 		}
 
-		if(m_roleValidatorClass != null) {
-
+		if(m_roleValidatorClass != null)
+		{
 			Class<?> clazz = Class.forName(m_roleValidatorClass);
 
-			if(ClassFinder.extendsClass(clazz, RoleValidatorInterface.class) == false) {
-
+			if(ClassFinder.extendsClass(clazz, RoleValidatorInterface.class) == false)
+			{
 				throw new Exception("class `" + m_roleValidatorClass + "` must implement `" + RoleValidatorInterface.class.getName() + "`");
 			}
 		}
@@ -61,7 +64,8 @@ public class AddRole extends CommandAbstractClass {
 
 		QueryResult queryResult = transactionalQuerier.executeSQLQuery(sql1);
 
-		if(queryResult.getNumberOfRows() != 1) {
+		if(queryResult.getNumberOfRows() != 1)
+		{
 			throw new Exception("unknown role `" + m_parent + "`");
 		}
 
@@ -73,15 +77,15 @@ public class AddRole extends CommandAbstractClass {
 
 		String sql2;
 
-		if(m_roleValidatorClass == null) {
-
+		if(m_roleValidatorClass == null)
+		{
 			sql2 = String.format("INSERT INTO `router_role` (`parentFK`,`role`) VALUES ('%s','%s')",
 					parentID.replace("'", "''"),
 					m_role.replace("'", "''")
 			);
-
-		} else {
-
+		}
+		else
+		{
 			sql2 = String.format("INSERT INTO `router_role` (`parentFK`,`role`,`roleValidatorClass`) VALUES ('%s','%s','%s')",
 					parentID.replace("'", "''"),
 					m_role.replace("'", "''"),
@@ -98,15 +102,15 @@ public class AddRole extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Add role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "(-parent=\"value\")? -role=\"value\" (-roleValidatorClass=\"value\")?";
 	}
 

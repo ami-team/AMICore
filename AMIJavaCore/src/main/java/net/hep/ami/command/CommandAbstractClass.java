@@ -6,7 +6,8 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 
-public abstract class CommandAbstractClass {
+public abstract class CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	protected String m_AMIUser;
@@ -33,43 +34,65 @@ public abstract class CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public CommandAbstractClass(Map<String, String> arguments, int transactionID) {
+	public CommandAbstractClass(Map<String, String> arguments, int transactionID)
+	{
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/
 
-		if(arguments.containsKey("AMIUser")) {
+		if(arguments.containsKey("AMIUser"))
+		{
 			m_AMIUser = arguments.get("AMIUser");
 			arguments.remove("AMIUser");
-		} else {
+		}
+		else
+		{
 			m_AMIUser = "";
 		}
 
-		if(arguments.containsKey("AMIPass")) {
+		/*-----------------------------------------------------------------*/
+
+		if(arguments.containsKey("AMIPass"))
+		{
 			m_AMIPass = arguments.get("AMIPass");
 			arguments.remove("AMIPass");
-		} else {
+		}
+		else
+		{
 			m_AMIPass = "";
 		}
 
-		if(arguments.containsKey("clientDN")) {
+		if(arguments.containsKey("clientDN"))
+		{
 			m_clientDN = arguments.get("clientDN");
 			arguments.remove("clientDN");
-		} else {
+		}
+		else
+		{
 			m_clientDN = "";
 		}
 
-		if(arguments.containsKey("issuerDN")) {
+		/*-----------------------------------------------------------------*/
+
+		if(arguments.containsKey("issuerDN"))
+		{
 			m_issuerDN = arguments.get("issuerDN");
 			arguments.remove("issuerDN");
-		} else {
+		}
+		else
+		{
 			m_issuerDN = "";
 		}
 
-		if(arguments.containsKey("isSecure")) {
+		/*-----------------------------------------------------------------*/
+
+		if(arguments.containsKey("isSecure"))
+		{
 			m_isSecure = arguments.get("isSecure");
 			arguments.remove("isSecure");
-		} else {
+		}
+		else
+		{
 			m_isSecure = "";
 		}
 
@@ -81,10 +104,13 @@ public abstract class CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		if(transactionID < 0) {
+		if(transactionID < 0)
+		{
 			m_transactionID = TransactionPoolSingleton.bookNewTransactionID();
 			m_transactionIDBooker = true;
-		} else {
+		}
+		else
+		{
 			m_transactionID = (((((((((((((((((transactionID)))))))))))))))));
 			m_transactionIDBooker = false;
 		}
@@ -94,41 +120,45 @@ public abstract class CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	protected TransactionalQuerier getQuerier(String catalog) throws Exception {
-
+	protected TransactionalQuerier getQuerier(String catalog) throws Exception
+	{
 		return new TransactionalQuerier(catalog, m_transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	protected TransactionalQuerier getQuerier(String jdbcUrl, String user, String pass) throws Exception {
-
+	protected TransactionalQuerier getQuerier(String jdbcUrl, String user, String pass) throws Exception
+	{
 		return new TransactionalQuerier(jdbcUrl, user, pass, m_transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	protected String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception {
-
+	protected String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception
+	{
 		return CommandSingleton.executeCommand(command, arguments, checkRoles, m_transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuilder execute() throws Exception {
-
+	public StringBuilder execute() throws Exception
+	{
 		StringBuilder result = null;
 
-		try {
+		try
+		{
 			result = main();
-
-		} finally {
-
-			if(m_transactionIDBooker) {
-
-				if(result != null) {
+		}
+		finally
+		{
+			if(m_transactionIDBooker)
+			{
+				if(result != null)
+				{
 					TransactionPoolSingleton.commitAndRelease(m_transactionID);
-				} else {
+				}
+				else
+				{
 					TransactionPoolSingleton.rollbackAndRelease(m_transactionID);
 				}
 			}
@@ -143,15 +173,15 @@ public abstract class CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "";
 	}
 

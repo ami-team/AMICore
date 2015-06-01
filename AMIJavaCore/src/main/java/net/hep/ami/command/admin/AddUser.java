@@ -8,7 +8,8 @@ import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-public class AddUser extends CommandAbstractClass {
+public class AddUser extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final UserValidatorInterface m_userValidator = _getUserValidator();
@@ -17,7 +18,8 @@ public class AddUser extends CommandAbstractClass {
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	static UserValidatorInterface _getUserValidator() {
+	static UserValidatorInterface _getUserValidator()
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET USER VALIDATOR CLASS NAME                                   */
 		/*-----------------------------------------------------------------*/
@@ -28,17 +30,20 @@ public class AddUser extends CommandAbstractClass {
 		/* GET USER VALIDATOR INSTANCE                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(userValidatorClass != null) {
-
-			try {
+		if(userValidatorClass != null)
+		{
+			try
+			{
 				Class<UserValidatorInterface> clazz = (Class<UserValidatorInterface>) Class.forName(userValidatorClass);
 
-				if(ClassFinder.extendsClass(clazz, UserValidatorInterface.class)) {
-
+				if(ClassFinder.extendsClass(clazz, UserValidatorInterface.class))
+				{
 					return clazz.newInstance();
 				}
 
-			} catch(Exception e) {
+			}
+			catch(Exception e)
+			{
 				/* IGNORE */
 			}
 		}
@@ -78,7 +83,8 @@ public class AddUser extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public AddUser(Map<String, String> arguments, int transactionID) {
+	public AddUser(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_AMIUser = arguments.get("amiLogin");
@@ -100,8 +106,8 @@ public class AddUser extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
+	public StringBuilder main() throws Exception
+	{
 		if(m_AMIUser == null
 		   ||
 		   m_AMIPass == null
@@ -116,14 +122,14 @@ public class AddUser extends CommandAbstractClass {
 		}
 
 		if(m_userValidator.check(
-				m_AMIUser,
-				m_AMIPass,
-				m_clientDN,
-				m_issuerDN,
-				m_firstName,
-				m_lastName,
-				m_email
-		   ) == false
+			m_AMIUser,
+			m_AMIPass,
+			m_clientDN,
+			m_issuerDN,
+			m_firstName,
+			m_lastName,
+			m_email
+		  ) == false
 		 ) {
 			throw new Exception("not allowed");
 		}
@@ -157,15 +163,15 @@ public class AddUser extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Add new user.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-amiLogin=\"value\" -amiPassword=\"value\" (-clientDN=\"value\")? (-issuerDN=\"value\")? -firstName=\"value\" -lastName=\"value\" -email=\"value\"";
 	}
 

@@ -6,7 +6,8 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.introspection.*;
 import net.hep.ami.command.*;
 
-public class RemoveElements extends CommandAbstractClass {
+public class RemoveElements extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -19,7 +20,8 @@ public class RemoveElements extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public RemoveElements(Map<String, String> arguments, int transactionID) {
+	public RemoveElements(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
@@ -45,10 +47,10 @@ public class RemoveElements extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_catalog == null || m_entity == null || m_keyFields.length != m_keyValues.length) {
-
+	public StringBuilder main() throws Exception
+	{
+		if(m_catalog == null || m_entity == null || m_keyFields.length != m_keyValues.length)
+		{
 			throw new Exception("invalid usage");
 		}
 
@@ -68,12 +70,12 @@ public class RemoveElements extends CommandAbstractClass {
 
 		boolean wherePresent = false;
 
-		if(m_keyFields.length > 0) {
-
+		if(m_keyFields.length > 0)
+		{
 			Map<String, List<String>> joins = new HashMap<String, List<String>>();
 
-			for(int i = 0; i < m_keyFields.length; i++) {
-
+			for(int i = 0; i < m_keyFields.length; i++)
+			{
 				AutoJoinSingleton.resolveWithNestedSelect(
 					joins,
 					m_catalog,
@@ -87,8 +89,8 @@ public class RemoveElements extends CommandAbstractClass {
 
 			String where = AutoJoinSingleton.joinsToSQL(joins).where;
 
-			if(where.isEmpty() == false) {
-
+			if(where.isEmpty() == false)
+			{
 				stringBuilder.append(" WHERE " + where);
 
 				wherePresent = true;
@@ -99,11 +101,14 @@ public class RemoveElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_where.isEmpty() == false) {
-
-			if(wherePresent) {
+		if(m_where.isEmpty() == false)
+		{
+			if(wherePresent)
+			{
 				stringBuilder.append(" AND (" + m_where + ")");
-			} else {
+			}
+			else
+			{
 				stringBuilder.append(" WHERE (" + m_where + ")");
 			}
 		}
@@ -123,15 +128,15 @@ public class RemoveElements extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Remove elements.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? (-keyFields=\"comma_separated_values\" -keyValues=\"comma_separated_values\")? (-where=\"value\")?";
 	}
 

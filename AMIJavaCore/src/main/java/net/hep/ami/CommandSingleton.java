@@ -9,12 +9,14 @@ import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 
-public class CommandSingleton {
+public class CommandSingleton
+{
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple4<String, String, Constructor<CommandAbstractClass>, String> {
-
-		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z, String _t) {
+	private static class Tuple extends Tuple4<String, String, Constructor<CommandAbstractClass>, String>
+	{
+		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z, String _t)
+		{
 			super(_x, _y, _z, _t);
 		}
 	}
@@ -25,19 +27,22 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	static {
-
-		try {
+	static
+	{
+		try
+		{
 			addCommands();
-
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommands() throws Exception {
+	private static void addCommands() throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
@@ -50,10 +55,12 @@ public class CommandSingleton {
 
 		QueryResult queryResult;
 
-		try {
+		try
+		{
 			queryResult = driver.executeSQLQuery("SELECT `command`,`class`,`archived` FROM `router_command`");
-
-		} finally {
+		}
+		finally
+		{
 			driver.rollbackAndRelease();
 		}
 
@@ -67,16 +74,18 @@ public class CommandSingleton {
 		/* ADD CATALOGS                                                    */
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < numberOfRows; i++) {
-
-			try {
+		for(int i = 0; i < numberOfRows; i++)
+		{
+			try
+			{
 				addCommand(
 					queryResult.getValue(i, "command"),
 					queryResult.getValue(i, "class"),
 					queryResult.getValue(i, "archived")
 				);
-
-			} catch(Exception e) {
+			}
+			catch(Exception e)
+			{
 				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 			}
 		}
@@ -88,7 +97,8 @@ public class CommandSingleton {
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommand(String commandName, String className, String archived) throws Exception {
+	private static void addCommand(String commandName, String className, String archived) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
@@ -99,8 +109,8 @@ public class CommandSingleton {
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class)) {
-
+		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
+		{
 			m_commands.put(
 				commandName
 				,
@@ -121,23 +131,24 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments) throws Exception {
-
+	public static String executeCommand(String command, Map<String, String> arguments) throws Exception
+	{
 		return executeCommand(command, arguments, true, -1);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception {
-
+	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception
+	{
 		return executeCommand(command, arguments, checkRoles, -1);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, int transactionID) throws Exception {
-
-		if(command.startsWith("AMI")) {
+	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, int transactionID) throws Exception
+	{
+		if(command.startsWith("AMI"))
+		{
 			command = command.substring(3);
 		}
 
@@ -147,7 +158,8 @@ public class CommandSingleton {
 
 		Tuple tuple = m_commands.get(command);
 
-		if(tuple == null) {
+		if(tuple == null)
+		{
 			throw new Exception("command `" + command + "` not found");
 		}
 
@@ -155,7 +167,8 @@ public class CommandSingleton {
 
 		String result;
 
-		if(arguments.containsKey("help") == false) {
+		if(arguments.containsKey("help") == false)
+		{
 			/*-------------------------------------------------------------*/
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
@@ -215,7 +228,9 @@ public class CommandSingleton {
 			result = stringBuilder.toString();
 
 			/*-------------------------------------------------------------*/
-		} else {
+		}
+		else
+		{
 			result = XMLTemplates.help(
 				tuple.x,
 				tuple.y
@@ -229,8 +244,8 @@ public class CommandSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder listCommands() {
-
+	public static StringBuilder listCommands()
+	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -239,8 +254,8 @@ public class CommandSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, Tuple> entry: m_commands.entrySet()) {
-
+		for(Entry<String, Tuple> entry: m_commands.entrySet())
+		{
 			String command = entry.getKey();
 
 			String help = entry.getValue().x.toString();

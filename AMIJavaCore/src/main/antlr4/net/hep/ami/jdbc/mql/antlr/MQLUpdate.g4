@@ -29,7 +29,7 @@ createTableColumnList
   ;
 
 createTableColumn
-  : ID TYPE ('(' NUMBER ')')? (NOT NULL)? (DEFAULT sqlLiteral)? (AUTO_INCREMENT)?
+  : ID TYPE ('(' NUMBER ')')? (NOT NULL)? (DEFAULT sqlLiteral)?
   ;
 
 /*---------------------------*/

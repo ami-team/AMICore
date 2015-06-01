@@ -8,9 +8,9 @@ import java.security.cert.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.Cryptography.*;
 
-public class GenerateCertificate extends CommandAbstractClass {
+public class GenerateCertificate extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_country;
@@ -24,7 +24,8 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public GenerateCertificate(Map<String, String> arguments, int transactionID) {
+	public GenerateCertificate(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_country = arguments.containsKey("country") ? arguments.get("country")
@@ -51,15 +52,19 @@ public class GenerateCertificate extends CommandAbstractClass {
 		                                               : ""
 		;
 
-		if(arguments.containsKey("validity")) {
-
-			try {
+		if(arguments.containsKey("validity"))
+		{
+			try
+			{
 				m_validity = Integer.parseInt(arguments.get("validity"));
-
-			} catch(NumberFormatException e) {
+			}
+			catch(NumberFormatException e)
+			{
 				m_validity = 1;
 			}
-		} else {
+		}
+		else
+		{
 			m_validity = 1;
 		}
 	}
@@ -67,8 +72,8 @@ public class GenerateCertificate extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
+	public StringBuilder main() throws Exception
+	{
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
@@ -78,23 +83,27 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		try {
+		try
+		{
 			InputStream inputStream = new FileInputStream(fileName);
 
-			PEMTuple tuple = Cryptography.loadPEM(inputStream);
+			Cryptography.PEMTuple tuple = Cryptography.loadPEM(inputStream);
 
-			if(tuple.privateKeys.length == 0) {
+			if(tuple.privateKeys.length == 0)
+			{
 				throw new Exception("no private key in  `" + fileName + "`");
 			}
 
-			if(tuple.x509Certificates.length == 0) {
+			if(tuple.x509Certificates.length == 0)
+			{
 				throw new Exception("no certificate in  `" + fileName + "`");
 			}
 
 			caKey = tuple.privateKeys[0];
 			caCrt = tuple.x509Certificates[0];
-
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			throw new Exception("could not open `" + fileName + "`: " + e.getMessage());
 		}
 
@@ -157,27 +166,31 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 		output = new ByteArrayOutputStream();
 
-		try {
+		try
+		{
 			keyStore_JKS.store(output, m_password.toCharArray());
 
 			result.append("<field name=\"KEYSTORE_JKS\">");
 			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
-
-		} finally {
+		}
+		finally
+		{
 			output.close();
 		}
 
 		output = new ByteArrayOutputStream();
 
-		try {
+		try
+		{
 			keyStore_PKCS12.store(output, m_password.toCharArray());
 
 			result.append("<field name=\"KEYSTORE_P12\">");
 			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
-
-		} finally {
+		}
+		finally
+		{
 			output.close();
 		}
 
@@ -192,15 +205,15 @@ public class GenerateCertificate extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Generate client or server certificates.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-country=\"value\" -locality=\"value\" -organization=\"value\" -organizationalUnit=\"value\" -commonName=\"value\" -password=\"value\"";
 	}
 

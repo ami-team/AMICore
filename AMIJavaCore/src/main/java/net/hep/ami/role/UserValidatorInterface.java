@@ -1,6 +1,7 @@
 package net.hep.ami.role;
 
-public interface UserValidatorInterface {
+public interface UserValidatorInterface
+{
 	/*---------------------------------------------------------------------*/
 
 	public boolean check(

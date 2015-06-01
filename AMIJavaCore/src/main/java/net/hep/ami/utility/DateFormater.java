@@ -3,7 +3,8 @@ package net.hep.ami.utility;
 import java.text.*;
 import java.util.*;
 
-public class DateFormater {
+public class DateFormater
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.US);
@@ -12,15 +13,15 @@ public class DateFormater {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String format(Date date) {
-
+	public static String format(Date date)
+	{
 		return m_simpleDateFormat.format(date);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String formatSLS(Date date) {
-
+	public static String formatSLS(Date date)
+	{
 		return m_simpleDateFormatSLS.format(date);
 	}
 

@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class AddCommandRole extends CommandAbstractClass {
+public class AddCommandRole extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_command;
@@ -13,7 +14,8 @@ public class AddCommandRole extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public AddCommandRole(Map<String, String> arguments, int transactionID) {
+	public AddCommandRole(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_command = arguments.get("command");
@@ -23,8 +25,8 @@ public class AddCommandRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
+	public StringBuilder main() throws Exception
+	{
 		if(m_command == null
 		   ||
 		   m_role == null
@@ -46,7 +48,8 @@ public class AddCommandRole extends CommandAbstractClass {
 
 		QueryResult queryResult1 = transactionalQuerier.executeSQLQuery(sql1);
 
-		if(queryResult1.getNumberOfRows() != 1) {
+		if(queryResult1.getNumberOfRows() != 1)
+		{
 			throw new Exception("unknown command `" + m_command + "`");
 		}
 
@@ -62,7 +65,8 @@ public class AddCommandRole extends CommandAbstractClass {
 
 		QueryResult queryResult2 = transactionalQuerier.executeSQLQuery(sql2);
 
-		if(queryResult2.getNumberOfRows() != 1) {
+		if(queryResult2.getNumberOfRows() != 1)
+		{
 			throw new Exception("unknown role `" + m_role + "`");
 		}
 
@@ -86,15 +90,15 @@ public class AddCommandRole extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Add command role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-command=\"value\" -role=\"value\"";
 	}
 

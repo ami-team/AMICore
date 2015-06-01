@@ -4,24 +4,27 @@ import java.security.cert.*;
 
 import javax.net.ssl.*;
 
-public class PermissiveSocketFactory {
+public class PermissiveSocketFactory
+{
 	/*---------------------------------------------------------------------*/
 
-	private static class PermissiveX509TrustManager implements X509TrustManager {
-
+	private static class PermissiveX509TrustManager implements X509TrustManager
+	{
 		@Override
-		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException
+		{
 			/* IGNORE */
 		}
 
 		@Override
-		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException
+		{
 			/* IGNORE */
 		}
 
 		@Override
-		public X509Certificate[] getAcceptedIssuers() {
-
+		public X509Certificate[] getAcceptedIssuers()
+		{
 			return null;
 		}
 	}
@@ -33,9 +36,10 @@ public class PermissiveSocketFactory {
 
 	/*---------------------------------------------------------------------*/
 
-	static {
-
-		try {
+	static
+	{
+		try
+		{
 			/*-------------------------------------------------------------*/
 			/* CREATE SSL CONTEXT                                          */
 			/*-------------------------------------------------------------*/
@@ -69,22 +73,24 @@ public class PermissiveSocketFactory {
 			m_tlsSocketFactory = tlsContext.getSocketFactory();
 
 			/*-------------------------------------------------------------*/
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			/* IGNORE */
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static SSLSocketFactory getSSLSocketFactory() throws Exception {
-
+	public static SSLSocketFactory getSSLSocketFactory() throws Exception
+	{
 		return m_sslSocketFactory;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static SSLSocketFactory getTLSSocketFactory() throws Exception {
-
+	public static SSLSocketFactory getTLSSocketFactory() throws Exception
+	{
 		return m_tlsSocketFactory;
 	}
 

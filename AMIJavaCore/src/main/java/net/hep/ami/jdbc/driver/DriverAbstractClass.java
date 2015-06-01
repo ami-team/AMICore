@@ -8,7 +8,8 @@ import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.introspection.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
-public abstract class DriverAbstractClass implements QuerierInterface, DriverInterface {
+public abstract class DriverAbstractClass implements QuerierInterface, DriverInterface
+{
 	/*---------------------------------------------------------------------*/
 
 	protected Connection m_connection;
@@ -16,28 +17,32 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	/*---------------------------------------------------------------------*/
 
+	protected String m_internalCatalog;
+	protected String m_externalCatalog;
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
 	protected String m_jdbcUrl;
-	protected String m_internalCatalog;
-	protected String m_externalCatalog;
 	protected String m_user;
 	protected String m_pass;
 
 	/*---------------------------------------------------------------------*/
 
-	public DriverAbstractClass(String jdbcUrl, String user, String pass) throws Exception {
+	public DriverAbstractClass(String jdbcUrl, String user, String pass) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 
 		Jdbc annotation = getClass().getAnnotation(Jdbc.class);
 
-		if(annotation == null) {
+		if(annotation == null)
+		{
 			throw new Exception("no `Jdbc` annotation for driver `" + getClass().getName() + "`");
 		}
 
 		String jdbcProto = annotation.proto();
 		String jdbcClass = annotation.clazz();
 
+		/*-----------------------------------------------------------------*/
+		/* GET CONNECTION                                                  */
 		/*-----------------------------------------------------------------*/
 
 		m_jdbcProto = jdbcProto;
@@ -56,15 +61,23 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		m_connection.setAutoCommit(false);
 
 		/*-----------------------------------------------------------------*/
+		/* GET STATEMENT                                                   */
+		/*-----------------------------------------------------------------*/
 
 		m_statement = m_connection.createStatement();
 
+		/*-----------------------------------------------------------------*/
+		/* GET CATALOG                                                     */
+		/*-----------------------------------------------------------------*/
+
 		m_internalCatalog = m_connection.getCatalog();
 
-		try {
+		try
+		{
 			m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog);
-
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			/* IGNORE */
 		}
 
@@ -74,8 +87,8 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public QueryResult executeSQLQuery(String sql) throws Exception {
-
+	public QueryResult executeSQLQuery(String sql) throws Exception
+	{
 		return new QueryResult(
 			m_statement.executeQuery(sql)
 		);
@@ -84,8 +97,8 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public QueryResult executeMQLQuery(String mql) throws Exception {
-
+	public QueryResult executeMQLQuery(String mql) throws Exception
+	{
 		String sql = SelectParser.parse(mql, m_externalCatalog);
 
 		return new QueryResult(
@@ -96,16 +109,16 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void executeSQLUpdate(String sql) throws Exception {
-
+	public void executeSQLUpdate(String sql) throws Exception
+	{
 		m_statement.executeUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void executeMQLUpdate(String mql) throws Exception {
-
+	public void executeMQLUpdate(String mql) throws Exception
+	{
 		String sql = UpdateParser.parse(mql, this);
 
 		m_statement.executeUpdate(sql);
@@ -113,37 +126,43 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	/*---------------------------------------------------------------------*/
 
-	public void commit() throws Exception {
-
-		if(m_connection.getAutoCommit() == false) {
+	public void commit() throws Exception
+	{
+		if(m_connection.getAutoCommit() == false)
+		{
 			m_connection.commit();
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void rollback() throws Exception {
-
-		if(m_connection.getAutoCommit() == false) {
+	public void rollback() throws Exception
+	{
+		if(m_connection.getAutoCommit() == false)
+		{
 			m_connection.rollback();
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void commitAndRelease() throws Exception {
-
-		try {
-
-			if(m_connection.getAutoCommit() == false) {
+	public void commitAndRelease() throws Exception
+	{
+		try
+		{
+			if(m_connection.getAutoCommit() == false)
+			{
 				m_connection.commit();
 			}
-
-		} finally {
-
-			try {
+		}
+		finally
+		{
+			try
+			{
 				m_statement.close();
-			} finally {
+			}
+			finally
+			{
 				m_connection.close();
 			}
 		}
@@ -151,19 +170,23 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	/*---------------------------------------------------------------------*/
 
-	public void rollbackAndRelease() throws Exception {
-
-		try {
-
-			if(m_connection.getAutoCommit() == false) {
+	public void rollbackAndRelease() throws Exception
+	{
+		try
+		{
+			if(m_connection.getAutoCommit() == false)
+			{
 				m_connection.rollback();
 			}
-
-		} finally {
-
-			try {
+		}
+		finally
+		{
+			try
+			{
 				m_statement.close();
-			} finally {
+			}
+			finally
+			{
 				m_connection.close();
 			}
 		}
@@ -172,64 +195,72 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Deprecated
-	public Connection getConnection() {
-
+	public Connection getConnection()
+	{
 		return m_connection;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	@Override
-	public String getJdbcProto() {
-
-		return m_jdbcProto;
+	@Deprecated
+	public Statement getStatement()
+	{
+		return m_statement;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getJdbcClass() {
-
-		return m_jdbcClass;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public String getJdbcUrl() {
-
-		return m_jdbcUrl;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public String getInternalCatalog() {
-
+	public String getInternalCatalog()
+	{
 		return m_internalCatalog;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getExternalCatalog() {
-
+	public String getExternalCatalog()
+	{
 		return m_externalCatalog;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getUser() {
+	public String getJdbcProto()
+	{
+		return m_jdbcProto;
+	}
 
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String getJdbcClass()
+	{
+		return m_jdbcClass;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String getJdbcUrl()
+	{
+		return m_jdbcUrl;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String getUser()
+	{
 		return m_user;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getPass() {
-
+	public String getPass()
+	{
 		return m_pass;
 	}
 

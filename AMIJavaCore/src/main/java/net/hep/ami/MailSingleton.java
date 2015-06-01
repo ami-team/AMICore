@@ -5,16 +5,17 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
-public class MailSingleton {
+public class MailSingleton
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final Properties m_properties = new Properties();
 
-	private static final Authenticator m_authenticator = new Authenticator() {
-
+	private static final Authenticator m_authenticator = new Authenticator()
+	{
 		@Override
-		protected PasswordAuthentication getPasswordAuthentication() {
-
+		protected PasswordAuthentication getPasswordAuthentication()
+		{
 			return new PasswordAuthentication(
 				ConfigSingleton.getProperty("email_user"),
 				ConfigSingleton.getProperty("email_pass")
@@ -24,7 +25,8 @@ public class MailSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	static {
+	static
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET HOST, PORT AND MODE                                         */
 		/*-----------------------------------------------------------------*/
@@ -43,10 +45,12 @@ public class MailSingleton {
 		m_properties.setProperty("mail.smtp.host", (host));
 		m_properties.setProperty("mail.smtp.port", (port));
 
-
-		/****/ if(mode.equals("1")) {
+		/**/ if(mode.equals("1"))
+		{
 			m_properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		} else if(mode.equals("2")) {
+		}
+		else if(mode.equals("2"))
+		{
 			m_properties.setProperty("mail.smtp.starttls.enable", "true");
 		}
 
@@ -55,7 +59,8 @@ public class MailSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, String to, String cc, String subject, String text) throws Exception {
+	public static void sendMessage(String from, String to, String cc, String subject, String text) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/

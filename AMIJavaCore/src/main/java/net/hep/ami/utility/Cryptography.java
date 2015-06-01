@@ -18,7 +18,8 @@ import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
 
-public class Cryptography {
+public class Cryptography
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final String BC = org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
@@ -30,14 +31,15 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	static {
+	static
+	{
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void init(String password) throws Exception {
-
+	public static void init(String password) throws Exception
+	{
 		byte[] key;
 
 		final int length = password.length();
@@ -63,8 +65,8 @@ public class Cryptography {
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
-	private static Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> parsePEM(InputStream inputStream) throws Exception {
-
+	private static Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> parsePEM(InputStream inputStream) throws Exception
+	{
 		String line;
 
 		StringBuilder stringBuilder = null;
@@ -79,55 +81,73 @@ public class Cryptography {
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		try {
-
-			while((line = bufferedReader.readLine()) != null) {
+		try
+		{
+			while((line = bufferedReader.readLine()) != null)
+			{
+				/*---------------------------------------------------------*/
+				/* PRIVATE KEY                                             */
 				/*---------------------------------------------------------*/
 
-				/****/ if(line.equals("-----BEGIN PRIVATE KEY-----")) {
+				/**/ if(line.equals("-----BEGIN PRIVATE KEY-----"))
+				{
 					stringBuilder = new StringBuilder();
 					appendPrivateKey = true;
-
-				} else if(line.equals("-----END PRIVATE KEY-----")) {
+				}
+				else if(line.equals("-----END PRIVATE KEY-----"))
+				{
 					privateKey.add(stringBuilder);
 					appendPrivateKey = false;
-
-				} else if(appendPrivateKey) {
+				}
+				else if(appendPrivateKey)
+				{
 					stringBuilder.append(line);
 				}
 
 				/*---------------------------------------------------------*/
+				/* PUBLIC KEY                                              */
+				/*---------------------------------------------------------*/
 
-				else if(line.equals("-----BEGIN PUBLIC KEY-----")) {
+				else if(line.equals("-----BEGIN PUBLIC KEY-----"))
+				{
 					stringBuilder = new StringBuilder();
 					appendPublicKey = true;
-
-				} else if(line.equals("-----END PUBLIC KEY-----")) {
+				}
+				else if(line.equals("-----END PUBLIC KEY-----"))
+				{
 					publicKey.add(stringBuilder);
 					appendPublicKey = false;
-
-				} else if(appendPublicKey) {
+				}
+				else if(appendPublicKey)
+				{
 					stringBuilder.append(line);
 				}
 
 				/*---------------------------------------------------------*/
+				/* CERTIFICATE                                             */
+				/*---------------------------------------------------------*/
 
-				else if(line.equals("-----BEGIN CERTIFICATE-----")) {
+				else if(line.equals("-----BEGIN CERTIFICATE-----"))
+				{
 					stringBuilder = new StringBuilder();
 					appendCertificate = true;
-
-				} else if(line.equals("-----END CERTIFICATE-----")) {
+				}
+				else if(line.equals("-----END CERTIFICATE-----"))
+				{
 					certificates.add(stringBuilder);
 					appendCertificate = false;
-
-				} else if(appendCertificate) {
+				}
+				else if(appendCertificate)
+				{
 					stringBuilder.append(line);
 				}
 
 				/*---------------------------------------------------------*/
 			}
 
-		} finally {
+		}
+		finally
+		{
 			bufferedReader.close();
 		}
 
@@ -140,8 +160,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	private static PrivateKey buildPrivateKey(byte[] encoded) throws Exception {
-
+	private static PrivateKey buildPrivateKey(byte[] encoded) throws Exception
+	{
 		return KeyFactory.getInstance("RSA", BC).generatePrivate(
 
 			new PKCS8EncodedKeySpec(
@@ -152,8 +172,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	private static PublicKey buildPublicKey(byte[] encoded) throws Exception {
-
+	private static PublicKey buildPublicKey(byte[] encoded) throws Exception
+	{
 		return KeyFactory.getInstance("RSA", BC).generatePublic(
 
 			new PKCS8EncodedKeySpec(
@@ -164,8 +184,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	private static X509Certificate buildCertificate(byte[] encoded) throws Exception {
-
+	private static X509Certificate buildCertificate(byte[] encoded) throws Exception
+	{
 		return (X509Certificate) CertificateFactory.getInstance("X509", BC).generateCertificate(
 
 			new ByteArrayInputStream(
@@ -176,12 +196,13 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static PrivateKey[] loadPrivateKeys(InputStream inputStream) throws Exception {
+	public static PrivateKey[] loadPrivateKeys(InputStream inputStream) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		 Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
+		Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
 
 		/*-----------------------------------------------------------------*/
 		/* GET NUMBER OF PRIVATE KEYS                                      */
@@ -195,8 +216,8 @@ public class Cryptography {
 
 		PrivateKey[] result = new PrivateKey[numberOfPrivateKeys];
 
-		for(int i = 0; i < numberOfPrivateKeys; i++) {
-
+		for(int i = 0; i < numberOfPrivateKeys; i++)
+		{
 			result[i] = buildPrivateKey(org.bouncycastle.util.encoders.Base64.decode(
 				tuple.x.get(i).toString()
 			));
@@ -209,12 +230,13 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static PublicKey[] loadPublicKeys(InputStream inputStream) throws Exception {
+	public static PublicKey[] loadPublicKeys(InputStream inputStream) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		 Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
+		Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
 
 		/*-----------------------------------------------------------------*/
 		/* GET NUMBER OF PUBLIC KEYS                                       */
@@ -228,8 +250,8 @@ public class Cryptography {
 
 		PublicKey[] result = new PublicKey[numberOfPublicKeys];
 
-		for(int i = 0; i < numberOfPublicKeys; i++) {
-
+		for(int i = 0; i < numberOfPublicKeys; i++)
+		{
 			result[i] = buildPublicKey(org.bouncycastle.util.encoders.Base64.decode(
 				tuple.y.get(i).toString()
 			));
@@ -242,7 +264,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate[] loadCertificates(InputStream inputStream) throws Exception {
+	public static X509Certificate[] loadCertificates(InputStream inputStream) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
@@ -261,8 +284,8 @@ public class Cryptography {
 
 		X509Certificate[] result = new X509Certificate[numberOfCertificates];
 
-		for(int i = 0; i < numberOfCertificates; i++) {
-
+		for(int i = 0; i < numberOfCertificates; i++)
+		{
 			result[i] = buildCertificate(org.bouncycastle.util.encoders.Base64.decode(
 				tuple.z.get(i).toString()
 			));
@@ -275,15 +298,15 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static class PEMTuple {
-
+	public static class PEMTuple
+	{
 		public PrivateKey[] privateKeys;
 		public PublicKey[] publicKeys;
 
 		public X509Certificate[] x509Certificates;
 
-		public PEMTuple(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates) {
-
+		public PEMTuple(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates)
+		{
 			privateKeys = _privateKeys;
 			publicKeys = _publicKeys;
 
@@ -293,7 +316,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static PEMTuple loadPEM(InputStream inputStream) throws Exception {
+	public static PEMTuple loadPEM(InputStream inputStream) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
@@ -314,8 +338,8 @@ public class Cryptography {
 
 		PrivateKey[] privateKeys = new PrivateKey[numberOfPrivateKeys];
 
-		for(int i = 0; i < numberOfPrivateKeys; i++) {
-
+		for(int i = 0; i < numberOfPrivateKeys; i++)
+		{
 			privateKeys[i] = buildPrivateKey(org.bouncycastle.util.encoders.Base64.decode(
 				tuple.x.get(i).toString()
 			));
@@ -325,8 +349,8 @@ public class Cryptography {
 
 		PublicKey[] publicKeys = new PublicKey[numberOfPublicKeys];
 
-		for(int i = 0; i < numberOfPublicKeys; i++) {
-
+		for(int i = 0; i < numberOfPublicKeys; i++)
+		{
 			publicKeys[i] = buildPublicKey(org.bouncycastle.util.encoders.Base64.decode(
 				tuple.y.get(i).toString()
 			));
@@ -336,8 +360,8 @@ public class Cryptography {
 
 		X509Certificate[] certificates = new X509Certificate[numberOfCertificates];
 
-		for(int i = 0; i < numberOfCertificates; i++) {
-
+		for(int i = 0; i < numberOfCertificates; i++)
+		{
 			certificates[i] = buildCertificate(org.bouncycastle.util.encoders.Base64.decode(
 				tuple.z.get(i).toString()
 			));
@@ -354,8 +378,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static KeyPair generateKeyPair(int keysize) throws Exception {
-
+	public static KeyPair generateKeyPair(int keysize) throws Exception
+	{
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", BC);
 
 		keyPairGenerator.initialize(keysize, new SecureRandom());
@@ -365,7 +389,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate generateCA(PrivateKey privateKey, PublicKey publicKey, String subject, int validity) throws Exception {
+	public static X509Certificate generateCA(PrivateKey privateKey, PublicKey publicKey, String subject, int validity) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 BUILDER                                             */
 		/*-----------------------------------------------------------------*/
@@ -414,7 +439,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate generateCertificate(PrivateKey CAPrivateKey, X509Certificate CACertificate, PublicKey publicKey, String subject, int validity) throws Exception {
+	public static X509Certificate generateCertificate(PrivateKey CAPrivateKey, X509Certificate CACertificate, PublicKey publicKey, String subject, int validity) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 BUILDER                                             */
 		/*-----------------------------------------------------------------*/
@@ -466,8 +492,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static KeyStore generateKeyStore_JKS(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception {
-
+	public static KeyStore generateKeyStore_JKS(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception
+	{
 		KeyStore result = KeyStore.getInstance("JKS");
 
 		result.load(null, null);
@@ -481,8 +507,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static KeyStore generateKeyStore_PKCS12(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception {
-
+	public static KeyStore generateKeyStore_PKCS12(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception
+	{
 		KeyStore result = KeyStore.getInstance("PKCS12");
 
 		result.load(null, null);
@@ -496,7 +522,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String byteArrayToBase64String(byte[] data) {
+	public static String byteArrayToBase64String(byte[] data)
+	{
 		/*-----------------------------------------------------------------*/
 		/* ENCODE TO BASE64                                                */
 		/*-----------------------------------------------------------------*/
@@ -514,18 +541,21 @@ public class Cryptography {
 
 		StringBuilder result = new StringBuilder();
 
-		for(;;) {
+		for(;;)
+		{
 			j = i + 64;
 
-			if(j > length) {
+			if(j > length)
+			{
 				j = length;
 
 				result.append(string.substring(i, j));
 				result.append("\n");
 
 				break;
-
-			} else {
+			}
+			else
+			{
 				result.append(string.substring(i, j));
 				result.append("\n");
 
@@ -540,8 +570,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isProxy(X509Certificate certificate) {
-
+	public static boolean isProxy(X509Certificate certificate)
+	{
 		byte[] data;
 
 		/*-----------------------------------------------------------------*/
@@ -550,7 +580,8 @@ public class Cryptography {
 
 		data = certificate.getExtensionValue("1.3.6.1.5.5.7.1.14");
 
-		if(data != null && data.length > 0) {
+		if(data != null && data.length > 0)
+		{
 			return true;
 		}
 
@@ -560,7 +591,8 @@ public class Cryptography {
 
 		data = certificate.getExtensionValue("1.3.6.1.4.1.3536.1.222");
 
-		if(data != null && data.length > 0) {
+		if(data != null && data.length > 0)
+		{
 			return true;
 		}
 
@@ -570,8 +602,8 @@ public class Cryptography {
 
 		String[] parts = certificate.getSubjectX500Principal().getName("RFC2253").split(",");
 
-		for(String part: parts) {
-
+		for(String part: parts)
+		{
 			if(part.equals("CN=limited proxy")
 			   ||
 			   part.equals(/**/"CN=proxy"/**/)
@@ -587,14 +619,14 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getAMIName(javax.security.auth.x500.X500Principal principal) {
-
+	public static String getAMIName(javax.security.auth.x500.X500Principal principal)
+	{
 		StringBuilder result = new StringBuilder();
 
 		String[] parts = principal.getName("RFC2253").split(",");
 
-		for(String part: parts) {
-
+		for(String part: parts)
+		{
 			result.insert(0, "/" + part);
 		}
 
@@ -607,16 +639,16 @@ public class Cryptography {
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
-	public static void encrypt(OutputStream outputStreamut, InputStream inputStream) throws Exception {
-
+	public static void encrypt(OutputStream outputStreamut, InputStream inputStream) throws Exception
+	{
 		int noBytesRead = 0;
 		int noBytesProcessed = 0;
 
 		byte[] ibuff = new byte[16];
 		byte[] obuff = new byte[512];
 
-		while((noBytesRead = inputStream.read(ibuff)) >= 0) {
-
+		while((noBytesRead = inputStream.read(ibuff)) >= 0)
+		{
 			noBytesProcessed = m_encryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
 			outputStreamut.write(obuff, 0, noBytesProcessed);
 		}
@@ -627,16 +659,16 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void decrypt(OutputStream outputStream, InputStream inputStream) throws Exception {
-
+	public static void decrypt(OutputStream outputStream, InputStream inputStream) throws Exception
+	{
 		int noBytesRead = 0;
 		int noBytesProcessed = 0;
 
 		byte[] ibuff = new byte[16];
 		byte[] obuff = new byte[512];
 
-		while((noBytesRead = inputStream.read(ibuff)) >= 0) {
-
+		while((noBytesRead = inputStream.read(ibuff)) >= 0)
+		{
 			noBytesProcessed = m_decryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
 			outputStream.write(obuff, 0, noBytesProcessed);
 		}
@@ -647,15 +679,17 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static byte[] encrypt(byte[] data) {
-
+	public static byte[] encrypt(byte[] data)
+	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		try {
+		try
+		{
 			encrypt(outputStream, inputStream);
-
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			/* IGNORE */
 		}
 
@@ -664,15 +698,17 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static byte[] decrypt(byte[] data) {
-
+	public static byte[] decrypt(byte[] data)
+	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		try {
+		try
+		{
 			decrypt(outputStream, inputStream);
-
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			/* IGNORE */
 		}
 
@@ -681,8 +717,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String encrypt(String s) {
-
+	public static String encrypt(String s)
+	{
 		return new String(
 			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes()))
 		);
@@ -690,8 +726,8 @@ public class Cryptography {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String decrypt(String s) {
-
+	public static String decrypt(String s)
+	{
 		return new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString()))
 		);

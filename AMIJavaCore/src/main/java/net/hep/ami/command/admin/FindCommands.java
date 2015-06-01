@@ -6,17 +6,20 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-public class FindCommands extends CommandAbstractClass {
+public class FindCommands extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
-	public FindCommands(Map<String, String> arguments, int transactionID) {
+	public FindCommands(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
+	public StringBuilder main() throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET TRANSACTIONAL QUERIER                                       */
 		/*-----------------------------------------------------------------*/
@@ -37,8 +40,8 @@ public class FindCommands extends CommandAbstractClass {
 
 		Set<String> commands = new HashSet<String>();
 
-		for(String className: classes) {
-
+		for(String className: classes)
+		{
 			addCommand(transactionalQuerier, commands, className);
 		}
 
@@ -49,16 +52,17 @@ public class FindCommands extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
-		return "Find commands by introspection";
+	public static String help()
+	{
+		return "Automatically find commands";
 	}
 
 	/*---------------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	private void addCommand(TransactionalQuerier transactionalQuerier, Set<String> commands, String className) throws Exception {
+	private void addCommand(TransactionalQuerier transactionalQuerier, Set<String> commands, String className) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
@@ -69,8 +73,8 @@ public class FindCommands extends CommandAbstractClass {
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class)) {
-
+		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
+		{
 			String simpleName = clazz.getSimpleName();
 			String name = clazz.getName();
 

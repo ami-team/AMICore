@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class TestEmail extends CommandAbstractClass {
+public class TestEmail extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_from;
@@ -16,7 +17,8 @@ public class TestEmail extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public TestEmail(Map<String, String> arguments, int transactionID) {
+	public TestEmail(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_from = arguments.containsKey("from") ? arguments.get("from")
@@ -35,8 +37,8 @@ public class TestEmail extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
+	public StringBuilder main() throws Exception
+	{
 		MailSingleton.sendMessage(m_from, m_to, m_cc, "This is a test", "This is a test");
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
@@ -44,15 +46,15 @@ public class TestEmail extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Check email.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "(-from=\"value\")? (-to=\"value\")? (-cc=\"value\")?";
 	}
 

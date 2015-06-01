@@ -28,13 +28,13 @@
     </dependency>
 
     <!--******************************************************************-->
-<!--
+
     <dependency>
       <groupId>net.hep.ami</groupId>
       <artifactId>AMICloud</artifactId>
       <version>${project.version}</version>
     </dependency>
--->
+
     <!--******************************************************************-->
 
     <dependency>

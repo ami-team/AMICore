@@ -6,7 +6,8 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.introspection.*;
 import net.hep.ami.command.*;
 
-public class UpdateElements extends CommandAbstractClass {
+public class UpdateElements extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
@@ -22,7 +23,8 @@ public class UpdateElements extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateElements(Map<String, String> arguments, int transactionID) {
+	public UpdateElements(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
@@ -56,10 +58,10 @@ public class UpdateElements extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_catalog == null || m_entity == null || m_fields.length != m_values.length || m_keyFields.length != m_keyValues.length) {
-
+	public StringBuilder main() throws Exception
+	{
+		if(m_catalog == null || m_entity == null || m_fields.length != m_values.length || m_keyFields.length != m_keyValues.length)
+		{
 			throw new Exception("invalid usage");
 		}
 
@@ -77,12 +79,12 @@ public class UpdateElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_fields.length > 0) {
-
+		if(m_fields.length > 0)
+		{
 			String part = "";
 
-			for(int i = 0; i < m_fields.length; i++) {
-
+			for(int i = 0; i < m_fields.length; i++)
+			{
 				part = part.concat(",`" + m_fields[i] + "`='" + m_values[i].replaceFirst("'", "''") + "'");
 			}
 
@@ -93,12 +95,12 @@ public class UpdateElements extends CommandAbstractClass {
 
 		boolean wherePresent = false;
 
-		if(m_keyFields.length > 0) {
-
+		if(m_keyFields.length > 0)
+		{
 			Map<String, List<String>> joins = new HashMap<String, List<String>>();
 
-			for(int i = 0; i < m_keyFields.length; i++) {
-
+			for(int i = 0; i < m_keyFields.length; i++)
+			{
 				AutoJoinSingleton.resolveWithNestedSelect(
 					joins,
 					m_catalog,
@@ -112,8 +114,8 @@ public class UpdateElements extends CommandAbstractClass {
 
 			String where = AutoJoinSingleton.joinsToSQL(joins).where;
 
-			if(where.isEmpty() == false) {
-
+			if(where.isEmpty() == false)
+			{
 				stringBuilder.append(" WHERE " + where);
 
 				wherePresent = true;
@@ -124,11 +126,14 @@ public class UpdateElements extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_where.isEmpty() == false) {
-
-			if(wherePresent) {
+		if(m_where.isEmpty() == false)
+		{
+			if(wherePresent)
+			{
 				stringBuilder.append(" AND (" + m_where + ")");
-			} else {
+			}
+			else
+			{
 				stringBuilder.append(" WHERE (" + m_where + ")");
 			}
 		}
@@ -148,15 +153,15 @@ public class UpdateElements extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Update elements.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? -fields=\"comma_separated_values\" -values=\"comma_separated_values\" (-keyFields=\"comma_separated_values\" -keyValues=\"comma_separated_values\")? (-where=\"value\")?";
 	}
 

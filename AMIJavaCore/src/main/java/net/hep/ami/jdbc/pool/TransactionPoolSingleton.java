@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 
-public class TransactionPoolSingleton {
+public class TransactionPoolSingleton
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final Map<Integer, Map<String, DriverAbstractClass>> m_pools = new HashMap<Integer, Map<String, DriverAbstractClass>>();
@@ -16,16 +17,17 @@ public class TransactionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static int bookNewTransactionID() {
-
+	public static int bookNewTransactionID()
+	{
 		return m_cnt.getAndIncrement();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String catalog, int transactionID) throws Exception {
-
-		if(transactionID < 0) {
+	public static DriverAbstractClass getConnection(String catalog, int transactionID) throws Exception
+	{
+		if(transactionID < 0)
+		{
 			throw new Exception("invalid transaction identifier (" + transactionID + ")");
 		}
 
@@ -35,26 +37,26 @@ public class TransactionPoolSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, DriverAbstractClass> transaction;
-
 		DriverAbstractClass result;
 
-		synchronized(TransactionPoolSingleton.class) {
+		Map<String, DriverAbstractClass> transaction;
 
+		synchronized(TransactionPoolSingleton.class)
+		{
 		/**/	transaction = m_pools.get(transactionID);
 		/**/
-		/**/	if(transaction == null) {
-		/**/
+		/**/	if(transaction == null)
+		/**/	{
 		/**/		m_pools.put(transactionID, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
 		/**/		transaction.put(key, result = CatalogSingleton.getConnection(catalog));
-		/**/
-		/**/	} else {
-		/**/
+		/**/	}
+		/**/	else
+		/**/	{
 		/**/		result = transaction.get(key);
 		/**/
-		/**/		if(result == null) {
-		/**/
+		/**/		if(result == null)
+		/**/		{
 		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog));
 		/**/		}
 		/**/	}
@@ -67,9 +69,10 @@ public class TransactionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, int transactionID) throws Exception {
-
-		if(transactionID < 0) {
+	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, int transactionID) throws Exception
+	{
+		if(transactionID < 0)
+		{
 			throw new Exception("invalid transaction identifier (" + transactionID + ")");
 		}
 
@@ -79,26 +82,26 @@ public class TransactionPoolSingleton {
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, DriverAbstractClass> transaction;
-
 		DriverAbstractClass result;
 
-		synchronized(TransactionPoolSingleton.class) {
+		Map<String, DriverAbstractClass> transaction;
 
+		synchronized(TransactionPoolSingleton.class)
+		{
 		/**/	transaction = m_pools.get(transactionID);
 		/**/
-		/**/	if(transaction == null) {
-		/**/
+		/**/	if(transaction == null)
+		/**/	{
 		/**/		m_pools.put(transactionID, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
 		/**/		transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
-		/**/
-		/**/	} else {
-		/**/
+		/**/	}
+		/**/	else
+		/**/	{
 		/**/		result = transaction.get(key);
 		/**/
-		/**/		if(result == null) {
-		/**/
+		/**/		if(result == null)
+		/**/		{
 		/**/			transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
 		/**/		}
 		/**/	}
@@ -111,19 +114,20 @@ public class TransactionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void commitAndRelease(int transactionID) throws Exception {
-
+	public static void commitAndRelease(int transactionID) throws Exception
+	{
 		Map<String, DriverAbstractClass> transaction;
 
 		/*-----------------------------------------------------------------*/
 		/* REMOVE TRANSACTION FROM POOL                                    */
 		/*-----------------------------------------------------------------*/
 
-		synchronized(TransactionPoolSingleton.class) {
-
+		synchronized(TransactionPoolSingleton.class)
+		{
 		/**/	transaction = m_pools.get(transactionID);
 		/**/
-		/**/	if(transaction != null) {
+		/**/	if(transaction != null)
+		/**/	{
 		/**/		m_pools.remove(transactionID);
 		/**/	}
 		}
@@ -132,10 +136,10 @@ public class TransactionPoolSingleton {
 		/* COMMIT AND RELEASE CONNECTIONS                                  */
 		/*-----------------------------------------------------------------*/
 
-		if(transaction != null) {
-
-			for(DriverAbstractClass driver: transaction.values()) {
-
+		if(transaction != null)
+		{
+			for(DriverAbstractClass driver: transaction.values())
+			{
 				driver.commitAndRelease();
 			}
 		}
@@ -145,19 +149,20 @@ public class TransactionPoolSingleton {
 
 	/*---------------------------------------------------------------------*/
 
-	public static void rollbackAndRelease(int transactionID) throws Exception {
-
+	public static void rollbackAndRelease(int transactionID) throws Exception
+	{
 		Map<String, DriverAbstractClass> transaction;
 
 		/*-----------------------------------------------------------------*/
 		/* REMOVE TRANSACTION FROM POOL                                    */
 		/*-----------------------------------------------------------------*/
 
-		synchronized(TransactionPoolSingleton.class) {
-
+		synchronized(TransactionPoolSingleton.class)
+		{
 		/**/	transaction = m_pools.get(transactionID);
 		/**/
-		/**/	if(transaction != null) {
+		/**/	if(transaction != null)
+		/**/	{
 		/**/		m_pools.remove(transactionID);
 		/**/	}
 		}
@@ -166,10 +171,10 @@ public class TransactionPoolSingleton {
 		/* ROLLBACK AND RELEASE CONNECTIONS                                */
 		/*-----------------------------------------------------------------*/
 
-		if(transaction != null) {
-
-			for(DriverAbstractClass driver: transaction.values()) {
-
+		if(transaction != null)
+		{
+			for(DriverAbstractClass driver: transaction.values())
+			{
 				driver.rollbackAndRelease();
 			}
 		}

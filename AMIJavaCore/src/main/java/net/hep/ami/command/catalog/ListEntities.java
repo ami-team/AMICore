@@ -5,14 +5,16 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.introspection.*;
 
-public class ListEntities extends CommandAbstractClass {
+public class ListEntities extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_catalog;
 
 	/*---------------------------------------------------------------------*/
 
-	public ListEntities(Map<String, String> arguments, int transactionID) {
+	public ListEntities(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_catalog = arguments.get("catalog");
@@ -21,10 +23,11 @@ public class ListEntities extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
+	public StringBuilder main() throws Exception
+	{
 
-		if(m_catalog == null) {
-
+		if(m_catalog == null)
+		{
 			throw new Exception("invalid usage");
 		}
 
@@ -36,8 +39,8 @@ public class ListEntities extends CommandAbstractClass {
 
 		/*-----------------------------------------------------------------*/
 
-		for(String entity: SchemaSingleton.getTableNames(m_catalog)) {
-
+		for(String entity: SchemaSingleton.getTableNames(m_catalog))
+		{
 			result.append(
 				"<row>"
 				+
@@ -58,15 +61,15 @@ public class ListEntities extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "List entities.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-catalog=\"value\"";
 	}
 

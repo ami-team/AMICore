@@ -7,27 +7,28 @@ import net.hep.ami.jdbc.driver.annotation.*;
 	clazz = "org.postgresql.Driver"
 )
 
-public class PostgreSQLDriver extends DriverAbstractClass {
+public class PostgreSQLDriver extends DriverAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
-	public PostgreSQLDriver(String jdbc_url, String user, String pass) throws Exception {
-
+	public PostgreSQLDriver(String jdbc_url, String user, String pass) throws Exception
+	{
 		super(jdbc_url, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Type jdbcTypeToAMIType(DriverInterface.Type type) throws Exception {
-
+	public Type jdbcTypeToAMIType(DriverInterface.Type type) throws Exception
+	{
 		throw new Exception("unimplemented");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Type amiTypeToJDBCType(DriverInterface.Type type) throws Exception {
-
+	public Type amiTypeToJDBCType(DriverInterface.Type type) throws Exception
+	{
 		throw new Exception("unimplemented");
 	}
 

@@ -5,17 +5,20 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 
-public class GetSessionInfo extends CommandAbstractClass {
+public class GetSessionInfo extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
-	public GetSessionInfo(Map<String, String> arguments, int transactionID) {
+	public GetSessionInfo(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
+	public StringBuilder main() throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
@@ -112,9 +115,16 @@ public class GetSessionInfo extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Get session information.";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String usage()
+	{
+		return "TODO";
 	}
 
 	/*---------------------------------------------------------------------*/

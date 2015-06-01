@@ -5,19 +5,22 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class GetConfig extends CommandAbstractClass {
+public class GetConfig extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
-	public GetConfig(Map<String, String> arguments, int transactionID) {
+	public GetConfig(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
-		if(m_isSecure.equals("false")) {
+	public StringBuilder main() throws Exception
+	{
+		if(m_isSecure.equals("false"))
+		{
 			throw new Exception("https connection required"); 
 		}
 
@@ -26,8 +29,8 @@ public class GetConfig extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Show configuration.";
 	}
 

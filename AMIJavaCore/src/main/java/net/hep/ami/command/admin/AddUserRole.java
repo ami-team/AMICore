@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class AddUserRole extends CommandAbstractClass {
+public class AddUserRole extends CommandAbstractClass
+{
 	/*---------------------------------------------------------------------*/
 
 	private String m_user;
@@ -13,7 +14,8 @@ public class AddUserRole extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public AddUserRole(Map<String, String> arguments, int transactionID) {
+	public AddUserRole(Map<String, String> arguments, int transactionID)
+	{
 		super(arguments, transactionID);
 
 		m_user = arguments.get("user");
@@ -23,8 +25,8 @@ public class AddUserRole extends CommandAbstractClass {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception {
-
+	public StringBuilder main() throws Exception
+	{
 		if(m_user == null
 		   ||
 		   m_role == null
@@ -46,7 +48,8 @@ public class AddUserRole extends CommandAbstractClass {
 
 		QueryResult queryResult1 = transactionalQuerier.executeSQLQuery(sql1);
 
-		if(queryResult1.getNumberOfRows() != 1) {
+		if(queryResult1.getNumberOfRows() != 1)
+		{
 			throw new Exception("unknown user `" + m_user + "`");
 		}
 
@@ -62,7 +65,8 @@ public class AddUserRole extends CommandAbstractClass {
 
 		QueryResult queryResult2 = transactionalQuerier.executeSQLQuery(sql2);
 
-		if(queryResult2.getNumberOfRows() != 1) {
+		if(queryResult2.getNumberOfRows() != 1)
+		{
 			throw new Exception("unknown role `" + m_role + "`");
 		}
 
@@ -86,15 +90,15 @@ public class AddUserRole extends CommandAbstractClass {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help() {
-
+	public static String help()
+	{
 		return "Add user role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String usage() {
-
+	public static String usage()
+	{
 		return "-user=\"value\" -role=\"value\"";
 	}
 

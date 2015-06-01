@@ -11,39 +11,44 @@ import net.sf.saxon.dom.*;
 
 import org.w3c.dom.*;
 
-public class XMLFactories {
+public class XMLFactories
+{
 	/*---------------------------------------------------------------------*/
 
-	public static Document newDocument(InputStream inputStream) throws Exception {
-
+	public static Document newDocument(InputStream inputStream) throws Exception
+	{
 		DocumentBuilder documentBuilderFactory = new DocumentBuilderImpl();
 
-		try {
+		try
+		{
 			return documentBuilderFactory.parse(inputStream);
-
-		} finally {
+		}
+		finally
+		{
 			inputStream.close();
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Templates newTemplates(InputStream inputStream) throws Exception {
-
+	public static Templates newTemplates(InputStream inputStream) throws Exception
+	{
 		TransformerFactory transformerFactory = new TransformerFactoryImpl();
 
-		try {
+		try
+		{
 			return transformerFactory.newTemplates(new StreamSource(inputStream));
-
-		} finally {
+		}
+		finally
+		{
 			inputStream.close();
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getAttribute(Node node, String name, String defaultValue) {
-
+	public static String getAttribute(Node node, String name, String defaultValue)
+	{
 		Node attr = node.getAttributes().getNamedItem(name);
 
 		return attr != null ? attr.getNodeValue().trim()
@@ -53,8 +58,8 @@ public class XMLFactories {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getContent(Node node) {
-
+	public static String getContent(Node node)
+	{
 		return node.getTextContent().trim();
 	}
 

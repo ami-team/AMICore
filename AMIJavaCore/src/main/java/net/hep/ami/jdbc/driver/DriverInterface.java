@@ -1,15 +1,16 @@
 package net.hep.ami.jdbc.driver;
 
-public interface DriverInterface {
+public interface DriverInterface
+{
 	/*---------------------------------------------------------------------*/
 
-	static class Type {
-
+	static class Type
+	{
 		String name;
 		int size;
 
-		public Type(String _name, int _size) {
-
+		public Type(String _name, int _size)
+		{
 			name = _name;
 			size = _size;
 		}

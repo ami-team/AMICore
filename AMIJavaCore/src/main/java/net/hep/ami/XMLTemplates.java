@@ -1,10 +1,11 @@
 package net.hep.ami;
 
-public class XMLTemplates {
+public class XMLTemplates
+{
 	/*---------------------------------------------------------------------*/
 
-	public static String info(String message) {
-
+	public static String info(String message)
+	{
 		StringBuilder result = new StringBuilder();
 
 		result.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage><info><![CDATA[");
@@ -16,8 +17,8 @@ public class XMLTemplates {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String error(String message) {
-
+	public static String error(String message)
+	{
 		StringBuilder result = new StringBuilder();
 
 		result.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage><error><![CDATA[");
@@ -29,8 +30,8 @@ public class XMLTemplates {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help(String help, String usage) {
-
+	public static String help(String help, String usage)
+	{
 		StringBuilder result = new StringBuilder();
 
 		result.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage>");

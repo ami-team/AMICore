@@ -3,17 +3,18 @@ package net.hep.ami.utility;
 import java.util.*;
 import java.util.regex.*;
 
-public class CommandParser {
+public class CommandParser
+{
 	/*---------------------------------------------------------------------*/
 
-	public static class CommandParserTuple {
-
+	public static class CommandParserTuple
+	{
 		public String command;
 
 		public Map<String, String> arguments;
 
-		public CommandParserTuple(String _command, Map<String, String> _arguments) {
-
+		public CommandParserTuple(String _command, Map<String, String> _arguments)
+		{
 			command = _command;
 
 			arguments = _arguments;
@@ -76,14 +77,16 @@ public class CommandParser {
 
 	/*---------------------------------------------------------------------*/
 
-	public static CommandParserTuple parse(String s) throws Exception {
+	public static CommandParserTuple parse(String s) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* TOKENIZE COMMAND                                                */
 		/*-----------------------------------------------------------------*/
 
 		List<String> tokens = Tokenizer.tokenize(s, m_spaces, m_kwords, m_quotes);
 
-		if(tokens.size() == 0) {
+		if(tokens.size() == 0)
+		{
 			throw new Exception("empty command");
 		}
 
@@ -105,16 +108,20 @@ public class CommandParser {
 
 		String param = "";
 
-		for(String token: tokens) {
-
-			/****/ if(token.equals("-")
-			          ||
-			          token.equals("/")
+		for(String token: tokens)
+		{
+			/**/ if(token.equals("-")
+			        ||
+			        token.equals("/")
 			 ) {
 				idx = DASH;
-			} else if(token.equals("=")) {
+			}
+			else if(token.equals("="))
+			{
 				idx = EQUAL;
-			} else {
+			}
+			else
+			{
 				idx = STRING;
 
 				if(token.charAt(0) == '\''
@@ -122,9 +129,11 @@ public class CommandParser {
 				   token.charAt(0) == '\"'
 				 ) {
 					token = token.substring(1, token.length() - 1);
-				} else {
-
-					if(m_stringPattern.matcher(token).find() == false) {
+				}
+				else
+				{
+					if(m_stringPattern.matcher(token).find() == false)
+					{
 						throw new Exception("syntax error, unexpected token `" + token + "`");
 					}
 				}
@@ -133,11 +142,13 @@ public class CommandParser {
 			new_state = TRANSITIONS[cur_state][idx];
 			operation = OPERATIONS[cur_state][idx];
 
-			if(new_state == ERR) {
+			if(new_state == ERR)
+			{
 				throw new Exception("syntax error, unexpected token `" + token + "`");
 			}
 
-			switch(operation) {
+			switch(operation)
+			{
 				case CMD:
 					command = token;
 					break;
@@ -162,9 +173,10 @@ public class CommandParser {
 
 		boolean isOk = false;
 
-		for(int the_state: FINALS) {
-
-			if(the_state == cur_state) {
+		for(int the_state: FINALS)
+		{
+			if(the_state == cur_state)
+			{
 				isOk = true;
 				break;
 			}
@@ -172,7 +184,8 @@ public class CommandParser {
 
 		/*-----------------------------------------------------------------*/
 
-		if(isOk == false) {
+		if(isOk == false)
+		{
 			throw new Exception("syntax error, truncated command");
 		}
 
@@ -187,8 +200,8 @@ public class CommandParser {
 
 	/*---------------------------------------------------------------------*/
 
-	public static String unescape(String s) {
-
+	public static String unescape(String s)
+	{
 		StringBuilder result = new StringBuilder(s.length());
 
 		/*-----------------------------------------------------------------*/
@@ -199,13 +212,16 @@ public class CommandParser {
 
 		final int length = s.length();
 
-		while(i < length) {
+		while(i < length)
+		{
 			c = s.charAt(i++);
 
-			if(c == '\\') {
+			if(c == '\\')
+			{
 				c = s.charAt(i++);
 
-				switch(c) {
+				switch(c)
+				{
 					case '\\':
 						c = '\\';
 						break;
@@ -240,7 +256,8 @@ public class CommandParser {
 
 					case 'u':
 
-						if(length - i < 4) {
+						if(length - i < 4)
+						{
 							c = 'u';
 							break;
 						}
@@ -248,9 +265,12 @@ public class CommandParser {
 						code = s.substring(i + 0, i + 4);
 						i += 4;
 
-						try { 
+						try
+						{ 
 							result.append(Character.toChars(Integer.parseInt(code, 16)));
-						} catch(Exception e) {
+						}
+						catch(Exception e)
+						{
 							result.append(/******************/ '?' /******************/);
 						}
 

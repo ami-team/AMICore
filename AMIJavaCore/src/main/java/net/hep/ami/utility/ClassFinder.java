@@ -1,17 +1,19 @@
-	package net.hep.ami.utility;
+package net.hep.ami.utility;
 
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 
-public class ClassFinder {
+public class ClassFinder
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final Set<String> m_classNames = new HashSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
-	static {
+	static
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET PATHS                                                       */
 		/*-----------------------------------------------------------------*/
@@ -28,7 +30,8 @@ public class ClassFinder {
 
 		/**/
 
-		if(path.startsWith("file:")) {
+		if(path.startsWith("file:"))
+		{
 			path = new File(path.substring(5)).getParent();
 		}
 
@@ -42,8 +45,8 @@ public class ClassFinder {
 
 		File file;
 
-		for(String classPath: classPaths) {
-
+		for(String classPath: classPaths)
+		{
 			file = new File(classPath);
 
 			walk(file, file);
@@ -54,27 +57,33 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(File base, File file) {
-
-		if(file.isDirectory()) {
+	private static void walk(File base, File file)
+	{
+		if(file.isDirectory())
+		{
 			/*-------------------------------------------------------------*/
 			/* DIRECTORY                                                   */
 			/*-------------------------------------------------------------*/
 
-			for(File FILE: file.listFiles()) {
-
+			for(File FILE: file.listFiles())
+			{
 				walk(base, FILE);
 			}
 
 			/*-------------------------------------------------------------*/
-		} else {
+		}
+		else
+		{
 			/*-------------------------------------------------------------*/
 			/* FILE                                                        */
 			/*-------------------------------------------------------------*/
 
-			if(file.getName().toLowerCase().endsWith(".jar")) {
+			if(file.getName().toLowerCase().endsWith(".jar"))
+			{
 				addJar(file);
-			} else {
+			}
+			else
+			{
 				addFile(base, file);
 			}
 
@@ -84,9 +93,10 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addJar(File file) {
-
-		try {
+	private static void addJar(File file)
+	{
+		try
+		{
 			/*-------------------------------------------------------------*/
 			/* OPEN ZIP FILE                                               */
 			/*-------------------------------------------------------------*/
@@ -103,8 +113,8 @@ public class ClassFinder {
 			/* ADD CLASSES                                                 */
 			/*-------------------------------------------------------------*/
 
-			while(entries.hasMoreElements()) {
-
+			while(entries.hasMoreElements())
+			{
 				String className = entries.nextElement().getName();
 
 				addClassName(className);
@@ -117,15 +127,17 @@ public class ClassFinder {
 			zipFile.close();
 
 			/*-------------------------------------------------------------*/
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			/* IGNORE */
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addFile(File base, File file) {
-
+	private static void addFile(File base, File file)
+	{
 		String className = base.toURI().relativize(file.toURI()).getPath();
 
 		addClassName(className);
@@ -133,10 +145,10 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addClassName(String className) {
-
-		if(className.endsWith(".class") && className.contains("$") == false) {
-
+	private static void addClassName(String className)
+	{
+		if(className.endsWith(".class") && className.contains("$") == false)
+		{
 			className = className.substring(0, className.length() - 6)
 			                     .replace('\\', '.')
 			                     .replace('/', '.')
@@ -148,14 +160,14 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> findClassNames(String filter) {
-
+	public static Set<String> findClassNames(String filter)
+	{
 		Set<String> result = new HashSet<String>();
 
-		for(String className: m_classNames) {
-
-			if(className.startsWith(filter)) {
-
+		for(String className: m_classNames)
+		{
+			if(className.startsWith(filter))
+			{
 				result.add(className);
 			}
 		}
@@ -165,11 +177,12 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean extendsClass(Class<?> child, Class<?> parent) {
-
-		while((child = child.getSuperclass()) != null) {
-
-			if(child == parent) {
+	public static boolean extendsClass(Class<?> child, Class<?> parent)
+	{
+		while((child = child.getSuperclass()) != null)
+		{
+			if(child == parent)
+			{
 				return true;
 			}
 		}
@@ -179,11 +192,12 @@ public class ClassFinder {
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean implementsInterface(Class<?> child, Class<?> parent) {
-
-		for(Class<?> clazz: child.getInterfaces()) {
-
-			if(clazz == parent) {
+	public static boolean implementsInterface(Class<?> child, Class<?> parent)
+	{
+		for(Class<?> clazz: child.getInterfaces())
+		{
+			if(clazz == parent)
+			{
 				return true;
 			}
 		}
