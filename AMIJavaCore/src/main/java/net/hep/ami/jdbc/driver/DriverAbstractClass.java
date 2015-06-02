@@ -99,7 +99,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public QueryResult executeMQLQuery(String mql) throws Exception
 	{
-		String sql = SelectParser.parse(mql, m_externalCatalog);
+		String sql = SelectParser.parse(mql, this);
 
 		return new QueryResult(
 			m_statement.executeQuery(sql)

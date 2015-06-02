@@ -54,7 +54,7 @@ public class FindCommands extends CommandAbstractClass
 
 	public static String help()
 	{
-		return "Automatically find commands";
+		return "Automatically find commands.";
 	}
 
 	/*---------------------------------------------------------------------*/

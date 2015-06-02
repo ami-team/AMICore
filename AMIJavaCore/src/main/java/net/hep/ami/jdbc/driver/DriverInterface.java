@@ -18,6 +18,14 @@ public interface DriverInterface
 
 	/*---------------------------------------------------------------------*/
 
+	public String getInternalCatalog();
+
+	/*---------------------------------------------------------------------*/
+
+	public String getExternalCatalog();
+
+	/*---------------------------------------------------------------------*/
+
 	public Type jdbcTypeToAMIType(Type type) throws Exception;
 
 	/*---------------------------------------------------------------------*/

@@ -5,7 +5,7 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.introspection.*;
 
@@ -15,18 +15,18 @@ public class SelectParser
 
 	private Map<String, Set<String>> m_fields = new HashMap<String, Set<String>>();
 
-	private String m_catalog;
+	private DriverInterface m_driver;
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectParser(String catalog)
+	public SelectParser(DriverInterface driver)
 	{
-		m_catalog = catalog;
+		m_driver = driver;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, String catalog) throws Exception
+	public static String parse(String query, DriverInterface driver) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -47,31 +47,9 @@ public class SelectParser
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		return new SelectParser(catalog).visitSelectStatement(parser.selectStatement()).toString();
+		return new SelectParser(driver).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void main(String[] args)
-	{
-		CatalogSingleton.listCatalogs();
-
-		try
-		{
-			//System.out.println(parse("SELECT `router_user`.*, foo.bar, `foo`.`bar` AS foobar, (1 + 1) * (1 + 1) * 333 + 4 + 4 <> 1 <> 0 AS expr WHERE foo.bar > 4 AND toto.toto LIKE 'string'", "self"));
-			//System.out.println(parse("SELECT DISTINCT(`router_command`.`command`) WHERE (1=1) LIMIT 10 OFFSET 0", "self"));
-			System.out.println(parse("SELECT `router_command`.* WHERE (`router_command`.`command`='GetSessionInfo')", "self"));
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-		}
-
-		System.out.println("done.");
-
-		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -248,7 +226,7 @@ public class SelectParser
 			String escapeTableName = escapeId(ctx.tableName.getText());
 			String unescapeTableName = unescapeId(ctx.tableName.getText());
 
-			Set<String> columnNames = SchemaSingleton.getColumnNames(m_catalog, unescapeTableName);
+			Set<String> columnNames = SchemaSingleton.getColumnNames(m_driver.getExternalCatalog(), unescapeTableName);
 
 			/*-------------------------------------------------------------*/
 			/* WRITE COLUMN NAMES                                          */
