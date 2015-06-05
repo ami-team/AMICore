@@ -236,7 +236,7 @@ public class GetSessionInfo extends CommandAbstractClass
 
 	public static String usage()
 	{
-		return "((-attachCert | -detachCert) -AMIUser=\"value\" -AMIPass=\"value\")?";
+		return "((-attachCert | -detachCert) -amiLogin=\"value\" -amiPassword=\"value\")? (-AMIUser=\"value\" -AMIPass=\"value\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
