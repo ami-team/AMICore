@@ -71,7 +71,12 @@ public class AddElement extends CommandAbstractClass
 
 			for(int i = 0; i < m_fields.length; i++)
 			{
-				fieldValue = AutoJoinSingleton.resolveFieldValue(m_catalog, m_entity, m_fields[i], m_values[i]);
+				fieldValue = AutoJoinSingleton.resolveFieldValue(
+					m_catalog,
+					m_entity,
+					m_fields[i],
+					m_values[i]
+				);
 
 				part1 = part1.concat("," + fieldValue.field);
 

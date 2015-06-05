@@ -99,29 +99,30 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public QueryResult executeMQLQuery(String mql) throws Exception
 	{
+		String ast = /* TODO */ null /* TODO */;
 		String sql = SelectParser.parse(mql, this);
 
 		return new QueryResult(
-			m_statement.executeQuery(sql)
+			m_statement.executeQuery(sql), ast, sql
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void executeSQLUpdate(String sql) throws Exception
+	public int executeSQLUpdate(String sql) throws Exception
 	{
-		m_statement.executeUpdate(sql);
+		return m_statement.executeUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void executeMQLUpdate(String mql) throws Exception
+	public int executeMQLUpdate(String mql) throws Exception
 	{
 		String sql = UpdateParser.parse(mql, this);
 
-		m_statement.executeUpdate(sql);
+		return m_statement.executeUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/

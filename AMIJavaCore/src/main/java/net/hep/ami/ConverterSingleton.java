@@ -2,7 +2,6 @@ package net.hep.ami;
 
 import java.io.*;
 import java.util.*;
-import java.util.Map.*;
 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
@@ -164,7 +163,7 @@ public class ConverterSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, Tuple> entry: m_transformers.entrySet())
+		for(Map.Entry<String, Tuple> entry: m_transformers.entrySet())
 		{
 			String xslt = entry.getKey();
 			String mime = entry.getValue().y;

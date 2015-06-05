@@ -13,7 +13,9 @@ public class SelectParser
 {
 	/*---------------------------------------------------------------------*/
 
-	private Map<String, Set<String>> m_fields = new HashMap<String, Set<String>>();
+	private Map<String, List<String>> m_joins = new HashMap<String, List<String>>();
+
+	private Set<String> m_tables = new HashSet<String>();
 
 	private DriverInterface m_driver;
 
@@ -78,22 +80,6 @@ public class SelectParser
 
 	/*---------------------------------------------------------------------*/
 
-	private void addColumn(String table, String column)
-	{
-		Set<String> result = m_fields.get(table);
-
-		if(result == null)
-		{
-			result = new HashSet<String>();
-
-			m_fields.put(table, result);
-		}
-
-		result.add(column);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	private StringBuilder visitSelectStatement(MQLSelectParser.SelectStatementContext ctx)
 	{
 		StringBuilder select = new StringBuilder();
@@ -132,9 +118,7 @@ public class SelectParser
 
 		/*-----------------------------------------------------------------*/
 
-		Set<String> fields = m_fields.keySet();
-
-		if(fields.isEmpty() == false)
+		if(m_tables.isEmpty() == false)
 		{
 			/*-------------------------------------------------------------*/
 			/* FROM PART                                                   */
@@ -144,7 +128,7 @@ public class SelectParser
 
 			from.append(" FROM ");
 
-			for(String table: m_fields.keySet())
+			for(String table: m_tables)
 			{
 				if(cnt++ > 0)
 				{
@@ -152,13 +136,14 @@ public class SelectParser
 				}
 
 				from.append(escapeId(table));
+
+				String joins = AutoJoinSingleton.joinsToSQL(m_joins).from;
+
+				if(joins.isEmpty() == false)
+				{
+					from.append(joins);
+				}
 			}
-
-			/*-------------------------------------------------------------*/
-			/* JOIN PART                                                   */
-			/*-------------------------------------------------------------*/
-
-			/* TODO */
 
 			/*-------------------------------------------------------------*/
 		}
@@ -215,16 +200,18 @@ public class SelectParser
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
-
 		try
 		{
 			/*-------------------------------------------------------------*/
 			/* GET COLUMN NAMES                                            */
 			/*-------------------------------------------------------------*/
 
-			String escapeTableName = escapeId(ctx.tableName.getText());
-			String unescapeTableName = unescapeId(ctx.tableName.getText());
+			String tableName = ctx.tableName.getText();
+
+			String escapeTableName = escapeId(tableName);
+			String unescapeTableName = unescapeId(tableName);
+
+			m_tables.add(escapeTableName);
 
 			Set<String> columnNames = SchemaSingleton.getColumnNames(m_driver.getExternalCatalog(), unescapeTableName);
 
@@ -242,14 +229,22 @@ public class SelectParser
 				escapeColumnName = escapeId(columnName);
 				unescapeColumnName = unescapeId(columnName);
 
+				AutoJoinSingleton.resolveWithNestedSelect(
+					m_joins,
+					m_driver.getExternalCatalog(),
+					unescapeTableName,
+					unescapeColumnName,
+					null
+				);
+
 				if(cnt++ > 0)
 				{
 					result.append(",");
 				}
 
-				result.append(escapeTableName + "." + escapeColumnName);
-
-				addColumn(unescapeTableName, unescapeColumnName);
+				result.append(escapeTableName);
+				result.append(".");
+				result.append(escapeColumnName);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -257,10 +252,7 @@ public class SelectParser
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			/* TODO */
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
@@ -503,7 +495,7 @@ public class SelectParser
 
 		result.append(ctx.functionName.getText());
 		result.append("(");
-		result.append(visitExpressionOr(ctx.expression));
+		result.append(ctx.expression != null ? visitExpressionOr(ctx.expression) : "*");
 		result.append(")");
 
 		/*-----------------------------------------------------------------*/
@@ -548,18 +540,39 @@ public class SelectParser
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		try
+		{
+			/*-------------------------------------------------------------*/
 
-		String tableName = ctx.tableName.getText();
-		String columnName = ctx.columnName.getText();
+			String tableName = ctx.tableName.getText();
+			String columnName = ctx.columnName.getText();
 
-		result.append(escapeId(tableName));
-		result.append(".");
-		result.append(escapeId(columnName));
+			String escapeTableName = escapeId(tableName);
+			String unescapeTableName = unescapeId(tableName);
 
-		addColumn(unescapeId(tableName), unescapeId(columnName));
+			String escapeColumnName = escapeId(columnName);
+			String unescapeColumnName = unescapeId(columnName);
 
-		/*-----------------------------------------------------------------*/
+			AutoJoinSingleton.resolveWithNestedSelect(
+				m_joins,
+				m_driver.getExternalCatalog(),
+				unescapeTableName,
+				unescapeColumnName,
+				null
+			);
+
+			m_tables.add(unescapeTableName);
+
+			result.append(escapeTableName);
+			result.append(".");
+			result.append(escapeColumnName);
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 
 		return result;
 	}

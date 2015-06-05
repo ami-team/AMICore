@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc;
 
 import java.util.*;
-import java.util.Map.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
@@ -140,7 +139,7 @@ public class DriverSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, Tuple> entry: m_drivers.entrySet())
+		for(Map.Entry<String, Tuple> entry: m_drivers.entrySet())
 		{
 			String jdbcProto = entry.getKey();
 

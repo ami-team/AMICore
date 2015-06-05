@@ -2,7 +2,6 @@ package net.hep.ami.jdbc.introspection;
 
 import java.sql.*;
 import java.util.*;
-import java.util.Map.*;
 
 public class SchemaSingleton
 {
@@ -378,11 +377,11 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"columns\">");
 
-		for(Entry<String, Map<String, Map<String, Column>>> entry1: m_columns.entrySet())
+		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: m_columns.entrySet())
 		{
-			for(Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
+			for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
 			{
-				for(Entry<String, Column> entry3: entry2.getValue().entrySet())
+				for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
 				{
 					result.append(
 						"<row>"
@@ -411,11 +410,11 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Entry<String, Map<String, Map<String, FrgnKey>>> entry1: m_frgnKeys.entrySet())
+		for(Map.Entry<String, Map<String, Map<String, FrgnKey>>> entry1: m_frgnKeys.entrySet())
 		{
-			for(Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet())
+			for(Map.Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet())
 			{
-				for(Entry<String, FrgnKey> entry3: entry2.getValue().entrySet())
+				for(Map.Entry<String, FrgnKey> entry3: entry2.getValue().entrySet())
 				{
 					result.append(
 						"<row>"
@@ -442,9 +441,9 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"indices\">");
 
-		for(Entry<String, Map<String, List<Index>>> entry1: m_indices.entrySet())
+		for(Map.Entry<String, Map<String, List<Index>>> entry1: m_indices.entrySet())
 		{
-			for(Entry<String, List<Index>> entry2: entry1.getValue().entrySet())
+			for(Map.Entry<String, List<Index>> entry2: entry1.getValue().entrySet())
 			{
 				for(Index entry3: entry2.getValue()) 
 				{

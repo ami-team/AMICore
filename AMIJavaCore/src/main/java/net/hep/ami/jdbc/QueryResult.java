@@ -3,10 +3,21 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.util.*;
 
+import org.antlr.v4.runtime.misc.*;
+
+import net.hep.ami.ConfigSingleton;
 import net.hep.ami.utility.*;
 
 public class QueryResult
 {
+	/*---------------------------------------------------------------------*/
+
+	static final int m_maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+
+	/*---------------------------------------------------------------------*/
+
+	private final Map<String, Integer> m_fieldIndices = new HashMap<String, Integer>();
+
 	/*---------------------------------------------------------------------*/
 
 	private String[] m_tables;
@@ -19,11 +30,12 @@ public class QueryResult
 
 	/*---------------------------------------------------------------------*/
 
-	private final Map<String, Integer> m_fieldIndices = new HashMap<String, Integer>();
+	private String m_ast;
+	private String m_sql;
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult(ResultSet resultSet) throws Exception
+	public QueryResult(ResultSet resultSet, @Nullable String ast, @Nullable String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET METADATA                                                    */
@@ -44,7 +56,7 @@ public class QueryResult
 		for(int i = 0; i < numberOfColumns; i++)
 		{
 			m_tables[i] = resultSetMetaData.getTableName(i + 1);
-			m_fields[i] = resultSetMetaData.getColumnName(i + 1);
+			m_fields[i] = resultSetMetaData.getColumnLabel(i + 1);
 			m_types[i] = resultSetMetaData.getColumnTypeName(i + 1);
 
 			m_fieldIndices.put(m_fields[i], i);
@@ -58,48 +70,48 @@ public class QueryResult
 
 		List<String[]> list = new LinkedList<String[]>();
 
-		while(resultSet.next())
+		while(resultSet.next() && numberOfRows < m_maxNumberOfRows)
 		{
 			String[] row = new String[numberOfColumns];
 
-			for(int i = 0; i < numberOfColumns; i++)
+			for(int j = 0; j < numberOfColumns; j++)
 			{
-				/**/ if(m_types[i].equals("TIME"))
+				/**/ if(m_types[j].equals("TIME"))
 				{
 					/*-----------------------------------------------------*/
 					/* TIME                                                */
 					/*-----------------------------------------------------*/
 
-					row[i] = resultSet.getTime(i + 1).toString();
+					row[j] = resultSet.getTime(j + 1).toString();
 
 					/*-----------------------------------------------------*/
 				}
-				else if(m_types[i].equals("DATE"))
+				else if(m_types[j].equals("DATE"))
 				{
 					/*-----------------------------------------------------*/
 					/* DATE                                                */
 					/*-----------------------------------------------------*/
 
-					row[i] = DateFormater.format(resultSet.getDate(i + 1));
+					row[j] = DateFormater.format(resultSet.getDate(j + 1));
 
-					if(row[i] == null)
+					if(row[j] == null)
 					{
-						row[i] = resultSet.getString(i + 1);
+						row[j] = resultSet.getString(j + 1);
 					}
 
 					/*-----------------------------------------------------*/
 				}
-				else if(m_types[i].equals("TIMESTAMP"))
+				else if(m_types[j].equals("TIMESTAMP"))
 				{
 					/*-----------------------------------------------------*/
 					/* TIMESTAMP                                           */
 					/*-----------------------------------------------------*/
 
-					row[i] = DateFormater.format(resultSet.getTimestamp(i + 1));
+					row[j] = DateFormater.format(resultSet.getTimestamp(j + 1));
 
-					if(row[i] == null)
+					if(row[j] == null)
 					{
-						row[i] = resultSet.getString(i + 1);
+						row[j] = resultSet.getString(j + 1);
 					}
 
 					/*-----------------------------------------------------*/
@@ -110,7 +122,7 @@ public class QueryResult
 					/* DEFAULT                                             */
 					/*-----------------------------------------------------*/
 
-					row[i] = resultSet.getString(i + 1);
+					row[j] = resultSet.getString(j + 1);
 
 					/*-----------------------------------------------------*/
 				}
@@ -133,6 +145,18 @@ public class QueryResult
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		m_ast = ast;
+		m_sql = sql;
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public QueryResult(ResultSet resultSet) throws Exception
+	{
+		this(resultSet, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -279,6 +303,22 @@ public class QueryResult
 	public StringBuilder toStringBuilder()
 	{
 		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_ast != null)
+		{
+			result.append("<ast>");
+			result.append(m_ast);
+			result.append("</ast>");
+		}
+
+		if(m_sql != null)
+		{
+			result.append("<sql>");
+			result.append(m_sql);
+			result.append("</sql>");
+		}
 
 		/*-----------------------------------------------------------------*/
 

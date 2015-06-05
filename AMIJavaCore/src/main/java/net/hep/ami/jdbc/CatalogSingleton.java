@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc;
 
 import java.util.*;
-import java.util.Map.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
@@ -177,7 +176,7 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, Tuple> entry: m_catalogs.entrySet())
+		for(Map.Entry<String, Tuple> entry: m_catalogs.entrySet())
 		{
 			String catalog = entry.getKey();
 

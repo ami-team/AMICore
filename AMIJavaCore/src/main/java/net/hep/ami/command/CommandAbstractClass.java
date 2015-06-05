@@ -20,7 +20,6 @@ public abstract class CommandAbstractClass
 
 	protected static final String m_guestUser = ConfigSingleton.getProperty("guest_user");
 	protected static final String m_guestPass = ConfigSingleton.getProperty("guest_pass");
-	protected static final String  m_useVOMS  = ConfigSingleton.getProperty( "use_voms" );
 
 	/*---------------------------------------------------------------------*/
 

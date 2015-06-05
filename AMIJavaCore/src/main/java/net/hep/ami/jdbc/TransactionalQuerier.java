@@ -51,17 +51,17 @@ public class TransactionalQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void executeSQLUpdate(String sql) throws Exception
+	public int executeSQLUpdate(String sql) throws Exception
 	{
-		m_driver.executeSQLUpdate(sql);
+		return m_driver.executeSQLUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void executeMQLUpdate(String mql) throws Exception
+	public int executeMQLUpdate(String mql) throws Exception
 	{
-		m_driver.executeMQLUpdate(mql);
+		return m_driver.executeMQLUpdate(mql);
 	}
 
 	/*---------------------------------------------------------------------*/

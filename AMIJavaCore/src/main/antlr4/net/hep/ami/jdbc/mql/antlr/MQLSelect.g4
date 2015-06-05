@@ -59,7 +59,7 @@ expressionNotPlusMinus
 
 expressionX
   : '(' expression=expressionOr ')'                                          # ExpressionGroup
-  | functionName=FUNCTION '(' expression=expressionOr ')'                    # ExpressionFunction
+  | functionName=FUNCTION '(' (expression=expressionOr | '*') ')'            # ExpressionFunction
   | qId=sqlQId LIKE literal=sqlLiteral                                       # ExpressionLike
   | qId=sqlQId                                                               # ExpressionQId
   | literal=sqlLiteral                                                       # ExpressionLiteral

@@ -12,11 +12,11 @@ public interface QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public void executeSQLUpdate(String sql) throws Exception;
+	public int executeSQLUpdate(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public void executeMQLUpdate(String mql) throws Exception;
+	public int executeMQLUpdate(String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

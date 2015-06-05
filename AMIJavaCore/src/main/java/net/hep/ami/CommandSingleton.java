@@ -1,7 +1,6 @@
 package net.hep.ami;
 
 import java.util.*;
-import java.util.Map.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.jdbc.*;
@@ -213,7 +212,7 @@ public class CommandSingleton
 			stringBuilder.append("<command>" + command + "</command>");
 
 			stringBuilder.append("<arguments>");
-			for(Entry<String, String> entry: arguments.entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
+			for(Map.Entry<String, String> entry: arguments.entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
 			stringBuilder.append("</arguments>");
 
 			stringBuilder.append("<executionDate>" + executionDate + "</executionDate>");
@@ -254,7 +253,7 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(Entry<String, Tuple> entry: m_commands.entrySet())
+		for(Map.Entry<String, Tuple> entry: m_commands.entrySet())
 		{
 			String command = entry.getKey();
 

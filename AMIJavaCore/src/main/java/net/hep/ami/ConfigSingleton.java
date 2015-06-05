@@ -2,7 +2,6 @@ package net.hep.ami;
 
 import java.io.*;
 import java.util.*;
-import java.util.Map.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
@@ -440,7 +439,7 @@ public class ConfigSingleton
 
 		result.append("<rowset type=\"config\"><row>");
 
-		for(Entry<String, String> entry: properties.entrySet())
+		for(Map.Entry<String, String> entry: properties.entrySet())
 		{
 			String key = entry.getKey();
 			String value = entry.getValue();

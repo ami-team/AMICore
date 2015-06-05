@@ -1,7 +1,6 @@
 package net.hep.ami.command;
 
 import java.util.*;
-import java.util.Map.*;
 
 public class Echo extends CommandAbstractClass
 {
@@ -21,7 +20,7 @@ public class Echo extends CommandAbstractClass
 
 		result.append("<Result><rowset><row>");
 
-		for(Entry<String, String> entry: m_arguments.entrySet())
+		for(Map.Entry<String, String> entry: m_arguments.entrySet())
 		{
 			result.append("<field name=\"" + entry.getKey() + "\"><![CDATA[" + entry.getValue() + "]]></field>");
 		}
