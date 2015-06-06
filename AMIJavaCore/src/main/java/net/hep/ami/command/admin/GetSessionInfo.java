@@ -1,12 +1,13 @@
-package net.hep.ami.command;
+package net.hep.ami.command.admin;
 
 import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-public class GetUserInfo extends CommandAbstractClass
+public class GetSessionInfo extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
@@ -14,15 +15,28 @@ public class GetUserInfo extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
+	private boolean m_attachCert;
+	private boolean m_detachCert;
+
 	private String m_amiLogin;
+	private String m_amiPassword;
 
 	/*---------------------------------------------------------------------*/
 
-	public GetUserInfo(Map<String, String> arguments, int transactionID)
+	public GetSessionInfo(Map<String, String> arguments, int transactionID)
 	{
 		super(arguments, transactionID);
 
-		m_amiLogin = arguments.get("amiLogin");
+		m_attachCert = arguments.containsKey("attachCert");
+		m_detachCert = arguments.containsKey("detachCert");
+
+		m_amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
+		                                               : ""
+		;
+
+		m_amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
+		                                                     : ""
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -30,8 +44,10 @@ public class GetUserInfo extends CommandAbstractClass
 	@Override
 	public StringBuilder main() throws Exception
 	{
-		if(m_amiLogin == null)
-		{
+		if(m_attachCert
+		   &&
+		   m_detachCert
+		 ) {
 			throw new Exception("invalid usage");
 		}
 
@@ -45,7 +61,7 @@ public class GetUserInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult1 = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + m_amiLogin + "'");
+		QueryResult queryResult1 = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -67,10 +83,68 @@ public class GetUserInfo extends CommandAbstractClass
 
 		boolean CERT_ENABLED = m_isSecure.equals("0") == false;
 
-		boolean VOMS_ENABLED = m_useVOMS.equals("yes")
+		boolean VOMS_ENABLED = m_useVOMS.equals("0")
+		                       ||
+		                       m_useVOMS.equals("yes")
 		                       ||
 		                       m_useVOMS.equals("true")
 		;
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		if(m_attachCert)
+		{
+			m_amiPassword = Cryptography.encrypt(m_amiPassword);
+
+			String clientDN = Cryptography.encrypt(m_clientDN);
+			String issuerDN = Cryptography.encrypt(m_issuerDN);
+
+			String sql;
+
+			if(VOMS_ENABLED == false)
+			{
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+			}
+			else
+			{
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='1' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+			}
+
+			if(transactionalQuerier.executeSQLUpdate(sql) != 1)
+			{
+				throw new Exception("authentication error");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		if(m_detachCert)
+		{
+			m_amiPassword = Cryptography.encrypt(m_amiPassword);
+
+			String clientDN = Cryptography.encrypt("");
+			String issuerDN = Cryptography.encrypt("");
+
+			String sql;
+
+			if(VOMS_ENABLED == false)
+			{
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+			}
+			else
+			{
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='0' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+			}
+
+			if(transactionalQuerier.executeSQLUpdate(sql) != 1)
+			{
+				throw new Exception("authentication error");
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -158,14 +232,14 @@ public class GetUserInfo extends CommandAbstractClass
 
 	public static String help()
 	{
-		return "Get user information.";
+		return "Get session information.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-amiLogin=\"value\"";
+		return "((-attachCert | -detachCert) -amiLogin=\"value\" -amiPassword=\"value\")? (-AMIUser=\"value\" -AMIPass=\"value\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

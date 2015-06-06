@@ -1,14 +1,15 @@
-package net.hep.ami.command;
+package net.hep.ami.command.admin;
 
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.CommandAbstractClass;
 
-public class ListCommands extends CommandAbstractClass
+public class ListConverters extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListCommands(Map<String, String> arguments, int transactionID)
+	public ListConverters(Map<String, String> arguments, int transactionID)
 	{
 		super(arguments, transactionID);
 	}
@@ -18,14 +19,14 @@ public class ListCommands extends CommandAbstractClass
 	@Override
 	public StringBuilder main() throws Exception
 	{
-		return CommandSingleton.listCommands();
+		return ConverterSingleton.listConverters();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "List commands.";
+		return "List converters.";
 	}
 
 	/*---------------------------------------------------------------------*/
