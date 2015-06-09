@@ -220,12 +220,11 @@ public class SchemaSingleton
 		{
 			String name = resultSet.getString("INDEX_NAME");
 			String column = resultSet.getString("COLUMN_NAME");
-			int ordinalPosition = resultSet.getInt("ORDINAL_POSITION");
-			boolean nonUnique = resultSet.getBoolean("NON_UNIQUE");
+			Integer ordinalPosition = resultSet.getInt("ORDINAL_POSITION");
 
-			String type = (nonUnique == false) ? name.equals("PRIMARY") ? "PRIMARY"
-			                                                            : "UNIQUE"
-			                                                            : "INDEX"
+			String type = (resultSet.getBoolean("NON_UNIQUE") == false) ? name.equals("PRIMARY") ? "PRIMARY"
+			                                                                                     : "UNIQUE"
+			                                                                                     : "INDEX"
 			;
 
 			m_indices.get(externalCatalog).get(table).add(new Index(
@@ -280,7 +279,8 @@ public class SchemaSingleton
 	{
 		Map<String, Map<String, Column>> map = m_columns.get(catalog);
 
-		if(map != null) {
+		if(map != null)
+		{
 			return map.keySet();
 		}
 
@@ -375,6 +375,8 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Column column;
+
 		result.append("<rowset type=\"columns\">");
 
 		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: m_columns.entrySet())
@@ -383,20 +385,22 @@ public class SchemaSingleton
 			{
 				for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
 				{
+					column = entry3.getValue();
+
 					result.append(
 						"<row>"
 						+
-						"<field name=\"internalCatalog\">" + entry3.getValue().internalCatalog + "</field>"
+						"<field name=\"internalCatalog\">" + column.internalCatalog + "</field>"
 						+
-						"<field name=\"externalCatalog\">" + entry3.getValue().catalog + "</field>"
+						"<field name=\"externalCatalog\">" + column.catalog + "</field>"
 						+
-						"<field name=\"table\">" + entry3.getValue().table + "</field>"
+						"<field name=\"table\">" + column.table + "</field>"
 						+
-						"<field name=\"name\">" + entry3.getValue().name + "</field>"
+						"<field name=\"name\">" + column.name + "</field>"
 						+
-						"<field name=\"type\">" + entry3.getValue().type + "</field>"
+						"<field name=\"type\">" + column.type + "</field>"
 						+
-						"<field name=\"size\">" + entry3.getValue().size + "</field>"
+						"<field name=\"size\">" + column.size + "</field>"
 						+
 						"</row>"
 					);
@@ -408,6 +412,8 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		FrgnKey frgnKey;
+
 		result.append("<rowset type=\"foreignKeys\">");
 
 		for(Map.Entry<String, Map<String, Map<String, FrgnKey>>> entry1: m_frgnKeys.entrySet())
@@ -416,18 +422,20 @@ public class SchemaSingleton
 			{
 				for(Map.Entry<String, FrgnKey> entry3: entry2.getValue().entrySet())
 				{
+					frgnKey = entry3.getValue();
+
 					result.append(
 						"<row>"
 						+
-						"<field name=\"catalog\">" + entry3.getValue().catalog + "</field>"
+						"<field name=\"catalog\">" + frgnKey.catalog + "</field>"
 						+
-						"<field name=\"fkTable\">" + entry3.getValue().fkTable + "</field>"
+						"<field name=\"fkTable\">" + frgnKey.fkTable + "</field>"
 						+
-						"<field name=\"fkColumn\">" + entry3.getValue().fkColumn + "</field>"
+						"<field name=\"fkColumn\">" + frgnKey.fkColumn + "</field>"
 						+
-						"<field name=\"pkTable\">" + entry3.getValue().pkTable + "</field>"
+						"<field name=\"pkTable\">" + frgnKey.pkTable + "</field>"
 						+
-						"<field name=\"pkColumn\">" + entry3.getValue().pkColumn + "</field>"
+						"<field name=\"pkColumn\">" + frgnKey.pkColumn + "</field>"
 						+
 						"</row>"
 					);

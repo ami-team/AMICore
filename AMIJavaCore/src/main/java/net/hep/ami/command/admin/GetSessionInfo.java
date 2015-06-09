@@ -114,7 +114,7 @@ public class GetSessionInfo extends CommandAbstractClass
 
 			if(transactionalQuerier.executeSQLUpdate(sql) != 1)
 			{
-				throw new Exception("authentication error");
+				throw new Exception("wrong authentication");
 			}
 		}
 
@@ -142,7 +142,7 @@ public class GetSessionInfo extends CommandAbstractClass
 
 			if(transactionalQuerier.executeSQLUpdate(sql) != 1)
 			{
-				throw new Exception("authentication error");
+				throw new Exception("wrong authentication");
 			}
 		}
 

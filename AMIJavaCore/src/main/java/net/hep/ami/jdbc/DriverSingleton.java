@@ -139,12 +139,17 @@ public class DriverSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		String jdbcProto;
+
+		String jdbcClass;
+		String driverClass;
+
 		for(Map.Entry<String, Tuple> entry: m_drivers.entrySet())
 		{
-			String jdbcProto = entry.getKey();
+			jdbcProto = entry.getKey();
 
-			String jdbcClass = entry.getValue().x;
-			String driverClass = entry.getValue().y;
+			jdbcClass = entry.getValue().x;
+			driverClass = entry.getValue().y;
 
 			result.append(
 				"<row>"

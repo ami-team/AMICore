@@ -176,14 +176,21 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		String catalog;
+
+		String jdbcUrl;
+		String user;
+		String pass;
+		String archived;
+
 		for(Map.Entry<String, Tuple> entry: m_catalogs.entrySet())
 		{
-			String catalog = entry.getKey();
+			catalog = entry.getKey();
 
-			String jdbcUrl  = entry.getValue().x;
-			String user     = entry.getValue().y;
-			String pass     = entry.getValue().z;
-			String archived = entry.getValue().t;
+			jdbcUrl = entry.getValue().x;
+			user = entry.getValue().y;
+			pass = entry.getValue().z;
+			archived = entry.getValue().t;
 
 			result.append(
 				"<row>"

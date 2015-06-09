@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-public class RestartAMI extends CommandAbstractClass
+public class RestartNode extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
@@ -13,7 +13,7 @@ public class RestartAMI extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public RestartAMI(Map<String, String> arguments, int transactionID)
+	public RestartNode(Map<String, String> arguments, int transactionID)
 	{
 		super(arguments, transactionID);
 	}

@@ -417,14 +417,23 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"status\"><row>");
-
-		result.append("<field name=\"configPathName\"><![CDATA[" + m_configPathName + "]]></field>");
-		result.append("<field name=\"configFileName\"><![CDATA[" + m_configFileName + "]]></field>");
-		result.append("<field name=\"hasValidConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>");
-		result.append("<field name=\"hasValidDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>");
-
-		result.append("</row></rowset>");
+		result.append(
+			"<rowset type=\"status\">"
+			+
+			"<row>"
+			+
+			"<field name=\"configPathName\"><![CDATA[" + m_configPathName + "]]></field>"
+			+
+			"<field name=\"configFileName\"><![CDATA[" + m_configFileName + "]]></field>"
+			+
+			"<field name=\"hasValidConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>"
+			+
+			"<field name=\"hasValidDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>"
+			+
+			"</row>"
+			+
+			"</rowset>"
+		);
 
 		/*-----------------------------------------------------------------*/
 
@@ -437,14 +446,17 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		String name;
+		String value;
+
 		result.append("<rowset type=\"config\"><row>");
 
 		for(Map.Entry<String, String> entry: properties.entrySet())
 		{
-			String key = entry.getKey();
-			String value = entry.getValue();
+			name = entry.getKey();
+			value = entry.getValue();
 
-			result.append("<field name=\"" + key + "\"><![CDATA[" + value + "]]></field>");
+			result.append("<field name=\"" + name + "\"><![CDATA[" + value + "]]></field>");
 		}
 
 		result.append("</row></rowset>");

@@ -253,14 +253,21 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		String command;
+
+		String help;
+		String usage;
+		String clazz;
+		String archived;
+
 		for(Map.Entry<String, Tuple> entry: m_commands.entrySet())
 		{
-			String command = entry.getKey();
+			command = entry.getKey();
 
-			String help = entry.getValue().x.toString();
-			String usage = entry.getValue().y.toString();
-			String clazz = entry.getValue().z.getName();
-			String archived = entry.getValue().t.toString();
+			help = entry.getValue().x.toString();
+			usage = entry.getValue().y.toString();
+			clazz = entry.getValue().z.getName();
+			archived = entry.getValue().t.toString();
 
 			result.append(
 				"<row>"

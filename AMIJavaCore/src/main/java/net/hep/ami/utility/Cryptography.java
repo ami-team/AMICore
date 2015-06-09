@@ -428,7 +428,7 @@ public class Cryptography
 		/* CREATE X509 CERTIFICATE                                         */
 		/*-----------------------------------------------------------------*/
 
-		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider(BC).build(privateKey);
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512withRSA").setProvider(BC).build(privateKey);
 
 		return new JcaX509CertificateConverter().setProvider(BC).getCertificate(
 			builder.build(contentSigner)
@@ -481,7 +481,7 @@ public class Cryptography
 		/* CREATE X509 CERTIFICATE                                         */
 		/*-----------------------------------------------------------------*/
 
-		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider(BC).build(CAPrivateKey);
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512withRSA").setProvider(BC).build(CAPrivateKey);
 
 		return new JcaX509CertificateConverter().setProvider(BC).getCertificate(
 			builder.build(contentSigner)

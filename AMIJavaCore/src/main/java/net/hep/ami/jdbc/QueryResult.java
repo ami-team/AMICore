@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.antlr.v4.runtime.misc.*;
 
-import net.hep.ami.ConfigSingleton;
+import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
 public class QueryResult

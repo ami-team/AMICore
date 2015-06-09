@@ -4,12 +4,12 @@ public interface DriverInterface
 {
 	/*---------------------------------------------------------------------*/
 
-	static class Type
+	static class FieldType
 	{
 		String name;
 		int size;
 
-		public Type(String _name, int _size)
+		public FieldType(String _name, int _size)
 		{
 			name = _name;
 			size = _size;
@@ -26,11 +26,11 @@ public interface DriverInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public Type jdbcTypeToAMIType(Type type) throws Exception;
+	public FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public Type amiTypeToJDBCType(Type type) throws Exception;
+	public FieldType amiTypeToJDBCType(FieldType fieldType) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 }

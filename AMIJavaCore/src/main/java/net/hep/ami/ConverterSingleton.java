@@ -75,7 +75,7 @@ public class ConverterSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+			LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
 		}
 	}
 
@@ -163,10 +163,13 @@ public class ConverterSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		String xslt;
+		String mime;
+
 		for(Map.Entry<String, Tuple> entry: m_transformers.entrySet())
 		{
-			String xslt = entry.getKey();
-			String mime = entry.getValue().y;
+			xslt = entry.getKey();
+			mime = entry.getValue().y;
 
 			result.append(
 				"<row>"

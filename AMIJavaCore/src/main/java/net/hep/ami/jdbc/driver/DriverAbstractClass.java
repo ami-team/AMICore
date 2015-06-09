@@ -67,7 +67,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		m_statement = m_connection.createStatement();
 
 		/*-----------------------------------------------------------------*/
-		/* GET CATALOG                                                     */
+		/* GET CATALOGS                                                    */
 		/*-----------------------------------------------------------------*/
 
 		m_internalCatalog = m_connection.getCatalog();

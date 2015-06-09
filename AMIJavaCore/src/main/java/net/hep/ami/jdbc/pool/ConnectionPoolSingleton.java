@@ -182,7 +182,7 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getStatus()
+	public static StringBuilder getStatus()
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -231,7 +231,7 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		return result.toString();
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

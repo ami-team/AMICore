@@ -19,11 +19,7 @@ public class GetConnectionPoolStatus extends CommandAbstractClass
 	@Override
 	public StringBuilder main() throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
-		result.append(ConnectionPoolSingleton.getStatus());
-
-		return result;
+		return ConnectionPoolSingleton.getStatus();
 	}
 
 	/*---------------------------------------------------------------------*/

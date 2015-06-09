@@ -19,7 +19,7 @@ public class PostgreSQLDriver extends DriverAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Type jdbcTypeToAMIType(DriverInterface.Type type) throws Exception
+	public FieldType jdbcTypeToAMIType(DriverInterface.FieldType fieldType) throws Exception
 	{
 		throw new Exception("unimplemented");
 	}
@@ -27,7 +27,7 @@ public class PostgreSQLDriver extends DriverAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Type amiTypeToJDBCType(DriverInterface.Type type) throws Exception
+	public FieldType amiTypeToJDBCType(DriverInterface.FieldType fieldType) throws Exception
 	{
 		throw new Exception("unimplemented");
 	}
