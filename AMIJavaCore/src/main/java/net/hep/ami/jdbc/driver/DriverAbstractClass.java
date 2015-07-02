@@ -102,9 +102,16 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		String ast = /* TODO */ null /* TODO */;
 		String sql = SelectParser.parse(mql, this);
 
-		return new QueryResult(
-			m_statement.executeQuery(sql), ast, sql
-		);
+		try
+		{
+			return new QueryResult(
+				m_statement.executeQuery(sql), ast, sql
+			);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for query " + sql);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -122,7 +129,14 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	{
 		String sql = UpdateParser.parse(mql, this);
 
-		return m_statement.executeUpdate(sql);
+		try
+		{
+			return m_statement.executeUpdate(sql);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for query " + sql);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

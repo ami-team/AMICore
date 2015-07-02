@@ -19,6 +19,8 @@ public class SelectParser
 
 	private DriverInterface m_driver;
 
+	private boolean m_break;
+
 	/*---------------------------------------------------------------------*/
 
 	public SelectParser(DriverInterface driver)
@@ -91,6 +93,12 @@ public class SelectParser
 		if(ctx.columns != null)
 		{
 			select.append("SELECT ");
+
+			if(ctx.distinct != null)
+			{
+				select.append("DISTINCT ");
+			}
+
 			select.append(visitColumnList(ctx.columns));
 		}
 
@@ -169,24 +177,16 @@ public class SelectParser
 
 		/*-----------------------------------------------------------------*/
 
-		int cnt = 0;
-
-		ParseTree child;
-
 		final int nb = ctx.getChildCount();
 
 		for(int i = 0; i < nb; i++)
 		{
-			child = ctx.getChild(i);
-
-			/****/ if(child instanceof MQLSelectParser.ColumnWildcardContext) {
-				if(cnt++ > 0) result.append(", ");
-				result.append(visitColumnWildcard((MQLSelectParser.ColumnWildcardContext) child));
-
-			} else if(child instanceof MQLSelectParser.ColumnExpressionContext) {
-				if(cnt++ > 0) result.append(", ");
-				result.append(visitColumnExpression((MQLSelectParser.ColumnExpressionContext) child));
+			if(i > 0)
+			{
+				result.append(", ");
 			}
+
+			result.append(visitColumnExpression((MQLSelectParser.ColumnContext) ctx.getChild(i)));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -196,70 +196,7 @@ public class SelectParser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnWildcard(MQLSelectParser.ColumnWildcardContext ctx)
-	{
-		StringBuilder result = new StringBuilder();
-
-		try
-		{
-			/*-------------------------------------------------------------*/
-			/* GET COLUMN NAMES                                            */
-			/*-------------------------------------------------------------*/
-
-			String tableName = ctx.tableName.getText();
-
-			String escapeTableName = escapeId(tableName);
-			String unescapeTableName = unescapeId(tableName);
-
-			m_tables.add(escapeTableName);
-
-			Set<String> columnNames = SchemaSingleton.getColumnNames(m_driver.getExternalCatalog(), unescapeTableName);
-
-			/*-------------------------------------------------------------*/
-			/* WRITE COLUMN NAMES                                          */
-			/*-------------------------------------------------------------*/
-
-			int cnt = 0;
-
-			String escapeColumnName;
-			String unescapeColumnName;
-
-			for(String columnName: columnNames)
-			{
-				escapeColumnName = escapeId(columnName);
-				unescapeColumnName = unescapeId(columnName);
-
-				AutoJoinSingleton.resolveWithNestedSelect(
-					m_joins,
-					m_driver.getExternalCatalog(),
-					unescapeTableName,
-					unescapeColumnName,
-					null
-				);
-
-				if(cnt++ > 0)
-				{
-					result.append(",");
-				}
-
-				result.append(escapeTableName);
-				result.append(".");
-				result.append(escapeColumnName);
-			}
-
-			/*-------------------------------------------------------------*/
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-		}
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private StringBuilder visitColumnExpression(MQLSelectParser.ColumnExpressionContext ctx)
+	private StringBuilder visitColumnExpression(MQLSelectParser.ColumnContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -495,7 +432,9 @@ public class SelectParser
 
 		result.append(ctx.functionName.getText());
 		result.append("(");
-		result.append(ctx.expression != null ? visitExpressionOr(ctx.expression) : "*");
+		m_break = true;
+		if(ctx.distinct != null) result.append("DISTINCT "); result.append(visitExpressionOr(ctx.expression));
+		m_break = false;
 		result.append(")");
 
 		/*-----------------------------------------------------------------*/
@@ -553,19 +492,56 @@ public class SelectParser
 			String escapeColumnName = escapeId(columnName);
 			String unescapeColumnName = unescapeId(columnName);
 
-			AutoJoinSingleton.resolveWithNestedSelect(
-				m_joins,
-				m_driver.getExternalCatalog(),
-				unescapeTableName,
-				unescapeColumnName,
-				null
-			);
-
 			m_tables.add(unescapeTableName);
 
-			result.append(escapeTableName);
-			result.append(".");
-			result.append(escapeColumnName);
+			if(unescapeColumnName.equals("*"))
+			{
+				int cnt = 0;
+
+				Set<String> columnNames = SchemaSingleton.getColumnNames(m_driver.getExternalCatalog(), unescapeTableName);
+
+				for(String x: columnNames)
+				{
+					escapeColumnName = escapeId(x);
+					unescapeColumnName = unescapeId(x);
+
+					AutoJoinSingleton.resolveWithNestedSelect(
+						m_joins,
+						m_driver.getExternalCatalog(),
+						unescapeTableName,
+						unescapeColumnName,
+						null
+					);
+
+					if(cnt++ > 0)
+					{
+						result.append(",");
+					}
+
+					result.append(escapeTableName);
+					result.append(".");
+					result.append(escapeColumnName);
+
+					if(m_break)
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				AutoJoinSingleton.resolveWithNestedSelect(
+					m_joins,
+					m_driver.getExternalCatalog(),
+					unescapeTableName,
+					unescapeColumnName,
+					null
+				);
+
+				result.append(escapeTableName);
+				result.append(".");
+				result.append(escapeColumnName);
+			}
 
 			/*-------------------------------------------------------------*/
 		}

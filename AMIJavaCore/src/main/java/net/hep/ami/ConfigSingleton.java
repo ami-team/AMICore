@@ -258,14 +258,14 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Boolean hasValidConfFile()
+	public static boolean hasValidConfFile()
 	{
 		return m_hasValidConfFile;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Boolean hasValidDataBase()
+	public static boolean hasValidDataBase()
 	{
 		return m_hasValidDataBase;
 	}

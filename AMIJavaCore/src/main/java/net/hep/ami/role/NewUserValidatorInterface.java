@@ -1,6 +1,6 @@
 package net.hep.ami.role;
 
-public interface UserValidatorInterface
+public interface NewUserValidatorInterface
 {
 	/*---------------------------------------------------------------------*/
 
@@ -12,7 +12,8 @@ public interface UserValidatorInterface
 		String firstName,
 		String lastName,
 		String email
-	);
+
+	)  throws Exception;
 
 	/*---------------------------------------------------------------------*/
 }

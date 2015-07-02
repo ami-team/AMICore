@@ -59,8 +59,8 @@ public class AddUser extends CommandAbstractClass
 			throw new Exception("invalid usage");
 		}
 
-		if(RoleSingleton.checkUser(
-			ConfigSingleton.getProperty("user_validator_class", ""),
+		RoleSingleton.checkNewUser(
+			ConfigSingleton.getProperty("user_validator_class"),
 			m_amiLogin,
 			m_amiPassword,
 			m_clientDN,
@@ -68,10 +68,7 @@ public class AddUser extends CommandAbstractClass
 			m_firstName,
 			m_lastName,
 			m_email
-		  ) == false
-		 ) {
-			throw new Exception("not allowed");
-		}
+		);
 
 		/*-----------------------------------------------------------------*/
 

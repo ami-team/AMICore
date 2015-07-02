@@ -13,7 +13,7 @@ options {
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT columns=columnList (WHERE expression=expressionOr)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
+	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
 	;
 
 /*---------------------------*/
@@ -25,8 +25,7 @@ columnList
 	;
 
 column
-	: tableName=ID '.' '*'                                                     # ColumnWildcard
-	| expression=expressionOr (AS alias=ID)?                                   # ColumnExpression
+	: expression=expressionOr (AS alias=ID)?
 	;
 
 /*---------------------------*/
@@ -59,7 +58,9 @@ expressionNotPlusMinus
 
 expressionX
   : '(' expression=expressionOr ')'                                          # ExpressionGroup
-  | functionName=FUNCTION '(' (expression=expressionOr | '*') ')'            # ExpressionFunction
+  | functionName=FUNCTION '('
+        (distinct=DISTINCT)? expression=expressionOr
+    ')'                                                                      # ExpressionFunction
   | qId=sqlQId LIKE literal=sqlLiteral                                       # ExpressionLike
   | qId=sqlQId                                                               # ExpressionQId
   | literal=sqlLiteral                                                       # ExpressionLiteral
@@ -70,7 +71,7 @@ expressionX
 /*---------------------------*/
 
 sqlQId
-  : tableName=ID '.' columnName=ID
+  : tableName=ID '.' columnName=(ID | '*')
   ;
 
 /*---------------------------*/
@@ -92,6 +93,10 @@ sqlLiteral
 SELECT
 	: S E L E C T
 	;
+
+DISTINCT
+  : D I S T I N C T
+  ;
 
 WHERE
 	: W H E R E
@@ -139,7 +144,6 @@ FUNCTION
 	: A B S | C O S | L O G | M O D | P O W | R N D | S I N | S Q R T
 	| C O N C A T | L O W E R | L E N G T H | S U B S T R | U P P E R
 	| A V G | C O U N T | M I N | M A X | S U M
-	| D I S T I N C T
 	;
 
 /*---------------------------*/
@@ -156,7 +160,7 @@ STRING
 	;
 
 ID
-  : [a-zA-Z_] [a-zA-Z_0-9]*
+  : [a-zA-Z_] [a-zA-Z0-9_#$]*
   | '`' (~'`' | '``')+ '`'
   | '"' (~'"' | '""')+ '"'
   ;

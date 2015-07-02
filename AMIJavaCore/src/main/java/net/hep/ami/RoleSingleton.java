@@ -2,6 +2,7 @@ package net.hep.ami;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
 import net.hep.ami.utility.*;
 
@@ -9,8 +10,8 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<RoleValidatorInterface>> m_roleValisators = new HashMap<String, Class<RoleValidatorInterface>>();
-	private static final Map<String, Class<UserValidatorInterface>> m_userValisators = new HashMap<String, Class<UserValidatorInterface>>();
+	private static final Map<String, Class<CommandValidatorInterface>> m_roleValisators = new HashMap<String, Class<CommandValidatorInterface>>();
+	private static final Map<String, Class<NewUserValidatorInterface>> m_userValisators = new HashMap<String, Class<NewUserValidatorInterface>>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -44,21 +45,21 @@ public class RoleSingleton
 		Class<?> clazz = Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
-		/* ADD ROLE VALIDATOR                                              */
+		/* ADD NEW COMMANDE VALIDATOR                                      */
 		/*-----------------------------------------------------------------*/
 
-		/**/ if(ClassFinder.extendsClass(clazz, RoleValidatorInterface.class))
+		/**/ if(ClassFinder.extendsClass(clazz, CommandValidatorInterface.class))
 		{
-			m_roleValisators.put(clazz.getName(), (Class<RoleValidatorInterface>) clazz);
+			m_roleValisators.put(clazz.getName(), (Class<CommandValidatorInterface>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* ADD ROLE VALIDATOR                                              */
+		/* ADD NEW USER ROLE VALIDATOR                                     */
 		/*-----------------------------------------------------------------*/
 
-		else if(ClassFinder.extendsClass(clazz, UserValidatorInterface.class))
+		else if(ClassFinder.extendsClass(clazz, NewUserValidatorInterface.class))
 		{
-			m_userValisators.put(clazz.getName(), (Class<UserValidatorInterface>) clazz);
+			m_userValisators.put(clazz.getName(), (Class<NewUserValidatorInterface>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -66,18 +67,100 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean checkRole(String validator, String command, Map<String, String> arguments) throws Exception
+	public static void checkRole(String command, Map<String, String> arguments) throws Exception
+	{
+		String AMIUser = arguments.get("AMIUser");
+		String AMIPass = arguments.get("AMIPass");
+
+		if(AMIUser == null
+		   ||
+		   AMIPass == null
+		 ) {
+			throw new Exception("no credential");
+		}
+
+		AMIPass = Cryptography.encrypt(AMIPass);
+
+		/*-----------------------------------------------------------------*/
+		/* EXECUTE QUERY                                                   */
+		/*-----------------------------------------------------------------*/
+
+		BasicQuerier basicQuerier = new BasicQuerier(
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
+
+		QueryResult queryResult;
+
+		try
+		{
+			queryResult = basicQuerier.executeSQLQuery("SELECT `router_role`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` WHERE `router_command`.`command`='" + command + "' AND `router_user`.`AMIUser`='" + AMIUser + "' AND `router_user`.`AMIPass`='" + AMIPass + "' AND `router_command_role`.`commandFK`=`router_command`.`id` AND `router_user_role`.`userFK`=`router_user`.`id` AND `router_command_role`.`roleFK`=`router_role`.`id` AND `router_user_role`.`roleFK`=`router_role`.`id`");
+		}
+		finally
+		{
+			basicQuerier.rollbackAndRelease();
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* GET NUMBER OF PROPERTIES                                        */
+		/*-----------------------------------------------------------------*/
+
+		final int numberOfRows = queryResult.getNumberOfRows();
+
+		if(numberOfRows != 1)
+		{
+			throw new Exception("wrong role");
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK VALIDATOR                                                 */
+		/*-----------------------------------------------------------------*/
+
+		String validatorClass = queryResult.getValue(0, "validatorClass");
+
+		checkCommand(validatorClass, command, arguments);
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+	{
+		ConfigSingleton.getProperty("host");
+
+		Map<String, String> arguments = new HashMap<String, String>();
+
+		arguments.put("AMIUser", "jodier");
+		arguments.put("AMIPass", "Xk3mgg256");
+
+		try
+		{
+			checkRole("GetSessionInfo", arguments);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		System.exit(0);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void checkCommand(String validator, String command, Map<String, String> arguments) throws Exception
 	{
 		if(validator.isEmpty())
 		{
-			return true;
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<RoleValidatorInterface> clazz = m_roleValisators.get(validator);
+		Class<CommandValidatorInterface> clazz = m_roleValisators.get(validator);
 
 		if(clazz == null)
 		{
@@ -88,13 +171,20 @@ public class RoleSingleton
 		/* EXECUTE VALIDATOR                                               */
 		/*-----------------------------------------------------------------*/
 
+		boolean isOk;
+
 		try
 		{
-			return (Boolean) clazz.getMethod("check", clazz).invoke(null, validator, command);
+			isOk = (Boolean) clazz.getMethod("check", clazz).invoke(null, validator, command);
 		}
 		catch(Exception e)
 		{
 			throw new Exception("could not call user validator `" + validator + "`");
+		}
+
+		if(isOk == false)
+		{
+			throw new Exception("the operation is not authorized");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -102,18 +192,18 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean checkUser(String validator, String amiLogin, String amiPassword, String clientDN, String issuerDN, String firstName, String lastName, String email) throws Exception
+	public static void checkNewUser(String validator, String amiLogin, String amiPassword, String clientDN, String issuerDN, String firstName, String lastName, String email) throws Exception
 	{
 		if(validator.isEmpty())
 		{
-			return true;
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<UserValidatorInterface> clazz = m_userValisators.get(validator);
+		Class<NewUserValidatorInterface> clazz = m_userValisators.get(validator);
 
 		if(clazz == null)
 		{
@@ -124,13 +214,20 @@ public class RoleSingleton
 		/* EXECUTE VALIDATOR                                               */
 		/*-----------------------------------------------------------------*/
 
+		boolean isOk;
+
 		try
 		{
-			return (Boolean) clazz.getMethod("check", clazz).invoke(null, amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
+			isOk = (Boolean) clazz.getMethod("check", clazz).invoke(null, amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
 		}
 		catch(Exception e)
 		{
 			throw new Exception("could not call user validator `" + validator + "`");
+		}
+
+		if(isOk == false)
+		{
+			throw new Exception("the operation is not authorized");
 		}
 
 		/*-----------------------------------------------------------------*/

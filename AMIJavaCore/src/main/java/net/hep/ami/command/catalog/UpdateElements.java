@@ -34,19 +34,19 @@ public class UpdateElements extends CommandAbstractClass
 		                                                      : ","
 		;
 
-		m_fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator)
+		m_fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
 		                                           : new String[] {}
 		;
 
-		m_values = arguments.containsKey("values") ? arguments.get("values").split(separator)
+		m_values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
 		                                           : new String[] {}
 		;
 
-		m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator)
+		m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
                                                          : new String[] {}
 		;
 
-		m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator)
+		m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
                                                          : new String[] {}
 		;
 

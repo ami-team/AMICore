@@ -29,11 +29,11 @@ public class AddElement extends CommandAbstractClass
 		                                                      : ","
 		;
 
-		m_fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator)
+		m_fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
 		                                           : new String[] {}
 		;
 
-		m_values = arguments.containsKey("values") ? arguments.get("values").split(separator)
+		m_values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
 		                                           : new String[] {}
 		;
 	}

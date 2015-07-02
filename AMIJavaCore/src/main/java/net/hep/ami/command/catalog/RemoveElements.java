@@ -31,11 +31,11 @@ public class RemoveElements extends CommandAbstractClass
 		                                                      : ","
 		;
 
-		m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator)
+		m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
 		                                                 : new String[] {}
 		;
 
-		m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator)
+		m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
 		                                                 : new String[] {}
 		;
 

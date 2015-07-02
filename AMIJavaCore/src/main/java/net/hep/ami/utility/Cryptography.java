@@ -71,9 +71,9 @@ public class Cryptography
 
 		StringBuilder stringBuilder = null;
 
-		Boolean appendPrivateKey = false;
-		Boolean appendPublicKey = false;
-		Boolean appendCertificate = false;
+		boolean appendPrivateKey = false;
+		boolean appendPublicKey = false;
+		boolean appendCertificate = false;
 
 		List<StringBuilder> privateKey = new ArrayList<StringBuilder>();
 		List<StringBuilder> publicKey = new ArrayList<StringBuilder>();

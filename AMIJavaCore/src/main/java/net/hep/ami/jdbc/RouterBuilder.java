@@ -81,7 +81,8 @@ public class RouterBuilder
 		m_driver.executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_role` ("					+
 			"  `id` INT(11) NOT NULL,"										+
-			"  `parentFK` INT(11) NOT NULL,"								+
+			"  `lft` INT(11) NOT NULL,"										+
+			"  `rgt` INT(11) NOT NULL,"										+
 			"  `role` VARCHAR(512) NOT NULL,"								+
 			"  `roleValidatorClass` TEXT"									+
 			") DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;"
@@ -90,8 +91,7 @@ public class RouterBuilder
 		m_driver.executeMQLUpdate(
 			"ALTER TABLE `router_role`"										+
 			"  ADD UNIQUE KEY (`id`),"										+
-			"  ADD PRIMARY KEY (`role`),"									+
-			"  ADD CONSTRAINT FOREIGN KEY (`parentFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION" +
+			"  ADD PRIMARY KEY (`role`)"									+
 			";"
 		);
 

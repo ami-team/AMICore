@@ -10,14 +10,14 @@ public class UpdateParser
 {
 	/*---------------------------------------------------------------------*/
 
-	private DriverInterface m_driver;
-
+/*	private DriverInterface m_driver;
+ */
 	/*---------------------------------------------------------------------*/
 
 	public UpdateParser(DriverInterface driver)
 	{
-		m_driver = driver;
-	}
+/*		m_driver = driver;
+ */	}
 
 	/*---------------------------------------------------------------------*/
 

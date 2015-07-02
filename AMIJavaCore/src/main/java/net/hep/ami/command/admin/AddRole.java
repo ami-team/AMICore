@@ -3,9 +3,7 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.role.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class AddRole extends CommandAbstractClass
 {
@@ -27,7 +25,9 @@ public class AddRole extends CommandAbstractClass
 
 		m_role = arguments.get("role");
 
-		m_roleValidatorClass = arguments.get("roleValidatorClass");
+		m_roleValidatorClass = arguments.containsKey("roleValidatorClass") ? arguments.get("roleValidatorClass")
+		                                                                   : ""
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -40,15 +40,7 @@ public class AddRole extends CommandAbstractClass
 			throw new Exception("invalid usage");
 		}
 
-		if(m_roleValidatorClass != null)
-		{
-			Class<?> clazz = Class.forName(m_roleValidatorClass);
-
-			if(ClassFinder.extendsClass(clazz, RoleValidatorInterface.class) == false)
-			{
-				throw new Exception("class `" + m_roleValidatorClass + "` must implement `" + RoleValidatorInterface.class.getName() + "`");
-			}
-		}
+		/* !!! CHECK VALIDATOR !!! */
 
 		/*-----------------------------------------------------------------*/
 
@@ -58,7 +50,7 @@ public class AddRole extends CommandAbstractClass
 		/* GET PARENT ID                                                   */
 		/*-----------------------------------------------------------------*/
 
-		String sql1 = String.format("SELECT `id` FROM `router_role` WHERE `role`='%s'",
+		String sql1 = String.format("SELECT `lft`,`rgt` FROM `router_role` WHERE `role`='%s'",
 			m_parent.replace("'", "''")
 		);
 
@@ -69,31 +61,42 @@ public class AddRole extends CommandAbstractClass
 			throw new Exception("unknown role `" + m_parent + "`");
 		}
 
-		String parentID = queryResult.getValue(0, 0);
+		String parentLft = queryResult.getValue(0, 0);
+		String parentRgt = queryResult.getValue(0, 1);
+System.out.println(parentLft);
+System.out.println(parentRgt);
+		/*-----------------------------------------------------------------*/
+		/* UPDATE TREE                                                     */
+		/*-----------------------------------------------------------------*/
+
+		String sql2 = String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE (`lft` > %s) ORDER BY `lft` DESC",
+			parentLft
+		);
+
+		transactionalQuerier.executeSQLUpdate(sql2);
+
+		/*-----------------------------------------------------------------*/
+
+		String sql3 = String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE (`rgt` >= %s) OR ((`rgt` > %s + 1) AND (`rgt` < %s)) ORDER BY `rgt` DESC",
+			parentRgt,
+			parentLft,
+			parentRgt
+		);
+
+		transactionalQuerier.executeSQLUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		String sql2;
+		String sql4 = String.format("INSERT INTO `router_role` (`lft`,`rgt`,`role`,`validatorClass`) VALUES (%s+1,%s+2,'%s','%s')",
+			parentLft,
+			parentLft,
+			m_role.replace("'", "''"),
+			m_roleValidatorClass.replace("'", "''")
+		);
 
-		if(m_roleValidatorClass == null)
-		{
-			sql2 = String.format("INSERT INTO `router_role` (`parentFK`,`role`) VALUES ('%s','%s')",
-					parentID.replace("'", "''"),
-					m_role.replace("'", "''")
-			);
-		}
-		else
-		{
-			sql2 = String.format("INSERT INTO `router_role` (`parentFK`,`role`,`roleValidatorClass`) VALUES ('%s','%s','%s')",
-					parentID.replace("'", "''"),
-					m_role.replace("'", "''"),
-					m_roleValidatorClass.replace("'", "''")
-			);
-		}
-
-		transactionalQuerier.executeSQLUpdate(sql2);
+		transactionalQuerier.executeSQLUpdate(sql4);
 
 		/*-----------------------------------------------------------------*/
 
