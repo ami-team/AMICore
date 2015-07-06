@@ -69,7 +69,7 @@ public class GenerateAuthority extends CommandAbstractClass
 	{
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = Cryptography.generateKeyPair(2048);
+		KeyPair keyPair = Cryptography.generateKeyPair(4096);
 
 		X509Certificate certificate = Cryptography.generateCA(
 			keyPair.getPrivate(),

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<web-app>
+<web-app metadata-complete="true">
+
   <display-name>AMI Server</display-name>
-<!--
+
   <servlet>
     <servlet-name>FrontEnd</servlet-name>
     <servlet-class>net.hep.ami.servlet.FrontEnd</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>FrontEnd</servlet-name>
     <url-pattern>/FrontEnd/*</url-pattern>
@@ -17,7 +17,6 @@
     <servlet-name>Setup</servlet-name>
     <servlet-class>net.hep.ami.servlet.Setup</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>Setup</servlet-name>
     <url-pattern>/Setup/*</url-pattern>
@@ -27,10 +26,9 @@
     <servlet-name>SLS</servlet-name>
     <servlet-class>net.hep.ami.servlet.SLS</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>SLS</servlet-name>
     <url-pattern>/SLS/*</url-pattern>
   </servlet-mapping>
--->
+
 </web-app>

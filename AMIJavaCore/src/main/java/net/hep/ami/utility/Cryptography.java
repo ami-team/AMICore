@@ -13,7 +13,6 @@ import org.bouncycastle.cert.*;
 import org.bouncycastle.cert.jcajce.*;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
-
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
@@ -419,7 +418,7 @@ public class Cryptography
 		/*-----------------------------------------------------------------*/
 
 		// Basic Constraints
-		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(true));
+		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, new BasicConstraints(true));
 
 		// Subject Key Identifier
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.14"), false, new JcaX509ExtensionUtils().createSubjectKeyIdentifier(publicKey));
