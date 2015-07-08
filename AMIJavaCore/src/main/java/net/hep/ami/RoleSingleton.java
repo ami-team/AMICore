@@ -126,29 +126,6 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void main(String[] args)
-	{
-		ConfigSingleton.getProperty("host");
-
-		Map<String, String> arguments = new HashMap<String, String>();
-
-		arguments.put("AMIUser", "jodier");
-		arguments.put("AMIPass", "Xk3mgg256");
-
-		try
-		{
-			checkRole("GetSessionInfo", arguments);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-		}
-
-		System.exit(0);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static void checkCommand(String validator, String command, Map<String, String> arguments) throws Exception
 	{
 		if(validator.isEmpty())
