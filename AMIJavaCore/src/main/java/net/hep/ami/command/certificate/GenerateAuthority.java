@@ -53,12 +53,12 @@ public class GenerateAuthority extends CommandAbstractClass
 			}
 			catch(NumberFormatException e)
 			{
-				m_validity = 10;
+				m_validity = 15;
 			}
 		}
 		else
 		{
-			m_validity = 10;
+			m_validity = 15;
 		}
 	}
 

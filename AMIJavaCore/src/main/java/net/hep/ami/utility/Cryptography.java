@@ -175,7 +175,7 @@ public class Cryptography
 	{
 		return KeyFactory.getInstance("RSA", BC).generatePublic(
 
-			new PKCS8EncodedKeySpec(
+			new X509EncodedKeySpec(
 				encoded
 			)
 		);
@@ -427,7 +427,7 @@ public class Cryptography
 		/* CREATE X509 CERTIFICATE                                         */
 		/*-----------------------------------------------------------------*/
 
-		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512withRSA").setProvider(BC).build(privateKey);
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(privateKey);
 
 		return new JcaX509CertificateConverter().setProvider(BC).getCertificate(
 			builder.build(contentSigner)
@@ -480,7 +480,7 @@ public class Cryptography
 		/* CREATE X509 CERTIFICATE                                         */
 		/*-----------------------------------------------------------------*/
 
-		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512withRSA").setProvider(BC).build(CAPrivateKey);
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(CAPrivateKey);
 
 		return new JcaX509CertificateConverter().setProvider(BC).getCertificate(
 			builder.build(contentSigner)
