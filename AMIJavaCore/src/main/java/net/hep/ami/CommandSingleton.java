@@ -85,6 +85,7 @@ public class CommandSingleton
 			}
 			catch(Exception e)
 			{
+				/* CETTE LIGNE DOIT ETRE DECOMMENTEE EN PROD */
 				//LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 			}
 		}
@@ -168,6 +169,12 @@ public class CommandSingleton
 
 		if(arguments.containsKey("help") == false)
 		{
+			/*-------------------------------------------------------------*/
+			/* CHECK ROLES                                                 */
+			/*-------------------------------------------------------------*/
+
+/*			RoleSingleton.checkRoles(command, arguments);
+ */
 			/*-------------------------------------------------------------*/
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/

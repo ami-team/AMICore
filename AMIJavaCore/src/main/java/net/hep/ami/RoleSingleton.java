@@ -67,7 +67,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void checkRole(String command, Map<String, String> arguments) throws Exception
+	public static void checkRoles(String command, Map<String, String> arguments) throws Exception
 	{
 		String AMIUser = arguments.get("AMIUser");
 		String AMIPass = arguments.get("AMIPass");
