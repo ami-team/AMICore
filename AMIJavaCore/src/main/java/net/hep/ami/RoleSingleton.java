@@ -45,7 +45,7 @@ public class RoleSingleton
 		Class<?> clazz = Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
-		/* ADD NEW COMMANDE VALIDATOR                                      */
+		/* ADD COMMANDE VALIDATOR                                          */
 		/*-----------------------------------------------------------------*/
 
 		/**/ if(ClassFinder.extendsClass(clazz, CommandValidatorInterface.class))
@@ -54,7 +54,7 @@ public class RoleSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* ADD NEW USER ROLE VALIDATOR                                     */
+		/* ADD NEW USER VALIDATOR                                          */
 		/*-----------------------------------------------------------------*/
 
 		else if(ClassFinder.extendsClass(clazz, NewUserValidatorInterface.class))
@@ -76,7 +76,7 @@ public class RoleSingleton
 		   ||
 		   AMIPass == null
 		 ) {
-			throw new Exception("no credential");
+			throw new Exception("not authenticated");
 		}
 
 		AMIPass = Cryptography.encrypt(AMIPass);
@@ -174,7 +174,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not call user validator `" + validator + "`");
+			throw new Exception("could not execute user validator `" + validator + "`");
 		}
 
 		if(isOk == false)
@@ -217,7 +217,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not call user validator `" + validator + "`");
+			throw new Exception("could not execute user validator `" + validator + "`");
 		}
 
 		if(isOk == false)

@@ -47,6 +47,17 @@ public class XMLFactories
 
 	/*---------------------------------------------------------------------*/
 
+	public static String getAttribute(Node node, String name)
+	{
+		Node attr = node.getAttributes().getNamedItem(name);
+
+		return attr != null ? attr.getNodeValue().trim()
+		                    : ""
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String getAttribute(Node node, String name, String defaultValue)
 	{
 		Node attr = node.getAttributes().getNamedItem(name);

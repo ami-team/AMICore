@@ -64,13 +64,13 @@ public class CommandSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF CATALOGS                                          */
+		/* GET NUMBER OF COMMANDS                                          */
 		/*-----------------------------------------------------------------*/
 
 		final int numberOfRows = queryResult.getNumberOfRows();
 
 		/*-----------------------------------------------------------------*/
-		/* ADD CATALOGS                                                    */
+		/* ADD COMMANDS                                                    */
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < numberOfRows; i++)
@@ -197,10 +197,6 @@ public class CommandSingleton
 			long t1 = System.currentTimeMillis();
 			StringBuilder content = commandObject.execute();
 			long t2 = System.currentTimeMillis();
-
-			/*-------------------------------------------------------------*/
-			/* GET EXECUTION TIME                                          */
-			/*-------------------------------------------------------------*/
 
 			String executionTime = String.format(Locale.US, "%.3f", 0.001f * (t2 - t1));
 
