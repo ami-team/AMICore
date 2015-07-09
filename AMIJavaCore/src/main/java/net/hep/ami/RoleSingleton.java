@@ -95,7 +95,25 @@ public class RoleSingleton
 
 		try
 		{
-			queryResult = basicQuerier.executeSQLQuery("SELECT `router_role`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` WHERE `router_command`.`command`='" + command + "' AND `router_user`.`AMIUser`='" + AMIUser + "' AND `router_user`.`AMIPass`='" + AMIPass + "' AND `router_command_role`.`commandFK`=`router_command`.`id` AND `router_user_role`.`userFK`=`router_user`.`id` AND `router_command_role`.`roleFK`=`router_role`.`id` AND `router_user_role`.`roleFK`=`router_role`.`id`");
+			queryResult = basicQuerier.executeSQLQuery(
+				"SELECT `node`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` AS `node`,`router_role` AS `tree` WHERE" +
+				"	`router_command`.`command`='" + command + "'" +
+				"AND" +
+				"	`router_user`.`AMIUser`='" + AMIUser + "'" +
+				"AND" +
+				"	`router_user`.`AMIPass`='" + AMIPass + "'" +
+				"AND" +
+				"	`router_command_role`.`commandFK`=`router_command`.`id`" +
+				"AND" +
+				"	`router_user_role`.`userFK`=`router_user`.`id`" +
+				"AND" +
+				"	`router_command_role`.`roleFK`=`tree`.`id`" +
+				"AND" +
+				"	`router_user_role`.`roleFK`=`node`.`id`" +
+				"AND" +
+				"	`node`.`lft` BETWEEN `tree`.`lft` AND `tree`.`rgt`" +
+				"ORDER BY `node`.`lft` DESC"
+			);
 		}
 		finally
 		{
@@ -108,7 +126,7 @@ public class RoleSingleton
 
 		final int numberOfRows = queryResult.getNumberOfRows();
 
-		if(numberOfRows != 1)
+		if(numberOfRows == 0)
 		{
 			throw new Exception("wrong role");
 		}
