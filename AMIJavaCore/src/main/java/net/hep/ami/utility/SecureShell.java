@@ -87,7 +87,7 @@ public class SecureShell extends ShellAbstractClass
 			try
 			{
 				channel.cd(fpath);
-				channel.put(inputStream, fpath + "/" + fname);
+				channel.put(inputStream, fpath + File.separator + fname);
 				channel.exit();
 			}
 			finally

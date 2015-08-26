@@ -1,5 +1,7 @@
 package net.hep.ami.utility;
 
+import java.io.*;
+
 public class SimpleShell extends ShellAbstractClass
 {
 	/*---------------------------------------------------------------------*/
@@ -23,7 +25,7 @@ public class SimpleShell extends ShellAbstractClass
 	@Override
 	public void sendFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
 	{
-
+		TextFile.save(new FileOutputStream(new File(fpath + File.separator + fname)), stringBuilder);
 	}
 
 	/*---------------------------------------------------------------------*/

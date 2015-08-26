@@ -38,33 +38,13 @@ public abstract class ShellAbstractClass
 		@Override
 		public void run()
 		{
-			String line;
-
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(m_inputStream));
-
 			try
 			{
-				while((line = bufferedReader.readLine()) != null)
-				{
-					m_stringBuilder.append(line);
-					m_stringBuilder.append('\n');
-				}
+				TextFile.read(m_stringBuilder, m_inputStream);
 			}
-			catch(IOException e)
+			catch(Exception e)
 			{
 				/* IGNORE */
-			}
-			finally
-			{
-				try
-				{
-					bufferedReader.close();
-				}
-				catch(IOException e)
-				{
-					/* IGNORE */
-
-				}
 			}
 		}
 	}
