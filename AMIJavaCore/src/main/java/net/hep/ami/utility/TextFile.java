@@ -12,12 +12,12 @@ public class TextFile
 
 		/*-----------------------------------------------------------------*/
 
+		String line;
+
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		try
 		{
-			String line;
-
 			while((line = bufferedReader.readLine()) != null)
 			{
 				result.append(line);

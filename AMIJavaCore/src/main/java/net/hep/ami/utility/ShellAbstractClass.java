@@ -54,12 +54,28 @@ public abstract class ShellAbstractClass
 			{
 				/* IGNORE */
 			}
+			finally
+			{
+				try
+				{
+					bufferedReader.close();
+				}
+				catch(IOException e)
+				{
+					/* IGNORE */
+
+				}
+			}
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public abstract ShellTuple exec(String command) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public abstract void sendFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 }
