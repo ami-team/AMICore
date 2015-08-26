@@ -8,12 +8,12 @@ public class TextFile
 
 	public static void read(StringBuilder stringBuilder, InputStream inputStream) throws Exception
 	{
-		String line;
-
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		try
 		{
+			String line;
+
 			while((line = bufferedReader.readLine()) != null)
 			{
 				stringBuilder.append(line);
