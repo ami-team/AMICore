@@ -28,7 +28,7 @@ public class TextFile
 
 	/*---------------------------------------------------------------------*/
 
-	public static void save(OutputStream outputStream, StringBuilder stringBuilder) throws Exception
+	public static void write(OutputStream outputStream, StringBuilder stringBuilder) throws Exception
 	{
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
 

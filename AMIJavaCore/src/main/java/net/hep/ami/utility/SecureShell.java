@@ -33,7 +33,7 @@ public class SecureShell extends ShellAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public void disconnect()
+	public void disconnect() throws Exception
 	{
 		m_session.disconnect();
 	}
