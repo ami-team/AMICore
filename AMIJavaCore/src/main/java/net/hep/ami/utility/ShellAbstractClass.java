@@ -55,7 +55,8 @@ public abstract class ShellAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract void sendFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception;
+	public abstract void readFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception;
+	public abstract void writeFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 }

@@ -76,28 +76,60 @@ public class SecureShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void sendFile(String fpath, String fname, StringBuilder content) throws Exception
+	public void readFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
 	{
-		InputStream inputStream = new ByteArrayInputStream(content.toString().getBytes());
+		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
 
 		try
 		{
-			ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
+			channel.cd(fpath);
+
+			InputStream inputStream = channel.get(fpath + File.separator + fname);
 
 			try
 			{
-				channel.cd(fpath);
-				channel.put(inputStream, fpath + File.separator + fname);
-				channel.exit();
+				TextFile.read(stringBuilder, inputStream);
 			}
 			finally
 			{
-				channel.disconnect();
+				inputStream.close();
 			}
+
+			channel.exit();
 		}
 		finally
 		{
-			inputStream.close();
+			channel.disconnect();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public void writeFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
+	{
+		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
+
+		try
+		{
+			channel.cd(fpath);
+
+			OutputStream outputStream = channel.put(fpath + File.separator + fname);
+
+			try
+			{
+				TextFile.write(outputStream, stringBuilder);
+			}
+			finally
+			{
+				outputStream.close();
+			}
+
+			channel.exit();
+		}
+		finally
+		{
+			channel.disconnect();
 		}
 	}
 

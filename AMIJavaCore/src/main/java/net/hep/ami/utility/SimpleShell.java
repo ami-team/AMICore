@@ -23,7 +23,15 @@ public class SimpleShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void sendFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
+	public void readFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
+	{
+		TextFile.read(stringBuilder, new FileInputStream(new File(fpath + File.separator + fname)));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public void writeFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
 	{
 		TextFile.write(new FileOutputStream(new File(fpath + File.separator + fname)), stringBuilder);
 	}
