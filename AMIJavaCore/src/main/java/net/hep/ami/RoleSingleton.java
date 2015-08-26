@@ -69,6 +69,21 @@ public class RoleSingleton
 
 	public static void checkRoles(String command, Map<String, String> arguments) throws Exception
 	{
+		/*---------------------------------*/
+		/* BYPASS                          */
+		/*---------------------------------*/
+
+		if(command.equals("GetSessionInfo")
+		   ||
+		   command.equals("ResetPassword")
+		   ||
+		   command.equals("AddUser")
+		 ) {
+			return;
+		}
+
+		/*---------------------------------*/
+
 		String AMIUser = arguments.get("AMIUser");
 		String AMIPass = arguments.get("AMIPass");
 
@@ -96,23 +111,34 @@ public class RoleSingleton
 		try
 		{
 			queryResult = basicQuerier.executeSQLQuery(
-				"SELECT `node`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` AS `node`,`router_role` AS `tree` WHERE" +
-				"	`router_command`.`command`='" + command + "'" +
-				"AND" +
-				"	`router_user`.`AMIUser`='" + AMIUser + "'" +
-				"AND" +
-				"	`router_user`.`AMIPass`='" + AMIPass + "'" +
-				"AND" +
-				"	`router_command_role`.`commandFK`=`router_command`.`id`" +
-				"AND" +
-				"	`router_user_role`.`userFK`=`router_user`.`id`" +
-				"AND" +
-				"	`router_command_role`.`roleFK`=`tree`.`id`" +
-				"AND" +
-				"	`router_user_role`.`roleFK`=`node`.`id`" +
-				"AND" +
-				"	`node`.`lft` BETWEEN `tree`.`lft` AND `tree`.`rgt`" +
-				"ORDER BY `node`.`lft` DESC"
+				"SELECT `node`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` AS `tree`,`router_role` AS `node` WHERE" +
+				/*---------------------------------------------------------*/
+				/* SELECT COMMAND                                          */
+				/*---------------------------------------------------------*/
+				"	"+" `router_command`.`command`='" + command + "'" +
+				/*---------------------------------------------------------*/
+				/* SELECT USER                                             */
+				/*---------------------------------------------------------*/
+				"	AND `router_user`.`AMIUser`='" + AMIUser + "'" +
+				"	AND `router_user`.`AMIPass`='" + AMIPass + "'" +
+				/*---------------------------------------------------------*/
+				/* SELECT COMMAND ROLE                                     */
+				/*---------------------------------------------------------*/
+				"	AND `router_command_role`.`commandFK`=`router_command`.`id`" +
+				/*---------------------------------------------------------*/
+				/* SELECT USER ROLE                                        */
+				/*---------------------------------------------------------*/
+				"	AND `router_user_role`.`userFK`=`router_user`.`id`" +
+				/*---------------------------------------------------------*/
+				/* SELECT ROLE                                             */
+				/*---------------------------------------------------------*/
+				"	AND `router_command_role`.`roleFK`=`tree`.`id`" +
+				"	AND `router_user_role`.`roleFK`=`node`.`id`" +
+				/*---------------------------------------------------------*/
+				"	AND `node`.`lft` BETWEEN `tree`.`lft` AND `tree`.`rgt`" +
+				/*---------------------------------------------------------*/
+				"	ORDER BY `node`.`lft` DESC"
+				/*---------------------------------------------------------*/
 			);
 		}
 		finally
@@ -159,7 +185,7 @@ public class RoleSingleton
 
 		if(clazz == null)
 		{
-			throw new Exception("could not find role validator `" + validator + "`");
+			throw new Exception("could not find command validator `" + validator + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -174,7 +200,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute user validator `" + validator + "`");
+			throw new Exception("could not execute command validator `" + validator + "`");
 		}
 
 		if(isOk == false)

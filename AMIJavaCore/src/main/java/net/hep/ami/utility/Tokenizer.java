@@ -142,19 +142,19 @@ public class Tokenizer
 			/**/ if(s.substring(i).startsWith(quote))
 			{
 				i += m;
-				if(cnt % 2 == 0) return i;
+				if((cnt & 1) == 0) return i;
 				cnt = 0;
 			}
 			else if(s.substring(i).startsWith(escape))
 			{
 				i += n;
-/*				if(0x00001 == 0) return i;
+/*				if(0x0000001 == 0) return i;
  */				cnt += 1;
 			}
 			else
 			{
 				i += 1;
-/*				if(0x00001 == 0) return i;
+/*				if(0x0000001 == 0) return i;
  */				cnt = 0;
 			}
 		}

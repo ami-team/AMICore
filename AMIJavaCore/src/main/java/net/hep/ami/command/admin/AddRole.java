@@ -63,8 +63,7 @@ public class AddRole extends CommandAbstractClass
 
 		String parentLft = queryResult.getValue(0, 0);
 		String parentRgt = queryResult.getValue(0, 1);
-System.out.println(parentLft);
-System.out.println(parentRgt);
+
 		/*-----------------------------------------------------------------*/
 		/* UPDATE TREE                                                     */
 		/*-----------------------------------------------------------------*/

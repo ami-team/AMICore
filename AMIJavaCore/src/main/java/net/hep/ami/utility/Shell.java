@@ -1,67 +1,13 @@
 package net.hep.ami.utility;
 
-import java.io.*;
-
-public class Shell
+public class Shell extends ShellAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class ShellTuple
+	@Override
+	public ShellTuple exec(String command) throws Exception
 	{
-		public Integer errorCode;
-
-		public StringBuilder inputStringBuilder;
-		public StringBuilder errorStringBuilder;
-
-		public ShellTuple(int _errorCode, StringBuilder _inputStringBuilder, StringBuilder _errorStringBuilder)
-		{
-			errorCode = _errorCode;
-
-			inputStringBuilder = _inputStringBuilder;
-			errorStringBuilder = _errorStringBuilder;
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static class StreamReader implements Runnable
-	{
-		private StringBuilder m_stringBuilder;
-		private InputStream   m_inputStream  ;
-
-		public StreamReader(StringBuilder stringBuilder, InputStream inputStream)
-		{
-			m_stringBuilder = stringBuilder;
-			m_inputStream   = inputStream  ;
-		}
-
-		@Override
-		public void run()
-		{
-			String line;
-
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(m_inputStream));
-
-			try
-			{
-				while((line = bufferedReader.readLine()) != null)
-				{
-					m_stringBuilder.append(line);
-					m_stringBuilder.append('\n');
-				}
-			}
-			catch(IOException e)
-			{
-				/* IGNORE */
-			}
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static ShellTuple exec(String[] args) throws Exception
-	{
-		Process p = Runtime.getRuntime().exec(args);
+		Process p = Runtime.getRuntime().exec(command);
 
 		StringBuilder inputStringBuilder = new StringBuilder();
 		StringBuilder errorStringBuilder = new StringBuilder();

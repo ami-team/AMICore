@@ -211,7 +211,7 @@ public class GetSessionInfo extends CommandAbstractClass
 			result.append(
 				"<row>"
 				+
-				"<field name=\"role\"><![CDATA[" + queryResult2.getValue(i, "role") + "]]></field>"
+				"<field name=\"name\"><![CDATA[" + queryResult2.getValue(i, "role") + "]]></field>"
 				+
 				"</row>"
 			);

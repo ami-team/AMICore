@@ -62,8 +62,8 @@ expressionX
         (distinct=DISTINCT)? expression=expressionOr
     ')'                                                                      # ExpressionFunction
   | qId=sqlQId LIKE literal=sqlLiteral                                       # ExpressionLike
-  | qId=sqlQId                                                               # ExpressionQId
   | literal=sqlLiteral                                                       # ExpressionLiteral
+  | qId=sqlQId                                                               # ExpressionQId
   ;
 
 /*---------------------------*/
@@ -156,11 +156,11 @@ NUMBER
   ;
 
 STRING
-	: '\'' (~'\'' | '\'\'')* '\''
-	;
+  : '\'' (~'\'' | '\'\'')* '\''
+  ;
 
 ID
-  : [a-zA-Z_] [a-zA-Z0-9_#$]*
+  : [a-zA-Z_][a-zA-Z0-9_#$]*
   | '`' (~'`' | '``')+ '`'
   | '"' (~'"' | '""')+ '"'
   ;
@@ -168,8 +168,8 @@ ID
 /*-------------------------------------------------------------------------*/
 
 WS
-	: [ \t\n\r]+ -> channel(HIDDEN)
-	;
+  : [ \t\n\r]+ -> channel(HIDDEN)
+  ;
 
 /*-------------------------------------------------------------------------*/
 
