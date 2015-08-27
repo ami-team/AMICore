@@ -23,7 +23,11 @@ public class RestartNode extends CommandAbstractClass
 	@Override
 	public StringBuilder main() throws Exception
 	{
-		new SimpleShell().exec(String.format("bash -c \"%s/shutdown.sh ; sleep 2 ; %s/startup.sh\"", m_path, m_path));
+		new SimpleShell().exec(new String[] {
+			"bash",
+			"-c",
+			m_path + "/shutdown.sh ; sleep 2 ; " + m_path + "/startup.sh",
+		});
 
 		return new StringBuilder("<info><![CDATA[restarting AMI...]]></info>");
 	}

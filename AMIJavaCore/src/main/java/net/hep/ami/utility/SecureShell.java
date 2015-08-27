@@ -1,6 +1,7 @@
 package net.hep.ami.utility;
 
 import java.io.*;
+import java.util.*;
 
 import com.jcraft.jsch.*;
 
@@ -14,18 +15,38 @@ public class SecureShell extends ShellAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public SecureShell(String host, int port, String user, String password) throws Exception
+	static Properties m_properties = new Properties();
+
+	static
+	{
+		m_properties.put("StrictHostKeyChecking", "no");
+
+		m_properties.put("PreferredAuthentications", "publickey,password");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public SecureShell(String host, int port, String user, String passwordOrPrivateKey) throws Exception
 	{
 		m_jsch = new JSch();
 
 		m_session = m_jsch.getSession(user, host, port);
 
-		m_session.setPassword(password);
-		m_session.setConfig("StrictHostKeyChecking", "no");
+		m_session.setConfig(m_properties);
+
+		if(passwordOrPrivateKey.length() > 64)
+		{
+			m_jsch.addIdentity(passwordOrPrivateKey);
+		}
+		else
+		{
+			m_session.setPassword(passwordOrPrivateKey);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void connect() throws Exception
 	{
 		m_session.connect();
@@ -33,6 +54,7 @@ public class SecureShell extends ShellAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void disconnect() throws Exception
 	{
 		m_session.disconnect();
@@ -41,7 +63,7 @@ public class SecureShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public ShellTuple exec(String command) throws Exception
+	public ShellTuple exec(String[] args) throws Exception
 	{
 		int exitStatus;
 
@@ -52,12 +74,24 @@ public class SecureShell extends ShellAbstractClass
 
 		ChannelExec channel = (ChannelExec) m_session.openChannel("exec");
 
+		channel.setCommand(argsToString(args));
+		channel.connect();
+
 		try
 		{
-			channel.setCommand(command);
+			Thread inputThread = new StreamReader(inputStringBuilder, channel.getInputStream());
+			Thread errorThread = new StreamReader(errorStringBuilder, channel.getErrStream());
 
-			new Thread(new StreamReader(inputStringBuilder, channel.getInputStream())).start();
-			new Thread(new StreamReader(errorStringBuilder, channel.getErrStream())).start();
+			inputThread.start();
+			errorThread.start();
+
+			inputThread.join();
+			errorThread.join();
+
+			while(channel.isClosed() == false)
+			{
+				Thread.sleep(1);
+			}
 
 			exitStatus = channel.getExitStatus();
 		}
@@ -76,7 +110,7 @@ public class SecureShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void readFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
+	public void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
 	{
 		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
 
@@ -106,7 +140,7 @@ public class SecureShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void writeFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
+	public void writeTextFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
 	{
 		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
 

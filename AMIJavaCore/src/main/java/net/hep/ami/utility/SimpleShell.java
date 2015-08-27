@@ -7,15 +7,21 @@ public class SimpleShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public ShellTuple exec(String command) throws Exception
+	public ShellTuple exec(String[] args) throws Exception
 	{
 		StringBuilder inputStringBuilder = new StringBuilder();
 		StringBuilder errorStringBuilder = new StringBuilder();
 
-		Process process = Runtime.getRuntime().exec(command);
+		Process process = Runtime.getRuntime().exec(args);
 
-		new Thread(new StreamReader(inputStringBuilder, process.getInputStream())).start();
-		new Thread(new StreamReader(errorStringBuilder, process.getErrorStream())).start();
+		Thread inputThread = new StreamReader(inputStringBuilder, process.getInputStream());
+		Thread errorThread = new StreamReader(errorStringBuilder, process.getErrorStream());
+
+		inputThread.start();
+		errorThread.start();
+
+		inputThread.join();
+		errorThread.join();
 
 		return new ShellTuple(process.waitFor(), inputStringBuilder, errorStringBuilder);
 	}
@@ -23,7 +29,15 @@ public class SimpleShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void readFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
+	public void connect() throws Exception {}
+
+	@Override
+	public void disconnect() throws Exception {}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
 	{
 		TextFile.read(stringBuilder, new FileInputStream(new File(fpath + File.separator + fname)));
 	}
@@ -31,7 +45,7 @@ public class SimpleShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void writeFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
+	public void writeTextFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
 	{
 		TextFile.write(new FileOutputStream(new File(fpath + File.separator + fname)), stringBuilder);
 	}
