@@ -75,6 +75,7 @@ public class SecureShell extends ShellAbstractClass
 		ChannelExec channel = (ChannelExec) m_session.openChannel("exec");
 
 		channel.setCommand(argsToString(args));
+
 		channel.connect();
 
 		try
