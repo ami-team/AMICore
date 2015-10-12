@@ -41,13 +41,15 @@ public class RouterBuilder
 
 		m_driver.executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_config` ("					+
+			"  `id` INT(11) NOT NULL,"										+
 			"  `name` VARCHAR(512) NOT NULL,"								+
 			"  `value` VARCHAR(512) NOT NULL"								+
-			") DEFAULT CHARSET=utf8;"
+			") DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;"
 		);
 
 		m_driver.executeMQLUpdate(
 			"ALTER TABLE `router_config`"									+
+			"  ADD UNIQUE KEY (`id`),"										+
 			"  ADD PRIMARY KEY (`name`)"									+
 			";"
 		);
@@ -210,6 +212,7 @@ public class RouterBuilder
 
 		m_driver.executeMQLUpdate(
 			"CREATE TABLE `router_search_criteria` ("						+
+			"  `id` INT(11) NOT NULL,"										+
 			"  `interfaceFK` INT(11) NOT NULL,"								+
 			"  `entity` VARCHAR(512) NOT NULL,"								+
 			"  `field` VARCHAR(512) NOT NULL,"								+
@@ -221,6 +224,7 @@ public class RouterBuilder
 
 		m_driver.executeMQLUpdate(
 			"ALTER TABLE `router_search_interface`"							+
+			"  ADD UNIQUE KEY (`id`),"										+
 			"  ADD PRIMARY KEY (`interfaceFK`, `entity`, `field`)"			+
 			"  ADD CONSTRAINT FOREIGN KEY (`interfaceFK`) REFERENCES `router_search_interface` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION" +
 			";"

@@ -102,8 +102,12 @@ public class Setup extends HttpServlet {
 
 		/*-----------------------------------------------------------------*/
 
+		StringBuilder stringBuilder = new StringBuilder();
+
 		try {
-			return TextFile.read(Setup.class.getResourceAsStream("/html/setup_level1.html")).replace("%%HOST%%", host).replace("%%AGENT%%", agent).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass).replace("%%GUEST_USER%%", guest_user).replace("%%GUEST_PASS%%", guest_pass).replace("%%ENCRYPTION_KEY%%", encryption_key).replace("%%JDBC_URL%%", jdbc_url).replace("%%ROUTER_USER%%", router_user).replace("%%ROUTER_PASS%%", router_pass);
+			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level1.html"));
+
+			return stringBuilder.toString().replace("%%HOST%%", host).replace("%%AGENT%%", agent).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass).replace("%%GUEST_USER%%", guest_user).replace("%%GUEST_PASS%%", guest_pass).replace("%%ENCRYPTION_KEY%%", encryption_key).replace("%%JDBC_URL%%", jdbc_url).replace("%%ROUTER_USER%%", router_user).replace("%%ROUTER_PASS%%", router_pass);
 		} catch(Exception e) {
 			return "<html><body><![CDATA[" + e.getMessage() + "]]></body></html>";
 		}
@@ -191,6 +195,7 @@ public class Setup extends HttpServlet {
 
 		BasicQuerier    basicQuerier    = null;
 		BufferedWriter bufferedWriter = null;
+		StringBuilder stringBuilder = new StringBuilder();
 
 		try {
 			basicQuerier = new BasicQuerier(jdbc_url, router_user, router_pass);
@@ -199,7 +204,9 @@ public class Setup extends HttpServlet {
 			bufferedWriter.write(content);
 
 			try {
-				return TextFile.read(Setup.class.getResourceAsStream("/html/setup_level2_success.html")).replace("%%HOST%%", host).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass);
+				TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_success.html"));
+
+				return stringBuilder.toString().replace("%%HOST%%", host).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass);
 			} catch(Exception f) {
 				return "<html><body><![CDATA[" + f.getMessage() + "]]></body></html>";
 			}
@@ -207,7 +214,9 @@ public class Setup extends HttpServlet {
 		} catch(Exception e) {
 
 			try {
-				return TextFile.read(Setup.class.getResourceAsStream("/html/setup_level2_error.html")).replace("%%MESSAGE%%", e.getMessage());
+				TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_error.html"));
+
+				return stringBuilder.toString().replace("%%MESSAGE%%", e.getMessage());
 			} catch(Exception f) {
 				return "<html><body><![CDATA[" + f.getMessage() + "]]></body></html>";
 			}

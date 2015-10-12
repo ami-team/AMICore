@@ -1,6 +1,8 @@
 package net.hep.ami;
 
 import java.util.*;
+import java.util.regex.*;
+
 import java.lang.reflect.*;
 
 import net.hep.ami.jdbc.*;
@@ -23,6 +25,16 @@ public class CommandSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static final Map<String, Tuple> m_commands = new HashMap<String, Tuple>();
+
+	/*---------------------------------------------------------------------*/
+
+	private static Pattern m_xml10Pattern = Pattern.compile("[^"
+		+ "\u0009\r\n"
+		+ "\u0020-\uD7FF"
+		+ "\uE000-\uFFFD"
+		+ "\uD800\uDC00-\uDBFF\uDFFF"
+		+ "]+"
+	);
 
 	/*---------------------------------------------------------------------*/
 
@@ -227,7 +239,7 @@ public class CommandSingleton
 
 			/*-------------------------------------------------------------*/
 
-			result = stringBuilder.toString();
+			result = m_xml10Pattern.matcher(stringBuilder.toString()).replaceAll("?");
 
 			/*-------------------------------------------------------------*/
 		}

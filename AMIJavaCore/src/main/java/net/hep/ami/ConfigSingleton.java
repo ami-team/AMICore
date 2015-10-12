@@ -188,7 +188,7 @@ public class ConfigSingleton
 			m_properties.put(
 				XMLFactories.getAttribute(node, "name")
 				,
-				XMLFactories.getContent(node)
+				Cryptography.decrypt(XMLFactories.getContent(node))
 			);
 		}
 

@@ -128,8 +128,8 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_JKS = Cryptography.generateKeyStore_JKS(keyPair.getPrivate(), certificate, m_password.toCharArray());
-		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), certificate, m_password.toCharArray());
+		KeyStore keyStore_JKS = Cryptography.generateKeyStore_JKS(keyPair.getPrivate(), new X509Certificate[] {certificate}, m_password.toCharArray());
+		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, m_password.toCharArray());
 
 		/*-----------------------------------------------------------------*/
 

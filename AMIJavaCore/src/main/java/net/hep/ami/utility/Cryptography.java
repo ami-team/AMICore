@@ -88,12 +88,12 @@ public class Cryptography
 				/* PRIVATE KEY                                             */
 				/*---------------------------------------------------------*/
 
-				/**/ if(line.equals("-----BEGIN PRIVATE KEY-----"))
+				/**/ if(line.matches("-----BEGIN( | [^ ]+ )PRIVATE KEY-----"))
 				{
 					stringBuilder = new StringBuilder();
 					appendPrivateKey = true;
 				}
-				else if(line.equals("-----END PRIVATE KEY-----"))
+				else if(line.matches("-----END( | [^ ]+ )PRIVATE KEY-----"))
 				{
 					privateKey.add(stringBuilder);
 					appendPrivateKey = false;
@@ -107,12 +107,12 @@ public class Cryptography
 				/* PUBLIC KEY                                              */
 				/*---------------------------------------------------------*/
 
-				else if(line.equals("-----BEGIN PUBLIC KEY-----"))
+				else if(line.matches("-----BEGIN( | [^ ]+ )PUBLIC KEY-----"))
 				{
 					stringBuilder = new StringBuilder();
 					appendPublicKey = true;
 				}
-				else if(line.equals("-----END PUBLIC KEY-----"))
+				else if(line.matches("-----END( | [^ ]+ )PUBLIC KEY-----"))
 				{
 					publicKey.add(stringBuilder);
 					appendPublicKey = false;
@@ -491,30 +491,26 @@ public class Cryptography
 
 	/*---------------------------------------------------------------------*/
 
-	public static KeyStore generateKeyStore_JKS(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception
+	public static KeyStore generateKeyStore_JKS(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("JKS");
 
 		result.load(null, null);
 
-		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {
-			certificate
-		});
+		result.setKeyEntry("AMI", privateKey, password, certificates);
 
 		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static KeyStore generateKeyStore_PKCS12(PrivateKey privateKey, X509Certificate certificate, char[] password) throws Exception
+	public static KeyStore generateKeyStore_PKCS12(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("PKCS12");
 
 		result.load(null, null);
 
-		result.setKeyEntry("AMI", privateKey, password, new X509Certificate[] {
-			certificate
-		});
+		result.setKeyEntry("AMI", privateKey, password, certificates);
 
 		return result;
 	}

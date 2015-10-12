@@ -115,11 +115,13 @@ public class SecureShell extends ShellAbstractClass
 	{
 		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
 
+		channel.connect();
+
 		try
 		{
 			channel.cd(fpath);
 
-			InputStream inputStream = channel.get(fpath + File.separator + fname);
+			InputStream inputStream = channel.get(fname);
 
 			try
 			{
@@ -145,11 +147,13 @@ public class SecureShell extends ShellAbstractClass
 	{
 		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
 
+		channel.connect();
+
 		try
 		{
 			channel.cd(fpath);
 
-			OutputStream outputStream = channel.put(fpath + File.separator + fname);
+			OutputStream outputStream = channel.put(fname);
 
 			try
 			{
