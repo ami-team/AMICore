@@ -41,6 +41,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void close() throws IOException {
 
 		Closeables.close(m_novaApi, true);
@@ -48,6 +49,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public Set<String> getRegions() {
 
 		return m_regions;
@@ -55,6 +57,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public Set<CloudServer> getServers() {
 
 		Set<CloudServer> result = new HashSet<CloudServer>();
@@ -115,6 +118,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public Set<CloudFlavor> getFlavors() {
 
 		Set<CloudFlavor> result = new HashSet<CloudFlavor>();
@@ -147,6 +151,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public Set<CloudImage> getImages() {
 
 		Set <CloudImage> result = new HashSet<CloudImage>();
@@ -178,6 +183,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public Set<CloudSecurityRule> getSecurityRules() {
 
 		Set<CloudSecurityRule> result = new HashSet<CloudSecurityRule>();
@@ -215,6 +221,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void startServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -224,6 +231,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void stopServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -233,6 +241,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void softRebootServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -242,6 +251,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void hardRebootServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -251,6 +261,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String buildServer(String region, String name, String flavorID, String imageID, String keypair, String fixedIP, String portUUID, String networUUID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -289,6 +300,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void rebuildServer(String region, String serverID, String imageID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -300,6 +312,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String createImageFromServer(String region, String name, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -309,6 +322,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void deleteServer(String region, String serverID) {
 
 		ServerApi serverApi = m_novaApi.getServerApi(region);
@@ -318,6 +332,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void deleteFlavor(String region, String flavorID) {
 
 		FlavorApi flavorApi = m_novaApi.getFlavorApi(region);
@@ -327,6 +342,7 @@ public class OpenStackDriver implements DriverInterface {
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void deleteImage(String region, String imageID) {
 
 		ImageApi imageApi = m_novaApi.getImageApi(region);

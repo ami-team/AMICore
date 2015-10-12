@@ -29,6 +29,7 @@ public interface DriverInterface extends Closeable {
 			IPv6List = _IPv6List;
 		}
 
+		@Override
 		public String toString() {
 
 			return String.format("ID: %s, name: %s, region: %s, flavorID: %s, imageID: %s, status: %s, IPv4List: %s, IPv6List: %s",
@@ -58,6 +59,7 @@ public interface DriverInterface extends Closeable {
 			disk = _disk;
 		}
 
+		@Override
  		public String toString() {
 
 			return String.format("ID: %s, name: %s, region: %s, cpu: %d, ram: %d, disk: %d",
@@ -85,6 +87,7 @@ public interface DriverInterface extends Closeable {
 			minDisk = _minDisk;
 		}
 
+		@Override
 		public String toString() {
 
 			return String.format("ID: %s, name: %s, region: %s, minRam: %d, minDisk: %d",
@@ -112,6 +115,7 @@ public interface DriverInterface extends Closeable {
 			IPRange = _IPRange;
 		}
 
+		@Override
 		public String toString() {
 
 			return String.format("region: %s, protocol: %s, fromPort: %d, toPort: %d, IPRange: %d",
