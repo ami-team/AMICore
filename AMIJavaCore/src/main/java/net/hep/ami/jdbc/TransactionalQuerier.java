@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import java.sql.*;
+
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.*;
 
@@ -62,6 +64,22 @@ public class TransactionalQuerier implements QuerierInterface
 	public int executeMQLUpdate(String mql) throws Exception
 	{
 		return m_driver.executeMQLUpdate(mql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
+	{
+		return m_driver.sqlPrepareStatement(sql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
+	{
+		return m_driver.mqlPrepareStatement(mql);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import java.sql.*;
+
 public interface QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
@@ -17,6 +19,14 @@ public interface QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	public int executeMQLUpdate(String mql) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public PreparedStatement sqlPrepareStatement(String sql) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public PreparedStatement mqlPrepareStatement(String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

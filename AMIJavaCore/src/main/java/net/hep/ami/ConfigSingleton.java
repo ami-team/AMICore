@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
@@ -188,7 +189,7 @@ public class ConfigSingleton
 			m_properties.put(
 				XMLFactories.getAttribute(node, "name")
 				,
-				Cryptography.decrypt(XMLFactories.getContent(node))
+				XMLFactories.getContent(node)
 			);
 		}
 
@@ -204,16 +205,16 @@ public class ConfigSingleton
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
-			ConfigSingleton.getProperty("jdbc_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
+			getProperty("jdbc_url"),
+			getProperty("router_user"),
+			getProperty("router_pass")
 		);
 
 		QueryResult queryResult;
 
 		try
 		{
-			queryResult = basicQuerier.executeSQLQuery("SELECT `name`,`value` FROM `router_config`");
+			queryResult = basicQuerier.executeSQLQuery("SELECT `paramName`,`paramValue` FROM `router_config`");
 		}
 		finally
 		{
@@ -229,14 +230,82 @@ public class ConfigSingleton
 		/*-----------------------------------------------------------------*/
 		/* ADD PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
-
 		for(int i = 0; i < numberOfRows; i++)
 		{
-			m_properties.put(
-				queryResult.getValue(i, "name").trim()
-				,
-				queryResult.getValue(i, "value").trim()
-			);
+			try
+			{
+				m_properties.put(
+					Cryptography.decrypt(queryResult.getValue(i, "paramName"))
+					,
+					Cryptography.decrypt(queryResult.getValue(i, "paramValue"))
+				);
+			}
+			catch(org.bouncycastle.util.encoders.DecoderException e)
+			{
+				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void writeToDataBase() throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Map<String, String> properties;
+
+		synchronized(ConfigSingleton.class)
+		{
+			properties = new HashMap<String, String>(m_properties);
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* EXECUTE QUERY                                                   */
+		/*-----------------------------------------------------------------*/
+
+		BasicQuerier basicQuerier = new BasicQuerier(
+			getProperty("jdbc_url"),
+			getProperty("router_user"),
+			getProperty("router_pass")
+		);
+
+		PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO router_config VALUES (?, ?)");
+
+		String name;
+		String value;
+
+		for(Map.Entry<String, String> entry: properties.entrySet())
+		{
+			name = entry.getKey();
+			value = entry.getValue();
+
+			if(name.equals("host")
+			   ||
+			   name.equals("agent")
+			   ||
+			   name.equals("admin_user")
+			   ||
+			   name.equals("guest_user")
+			   ||
+			   name.equals("encryption_key")
+			   ||
+			   name.equals("jdbc_url")
+			   ||
+			   name.equals("router_user")
+			 ) {
+				continue;
+			}
+			else
+			{
+				preparedStatement.setString(1, Cryptography.encrypt(name));
+				preparedStatement.setString(2, Cryptography.encrypt(value));
+				preparedStatement.addBatch();
+			}
+
+			preparedStatement.executeBatch();
 		}
 
 		/*-----------------------------------------------------------------*/

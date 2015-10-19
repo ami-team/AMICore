@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import java.sql.*;
+
 import net.hep.ami.jdbc.driver.*;
 
 public class BasicQuerier implements QuerierInterface
@@ -52,6 +54,22 @@ public class BasicQuerier implements QuerierInterface
 	public int executeMQLUpdate(String mql) throws Exception
 	{
 		return m_driver.executeMQLUpdate(mql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
+	{
+		return m_driver.sqlPrepareStatement(sql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
+	{
+		return m_driver.mqlPrepareStatement(mql);
 	}
 
 	/*---------------------------------------------------------------------*/

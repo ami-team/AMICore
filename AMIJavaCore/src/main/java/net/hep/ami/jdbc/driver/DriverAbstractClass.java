@@ -141,6 +141,31 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
+	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
+	{
+		return m_connection.prepareStatement(sql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
+	{
+		String sql = UpdateParser.parse(mql, this);
+
+		try
+		{
+			return m_connection.prepareStatement(sql);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for query " + sql);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public void commit() throws Exception
 	{
 		if(m_connection.getAutoCommit() == false)

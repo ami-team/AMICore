@@ -42,15 +42,15 @@ public class RouterBuilder
 		m_driver.executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_config` ("					+
 			"  `id` INT(11) NOT NULL,"										+
-			"  `name` VARCHAR(512) NOT NULL,"								+
-			"  `value` VARCHAR(512) NOT NULL"								+
+			"  `paramName` VARCHAR(512) NOT NULL,"							+
+			"  `paramValue` VARCHAR(512) NOT NULL"							+
 			") DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;"
 		);
 
 		m_driver.executeMQLUpdate(
 			"ALTER TABLE `router_config`"									+
 			"  ADD UNIQUE KEY (`id`),"										+
-			"  ADD PRIMARY KEY (`name`)"									+
+			"  ADD PRIMARY KEY (`paramName`)"								+
 			";"
 		);
 
