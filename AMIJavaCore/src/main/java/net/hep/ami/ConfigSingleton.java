@@ -78,7 +78,7 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+			LogSingleton.defaultLogger.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -234,15 +234,15 @@ public class ConfigSingleton
 		{
 			try
 			{
-				m_properties.put(
-					Cryptography.decrypt(queryResult.getValue(i, "paramName"))
-					,
-					Cryptography.decrypt(queryResult.getValue(i, "paramValue"))
-				);
+		//		m_properties.put(
+		//			Cryptography.decrypt(queryResult.getValue(i, "paramName"))
+		//			,
+		//			Cryptography.decrypt(queryResult.getValue(i, "paramValue"))
+		//		);
 			}
 			catch(org.bouncycastle.util.encoders.DecoderException e)
 			{
-				LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+				LogSingleton.defaultLogger.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 			}
 		}
 
@@ -272,7 +272,7 @@ public class ConfigSingleton
 			getProperty("router_pass")
 		);
 
-		PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO router_config VALUES (?, ?)");
+		PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
 
 		String name;
 		String value;

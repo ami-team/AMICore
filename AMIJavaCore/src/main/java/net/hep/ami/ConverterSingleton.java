@@ -75,7 +75,7 @@ public class ConverterSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
+			LogSingleton.defaultLogger.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
 		}
 	}
 
@@ -114,7 +114,7 @@ public class ConverterSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+			LogSingleton.defaultLogger.log(LogSingleton.LogLevel.ERROR, e.getMessage());
 		}
 	}
 
