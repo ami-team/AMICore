@@ -28,28 +28,26 @@ public class MailSingleton
 	static
 	{
 		/*-----------------------------------------------------------------*/
-		/* GET HOST, PORT AND MODE                                         */
+		/* GET PROTOCOL, HOST AND PORT                                     */
 		/*-----------------------------------------------------------------*/
 
+		String mode = ConfigSingleton.getProperty("email_mode");
 		String host = ConfigSingleton.getProperty("email_host");
 		String port = ConfigSingleton.getProperty("email_port");
-		String mode = ConfigSingleton.getProperty("email_mode");
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE PROPERTIES                                               */
 		/*-----------------------------------------------------------------*/
 
-		m_properties.setProperty("mail.transport.protocol", "smtp");
-
-		m_properties.setProperty("mail.smtp.auth", "true");
 		m_properties.setProperty("mail.smtp.host", (host));
 		m_properties.setProperty("mail.smtp.port", (port));
+		m_properties.setProperty("mail.smtp.auth", "true");
 
-		/**/ if(mode.equals("1"))
+		/**/ if(mode.equalsIgnoreCase("ssl"))
 		{
 			m_properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		}
-		else if(mode.equals("2"))
+		else if(mode.equalsIgnoreCase("tls"))
 		{
 			m_properties.setProperty("mail.smtp.starttls.enable", "true");
 		}
@@ -71,20 +69,20 @@ public class MailSingleton
 		/* CREATE MESSAGE                                                  */
 		/*-----------------------------------------------------------------*/
 
-		MimeMessage message = new MimeMessage(session);
+		MimeMessage mimeMessage = new MimeMessage(session);
 
-		message.setFrom(new InternetAddress(from));
+		mimeMessage.setFrom(new InternetAddress(from));
 
-		message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-		message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
-		message.setSubject(subject);
-		message.setText(text);
+		mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+		mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+		mimeMessage.setSubject(subject);
+		mimeMessage.setText(text);
 
 		/*-----------------------------------------------------------------*/
 		/* SEND MESSAGE                                                    */
 		/*-----------------------------------------------------------------*/
 
-		Transport.send(message);
+		Transport.send(mimeMessage);
 
 		/*-----------------------------------------------------------------*/
 	}

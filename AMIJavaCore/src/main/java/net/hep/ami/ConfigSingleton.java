@@ -234,6 +234,10 @@ public class ConfigSingleton
 		{
 			try
 			{
+				m_properties.put(
+					queryResult.getValue(i, "paramName"),
+					queryResult.getValue(i, "paramValue")
+				);
 		//		m_properties.put(
 		//			Cryptography.decrypt(queryResult.getValue(i, "paramName"))
 		//			,
