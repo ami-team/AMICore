@@ -2,19 +2,17 @@
 
 <Configuration>
   <Appenders>
-    <File name="A1" fileName="A1.log" append="false">
-      <PatternLayout pattern="%t %-5p %c{2} - %m%n" />
-    </File>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
+    <Console name="CONSOLE" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L)%n%m%n" />
     </Console>
+    <File name="FILE" fileName="ami.log" append="true">
+      <JsonLayout locationInfo="true" />
+    </File>
   </Appenders>
   <Loggers>
-    <Logger name="org.apache.log4j.xml" level="debug">
-      <AppenderRef ref="A1" />
-    </Logger>
-    <Root level="debug">
-      <AppenderRef ref="STDOUT" />
+    <Root level="DEBUG">
+      <AppenderRef ref="CONSOLE"/>
+      <AppenderRef ref="FILE"/>
     </Root>
   </Loggers>
 </Configuration>

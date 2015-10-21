@@ -15,6 +15,7 @@
     <mail.version>1.5.2</mail.version>
 
     <log4j.version>2.4.1</log4j.version>
+    <jackson.version>2.6.3</jackson.version>
     <saxon.version>9.6.0-5</saxon.version>
     <bouncycastle.version>1.51</bouncycastle.version>
     <antlr.version>4.5</antlr.version>
@@ -49,16 +50,16 @@
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
+      <artifactId>log4j-core</artifactId>
       <version>${log4j.version}</version>
     </dependency>
 
     <!--******************************************************************-->
 
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>${log4j.version}</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
     </dependency>
 
     <!--******************************************************************-->
