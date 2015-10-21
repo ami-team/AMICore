@@ -1,12 +1,39 @@
 package net.hep.ami;
 
+import java.io.*;
 import java.util.logging.*;
 
 public class LogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class JsonFormatter extends Formatter
+	static
+	{
+		try
+		{
+			/*-------------------------------------------------------------*/
+			/* GET INPUT STREAM                                            */
+			/*-------------------------------------------------------------*/
+
+			InputStream inputStream = LogSingleton.class.getResourceAsStream("/logging.properties");
+
+			/*-------------------------------------------------------------*/
+			/* READ CONFIG                                                 */
+			/*-------------------------------------------------------------*/
+
+			LogManager.getLogManager().readConfiguration(inputStream);
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static class JsonFormatter extends Formatter
 	{
 		@Override
 		public String format(LogRecord record)
@@ -55,15 +82,15 @@ public class LogSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
+		private static final Integer m_logLevel = ConfigSingleton.getProperty("log_level", 0);
+
+		/*-----------------------------------------------------------------*/
+
 		private static final String m_from = ConfigSingleton.getProperty("log_from");
 
 		private static final String m_to = ConfigSingleton.getProperty("log_to");
 
 		private static final String m_cc = ConfigSingleton.getProperty("log_cc");
-
-		/*-----------------------------------------------------------------*/
-
-		private static final Integer m_logLevel = ConfigSingleton.getProperty("log_level", 0);
 
 		/*-----------------------------------------------------------------*/
 
@@ -75,19 +102,7 @@ public class LogSingleton
 		{
 			try
 			{
-				/*---------------------------------------------------------*/
-
-				Handler fileHandler = new FileHandler(name + ".log");
-
-				fileHandler.setFormatter(new JsonFormatter());
-
-				/*---------------------------------------------------------*/
-
 				m_logger = java.util.logging.Logger.getLogger(name);
-
-				m_logger.addHandler(fileHandler);
-
-				/*---------------------------------------------------------*/
 			}
 			catch(Exception e)
 			{

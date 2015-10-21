@@ -35,7 +35,7 @@ public class CloudSingleton {
 				addDriver(className);
 
 			} catch(Exception e) {
-				LogSingleton.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
+				LogSingleton.defaultLogger.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
 			}
 		}
 	}

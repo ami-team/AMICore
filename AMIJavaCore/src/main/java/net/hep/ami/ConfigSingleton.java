@@ -263,7 +263,7 @@ public class ConfigSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE PREPARE STATEMENT                                        */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
@@ -274,6 +274,10 @@ public class ConfigSingleton
 
 		PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
 
+		/*-----------------------------------------------------------------*/
+		/* FILL PREPARE STATEMENT                                          */
+		/*-----------------------------------------------------------------*/
+
 		String name;
 		String value;
 
@@ -282,31 +286,31 @@ public class ConfigSingleton
 			name = entry.getKey();
 			value = entry.getValue();
 
-			if(name.equals("host")
-			   ||
-			   name.equals("agent")
-			   ||
-			   name.equals("admin_user")
-			   ||
-			   name.equals("guest_user")
-			   ||
-			   name.equals("encryption_key")
-			   ||
-			   name.equals("jdbc_url")
-			   ||
-			   name.equals("router_user")
+			if(name.equals("host") == false
+			   &&
+			   name.equals("agent") == false
+			   &&
+			   name.equals("admin_user") == false
+			   &&
+			   name.equals("guest_user") == false
+			   &&
+			   name.equals("encryption_key") == false
+			   &&
+			   name.equals("jdbc_url") == false
+			   &&
+			   name.equals("router_user") == false
 			 ) {
-				continue;
-			}
-			else
-			{
 				preparedStatement.setString(1, Cryptography.encrypt(name));
 				preparedStatement.setString(2, Cryptography.encrypt(value));
 				preparedStatement.addBatch();
 			}
-
-			preparedStatement.executeBatch();
 		}
+
+		/*-----------------------------------------------------------------*/
+		/* EXECUTE PREPARE STATEMENT                                       */
+		/*-----------------------------------------------------------------*/
+
+		preparedStatement.executeBatch();
 
 		/*-----------------------------------------------------------------*/
 	}
