@@ -22,13 +22,4 @@
     <url-pattern>/Setup/*</url-pattern>
   </servlet-mapping>
 
-  <servlet>
-    <servlet-name>SLS</servlet-name>
-    <servlet-class>net.hep.ami.servlet.SLS</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>SLS</servlet-name>
-    <url-pattern>/SLS/*</url-pattern>
-  </servlet-mapping>
-
 </web-app>

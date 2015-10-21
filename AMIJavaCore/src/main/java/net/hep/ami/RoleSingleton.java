@@ -27,7 +27,7 @@ public class RoleSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.log(LogSingleton.LogLevel.CRITICAL, e.getMessage());
+				LogSingleton.defaultLogger.fatal(e.getMessage());
 			}
 		}
 	}

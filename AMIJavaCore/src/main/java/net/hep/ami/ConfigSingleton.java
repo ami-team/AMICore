@@ -78,7 +78,7 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+			LogSingleton.defaultLogger.error(e.getMessage());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -242,7 +242,7 @@ public class ConfigSingleton
 			}
 			catch(org.bouncycastle.util.encoders.DecoderException e)
 			{
-				LogSingleton.defaultLogger.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+				LogSingleton.defaultLogger.error(e.getMessage());
 			}
 		}
 

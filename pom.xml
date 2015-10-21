@@ -173,7 +173,6 @@
     <module>AMIJavaCore</module>
     <module>AMIWebCore</module>
     <module>AMITaskServer</module>
-<!-- <module>AMICloud</module> -->
   </modules>
 
 </project>

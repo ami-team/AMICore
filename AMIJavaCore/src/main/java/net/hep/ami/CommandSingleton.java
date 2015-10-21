@@ -2,7 +2,6 @@ package net.hep.ami;
 
 import java.util.*;
 import java.util.regex.*;
-
 import java.lang.reflect.*;
 
 import net.hep.ami.jdbc.*;
@@ -46,7 +45,7 @@ public class CommandSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+			LogSingleton.defaultLogger.error(e.getMessage());
 		}
 	}
 
