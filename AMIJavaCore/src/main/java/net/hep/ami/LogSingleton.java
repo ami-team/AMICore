@@ -72,7 +72,15 @@ public class LogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		configuration.getRootLogger().addAppender(amiFatalAppender, null, null);
+		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level"));
+
+		/*-----------------------------------------------------------------*/
+
+		LoggerConfig loggerConfig = configuration.getRootLogger();
+
+		loggerConfig.addAppender(amiFatalAppender, null, null);
+
+		loggerConfig.setLevel(level);
 
 		/*-----------------------------------------------------------------*/
 	}
