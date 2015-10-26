@@ -45,7 +45,7 @@ public class RoleSingleton
 		Class<?> clazz = Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
-		/* ADD COMMANDE VALIDATOR                                          */
+		/* ADD COMMAND VALIDATOR                                           */
 		/*-----------------------------------------------------------------*/
 
 		/**/ if(ClassFinder.extendsClass(clazz, CommandValidatorInterface.class))

@@ -38,40 +38,28 @@ public class ConfigSingleton
 			/* READ FROM CONFFILE                                          */
 			/*-------------------------------------------------------------*/
 
-			readFromConfFile();
+			readFromConfFile(m_properties);
 			m_hasValidConfFile = true;
 
 			/*-------------------------------------------------------------*/
 			/* READ FROM DATABASE                                          */
 			/*-------------------------------------------------------------*/
 
-			readFromDataBase();
+			readFromDataBase(m_properties);
 			m_hasValidDataBase = true;
 
 			/*-------------------------------------------------------------*/
 			/* CHECK IF VALID                                              */
 			/*-------------------------------------------------------------*/
 
-			if(getProperty("host").isEmpty()
-			   ||
-			   getProperty("agent").isEmpty()
-			   ||
-			   getProperty("admin_user").isEmpty()
-			   ||
-			   getProperty("guest_user").isEmpty()
-			   ||
-			   getProperty("encryption_key").isEmpty()
-			   ||
-			   getProperty("jdbc_url").isEmpty()
-			   ||
-			   getProperty("router_user").isEmpty()
-			 ) {
-				m_hasValidConfFile = false;
-				m_hasValidDataBase = false;
+			if(isValid())
+			{
+				Cryptography.init(getProperty("encryption_key"));
 			}
 			else
 			{
-				Cryptography.init(getProperty("encryption_key"));
+				m_hasValidConfFile = false;
+				m_hasValidDataBase = false;
 			}
 
 			/*-------------------------------------------------------------*/
@@ -86,10 +74,50 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static boolean isValid()
+	{
+		return getProperty("host").isEmpty() == false
+		       &&
+		       getProperty("agent").isEmpty() == false
+		       &&
+		       getProperty("admin_user").isEmpty() == false
+		       &&
+		       getProperty("guest_user").isEmpty() == false
+		       &&
+		       getProperty("encryption_key").isEmpty() == false
+		       &&
+		       getProperty("jdbc_url").isEmpty() == false
+		       &&
+		       getProperty("router_user").isEmpty() == false
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static boolean isReserved(String name)
+	{
+		return name.equals("host")
+		       ||
+		       name.equals("agent")
+		       ||
+		       name.equals("admin_user")
+		       ||
+		       name.equals("guest_user")
+		       ||
+		       name.equals("encryption_key")
+		       ||
+		       name.equals("jdbc_url")
+		       ||
+		       name.equals("router_user")
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	private static File _toFile(String configFileName)
 	{
 		/*-----------------------------------------------------------------*/
-		/* CHECK FILENAME                                                  */
+		/* CHECK FILEEXT                                                   */
 		/*-----------------------------------------------------------------*/
 
 		if(configFileName.endsWith(".xml") == false)
@@ -108,7 +136,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromConfFile() throws Exception
+	private static void readFromConfFile(Map<String, String> properties) throws Exception
 	{
 		String path;
 
@@ -186,7 +214,7 @@ public class ConfigSingleton
 		{
 			Node node = nodeList.item(i);
 
-			m_properties.put(
+			properties.put(
 				XMLFactories.getAttribute(node, "name")
 				,
 				XMLFactories.getContent(node)
@@ -198,10 +226,10 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromDataBase() throws Exception
+	private static void readFromDataBase(Map<String, String> properties) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
@@ -209,6 +237,10 @@ public class ConfigSingleton
 			getProperty("router_user"),
 			getProperty("router_pass")
 		);
+
+		/*-----------------------------------------------------------------*/
+		/* EXECUTE QUERY                                                   */
+		/*-----------------------------------------------------------------*/
 
 		QueryResult queryResult;
 
@@ -230,11 +262,12 @@ public class ConfigSingleton
 		/*-----------------------------------------------------------------*/
 		/* ADD PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
+
 		for(int i = 0; i < numberOfRows; i++)
 		{
 			try
 			{
-				m_properties.put(
+				properties.put(
 					queryResult.getValue(i, "paramName"),
 					queryResult.getValue(i, "paramValue")
 				);
@@ -255,19 +288,10 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void writeToDataBase() throws Exception
+	public static void writeToDataBase(Map<String, String> properties) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-
-		Map<String, String> properties;
-
-		synchronized(ConfigSingleton.class)
-		{
-			properties = new HashMap<String, String>(m_properties);
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE PREPARE STATEMENT                                        */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
@@ -276,45 +300,61 @@ public class ConfigSingleton
 			getProperty("router_pass")
 		);
 
-		PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
-
 		/*-----------------------------------------------------------------*/
-		/* FILL PREPARE STATEMENT                                          */
+		/* EXECUTE QUERIES                                                 */
 		/*-----------------------------------------------------------------*/
 
-		String name;
-		String value;
-
-		for(Map.Entry<String, String> entry: properties.entrySet())
+		try
 		{
-			name = entry.getKey();
-			value = entry.getValue();
+			/*-------------------------------------------------------------*/
 
-			if(name.equals("host") == false
-			   &&
-			   name.equals("agent") == false
-			   &&
-			   name.equals("admin_user") == false
-			   &&
-			   name.equals("guest_user") == false
-			   &&
-			   name.equals("encryption_key") == false
-			   &&
-			   name.equals("jdbc_url") == false
-			   &&
-			   name.equals("router_user") == false
-			 ) {
-				preparedStatement.setString(1, Cryptography.encrypt(name));
-				preparedStatement.setString(2, Cryptography.encrypt(value));
-				preparedStatement.addBatch();
+			basicQuerier.executeSQLUpdate("DELETE FROM `router_config`");
+
+			/*-------------------------------------------------------------*/
+
+			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
+
+			/*-------------------------------------------------------------*/
+
+			String name;
+			String value;
+
+			for(Map.Entry<String, String> entry: properties.entrySet())
+			{
+				name = entry.getKey();
+				value = entry.getValue();
+
+				if(isReserved(name) == false)
+				{
+					preparedStatement.setString(1, Cryptography.encrypt(name));
+					preparedStatement.setString(2, Cryptography.encrypt(value));
+					preparedStatement.addBatch();
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
+			preparedStatement.executeBatch();
+
+			/*-------------------------------------------------------------*/
+		}
+		finally
+		{
+			try
+			{
+				basicQuerier.rollbackAndRelease();
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE PREPARE STATEMENT                                       */
+		/* COMMIT AND RELEASE                                              */
 		/*-----------------------------------------------------------------*/
 
-		preparedStatement.executeBatch();
+		basicQuerier.commitAndRelease();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -349,28 +389,9 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String setProperty(String key, String value)
-	{
-		String result;
-
-		synchronized(ConfigSingleton.class)
-		{
-			result = m_properties.put(key, value);
-		}
-
-		return result != null ? result : "";
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static String getProperty(String key)
 	{
-		String result;
-
-		synchronized(ConfigSingleton.class)
-		{
-			result = m_properties.get(key);
-		}
+		String result = m_properties.get(key);
 
 		return result != null ? result : "";
 	}
@@ -379,12 +400,7 @@ public class ConfigSingleton
 
 	public static String getProperty(String key, String defaultValue)
 	{
-		String result;
-
-		synchronized(ConfigSingleton.class)
-		{
-			result = m_properties.get(key);
-		}
+		String result = m_properties.get(key);
 
 		return result != null ? result : defaultValue;
 	}
@@ -394,12 +410,8 @@ public class ConfigSingleton
 	public static int getProperty(String key, int defaultValue)
 	{
 		int result;
-		String tmpValue;
 
-		synchronized(ConfigSingleton.class)
-		{
-			tmpValue = m_properties.get(key);
-		}
+		String tmpValue = m_properties.get(key);
 
 		if(tmpValue != null)
 		{
@@ -425,12 +437,8 @@ public class ConfigSingleton
 	public static float getProperty(String key, float defaultValue)
 	{
 		float result;
-		String tmpValue;
 
-		synchronized(ConfigSingleton.class)
-		{
-			tmpValue = m_properties.get(key);
-		}
+		String tmpValue = m_properties.get(key);
 
 		if(tmpValue != null)
 		{
@@ -456,12 +464,8 @@ public class ConfigSingleton
 	public static double getProperty(String key, double defaultValue)
 	{
 		double result;
-		String tmpValue;
 
-		synchronized(ConfigSingleton.class)
-		{
-			tmpValue = m_properties.get(key);
-		}
+		String tmpValue = m_properties.get(key);
 
 		if(tmpValue != null)
 		{
@@ -514,21 +518,12 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, String> properties;
-
-		synchronized(ConfigSingleton.class)
-		{
-			properties = new HashMap<String, String>(m_properties);
-		}
-
-		/*-----------------------------------------------------------------*/
-
 		String name;
 		String value;
 
 		result.append("<rowset type=\"config\"><row>");
 
-		for(Map.Entry<String, String> entry: properties.entrySet())
+		for(Map.Entry<String, String> entry: m_properties.entrySet())
 		{
 			name = entry.getKey();
 			value = entry.getValue();

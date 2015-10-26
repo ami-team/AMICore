@@ -5,16 +5,16 @@ import java.math.*;
 
 import net.hep.ami.jdbc.*;
 
-public class LocalisationSingleton
+public class LocalizationSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class Localisation
+	public static class Localization
 	{
 		public String continentCode;
 		public String countryCode;
 
-		public Localisation(String _continentCode, String _countryCode)
+		public Localization(String _continentCode, String _countryCode)
 		{
 			continentCode = _continentCode;
 			countryCode = _countryCode;
@@ -79,7 +79,7 @@ public class LocalisationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localisation getCountryIPv4(String ip) throws Exception
+	public static Localization getCountryIPv4(String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
@@ -114,7 +114,7 @@ public class LocalisationSingleton
 
 		if(queryResult.getNumberOfRows() == 1)
 		{
-			return new Localisation(
+			return new Localization(
 				queryResult.getValue(0, "continentCode"),
 				queryResult.getValue(0, "countryCode")
 			);
@@ -131,7 +131,7 @@ public class LocalisationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localisation getCountryIPv6(String ip) throws Exception
+	public static Localization getCountryIPv6(String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
@@ -166,7 +166,7 @@ public class LocalisationSingleton
 
 		if(queryResult.getNumberOfRows() == 1)
 		{
-			return new Localisation(
+			return new Localization(
 				queryResult.getValue(0, "continentCode"),
 				queryResult.getValue(0, "countryCode")
 			);

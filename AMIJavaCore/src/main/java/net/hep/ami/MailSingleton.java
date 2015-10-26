@@ -11,6 +11,8 @@ public class MailSingleton
 
 	private static final Properties m_properties = new Properties();
 
+	/*---------------------------------------------------------------------*/
+
 	private static final Authenticator m_authenticator = new Authenticator()
 	{
 		@Override
