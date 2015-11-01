@@ -37,7 +37,7 @@ public class TransactionalQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public QueryResult executeSQLQuery(String sql) throws Exception
+	public RowSet executeSQLQuery(String sql) throws Exception
 	{
 		return m_driver.executeSQLQuery(sql);
 	}
@@ -45,7 +45,7 @@ public class TransactionalQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public QueryResult executeMQLQuery(String mql) throws Exception
+	public RowSet executeMQLQuery(String mql) throws Exception
 	{
 		return m_driver.executeMQLQuery(mql);
 	}

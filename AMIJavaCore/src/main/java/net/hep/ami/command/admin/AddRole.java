@@ -54,15 +54,15 @@ public class AddRole extends CommandAbstractClass
 			m_parent.replace("'", "''")
 		);
 
-		QueryResult queryResult = transactionalQuerier.executeSQLQuery(sql1);
+		List<Row> rowList = transactionalQuerier.executeSQLQuery(sql1).getAll();
 
-		if(queryResult.getNumberOfRows() != 1)
+		if(rowList.size() != 1)
 		{
 			throw new Exception("unknown role `" + m_parent + "`");
 		}
 
-		String parentLft = queryResult.getValue(0, 0);
-		String parentRgt = queryResult.getValue(0, 1);
+		String parentLft = rowList.get(0).getValue(0);
+		String parentRgt = rowList.get(0).getValue(1);
 
 		/*-----------------------------------------------------------------*/
 		/* UPDATE TREE                                                     */

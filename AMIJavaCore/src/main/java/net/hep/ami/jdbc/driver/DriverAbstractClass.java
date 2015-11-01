@@ -13,6 +13,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	protected Connection m_connection;
+
 	protected Statement m_statement;
 
 	/*---------------------------------------------------------------------*/
@@ -87,9 +88,9 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public QueryResult executeSQLQuery(String sql) throws Exception
+	public RowSet executeSQLQuery(String sql) throws Exception
 	{
-		return new QueryResult(
+		return new RowSet(
 			m_statement.executeQuery(sql)
 		);
 	}
@@ -97,14 +98,14 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public QueryResult executeMQLQuery(String mql) throws Exception
+	public RowSet executeMQLQuery(String mql) throws Exception
 	{
 		String ast = /* TODO */ null /* TODO */;
 		String sql = SelectParser.parse(mql, this);
 
 		try
 		{
-			return new QueryResult(
+			return new RowSet(
 				m_statement.executeQuery(sql), ast, sql
 			);
 		}
@@ -238,14 +239,6 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	public Connection getConnection()
 	{
 		return m_connection;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Deprecated
-	public Statement getStatement()
-	{
-		return m_statement;
 	}
 
 	/*---------------------------------------------------------------------*/

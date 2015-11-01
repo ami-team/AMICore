@@ -61,19 +61,22 @@ public class GetSessionInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult1 = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')");
+		List<Row> rowList = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')").getAll();
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
+		if(rowList.size() == 0)
+		{
+			throw new Exception("invalid user `" + m_amiLogin + "`");
+		}
 
-		String AMIUser = queryResult1.getValue(0, "AMIUser");
-		String clientDNInAMI = queryResult1.getValue(0, "clientDN");
-		String issuerDNInAMI = queryResult1.getValue(0, "issuerDN");
-		String firstName = queryResult1.getValue(0, "firstName");
-		String lastName = queryResult1.getValue(0, "lastName");
-		String email = queryResult1.getValue(0, "email");
-		String valid = queryResult1.getValue(0, "valid");
+		Row row1 = rowList.get(0);
+
+		String AMIUser = row1.getValue("AMIUser");
+		String clientDNInAMI = row1.getValue("clientDN");
+		String issuerDNInAMI = row1.getValue("issuerDN");
+		String firstName = row1.getValue("firstName");
+		String lastName = row1.getValue("lastName");
+		String email = row1.getValue("email");
+		String valid = row1.getValue("valid");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -150,7 +153,7 @@ public class GetSessionInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult2 = transactionalQuerier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
+		RowSet rowSet2 = transactionalQuerier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
 
 		/*-----------------------------------------------------------------*/
 
@@ -202,16 +205,14 @@ public class GetSessionInfo extends CommandAbstractClass
 		/* ROLE                                                            */
 		/*-----------------------------------------------------------------*/
 
-		final int numberOfRows = queryResult2.getNumberOfRows();
-
 		result.append("<rowset type=\"role\">");
 
-		for(int i = 0; i < numberOfRows; i++)
+		for(Row row: rowSet2)
 		{
 			result.append(
 				"<row>"
 				+
-				"<field name=\"name\"><![CDATA[" + queryResult2.getValue(i, "role") + "]]></field>"
+				"<field name=\"name\"><![CDATA[" + row.getValue("role") + "]]></field>"
 				+
 				"</row>"
 			);

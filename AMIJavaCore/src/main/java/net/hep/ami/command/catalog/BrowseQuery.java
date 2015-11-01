@@ -40,7 +40,7 @@ public class BrowseQuery extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult;
+		RowSet queryResult;
 
 		if(m_sql != null)
 		{

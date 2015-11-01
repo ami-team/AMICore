@@ -54,7 +54,7 @@ public class CommandSingleton
 	private static void addCommands() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		DriverAbstractClass driver = DriverSingleton.getConnection(
@@ -63,42 +63,42 @@ public class CommandSingleton
 			ConfigSingleton.getProperty("router_pass")
 		);
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
-			queryResult = driver.executeSQLQuery("SELECT `command`,`class`,`archived` FROM `router_command`");
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			RowSet rowSet = driver.executeSQLQuery("SELECT `command`,`class`,`archived` FROM `router_command`");
+
+			/*-------------------------------------------------------------*/
+			/* ADD COMMANDS                                                */
+			/*-------------------------------------------------------------*/
+
+			for(Row row: rowSet)
+			{
+				try
+				{
+					addCommand(
+						row.getValue("command"),
+						row.getValue("class"),
+						row.getValue("archived")
+					);
+				}
+				catch(Exception e)
+				{
+					/* CETTE LIGNE DOIT ETRE DECOMMENTEE EN PROD */
+					//LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+				}
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
 			driver.rollbackAndRelease();
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF COMMANDS                                          */
-		/*-----------------------------------------------------------------*/
-
-		final int numberOfRows = queryResult.getNumberOfRows();
-
-		/*-----------------------------------------------------------------*/
-		/* ADD COMMANDS                                                    */
-		/*-----------------------------------------------------------------*/
-
-		for(int i = 0; i < numberOfRows; i++)
-		{
-			try
-			{
-				addCommand(
-					queryResult.getValue(i, "command"),
-					queryResult.getValue(i, "class"),
-					queryResult.getValue(i, "archived")
-				);
-			}
-			catch(Exception e)
-			{
-				/* CETTE LIGNE DOIT ETRE DECOMMENTEE EN PROD */
-				//LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
-			}
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -16,7 +16,8 @@ import net.hep.ami.utility.*;
 	urlPatterns = "/FrontEnd"
 )
 
-public class FrontEnd extends HttpServlet {
+public class FrontEnd extends HttpServlet
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 6325706434625863655L;
@@ -29,20 +30,23 @@ public class FrontEnd extends HttpServlet {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 		doCommand(req, res);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 		doCommand(req, res);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private void doCommand(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	private void doCommand(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 		/*-----------------------------------------------------------------*/
 		/* SET DEFAULT ENCODING                                            */
 		/*-----------------------------------------------------------------*/
@@ -56,7 +60,8 @@ public class FrontEnd extends HttpServlet {
 
 		String origin = req.getHeader("Origin");
 
-		if(origin != null) {
+		if(origin != null)
+		{
 			res.setHeader("Access-Control-Allow-Credentials", "true");
 			res.setHeader("Access-Control-Allow-Origin", origin);
 		}
@@ -104,8 +109,8 @@ public class FrontEnd extends HttpServlet {
 		/* PING                                                            */
 		/*-----------------------------------------------------------------*/
 
-		if(command.equals("Ping")) {
-
+		if(command.equals("Ping"))
+		{
 			res.setContentType("text/xml");
 
 			writer.print(XMLTemplates.info("AMI is alive."));
@@ -119,10 +124,12 @@ public class FrontEnd extends HttpServlet {
 		/* SET CONTENT DISPOSITION                                         */
 		/*-----------------------------------------------------------------*/
 
-		if(textOutput.isEmpty()) {
+		if(textOutput.isEmpty())
+		{
 			res.setHeader("Content-disposition", "inline; filename=" + ((("AMI"))) );
 		}
-		else {
+		else
+		{
 			res.setHeader("Content-disposition", "attachment; filename=" + textOutput);
 		}
 
@@ -132,15 +139,16 @@ public class FrontEnd extends HttpServlet {
 
 		String data;
 
-		if(ConfigSingleton.hasValidConfFile() != false) {
-
-			try {
+		if(ConfigSingleton.hasValidConfFile() != false)
+		{
+			try
+			{
 				/*---------------------------------------------------------*/
 				/* RESOLVE LINK                                            */
 				/*---------------------------------------------------------*/
 
-				if(link.isEmpty() == false) {
-
+				if(link.isEmpty() == false)
+				{
 					Tuple2<String, String> result = resolveLink(link);
 
 					command = result.x;
@@ -165,12 +173,16 @@ public class FrontEnd extends HttpServlet {
 				);
 
 				/*---------------------------------------------------------*/
-			} catch(Exception e) {
+			}
+			catch(Exception e)
+			{
 				data = XMLTemplates.error(
 					e.getMessage()
 				);
 			}
-		} else {
+		}
+		else
+		{
 			data = XMLTemplates.error(
 				"config error"
 			);
@@ -182,24 +194,28 @@ public class FrontEnd extends HttpServlet {
 
 		String mime;
 
-		if(converter.isEmpty() == false) {
-
+		if(converter.isEmpty() == false)
+		{
 			StringReader stringReader = new StringReader(data);
 			StringWriter stringWriter = new StringWriter(/**/);
 
-			try {
+			try
+			{
 				mime = ConverterSingleton.applyConverter(converter, stringReader, stringWriter);
 
 				data = stringWriter.toString();
-
-			} catch(Exception e) {
+			}
+			catch(Exception e)
+			{
 				data = XMLTemplates.error(
 					e.getMessage()
 				);
 
 				mime = "text/xml";
 			}
-		} else {
+		}
+		else
+		{
 			mime = "text/xml";
 		}
 
@@ -222,16 +238,16 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private static Tuple2<String, String> getDNs(HttpServletRequest req) {
-
+	private static Tuple2<String, String> getDNs(HttpServletRequest req)
+	{
 		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
-		if(certificates != null) {
-
-			for(X509Certificate certificate: certificates) {
-
-				if(Cryptography.isProxy(certificate) == false) {
-
+		if(certificates != null)
+		{
+			for(X509Certificate certificate: certificates)
+			{
+				if(Cryptography.isProxy(certificate) == false)
+				{
 					return new Tuple2<String, String>(
 						Cryptography.getAMIName(certificate.getSubjectX500Principal()),
 						Cryptography.getAMIName(certificate.getIssuerX500Principal())
@@ -248,80 +264,106 @@ public class FrontEnd extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private Tuple2<String, String> resolveLink(String linkId) throws Exception {
+	private Tuple2<String, String> resolveLink(String linkId) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier("self");
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
 
-		try {
-			queryResult = basicQuerier.executeSQLQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id`='" + linkId.replace("'", "''") + "'");
+		Row row;
 
-		} finally {
+		try
+		{
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id`='" + linkId.replace("'", "''") + "'").getAll();
+
+			/*-------------------------------------------------------------*/
+			/* GET LINK                                                    */
+			/*-------------------------------------------------------------*/
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("could not resolve link `" + linkId + "`");
+			}
+
+			row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
+		}
+		finally
+		{
 			basicQuerier.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CHECK AND RETURN RESULT                                         */
+		/* RETURN LINK                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(queryResult.getNumberOfRows() == 1) {
-
-			return new Tuple2<String, String>(
-				queryResult.getValue(0,  "command" ),
-				queryResult.getValue(0, "converter")
-			);
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* RAISE ERROR                                                     */
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("could not resolve link `" + linkId + "`");
+		return new Tuple2<String, String>(
+			row.getValue( "command" ),
+			row.getValue("converter")
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private Tuple2<String, String> resolveCertificate(String clientDN) throws Exception {
+	private Tuple2<String, String> resolveCertificate(String clientDN) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier("self");
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
 
-		try {
-			queryResult = basicQuerier.executeSQLQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + Cryptography.encrypt(clientDN).replace("'", "''") + "'");
+		Row row;
 
-		} finally {
+		try
+		{
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + Cryptography.encrypt(clientDN).replace("'", "''") + "'").getAll();
+
+			/*-------------------------------------------------------------*/
+			/* GET CREDENTIALS                                             */
+			/*-------------------------------------------------------------*/
+
+			if(rowList.size() != 1)
+			{
+				new Tuple2<String, String>(
+					m_guest_user,
+					m_guest_pass
+				);
+			}
+
+			row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
+		}
+		finally
+		{
 			basicQuerier.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CHECK AND RETURN RESULT                                         */
-		/*-----------------------------------------------------------------*/
-
-		if(queryResult.getNumberOfRows() == 1) {
-
-			return new Tuple2<String, String>(
-				/******************/(queryResult.getValue(0, "AMIUser")),
-				Cryptography.decrypt(queryResult.getValue(0, "AMIPass"))
-			);
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* RAISE ERROR                                                     */
+		/* RETURN CREDENTIALS                                              */
 		/*-----------------------------------------------------------------*/
 
 		return new Tuple2<String, String>(
-			m_guest_user,
-			m_guest_pass
+			/******************/(row.getValue("AMIUser")),
+			Cryptography.decrypt(row.getValue("AMIPass"))
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -352,11 +394,14 @@ public class FrontEnd extends HttpServlet {
 
 		boolean noCert;
 
-		if(request.getParameter("NoCert") != null) {
+		if(request.getParameter("NoCert") != null)
+		{
 			session.setAttribute("NoCert", "NoCert");
 
 			noCert = 0x0000000000000000000000000000 != 0x01;
-		} else {
+		}
+		else
+		{
 			noCert = session.getAttribute("NoCert") != null;
 		}
 
@@ -364,7 +409,8 @@ public class FrontEnd extends HttpServlet {
 		/* UPDATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
 
-		if(clientDN.isEmpty() == false && issuerDN.isEmpty() == false && noCert == false) {
+		if(clientDN.isEmpty() == false && issuerDN.isEmpty() == false && noCert == false)
+		{
 			/*-------------------------------------------------------------*/
 			/* CERTIFICATE LOGIN                                           */
 			/*-------------------------------------------------------------*/
@@ -382,13 +428,16 @@ public class FrontEnd extends HttpServlet {
 				AMIPass = result.y;
 			}
 
-			if(AMIUser.equals(m_guest_user) == false) {
+			if(AMIUser.equals(m_guest_user) == false)
+			{
 				session.setAttribute("AMIUser_certificate", AMIUser);
 				session.setAttribute("AMIPass_certificate", AMIPass);
 
 				session.removeAttribute("AMIUser_credential");
 				session.removeAttribute("AMIPass_credential");
-			} else {
+			}
+			else
+			{
 				session.setAttribute("AMIUser_credential", AMIUser);
 				session.setAttribute("AMIPass_credential", AMIPass);
 
@@ -397,7 +446,9 @@ public class FrontEnd extends HttpServlet {
 			}
 
 			/*-------------------------------------------------------------*/
-		} else {
+		}
+		else
+		{
 			/*-------------------------------------------------------------*/
 			/* CREDENTIAL LOGIN                                            */
 			/*-------------------------------------------------------------*/
@@ -419,8 +470,9 @@ public class FrontEnd extends HttpServlet {
 					AMIUser = m_guest_user;
 					AMIPass = m_guest_pass;
 				}
-			} else {
-
+			}
+			else
+			{
 				if(AMIUser.isEmpty()
 				   ||
 				   AMIPass.isEmpty()

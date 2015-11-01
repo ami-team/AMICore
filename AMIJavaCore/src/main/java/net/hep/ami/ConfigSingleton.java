@@ -210,9 +210,11 @@ public class ConfigSingleton
 		/* ADD PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
 
+		Node node;
+
 		for(int i = 0; i < numberOfNodes; i++)
 		{
-			Node node = nodeList.item(i);
+			node = nodeList.item(i);
 
 			properties.put(
 				XMLFactories.getAttribute(node, "name")
@@ -239,48 +241,44 @@ public class ConfigSingleton
 		);
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
-		/*-----------------------------------------------------------------*/
-
-		QueryResult queryResult;
 
 		try
 		{
-			queryResult = basicQuerier.executeSQLQuery("SELECT `paramName`,`paramValue` FROM `router_config`");
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			RowSet rowSet = basicQuerier.executeSQLQuery("SELECT `paramName`,`paramValue` FROM `router_config`");
+
+			/*-------------------------------------------------------------*/
+			/* ADD PROPERTIES                                              */
+			/*-------------------------------------------------------------*/
+
+			for(Row row: rowSet)
+			{
+				try
+				{
+					properties.put(
+						row.getValue("paramName"),
+						row.getValue("paramValue")
+					);
+			//		m_properties.put(
+			//			Cryptography.decrypt(queryResult.getValue(i, "paramName"))
+			//			,
+			//			Cryptography.decrypt(queryResult.getValue(i, "paramValue"))
+			//		);
+				}
+				catch(org.bouncycastle.util.encoders.DecoderException e)
+				{
+					LogSingleton.defaultLogger.error(e.getMessage());
+				}
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
 			basicQuerier.rollbackAndRelease();
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF PROPERTIES                                        */
-		/*-----------------------------------------------------------------*/
-
-		final int numberOfRows = queryResult.getNumberOfRows();
-
-		/*-----------------------------------------------------------------*/
-		/* ADD PROPERTIES                                                  */
-		/*-----------------------------------------------------------------*/
-
-		for(int i = 0; i < numberOfRows; i++)
-		{
-			try
-			{
-				properties.put(
-					queryResult.getValue(i, "paramName"),
-					queryResult.getValue(i, "paramValue")
-				);
-		//		m_properties.put(
-		//			Cryptography.decrypt(queryResult.getValue(i, "paramName"))
-		//			,
-		//			Cryptography.decrypt(queryResult.getValue(i, "paramValue"))
-		//		);
-			}
-			catch(org.bouncycastle.util.encoders.DecoderException e)
-			{
-				LogSingleton.defaultLogger.error(e.getMessage());
-			}
 		}
 
 		/*-----------------------------------------------------------------*/

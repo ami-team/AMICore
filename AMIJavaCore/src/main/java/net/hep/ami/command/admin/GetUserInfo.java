@@ -40,17 +40,20 @@ public class GetUserInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult1 = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + m_amiLogin + "'");
+		List<Row> rowList = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + m_amiLogin + "'").getAll();
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
+		if(rowList.size() == 0)
+		{
+			throw new Exception("invalid user `" + m_amiLogin + "`");
+		}
 
-		String AMIUser = queryResult1.getValue(0, "AMIUser");
-		String firstName = queryResult1.getValue(0, "firstName");
-		String lastName = queryResult1.getValue(0, "lastName");
-		String email = queryResult1.getValue(0, "email");
-		String valid = queryResult1.getValue(0, "valid");
+		Row row1 = rowList.get(0);
+
+		String AMIUser = row1.getValue("AMIUser");
+		String firstName = row1.getValue("firstName");
+		String lastName = row1.getValue("lastName");
+		String email = row1.getValue("email");
+		String valid = row1.getValue("valid");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -62,7 +65,7 @@ public class GetUserInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		QueryResult queryResult2 = transactionalQuerier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
+		RowSet rowSet2 = transactionalQuerier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
 
 		/*-----------------------------------------------------------------*/
 
@@ -100,16 +103,14 @@ public class GetUserInfo extends CommandAbstractClass
 		/* ROLE                                                            */
 		/*-----------------------------------------------------------------*/
 
-		final int numberOfRows = queryResult2.getNumberOfRows();
-
 		result.append("<rowset type=\"role\">");
 
-		for(int i = 0; i < numberOfRows; i++)
+		for(Row row2: rowSet2)
 		{
 			result.append(
 				"<row>"
 				+
-				"<field name=\"role\"><![CDATA[" + queryResult2.getValue(i, "role") + "]]></field>"
+				"<field name=\"role\"><![CDATA[" + row2.getValue("role") + "]]></field>"
 				+
 				"</row>"
 			);

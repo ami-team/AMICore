@@ -42,7 +42,7 @@ public class CatalogSingleton
 	static void addCatalogs() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		DriverAbstractClass driver = DriverSingleton.getConnection(
@@ -51,43 +51,43 @@ public class CatalogSingleton
 			ConfigSingleton.getProperty("router_pass")
 		);
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
-			queryResult = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass`,`archived` FROM `router_catalog`");
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			RowSet rowSet = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass`,`archived` FROM `router_catalog`");
+
+			/*-------------------------------------------------------------*/
+			/* ADD CATALOGS                                                */
+			/*-------------------------------------------------------------*/
+
+			for(Row row: rowSet)
+			{
+				try
+				{
+					addCatalog(
+						row.getValue("catalog"),
+						row.getValue("jdbcUrl"),
+						Cryptography.decrypt(row.getValue("user")),
+						Cryptography.decrypt(row.getValue("pass")),
+						row.getValue("archived")
+					);
+				}
+				catch(Exception e)
+				{
+					LogSingleton.defaultLogger.fatal(e.getMessage());
+				}
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
 			driver.rollbackAndRelease();
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF CATALOGS                                          */
-		/*-----------------------------------------------------------------*/
-
-		final int numberOfRows = queryResult.getNumberOfRows();
-
-		/*-----------------------------------------------------------------*/
-		/* ADD CATALOGS                                                    */
-		/*-----------------------------------------------------------------*/
-
-		for(int i = 0; i < numberOfRows; i++)
-		{
-			try
-			{
-				addCatalog(
-					queryResult.getValue(i, "catalog"),
-					queryResult.getValue(i, "jdbcUrl"),
-					Cryptography.decrypt(queryResult.getValue(i, "user")),
-					Cryptography.decrypt(queryResult.getValue(i, "pass")),
-					queryResult.getValue(i, "archived")
-				);
-			}
-			catch(Exception e)
-			{
-				LogSingleton.defaultLogger.fatal(e.getMessage());
-			}
 		}
 
 		/*-----------------------------------------------------------------*/

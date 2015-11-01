@@ -14,7 +14,8 @@ import net.hep.ami.utility.*;
 	urlPatterns = "/Setup"
 )
 
-public class Setup extends HttpServlet {
+public class Setup extends HttpServlet
+{
 	/*---------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = -7394712866072360297L;
@@ -22,20 +23,23 @@ public class Setup extends HttpServlet {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 		doCommand(req, res);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 		doCommand(req, res);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private void doCommand(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	private void doCommand(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 		/*-----------------------------------------------------------------*/
 		/* SET DEFAULT ENCODING                                            */
 		/*-----------------------------------------------------------------*/
@@ -71,7 +75,8 @@ public class Setup extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private String level1(HttpServletRequest req) {
+	private String level1(HttpServletRequest req)
+	{
 		/*-----------------------------------------------------------------*/
 		/* VARIABLES (SERVER)                                              */
 		/*-----------------------------------------------------------------*/
@@ -104,11 +109,14 @@ public class Setup extends HttpServlet {
 
 		StringBuilder stringBuilder = new StringBuilder();
 
-		try {
+		try
+		{
 			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level1.html"));
 
 			return stringBuilder.toString().replace("%%HOST%%", host).replace("%%AGENT%%", agent).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass).replace("%%GUEST_USER%%", guest_user).replace("%%GUEST_PASS%%", guest_pass).replace("%%ENCRYPTION_KEY%%", encryption_key).replace("%%JDBC_URL%%", jdbc_url).replace("%%ROUTER_USER%%", router_user).replace("%%ROUTER_PASS%%", router_pass);
-		} catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			return "<html><body><![CDATA[" + e.getMessage() + "]]></body></html>";
 		}
 
@@ -117,7 +125,8 @@ public class Setup extends HttpServlet {
 
 	/*---------------------------------------------------------------------*/
 
-	private String level2(HttpServletRequest req) {
+	private String level2(HttpServletRequest req)
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (SERVER)                                     */
 		/*-----------------------------------------------------------------*/
@@ -160,7 +169,8 @@ public class Setup extends HttpServlet {
 		/* PATCH HOST                                                      */
 		/*-----------------------------------------------------------------*/
 
-		while(host.endsWith("/")) {
+		while(host.endsWith("/"))
+		{
 			host = host.substring(0, host.length() - 1);
 		}
 
@@ -193,55 +203,69 @@ public class Setup extends HttpServlet {
 
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier    basicQuerier    = null;
+		BasicQuerier basicQuerier = null;
 		BufferedWriter bufferedWriter = null;
 		StringBuilder stringBuilder = new StringBuilder();
 
-		try {
+		try
+		{
 			basicQuerier = new BasicQuerier(jdbc_url, router_user, router_pass);
 
 			bufferedWriter = new BufferedWriter(new FileWriter(fileName));
 			bufferedWriter.write(content);
 
-			try {
+			try
+			{
 				TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_success.html"));
 
 				return stringBuilder.toString().replace("%%HOST%%", host).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass);
-			} catch(Exception f) {
+			}
+			catch(Exception f)
+			{
 				return "<html><body><![CDATA[" + f.getMessage() + "]]></body></html>";
 			}
 
-		} catch(Exception e) {
-
-			try {
+		}
+		catch(Exception e)
+		{
+			try
+			{
 				TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_error.html"));
 
 				return stringBuilder.toString().replace("%%MESSAGE%%", e.getMessage());
-			} catch(Exception f) {
+			}
+			catch(Exception f)
+			{
 				return "<html><body><![CDATA[" + f.getMessage() + "]]></body></html>";
 			}
 
-		} finally {
+		}
+		finally
+		{
 			/*-------------------------------------------------------------*/
 
-			if(basicQuerier != null) {
-
-				try {
+			if(basicQuerier != null)
+			{
+				try
+				{
 					basicQuerier.rollbackAndRelease();
-
-				} catch(Exception e) {
+				}
+				catch(Exception e)
+				{
 					/* IGNORE */
 				}
 			}
 
 			/*-------------------------------------------------------------*/
 
-			if(bufferedWriter != null) {
-
-				try {
+			if(bufferedWriter != null)
+			{
+				try
+				{
 					bufferedWriter.close();
-
-				} catch(Exception e) {
+				}
+				catch(Exception e)
+				{
 					/* IGNORE */
 				}
 			}

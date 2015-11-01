@@ -6,11 +6,11 @@ public interface QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeSQLQuery(String sql) throws Exception;
+	public RowSet executeSQLQuery(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public QueryResult executeMQLQuery(String mql) throws Exception;
+	public RowSet executeMQLQuery(String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

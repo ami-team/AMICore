@@ -46,14 +46,14 @@ public class AddCommandRole extends CommandAbstractClass
 			m_command.replace("'", "''")
 		);
 
-		QueryResult queryResult1 = transactionalQuerier.executeSQLQuery(sql1);
+		List<Row> rowList1 = transactionalQuerier.executeSQLQuery(sql1).getAll();
 
-		if(queryResult1.getNumberOfRows() != 1)
+		if(rowList1.size() != 1)
 		{
 			throw new Exception("unknown command `" + m_command + "`");
 		}
 
-		String commandID = queryResult1.getValue(0, 0);
+		String commandID = rowList1.get(0).getValue(0);
 
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE ID                                                     */
@@ -63,14 +63,14 @@ public class AddCommandRole extends CommandAbstractClass
 			m_role.replace("'", "''")
 		);
 
-		QueryResult queryResult2 = transactionalQuerier.executeSQLQuery(sql2);
+		List<Row> rowList2 = transactionalQuerier.executeSQLQuery(sql2).getAll();
 
-		if(queryResult2.getNumberOfRows() != 1)
+		if(rowList2.size() != 1)
 		{
 			throw new Exception("unknown role `" + m_role + "`");
 		}
 
-		String roleID = queryResult2.getValue(0, 0);
+		String roleID = rowList2.get(0).getValue(0);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD ROLE                                                        */

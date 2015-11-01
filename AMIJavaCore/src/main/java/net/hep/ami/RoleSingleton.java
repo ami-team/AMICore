@@ -97,7 +97,7 @@ public class RoleSingleton
 		AMIPass = Cryptography.encrypt(AMIPass);
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
@@ -106,11 +106,17 @@ public class RoleSingleton
 			ConfigSingleton.getProperty("router_pass")
 		);
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
+
+		Row row;
 
 		try
 		{
-			queryResult = basicQuerier.executeSQLQuery(
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			RowSet rowSet = basicQuerier.executeSQLQuery(
 				"SELECT `node`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` AS `tree`,`router_role` AS `node` WHERE" +
 				/*---------------------------------------------------------*/
 				/* SELECT COMMAND                                          */
@@ -140,6 +146,21 @@ public class RoleSingleton
 				"	ORDER BY `node`.`lft` DESC"
 				/*---------------------------------------------------------*/
 			);
+
+			/*-------------------------------------------------------------*/
+			/* GET ROLE                                                    */
+			/*-------------------------------------------------------------*/
+
+			List<Row> rowList = rowSet.getAll();
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("wrong role");
+			}
+
+			row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
@@ -147,23 +168,10 @@ public class RoleSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF PROPERTIES                                        */
+		/* CHECK ROLE                                                      */
 		/*-----------------------------------------------------------------*/
 
-		final int numberOfRows = queryResult.getNumberOfRows();
-
-		if(numberOfRows == 0)
-		{
-			throw new Exception("wrong role");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CHECK VALIDATOR                                                 */
-		/*-----------------------------------------------------------------*/
-
-		String validatorClass = queryResult.getValue(0, "validatorClass");
-
-		checkCommand(validatorClass, command, arguments);
+		checkCommand(row.getValue("validatorClass"), command, arguments);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -172,7 +180,7 @@ public class RoleSingleton
 
 	public static void checkCommand(String validator, String command, Map<String, String> arguments) throws Exception
 	{
-		if(validator.isEmpty())
+		if(validator == null || validator.isEmpty())
 		{
 			return;
 		}
@@ -215,7 +223,7 @@ public class RoleSingleton
 
 	public static void checkNewUser(String validator, String amiLogin, String amiPassword, String clientDN, String issuerDN, String firstName, String lastName, String email) throws Exception
 	{
-		if(validator.isEmpty())
+		if(validator == null || validator.isEmpty())
 		{
 			return;
 		}

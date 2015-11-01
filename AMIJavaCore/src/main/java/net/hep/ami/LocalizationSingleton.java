@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import java.net.*;
+import java.util.*;
 import java.math.*;
 
 import net.hep.ami.jdbc.*;
@@ -88,7 +89,7 @@ public class LocalizationSingleton
 		String _ip = ipv4ToInteger(ip).toString();
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
@@ -97,11 +98,32 @@ public class LocalizationSingleton
 			m_routerPass
 		);
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
+
+		Row row;
 
 		try
 		{
-			queryResult = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
+
+			/*-------------------------------------------------------------*/
+			/* GET LOCALIZATION                                            */
+			/*-------------------------------------------------------------*/
+
+			List<Row> rowList = rowSet.getAll();
+
+			if(rowList.size() == 0)
+			{
+				throw new Exception("could not localize IPv4 `" + ip + "`");
+			}
+
+			row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
@@ -109,22 +131,13 @@ public class LocalizationSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CHECK AND RETURN RESULT                                         */
+		/* RETURN LOCALIZATION                                             */
 		/*-----------------------------------------------------------------*/
 
-		if(queryResult.getNumberOfRows() == 1)
-		{
-			return new Localization(
-				queryResult.getValue(0, "continentCode"),
-				queryResult.getValue(0, "countryCode")
-			);
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* RAISE ERROR                                                     */
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("could not localize IPv4 `" + ip + "`");
+		return new Localization(
+			row.getValue("continentCode"),
+			row.getValue( "countryCode" )
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -140,7 +153,7 @@ public class LocalizationSingleton
 		String _ip = ipv6ToInteger(ip).toString();
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
@@ -149,11 +162,32 @@ public class LocalizationSingleton
 			m_routerPass
 		);
 
-		QueryResult queryResult;
+		/*-----------------------------------------------------------------*/
+
+		Row row;
 
 		try
 		{
-			queryResult = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
+			/*-----------------------------------------------------------------*/
+			/* EXECUTE QUERY                                                   */
+			/*-----------------------------------------------------------------*/
+
+			RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
+
+			/*-------------------------------------------------------------*/
+			/* GET LOCALIZATION                                            */
+			/*-------------------------------------------------------------*/
+
+			List<Row> rowList = rowSet.getAll();
+
+			if(rowList.size() == 0)
+			{
+				throw new Exception("could not localize IPv4 `" + ip + "`");
+			}
+
+			row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
@@ -161,22 +195,13 @@ public class LocalizationSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CHECK AND RETURN RESULT                                         */
+		/* RETURN LOCALIZATION                                             */
 		/*-----------------------------------------------------------------*/
 
-		if(queryResult.getNumberOfRows() == 1)
-		{
-			return new Localization(
-				queryResult.getValue(0, "continentCode"),
-				queryResult.getValue(0, "countryCode")
-			);
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* RAISE ERROR                                                     */
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("could not localize IPv6 `" + ip + "`");
+		return new Localization(
+			row.getValue("continentCode"),
+			row.getValue( "countryCode" )
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
