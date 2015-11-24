@@ -8,7 +8,7 @@ install:
 	mvn install
 
 assembly:
-	mvn assembly:assembly
+	mvn -f AMITaskServer/pom.xml assembly:assembly
 
 update-versions:
 	mvn release:update-versions
