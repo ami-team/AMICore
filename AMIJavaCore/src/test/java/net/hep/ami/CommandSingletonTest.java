@@ -12,6 +12,15 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
+		LogSingleton.defaultLogger.error("Hello");
+		//LogSingleton.defaultLogger.fatal("Hello");
+
+		System.out.println(CatalogSingleton.listCatalogs());
+
+		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+
+		if(true) System.exit(0);
+
 		try
 		{
 			/*System.out.println(*/CatalogSingleton.listCatalogs()/*)*/;
@@ -54,6 +63,8 @@ public class CommandSingletonTest
 				try
 				{
 					RoleSingleton.checkRoles("GetSessionInfo", arguments);
+					arguments.clear();
+					//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 				}
 				catch(Exception e)
 				{

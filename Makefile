@@ -7,6 +7,9 @@ compile:
 install:
 	mvn install
 
+assembly:
+	mvn assembly:assembly
+
 update-versions:
 	mvn release:update-versions
 
