@@ -71,11 +71,9 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		/* GET CATALOGS                                                    */
 		/*-----------------------------------------------------------------*/
 
-		m_internalCatalog = m_connection.getCatalog();
-
 		try
 		{
-			m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog);
+			m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog = m_connection.getCatalog());
 		}
 		catch(Exception e)
 		{
@@ -158,6 +156,31 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		try
 		{
 			return m_connection.prepareStatement(sql);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for query " + sql);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception
+	{
+		return m_connection.prepareStatement(sql, columnNames);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement mqlPrepareStatement(String mql, String columnNames[]) throws Exception
+	{
+		String sql = UpdateParser.parse(mql, this);
+
+		try
+		{
+			return m_connection.prepareStatement(sql, columnNames);
 		}
 		catch(Exception e)
 		{

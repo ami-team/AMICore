@@ -85,6 +85,22 @@ public class TransactionalQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception
+	{
+		return m_driver.sqlPrepareStatement(sql, columnNames);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement mqlPrepareStatement(String mql, String columnNames[]) throws Exception
+	{
+		return m_driver.mqlPrepareStatement(mql, columnNames);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String getInternalCatalog()
 	{
 		return m_driver.getInternalCatalog();

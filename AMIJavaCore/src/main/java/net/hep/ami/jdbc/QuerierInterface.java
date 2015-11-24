@@ -30,6 +30,14 @@ public interface QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
+	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public PreparedStatement mqlPrepareStatement(String mql, String columnNames[]) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
 	public String getInternalCatalog();
 
 	/*---------------------------------------------------------------------*/
