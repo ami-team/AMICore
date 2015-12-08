@@ -83,7 +83,7 @@ public class MainServer
 
 			try
 			{
-				if(file.createNewFile() == false && file.setLastModified(date.getTime()) == false)
+				if(file.exists() && file.setLastModified(date.getTime()) == false)
 				{
 					LogSingleton.defaultLogger.error("Watch dog error");
 

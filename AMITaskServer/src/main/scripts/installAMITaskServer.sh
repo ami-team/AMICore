@@ -15,20 +15,20 @@ AMI_HOME=$(cd $(dirname $THIS_SCRIPT) && pwd)
 
 if [[ $(uname -s) == 'Linux' ]]
 then
-    #########################################################################
+  ###########################################################################
 
-    rm -f /etc/init.d/AMITaskServer
+  rm -f /etc/init.d/AMITaskServer
 
-    ln -s $AMI_HOME/AMITaskServer /etc/init.d/AMITaskServer
+  ln -s $AMI_HOME/AMITaskServer /etc/init.d/AMITaskServer
 
-    #########################################################################
+  ###########################################################################
 
-    chkconfig --add AMITaskServer
-    chkconfig AMITaskServer on
+  chkconfig --add AMITaskServer
+  chkconfig AMITaskServer on
 
-    #########################################################################
+  ###########################################################################
 else
-    echo 'Only for Linux'
+  echo 'Only for Linux'
 fi
 
 #############################################################################

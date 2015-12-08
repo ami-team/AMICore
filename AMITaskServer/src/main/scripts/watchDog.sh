@@ -6,30 +6,46 @@ THIS_SCRIPT=${BASH_SOURCE[0]:-$0}
 
 while [[ -n $(readlink $THIS_SCRIPT) ]]
 do
-    THIS_SCRIPT=$(readlink $THIS_SCRIPT)
+  THIS_SCRIPT=$(readlink $THIS_SCRIPT)
 done
 
 AMI_HOME=$(cd $(dirname $THIS_SCRIPT) && pwd)
 
 #############################################################################
 
-if [[ -z $(pgrep watchDog.sh) ]]
+PID=$(cat $AMI_HOME/wdogFile 2> /dev/null)
+
+if [[ $? -eq 0 ]]
 then
-  while true
-  do
-    sleep 10
+  XXXXXXXXXXXXXXX=$(ps -p $PID 2> /dev/null)
 
-    Q1=$(find $AMI_HOME/log/AMITaskServer.out -cmin -60)
-    sleep 1
-    Q2=$(find $AMI_HOME/log/AMITaskServer.out -cmin -60)
+  if [[ $? -eq 0 ]]
+  then
+    echo $XXXXXXXXXXXXXXX
 
-    if [[ -z $Q1 && -z $Q2 ]]
-    then
-      echo "$(date) - restart AMI Task Server" >> /tmp/WD.out
-
-      $AMI_HOME/restartAMITaskServer.sh &
-    fi
-  done
+    exit 0
+  fi
 fi
+
+#############################################################################
+
+echo $$ > $AMI_HOME/wdogFile
+
+if [[ $? -ne 0 ]]
+then
+  exit 1
+fi
+
+#############################################################################
+
+while true
+do
+  sleep 10
+
+  if [[ -z $(find $AMI_HOME/wdogFile -cmin -1 2> /dev/null) ]]
+  then
+    $AMI_HOME/restartAMITaskServer.sh
+  fi
+done
 
 #############################################################################
