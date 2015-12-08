@@ -8,13 +8,13 @@ public abstract class TaskAbstractClass implements Runnable
 {
 	/*---------------------------------------------------------------------*/
 
-	private TaskThread m_taskThread = null;
-
-	private String m_argument = null;
+	protected final Logger m_logger = LogManager.getLogger(getClass().getSimpleName());
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Logger m_logger = LogManager.getLogger(getClass().getSimpleName());
+	private TaskThread m_taskThread = null;
+
+	private String m_argument = null;
 
 	/*---------------------------------------------------------------------*/
 
@@ -40,24 +40,35 @@ public abstract class TaskAbstractClass implements Runnable
 	@Override
 	public final void run()
 	{
+		/*-----------------------------------------------------------------*/
+
+		m_logger.info("Task '" + getTaskName() + "': start");
+
+		/*-----------------------------------------------------------------*/
+
+		boolean status = false;
+
 		try
 		{
-			boolean status = main(m_argument);
-
-			if(m_taskThread != null)
-			{
-				m_taskThread.m_status = status;
-			}
+			status = main(m_argument);
 		}
 		catch(Exception e)
 		{
-			if(m_taskThread != null)
-			{
-				m_taskThread.m_status = false;
-			}
-
-			throw new RuntimeException(e.getMessage());
+			m_logger.error(e.getMessage());
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_taskThread != null)
+		{
+			m_taskThread.m_status = status;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		m_logger.info("Task '" + getTaskName() + "': stop");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -69,20 +69,9 @@ public class MainServer
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Thread.UncaughtExceptionHandler s_uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler()
-	{
-		@Override
-		public void uncaughtException(Thread thread, Throwable throwable)
-		{
-			LogSingleton.defaultLogger.error(throwable.getMessage());
-		}
-	};
-
-	/*---------------------------------------------------------------------*/
-
 	private long m_cnt = 0;
 
-	private boolean isFinish()
+	private boolean isFinish(Date date)
 	{
 		/*-----------------------------------------------------------------*/
 		/* WDOG FILE                                                       */
@@ -94,9 +83,7 @@ public class MainServer
 
 			try
 			{
-				file.createNewFile();
-
-				if(file.setLastModified(new java.util.Date().getTime()) == false)
+				if(file.createNewFile() == false && file.setLastModified(date.getTime()) == false)
 				{
 					LogSingleton.defaultLogger.error("Watch dog error");
 
@@ -180,17 +167,19 @@ public class MainServer
 		{
 			/*-------------------------------------------------------------*/
 
-			if(isFinish())
+			Date date = new java.util.Date();
+
+			/*-------------------------------------------------------------*/
+
+			if(isFinish(date))
 			{
 				removeAllTasks();
-
 				break;
 			}
 			else
 			{
 				removeFinishTasks();
-
-				/***/;
+				;;;;;;
 			}
 
 			/*-------------------------------------------------------------*/
@@ -205,10 +194,6 @@ public class MainServer
 			/*-------------------------------------------------------------*/
 
 			int priority = s_priorityArray[random.nextInt(s_priorityArray.length)];
-
-			/*-------------------------------------------------------------*/
-
-			Date date = new java.util.Date();
 
 			/*-------------------------------------------------------------*/
 
@@ -234,13 +219,12 @@ public class MainServer
 
 					TaskThread taskThread = TaskAbstractClass.getInstance(taskClass, taskArgument); m_threadMap.put(taskId, taskThread);
 
-					taskThread.setUncaughtExceptionHandler(s_uncaughtExceptionHandler);
 					taskThread.setName(taskClass);
 					taskThread.start();
 
 					/*-----------------------------------------------------------------*/
 
-					if(m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = (status | '1'), lastRunTime = '" + date.getTime() + "', lastRunDate = '" + DateFormater.format(date) + "' WHERE id = '" + taskId + "'") == 1)
+					if(m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = (status | 1), lastRunTime = '" + date.getTime() + "', lastRunDate = '" + DateFormater.format(date) + "' WHERE id = '" + taskId + "'") == 1)
 					{
 						m_taskServerQuerier.commit();
 					}
@@ -282,7 +266,7 @@ public class MainServer
 
 		try
 		{
-			if(m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = (status & ~3) WHERE taskServerName = '" + m_taskServerName.replace("'", "''") + "'") > 0)
+			if(m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = (status & ~1) WHERE taskServerName = '" + m_taskServerName.replace("'", "''") + "'") > 0)
 			{
 				m_taskServerQuerier.commit();
 			}
@@ -317,8 +301,8 @@ public class MainServer
 
 			try
 			{
-				int nb = status ? m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | '2') WHERE id = '" + taskId + "'")
-				                : m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | '0') WHERE id = '" + taskId + "'")
+				int nb = status ? m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | 2) WHERE id = '" + taskId + "'")
+				                : m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | 0) WHERE id = '" + taskId + "'")
 				;
 
 				if(nb > 0)
