@@ -114,22 +114,22 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static File _toFile(String configFileName)
+	private static File _toFile(String configPathName)
 	{
 		/*-----------------------------------------------------------------*/
 		/* CHECK FILEEXT                                                   */
 		/*-----------------------------------------------------------------*/
 
-		if(configFileName.endsWith(".xml") == false)
+		if(configPathName.endsWith(".xml") == false)
 		{
-			configFileName = configFileName.concat(File.separator).concat("AMI.xml");
+			configPathName = configPathName.concat(File.separator).concat("AMI.xml");
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE FILE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		return new File(configFileName);
+		return new File(configPathName);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -383,6 +383,24 @@ public class ConfigSingleton
 	public static boolean hasValidDataBase()
 	{
 		return m_hasValidDataBase;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String getSystemProperty(String key)
+	{
+		String result = System.getProperty(key);
+
+		return result != null ? result : "";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String getSystemProperty(String key, String defaultValue)
+	{
+		String result = System.getProperty(key);
+
+		return result != null ? result : defaultValue;
 	}
 
 	/*---------------------------------------------------------------------*/

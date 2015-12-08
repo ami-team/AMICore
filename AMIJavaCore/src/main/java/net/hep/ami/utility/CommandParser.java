@@ -9,9 +9,13 @@ public class CommandParser
 
 	public static class CommandParserTuple
 	{
+		/*-----------------------------------------------------------------*/
+
 		public String command;
 
 		public Map<String, String> arguments;
+
+		/*-----------------------------------------------------------------*/
 
 		public CommandParserTuple(String _command, Map<String, String> _arguments)
 		{
@@ -19,6 +23,8 @@ public class CommandParser
 
 			arguments = _arguments;
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

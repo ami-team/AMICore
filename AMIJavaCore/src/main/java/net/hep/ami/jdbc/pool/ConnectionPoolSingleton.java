@@ -152,7 +152,7 @@ public class ConnectionPoolSingleton
 		/**/
 		/**/		poolProperties.setTestOnBorrow(true);				/* The indication of whether objects will be validated before being borrowed from the pool. */
 		/**/		poolProperties.setTestOnReturn(true);				/* The indication of whether objects will be validated after being returned to the pool. */
-		/**/		poolProperties.setTestOnConnect(false);				/* Set to true if query validation should take place the first time on a connection. */
+		/**/		poolProperties.setTestOnConnect(true);				/* Set to true if query validation should take place the first time on a connection. */
 		/**/		poolProperties.setTestWhileIdle(true);				/* Set to true if query validation should take place while the connection is idle. */
 		/**/
 		/**/		poolProperties.setValidationQuery("SELECT 1");
@@ -162,7 +162,7 @@ public class ConnectionPoolSingleton
 		/**/		/*---------------------------*/
 		/**/
 		/**/		poolProperties.setLogAbandoned(true);
-		/**/		poolProperties.setRemoveAbandoned(true);
+		/**/		poolProperties.setRemoveAbandoned(false);			/* A revoir !!! */
 		/**/		poolProperties.setRemoveAbandonedTimeout(60);
 		/**/
 		/**/		/*-----------------------------------------------------*/

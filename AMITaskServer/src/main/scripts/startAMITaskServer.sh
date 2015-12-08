@@ -2,34 +2,46 @@
 
 #############################################################################
 
-AMI_HOME=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
+THIS_SCRIPT=${BASH_SOURCE[0]:-$0}
 
-echo $AMI_HOME
-
-#############################################################################
-
-export JAVA_HOME=/usr/local/java
-
-#############################################################################
-
-AMICLASSPATH=''
-
-for jar in $AMI_HOME/lib/*.jar
+while [[ -n $(readlink $THIS_SCRIPT) ]]
 do
-    AMICLASSPATH=$jar${AMICLASSPATH:+:$AMICLASSPATH}
+  THIS_SCRIPT=$(readlink $THIS_SCRIPT)
 done
 
-export CLASSPATH=$AMI_HOME/classes:$AMICLASSPATH${CLASSPATH:+:$CLASSPATH}
+AMI_HOME=$(cd $(dirname $THIS_SCRIPT) && pwd)
 
 #############################################################################
 
-if [[ -f $AMI_HOME/AMITaskServer.log ]]
+if [[ -z $(ps -ef | grep "net\.hep\.ami\.task\.MainServer") ]]
 then
-    mv $AMI_HOME/AMITaskServer.log $AMI_HOME/AMITaskServer.log.`date +%Y-%m-%d_%Hh%Mm%Ss`
+    #########################################################################
+
+    export JAVA_HOME=/usr/local/java
+
+    #########################################################################
+
+    AMICLASSPATH=''
+
+    for jar in $AMI_HOME/lib/*.jar
+    do
+        AMICLASSPATH=$jar${AMICLASSPATH:+:$AMICLASSPATH}
+    done
+
+    export CLASSPATH=$AMI_HOME/classes:$AMICLASSPATH${CLASSPATH:+:$CLASSPATH}
+
+    #########################################################################
+
+    if [[ -f $AMI_HOME/log/AMITaskServer.out ]]
+    then
+      mv $AMI_HOME/log/AMITaskServer.out $AMI_HOME/log/AMITaskServer.$(date +%Y-%m-%d_%Hh%Mm%Ss).out
+    fi
+
+    #########################################################################
+
+    $JAVA_HOME/bin/java -Xms2G -Xmx2G -Djsse.enableSNIExtension=false -DAMI_HOME=$AMI_HOME -Dami.conffile=$AMI_HOME/AMI.xml net.hep.ami.task.MainServer > $AMI_HOME/log/AMITaskServer.out &
+
+    #########################################################################
 fi
-
-#############################################################################
-
-$JAVA_HOME/bin/java -Xms1G -Xmx1G -Djsse.enableSNIExtension=false -Dconfigfile=$AMI_HOME/AMI.conf net.hep.ami.task.MainServer > $AMI_HOME/AMITaskServer.log &
 
 #############################################################################

@@ -140,7 +140,7 @@ public abstract class CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuilder execute() throws Exception
+	public final StringBuilder execute() throws Exception
 	{
 		StringBuilder result = null;
 
