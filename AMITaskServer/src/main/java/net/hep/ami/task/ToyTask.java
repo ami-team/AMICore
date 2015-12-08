@@ -5,9 +5,11 @@ public class ToyTask extends TaskAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void main(String argument) throws Exception
+	public boolean main(String argument) throws Exception
 	{
 		System.out.println("Hello World from '" + getTaskName() + "'!");
+
+		return true;
 	}
 
 	/*---------------------------------------------------------------------*/

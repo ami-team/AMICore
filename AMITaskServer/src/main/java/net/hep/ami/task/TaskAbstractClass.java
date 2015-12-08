@@ -42,7 +42,12 @@ public abstract class TaskAbstractClass implements Runnable
 	{
 		try
 		{
-			main(m_argument);
+			boolean status = main(m_argument);
+
+			if(m_taskThread != null)
+			{
+				m_taskThread.m_status = status;
+			}
 		}
 		catch(Exception e)
 		{
@@ -57,7 +62,7 @@ public abstract class TaskAbstractClass implements Runnable
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract void main(String argument) throws Exception;
+	public abstract boolean main(String argument) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 }
