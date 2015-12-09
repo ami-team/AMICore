@@ -1,7 +1,8 @@
 #!/bin/sh
 
-MIN_RAM=512M
-MAX_RAM=2G
+export JAVA_HOME=/usr/local/java
+JAVA_MIN_RAM=512M
+JAVA_MAX_RAM=2G
 
 #############################################################################
 
@@ -18,10 +19,6 @@ AMI_HOME=$(cd $(dirname $THIS_SCRIPT) && pwd)
 
 if [[ -z $(ps -ef | grep "net\.hep\.ami\.task\.MainServer") ]]
 then
-  ###########################################################################
-
-  export JAVA_HOME=/usr/local/java
-
   ###########################################################################
 
   AMICLASSPATH=''
@@ -42,7 +39,7 @@ then
 
   ###########################################################################
 
-  $JAVA_HOME/bin/java -Xms$MIN_RAM -Xmx$MAX_RAM -Djsse.enableSNIExtension=false -DAMI_HOME=$AMI_HOME -Dami.conffile=$AMI_HOME/AMI.xml net.hep.ami.task.MainServer > $AMI_HOME/log/AMITaskServer.out &
+  $JAVA_HOME/bin/java -Xms$JAVA_MIN_RAM -Xmx$JAVA_MAX_RAM -Djsse.enableSNIExtension=false -DAMI_HOME=$AMI_HOME -Dami.conffile=$AMI_HOME/AMI.xml net.hep.ami.task.MainServer > $AMI_HOME/log/AMITaskServer.out &
 
   ###########################################################################
 
