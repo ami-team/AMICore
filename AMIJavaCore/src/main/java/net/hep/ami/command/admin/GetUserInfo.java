@@ -13,9 +13,9 @@ public class GetUserInfo extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public GetUserInfo(Map<String, String> arguments, int transactionID)
+	public GetUserInfo(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_amiLogin = arguments.get("amiLogin");
 	}

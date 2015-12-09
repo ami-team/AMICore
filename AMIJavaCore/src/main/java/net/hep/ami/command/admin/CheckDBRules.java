@@ -14,9 +14,9 @@ public class CheckDBRules extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public CheckDBRules(Map<String, String> arguments, int transactionID)
+	public CheckDBRules(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

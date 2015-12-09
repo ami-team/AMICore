@@ -10,9 +10,9 @@ public class FindCommands extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public FindCommands(Map<String, String> arguments, int transactionID)
+	public FindCommands(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

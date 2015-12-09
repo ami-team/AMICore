@@ -9,9 +9,9 @@ public class GetConfig extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetConfig(Map<String, String> arguments, int transactionID)
+	public GetConfig(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

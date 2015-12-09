@@ -156,7 +156,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, int transactionID) throws Exception
+	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, long transactionId) throws Exception
 	{
 		if(command.startsWith("AMI"))
 		{
@@ -192,7 +192,7 @@ public class CommandSingleton
 
 			CommandAbstractClass commandObject = tuple.z.newInstance(
 				arguments,
-				transactionID
+				transactionId
 			);
 
 			/*-------------------------------------------------------------*/

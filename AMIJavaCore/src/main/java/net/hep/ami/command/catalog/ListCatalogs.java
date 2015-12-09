@@ -9,9 +9,9 @@ public class ListCatalogs extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListCatalogs(Map<String, String> arguments, int transactionID)
+	public ListCatalogs(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

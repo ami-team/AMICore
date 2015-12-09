@@ -21,9 +21,9 @@ public class GenerateAuthority extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public GenerateAuthority(Map<String, String> arguments, int transactionID)
+	public GenerateAuthority(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_country = arguments.containsKey("country") ? arguments.get("country")
 		                                             : ""

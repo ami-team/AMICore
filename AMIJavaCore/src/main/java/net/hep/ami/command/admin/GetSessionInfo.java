@@ -23,9 +23,9 @@ public class GetSessionInfo extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public GetSessionInfo(Map<String, String> arguments, int transactionID)
+	public GetSessionInfo(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_attachCert = arguments.containsKey("attachCert");
 		m_detachCert = arguments.containsKey("detachCert");

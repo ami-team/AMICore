@@ -14,9 +14,9 @@ public class AddUserRole extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public AddUserRole(Map<String, String> arguments, int transactionID)
+	public AddUserRole(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_user = arguments.get("user");
 		m_role = arguments.get("role");

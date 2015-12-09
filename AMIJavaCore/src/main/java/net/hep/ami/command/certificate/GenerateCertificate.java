@@ -24,9 +24,9 @@ public class GenerateCertificate extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public GenerateCertificate(Map<String, String> arguments, int transactionID)
+	public GenerateCertificate(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_country = arguments.containsKey("country") ? arguments.get("country")
 		                                             : ""

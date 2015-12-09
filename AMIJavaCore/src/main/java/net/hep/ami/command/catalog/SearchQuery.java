@@ -16,9 +16,9 @@ public class SearchQuery extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public SearchQuery(Map<String, String> arguments, int transactionID)
+	public SearchQuery(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_catalog = arguments.get("catalog");
 

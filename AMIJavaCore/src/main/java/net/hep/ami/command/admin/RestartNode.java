@@ -13,9 +13,9 @@ public class RestartNode extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public RestartNode(Map<String, String> arguments, int transactionID)
+	public RestartNode(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

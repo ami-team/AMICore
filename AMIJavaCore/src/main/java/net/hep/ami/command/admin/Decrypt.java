@@ -13,9 +13,9 @@ public class Decrypt extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public Decrypt(Map<String, String> arguments, int transactionID)
+	public Decrypt(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_string = arguments.get("string");
 	}

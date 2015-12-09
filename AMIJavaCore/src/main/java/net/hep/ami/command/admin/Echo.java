@@ -8,9 +8,9 @@ public class Echo extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public Echo(Map<String, String> arguments, int transactionID)
+	public Echo(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

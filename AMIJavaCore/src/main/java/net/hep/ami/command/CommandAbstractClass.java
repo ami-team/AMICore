@@ -27,13 +27,13 @@ public abstract class CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	protected int m_transactionID;
+	protected long m_transactionId;
 
-	 private  boolean m_transactionIDBooker;
+	 private  boolean m_transactionIdBooker;
 
 	/*---------------------------------------------------------------------*/
 
-	public CommandAbstractClass(Map<String, String> arguments, int transactionID)
+	public CommandAbstractClass(Map<String, String> arguments, long transactionId)
 	{
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */
@@ -103,15 +103,15 @@ public abstract class CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		if(transactionID < 0)
+		if(transactionId < 0)
 		{
-			m_transactionID = TransactionPoolSingleton.bookNewTransactionID();
-			m_transactionIDBooker = true;
+			m_transactionId = TransactionPoolSingleton.bookNewTransactionId();
+			m_transactionIdBooker = true;
 		}
 		else
 		{
-			m_transactionID = (((((((((((((((((transactionID)))))))))))))))));
-			m_transactionIDBooker = false;
+			m_transactionId = (((((((((((((((((transactionId)))))))))))))))));
+			m_transactionIdBooker = false;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -121,21 +121,21 @@ public abstract class CommandAbstractClass
 
 	protected TransactionalQuerier getQuerier(String catalog) throws Exception
 	{
-		return new TransactionalQuerier(catalog, m_transactionID);
+		return new TransactionalQuerier(catalog, m_transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	protected TransactionalQuerier getQuerier(String jdbcUrl, String user, String pass) throws Exception
 	{
-		return new TransactionalQuerier(jdbcUrl, user, pass, m_transactionID);
+		return new TransactionalQuerier(jdbcUrl, user, pass, m_transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	protected String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception
 	{
-		return CommandSingleton.executeCommand(command, arguments, checkRoles, m_transactionID);
+		return CommandSingleton.executeCommand(command, arguments, checkRoles, m_transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -150,15 +150,15 @@ public abstract class CommandAbstractClass
 		}
 		finally
 		{
-			if(m_transactionIDBooker)
+			if(m_transactionIdBooker)
 			{
 				if(result != null)
 				{
-					TransactionPoolSingleton.commitAndRelease(m_transactionID);
+					TransactionPoolSingleton.commitAndRelease(m_transactionId);
 				}
 				else
 				{
-					TransactionPoolSingleton.rollbackAndRelease(m_transactionID);
+					TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
 				}
 			}
 		}

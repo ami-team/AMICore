@@ -15,9 +15,9 @@ public class AddRole extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public AddRole(Map<String, String> arguments, int transactionID)
+	public AddRole(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_parent = arguments.containsKey("parent") ? arguments.get("parent")
 		                                           : "AMI_guest_role"

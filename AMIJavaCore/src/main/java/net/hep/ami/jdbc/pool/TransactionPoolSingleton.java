@@ -9,26 +9,26 @@ public class TransactionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<Integer, Map<String, DriverAbstractClass>> m_pools = new HashMap<Integer, Map<String, DriverAbstractClass>>();
+	private static final Map<Long, Map<String, DriverAbstractClass>> m_pools = new HashMap<Long, Map<String, DriverAbstractClass>>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final java.util.concurrent.atomic.AtomicInteger m_cnt = new java.util.concurrent.atomic.AtomicInteger(0);
+	private static final java.util.concurrent.atomic.AtomicLong m_cnt = new java.util.concurrent.atomic.AtomicLong(0);
 
 	/*---------------------------------------------------------------------*/
 
-	public static int bookNewTransactionID()
+	public static long bookNewTransactionId()
 	{
 		return m_cnt.getAndIncrement();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String catalog, int transactionID) throws Exception
+	public static DriverAbstractClass getConnection(String catalog, long transactionId) throws Exception
 	{
-		if(transactionID < 0)
+		if(transactionId < 0)
 		{
-			throw new Exception("invalid transaction identifier (" + transactionID + ")");
+			throw new Exception("invalid transaction identifier (" + transactionId + ")");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -43,11 +43,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionID);
+		/**/	transaction = m_pools.get(transactionId);
 		/**/
 		/**/	if(transaction == null)
 		/**/	{
-		/**/		m_pools.put(transactionID, transaction = new HashMap<String, DriverAbstractClass>());
+		/**/		m_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
 		/**/		transaction.put(key, result = CatalogSingleton.getConnection(catalog));
 		/**/	}
@@ -69,11 +69,11 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, int transactionID) throws Exception
+	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
-		if(transactionID < 0)
+		if(transactionId < 0)
 		{
-			throw new Exception("invalid transaction identifier (" + transactionID + ")");
+			throw new Exception("invalid transaction identifier (" + transactionId + ")");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -88,11 +88,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionID);
+		/**/	transaction = m_pools.get(transactionId);
 		/**/
 		/**/	if(transaction == null)
 		/**/	{
-		/**/		m_pools.put(transactionID, transaction = new HashMap<String, DriverAbstractClass>());
+		/**/		m_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
 		/**/		transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
 		/**/	}
@@ -114,7 +114,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void commitAndRelease(int transactionID) throws Exception
+	public static void commitAndRelease(long transactionId) throws Exception
 	{
 		Map<String, DriverAbstractClass> transaction;
 
@@ -124,11 +124,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionID);
+		/**/	transaction = m_pools.get(transactionId);
 		/**/
 		/**/	if(transaction != null)
 		/**/	{
-		/**/		m_pools.remove(transactionID);
+		/**/		m_pools.remove(transactionId);
 		/**/	}
 		}
 
@@ -149,7 +149,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void rollbackAndRelease(int transactionID) throws Exception
+	public static void rollbackAndRelease(long transactionId) throws Exception
 	{
 		Map<String, DriverAbstractClass> transaction;
 
@@ -159,11 +159,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionID);
+		/**/	transaction = m_pools.get(transactionId);
 		/**/
 		/**/	if(transaction != null)
 		/**/	{
-		/**/		m_pools.remove(transactionID);
+		/**/		m_pools.remove(transactionId);
 		/**/	}
 		}
 

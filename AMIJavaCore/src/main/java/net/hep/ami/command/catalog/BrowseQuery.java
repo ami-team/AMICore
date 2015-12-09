@@ -16,9 +16,9 @@ public class BrowseQuery extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public BrowseQuery(Map<String, String> arguments, int transactionID)
+	public BrowseQuery(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_catalog = arguments.get("catalog");
 

@@ -9,9 +9,9 @@ public class GetConnectionPoolStatus extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetConnectionPoolStatus(Map<String, String> arguments, int transactionID)
+	public GetConnectionPoolStatus(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

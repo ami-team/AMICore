@@ -9,29 +9,29 @@ public class TransactionalQuerier implements QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
 
-	private int m_transactionID;
+	private long m_transactionId;
 
 	private DriverAbstractClass m_driver;
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(String catalog, int transactionID) throws Exception
+	public TransactionalQuerier(String catalog, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(catalog, m_transactionID = transactionID);
+		m_driver = TransactionPoolSingleton.getConnection(catalog, m_transactionId = transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(String jdbcUrl, String user, String pass, int transactionID) throws Exception
+	public TransactionalQuerier(String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(jdbcUrl, user, pass, m_transactionID = transactionID);
+		m_driver = TransactionPoolSingleton.getConnection(jdbcUrl, user, pass, m_transactionId = transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public int getTransactionID()
+	public long getTransactionId()
 	{
-		return m_transactionID;
+		return m_transactionId;
 	}
 
 	/*---------------------------------------------------------------------*/

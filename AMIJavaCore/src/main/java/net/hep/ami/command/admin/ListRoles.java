@@ -8,9 +8,9 @@ public class ListRoles extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListRoles(Map<String, String> arguments, int transactionID)
+	public ListRoles(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

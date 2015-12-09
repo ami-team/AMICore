@@ -14,9 +14,9 @@ public class AddCommandRole extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public AddCommandRole(Map<String, String> arguments, int transactionID)
+	public AddCommandRole(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_command = arguments.get("command");
 		m_role = arguments.get("role");

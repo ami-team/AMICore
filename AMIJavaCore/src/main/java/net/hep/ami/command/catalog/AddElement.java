@@ -18,9 +18,9 @@ public class AddElement extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public AddElement(Map<String, String> arguments, int transactionID)
+	public AddElement(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_catalog = arguments.get("catalog");
 		m_entity = arguments.get("entity");

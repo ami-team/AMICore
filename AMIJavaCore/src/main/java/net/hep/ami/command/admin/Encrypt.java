@@ -13,9 +13,9 @@ public class Encrypt extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public Encrypt(Map<String, String> arguments, int transactionID)
+	public Encrypt(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_string = arguments.get("string");
 	}

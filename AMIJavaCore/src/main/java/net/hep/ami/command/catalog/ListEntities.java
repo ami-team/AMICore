@@ -13,9 +13,9 @@ public class ListEntities extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public ListEntities(Map<String, String> arguments, int transactionID)
+	public ListEntities(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_catalog = arguments.get("catalog");
 	}

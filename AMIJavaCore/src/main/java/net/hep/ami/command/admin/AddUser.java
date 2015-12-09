@@ -21,9 +21,9 @@ public class AddUser extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public AddUser(Map<String, String> arguments, int transactionID)
+	public AddUser(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_amiLogin = arguments.get("amiLogin");
 		m_amiPassword = arguments.get("amiPassword");

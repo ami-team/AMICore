@@ -9,9 +9,9 @@ public class GetSchemes extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetSchemes(Map<String, String> arguments, int transactionID)
+	public GetSchemes(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

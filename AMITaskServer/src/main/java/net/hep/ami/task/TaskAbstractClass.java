@@ -4,6 +4,8 @@ import java.util.*;
 
 import org.apache.logging.log4j.*;
 
+import net.hep.ami.jdbc.TransactionalQuerier;
+import net.hep.ami.jdbc.pool.TransactionPoolSingleton;
 import net.hep.ami.task.MainServer.*;
 
 public abstract class TaskAbstractClass implements Runnable
@@ -21,6 +23,10 @@ public abstract class TaskAbstractClass implements Runnable
 	/*---------------------------------------------------------------------*/
 
 	public final Set<String> m_lockNameSet = new HashSet<String>();
+
+	/*---------------------------------------------------------------------*/
+
+	protected int m_transactionId = TransactionPoolSingleton.bookNewTransactionId();
 
 	/*---------------------------------------------------------------------*/
 
@@ -44,6 +50,20 @@ public abstract class TaskAbstractClass implements Runnable
 	public final String getTaskName()
 	{
 		return getClass().getSimpleName();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected TransactionalQuerier getQuerier(String catalog) throws Exception
+	{
+		return new TransactionalQuerier(catalog, m_transactionId);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected TransactionalQuerier getQuerier(String jdbcUrl, String user, String pass) throws Exception
+	{
+		return new TransactionalQuerier(jdbcUrl, user, pass, m_transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

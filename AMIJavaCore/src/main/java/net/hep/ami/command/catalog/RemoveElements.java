@@ -20,9 +20,9 @@ public class RemoveElements extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public RemoveElements(Map<String, String> arguments, int transactionID)
+	public RemoveElements(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_catalog = arguments.get("catalog");
 		m_entity = arguments.get("entity");

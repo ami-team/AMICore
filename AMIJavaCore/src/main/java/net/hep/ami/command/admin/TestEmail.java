@@ -17,9 +17,9 @@ public class TestEmail extends CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public TestEmail(Map<String, String> arguments, int transactionID)
+	public TestEmail(Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionID);
+		super(arguments, transactionId);
 
 		m_from = arguments.containsKey("from") ? arguments.get("from")
 		                                       : ConfigSingleton.getProperty("log_from")
