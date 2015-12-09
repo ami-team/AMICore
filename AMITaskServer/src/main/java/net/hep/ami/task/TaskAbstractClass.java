@@ -63,9 +63,9 @@ public abstract class TaskAbstractClass implements Runnable
 		}
 		catch(Exception e)
 		{
-			m_status = false;
-
 			m_logger.error(e.getMessage());
+
+			m_status = false;
 		}
 
 		/*-----------------------------------------------------------------*/

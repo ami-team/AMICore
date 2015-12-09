@@ -70,46 +70,6 @@ public class MainServer
 
 	/*---------------------------------------------------------------------*/
 
-	private long m_cnt = 0;
-
-	private boolean isFinish()
-	{
-		/*-----------------------------------------------------------------*/
-		/* WDOG FILE                                                       */
-		/*-----------------------------------------------------------------*/
-
-		if((m_cnt++) % 10 == 0)
-		{
-			File file = new File(m_wdogFileName);
-
-			try
-			{
-				if(file.exists() && file.setLastModified(new Date().getTime()) == false)
-				{
-					LogSingleton.defaultLogger.error("Watch dog error");
-
-					return true;
-				}
-			}
-			catch(Exception e)
-			{
-				LogSingleton.defaultLogger.error("Watch dog error");
-
-				return true;
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* STOP FILE                                                       */
-		/*-----------------------------------------------------------------*/
-
-		return new File(m_stopFileName).exists();
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public int run()
 	{
 		/*-----------------------------------------------------------------*/
@@ -195,11 +155,64 @@ public class MainServer
 
 		/*-----------------------------------------------------------------*/
 
+		try
+		{
+			m_taskServerQuerier.rollbackAndRelease();
+		}
+		catch(Exception e)
+		{
+			LogSingleton.defaultLogger.error(e.getMessage());
+
+			return 1;
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		LogSingleton.defaultLogger.info("TaskServer: stop");
 
 		/*-----------------------------------------------------------------*/
 
 		return 0;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private long m_cnt = 0;
+
+	private boolean isFinish()
+	{
+		/*-----------------------------------------------------------------*/
+		/* WDOG FILE                                                       */
+		/*-----------------------------------------------------------------*/
+
+		if((m_cnt++) % 10 == 0)
+		{
+			File file = new File(m_wdogFileName);
+
+			try
+			{
+				if(file.exists() && file.setLastModified(new Date().getTime()) == false)
+				{
+					LogSingleton.defaultLogger.error("Watch dog error");
+
+					return true;
+				}
+			}
+			catch(Exception e)
+			{
+				LogSingleton.defaultLogger.error("Watch dog error");
+
+				return true;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* STOP FILE                                                       */
+		/*-----------------------------------------------------------------*/
+
+		return new File(m_stopFileName).exists();
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -328,10 +341,6 @@ public class MainServer
 				{
 					/*-----------------------------------------------------*/
 
-					LogSingleton.defaultLogger.info("Task " + taskClass + ": start");
-
-					/*-----------------------------------------------------*/
-
 					TaskThread taskThread = TaskAbstractClass.getInstance(taskClass, taskArgument, lockNameSet);
 					m_threadMap.put(taskId, taskThread);
 					taskThread.start();
@@ -375,15 +384,6 @@ public class MainServer
 		if(lockNameSet.isEmpty())
 		{
 			return false;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(lockNameSet.contains("lock")
-		   ||
-		   lockNameSet.contains("LOCK")
-		 ) {
-			return true;
 		}
 
 		/*-----------------------------------------------------------------*/
