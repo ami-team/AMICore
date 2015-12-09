@@ -1,5 +1,7 @@
 package net.hep.ami.task;
 
+import java.util.*;
+
 import org.apache.logging.log4j.*;
 
 import net.hep.ami.task.MainServer.*;
@@ -12,17 +14,27 @@ public abstract class TaskAbstractClass implements Runnable
 
 	/*---------------------------------------------------------------------*/
 
-	private TaskThread m_taskThread = null;
-	private /**/ String m_taskArgument = null;
+	public TaskThread m_thread = null;
+	public String m_argument = null;
+	public boolean m_status = true;
 
 	/*---------------------------------------------------------------------*/
 
-	public static TaskThread getInstance(String taskClass, String taskArgument) throws Exception
-	{
-		TaskThread taskThread = new TaskThread((TaskAbstractClass) Class.forName(taskClass).getConstructor().newInstance());
+	public final Set<String> m_lockNameSet = new HashSet<String>();
 
-		taskThread.m_task.m_taskThread = taskThread;
-		taskThread.m_task.m_taskArgument = taskArgument;
+	/*---------------------------------------------------------------------*/
+
+	public static TaskThread getInstance(String taskClass, String taskArgument, Set<String> lockNameSet) throws Exception
+	{
+		TaskThread taskThread = new TaskThread((TaskAbstractClass) Class.forName(taskClass).getConstructor().newInstance(), taskClass);
+
+		taskThread.m_task.m_thread = taskThread;
+		taskThread.m_task.m_argument = taskArgument;
+
+		if(lockNameSet != null)
+		{
+			taskThread.m_task.m_lockNameSet.addAll(lockNameSet);
+		}
 
 		return taskThread;
 	}
@@ -45,22 +57,15 @@ public abstract class TaskAbstractClass implements Runnable
 
 		/*-----------------------------------------------------------------*/
 
-		boolean status = false;
-
 		try
 		{
-			status = main(m_taskArgument);
+			m_status = main(m_argument != null ? m_argument : "");
 		}
 		catch(Exception e)
 		{
+			m_status = false;
+
 			m_logger.error(e.getMessage());
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(m_taskThread != null)
-		{
-			m_taskThread.m_status = status;
 		}
 
 		/*-----------------------------------------------------------------*/
