@@ -351,7 +351,6 @@ public class MainServer
 		}
 		catch(Exception e1)
 		{
-			e1.printStackTrace();
 			LogSingleton.defaultLogger.error(e1.getMessage());
 
 			try
