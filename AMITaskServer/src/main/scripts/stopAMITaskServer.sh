@@ -13,12 +13,7 @@ AMI_HOME=$(cd $(dirname $THIS_SCRIPT) && pwd)
 
 #############################################################################
 
-PID=$(cat $AMI_HOME/wdogFile 2> /dev/null)
-
-if [[ $? -eq 0 ]]
-then
-  kill $PID &> /dev/null
-fi
+ps -ef | grep "watchDog\.sh" | awk '{print $2}' | xargs kill
 
 #############################################################################
 

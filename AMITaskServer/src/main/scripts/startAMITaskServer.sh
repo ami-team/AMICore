@@ -1,5 +1,8 @@
 #!/bin/sh
 
+MIN_RAM=512M
+MAX_RAM=2G
+
 #############################################################################
 
 THIS_SCRIPT=${BASH_SOURCE[0]:-$0}
@@ -39,7 +42,9 @@ then
 
   ###########################################################################
 
-  $JAVA_HOME/bin/java -Xms2G -Xmx2G -Djsse.enableSNIExtension=false -DAMI_HOME=$AMI_HOME -Dami.conffile=$AMI_HOME/AMI.xml net.hep.ami.task.MainServer > $AMI_HOME/log/AMITaskServer.out &
+  $JAVA_HOME/bin/java -Xms$MIN_RAM -Xmx$MAX_RAM -Djsse.enableSNIExtension=false -DAMI_HOME=$AMI_HOME -Dami.conffile=$AMI_HOME/AMI.xml net.hep.ami.task.MainServer > $AMI_HOME/log/AMITaskServer.out &
+
+  ###########################################################################
 
   $AMI_HOME/watchDog.sh &
 
