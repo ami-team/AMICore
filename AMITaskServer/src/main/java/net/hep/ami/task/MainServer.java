@@ -318,7 +318,9 @@ public class MainServer
 
 				/*---------------------------------------------------------*/
 
-				Set<String> lockNameSet = new HashSet<String>(Arrays.asList(lockNames.split("[^a-zA-Z0-9_]")));
+				Set<String> lockNameSet = (lockNames == null) ? new HashSet<String>(/*-------------------------------------------*/)
+				                                              : new HashSet<String>(Arrays.asList(lockNames.split("[^a-zA-Z0-9_]")))
+				;
 
 				/*---------------------------------------------------------*/
 
@@ -349,6 +351,7 @@ public class MainServer
 		}
 		catch(Exception e1)
 		{
+			e1.printStackTrace();
 			LogSingleton.defaultLogger.error(e1.getMessage());
 
 			try
@@ -368,6 +371,13 @@ public class MainServer
 
 	private boolean isLocked(Set<String> lockNameSet)
 	{
+		/*-----------------------------------------------------------------*/
+
+		if(lockNameSet.isEmpty())
+		{
+			return false;
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		if(lockNameSet.contains("lock")
