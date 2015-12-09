@@ -4,8 +4,8 @@ import java.util.*;
 
 import org.apache.logging.log4j.*;
 
-import net.hep.ami.jdbc.TransactionalQuerier;
-import net.hep.ami.jdbc.pool.TransactionPoolSingleton;
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.task.MainServer.*;
 
 public abstract class TaskAbstractClass implements Runnable
@@ -26,7 +26,7 @@ public abstract class TaskAbstractClass implements Runnable
 
 	/*---------------------------------------------------------------------*/
 
-	protected int m_transactionId = TransactionPoolSingleton.bookNewTransactionId();
+	protected long m_transactionId = TransactionPoolSingleton.bookNewTransactionId();
 
 	/*---------------------------------------------------------------------*/
 
