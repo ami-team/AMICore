@@ -13,17 +13,16 @@ public abstract class TaskAbstractClass implements Runnable
 	/*---------------------------------------------------------------------*/
 
 	private TaskThread m_taskThread = null;
-
-	private String m_argument = null;
+	private /**/ String m_taskArgument = null;
 
 	/*---------------------------------------------------------------------*/
 
-	public static TaskThread getInstance(String clazz, String argument) throws Exception
+	public static TaskThread getInstance(String taskClass, String taskArgument) throws Exception
 	{
-		TaskThread taskThread = new TaskThread((TaskAbstractClass) Class.forName(clazz).getConstructor().newInstance());
+		TaskThread taskThread = new TaskThread((TaskAbstractClass) Class.forName(taskClass).getConstructor().newInstance());
 
 		taskThread.m_task.m_taskThread = taskThread;
-		taskThread.m_task.m_argument = argument;
+		taskThread.m_task.m_taskArgument = taskArgument;
 
 		return taskThread;
 	}
@@ -50,7 +49,7 @@ public abstract class TaskAbstractClass implements Runnable
 
 		try
 		{
-			status = main(m_argument);
+			status = main(m_taskArgument);
 		}
 		catch(Exception e)
 		{

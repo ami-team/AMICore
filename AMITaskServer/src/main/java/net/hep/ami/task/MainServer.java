@@ -262,7 +262,11 @@ public class MainServer
 
 	private void removeAllTasks()
 	{
+		/*-----------------------------------------------------------------*/
+
 		m_threadMap.clear();
+
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
@@ -271,19 +275,30 @@ public class MainServer
 				m_taskServerQuerier.commit();
 			}
 		}
-		catch(Exception e)
+		catch(Exception e1)
 		{
-			LogSingleton.defaultLogger.error(e.getMessage());
+			LogSingleton.defaultLogger.error(e1.getMessage());
+
+			try
+			{
+				m_taskServerQuerier.rollback();
+			}
+			catch(Exception e2)
+			{
+				LogSingleton.defaultLogger.error(e2.getMessage());
+			}
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	private void removeFinishTasks()
 	{
-		List<String> toBeRemoved = new ArrayList<String>();
-
 		/*-----------------------------------------------------------------*/
+
+		List<String> toBeRemoved = new ArrayList<String>();
 
 		for(Entry<String, TaskThread> entry: m_threadMap.entrySet())
 		{
@@ -310,9 +325,18 @@ public class MainServer
 					m_taskServerQuerier.commit();
 				}
 			}
-			catch(Exception e)
+			catch(Exception e1)
 			{
-				LogSingleton.defaultLogger.error(e.getMessage());
+				LogSingleton.defaultLogger.error(e1.getMessage());
+
+				try
+				{
+					m_taskServerQuerier.rollback();
+				}
+				catch(Exception e2)
+				{
+					LogSingleton.defaultLogger.error(e2.getMessage());
+				}
 			}
 		}
 
