@@ -6,6 +6,7 @@ import java.util.Map.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.utility.*;
 
 public class MainServer
@@ -45,7 +46,7 @@ public class MainServer
 
 	/*---------------------------------------------------------------------*/
 
-	private final HashMap<String, TaskThread> m_threadMap = new HashMap<String, TaskThread>();
+	private final HashMap<String, TaskThread> m_taskThreadMap = new HashMap<String, TaskThread>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -89,11 +90,11 @@ public class MainServer
 
 		/*-----------------------------------------------------------------*/
 
-		String amiHome = ConfigSingleton.getSystemProperty("AMI_HOME");
+		String amiHome = ConfigSingleton.getSystemProperty("ami.home");
 
 		if(amiHome.isEmpty())
 		{
-			LogSingleton.defaultLogger.fatal("System property 'AMI_HOME' not defined");
+			LogSingleton.defaultLogger.fatal("System property 'ami.home' not defined");
 
 			return 1;
 		}
@@ -124,34 +125,51 @@ public class MainServer
 
 		Random random = new Random();
 
-		for(;;)
+		while(isFinish() == false)
 		{
-			/*-------------------------------------------------------------*/
+			try
+			{
+				/*---------------------------------------------------------*/
 
-			if(isFinish())
-			{
-				removeAllTasks();
-				break;
-			}
-			else
-			{
+				try { Thread.sleep(1000); } catch(Exception e) { /* IGNORE */ }
+
+				/*---------------------------------------------------------*/
+
 				removeFinishTasks();
-				;;;;;;
+
+				/*---------------------------------------------------------*/
+
+				if(m_taskThreadMap.size() <= m_maxTasks)
+				{
+					startTask(random);
+				}
+
+				/*---------------------------------------------------------*/
+
+				watchDog();
+
+				/*---------------------------------------------------------*/
 			}
-
-			/*-------------------------------------------------------------*/
-
-			try { Thread.sleep(1000); } catch(Exception e) { /* IGNORE */ }
-
-			/*-------------------------------------------------------------*/
-
-			if(m_threadMap.size() <= m_maxTasks)
+			catch(Exception e1)
 			{
-				startTask(random);
+				LogSingleton.defaultLogger.error(e1.getMessage());
+
+				try
+				{
+					m_taskServerQuerier.rollback();
+				}
+				catch(Exception e2)
+				{
+					LogSingleton.defaultLogger.error(e2.getMessage());
+				}
 			}
 
 			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		removeAllTasks();
 
 		/*-----------------------------------------------------------------*/
 
@@ -177,14 +195,17 @@ public class MainServer
 
 	/*---------------------------------------------------------------------*/
 
-	private long m_cnt = 0;
-
 	private boolean isFinish()
 	{
-		/*-----------------------------------------------------------------*/
-		/* WDOG FILE                                                       */
-		/*-----------------------------------------------------------------*/
+		return new File(m_stopFileName).delete();
+	}
 
+	/*---------------------------------------------------------------------*/
+
+	private long m_cnt = 0;
+
+	private void watchDog()
+	{
 		if((m_cnt++) % 10 == 0)
 		{
 			File file = new File(m_wdogFileName);
@@ -194,25 +215,13 @@ public class MainServer
 				if(file.exists() && file.setLastModified(new Date().getTime()) == false)
 				{
 					LogSingleton.defaultLogger.error("Watch dog error");
-
-					return true;
 				}
 			}
 			catch(Exception e)
 			{
 				LogSingleton.defaultLogger.error("Watch dog error");
-
-				return true;
 			}
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* STOP FILE                                                       */
-		/*-----------------------------------------------------------------*/
-
-		return new File(m_stopFileName).exists();
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -221,7 +230,16 @@ public class MainServer
 	{
 		/*-----------------------------------------------------------------*/
 
-		m_threadMap.clear();
+		for(TaskThread thread: m_taskThreadMap.values())
+		{
+			thread.interrupt();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		m_taskThreadMap.clear();
+
+		TransactionPoolSingleton.clear();
 
 		/*-----------------------------------------------------------------*/
 
@@ -251,13 +269,13 @@ public class MainServer
 
 	/*---------------------------------------------------------------------*/
 
-	private void removeFinishTasks()
+	private void removeFinishTasks() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
 		List<String> toBeRemoved = new ArrayList<String>();
 
-		for(Entry<String, TaskThread> entry: m_threadMap.entrySet())
+		for(Entry<String, TaskThread> entry: m_taskThreadMap.entrySet())
 		{
 			if(entry.getValue().isAlive() == false)
 			{
@@ -269,31 +287,17 @@ public class MainServer
 
 		for(String taskId: toBeRemoved)
 		{
-			Boolean status = m_threadMap.remove(taskId).m_task.m_status;
+			m_taskThreadMap.remove(taskId);
 
-			try
+			Boolean status = m_taskThreadMap.remove(taskId).m_task.m_status;
+
+			int nb = status ? m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | 2) WHERE id = '" + taskId + "'")
+			                : m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | 0) WHERE id = '" + taskId + "'")
+			;
+
+			if(nb > 0)
 			{
-				int nb = status ? m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | 2) WHERE id = '" + taskId + "'")
-				                : m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = ((status & ~3) | 0) WHERE id = '" + taskId + "'")
-				;
-
-				if(nb > 0)
-				{
-					m_taskServerQuerier.commit();
-				}
-			}
-			catch(Exception e1)
-			{
-				LogSingleton.defaultLogger.error(e1.getMessage());
-
-				try
-				{
-					m_taskServerQuerier.rollback();
-				}
-				catch(Exception e2)
-				{
-					LogSingleton.defaultLogger.error(e2.getMessage());
-				}
+				m_taskServerQuerier.commit();
 			}
 		}
 
@@ -302,7 +306,7 @@ public class MainServer
 
 	/*---------------------------------------------------------------------*/
 
-	private void startTask(Random random)
+	private void startTask(Random random) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -310,66 +314,46 @@ public class MainServer
 
 		/*-----------------------------------------------------------------*/
 
-		int priority = s_priorityArray[random.nextInt(s_priorityArray.length)];
+		List<Row> rows = m_taskServerQuerier.executeSQLQuery("SELECT id, class, argument, lockNames FROM router_task WHERE taskServerName = '" + m_taskServerName.replace("'", "''") + "' AND priority = '" + s_priorityArray[random.nextInt(s_priorityArray.length)] + "' AND (lastRunTime + step) < '" + date.getTime() + "' AND (status & '1') = '0'").getAll();
 
-		/*-----------------------------------------------------------------*/
-
-		try
+		if(rows.isEmpty() == false)
 		{
-			List<Row> rows = m_taskServerQuerier.executeSQLQuery("SELECT id, class, argument, lockNames FROM router_task WHERE taskServerName = '" + m_taskServerName.replace("'", "''") + "' AND priority = '" + priority + "' AND (lastRunTime + step) < '" + date.getTime() + "' AND (status & '1') = '0'").getAll();
+			/*-------------------------------------------------------------*/
 
-			if(rows.isEmpty() == false)
+			Row row = rows.get(random.nextInt(rows.size()));
+
+			String taskId = row.getValue("id");
+			String taskClass = row.getValue("class");
+			String taskArgument = row.getValue("argument");
+			String lockNames = row.getValue("lockNames");
+
+			/*-------------------------------------------------------------*/
+
+			Set<String> lockNameSet = (lockNames == null) ? new HashSet<String>(/*-------------------------------------------*/)
+			                                              : new HashSet<String>(Arrays.asList(lockNames.split("[^a-zA-Z0-9_]")))
+			;
+
+			/*-------------------------------------------------------------*/
+
+			if(isLocked(lockNameSet) == false)
 			{
 				/*---------------------------------------------------------*/
 
-				Row row = rows.get(random.nextInt(rows.size()));
-
-				String taskId = row.getValue("id");
-				String taskClass = row.getValue("class");
-				String taskArgument = row.getValue("argument");
-				String lockNames = row.getValue("lockNames");
+				TaskThread taskThread = TaskAbstractClass.getInstance(taskClass, taskArgument, lockNameSet);
+				m_taskThreadMap.put(taskId, taskThread);
+				taskThread.start();
 
 				/*---------------------------------------------------------*/
 
-				Set<String> lockNameSet = (lockNames == null) ? new HashSet<String>(/*-------------------------------------------*/)
-				                                              : new HashSet<String>(Arrays.asList(lockNames.split("[^a-zA-Z0-9_]")))
-				;
-
-				/*---------------------------------------------------------*/
-
-				if(isLocked(lockNameSet) == false)
+				if(m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = (status | 1), lastRunTime = '" + date.getTime() + "', lastRunDate = '" + DateFormater.format(date) + "' WHERE id = '" + taskId + "'") > 0)
 				{
-					/*-----------------------------------------------------*/
-
-					TaskThread taskThread = TaskAbstractClass.getInstance(taskClass, taskArgument, lockNameSet);
-					m_threadMap.put(taskId, taskThread);
-					taskThread.start();
-
-					/*-----------------------------------------------------*/
-
-					if(m_taskServerQuerier.executeSQLUpdate("UPDATE router_task SET status = (status | 1), lastRunTime = '" + date.getTime() + "', lastRunDate = '" + DateFormater.format(date) + "' WHERE id = '" + taskId + "'") > 0)
-					{
-						m_taskServerQuerier.commit();
-					}
-
-					/*-----------------------------------------------------*/
+					m_taskServerQuerier.commit();
 				}
 
 				/*---------------------------------------------------------*/
 			}
-		}
-		catch(Exception e1)
-		{
-			LogSingleton.defaultLogger.error(e1.getMessage());
 
-			try
-			{
-				m_taskServerQuerier.rollback();
-			}
-			catch(Exception e2)
-			{
-				LogSingleton.defaultLogger.error(e2.getMessage());
-			}
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -388,7 +372,7 @@ public class MainServer
 
 		/*-----------------------------------------------------------------*/
 
-		for(TaskThread taskThread: m_threadMap.values())
+		for(TaskThread taskThread: m_taskThreadMap.values())
 		{
 			Set<String> lockNameSET = taskThread.m_task.m_lockNameSet;
 

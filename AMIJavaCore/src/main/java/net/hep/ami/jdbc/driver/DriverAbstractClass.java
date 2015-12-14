@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.driver;
 
 import java.sql.*;
+import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.mql.*;
@@ -14,7 +15,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	protected Connection m_connection;
 
-	protected Statement m_statement;
+	protected final List<Statement> m_statementList = new ArrayList<Statement>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -65,7 +66,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		/* GET STATEMENT                                                   */
 		/*-----------------------------------------------------------------*/
 
-		m_statement = m_connection.createStatement();
+		m_statementList.add(m_connection.createStatement());
 
 		/*-----------------------------------------------------------------*/
 		/* GET CATALOGS                                                    */
@@ -89,7 +90,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	public RowSet executeSQLQuery(String sql) throws Exception
 	{
 		return new RowSet(
-			m_statement.executeQuery(sql)
+			m_statementList.get(0).executeQuery(sql)
 		);
 	}
 
@@ -104,7 +105,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		try
 		{
 			return new RowSet(
-				m_statement.executeQuery(sql), ast, sql
+				m_statementList.get(0).executeQuery(sql), ast, sql
 			);
 		}
 		catch(Exception e)
@@ -118,7 +119,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public int executeSQLUpdate(String sql) throws Exception
 	{
-		return m_statement.executeUpdate(sql);
+		return m_statementList.get(0).executeUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -130,7 +131,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 		try
 		{
-			return m_statement.executeUpdate(sql);
+			return m_statementList.get(0).executeUpdate(sql);
 		}
 		catch(Exception e)
 		{
@@ -155,7 +156,11 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 		try
 		{
-			return m_connection.prepareStatement(sql);
+			PreparedStatement result = m_connection.prepareStatement(sql);
+
+			m_statementList.add(result);
+
+			return result;
 		}
 		catch(Exception e)
 		{
@@ -168,7 +173,11 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception
 	{
-		return m_connection.prepareStatement(sql, columnNames);
+		PreparedStatement result = m_connection.prepareStatement(sql, columnNames);
+
+		m_statementList.add(result);
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -223,7 +232,13 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		{
 			try
 			{
-				m_statement.close();
+				for(Statement statement: m_statementList)
+				{
+					if(statement.isClosed() == false)
+					{
+						statement.close();
+					}
+				}
 			}
 			finally
 			{
@@ -247,7 +262,13 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		{
 			try
 			{
-				m_statement.close();
+				for(Statement statement: m_statementList)
+				{
+					if(statement.isClosed() == false)
+					{
+						statement.close();
+					}
+				}
 			}
 			finally
 			{

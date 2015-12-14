@@ -1,5 +1,6 @@
 package net.hep.ami.task;
 
+import java.io.*;
 import java.util.*;
 
 import org.apache.logging.log4j.*;
@@ -83,9 +84,18 @@ public abstract class TaskAbstractClass implements Runnable
 		}
 		catch(Exception e)
 		{
-			m_logger.error(e.getMessage());
+			if(e instanceof InterruptedException
+			   ||
+			   e instanceof InterruptedIOException
+			 ) {
+				Thread.currentThread().interrupt();
+			}
+			else
+			{
+				m_status = false;
 
-			m_status = false;
+				m_logger.error(e.getMessage());
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

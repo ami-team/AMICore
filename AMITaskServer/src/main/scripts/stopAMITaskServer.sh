@@ -13,7 +13,10 @@ AMI_HOME=$(cd $(dirname $THIS_SCRIPT) && pwd)
 
 #############################################################################
 
-ps -ef | grep "watchDog\.sh" | awk '{print $2}' | xargs kill
+if [[ -n $(ps -ef | grep "watchDog\.sh") ]]
+then
+  ps -ef | grep "watchDog\.sh" | awk '{print $2}' | xargs kill
+fi
 
 #############################################################################
 
@@ -34,7 +37,7 @@ done
 
 if [[ -n $(ps -ef | grep "net\.hep\.ami\.task\.MainServer") ]]
 then
-  ps -ef | grep "AMI\.Task\.MainServer" | awk '{print $2}' | xargs kill
+  ps -ef | grep "net\.hep\.ami\.task\.MainServer" | awk '{print $2}' | xargs kill
 
   echo 'Task server killed'
 else

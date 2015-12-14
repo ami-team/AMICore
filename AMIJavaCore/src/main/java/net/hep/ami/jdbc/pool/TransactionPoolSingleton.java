@@ -2,6 +2,7 @@ package net.hep.ami.jdbc.pool;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 
@@ -180,6 +181,41 @@ public class TransactionPoolSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void clear()
+	{
+		synchronized(TransactionPoolSingleton.class)
+		{
+		/**/	/*---------------------------------------------------------*/
+		/**/	/* ROLLBACK AND RELEASE CONNECTIONS                        */
+		/**/	/*---------------------------------------------------------*/
+		/**/
+		/**/	for(Map<String, DriverAbstractClass> transaction: m_pools.values())
+		/**/	{
+		/**/		for(DriverAbstractClass connection: transaction.values())
+		/**/		{
+		/**/			try
+		/**/			{
+		/**/				connection.rollbackAndRelease();
+		/**/			}
+		/**/			catch(Exception e)
+		/**/			{
+		/**/				LogSingleton.defaultLogger.error(e.getMessage());
+		/**/			}
+		/**/		}
+		/**/	}
+		/**/
+		/**/	/*---------------------------------------------------------*/
+		/**/	/* CLEAR TRANSACTION POOL                                  */
+		/**/	/*---------------------------------------------------------*/
+		/**/
+		/**/	m_pools.clear();
+		/**/
+		/**/	/*---------------------------------------------------------*/
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -9,6 +9,8 @@ public class ToyTask extends TaskAbstractClass
 	{
 		System.out.println("Hello World from '" + getTaskName() + "'!");
 
+		Thread.sleep(100000);
+
 		return true;
 	}
 

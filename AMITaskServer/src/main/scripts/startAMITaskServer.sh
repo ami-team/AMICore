@@ -39,7 +39,7 @@ then
 
   ###########################################################################
 
-  $JAVA_HOME/bin/java -Xms$JAVA_MIN_RAM -Xmx$JAVA_MAX_RAM -Djsse.enableSNIExtension=false -DAMI_HOME=$AMI_HOME -Dami.conffile=$AMI_HOME/AMI.xml net.hep.ami.task.MainServer > $AMI_HOME/log/AMITaskServer.out &
+  $JAVA_HOME/bin/java -Xms$JAVA_MIN_RAM -Xmx$JAVA_MAX_RAM -Djsse.enableSNIExtension=false -Dami.home=$AMI_HOME -Dami.conffile=$AMI_HOME/AMI.xml net.hep.ami.task.MainServer > $AMI_HOME/log/AMITaskServer.out &
 
   ###########################################################################
 
