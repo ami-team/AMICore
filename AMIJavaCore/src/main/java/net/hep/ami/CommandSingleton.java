@@ -90,7 +90,7 @@ public class CommandSingleton
 				catch(Exception e)
 				{
 					/* CETTE LIGNE DOIT ETRE DECOMMENTEE EN PROD */
-					//LogSingleton.log(LogSingleton.LogLevel.ERROR, e.getMessage());
+					//LogSingleton.defaultLogger.error(e.getMessage());
 				}
 			}
 
@@ -130,7 +130,7 @@ public class CommandSingleton
 					clazz.getMethod("usage").invoke(null).toString(),
 					clazz.getConstructor(
 						Map.class,
-						int.class
+						long.class
 					),
 					archived
 				)

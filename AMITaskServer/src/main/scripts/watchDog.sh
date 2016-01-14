@@ -42,8 +42,10 @@ while true
 do
   sleep 10
 
-  if [[ -z $(find $AMI_HOME/wdogFile -cmin -1 2> /dev/null) ]]
+  if [[ -z $(find $AMI_HOME/wdogFile -cmin -10 2> /dev/null) ]]
   then
+    echo 'Restart task server'
+
     $AMI_HOME/restartAMITaskServer.sh
   fi
 done

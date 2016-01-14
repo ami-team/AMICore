@@ -89,6 +89,8 @@ public class ConfigSingleton
 		       getProperty("jdbc_url").isEmpty() == false
 		       &&
 		       getProperty("router_user").isEmpty() == false
+		       &&
+		       getProperty("router_pass").isEmpty() == false
 		;
 	}
 
@@ -109,6 +111,8 @@ public class ConfigSingleton
 		       name.equals("jdbc_url")
 		       ||
 		       name.equals("router_user")
+		       ||
+		       name.equals("router_pass")
 		;
 	}
 

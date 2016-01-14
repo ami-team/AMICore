@@ -26,7 +26,7 @@ touch $AMI_HOME/stopFile
 
 n=0
 
-while [[ -n $(ps -ef | grep "net\.hep\.ami\.task\.MainServer") && $n -lt 20 ]]
+while [[ -n $(ps -ef | grep "net\.hep\.ami\.task\.MainServer") && $n -lt 30 ]]
 do
   n=$((n+1))
   printf '.'

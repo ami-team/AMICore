@@ -202,25 +202,20 @@ public class MainServer
 
 	/*---------------------------------------------------------------------*/
 
-	private long m_cnt = 0;
-
 	private void watchDog()
 	{
-		if((m_cnt++) % 10 == 0)
-		{
-			File file = new File(m_wdogFileName);
+		File file = new File(m_wdogFileName);
 
-			try
-			{
-				if(file.exists() && file.setLastModified(new Date().getTime()) == false)
-				{
-					LogSingleton.defaultLogger.error("Watch dog error");
-				}
-			}
-			catch(Exception e)
+		try
+		{
+			if(file.exists() && file.setLastModified(new Date().getTime()) == false)
 			{
 				LogSingleton.defaultLogger.error("Watch dog error");
 			}
+		}
+		catch(Exception e)
+		{
+			LogSingleton.defaultLogger.error("Watch dog error");
 		}
 	}
 
