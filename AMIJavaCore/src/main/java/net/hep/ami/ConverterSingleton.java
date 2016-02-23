@@ -140,7 +140,10 @@ public class ConverterSingleton
 		Source source = new StreamSource(reader);
 		Result target = new StreamResult(writer);
 
-		tuple.x.newTransformer().transform(source, target);
+		Transformer transformer = tuple.x.newTransformer();
+
+		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		transformer.transform(source, target);
 
 		/*-----------------------------------------------------------------*/
 		/* RETURN MIME                                                     */

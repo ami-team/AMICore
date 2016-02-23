@@ -62,10 +62,14 @@ public class Row
 	{
 		StringBuilder result = new StringBuilder();
 
+		result.append("<row>");
+
 		for(int i = 0; i < m_values.length; i++)
 		{
 			result.append("<field table=\"" + m_rowSet.m_fieldTables[i] + "\" name=\"" + m_rowSet.m_fieldNames[i] + "\" type=\"" + m_rowSet.m_fieldTypes[i] + "\"><![CDATA[" + m_values[i] + "]]></field>");
 		}
+
+		result.append("</row>");
 
 		return result;
 	}

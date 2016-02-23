@@ -16,7 +16,7 @@
 
     <log4j.version>2.4.1</log4j.version>
     <jackson.version>2.6.3</jackson.version>
-    <saxon.version>9.6.0-5</saxon.version>
+    <saxon.version>9.6.0-7</saxon.version>
     <bouncycastle.version>1.51</bouncycastle.version>
     <antlr.version>4.5</antlr.version>
     <jsch.version>0.1.53</jsch.version>

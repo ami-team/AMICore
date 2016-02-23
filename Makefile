@@ -5,7 +5,7 @@ compile:
 	mvn compile
 
 install:
-	mvn install
+	mvn install -U
 
 assembly:
 	mvn -f AMITaskServer/pom.xml assembly:assembly

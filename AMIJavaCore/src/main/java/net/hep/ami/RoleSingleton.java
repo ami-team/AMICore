@@ -10,8 +10,8 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<CommandValidatorInterface>> m_roleValisators = new HashMap<String, Class<CommandValidatorInterface>>();
-	private static final Map<String, Class<NewUserValidatorInterface>> m_userValisators = new HashMap<String, Class<NewUserValidatorInterface>>();
+	private static final Map<String, Class<CommandValidatorInterface>> m_roleValidators = new HashMap<String, Class<CommandValidatorInterface>>();
+	private static final Map<String, Class<NewUserValidatorInterface>> m_userValidators = new HashMap<String, Class<NewUserValidatorInterface>>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -50,7 +50,7 @@ public class RoleSingleton
 
 		/**/ if(ClassFinder.extendsClass(clazz, CommandValidatorInterface.class))
 		{
-			m_roleValisators.put(clazz.getName(), (Class<CommandValidatorInterface>) clazz);
+			m_roleValidators.put(clazz.getName(), (Class<CommandValidatorInterface>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -59,7 +59,7 @@ public class RoleSingleton
 
 		else if(ClassFinder.extendsClass(clazz, NewUserValidatorInterface.class))
 		{
-			m_userValisators.put(clazz.getName(), (Class<NewUserValidatorInterface>) clazz);
+			m_userValidators.put(clazz.getName(), (Class<NewUserValidatorInterface>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -117,33 +117,33 @@ public class RoleSingleton
 			/*-------------------------------------------------------------*/
 
 			RowSet rowSet = basicQuerier.executeSQLQuery(
-				"SELECT `node`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` AS `tree`,`router_role` AS `node` WHERE" +
+				"SELECT \"node\".\"validatorClass\" FROM \"router_command\",\"router_user\",\"router_command_role\",\"router_user_role\",\"router_role\" AS \"tree\",\"router_role\" AS \"node\" WHERE" +
 				/*---------------------------------------------------------*/
 				/* SELECT COMMAND                                          */
 				/*---------------------------------------------------------*/
-				"	"+" `router_command`.`command`='" + command + "'" +
+				"	"+" \"router_command\".\"command\"='" + command + "'" +
 				/*---------------------------------------------------------*/
 				/* SELECT USER                                             */
 				/*---------------------------------------------------------*/
-				"	AND `router_user`.`AMIUser`='" + AMIUser + "'" +
-				"	AND `router_user`.`AMIPass`='" + AMIPass + "'" +
+				"	AND \"router_user\".\"AMIUser\"='" + AMIUser + "'" +
+				"	AND \"router_user\".\"AMIPass\"='" + AMIPass + "'" +
 				/*---------------------------------------------------------*/
 				/* SELECT COMMAND ROLE                                     */
 				/*---------------------------------------------------------*/
-				"	AND `router_command_role`.`commandFK`=`router_command`.`id`" +
+				"	AND \"router_command_role\".\"commandFK\"=\"router_command\".\"id\"" +
 				/*---------------------------------------------------------*/
 				/* SELECT USER ROLE                                        */
 				/*---------------------------------------------------------*/
-				"	AND `router_user_role`.`userFK`=`router_user`.`id`" +
+				"	AND \"router_user_role\".\"userFK\"=\"router_user\".\"id\"" +
 				/*---------------------------------------------------------*/
 				/* SELECT ROLE                                             */
 				/*---------------------------------------------------------*/
-				"	AND `router_command_role`.`roleFK`=`tree`.`id`" +
-				"	AND `router_user_role`.`roleFK`=`node`.`id`" +
+				"	AND \"router_command_role\".\"roleFK\"=\"tree\".\"id\"" +
+				"	AND \"router_user_role\".\"roleFK\"=\"node\".\"id\"" +
 				/*---------------------------------------------------------*/
-				"	AND `node`.`lft` BETWEEN `tree`.`lft` AND `tree`.`rgt`" +
+				"	AND \"node\".\"lft\" BETWEEN \"tree\".\"lft\" AND \"tree\".\"rgt\"" +
 				/*---------------------------------------------------------*/
-				"	ORDER BY `node`.`lft` DESC"
+				"	ORDER BY \"node\".\"lft\" DESC"
 				/*---------------------------------------------------------*/
 			);
 
@@ -189,7 +189,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<CommandValidatorInterface> clazz = m_roleValisators.get(validator);
+		Class<CommandValidatorInterface> clazz = m_roleValidators.get(validator);
 
 		if(clazz == null)
 		{
@@ -232,7 +232,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<NewUserValidatorInterface> clazz = m_userValisators.get(validator);
+		Class<NewUserValidatorInterface> clazz = m_userValidators.get(validator);
 
 		if(clazz == null)
 		{
