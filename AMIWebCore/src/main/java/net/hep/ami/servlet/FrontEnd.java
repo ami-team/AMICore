@@ -25,11 +25,12 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static Pattern m_xml10Pattern = Pattern.compile("[^"
+	private static Pattern m_xml10Pattern = Pattern.compile(
+	      "[^"
 	    + "\u0009\r\n"
 	    + "\u0020-\uD7FF"
 	    + "\uE000-\uFFFD"
-	    + "\ud800\udc00-\udbff\udfff"
+	    + "\uD800\uDC00-\uDBFF\uDFFF"
 	    + "]+"
 	);
 
