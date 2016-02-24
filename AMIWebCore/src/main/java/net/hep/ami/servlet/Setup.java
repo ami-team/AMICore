@@ -212,6 +212,7 @@ public class Setup extends HttpServlet
 			basicQuerier = new BasicQuerier(jdbc_url, router_user, router_pass);
 
 			bufferedWriter = new BufferedWriter(new FileWriter(fileName));
+
 			bufferedWriter.write(content);
 
 			try
