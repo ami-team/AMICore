@@ -354,9 +354,9 @@ public class FrontEnd extends HttpServlet
 			/* GET CREDENTIALS                                             */
 			/*-------------------------------------------------------------*/
 
-			if(rowList.size() != 1)
+			if(rowList.size() == 0)
 			{
-				new Tuple2<String, String>(
+				return new Tuple2<String, String>(
 					m_guest_user,
 					m_guest_pass
 				);
@@ -522,7 +522,19 @@ public class FrontEnd extends HttpServlet
 		arguments.put("clientDN", clientDN);
 		arguments.put("issuerDN", issuerDN);
 
-		arguments.put("isSecure", request.isSecure() ? "true" : "false");
+		/*-----------------------------------------------------------------*/
+
+		arguments.put("isSecure", request.isSecure() ? "true"
+		                                             : "false"
+		);
+
+		/*-----------------------------------------------------------------*/
+
+		String agent = request.getHeader("User-Agent");
+
+		arguments.put("AMIAgent", agent.startsWith("pyAMI") ? agent
+		                                                    : "web"
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
