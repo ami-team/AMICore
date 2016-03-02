@@ -24,12 +24,6 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final String m_jdbcUrl = ConfigSingleton.getProperty("jdbc_url");
-	private static final String m_routerUser = ConfigSingleton.getProperty("router_user");
-	private static final String m_routerPass = ConfigSingleton.getProperty("router_pass");
-
-	/*---------------------------------------------------------------------*/
-
 	public static BigInteger ipv4ToInteger(String ip) throws UnknownHostException
 	{
 		return ipv4ToInteger((Inet4Address) InetAddress.getByName(ip));
@@ -80,7 +74,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localization getCountryIPv4(String ip) throws Exception
+	public static Localization getCountryIPv4(BasicQuerier basicQuerier, String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
@@ -89,46 +83,23 @@ public class LocalizationSingleton
 		String _ip = ipv4ToInteger(ip).toString();
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
+		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier(
-			m_jdbcUrl,
-			m_routerUser,
-			m_routerPass
-		);
+		RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
 
 		/*-----------------------------------------------------------------*/
+		/* GET LOCALIZATION                                                */
+		/*-----------------------------------------------------------------*/
 
-		Row row;
+		List<Row> rowList = rowSet.getAll();
 
-		try
+		if(rowList.size() == 0)
 		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
-
-			RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
-
-			/*-------------------------------------------------------------*/
-			/* GET LOCALIZATION                                            */
-			/*-------------------------------------------------------------*/
-
-			List<Row> rowList = rowSet.getAll();
-
-			if(rowList.size() == 0)
-			{
-				throw new Exception("could not localize IPv4 `" + ip + "`");
-			}
-
-			row = rowList.get(0);
-
-			/*-------------------------------------------------------------*/
+			throw new Exception("could not localize IPv4 `" + ip + "`");
 		}
-		finally
-		{
-			basicQuerier.rollbackAndRelease();
-		}
+
+		Row row = rowList.get(0);
 
 		/*-----------------------------------------------------------------*/
 		/* RETURN LOCALIZATION                                             */
@@ -144,7 +115,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localization getCountryIPv6(String ip) throws Exception
+	public static Localization getCountryIPv6(BasicQuerier basicQuerier, String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
@@ -153,46 +124,23 @@ public class LocalizationSingleton
 		String _ip = ipv6ToInteger(ip).toString();
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
+		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier(
-			m_jdbcUrl,
-			m_routerUser,
-			m_routerPass
-		);
+		RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
 
 		/*-----------------------------------------------------------------*/
+		/* GET LOCALIZATION                                                */
+		/*-----------------------------------------------------------------*/
 
-		Row row;
+		List<Row> rowList = rowSet.getAll();
 
-		try
+		if(rowList.size() == 0)
 		{
-			/*-----------------------------------------------------------------*/
-			/* EXECUTE QUERY                                                   */
-			/*-----------------------------------------------------------------*/
-
-			RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geonameFK` = `L`.`id`", _ip, _ip));
-
-			/*-------------------------------------------------------------*/
-			/* GET LOCALIZATION                                            */
-			/*-------------------------------------------------------------*/
-
-			List<Row> rowList = rowSet.getAll();
-
-			if(rowList.size() == 0)
-			{
-				throw new Exception("could not localize IPv4 `" + ip + "`");
-			}
-
-			row = rowList.get(0);
-
-			/*-------------------------------------------------------------*/
+			throw new Exception("could not localize IPv4 `" + ip + "`");
 		}
-		finally
-		{
-			basicQuerier.rollbackAndRelease();
-		}
+
+		Row row = rowList.get(0);
 
 		/*-----------------------------------------------------------------*/
 		/* RETURN LOCALIZATION                                             */

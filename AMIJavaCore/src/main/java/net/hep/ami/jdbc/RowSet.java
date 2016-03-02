@@ -12,10 +12,6 @@ public class RowSet implements Iterable<Row>
 {
 	/*---------------------------------------------------------------------*/
 
-	static final int m_maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
-
-	/*---------------------------------------------------------------------*/
-
 	private ResultSet m_resultSet;
 
 	private String m_ast;
@@ -320,15 +316,17 @@ public class RowSet implements Iterable<Row>
 
 		m_resultSet.beforeFirst();
 
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+
 		/*-----------------------------------------------------------------*/
 
 		int i = 0;
 
 		while(m_resultSet.next())
 		{
-			if(i++ < m_maxNumberOfRows)
+			if(i++ < maxNumberOfRows)
 			{
-				result.add(new Row(m_this, m_this.next()));
+				result.add(new Row(this, next()));
 			}
 			else
 			{
@@ -343,9 +341,20 @@ public class RowSet implements Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuilder toStringBuilder()
+	public StringBuilder toStringBuilder(@Nullable String type) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		if(type == null)
+		{
+			result.append("<rowset>");
+		}
+		else
+		{
+			result.append("<rowset type=\"" + type + "\">");
+		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -359,17 +368,19 @@ public class RowSet implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
+		m_resultSet.beforeFirst();
+
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
 
 		/*-----------------------------------------------------------------*/
 
 		int i = 0;
 
-		for(Row row: this)
+		while(m_resultSet.next())
 		{
-			if(i++ < m_maxNumberOfRows)
+			if(i++ < maxNumberOfRows)
 			{
-				result.append(row.toStringBuilder());
+				result.append(new Row(this, next()).toStringBuilder());
 			}
 			else
 			{
@@ -384,6 +395,13 @@ public class RowSet implements Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public StringBuilder toStringBuilder() throws Exception
+	{
+		return toStringBuilder(null);
 	}
 
 	/*---------------------------------------------------------------------*/

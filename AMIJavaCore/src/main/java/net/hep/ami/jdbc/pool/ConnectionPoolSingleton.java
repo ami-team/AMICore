@@ -197,9 +197,7 @@ public class ConnectionPoolSingleton
 			result.append(
 				"<row>"
 				+
-				"<field name=\"url\">" + entry.getUrl() + "</field>"
-				+
-				"<field name=\"name\">" + entry.getUsername() + "</field>"
+				"<field name=\"url\">" + entry.getDefaultCatalog() + "</field>"
 				+
 				"<field name=\"poolSize\">" + entry.getPoolSize() + "</field>"
 				+

@@ -532,8 +532,8 @@ public class FrontEnd extends HttpServlet
 
 		String agent = request.getHeader("User-Agent");
 
-		arguments.put("AMIAgent", agent.startsWith("pyAMI") ? agent
-		                                                    : "web"
+		arguments.put("AMIAgent", agent.contains("pyAMI") ? agent
+		                                                  : "web"
 		);
 
 		/*-----------------------------------------------------------------*/

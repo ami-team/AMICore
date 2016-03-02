@@ -11,10 +11,6 @@ public class GetSessionInfo extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	static final String m_useVOMS = ConfigSingleton.getProperty("use_voms");
-
-	/*---------------------------------------------------------------------*/
-
 	private boolean m_attachCert;
 	private boolean m_detachCert;
 
@@ -82,16 +78,21 @@ public class GetSessionInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
+		String useVOMS = ConfigSingleton.getProperty("use_voms");
+
+		/*-----------------------------------------------------------------*/
+
 		boolean VALID = valid.equals("0") == false;
 
 		boolean CERT_ENABLED = m_isSecure.equals("0") == false;
 
-		boolean VOMS_ENABLED = m_useVOMS.equals("0")
-		                       ||
-		                       m_useVOMS.equals("yes")
-		                       ||
-		                       m_useVOMS.equals("true")
-		;
+		boolean VOMS_ENABLED = !(
+				useVOMS.equals("0") == false
+				&&
+				useVOMS.equals("no") == false
+				&&
+				useVOMS.equals("false") == false
+		);
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
