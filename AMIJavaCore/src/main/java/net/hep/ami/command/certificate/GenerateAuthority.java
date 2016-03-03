@@ -91,7 +91,7 @@ public class GenerateAuthority extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<Result><rowset><row>");
+		result.append("<rowset><row>");
 
 		/*-----------------------------------------------------------------*/
 
@@ -118,7 +118,7 @@ public class GenerateAuthority extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("</row></rowset></Result>");
+		result.append("</row></rowset>");
 
 		/*-----------------------------------------------------------------*/
 

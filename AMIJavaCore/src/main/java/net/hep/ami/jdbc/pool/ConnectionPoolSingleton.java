@@ -188,7 +188,7 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<Result><rowset>");
+		result.append("<rowset type=\"connectionPool\">");
 
 		/*-----------------------------------------------------------------*/
 
@@ -225,7 +225,7 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("</rowset></Result>");
+		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
 

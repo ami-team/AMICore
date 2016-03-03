@@ -20,14 +20,14 @@ public class Echo extends CommandAbstractClass
 	{
 		StringBuilder result = new StringBuilder();
 
-		result.append("<Result><rowset><row>");
+		result.append("<rowset><row>");
 
 		for(Map.Entry<String, String> entry: m_arguments.entrySet())
 		{
 			result.append("<field name=\"" + entry.getKey() + "\"><![CDATA[" + entry.getValue() + "]]></field>");
 		}
 
-		result.append("</row></rowset></Result>");
+		result.append("</row></rowset>");
 
 		return result;
 	}

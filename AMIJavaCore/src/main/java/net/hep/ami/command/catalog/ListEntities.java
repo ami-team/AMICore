@@ -35,7 +35,7 @@ public class ListEntities extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<Result><rowset>");
+		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
 
@@ -52,7 +52,7 @@ public class ListEntities extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("</rowset></Result>");
+		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
 

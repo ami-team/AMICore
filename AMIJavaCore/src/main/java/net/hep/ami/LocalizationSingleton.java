@@ -24,6 +24,18 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static BigInteger _toPositiveBigInteger(BigInteger bigInteger, int bitLength)
+	{
+		if(bigInteger.compareTo(BigInteger.ZERO) < 0)
+		{
+			bigInteger = bigInteger.add(BigInteger.ONE.shiftLeft(bitLength));
+		}
+
+		return bigInteger;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static BigInteger ipv4ToInteger(String ip) throws UnknownHostException
 	{
 		return ipv4ToInteger((Inet4Address) InetAddress.getByName(ip));
@@ -35,16 +47,14 @@ public class LocalizationSingleton
 	{
 		byte[] parts = ip.getAddress();
 
-		final int length = parts.length;
-
 		BigInteger result = BigInteger.ZERO;
 
-		for(int i = 0; i < length; i++)
+		for(byte part: parts)
 		{
-			result = result.shiftLeft(8).or(BigInteger.valueOf(parts[i]));
+			result = result.shiftLeft(8).or(_toPositiveBigInteger(BigInteger.valueOf(part), 8));
 		}
 
-		return result.compareTo(BigInteger.ZERO) < 0 ? result.add(BigInteger.ONE.shiftLeft(8 * length)) : result;
+		return _toPositiveBigInteger(result, 8 * parts.length);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -60,16 +70,14 @@ public class LocalizationSingleton
 	{
 		byte[] parts = ip.getAddress();
 
-		final int length = parts.length;
-
 		BigInteger result = BigInteger.ZERO;
 
-		for(int i = 0; i < length; i++)
+		for(byte part: parts)
 		{
-			result = result.shiftLeft(8).or(BigInteger.valueOf(parts[i]));
+			result = result.shiftLeft(8).or(_toPositiveBigInteger(BigInteger.valueOf(part), 8));
 		}
 
-		return result.compareTo(BigInteger.ZERO) < 0 ? result.add(BigInteger.ONE.shiftLeft(8 * length)) : result;
+		return _toPositiveBigInteger(result, 8 * parts.length);
 	}
 
 	/*---------------------------------------------------------------------*/

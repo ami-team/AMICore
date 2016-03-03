@@ -72,10 +72,6 @@ public class GetUserInfo extends CommandAbstractClass
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
-		result.append("<Result>");
-
-		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
 		/*-----------------------------------------------------------------*/
 
@@ -117,10 +113,6 @@ public class GetUserInfo extends CommandAbstractClass
 		}
 
 		result.append("</rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</Result>");
 
 		/*-----------------------------------------------------------------*/
 

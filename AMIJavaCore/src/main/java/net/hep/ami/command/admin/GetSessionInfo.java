@@ -161,10 +161,6 @@ public class GetSessionInfo extends CommandAbstractClass
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
-		result.append("<Result>");
-
-		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
 		/*-----------------------------------------------------------------*/
 
@@ -220,10 +216,6 @@ public class GetSessionInfo extends CommandAbstractClass
 		}
 
 		result.append("</rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</Result>");
 
 		/*-----------------------------------------------------------------*/
 

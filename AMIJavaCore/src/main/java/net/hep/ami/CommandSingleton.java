@@ -232,7 +232,9 @@ public class CommandSingleton
 			stringBuilder.append("<executionDate>" + executionDate + "</executionDate>");
 			stringBuilder.append("<executionTime>" + executionTime + "</executionTime>");
 
+			stringBuilder.append("<Result>");
 			stringBuilder.append(content);
+			stringBuilder.append("</Result>");
 
 			stringBuilder.append("</AMIMessage>");
 
@@ -263,7 +265,7 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<Result><rowset>");
+		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
 
@@ -302,7 +304,7 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("</rowset></Result>");
+		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
 
