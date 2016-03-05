@@ -12,11 +12,12 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		LogSingleton.defaultLogger.error("Hello");
+		//LogSingleton.defaultLogger.error("Hello");
 
-		System.out.println(CatalogSingleton.listCatalogs().toString().replace(">", ">\n"));
+		//System.out.println(CatalogSingleton.listCatalogs().toString().replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+		//System.out.println(CommandSingleton.executeCommand("GetConnectionPoolStatus", arguments).replace(">", ">\n"));
+		CommandSingleton.executeCommand("GetConnectionPoolStatus", arguments);
 
 		System.exit(0);
 	}

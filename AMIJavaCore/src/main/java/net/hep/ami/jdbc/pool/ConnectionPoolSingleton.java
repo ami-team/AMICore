@@ -1,7 +1,9 @@
 package net.hep.ami.jdbc.pool;
 
+import java.net.*;
 import java.sql.*;
 import java.util.*;
+import java.util.Map.*;
 
 import net.hep.ami.*;
 
@@ -24,6 +26,20 @@ public class ConnectionPoolSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static final Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
+
+	/*---------------------------------------------------------------------*/
+
+	private static String getKey(String url, String name)
+	{
+		try
+		{
+			return url.startsWith("jdbc:") ? name + '@' + new URI(url.substring(5)).getHost() : url;
+		}
+		catch(URISyntaxException e)
+		{
+			return url;
+		}
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -102,7 +118,7 @@ public class ConnectionPoolSingleton
 	{
 		DataSource result;
 
-		String key = jdbc_url + "@" + user;
+		String key = getKey(jdbc_url, user);
 
 		synchronized(ConnectionPoolSingleton.class)
 		{
@@ -121,9 +137,6 @@ public class ConnectionPoolSingleton
 		/**/		/*---------------------------*/
 		/**/
 		/**/		poolProperties.setDriverClassName(jdbc_driver);
-		/**/
-		/**/		/*---------------------------*/
-		/**/
 		/**/		poolProperties.setUrl(jdbc_url);
 		/**/		poolProperties.setUsername(user);
 		/**/		poolProperties.setPassword(pass);
@@ -161,9 +174,8 @@ public class ConnectionPoolSingleton
 		/**/		/* ABANDONED CONNECTIONS     */
 		/**/		/*---------------------------*/
 		/**/
-		/**/		poolProperties.setLogAbandoned(true);
-		/**/		poolProperties.setRemoveAbandoned(false);			/* A revoir !!! */
-		/**/		poolProperties.setRemoveAbandonedTimeout(60);
+		/**/		poolProperties.setLogAbandoned(false);
+		/**/		poolProperties.setRemoveAbandoned(false);
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE DATA SOURCE                                  */
@@ -192,32 +204,38 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(DataSource entry: m_pools.values())
+		String key;
+		DataSource value;
+
+		for(Entry<String, DataSource> entry: m_pools.entrySet())
 		{
+			key = entry.getKey();
+			value = entry.getValue();
+
 			result.append(
 				"<row>"
 				+
-				"<field name=\"url\">" + entry.getDefaultCatalog() + "</field>"
+				"<field name=\"name\">" + key + "</field>"
 				+
-				"<field name=\"poolSize\">" + entry.getPoolSize() + "</field>"
+				"<field name=\"poolSize\">" + value.getPoolSize() + "</field>"
 				+
-				"<field name=\"minIdle\">" + entry.getMinIdle() + "</field>"
+				"<field name=\"minIdle\">" + value.getMinIdle() + "</field>"
 				+
-				"<field name=\"maxIdle\">" + entry.getMaxIdle() + "</field>"
+				"<field name=\"maxIdle\">" + value.getMaxIdle() + "</field>"
 				+
-				"<field name=\"maxActive\">" + entry.getMaxActive() + "</field>"
+				"<field name=\"maxActive\">" + value.getMaxActive() + "</field>"
 				+
-				"<field name=\"timeBetweenEvictionRunsMillis\">" + entry.getTimeBetweenEvictionRunsMillis() + "</field>"
+				"<field name=\"timeBetweenEvictionRunsMillis\">" + value.getTimeBetweenEvictionRunsMillis() + "</field>"
 				+
-				"<field name=\"minEvictableIdleTimeMillis\">" + entry.getMinEvictableIdleTimeMillis() + "</field>"
+				"<field name=\"minEvictableIdleTimeMillis\">" + value.getMinEvictableIdleTimeMillis() + "</field>"
 				+
-				"<field name=\"validationInterval\">" + entry.getValidationInterval() + "</field>"
+				"<field name=\"validationInterval\">" + value.getValidationInterval() + "</field>"
 				+
-				"<field name=\"maxWait\">" + entry.getMaxWait() + "</field>"
+				"<field name=\"maxWait\">" + value.getMaxWait() + "</field>"
 				+
-				"<field name=\"numIdle\">" + entry.getNumIdle() + "</field>"
+				"<field name=\"numIdle\">" + value.getNumIdle() + "</field>"
 				+
-				"<field name=\"numActive\">" + entry.getNumActive() + "</field>"
+				"<field name=\"numActive\">" + value.getNumActive() + "</field>"
 				+
 				"</row>"
 			);
