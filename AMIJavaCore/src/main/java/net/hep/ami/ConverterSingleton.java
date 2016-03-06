@@ -24,7 +24,7 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_transformers = new HashMap<String, Tuple>();
+	private static final Map<String, Tuple> m_converters = new HashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -101,7 +101,7 @@ public class ConverterSingleton
 			/* ADD CONVERTER                                               */
 			/*-------------------------------------------------------------*/
 
-			m_transformers.put(
+			m_converters.put(
 				new File(xslt).getName()
 				,
 				new Tuple(
@@ -120,17 +120,17 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String applyConverter(String fileName, Reader reader, Writer writer) throws Exception
+	public static String convert(String converter, Reader reader, Writer writer) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET TRANSFORM                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple = m_transformers.get(fileName);
+		Tuple tuple = m_converters.get(converter);
 
 		if(tuple == null)
 		{
-			throw new Exception("converter `" + fileName + "` not found");
+			throw new Exception("converter `" + converter + "` not found");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -169,7 +169,7 @@ public class ConverterSingleton
 		String xslt;
 		String mime;
 
-		for(Map.Entry<String, Tuple> entry: m_transformers.entrySet())
+		for(Map.Entry<String, Tuple> entry: m_converters.entrySet())
 		{
 			xslt = entry.getKey();
 			mime = entry.getValue().y;

@@ -212,7 +212,7 @@ public class CommandSingleton
 			String executionTime = String.format(Locale.US, "%.3f", 0.001f * (t2 - t1));
 
 			/*-------------------------------------------------------------*/
-			/* GET RESULT                                                  */
+			/* BUILD RESULT                                                */
 			/*-------------------------------------------------------------*/
 
 			StringBuilder stringBuilder = new StringBuilder();
@@ -233,14 +233,14 @@ public class CommandSingleton
 			stringBuilder.append("<executionTime>" + executionTime + "</executionTime>");
 
 			stringBuilder.append("<Result>");
-			stringBuilder.append(content);
+			stringBuilder.append(m_xml10Pattern.matcher(content).replaceAll("?"));
 			stringBuilder.append("</Result>");
 
 			stringBuilder.append("</AMIMessage>");
 
 			/*-------------------------------------------------------------*/
 
-			result = m_xml10Pattern.matcher(stringBuilder.toString()).replaceAll("?");
+			result = stringBuilder.toString();
 
 			/*-------------------------------------------------------------*/
 		}

@@ -2,7 +2,7 @@ package net.hep.ami;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
+//import net.hep.ami.jdbc.*;
 
 public class CommandSingletonTest
 {

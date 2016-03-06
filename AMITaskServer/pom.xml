@@ -30,9 +30,9 @@
     <!--******************************************************************-->
 
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>${jetty.version}</version>
+      <groupId>net.hep.ami</groupId>
+      <artifactId>AMIMini</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <!--******************************************************************-->

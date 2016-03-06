@@ -25,13 +25,13 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static Pattern m_xml10Pattern = Pattern.compile(
-	      "[^"
-	    + "\u0009\r\n"
-	    + "\u0020-\uD7FF"
-	    + "\uE000-\uFFFD"
-	    + "\uD800\uDC00-\uDBFF\uDFFF"
-	    + "]+"
+	private static final Pattern m_xml10Pattern = Pattern.compile(
+		  "[^"
+		+ "\u0009\r\n"
+		+ "\u0020-\uD7FF"
+		+ "\uE000-\uFFFD"
+		+ "\uD800\uDC00-\uDBFF\uDFFF"
+		+ "]+"
 	);
 
 	/*---------------------------------------------------------------------*/
@@ -60,7 +60,7 @@ public class FrontEnd extends HttpServlet
 	private void doCommand(HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		/*-----------------------------------------------------------------*/
-		/* SET DEFAULT ENCODING                                            */
+		/* SET UTF-8 AS DEFAULT ENCODING                                   */
 		/*-----------------------------------------------------------------*/
 
 		req.setCharacterEncoding("UTF-8");
@@ -121,8 +121,10 @@ public class FrontEnd extends HttpServlet
 		/* PING                                                            */
 		/*-----------------------------------------------------------------*/
 
-		if(command.equals("Ping"))
-		{
+		if(command.trim().startsWith("Ping")
+		   ||
+		   command.trim().startsWith("AMIPing")
+		 ) {
 			res.setContentType("text/xml");
 
 			writer.print(XMLTemplates.info("AMI is alive."));
@@ -215,7 +217,7 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				mime = ConverterSingleton.applyConverter(converter, stringReader, stringWriter);
+				mime = ConverterSingleton.convert(converter, stringReader, stringWriter);
 
 				data = stringWriter.toString();
 			}
