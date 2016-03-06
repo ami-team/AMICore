@@ -3,7 +3,7 @@
 .classpath
 /AMIJavaCore/target/
 /AMIWebCore/target/
+/AMIMini/target/
 /AMITaskServer/target/
-/AMICloud/target/
 /tomcat/
 /ojdbc*.jar
