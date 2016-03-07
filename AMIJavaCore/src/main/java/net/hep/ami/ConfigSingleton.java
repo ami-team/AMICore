@@ -120,22 +120,10 @@ public class ConfigSingleton
 
 	private static File _toFile(String configPathName)
 	{
-		/*-----------------------------------------------------------------*/
-		/* CHECK FILEEXT                                                   */
-		/*-----------------------------------------------------------------*/
-
-		if(configPathName.endsWith(".xml") == false)
-		{
-			configPathName = configPathName.concat(File.separator).concat("AMI.xml");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE FILE                                                     */
-		/*-----------------------------------------------------------------*/
-
-		return new File(configPathName);
-
-		/*-----------------------------------------------------------------*/
+		return new File(
+			configPathName.endsWith(".xml") == false ? configPathName + File.separator + "AMI.xml"
+			                                         : configPathName
+		);
 	}
 
 	/*---------------------------------------------------------------------*/

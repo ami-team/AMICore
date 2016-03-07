@@ -7,11 +7,16 @@ import java.util.regex.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+
+import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.*;
+import org.eclipse.jetty.util.log.*;
+
+import org.w3c.dom.*;
 
 public class AMIMini extends AbstractHandler
 {
@@ -19,22 +24,148 @@ public class AMIMini extends AbstractHandler
 
 	public static interface Handler
 	{
-		public StringBuilder exec(String command, Map<String, String> arguments);
+		public StringBuilder exec(String command, Map<String, String> arguments, Map<String, String> config, String ip);
 
-		public StringBuilder help(String command, Map<String, String> arguments);
+		public StringBuilder help(String command, Map<String, String> arguments, Map<String, String> config, String ip);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private Handler m_handler; private AMIMini(Handler handler) { super(); m_handler = handler; }
+	private Handler m_handler;
+
+	private Map<String, String> m_config;
 
 	/*---------------------------------------------------------------------*/
 
-	private static final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.US);
+	private static File _toFile(String configPathName)
+	{
+		return new File(
+			configPathName.endsWith(".xml") == false ? configPathName + File.separator + "AMI.xml"
+			                                         : configPathName
+		);
+	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern m_xml10Pattern = Pattern.compile(
+	private AMIMini(Handler handler)
+	{
+		super();
+
+		/*-----------------------------------------------------------------*/
+		/* SET HANDLER                                                     */
+		/*-----------------------------------------------------------------*/
+
+		m_handler = handler;
+
+		/*-----------------------------------------------------------------*/
+		/* READ CONFIG                                                     */
+		/*-----------------------------------------------------------------*/
+
+		m_config = new HashMap<String, String>();
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			/*-------------------------------------------------------------*/
+			/* FIND CONFFILE                                               */
+			/*-------------------------------------------------------------*/
+
+			File file;
+			String path;
+
+			path = System.getProperty("ami.conffile");
+
+			if(path == null
+			   ||
+			   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
+			 ) {
+
+				path = System.getProperty((("user.home")));
+
+				if(path == null
+				   ||
+				   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
+				 ) {
+					/*----------------------------*/
+					/* DEFAULT FOR DEBs/RPMs      */
+					/*----------------------------*/
+
+					file = _toFile("/etc/ami");
+
+					/*----------------------------*/
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+			/* PARSE FILE                                                  */
+			/*-------------------------------------------------------------*/
+
+			Document document;
+
+			InputStream inputStream = new FileInputStream(file);
+
+			try
+			{
+				document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream);
+			}
+			finally
+			{
+				inputStream.close();
+			}
+
+			/*-------------------------------------------------------------*/
+			/* READ FILE                                                   */
+			/*-------------------------------------------------------------*/
+
+			NodeList nodeList = document.getElementsByTagName("property");
+
+			/*-------------------------------------------------------------*/
+			/* GET NUMBER OF PROPERTIES                                    */
+			/*-------------------------------------------------------------*/
+
+			final int numberOfNodes = nodeList.getLength();
+
+			/*-------------------------------------------------------------*/
+			/* ADD PROPERTIES                                              */
+			/*-------------------------------------------------------------*/
+
+			Node node;
+			Node attr;
+
+			for(int i = 0; i < numberOfNodes; i++)
+			{
+				node = nodeList.item(i);
+				attr = node.getAttributes()
+				           .getNamedItem("name");
+
+				if(attr != null)
+				{
+					m_config.put(
+							attr.getNodeValue().trim()
+							,
+							node.getTextContent().trim()
+					);
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			Log.getRootLogger().warn("could not read configuration file: " + e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static final SimpleDateFormat s_simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.US);
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Pattern s_xml10Pattern = Pattern.compile(
 		  "[^"
 		+ "\u0009\r\n"
 		+ "\u0020-\uD7FF"
@@ -150,7 +281,7 @@ public class AMIMini extends AbstractHandler
 			for(Map.Entry<String, String> entry: result.getValue().entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
 			stringBuilder.append("</arguments>");
 
-			stringBuilder.append("<executionDate>" + m_simpleDateFormat.format(new Date()) + "</executionDate>");
+			stringBuilder.append("<executionDate>" + s_simpleDateFormat.format(new Date()) + "</executionDate>");
 
 			if(result.getValue().containsKey("help") == false)
 			{
@@ -159,7 +290,7 @@ public class AMIMini extends AbstractHandler
 				/*---------------------------------------------------------*/
 
 				long t1 = System.currentTimeMillis();
-				StringBuilder content = m_handler.exec(result.getKey(), result.getValue());
+				StringBuilder content = m_handler.exec(result.getKey(), result.getValue(), m_config, req.getRemoteAddr());
 				long t2 = System.currentTimeMillis();
 
 				/**/
@@ -167,7 +298,7 @@ public class AMIMini extends AbstractHandler
 				stringBuilder.append("<executionTime>" + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "</executionTime>");
 
 				stringBuilder.append("<Result>");
-				stringBuilder.append(m_xml10Pattern.matcher(content).replaceAll("?"));
+				stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
 				stringBuilder.append("</Result>");
 
 				/*---------------------------------------------------------*/
@@ -179,7 +310,7 @@ public class AMIMini extends AbstractHandler
 				/*---------------------------------------------------------*/
 
 				long t1 = System.currentTimeMillis();
-				StringBuilder content = m_handler.help(result.getKey(), result.getValue());
+				StringBuilder content = m_handler.help(result.getKey(), result.getValue(), m_config, req.getRemoteAddr());
 				long t2 = System.currentTimeMillis();
 
 				/**/
@@ -187,7 +318,7 @@ public class AMIMini extends AbstractHandler
 				stringBuilder.append("<executionTime>" + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "</executionTime>");
 
 				stringBuilder.append("<help><![CDATA[");
-				stringBuilder.append(m_xml10Pattern.matcher(content).replaceAll("?"));
+				stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
 				stringBuilder.append("]]></help>");
 
 				/*---------------------------------------------------------*/
@@ -288,14 +419,16 @@ public class AMIMini extends AbstractHandler
 
 	private static AbstractMap.SimpleEntry<String, Map<String, String>> parse(String s) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* PARSE COMMAND                                                   */
-		/*-----------------------------------------------------------------*/
-
 		String command;
 
 		/***/ int i = 0x00000000;
 		final int l = s.length();
+
+		Map<String, String> arguments = new HashMap<String, String>();
+
+		/*-----------------------------------------------------------------*/
+		/* PARSE COMMAND                                                   */
+		/*-----------------------------------------------------------------*/
 
 		Matcher m = s_pattern1.matcher(s);
 
@@ -315,8 +448,6 @@ public class AMIMini extends AbstractHandler
 		char c;
 		String key;
 		String value;
-
-		Map<String, String> arguments = new HashMap<String, String>();
 
 		while(i < l)
 		{
@@ -357,7 +488,7 @@ public class AMIMini extends AbstractHandler
 			/* SYNTAX ERROR                                                */
 			/*-------------------------------------------------------------*/
 
-			throw new Exception("command syntax error, invalid argument");
+			throw new Exception("command syntax error, invalid argument syntax");
 
 			/*-------------------------------------------------------------*/
 		}
@@ -448,7 +579,7 @@ public class AMIMini extends AbstractHandler
 						{ 
 							result.append(Character.toChars(Integer.parseInt(code, 16)));
 						}
-						catch(Exception e)
+						catch(java.lang.NumberFormatException e)
 						{
 							result.append(/******************/ '?' /******************/);
 						}

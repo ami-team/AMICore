@@ -19,7 +19,7 @@ public class MainServer2
 			/*-------------------------------------------------------------*/
 
 			@Override
-			public StringBuilder exec(String command, Map<String, String> arguments)
+			public StringBuilder exec(String command, Map<String, String> arguments, Map<String, String> config, String ip)
 			{
 				StringBuilder result = new StringBuilder();
 
@@ -29,7 +29,7 @@ public class MainServer2
 			/*-------------------------------------------------------------*/
 
 			@Override
-			public StringBuilder help(String command, Map<String, String> arguments)
+			public StringBuilder help(String command, Map<String, String> arguments, Map<String, String> config, String ip)
 			{
 				StringBuilder result = new StringBuilder();
 

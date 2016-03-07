@@ -25,7 +25,7 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern m_xml10Pattern = Pattern.compile(
+	private static final Pattern s_xml10Pattern = Pattern.compile(
 		  "[^"
 		+ "\u0009\r\n"
 		+ "\u0020-\uD7FF"
@@ -36,8 +36,8 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static final String m_guest_user = ConfigSingleton.getProperty("guest_user");
-	private static final String m_guest_pass = ConfigSingleton.getProperty("guest_pass");
+	private static final String s_guest_user = ConfigSingleton.getProperty("guest_user");
+	private static final String s_guest_pass = ConfigSingleton.getProperty("guest_pass");
 
 	/*---------------------------------------------------------------------*/
 
@@ -186,7 +186,7 @@ public class FrontEnd extends HttpServlet
 					result.arguments
 				);
 
-				data = m_xml10Pattern.matcher(data).replaceAll("?");
+				data = s_xml10Pattern.matcher(data).replaceAll("?");
 
 				/*---------------------------------------------------------*/
 			}
@@ -359,8 +359,8 @@ public class FrontEnd extends HttpServlet
 			if(rowList.size() == 0)
 			{
 				return new Tuple2<String, String>(
-					m_guest_user,
-					m_guest_pass
+					s_guest_user,
+					s_guest_pass
 				);
 			}
 
@@ -444,7 +444,7 @@ public class FrontEnd extends HttpServlet
 				AMIPass = result.y;
 			}
 
-			if(AMIUser.equals(m_guest_user) == false)
+			if(AMIUser.equals(s_guest_user) == false)
 			{
 				session.setAttribute("AMIUser_certificate", AMIUser);
 				session.setAttribute("AMIPass_certificate", AMIPass);
@@ -483,8 +483,8 @@ public class FrontEnd extends HttpServlet
 				   ||
 				   AMIPass == null || AMIPass.isEmpty()
 				 ) {
-					AMIUser = m_guest_user;
-					AMIPass = m_guest_pass;
+					AMIUser = s_guest_user;
+					AMIPass = s_guest_pass;
 				}
 			}
 			else
@@ -493,8 +493,8 @@ public class FrontEnd extends HttpServlet
 				   ||
 				   AMIPass.isEmpty()
 				 ) {
-					AMIUser = m_guest_user;
-					AMIPass = m_guest_pass;
+					AMIUser = s_guest_user;
+					AMIPass = s_guest_pass;
 				}
 			}
 
@@ -507,9 +507,9 @@ public class FrontEnd extends HttpServlet
 			/*-------------------------------------------------------------*/
 		}
 
-		if(AMIUser.equals(m_guest_user)
+		if(AMIUser.equals(s_guest_user)
 		   &&
-		   AMIPass.equals(m_guest_pass)
+		   AMIPass.equals(s_guest_pass)
 		 ) {
 			session.removeAttribute("NoCert");
 		}
