@@ -41,7 +41,7 @@ public class AMIMini extends AbstractHandler
 	{
 		return new File(
 			configPathName.endsWith(".xml") == false ? configPathName + File.separator + "AMI.xml"
-			                                         : configPathName
+			                                         : configPathName ////////////////////////////
 		);
 	}
 
@@ -78,22 +78,30 @@ public class AMIMini extends AbstractHandler
 
 			if(path == null
 			   ||
-			   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
+			   (file = _toFile(path.trim())).exists() == false
 			 ) {
 
-				path = System.getProperty((("user.home")));
+				path = System.getProperty("catalina.base");
 
 				if(path == null
 				   ||
-				   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
+				   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
 				 ) {
-					/*----------------------------*/
-					/* DEFAULT FOR DEBs/RPMs      */
-					/*----------------------------*/
 
-					file = _toFile("/etc/ami");
+					path = System.getProperty((("user.home")));
 
-					/*----------------------------*/
+					if(path == null
+					   ||
+					   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
+					 ) {
+						/*----------------------------*/
+						/* DEFAULT FOR DEBs/RPMs      */
+						/*----------------------------*/
+
+						file = _toFile("/etc/ami");
+
+						/*----------------------------*/
+					}
 				}
 			}
 
@@ -275,7 +283,7 @@ public class AMIMini extends AbstractHandler
 
 			stringBuilder.append("<AMIMessage>");
 
-			stringBuilder.append("<command>" + result.getKey() + "</command>");
+			stringBuilder.append("<command><![CDATA[" + result.getKey() + "]]></command>");
 
 			stringBuilder.append("<arguments>");
 			for(Map.Entry<String, String> entry: result.getValue().entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
@@ -358,7 +366,7 @@ public class AMIMini extends AbstractHandler
 			}
 			catch(Exception e)
 			{
-				data = error("conv error");
+				data = error(e.getMessage());
 
 				mime = "text/xml";
 			}
@@ -460,6 +468,10 @@ public class AMIMini extends AbstractHandler
 			if(c == ' '
 			   ||
 			   c == '\t'
+			   ||
+			   c == '\n'
+			   ||
+			   c == '\r'
 			 ) {
 				i++;
 
@@ -610,6 +622,13 @@ public class AMIMini extends AbstractHandler
 		/*-----------------------------------------------------------------*/
 
 		InputStream inputStream = AMIMini.class.getResourceAsStream("../../../xslt/" + converter);
+
+		if(inputStream == null)
+		{
+			throw new Exception("converter `" + converter + "` not found");
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		try
 		{

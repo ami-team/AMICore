@@ -27,7 +27,8 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static Pattern m_xml10Pattern = Pattern.compile("[^"
+	private static final Pattern s_xml10Pattern = Pattern.compile(
+		  "[^"
 		+ "\u0009\r\n"
 		+ "\u0020-\uD7FF"
 		+ "\uE000-\uFFFD"
@@ -176,7 +177,21 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String result;
+		StringBuilder stringBuilder = new StringBuilder();
+
+		/*-------------------------------------------------------------*/
+
+		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+
+		stringBuilder.append("<AMIMessage>");
+
+		stringBuilder.append("<command><![CDATA[" + command + "]]></command>");
+
+		stringBuilder.append("<arguments>");
+		for(Map.Entry<String, String> entry: arguments.entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
+		stringBuilder.append("</arguments>");
+
+		stringBuilder.append("<executionDate>" + DateFormater.format(new Date()) + "</executionDate>");
 
 		if(arguments.containsKey("help") == false)
 		{
@@ -196,65 +211,46 @@ public class CommandSingleton
 			);
 
 			/*-------------------------------------------------------------*/
-			/* GET EXECUTION DATE                                          */
-			/*-------------------------------------------------------------*/
-
-			String executionDate = DateFormater.format(new Date());
-
-			/*-------------------------------------------------------------*/
-			/* EXECUTE COMMAND                                             */
+			/* EXECUTE COMMAND INSTANCE                                    */
 			/*-------------------------------------------------------------*/
 
 			long t1 = System.currentTimeMillis();
 			StringBuilder content = commandObject.execute();
 			long t2 = System.currentTimeMillis();
 
-			String executionTime = String.format(Locale.US, "%.3f", 0.001f * (t2 - t1));
+			/**/
 
-			/*-------------------------------------------------------------*/
-			/* BUILD RESULT                                                */
-			/*-------------------------------------------------------------*/
-
-			StringBuilder stringBuilder = new StringBuilder();
-
-			/*-------------------------------------------------------------*/
-
-			stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-
-			stringBuilder.append("<AMIMessage>");
-
-			stringBuilder.append("<command>" + command + "</command>");
-
-			stringBuilder.append("<arguments>");
-			for(Map.Entry<String, String> entry: arguments.entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
-			stringBuilder.append("</arguments>");
-
-			stringBuilder.append("<executionDate>" + executionDate + "</executionDate>");
-			stringBuilder.append("<executionTime>" + executionTime + "</executionTime>");
+			stringBuilder.append("<executionTime>" + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "</executionTime>");
 
 			stringBuilder.append("<Result>");
-			stringBuilder.append(m_xml10Pattern.matcher(content).replaceAll("?"));
+			stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
 			stringBuilder.append("</Result>");
 
-			stringBuilder.append("</AMIMessage>");
-
-			/*-------------------------------------------------------------*/
-
-			result = stringBuilder.toString();
 
 			/*-------------------------------------------------------------*/
 		}
 		else
 		{
-			result = XMLTemplates.help(
-				tuple.x,
-				tuple.y
-			);
+			/*-------------------------------------------------------------*/
+
+			stringBuilder.append("<executionTime>0.000</executionTime>");
+
+			stringBuilder.append("<help><![CDATA[");
+			stringBuilder.append(s_xml10Pattern.matcher(tuple.x).replaceAll("?"));
+			stringBuilder.append("]]></help>");
+
+			stringBuilder.append("<usage><![CDATA[");
+			stringBuilder.append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"));
+			stringBuilder.append("]]></usage>");
+
+			/*-------------------------------------------------------------*/
 		}
+
+		stringBuilder.append("</AMIMessage>");
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		return stringBuilder.toString();
 	}
 
 	/*---------------------------------------------------------------------*/

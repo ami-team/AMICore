@@ -2,7 +2,6 @@ package net.hep.ami.servlet;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
 import java.security.cert.*;
 
 import javax.servlet.http.*;
@@ -22,17 +21,6 @@ public class FrontEnd extends HttpServlet
 	/*---------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 6325706434625863655L;
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Pattern s_xml10Pattern = Pattern.compile(
-		  "[^"
-		+ "\u0009\r\n"
-		+ "\u0020-\uD7FF"
-		+ "\uE000-\uFFFD"
-		+ "\uD800\uDC00-\uDBFF\uDFFF"
-		+ "]+"
-	);
 
 	/*---------------------------------------------------------------------*/
 
@@ -170,7 +158,7 @@ public class FrontEnd extends HttpServlet
 				}
 
 				/*---------------------------------------------------------*/
-				/* EXECUTE COMMAND                                         */
+				/* PARSE COMMAND                                           */
 				/*---------------------------------------------------------*/
 
 				CommandParser.CommandParserTuple result = CommandParser.parse(command);
@@ -181,12 +169,14 @@ public class FrontEnd extends HttpServlet
 					req
 				);
 
+				/*---------------------------------------------------------*/
+				/* EXECUTE COMMAND                                         */
+				/*---------------------------------------------------------*/
+
 				data = CommandSingleton.executeCommand(
 					result.command,
 					result.arguments
 				);
-
-				data = s_xml10Pattern.matcher(data).replaceAll("?");
 
 				/*---------------------------------------------------------*/
 			}

@@ -130,13 +130,12 @@ public class ConfigSingleton
 
 	private static void readFromConfFile(Map<String, String> properties) throws Exception
 	{
-		String path;
-
 		/*-----------------------------------------------------------------*/
 		/* FIND CONFFILE                                                   */
 		/*-----------------------------------------------------------------*/
 
 		File file;
+		String path;
 
 		path = System.getProperty("ami.conffile");
 
@@ -152,7 +151,7 @@ public class ConfigSingleton
 			   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
 			 ) {
 
-				path = System.getProperty("user.home");
+				path = System.getProperty((("user.home")));
 
 				if(path == null
 				   ||

@@ -29,196 +29,129 @@ public class CommandParser
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern m_stringPattern = Pattern.compile("^[_a-zA-Z0-9]+$");
+	private static final Pattern s_pattern1 = Pattern.compile(
+		"^\\s*([a-zA-Z][a-zA-Z0-9]*)"
+	);
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Character[] m_spaces = {
-		' ', '\t', '\n'
-	};
-
-	private static final String[] m_kwords = {
-		"-", "/", "="
-	};
-
-	private static final String[] m_quotes = {
-		"\'", "\""
-	};
-
-	/*---------------------------------------------------------------------*/
-
-	private static final int DASH = 0;
-	private static final int EQUAL = 1;
-	private static final int STRING = 2;
-	private static final int ERR = 9;
-
-	private static final int CMD = 0;
-	private static final int ARG = 1;
-	private static final int VAL = 2;
-	private static final int NIL = 9;
-
-	/*---------------------------------------------------------------------*/
-
-	private static final int TRANSITIONS[][] = {
-		/*	DASH	EQUAL	STRING  */
-		{	ERR,	ERR,	  1		},
-		{	  2,	ERR,	  3		},
-		{	  2,	ERR,	  3		},
-		{	  2,	  4,	  3		},
-		{	ERR,	ERR,	  1		},
-	};
-
-	private static final int OPERATIONS[][] = {
-		/*	DASH	EQUAL	STRING  */
-		{	NIL,	NIL,	CMD		},
-		{	NIL,	NIL,	ARG		},
-		{	NIL,	NIL,	ARG		},
-		{	NIL,	NIL,	ARG		},
-		{	NIL,	NIL,	VAL		},
-	};
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Integer FINALS[] = {1, 3};
+	private static final Pattern s_pattern2 = Pattern.compile(
+		"^[-]+([a-zA-Z][a-zA-Z0-9]*)(?:=\"("
+		+
+		"(?:\\\"|[^\"])*"
+		+
+		")\")?"
+	);
 
 	/*---------------------------------------------------------------------*/
 
 	public static CommandParserTuple parse(String s) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* TOKENIZE COMMAND                                                */
-		/*-----------------------------------------------------------------*/
+		String command;
 
-		List<String> tokens = Tokenizer.tokenize(s, m_spaces, m_kwords, m_quotes);
+		/***/ int i = 0x00000000;
+		final int l = s.length();
 
-		if(tokens.size() == 0)
-		{
-			throw new Exception("empty command");
-		}
+		Map<String, String> arguments = new HashMap<String, String>();
 
 		/*-----------------------------------------------------------------*/
 		/* PARSE COMMAND                                                   */
 		/*-----------------------------------------------------------------*/
 
-		String command = "";
+		Matcher m = s_pattern1.matcher(s);
 
-		Map<String, String> arguments = new HashMap<String, String>();
+		if(m.find())
+		{
+			i += (command = m.group(1)).length();
+		}
+		else
+		{
+			throw new Exception("command syntax error, missing command name");
+		}
 
 		/*-----------------------------------------------------------------*/
+		/* PARSE ARGUMENTS                                                 */
+		/*-----------------------------------------------------------------*/
 
-		int idx = 0;
+		char c;
+		String key;
+		String value;
 
-		int cur_state = 0;
-		int new_state = 0;
-		int operation = 0;
-
-		String param = "";
-
-		for(String token: tokens)
+		while(i < l)
 		{
-			/**/ if(token.equals("-")
-			        ||
-			        token.equals("/")
+			/*-------------------------------------------------------------*/
+			/* EAT SPACE                                                   */
+			/*-------------------------------------------------------------*/
+
+			c = s.charAt(i);
+
+			if(c == ' '
+			   ||
+			   c == '\t'
+			   ||
+			   c == '\n'
+			   ||
+			   c == '\r'
 			 ) {
-				idx = DASH;
+				i++;
+
+				continue;
 			}
-			else if(token.equals("="))
+
+			/*-------------------------------------------------------------*/
+			/* EAT ARGUMENT                                                */
+			/*-------------------------------------------------------------*/
+
+			m = s_pattern2.matcher(s.substring(i));
+
+			if(m.find())
 			{
-				idx = EQUAL;
-			}
-			else
-			{
-				idx = STRING;
+				key = m.group(1);
+				value = m.group(2);
 
-				if(token.charAt(0) == '\''
-				   ||
-				   token.charAt(0) == '\"'
-				 ) {
-					token = token.substring(1, token.length() - 1);
-				}
-				else
-				{
-					if(m_stringPattern.matcher(token).find() == false)
-					{
-						throw new Exception("syntax error, unexpected token `" + token + "`");
-					}
-				}
+				arguments.put(key, value != null ? unescape(value) : null);
+
+				i += m.group(0).length();
+
+				continue;
 			}
 
-			new_state = TRANSITIONS[cur_state][idx];
-			operation = OPERATIONS[cur_state][idx];
+			/*-------------------------------------------------------------*/
+			/* SYNTAX ERROR                                                */
+			/*-------------------------------------------------------------*/
 
-			if(new_state == ERR)
-			{
-				throw new Exception("syntax error, unexpected token `" + token + "`");
-			}
+			throw new Exception("command syntax error, invalid argument syntax");
 
-			switch(operation)
-			{
-				case CMD:
-					command = token;
-					break;
-
-				case ARG:
-					param = token;
-					arguments.put(param, "");
-					break;
-
-				case VAL:
-					token = unescape(token);
-					arguments.put(param, token);
-					break;
-			}
-
-			cur_state = new_state;
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CHECK FINAL STATE                                               */
-		/*-----------------------------------------------------------------*/
-
-		boolean isOk = false;
-
-		for(int the_state: FINALS)
-		{
-			if(the_state == cur_state)
-			{
-				isOk = true;
-				break;
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(isOk == false)
-		{
-			throw new Exception("syntax error, truncated command");
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* RETURN RESULT                                                   */
 		/*-----------------------------------------------------------------*/
 
-		return new CommandParserTuple(command, arguments);
+		return new CommandParserTuple(
+			command,
+			arguments
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String unescape(String s)
+	private static String unescape(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());
 
 		/*-----------------------------------------------------------------*/
 
-		char c;
-		int i = 0;
+		/***/ int i = 0x00000000;
+		final int l = s.length();
+
 		String code;
+		char c;
 
-		final int length = s.length();
-
-		while(i < length)
+		while(i < l)
 		{
 			c = s.charAt(i++);
 
@@ -261,8 +194,11 @@ public class CommandParser
 						break;
 
 					case 'u':
+						/*-------------------------------------------------*/
+						/* UNICODE                                         */
+						/*-------------------------------------------------*/
 
-						if(length - i < 4)
+						if(l - i < 4)
 						{
 							c = 'u';
 							break;
@@ -275,12 +211,14 @@ public class CommandParser
 						{ 
 							result.append(Character.toChars(Integer.parseInt(code, 16)));
 						}
-						catch(Exception e)
+						catch(java.lang.NumberFormatException e)
 						{
 							result.append(/******************/ '?' /******************/);
 						}
 
 						continue;
+
+						/*-------------------------------------------------*/
 				}
 			}
 
