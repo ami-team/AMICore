@@ -111,9 +111,11 @@ public class AMIMini extends AbstractHandler
 			/* PARSE FILE                                                  */
 			/*-------------------------------------------------------------*/
 
-			Document document;
-
 			InputStream inputStream = new FileInputStream(file);
+
+			/*-------------------------------------------------------------*/
+
+			Document document;
 
 			try
 			{
