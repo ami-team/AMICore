@@ -19,6 +19,14 @@ public class MainServer2
 			/*-------------------------------------------------------------*/
 
 			@Override
+			public void init(Map<String, String> config)
+			{
+
+			}
+
+			/*-------------------------------------------------------------*/
+
+			@Override
 			public StringBuilder exec(String command, Map<String, String> arguments, Map<String, String> config, String ip)
 			{
 				StringBuilder result = new StringBuilder();

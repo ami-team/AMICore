@@ -24,6 +24,8 @@ public class AMIMini extends AbstractHandler
 
 	public static interface Handler
 	{
+		public void init(Map<String, String> config);
+
 		public StringBuilder exec(String command, Map<String, String> arguments, Map<String, String> config, String ip);
 
 		public StringBuilder help(String command, Map<String, String> arguments, Map<String, String> config, String ip);
@@ -163,6 +165,12 @@ public class AMIMini extends AbstractHandler
 		{
 			Log.getRootLogger().warn("could not read configuration file: " + e.getMessage());
 		}
+
+		/*-----------------------------------------------------------------*/
+		/* INIT                                                            */
+		/*-----------------------------------------------------------------*/
+
+		m_handler.init(m_config);
 
 		/*-----------------------------------------------------------------*/
 	}
