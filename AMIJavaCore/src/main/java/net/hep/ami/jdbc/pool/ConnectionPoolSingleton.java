@@ -21,7 +21,7 @@ public class ConnectionPoolSingleton
 	private static final int m_timeBetweenEvictionRunsMillis = ConfigSingleton.getProperty("time_between_eviction_runs_millis", 5000);
 	private static final int m_minEvictableIdleTimeMillis = ConfigSingleton.getProperty("min_evictable_idle_time_millis", 30000);
 	private static final int m_validationInterval = ConfigSingleton.getProperty("validation_interval", 30000);
-	private static final int m_maxWait = ConfigSingleton.getProperty("max_wait", 10000);
+	private static final int m_maxWait = ConfigSingleton.getProperty("max_wait", 30000);
 
 	/*---------------------------------------------------------------------*/
 
@@ -160,7 +160,7 @@ public class ConnectionPoolSingleton
 		/**/		poolProperties.setMaxWait(maxWait);
 		/**/
 		/**/		/*---------------------------*/
-		/**/		/* TESTS                     */
+		/**/		/* CONNECTION TESTS          */
 		/**/		/*---------------------------*/
 		/**/
 		/**/		poolProperties.setTestOnBorrow(true);				/* The indication of whether objects will be validated before being borrowed from the pool. */
@@ -174,8 +174,8 @@ public class ConnectionPoolSingleton
 		/**/		/* ABANDONED CONNECTIONS     */
 		/**/		/*---------------------------*/
 		/**/
-		/**/		poolProperties.setLogAbandoned(false);
 		/**/		poolProperties.setRemoveAbandoned(false);
+		/**/		poolProperties.setLogAbandoned(false);
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE DATA SOURCE                                  */

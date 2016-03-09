@@ -141,21 +141,21 @@ public class ConfigSingleton
 
 		if(path == null
 		   ||
-		   (file = _toFile(path.trim())).exists() == false
+		   (file = _toFile(path)).exists() == false
 		 ) {
 
 			path = System.getProperty("catalina.base");
 
 			if(path == null
 			   ||
-			   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
+			   (file = _toFile(path + File.separator + "conf")).exists() == false
 			 ) {
 
 				path = System.getProperty((("user.home")));
 
 				if(path == null
 				   ||
-				   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
+				   (file = _toFile(path + File.separator + ".ami")).exists() == false
 				 ) {
 					/*----------------------------*/
 					/* DEFAULT FOR DEBs/RPMs      */

@@ -1,4 +1,4 @@
-package net.hep.ami;
+package net.hep.ami.mini;
 
 import java.io.*;
 import java.text.*;
@@ -12,26 +12,15 @@ import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
-import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.server.handler.*;
-import org.eclipse.jetty.util.log.*;
-
 import org.w3c.dom.*;
 
-public class AMIMini extends AbstractHandler
+/*---------------------------------------------------------------------*/
+
+public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandler
 {
 	/*---------------------------------------------------------------------*/
 
-	public static interface Handler
-	{
-		public void init(Map<String, String> config);
-
-		public StringBuilder exec(String command, Map<String, String> arguments, Map<String, String> config, String ip);
-
-		public StringBuilder help(String command, Map<String, String> arguments, Map<String, String> config, String ip);
-	}
-
-	/*---------------------------------------------------------------------*/
+	private Server m_server;
 
 	private Handler m_handler;
 
@@ -49,9 +38,15 @@ public class AMIMini extends AbstractHandler
 
 	/*---------------------------------------------------------------------*/
 
-	private AMIMini(Handler handler)
+	public JettyHandler(Server server, Handler handler) throws Exception
 	{
 		super();
+
+		/*-----------------------------------------------------------------*/
+		/* SET SERVER                                                      */
+		/*-----------------------------------------------------------------*/
+
+		m_server = server;
 
 		/*-----------------------------------------------------------------*/
 		/* SET HANDLER                                                     */
@@ -80,21 +75,21 @@ public class AMIMini extends AbstractHandler
 
 			if(path == null
 			   ||
-			   (file = _toFile(path.trim())).exists() == false
+			   (file = _toFile(path)).exists() == false
 			 ) {
 
 				path = System.getProperty("catalina.base");
 
 				if(path == null
 				   ||
-				   (file = _toFile(path.trim() + File.separator + "conf")).exists() == false
+				   (file = _toFile(path + File.separator + "conf")).exists() == false
 				 ) {
 
 					path = System.getProperty((("user.home")));
 
 					if(path == null
 					   ||
-					   (file = _toFile(path.trim() + File.separator + ".ami")).exists() == false
+					   (file = _toFile(path + File.separator + ".ami")).exists() == false
 					 ) {
 						/*----------------------------*/
 						/* DEFAULT FOR DEBs/RPMs      */
@@ -119,7 +114,10 @@ public class AMIMini extends AbstractHandler
 
 			try
 			{
-				document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream);
+				document = DocumentBuilderFactory.newInstance()
+				                                 .newDocumentBuilder()
+				                                 .parse(inputStream)
+				;
 			}
 			finally
 			{
@@ -165,14 +163,14 @@ public class AMIMini extends AbstractHandler
 		}
 		catch(Exception e)
 		{
-			Log.getRootLogger().warn("could not read configuration file: " + e.getMessage());
+			org.eclipse.jetty.util.log.Log.getRootLogger().warn("could not read configuration file: " + e.getMessage());
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* INIT                                                            */
 		/*-----------------------------------------------------------------*/
 
-		m_handler.init(m_config);
+		m_handler.init(m_server, m_config);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -195,7 +193,7 @@ public class AMIMini extends AbstractHandler
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
+	public void handle(String target, org.eclipse.jetty.server.Request baseRequest, HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
 	{
 		/*-----------------------------------------------------------------*/
 		/* SET UTF-8 AS DEFAULT ENCODING                                   */
@@ -234,25 +232,6 @@ public class AMIMini extends AbstractHandler
 		/*-----------------------------------------------------------------*/
 
 		PrintWriter writer = res.getWriter();
-
-		/*-----------------------------------------------------------------*/
-		/* PING                                                            */
-		/*-----------------------------------------------------------------*/
-
-		if(command.trim().startsWith("Ping")
-		   ||
-		   command.trim().startsWith("AMIPing")
-		 ) {
-			res.setContentType("text/xml");
-
-			writer.print(info(
-				"AMI is alive.")
-			);
-
-			writer.close();
-
-			return;
-		}
 
 		/*-----------------------------------------------------------------*/
 		/* SET CONTENT DISPOSITION                                         */
@@ -308,7 +287,7 @@ public class AMIMini extends AbstractHandler
 				/*---------------------------------------------------------*/
 
 				long t1 = System.currentTimeMillis();
-				StringBuilder content = m_handler.exec(result.getKey(), result.getValue(), m_config, req.getRemoteAddr());
+				StringBuilder content = m_handler.exec(m_server, m_config, result.getKey(), result.getValue(), req.getRemoteAddr());
 				long t2 = System.currentTimeMillis();
 
 				/**/
@@ -328,7 +307,7 @@ public class AMIMini extends AbstractHandler
 				/*---------------------------------------------------------*/
 
 				long t1 = System.currentTimeMillis();
-				StringBuilder content = m_handler.help(result.getKey(), result.getValue(), m_config, req.getRemoteAddr());
+				StringBuilder content = m_handler.help(m_server, m_config, result.getKey(), result.getValue(), req.getRemoteAddr());
 				long t2 = System.currentTimeMillis();
 
 				/**/
@@ -401,15 +380,23 @@ public class AMIMini extends AbstractHandler
 		writer.close();
 
 		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		res.setStatus(HttpServletResponse.SC_OK);
+
+		baseRequest.setHandled(true);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
-
+/*
 	private String info(String s)
 	{
 		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage><info><![CDATA[" + s + "]]></info></AMIMessage>";
 	}
-
+ */
 	/*---------------------------------------------------------------------*/
 
 	private String error(String s)
@@ -631,7 +618,7 @@ public class AMIMini extends AbstractHandler
 
 		/*-----------------------------------------------------------------*/
 
-		InputStream inputStream = AMIMini.class.getResourceAsStream("../../../xslt/" + converter);
+		InputStream inputStream = JettyHandler.class.getResourceAsStream("../../../../xslt/" + converter);
 
 		if(inputStream == null)
 		{
@@ -655,17 +642,4 @@ public class AMIMini extends AbstractHandler
 
 		/*-----------------------------------------------------------------*/
 	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static Server newInstance(int port, Handler handler)
-	{
-		Server result = new Server(port);
-
-		result.setHandler(new AMIMini(handler));
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
 }

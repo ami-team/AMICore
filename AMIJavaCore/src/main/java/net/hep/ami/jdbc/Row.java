@@ -75,7 +75,7 @@ public class Row
 
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < m_values.length; i++)
+		for(int i = 0; i < m_values.length; i++) /* pas beau le length dans le if */
 		{
 			result.append("<field table=\"" + m_rowSet.m_fieldTables[i] + "\" name=\"" + m_rowSet.m_fieldNames[i] + "\" type=\"" + m_rowSet.m_fieldTypes[i] + "\"><![CDATA[" + m_values[i] + "]]></field>");
 		}
