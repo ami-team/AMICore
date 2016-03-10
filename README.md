@@ -6,7 +6,7 @@ The [ATLAS Metadata Interface (AMI)](http://www.cern.ch/ami/) is a generic high 
 Compiling AMI
 =============
 
-1. Requierments
+1. Requirements
 
   Make sure that [Java 8](http://www.oracle.com/technetwork/java/javase/) and [Maven 3](http://maven.apache.org/) are installed:
 	```bash
@@ -34,7 +34,7 @@ mvn install:install-file \
 ./OracheMaven.sh
 ```
 
-3. Compiling AMI
+3. Compiling sources
 	```bash
 mvn install
 ```
