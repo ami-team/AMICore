@@ -106,23 +106,6 @@ public class FrontEnd extends HttpServlet
 		HttpSession session = req.getSession(true);
 
 		/*-----------------------------------------------------------------*/
-		/* PING                                                            */
-		/*-----------------------------------------------------------------*/
-
-		if(command.trim().startsWith("Ping")
-		   ||
-		   command.trim().startsWith("AMIPing")
-		 ) {
-			res.setContentType("text/xml");
-
-			writer.print(XMLTemplates.info("AMI is alive."));
-
-			writer.close();
-
-			return;
-		}
-
-		/*-----------------------------------------------------------------*/
 		/* SET CONTENT DISPOSITION                                         */
 		/*-----------------------------------------------------------------*/
 

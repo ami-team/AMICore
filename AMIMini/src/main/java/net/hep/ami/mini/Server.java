@@ -8,8 +8,6 @@ public class Server extends org.eclipse.jetty.server.Server
 	{
 		super(port);
 
-		setStopTimeout(5000);
-
 		setStopAtShutdown(true);
 
 		setHandler(new JettyHandler(this, handler));
@@ -17,18 +15,37 @@ public class Server extends org.eclipse.jetty.server.Server
 
 	/*---------------------------------------------------------------------*/
 
-	@Override
-	public void join() throws InterruptedException
+	public void gracefulStop()
 	{
-		while(isRunning())
-		{
-			Thread.sleep(100);
-		}
+		/*-----------------------------------------------------------------*/
+		/* CREATE THREAD                                                   */
+		/*-----------------------------------------------------------------*/
 
-		while(isStopping())
+		Thread thread = new Thread()
 		{
-			Thread.sleep(100);
-		}
+			@Override
+			public void run()
+			{
+				try
+				{
+					Thread.sleep(500);
+
+					Server.this.stop();
+				}
+				catch(Exception e)
+				{
+					/* IGNORE */
+				}
+			}
+		};
+
+		/*-----------------------------------------------------------------*/
+		/* START THREAD                                                    */
+		/*-----------------------------------------------------------------*/
+
+		thread.start();
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

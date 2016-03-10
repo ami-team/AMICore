@@ -30,7 +30,7 @@ public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandl
 
 	private static File _toFile(String configPathName)
 	{
-		return new File(
+		return new File (
 			configPathName.endsWith(".xml") == false ? configPathName + File.separator + "AMI.xml"
 			                                         : configPathName ////////////////////////////
 		);
@@ -65,7 +65,7 @@ public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandl
 		try
 		{
 			/*-------------------------------------------------------------*/
-			/* FIND CONFFILE                                               */
+			/* FIND FILE                                                   */
 			/*-------------------------------------------------------------*/
 
 			File file;
@@ -177,7 +177,7 @@ public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandl
 
 	/*---------------------------------------------------------------------*/
 
-	private static final SimpleDateFormat s_simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.US);
+	public static final SimpleDateFormat s_simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -261,7 +261,7 @@ public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandl
 			AbstractMap.SimpleEntry<String, Map<String, String>> result = parse(command);
 
 			/*-------------------------------------------------------------*/
-			/* BUILD RESULT AND EXECUTE COMMAND                            */
+			/* EXECUTE COMMAND AND BUILD RESULT                            */
 			/*-------------------------------------------------------------*/
 
 			StringBuilder stringBuilder = new StringBuilder();
@@ -380,7 +380,7 @@ public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandl
 		writer.close();
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* OKAY                                                            */
 		/*-----------------------------------------------------------------*/
 
 		res.setStatus(HttpServletResponse.SC_OK);
@@ -391,11 +391,11 @@ public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandl
 	}
 
 	/*---------------------------------------------------------------------*/
-/*
-	private String info(String s)
-	{
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage><info><![CDATA[" + s + "]]></info></AMIMessage>";
-	}
+
+/*	private String info(String s)
+ *	{
+ *		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage><info><![CDATA[" + s + "]]></info></AMIMessage>";
+ *	}
  */
 	/*---------------------------------------------------------------------*/
 
@@ -642,4 +642,6 @@ public class JettyHandler extends org.eclipse.jetty.server.handler.AbstractHandl
 
 		/*-----------------------------------------------------------------*/
 	}
+
+	/*---------------------------------------------------------------------*/
 }

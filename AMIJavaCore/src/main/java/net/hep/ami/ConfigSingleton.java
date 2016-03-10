@@ -131,7 +131,7 @@ public class ConfigSingleton
 	private static void readFromConfFile(Map<String, String> properties) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* FIND CONFFILE                                                   */
+		/* FIND FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
 		File file;
