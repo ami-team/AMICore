@@ -19,8 +19,8 @@ deploy:
 
 	unzip AMIWebCore/target/AMIWebCore-*.war -d tomcat/webapps/AMI/
 
-	cp ../AMIFinance/target/AMIFinance-*.jar tomcat/webapps/AMI/WEB-INF/lib/
-	cp ~/.m2/repository/com/yahoofinance-api/YahooFinanceAPI/2.3.0/YahooFinanceAPI-2.3.0.jar tomcat/webapps/AMI/WEB-INF/lib/
+#	cp ../AMIFinance/target/AMIFinance-*.jar tomcat/webapps/AMI/WEB-INF/lib/
+#	cp ~/.m2/repository/com/yahoofinance-api/YahooFinanceAPI/2.3.0/YahooFinanceAPI-2.3.0.jar tomcat/webapps/AMI/WEB-INF/lib/
 
 #	cp ../QR/target/QRCode.war tomcat/webapps/QRCode.war
 
