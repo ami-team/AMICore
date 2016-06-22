@@ -8,11 +8,11 @@ import net.hep.ami.utility.*;
 
 import org.antlr.v4.runtime.misc.*;
 
-public class RowSet implements Iterable<Row>
+public class RowSet
 {
 	/*---------------------------------------------------------------------*/
 
-	private ResultSet m_resultSet;
+	protected ResultSet m_resultSet;
 
 	private String m_ast;
 	private String m_sql;
@@ -180,7 +180,7 @@ public class RowSet implements Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	private String[] next() throws SQLException
+	protected String[] getCurrentValue() throws SQLException
 	{
 		String[] result = new String[m_numberOfFields];
 
@@ -248,62 +248,9 @@ public class RowSet implements Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	private final RowSet m_this = this;
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public Iterator<Row> iterator()
+	public Iterable iter() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			m_resultSet.beforeFirst();
-		}
-		catch(SQLException e)
-		{
-			throw new RuntimeException(e.getMessage());
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return new Iterator<Row>()
-		{
-			/*-------------------------------------------------------------*/
-
-			@Override
-			public boolean hasNext()
-			{
-				try
-				{
-					return m_resultSet.next();
-				}
-				catch(SQLException e)
-				{
-					throw new RuntimeException(e.getMessage());
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-
-			@Override
-			public Row next()
-			{
-				try
-				{
-					return new Row(m_this, m_this.next());
-				}
-				catch(SQLException e)
-				{
-					throw new RuntimeException(e.getMessage());
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-		};
-
-		/*-----------------------------------------------------------------*/
+		return new Iterable(this);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -326,7 +273,7 @@ public class RowSet implements Iterable<Row>
 		{
 			if(i++ < maxNumberOfRows)
 			{
-				result.add(new Row(this, next()));
+				result.add(new Row(this, getCurrentValue()));
 			}
 			else
 			{
@@ -370,7 +317,7 @@ public class RowSet implements Iterable<Row>
 
 		m_resultSet.beforeFirst();
 
-		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
 
 		/*-----------------------------------------------------------------*/
 
@@ -380,7 +327,7 @@ public class RowSet implements Iterable<Row>
 		{
 			if(i++ < maxNumberOfRows)
 			{
-				result.append(new Row(this, next()).toStringBuilder());
+				result.append(new Row(this, getCurrentValue()).toStringBuilder());
 			}
 			else
 			{

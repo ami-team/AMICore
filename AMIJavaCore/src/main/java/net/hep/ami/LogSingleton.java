@@ -41,7 +41,7 @@ public class LogSingleton
 					title, title + "\n\n" + event.getMessage().getFormattedMessage()
 				);
 			}
-			catch(final Exception e)
+			catch(Exception e)
 			{
 				error(e.getMessage());
 

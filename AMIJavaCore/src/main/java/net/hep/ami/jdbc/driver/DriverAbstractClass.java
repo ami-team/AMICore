@@ -86,12 +86,23 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	/*---------------------------------------------------------------------*/
 
+	public abstract String patch(String sql) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
 	@Override
 	public RowSet executeSQLQuery(String sql) throws Exception
 	{
-		return new RowSet(
-			m_statementList.get(0).executeQuery(sql)
-		);
+		try
+		{
+			return new RowSet(
+				m_statementList.get(0).executeQuery(patch(sql))
+			);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -99,18 +110,18 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public RowSet executeMQLQuery(String mql) throws Exception
 	{
-		String ast = /* TODO */ null /* TODO */;
-		String sql = SelectParser.parse(mql, this);
-
 		try
 		{
+			String ast = /* TODO */ null /* TODO */;
+			String sql = SelectParser.parse(mql, this);
+
 			return new RowSet(
-				m_statementList.get(0).executeQuery(sql), ast, sql
+				m_statementList.get(0).executeQuery(patch(sql)), ast, sql
 			);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for query " + sql);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql);
 		}
 	}
 
@@ -119,7 +130,14 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public int executeSQLUpdate(String sql) throws Exception
 	{
-		return m_statementList.get(0).executeUpdate(sql);
+		try
+		{
+			return m_statementList.get(0).executeUpdate(patch(sql));
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -127,15 +145,13 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public int executeMQLUpdate(String mql) throws Exception
 	{
-		String sql = UpdateParser.parse(mql, this);
-
 		try
 		{
-			return m_statementList.get(0).executeUpdate(sql);
+			return m_statementList.get(0).executeUpdate(patch(UpdateParser.parse(mql, this)));
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for query " + sql);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql);
 		}
 	}
 
@@ -144,19 +160,9 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
 	{
-		return m_connection.prepareStatement(sql);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
-	{
-		String sql = UpdateParser.parse(mql, this);
-
 		try
 		{
-			PreparedStatement result = m_connection.prepareStatement(sql);
+			PreparedStatement result = m_connection.prepareStatement(patch(sql));
 
 			m_statementList.add(result);
 
@@ -164,7 +170,26 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for query " + sql);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
+	{
+		try
+		{
+			PreparedStatement result = m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)));
+
+			m_statementList.add(result);
+
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for MQL query: " + mql);
 		}
 	}
 
@@ -173,11 +198,18 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception
 	{
-		PreparedStatement result = m_connection.prepareStatement(sql, columnNames);
+		try
+		{
+			PreparedStatement result = m_connection.prepareStatement(patch(sql), columnNames);
 
-		m_statementList.add(result);
+			m_statementList.add(result);
 
-		return result;
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -185,15 +217,17 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public PreparedStatement mqlPrepareStatement(String mql, String columnNames[]) throws Exception
 	{
-		String sql = UpdateParser.parse(mql, this);
-
 		try
 		{
-			return m_connection.prepareStatement(sql, columnNames);
+			PreparedStatement result = m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)), columnNames);
+
+			m_statementList.add(result);
+
+			return result;
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for query " + sql);
+			throw new Exception(e.getMessage() + " for MQL query " + mql);
 		}
 	}
 

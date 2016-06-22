@@ -9,7 +9,7 @@ public class XMLTemplates
 		return new StringBuilder()
 
 			.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage><info><![CDATA[")
-			.append(message)
+			.append(message.replace("@![CDATA[", "").replace("]]@", ""))
 			.append("]]></info><executionTime>0.0</executionTime></AMIMessage>")
 
 			.toString()
@@ -23,7 +23,7 @@ public class XMLTemplates
 		return new StringBuilder()
 
 			.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AMIMessage><error><![CDATA[")
-			.append(message)
+			.append(message.replace("@![CDATA[", "").replace("]]@", ""))
 			.append("]]></error><executionTime>0.0</executionTime></AMIMessage>")
 
 			.toString()

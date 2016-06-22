@@ -3,15 +3,15 @@ package net.hep.ami.jdbc.driver;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
-	proto = "jdbc:postgresql",
-	clazz = "org.postgresql.Driver"
+	proto = "jdbc:h2",
+	clazz = "org.h2.Driver"
 )
 
-public class PostgreSQLDriver extends DriverAbstractClass
+public class H2Driver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public PostgreSQLDriver(String jdbc_url, String user, String pass) throws Exception
+	public H2Driver(String jdbc_url, String user, String pass) throws Exception
 	{
 		super(jdbc_url, user, pass);
 	}

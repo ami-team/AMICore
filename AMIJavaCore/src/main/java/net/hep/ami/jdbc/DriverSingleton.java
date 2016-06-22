@@ -55,6 +55,8 @@ public class DriverSingleton
 
 		Class<DriverAbstractClass> clazz = (Class<DriverAbstractClass>) Class.forName(className);
 
+		/* QUOI FAIRE SI clazz EST NULL ??? */
+
 		/*-----------------------------------------------------------------*/
 		/* ADD DRIVER                                                      */
 		/*-----------------------------------------------------------------*/

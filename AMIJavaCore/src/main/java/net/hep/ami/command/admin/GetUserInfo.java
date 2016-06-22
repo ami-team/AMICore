@@ -101,7 +101,7 @@ public class GetUserInfo extends CommandAbstractClass
 
 		result.append("<rowset type=\"role\">");
 
-		for(Row row2: rowSet2)
+		for(Row row2: rowSet2.iter())
 		{
 			result.append(
 				"<row>"

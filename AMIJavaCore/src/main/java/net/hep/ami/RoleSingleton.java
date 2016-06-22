@@ -117,33 +117,33 @@ public class RoleSingleton
 			/*-------------------------------------------------------------*/
 
 			RowSet rowSet = basicQuerier.executeSQLQuery(
-				"SELECT \"node\".\"validatorClass\" FROM \"router_command\",\"router_user\",\"router_command_role\",\"router_user_role\",\"router_role\" AS \"tree\",\"router_role\" AS \"node\" WHERE" +
+				"SELECT `node`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` AS `tree`,`router_role` AS `node` WHERE" +
 				/*---------------------------------------------------------*/
 				/* SELECT COMMAND                                          */
 				/*---------------------------------------------------------*/
-				"	"+" \"router_command\".\"command\"='" + command + "'" +
+				"	"+" `router_command`.`command`='" + command + "'" +
 				/*---------------------------------------------------------*/
 				/* SELECT USER                                             */
 				/*---------------------------------------------------------*/
-				"	AND \"router_user\".\"AMIUser\"='" + AMIUser + "'" +
-				"	AND \"router_user\".\"AMIPass\"='" + AMIPass + "'" +
+				"	AND `router_user`.`AMIUser`='" + AMIUser + "'" +
+				"	AND `router_user`.`AMIPass`='" + AMIPass + "'" +
 				/*---------------------------------------------------------*/
 				/* SELECT COMMAND ROLE                                     */
 				/*---------------------------------------------------------*/
-				"	AND \"router_command_role\".\"commandFK\"=\"router_command\".\"id\"" +
+				"	AND `router_command_role`.`commandFK`=`router_command`.`id`" +
 				/*---------------------------------------------------------*/
 				/* SELECT USER ROLE                                        */
 				/*---------------------------------------------------------*/
-				"	AND \"router_user_role\".\"userFK\"=\"router_user\".\"id\"" +
+				"	AND `router_user_role`.`userFK`=`router_user`.`id`" +
 				/*---------------------------------------------------------*/
 				/* SELECT ROLE                                             */
 				/*---------------------------------------------------------*/
-				"	AND \"router_command_role\".\"roleFK\"=\"tree\".\"id\"" +
-				"	AND \"router_user_role\".\"roleFK\"=\"node\".\"id\"" +
+				"	AND `router_command_role`.`roleFK`=`tree`.`id`" +
+				"	AND `router_user_role`.`roleFK`=`node`.`id`" +
 				/*---------------------------------------------------------*/
-				"	AND \"node\".\"lft\" BETWEEN \"tree\".\"lft\" AND \"tree\".\"rgt\"" +
+				"	AND `node`.`lft` BETWEEN `tree`.`lft` AND `tree`.`rgt`" +
 				/*---------------------------------------------------------*/
-				"	ORDER BY \"node\".\"lft\" DESC"
+				"	ORDER BY `node`.`lft` DESC"
 				/*---------------------------------------------------------*/
 			);
 
@@ -204,7 +204,7 @@ public class RoleSingleton
 
 		try
 		{
-			isOk = (Boolean) clazz.getMethod("check", clazz).invoke(null, validator, command);
+			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, validator, command);
 		}
 		catch(Exception e)
 		{
@@ -247,7 +247,7 @@ public class RoleSingleton
 
 		try
 		{
-			isOk = (Boolean) clazz.getMethod("check", clazz).invoke(null, amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
+			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
 		}
 		catch(Exception e)
 		{

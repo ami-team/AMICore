@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.driver;
 
 import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.jdbc.sql.Tokenizer;
 
 @Jdbc(
 	proto = "jdbc:oracle",
@@ -30,6 +31,26 @@ public class OracleDriver extends DriverAbstractClass
 	public FieldType amiTypeToJDBCType(DriverInterface.FieldType fieldType) throws Exception
 	{
 		throw new Exception("unimplemented");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String patch(String sql) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		for(String token: Tokenizer.tokenize(sql))
+		{
+			if(token.startsWith("`")
+			   &&
+			   token.endsWith("`")
+			 ) {
+				token = token.replace("`", "\"");
+			}
+		}
+
+		return result.toString();
 	}
 
 	/*---------------------------------------------------------------------*/

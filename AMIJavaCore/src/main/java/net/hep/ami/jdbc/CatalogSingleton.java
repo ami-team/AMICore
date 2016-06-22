@@ -59,13 +59,13 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `catalog`,`jdbcUrl`,`user`,`pass`,`archived` FROM `router_catalog`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CATALOGS                                                */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet)
+			for(Row row: rowSet.iter())
 			{
 				try
 				{

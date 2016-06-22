@@ -33,30 +33,30 @@ public class CommandParser
 		"^\\s*([a-zA-Z][a-zA-Z0-9]*)"
 	);
 
-	/*---------------------------------------------------------------------*/
-
 	private static final Pattern s_pattern2 = Pattern.compile(
-		"^[-]+([a-zA-Z][a-zA-Z0-9]*)(?:=\"("
-		+
-		"(?:\\\"|[^\"])*"
-		+
-		")\")?"
+		"^[-]*([a-zA-Z][a-zA-Z0-9]*)\\s*=\\s*\"((?:\\\\\"|[^\"])*)\""
+	);
+
+	private static final Pattern s_pattern3 = Pattern.compile(
+		"^[-]*([a-zA-Z][a-zA-Z0-9]*)\\s*=\\s*([^\\s]+)"
+	);
+
+	private static final Pattern s_pattern4 = Pattern.compile(
+		"^[-]*([a-zA-Z][a-zA-Z0-9]*)"
 	);
 
 	/*---------------------------------------------------------------------*/
 
 	public static CommandParserTuple parse(String s) throws Exception
 	{
-		String command;
-
 		/***/ int i = 0x00000000;
 		final int l = s.length();
-
-		Map<String, String> arguments = new HashMap<String, String>();
 
 		/*-----------------------------------------------------------------*/
 		/* PARSE COMMAND                                                   */
 		/*-----------------------------------------------------------------*/
+
+		String command;
 
 		Matcher m = s_pattern1.matcher(s);
 
@@ -73,9 +73,7 @@ public class CommandParser
 		/* PARSE ARGUMENTS                                                 */
 		/*-----------------------------------------------------------------*/
 
-		char c;
-		String key;
-		String value;
+		Map<String, String> arguments = new HashMap<String, String>();
 
 		while(i < l)
 		{
@@ -83,16 +81,8 @@ public class CommandParser
 			/* EAT SPACE                                                   */
 			/*-------------------------------------------------------------*/
 
-			c = s.charAt(i);
-
-			if(c == ' '
-			   ||
-			   c == '\t'
-			   ||
-			   c == '\n'
-			   ||
-			   c == '\r'
-			 ) {
+			if(Character.isWhitespace(s.charAt(i)))
+			{
 				i++;
 
 				continue;
@@ -104,23 +94,26 @@ public class CommandParser
 
 			m = s_pattern2.matcher(s.substring(i));
 
-			if(m.find())
+			if(m.find() == false)
 			{
-				key = m.group(1);
-				value = m.group(2);
+				m = s_pattern3.matcher(s.substring(i));
 
-				arguments.put(key, value != null ? unescape(value) : null);
+				if(m.find() == false)
+				{
+					m = s_pattern4.matcher(s.substring(i));
 
-				i += m.group(0).length();
-
-				continue;
+					if(m.find() == false)
+					{
+						throw new Exception("command syntax error, invalid argument syntax");
+					}
+				}
 			}
 
 			/*-------------------------------------------------------------*/
-			/* SYNTAX ERROR                                                */
-			/*-------------------------------------------------------------*/
 
-			throw new Exception("command syntax error, invalid argument syntax");
+			arguments.put(m.group(1), (m.groupCount() == 2) ? unescape(m.group(2)) : null);
+
+			i += m.group(0).length();
 
 			/*-------------------------------------------------------------*/
 		}
@@ -217,6 +210,11 @@ public class CommandParser
 						}
 
 						continue;
+
+						/*-------------------------------------------------*/
+
+						default:
+							break;
 
 						/*-------------------------------------------------*/
 				}

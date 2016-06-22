@@ -72,13 +72,13 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `command`,`class`,`archived` FROM `router_command`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class`, `archived` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet)
+			for(Row row: rowSet.iter())
 			{
 				try
 				{

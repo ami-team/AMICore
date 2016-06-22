@@ -33,4 +33,12 @@ public class SQLiteDriver extends DriverAbstractClass
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String patch(String sql) throws Exception
+	{
+		return sql;
+	}
+
+	/*---------------------------------------------------------------------*/
 }

@@ -675,45 +675,31 @@ public class Cryptography
 
 	/*---------------------------------------------------------------------*/
 
-	public static byte[] encrypt(byte[] data)
+	public static byte[] encrypt(byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		try
-		{
-			encrypt(outputStream, inputStream);
-		}
-		catch(Exception e)
-		{
-			/* IGNORE */
-		}
+		encrypt(outputStream, inputStream);
 
 		return outputStream.toByteArray();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static byte[] decrypt(byte[] data)
+	public static byte[] decrypt(byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		try
-		{
-			decrypt(outputStream, inputStream);
-		}
-		catch(Exception e)
-		{
-			/* IGNORE */
-		}
+		decrypt(outputStream, inputStream);
 
 		return outputStream.toByteArray();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String encrypt(String s)
+	public static String encrypt(String s) throws Exception
 	{
 		return new String(
 			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes()))
@@ -722,7 +708,7 @@ public class Cryptography
 
 	/*---------------------------------------------------------------------*/
 
-	public static String decrypt(String s)
+	public static String decrypt(String s) throws Exception
 	{
 		return new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString()))

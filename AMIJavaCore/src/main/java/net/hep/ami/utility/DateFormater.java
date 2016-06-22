@@ -7,7 +7,7 @@ public class DateFormater
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.US);
+	private static final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 

@@ -10,7 +10,7 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	public Row(RowSet rowSet, String[] values)
+	protected Row(RowSet rowSet, String[] values)
 	{
 		m_rowSet = rowSet;
 
@@ -75,7 +75,9 @@ public class Row
 
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < m_values.length; i++) /* pas beau le length dans le if */
+		final int numberOfValues = m_values.length;
+
+		for(int i = 0; i < numberOfValues; i++)
 		{
 			result.append("<field table=\"" + m_rowSet.m_fieldTables[i] + "\" name=\"" + m_rowSet.m_fieldNames[i] + "\" type=\"" + m_rowSet.m_fieldTypes[i] + "\"><![CDATA[" + m_values[i] + "]]></field>");
 		}

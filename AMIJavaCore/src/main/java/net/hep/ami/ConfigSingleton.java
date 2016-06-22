@@ -3,6 +3,7 @@ package net.hep.ami;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
@@ -23,7 +24,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> m_properties = new HashMap<String, String>();
+	private static final Map<String, String> m_properties = new ConcurrentHashMap<String, String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -122,7 +123,7 @@ public class ConfigSingleton
 	{
 		return new File(
 			configPathName.endsWith(".xml") == false ? configPathName + File.separator + "AMI.xml"
-			                                         : configPathName
+			                                         : configPathName ////////////////////////////
 		);
 	}
 
@@ -239,13 +240,13 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = basicQuerier.executeSQLQuery("SELECT `paramName`,`paramValue` FROM `router_config`");
+			RowSet rowSet = basicQuerier.executeSQLQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet)
+			for(Row row: rowSet.iter())
 			{
 				try
 				{
@@ -253,11 +254,13 @@ public class ConfigSingleton
 						row.getValue("paramName"),
 						row.getValue("paramValue")
 					);
-			//		m_properties.put(
-			//			Cryptography.decrypt(queryResult.getValue(i, "paramName"))
-			//			,
-			//			Cryptography.decrypt(queryResult.getValue(i, "paramValue"))
-			//		);
+/*
+					properties.put(
+						Cryptography.decrypt(row.getValue("paramName"))
+						,
+						Cryptography.decrypt(row.getValue("paramValue"))
+					);
+*/
 				}
 				catch(org.bouncycastle.util.encoders.DecoderException e)
 				{
@@ -305,25 +308,30 @@ public class ConfigSingleton
 
 			/*-------------------------------------------------------------*/
 
-			String name;
-			String value;
-
-			for(Map.Entry<String, String> entry: properties.entrySet())
+			try
 			{
-				name = entry.getKey();
-				value = entry.getValue();
+				String name;
+				String value;
 
-				if(isReserved(name) == false)
+				for(Map.Entry<String, String> entry: properties.entrySet())
 				{
-					preparedStatement.setString(1, Cryptography.encrypt(name));
-					preparedStatement.setString(2, Cryptography.encrypt(value));
-					preparedStatement.addBatch();
+					name = entry.getKey();
+					value = entry.getValue();
+
+					if(isReserved(name) == false)
+					{
+						preparedStatement.setString(1, Cryptography.encrypt(name));
+						preparedStatement.setString(2, Cryptography.encrypt(value));
+						preparedStatement.addBatch();
+					}
 				}
+
+				preparedStatement.executeBatch();
 			}
-
-			/*-------------------------------------------------------------*/
-
-			preparedStatement.executeBatch();
+			finally
+			{
+				preparedStatement.close();
+			}
 
 			/*-------------------------------------------------------------*/
 		}
