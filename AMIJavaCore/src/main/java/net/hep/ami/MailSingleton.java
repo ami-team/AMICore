@@ -61,6 +61,13 @@ public class MailSingleton
 
 	public static void sendMessage(String from, String to, String cc, String subject, String text) throws Exception
 	{
+		sendMessage(from, to, cc, subject, text);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void sendMessage(String from, String to, String cc, String subject, String text, BodyPart[] bodyParts) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
@@ -78,7 +85,42 @@ public class MailSingleton
 		mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 		mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
 		mimeMessage.setSubject(subject);
-		mimeMessage.setText(text);
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		if(bodyParts != null)
+		{
+			/*-------------------------------------------------------------*/
+
+			Multipart multipart = new MimeMultipart();
+
+			/*-------------------------------------------------------------*/
+
+			BodyPart mainBodyPart = new MimeBodyPart();
+
+			mainBodyPart.setText(text);
+
+			multipart.addBodyPart(mainBodyPart);
+
+			/*-------------------------------------------------------------*/
+
+			for(BodyPart bodyPart: bodyParts)
+			{
+				multipart.addBodyPart(bodyPart);
+			}
+
+			/*-------------------------------------------------------------*/
+
+			mimeMessage.setContent(multipart);
+
+			/*-------------------------------------------------------------*/
+		}
+		else
+		{
+			mimeMessage.setText(text);
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* SEND MESSAGE                                                    */
