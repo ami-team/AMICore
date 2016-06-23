@@ -61,7 +61,7 @@ public class MailSingleton
 
 	public static void sendMessage(String from, String to, String cc, String subject, String text) throws Exception
 	{
-		sendMessage(from, to, cc, subject, text);
+		sendMessage(from, to, cc, subject, text, null);
 	}
 
 	/*---------------------------------------------------------------------*/
