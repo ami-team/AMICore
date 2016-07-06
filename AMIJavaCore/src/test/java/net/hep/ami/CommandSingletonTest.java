@@ -17,7 +17,7 @@ public class CommandSingletonTest
 		//System.out.println(CatalogSingleton.listCatalogs().toString().replace(">", ">\n"));
 
 		//System.out.println(CommandSingleton.executeCommand("GetConnectionPoolStatus", arguments).replace(">", ">\n"));
-		CommandSingleton.executeCommand("GetConnectionPoolStatus", arguments);
+		CommandSingleton.executeCommand("GetStocksInfo", arguments);
 
 		System.exit(0);
 	}
