@@ -159,20 +159,35 @@ public class CommandSingleton
 
 	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, long transactionId) throws Exception
 	{
-		if(command.startsWith("AMI"))
-		{
-			command = command.substring(3);
-		}
-
 		/*-----------------------------------------------------------------*/
 		/* GET COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple = m_commands.get(command);
+		Tuple tuple;
 
-		if(tuple == null)
+		for(;;)
 		{
-			throw new Exception("command `" + command + "` not found");
+			/*-------------------------------------------------------------*/
+
+			tuple = m_commands.get(command);
+
+			if(tuple != null)
+			{
+				break;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			if(command.startsWith("AMI"))
+			{
+				command = command.substring(3);
+			}
+			else
+			{
+				throw new Exception("command `" + command + "` not found");
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -227,7 +242,6 @@ public class CommandSingleton
 			stringBuilder.append("<Result>");
 			stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
 			stringBuilder.append("</Result>");
-
 
 			/*-------------------------------------------------------------*/
 		}

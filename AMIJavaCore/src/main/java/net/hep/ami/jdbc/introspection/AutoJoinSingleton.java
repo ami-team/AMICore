@@ -2,7 +2,7 @@ package net.hep.ami.jdbc.introspection;
 
 import java.util.*;
 
-import org.antlr.v4.runtime.misc.*;
+import net.hep.ami.utility.annotation.*;
 
 public class AutoJoinSingleton
 {

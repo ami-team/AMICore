@@ -134,6 +134,11 @@ public class FrontEnd extends HttpServlet
 
 				if(link.isEmpty() == false)
 				{
+					if(link.matches("[0-9]+") == false)
+					{
+						throw new Exception("invalid link format");
+					}
+
 					Tuple2<String, String> result = resolveLink(link);
 
 					command = result.x;

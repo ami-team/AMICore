@@ -5,12 +5,10 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
+import net.hep.ami.utility.annotation.*;
+
 public class MailSingleton
 {
-	/*---------------------------------------------------------------------*/
-
-	private static final Properties m_properties = new Properties();
-
 	/*---------------------------------------------------------------------*/
 
 	private static final Authenticator m_authenticator = new Authenticator()
@@ -27,34 +25,43 @@ public class MailSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	static
+	private static Properties getProperties()
 	{
+		Properties result = new Properties();
+
 		/*-----------------------------------------------------------------*/
-		/* GET PROTOCOL, HOST AND PORT                                     */
+		/* SET PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		String mode = ConfigSingleton.getProperty("email_mode");
 		String host = ConfigSingleton.getProperty("email_host");
 		String port = ConfigSingleton.getProperty("email_port");
+		String mode = ConfigSingleton.getProperty("email_mode");
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE PROPERTIES                                               */
-		/*-----------------------------------------------------------------*/
 
-		m_properties.setProperty("mail.smtp.host", (host));
-		m_properties.setProperty("mail.smtp.port", (port));
-		m_properties.setProperty("mail.smtp.auth", "true");
+		result.setProperty("mail.smtp.host", (host));
+		result.setProperty("mail.smtp.port", (port));
+		result.setProperty("mail.smtp.auth", "true");
 
 		/**/ if(mode.equalsIgnoreCase("ssl"))
 		{
-			m_properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		}
 		else if(mode.equalsIgnoreCase("tls"))
 		{
-			m_properties.setProperty("mail.smtp.starttls.enable", "true");
+			result.setProperty((("mail.smtp.starttls.enable")), ((((((((((((("true"))))))))))))));
+		}
+		else
+		{
+			if(mode.isEmpty() == false)
+			{
+				LogSingleton.defaultLogger.error("invalid encrypting mode");
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -66,13 +73,13 @@ public class MailSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, String to, String cc, String subject, String text, BodyPart[] bodyParts) throws Exception
+	public static void sendMessage(String from, String to, String cc, String subject, String text, @Nullable BodyPart[] bodyParts) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
 
-		Session session = Session.getInstance(m_properties, m_authenticator);
+		Session session = Session.getInstance(getProperties(), m_authenticator);
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE MESSAGE                                                  */
@@ -81,37 +88,27 @@ public class MailSingleton
 		MimeMessage mimeMessage = new MimeMessage(session);
 
 		mimeMessage.setFrom(new InternetAddress(from));
-
 		mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 		mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
 		mimeMessage.setSubject(subject);
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		if(bodyParts != null)
 		{
 			/*-------------------------------------------------------------*/
 
+			BodyPart mainPart = new MimeBodyPart();
+
+			mainPart.setText(text);
+
+			/*-------------------------------------------------------------*/
+
 			Multipart multipart = new MimeMultipart();
 
-			/*-------------------------------------------------------------*/
-
-			BodyPart mainBodyPart = new MimeBodyPart();
-
-			mainBodyPart.setText(text);
-
-			multipart.addBodyPart(mainBodyPart);
-
-			/*-------------------------------------------------------------*/
-
+			multipart.addBodyPart(mainPart);
 			for(BodyPart bodyPart: bodyParts)
-			{
-				multipart.addBodyPart(bodyPart);
-			}
-
-			/*-------------------------------------------------------------*/
+			multipart.addBodyPart(bodyPart);
 
 			mimeMessage.setContent(multipart);
 

@@ -58,6 +58,13 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
+	public StringBuilder toStringBuilder()
+	{
+		return toStringBuilder(null);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public StringBuilder toStringBuilder(String type)
 	{
 		StringBuilder result = new StringBuilder();
@@ -89,13 +96,6 @@ public class Row
 		/*-----------------------------------------------------------------*/
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public StringBuilder toStringBuilder()
-	{
-		return toStringBuilder(null);
 	}
 
 	/*---------------------------------------------------------------------*/

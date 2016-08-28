@@ -11,9 +11,30 @@ public class Iterable implements java.lang.Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
+	private int m_i;
+	private int m_limit;
+	private int m_offset;
+
+	/*---------------------------------------------------------------------*/
+
 	protected Iterable(RowSet rowSet) throws Exception
 	{
 		m_rowSet = rowSet;
+
+		m_i = 0;
+		m_limit = Integer.MAX_VALUE;
+		m_offset = 0x0000000000000000;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected Iterable(RowSet rowSet, int limit, int offset) throws Exception
+	{
+		m_rowSet = rowSet;
+
+		m_i = 0;
+		m_limit = limit;
+		m_offset = offset;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -26,6 +47,17 @@ public class Iterable implements java.lang.Iterable<Row>
 		try
 		{
 			m_rowSet.m_resultSet.beforeFirst();
+		}
+		catch(SQLException e)
+		{
+			/* IGNORE */
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			while(m_i++ < m_offset && m_rowSet.m_resultSet.next());
 		}
 		catch(SQLException e)
 		{
@@ -43,7 +75,7 @@ public class Iterable implements java.lang.Iterable<Row>
 			{
 				try
 				{
-					return m_rowSet.m_resultSet.next();
+					return m_i++ < m_limit && m_rowSet.m_resultSet.next();
 				}
 				catch(SQLException e)
 				{

@@ -42,7 +42,7 @@ public class ConverterSingleton
 			/* PARSE FILE                                                  */
 			/*-------------------------------------------------------------*/
 
-			Document document = (Document) XMLFactories.newDocument(inputStream);
+			Document document = XMLFactories.newDocument(inputStream);
 
 			/*-------------------------------------------------------------*/
 			/* READ FILE                                                   */
