@@ -23,7 +23,7 @@ public class MySQLDriver extends DriverAbstractClass
 	@Override
 	public FieldType jdbcTypeToAMIType(DriverInterface.FieldType fieldType) throws Exception
 	{
-		throw new Exception("unimplemented");
+		return fieldType;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -31,7 +31,7 @@ public class MySQLDriver extends DriverAbstractClass
 	@Override
 	public FieldType amiTypeToJDBCType(DriverInterface.FieldType fieldType) throws Exception
 	{
-		throw new Exception("unimplemented");
+		return fieldType;
 	}
 
 	/*---------------------------------------------------------------------*/
