@@ -1,5 +1,6 @@
 package net.hep.ami.jdbc;
 
+import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -105,30 +106,9 @@ public class CatalogSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("deprecation")
-	/*---------------------------------------------------------------------*/
 
 	private static void addCatalog(String catalog, String jdbcUrl, String user, String pass, String archived) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* READ SCHEMA                                                     */
-		/*-----------------------------------------------------------------*/
-
-		DriverAbstractClass driver = DriverSingleton.getConnection(
-			jdbcUrl,
-			user,
-			pass
-		);
-
-		try
-		{
-			SchemaSingleton.readSchema(driver.getConnection(), catalog);
-		}
-		finally
-		{
-			driver.rollbackAndRelease();
-		}
-
 		/*-----------------------------------------------------------------*/
 		/* ADD CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
@@ -143,6 +123,24 @@ public class CatalogSingleton
 				archived
 			)
 		);
+
+		/*-----------------------------------------------------------------*/
+		/* READ SCHEMA                                                     */
+		/*-----------------------------------------------------------------*/
+
+		if(DriverSingleton.isType(jdbcUrl, DBType.SQL))
+		{
+			Connection connection = DriverManager.getConnection(jdbcUrl, user, pass);
+
+			try
+			{
+				SchemaSingleton.readSchema(connection, catalog);
+			}
+			finally
+			{
+				connection.close();
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -229,5 +227,11 @@ public class CatalogSingleton
 		return result;
 	}
 
+	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
+
+	public static void kludge() {}
+
+	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 }

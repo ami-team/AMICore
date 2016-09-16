@@ -5,8 +5,8 @@ import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = DBType.SQL,
-	clazz = "org.postgresql.Driver",
-	proto = "jdbc:postgresql"
+	proto = "jdbc:postgresql",
+	clazz = "org.postgresql.Driver"
 )
 
 public class PostgreSQLDriver extends DriverAbstractClass

@@ -5,8 +5,8 @@ import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = DBType.SQL,
-	clazz = "org.sqlite.JDBC",
-	proto = "jdbc:sqlite"
+	proto = "jdbc:sqlite",
+	clazz = "org.sqlite.JDBC"
 )
 
 public class SQLiteDriver extends DriverAbstractClass

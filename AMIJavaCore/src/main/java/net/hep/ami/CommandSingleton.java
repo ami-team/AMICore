@@ -40,7 +40,9 @@ public class CommandSingleton
 
 	static
 	{
-		reload();
+		CatalogSingleton.kludge();
+
+		CommandSingleton.reload();
 	}
 
 	/*---------------------------------------------------------------------*/

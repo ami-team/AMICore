@@ -6,8 +6,8 @@ import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = DBType.SQL,
-	clazz = "oracle.jdbc.driver.OracleDriver",
-	proto = "jdbc:oracle"
+	proto = "jdbc:oracle",
+	clazz = "oracle.jdbc.driver.OracleDriver"
 )
 
 public class OracleDriver extends DriverAbstractClass

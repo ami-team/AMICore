@@ -14,9 +14,9 @@ public @interface Jdbc
 
 	DBType type();
 
-	String clazz();
-
 	String proto();
+
+	String clazz();
 
 	/*---------------------------------------------------------------------*/
 }

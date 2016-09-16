@@ -379,7 +379,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder getDBSchemas()
+	public static StringBuilder getDBSchemes()
 	{
 		StringBuilder result = new StringBuilder();
 

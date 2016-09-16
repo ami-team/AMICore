@@ -21,9 +21,10 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	protected String m_internalCatalog;
 	protected String m_externalCatalog;
+
+	protected DBType m_jdbcType;
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
-	protected DBType m_jdbcType;
 	protected String m_jdbcUrl;
 	protected String m_user;
 	protected String m_pass;
@@ -41,17 +42,17 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 			throw new Exception("no `Jdbc` annotation for driver `" + getClass().getName() + "`");
 		}
 
+		DBType jdbcType = annotation.type();
 		String jdbcProto = annotation.proto();
 		String jdbcClass = annotation.clazz();
-		DBType jdbcType = annotation.type();
 
 		/*-----------------------------------------------------------------*/
 		/* GET CONNECTION                                                  */
 		/*-----------------------------------------------------------------*/
 
+		m_jdbcType = jdbcType;
 		m_jdbcProto = jdbcProto;
 		m_jdbcClass = jdbcClass;
-		m_jdbcType = jdbcType;
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
@@ -351,6 +352,14 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public DBType getJdbcType()
+	{
+		return m_jdbcType;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String getJdbcProto()
 	{
 		return m_jdbcProto;
@@ -364,13 +373,6 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		return m_jdbcClass;
 	}
 
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public DBType getJdbcType()
-	{
-		return m_jdbcType;
-	}
 
 	/*---------------------------------------------------------------------*/
 

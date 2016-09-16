@@ -135,6 +135,14 @@ public class BasicQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public DBType getJdbcType()
+	{
+		return m_driver.getJdbcType();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String getJdbcProto()
 	{
 		return m_driver.getJdbcProto();
@@ -146,14 +154,6 @@ public class BasicQuerier implements QuerierInterface
 	public String getJdbcClass()
 	{
 		return m_driver.getJdbcClass();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public DBType getJdbcType()
-	{
-		return m_driver.getJdbcType();
 	}
 
 	/*---------------------------------------------------------------------*/

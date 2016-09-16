@@ -148,6 +148,43 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static boolean isType(String jdbcUrl, DBType dbType) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* GET PROTOCOL                                                    */
+		/*-----------------------------------------------------------------*/
+
+		int index = jdbcUrl.indexOf("://");
+
+		if(index < 0)
+		{
+			throw new Exception("invalid JDBC URL `" + jdbcUrl + "`");
+		}
+
+		String jdbcProto = jdbcUrl.substring(0, index);
+
+		/*-----------------------------------------------------------------*/
+		/* GET DRIVER                                                      */
+		/*-----------------------------------------------------------------*/
+
+		Tuple tuple = m_drivers.get(jdbcProto);
+
+		if(tuple == null)
+		{
+			throw new Exception("unknown JDBC protocol `" + jdbcProto + "`");
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CONNECTION                                                      */
+		/*-----------------------------------------------------------------*/
+
+		return tuple.x == dbType;
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static StringBuilder listDrivers()
 	{
 		StringBuilder result = new StringBuilder();
@@ -167,7 +204,7 @@ public class DriverSingleton
 		{
 			jdbcProto = entry.getKey();
 			jdbcType = entry.getValue().x;
-			jdbcClass = entry.getValue().z;
+			jdbcClass = entry.getValue().y;
 			driverClass = entry.getValue().z;
 
 			result.append(

@@ -5,8 +5,8 @@ import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = DBType.NoSQL,
-	clazz = "org.neo4j.jdbc.Driver",
-	proto = "jdbc:neo4j"
+	proto = "jdbc:neo4j",
+	clazz = "org.neo4j.jdbc.Driver"
 )
 
 public class Neo4jDriver extends DriverAbstractClass

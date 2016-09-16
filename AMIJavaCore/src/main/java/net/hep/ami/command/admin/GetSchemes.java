@@ -19,14 +19,14 @@ public class GetSchemes extends CommandAbstractClass
 	@Override
 	public StringBuilder main() throws Exception
 	{
-		return SchemaSingleton.getDBSchemas();
+		return SchemaSingleton.getDBSchemes();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Get database schemas.";
+		return "Get database schemes.";
 	}
 
 	/*---------------------------------------------------------------------*/

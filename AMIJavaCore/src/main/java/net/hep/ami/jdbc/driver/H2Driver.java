@@ -5,8 +5,8 @@ import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = DBType.SQL,
-	clazz = "org.h2.Driver",
-	proto = "jdbc:h2"
+	proto = "jdbc:h2",
+	clazz = "org.h2.Driver"
 )
 
 public class H2Driver extends DriverAbstractClass
