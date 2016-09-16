@@ -23,6 +23,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	protected String m_externalCatalog;
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
+	protected DBType m_jdbcType;
 	protected String m_jdbcUrl;
 	protected String m_user;
 	protected String m_pass;
@@ -42,6 +43,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 		String jdbcProto = annotation.proto();
 		String jdbcClass = annotation.clazz();
+		DBType jdbcType = annotation.type();
 
 		/*-----------------------------------------------------------------*/
 		/* GET CONNECTION                                                  */
@@ -49,6 +51,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 		m_jdbcProto = jdbcProto;
 		m_jdbcClass = jdbcClass;
+		m_jdbcType = jdbcType;
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
@@ -91,7 +94,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql) throws Exception
+	public RowSet executeQuery(String sql) throws Exception
 	{
 		try
 		{
@@ -101,7 +104,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+			throw new Exception(e.getMessage() + " for query: " + sql);
 		}
 	}
 
@@ -110,6 +113,11 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public RowSet executeMQLQuery(String mql) throws Exception
 	{
+		if(m_jdbcType != DBType.SQL)
+		{
+			throw new Exception("MQL not supported");
+		}
+
 		try
 		{
 			String ast = /* TODO */ null /* TODO */;
@@ -128,7 +136,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeSQLUpdate(String sql) throws Exception
+	public int executeUpdate(String sql) throws Exception
 	{
 		try
 		{
@@ -136,7 +144,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+			throw new Exception(e.getMessage() + " for query: " + sql);
 		}
 	}
 
@@ -145,6 +153,11 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public int executeMQLUpdate(String mql) throws Exception
 	{
+		if(m_jdbcType != DBType.SQL)
+		{
+			throw new Exception("MQL not supported");
+		}
+
 		try
 		{
 			return m_statementList.get(0).executeUpdate(patch(UpdateParser.parse(mql, this)));
@@ -349,6 +362,14 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	public String getJdbcClass()
 	{
 		return m_jdbcClass;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public DBType getJdbcType()
+	{
+		return m_jdbcType;
 	}
 
 	/*---------------------------------------------------------------------*/

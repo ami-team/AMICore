@@ -73,18 +73,32 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> m_internalCatalogToExternalCatalog = new HashMap<String, String>();
-	private static final Map<String, String> m_externalCatalogToInternalCatalog = new HashMap<String, String>();
+	private static final Map<String, String> m_internalCatalogToExternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
+	private static final Map<String, String> m_externalCatalogToInternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> m_columns = new HashMap<String, Map<String, Map<String, Column>>>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys = new HashMap<String, Map<String, Map<String, FrgnKey>>>();
-	private static final Map<String, Map<String, List<Index>>> m_indices = new HashMap<String, Map<String, List<Index>>>();
+	private static final Map<String, Map<String, Map<String, Column>>> m_columns = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, Column>>>();
+	private static final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, FrgnKey>>>();
+	private static final Map<String, Map<String, List<Index>>> m_indices = new java.util.concurrent.ConcurrentHashMap<String, Map<String, List<Index>>>();
 
 	/*---------------------------------------------------------------------*/
 
 	private static long m_executionTime = 0;
+
+	/*---------------------------------------------------------------------*/
+
+	public static void clear()
+	{
+		m_internalCatalogToExternalCatalog.clear();
+		m_externalCatalogToInternalCatalog.clear();
+
+		m_columns.clear();
+		m_frgnKeys.clear();
+		m_indices.clear();
+
+		m_executionTime = 0;
+	}
 
 	/*---------------------------------------------------------------------*/
 

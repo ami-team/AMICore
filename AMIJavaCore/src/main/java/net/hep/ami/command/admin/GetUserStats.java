@@ -31,13 +31,13 @@ public class GetUserStats extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		result.append(transactionalQuerier.executeSQLQuery("SELECT (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=1) AS `valid`, (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=0) AS `invalid`").toStringBuilder("users"));
+		result.append(transactionalQuerier.executeQuery("SELECT (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=1) AS `valid`, (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=0) AS `invalid`").toStringBuilder("users"));
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		result.append(transactionalQuerier.executeSQLQuery("SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid`=1 GROUP BY `country`").toStringBuilder("countries"));
+		result.append(transactionalQuerier.executeQuery("SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid`=1 GROUP BY `country`").toStringBuilder("countries"));
 
 		/*-----------------------------------------------------------------*/
 

@@ -6,7 +6,7 @@ public interface QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
 
-	public RowSet executeSQLQuery(String sql) throws Exception;
+	public RowSet executeQuery(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -14,7 +14,7 @@ public interface QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public int executeSQLUpdate(String sql) throws Exception;
+	public int executeUpdate(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -51,6 +51,10 @@ public interface QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	public String getJdbcClass();
+
+	/*---------------------------------------------------------------------*/
+
+	public DBType getJdbcType();
 
 	/*---------------------------------------------------------------------*/
 

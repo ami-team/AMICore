@@ -119,7 +119,7 @@ public class RemoveElements extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		transactionalQuerier.executeSQLUpdate(sql);
+		transactionalQuerier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

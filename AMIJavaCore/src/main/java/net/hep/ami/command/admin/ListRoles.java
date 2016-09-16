@@ -23,7 +23,7 @@ public class ListRoles extends CommandAbstractClass
 			throw new Exception("https connection required"); 
 		}
 
-		return getQuerier("self").executeSQLQuery("SELECT * FROM `router_role`").toStringBuilder();
+		return getQuerier("self").executeQuery("SELECT * FROM `router_role`").toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/

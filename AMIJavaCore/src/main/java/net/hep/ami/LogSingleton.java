@@ -94,7 +94,7 @@ public class LogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static final org.apache.logging.log4j.Logger defaultLogger = LogManager.getLogger("ami.core");
+	public static final org.apache.logging.log4j.Logger defaultLogger = LogManager.getLogger("net.hep.ami");
 
 	/*---------------------------------------------------------------------*/
 }

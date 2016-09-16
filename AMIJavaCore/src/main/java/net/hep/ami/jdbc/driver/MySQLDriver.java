@@ -1,10 +1,12 @@
 package net.hep.ami.jdbc.driver;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
-	proto = "jdbc:mysql",
-	clazz = "org.gjt.mm.mysql.Driver"
+	type = DBType.SQL,
+	clazz = "org.gjt.mm.mysql.Driver",
+	proto = "jdbc:mysql"
 )
 
 public class MySQLDriver extends DriverAbstractClass

@@ -1,11 +1,13 @@
 package net.hep.ami.jdbc.driver;
 
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.sql.*;
 import net.hep.ami.jdbc.driver.annotation.*;
-import net.hep.ami.jdbc.sql.Tokenizer;
 
 @Jdbc(
-	proto = "jdbc:oracle",
-	clazz = "oracle.jdbc.driver.OracleDriver"
+	type = DBType.SQL,
+	clazz = "oracle.jdbc.driver.OracleDriver",
+	proto = "jdbc:oracle"
 )
 
 public class OracleDriver extends DriverAbstractClass

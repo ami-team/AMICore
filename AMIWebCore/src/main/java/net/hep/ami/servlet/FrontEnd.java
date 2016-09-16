@@ -276,7 +276,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id`='" + linkId.replace("'", "''") + "'").getAll();
+			List<Row> rowList = basicQuerier.executeQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id`='" + linkId.replace("'", "''") + "'").getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET LINK                                                    */
@@ -328,7 +328,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + Cryptography.encrypt(clientDN).replace("'", "''") + "'").getAll();
+			List<Row> rowList = basicQuerier.executeQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + Cryptography.encrypt(clientDN).replace("'", "''") + "'").getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */

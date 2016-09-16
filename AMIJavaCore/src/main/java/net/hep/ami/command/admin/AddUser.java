@@ -90,7 +90,7 @@ public class AddUser extends CommandAbstractClass
 			m_email.replace("'", "''")
 		);
 
-		transactionalQuerier.executeSQLUpdate(sql);
+		transactionalQuerier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

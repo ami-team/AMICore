@@ -144,7 +144,7 @@ public class UpdateElements extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		transactionalQuerier.executeSQLUpdate(sql);
+		transactionalQuerier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

@@ -4,16 +4,16 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
-	type = DBType.SQL,
-	clazz = "org.sqlite.JDBC",
-	proto = "jdbc:sqlite"
+	type = DBType.NoSQL,
+	clazz = "org.neo4j.jdbc.Driver",
+	proto = "jdbc:neo4j"
 )
 
-public class SQLiteDriver extends DriverAbstractClass
+public class Neo4jDriver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public SQLiteDriver(String jdbc_url, String user, String pass) throws Exception
+	public Neo4jDriver(String jdbc_url, String user, String pass) throws Exception
 	{
 		super(jdbc_url, user, pass);
 	}
@@ -23,7 +23,7 @@ public class SQLiteDriver extends DriverAbstractClass
 	@Override
 	public FieldType jdbcTypeToAMIType(DriverInterface.FieldType fieldType) throws Exception
 	{
-		throw new Exception("unimplemented");
+		return fieldType;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -31,7 +31,7 @@ public class SQLiteDriver extends DriverAbstractClass
 	@Override
 	public FieldType amiTypeToJDBCType(DriverInterface.FieldType fieldType) throws Exception
 	{
-		throw new Exception("unimplemented");
+		return fieldType;
 	}
 
 	/*---------------------------------------------------------------------*/

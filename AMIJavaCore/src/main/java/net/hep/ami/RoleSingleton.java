@@ -10,12 +10,29 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<CommandValidatorInterface>> m_roleValidators = new HashMap<String, Class<CommandValidatorInterface>>();
-	private static final Map<String, Class<NewUserValidatorInterface>> m_userValidators = new HashMap<String, Class<NewUserValidatorInterface>>();
+	private static final Map<String, Class<CommandValidatorInterface>> m_roleValidators = new java.util.concurrent.ConcurrentHashMap<String, Class<CommandValidatorInterface>>();
+	private static final Map<String, Class<NewUserValidatorInterface>> m_userValidators = new java.util.concurrent.ConcurrentHashMap<String, Class<NewUserValidatorInterface>>();
 
 	/*---------------------------------------------------------------------*/
 
 	static
+	{
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		m_roleValidators.clear();
+		m_userValidators.clear();
+
+		addValidators();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static void addValidators()
 	{
 		Set<String> classeNames = ClassFinder.findClassNames("net.hep.ami.role");
 
@@ -27,7 +44,7 @@ public class RoleSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.fatal(e.getMessage());
+				LogSingleton.defaultLogger.error(e.getMessage());
 			}
 		}
 	}
@@ -116,7 +133,7 @@ public class RoleSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = basicQuerier.executeSQLQuery(
+			RowSet rowSet = basicQuerier.executeQuery(
 				"SELECT `node`.`validatorClass` FROM `router_command`,`router_user`,`router_command_role`,`router_user_role`,`router_role` AS `tree`,`router_role` AS `node` WHERE" +
 				/*---------------------------------------------------------*/
 				/* SELECT COMMAND                                          */

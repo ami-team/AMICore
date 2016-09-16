@@ -24,54 +24,24 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_converters = new HashMap<String, Tuple>();
+	private static final Map<String, Tuple> m_converters = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
 	static
 	{
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		m_converters.clear();
+
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* GET INPUT STREAM                                            */
-			/*-------------------------------------------------------------*/
-
-			InputStream inputStream = ConverterSingleton.class.getResourceAsStream("/XSLT.xml");
-
-			/*-------------------------------------------------------------*/
-			/* PARSE FILE                                                  */
-			/*-------------------------------------------------------------*/
-
-			Document document = XMLFactories.newDocument(inputStream);
-
-			/*-------------------------------------------------------------*/
-			/* READ FILE                                                   */
-			/*-------------------------------------------------------------*/
-
-			NodeList nodeList = document.getElementsByTagName("transform");
-
-			/*-------------------------------------------------------------*/
-			/* GET NUMBER OF CONVERTERS                                    */
-			/*-------------------------------------------------------------*/
-
-			final int numberOfConverters = nodeList.getLength();
-
-			/*-------------------------------------------------------------*/
-			/* ADD CONVERTERS                                              */
-			/*-------------------------------------------------------------*/
-
-			for(int i = 0; i < numberOfConverters; i++)
-			{
-				Node node = nodeList.item(i);
-
-				addConverter(
-					XMLFactories.getAttribute(node, "xslt", (((((""))))))
-					,
-					XMLFactories.getAttribute(node, "mime", "text/plain")
-				);
-			}
-
-			/*-------------------------------------------------------------*/
+			addConverters();
 		}
 		catch(Exception e)
 		{
@@ -81,41 +51,87 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addConverter(String xslt, String mime)
+	private static void addConverters() throws Exception
 	{
-		try
+		/*-----------------------------------------------------------------*/
+		/* GET INPUT STREAM                                                */
+		/*-----------------------------------------------------------------*/
+
+		InputStream inputStream = ConverterSingleton.class.getResourceAsStream("/XSLT.xml");
+
+		/*-----------------------------------------------------------------*/
+		/* PARSE FILE                                                      */
+		/*-----------------------------------------------------------------*/
+
+		Document document = XMLFactories.newDocument(inputStream);
+
+		/*-----------------------------------------------------------------*/
+		/* READ FILE                                                       */
+		/*-----------------------------------------------------------------*/
+
+		NodeList nodeList = document.getElementsByTagName("transform");
+
+		/*-----------------------------------------------------------------*/
+		/* GET NUMBER OF CONVERTERS                                        */
+		/*-----------------------------------------------------------------*/
+
+		final int numberOfConverters = nodeList.getLength();
+
+		/*-----------------------------------------------------------------*/
+		/* ADD CONVERTERS                                                  */
+		/*-----------------------------------------------------------------*/
+
+		for(int i = 0; i < numberOfConverters; i++)
 		{
-			/*-------------------------------------------------------------*/
-			/* GET INPUT STREAM                                            */
-			/*-------------------------------------------------------------*/
+			Node node = nodeList.item(i);
 
-			InputStream inputStream = ConverterSingleton.class.getResourceAsStream(xslt);
-
-			/*-------------------------------------------------------------*/
-			/* PARSE FILE                                                  */
-			/*-------------------------------------------------------------*/
-
-			Templates templates = XMLFactories.newTemplates(inputStream);
-
-			/*-------------------------------------------------------------*/
-			/* ADD CONVERTER                                               */
-			/*-------------------------------------------------------------*/
-
-			m_converters.put(
-				new File(xslt).getName()
-				,
-				new Tuple(
-					templates,
-					mime
-				)
-			);
-
-			/*-------------------------------------------------------------*/
+			try
+			{
+				addConverter(
+					XMLFactories.getAttribute(node, "xslt", (((((""))))))
+					,
+					XMLFactories.getAttribute(node, "mime", "text/plain")
+				);
+			}
+			catch(Exception e)
+			{
+				LogSingleton.defaultLogger.error(e.getMessage());
+			}
 		}
-		catch(Exception e)
-		{
-			LogSingleton.defaultLogger.error(e.getMessage());
-		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static void addConverter(String xslt, String mime) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* GET INPUT STREAM                                                */
+		/*-----------------------------------------------------------------*/
+
+		InputStream inputStream = ConverterSingleton.class.getResourceAsStream(xslt);
+
+		/*-----------------------------------------------------------------*/
+		/* PARSE FILE                                                      */
+		/*-----------------------------------------------------------------*/
+
+		Templates templates = XMLFactories.newTemplates(inputStream);
+
+		/*-----------------------------------------------------------------*/
+		/* ADD CONVERTER                                                   */
+		/*-----------------------------------------------------------------*/
+
+		m_converters.put(
+			new File(xslt).getName()
+			,
+			new Tuple(
+				templates,
+				mime
+			)
+		);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

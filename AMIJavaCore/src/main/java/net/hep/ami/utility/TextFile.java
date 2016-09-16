@@ -16,9 +16,26 @@ public class TextFile
 
 			while((line = bufferedReader.readLine()) != null)
 			{
-				stringBuilder.append(line);
-				stringBuilder.append('\n');
+				stringBuilder.append(line)
+				             .append('\n')
+				;
 			}
+		}
+		finally
+		{
+			bufferedReader.close();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void readLine(StringBuilder stringBuilder, InputStream inputStream) throws Exception
+	{
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+		try
+		{
+			stringBuilder.append(bufferedReader.readLine());
 		}
 		finally
 		{

@@ -44,7 +44,7 @@ public class SearchQuery extends CommandAbstractClass
 
 		if(m_sql != null)
 		{
-			queryResult = transactionalQuerier.executeSQLQuery(m_sql);
+			queryResult = transactionalQuerier.executeQuery(m_sql);
 		}
 		else
 		{

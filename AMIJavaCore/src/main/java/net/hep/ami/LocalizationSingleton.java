@@ -94,7 +94,7 @@ public class LocalizationSingleton
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
+		RowSet rowSet = basicQuerier.executeQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
 
 		/*-----------------------------------------------------------------*/
 		/* GET LOCALIZATION                                                */
@@ -135,7 +135,7 @@ public class LocalizationSingleton
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = basicQuerier.executeSQLQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
+		RowSet rowSet = basicQuerier.executeQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
 
 		/*-----------------------------------------------------------------*/
 		/* GET LOCALIZATION                                                */

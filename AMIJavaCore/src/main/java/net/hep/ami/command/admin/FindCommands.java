@@ -84,7 +84,7 @@ public class FindCommands extends CommandAbstractClass
 				name
 			);
 
-			transactionalQuerier.executeSQLUpdate(sql);
+			transactionalQuerier.executeUpdate(sql);
 
 			commands.add(name);
 		}

@@ -2,13 +2,14 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class ListUsers extends CommandAbstractClass
+public class SetConfig extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListUsers(Map<String, String> arguments, long transactionId)
+	public SetConfig(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -23,14 +24,16 @@ public class ListUsers extends CommandAbstractClass
 			throw new Exception("https connection required"); 
 		}
 
-		return getQuerier("self").executeQuery("SELECT * FROM `router_user` WHERE `valid`='1'").toStringBuilder();
+		ConfigSingleton.writeToDataBase(m_arguments);
+
+		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "List users.";
+		return "Set configuration.";
 	}
 
 	/*---------------------------------------------------------------------*/

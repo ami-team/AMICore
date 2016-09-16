@@ -37,9 +37,9 @@ public class TransactionalQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql) throws Exception
+	public RowSet executeQuery(String sql) throws Exception
 	{
-		return m_driver.executeSQLQuery(sql);
+		return m_driver.executeQuery(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -53,9 +53,9 @@ public class TransactionalQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeSQLUpdate(String sql) throws Exception
+	public int executeUpdate(String sql) throws Exception
 	{
-		return m_driver.executeSQLUpdate(sql);
+		return m_driver.executeUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -128,6 +128,14 @@ public class TransactionalQuerier implements QuerierInterface
 	public String getJdbcClass()
 	{
 		return m_driver.getJdbcClass();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public DBType getJdbcType()
+	{
+		return m_driver.getJdbcType();
 	}
 
 	/*---------------------------------------------------------------------*/

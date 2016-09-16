@@ -1,10 +1,12 @@
 package net.hep.ami.jdbc.driver;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
-	proto = "jdbc:h2",
-	clazz = "org.h2.Driver"
+	type = DBType.SQL,
+	clazz = "org.h2.Driver",
+	proto = "jdbc:h2"
 )
 
 public class H2Driver extends DriverAbstractClass

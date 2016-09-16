@@ -12,21 +12,37 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple3<String, String, Constructor<DriverAbstractClass>>
+	private static class Tuple extends Tuple4<DBType, String, String, Constructor<DriverAbstractClass>>
 	{
-		public Tuple(String _x, String _y, Constructor<DriverAbstractClass> _z)
+		public Tuple(DBType _x, String _y, String _z, Constructor<DriverAbstractClass> _t)
 		{
-			super(_x, _y, _z);
+			super(_x, _y, _z, _t);
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_drivers = new HashMap<String, Tuple>();
+	private static final Map<String, Tuple> m_drivers = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
 	static
+	{
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		m_drivers.clear();
+
+		addDrivers();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void addDrivers()
 	{
 		Set<String> classeNames = ClassFinder.findClassNames("net.hep.ami.jdbc.driver");
 
@@ -38,7 +54,7 @@ public class DriverSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.fatal(e.getMessage());
+				LogSingleton.defaultLogger.error(e.getMessage());
 			}
 		}
 	}
@@ -74,6 +90,7 @@ public class DriverSingleton
 				jdbc.proto()
 				,
 				new Tuple(
+					jdbc.type(),
 					jdbc.clazz(),
 					clazz.getName(),
 					clazz.getConstructor(
@@ -120,7 +137,7 @@ public class DriverSingleton
 		/* CONNECTION                                                      */
 		/*-----------------------------------------------------------------*/
 
-		return tuple.z.newInstance(
+		return tuple.t.newInstance(
 			jdbcUrl,
 			user,
 			pass
@@ -142,23 +159,25 @@ public class DriverSingleton
 		/*-----------------------------------------------------------------*/
 
 		String jdbcProto;
-
+		DBType jdbcType;
 		String jdbcClass;
 		String driverClass;
 
 		for(Map.Entry<String, Tuple> entry: m_drivers.entrySet())
 		{
 			jdbcProto = entry.getKey();
-
-			jdbcClass = entry.getValue().x;
-			driverClass = entry.getValue().y;
+			jdbcType = entry.getValue().x;
+			jdbcClass = entry.getValue().z;
+			driverClass = entry.getValue().z;
 
 			result.append(
 				"<row>"
 				+
-				"<field name=\"jdbcProto\"><![CDATA[" + jdbcProto + "]]></field>"
+				"<field name=\"jdbcType\"><![CDATA[" + jdbcType + "]]></field>"
 				+
 				"<field name=\"jdbcClass\"><![CDATA[" + jdbcClass + "]]></field>"
+				+
+				"<field name=\"jdbcProto\"><![CDATA[" + jdbcProto + "]]></field>"
 				+
 				"<field name=\"driverClass\"><![CDATA[" + driverClass + "]]></field>"
 				+

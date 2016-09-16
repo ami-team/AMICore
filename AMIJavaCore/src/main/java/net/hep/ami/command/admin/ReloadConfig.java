@@ -2,13 +2,15 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
+import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class ListUsers extends CommandAbstractClass
+public class ReloadConfig extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListUsers(Map<String, String> arguments, long transactionId)
+	public ReloadConfig(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -18,19 +20,23 @@ public class ListUsers extends CommandAbstractClass
 	@Override
 	public StringBuilder main() throws Exception
 	{
-		if(m_isSecure.equals("false"))
-		{
-			throw new Exception("https connection required"); 
-		}
+		ConfigSingleton.reload();
 
-		return getQuerier("self").executeQuery("SELECT * FROM `router_user` WHERE `valid`='1'").toStringBuilder();
+		ConverterSingleton.reload();
+		RoleSingleton.reload();
+		CommandSingleton.reload();
+
+		DriverSingleton.reload();
+		CatalogSingleton.reload();
+
+		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "List users.";
+		return "Reload the configuration.";
 	}
 
 	/*---------------------------------------------------------------------*/

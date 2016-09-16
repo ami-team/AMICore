@@ -46,7 +46,7 @@ public class AddCommandRole extends CommandAbstractClass
 			m_command.replace("'", "''")
 		);
 
-		List<Row> rowList1 = transactionalQuerier.executeSQLQuery(sql1).getAll();
+		List<Row> rowList1 = transactionalQuerier.executeQuery(sql1).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -63,7 +63,7 @@ public class AddCommandRole extends CommandAbstractClass
 			m_role.replace("'", "''")
 		);
 
-		List<Row> rowList2 = transactionalQuerier.executeSQLQuery(sql2).getAll();
+		List<Row> rowList2 = transactionalQuerier.executeQuery(sql2).getAll();
 
 		if(rowList2.size() != 1)
 		{
@@ -81,7 +81,7 @@ public class AddCommandRole extends CommandAbstractClass
 			roleID
 		);
 
-		transactionalQuerier.executeSQLUpdate(sql3);
+		transactionalQuerier.executeUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 

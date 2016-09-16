@@ -40,7 +40,7 @@ public class GetUserInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = transactionalQuerier.executeSQLQuery("SELECT `AMIUser`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + m_amiLogin + "'").getAll();
+		List<Row> rowList = transactionalQuerier.executeQuery("SELECT `AMIUser`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + m_amiLogin + "'").getAll();
 
 		if(rowList.size() == 0)
 		{
@@ -65,7 +65,7 @@ public class GetUserInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = transactionalQuerier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
+		RowSet rowSet2 = transactionalQuerier.executeQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
 
 		/*-----------------------------------------------------------------*/
 

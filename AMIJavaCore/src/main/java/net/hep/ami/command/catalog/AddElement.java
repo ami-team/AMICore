@@ -92,7 +92,7 @@ public class AddElement extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		transactionalQuerier.executeSQLUpdate(sql);
+		transactionalQuerier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

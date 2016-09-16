@@ -3,7 +3,6 @@ package net.hep.ami;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
@@ -19,58 +18,34 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean m_hasValidConfFile;
-	private static boolean m_hasValidDataBase;
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Map<String, String> m_properties = new ConcurrentHashMap<String, String>();
+	private static final Map<String, String> m_properties = new java.util.concurrent.ConcurrentHashMap<String, String>();
 
 	/*---------------------------------------------------------------------*/
 
 	static
 	{
-		m_hasValidConfFile = false;
-		m_hasValidDataBase = false;
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		m_configPathName = "";
+		m_configFileName = "";
+
+		m_properties.clear();
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* READ FROM CONFFILE                                          */
-			/*-------------------------------------------------------------*/
-
-			readFromConfFile(m_properties);
-			m_hasValidConfFile = true;
-
-			/*-------------------------------------------------------------*/
-			/* READ FROM DATABASE                                          */
-			/*-------------------------------------------------------------*/
-
-			readFromDataBase(m_properties);
-			m_hasValidDataBase = true;
-
-			/*-------------------------------------------------------------*/
-			/* CHECK IF VALID                                              */
-			/*-------------------------------------------------------------*/
-
-			if(isValid())
-			{
-				Cryptography.init(getProperty("encryption_key"));
-			}
-			else
-			{
-				m_hasValidConfFile = false;
-				m_hasValidDataBase = false;
-			}
-
-			/*-------------------------------------------------------------*/
+			readFromConfFile();
+			Cryptography.init(getProperty("encryption_key"));
+			readFromDataBase();
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.error(e.getMessage());
+			LogSingleton.defaultLogger.fatal(e.getMessage());
 		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -121,15 +96,23 @@ public class ConfigSingleton
 
 	private static File _toFile(String configPathName)
 	{
-		return new File(
-			configPathName.endsWith(".xml") == false ? configPathName + File.separator + "AMI.xml"
-			                                         : configPathName ////////////////////////////
-		);
+		/*-----------------------------------------------------------------*/
+
+		if(configPathName.endsWith(".xml") == false)
+		{
+			configPathName = configPathName + File.separator + "AMI.xml";
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return new File(configPathName);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromConfFile(Map<String, String> properties) throws Exception
+	private static void readFromConfFile() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* FIND FILE                                                       */
@@ -208,11 +191,19 @@ public class ConfigSingleton
 		{
 			node = nodeList.item(i);
 
-			properties.put(
-				XMLFactories.getAttribute(node, "name")
-				,
+			m_properties.put(
+				XMLFactories.getAttribute(node, "name"),
 				XMLFactories.getContent(node)
 			);
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* CHECK CONFIG                                                    */
+		/*-----------------------------------------------------------------*/
+
+		if(isValid() == false)
+		{
+			throw new Exception("invalid configuration file");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -220,7 +211,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromDataBase(Map<String, String> properties) throws Exception
+	private static void readFromDataBase() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */
@@ -240,7 +231,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = basicQuerier.executeSQLQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
+			RowSet rowSet = basicQuerier.executeQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
@@ -250,12 +241,12 @@ public class ConfigSingleton
 			{
 				try
 				{
-					properties.put(
+					m_properties.put(
 						row.getValue("paramName"),
 						row.getValue("paramValue")
 					);
 /*
-					properties.put(
+					m_properties.put(
 						Cryptography.decrypt(row.getValue("paramName"))
 						,
 						Cryptography.decrypt(row.getValue("paramValue"))
@@ -293,15 +284,19 @@ public class ConfigSingleton
 		);
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERIES                                                 */
-		/*-----------------------------------------------------------------*/
+
+		boolean success = false;
 
 		try
 		{
 			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY 1                                             */
+			/*-------------------------------------------------------------*/
 
-			basicQuerier.executeSQLUpdate("DELETE FROM `router_config`");
+			basicQuerier.executeUpdate("DELETE FROM `router_config`");
 
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY 2                                             */
 			/*-------------------------------------------------------------*/
 
 			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
@@ -334,24 +329,31 @@ public class ConfigSingleton
 			}
 
 			/*-------------------------------------------------------------*/
+			/* SUCCESS                                                     */
+			/*-------------------------------------------------------------*/
+
+			success = true;
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
-			try
+			if(success)
 			{
-				basicQuerier.rollbackAndRelease();
+				basicQuerier.commitAndRelease();
 			}
-			catch(Exception e)
+			else
 			{
-				/* IGNORE */
+				try
+				{
+					basicQuerier.rollbackAndRelease();
+				}
+				catch(Exception e)
+				{
+					/* IGNORE */
+				}
 			}
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* COMMIT AND RELEASE                                              */
-		/*-----------------------------------------------------------------*/
-
-		basicQuerier.commitAndRelease();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -371,19 +373,7 @@ public class ConfigSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	public static boolean hasValidConfFile()
-	{
-		return m_hasValidConfFile;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static boolean hasValidDataBase()
-	{
-		return m_hasValidDataBase;
-	}
-
+	/* SYSTEM                                                              */
 	/*---------------------------------------------------------------------*/
 
 	public static String getSystemProperty(String key)
@@ -401,7 +391,118 @@ public class ConfigSingleton
 
 		return result != null ? result : defaultValue;
 	}
+	/*---------------------------------------------------------------------*/
 
+	public static boolean getSystemProperty(String key, boolean defaultValue)
+	{
+		boolean result;
+
+		String tmpValue = System.getProperty(key);
+
+		if(tmpValue != null)
+		{
+			tmpValue = tmpValue.trim().toLowerCase();
+
+			result = tmpValue.equals("1")
+			         ||
+			         tmpValue.equals("on")
+			         ||
+			         tmpValue.equals("yes")
+			         ||
+			         tmpValue.equals("true")
+			;
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static int getSystemProperty(String key, int defaultValue)
+	{
+		int result;
+
+		String tmpValue = System.getProperty(key);
+
+		if(tmpValue != null)
+		{
+			try
+			{
+				result = Integer.parseInt(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static float getSystemProperty(String key, float defaultValue)
+	{
+		float result;
+
+		String tmpValue = System.getProperty(key);
+
+		if(tmpValue != null)
+		{
+			try
+			{
+				result = Float.parseFloat(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static double getSystemProperty(String key, double defaultValue)
+	{
+		double result;
+
+		String tmpValue = System.getProperty(key);
+
+		if(tmpValue != null)
+		{
+			try
+			{
+				result = Double.parseDouble(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+	/* AMI                                                                 */
 	/*---------------------------------------------------------------------*/
 
 	public static String getProperty(String key)
@@ -418,6 +519,35 @@ public class ConfigSingleton
 		String result = m_properties.get(key);
 
 		return result != null ? result : defaultValue;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static boolean getProperty(String key, boolean defaultValue)
+	{
+		boolean result;
+
+		String tmpValue = m_properties.get(key);
+
+		if(tmpValue != null)
+		{
+			tmpValue = tmpValue.trim().toLowerCase();
+
+			result = tmpValue.equals("1")
+			         ||
+			         tmpValue.equals("on")
+			         ||
+			         tmpValue.equals("yes")
+			         ||
+			         tmpValue.equals("true")
+			;
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -510,17 +640,13 @@ public class ConfigSingleton
 		/*-----------------------------------------------------------------*/
 
 		result.append(
-			"<rowset type=\"status\">"
+			"<rowset type=\"paths\">"
 			+
 			"<row>"
 			+
 			"<field name=\"configPathName\"><![CDATA[" + m_configPathName + "]]></field>"
 			+
 			"<field name=\"configFileName\"><![CDATA[" + m_configFileName + "]]></field>"
-			+
-			"<field name=\"hasValidConfFile\"><![CDATA[" + m_hasValidConfFile + "]]></field>"
-			+
-			"<field name=\"hasValidDataBase\"><![CDATA[" + m_hasValidDataBase + "]]></field>"
 			+
 			"</row>"
 			+

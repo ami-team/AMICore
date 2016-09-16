@@ -44,7 +44,7 @@ public class PermissiveSocketFactory
 			/* CREATE SSL CONTEXT                                          */
 			/*-------------------------------------------------------------*/
 
-			SSLContext sslContext = SSLContext.getInstance("SSL");
+			SSLContext sslContext = SSLContext.getInstance("SSLv3");
 
 			sslContext.init(null, new TrustManager[] {
 				new PermissiveX509TrustManager()
@@ -60,7 +60,7 @@ public class PermissiveSocketFactory
 			/* CREATE TLS CONTEXT                                          */
 			/*-------------------------------------------------------------*/
 
-			SSLContext tlsContext = SSLContext.getInstance("TLS");
+			SSLContext tlsContext = SSLContext.getInstance("TLSv1.2");
 
 			tlsContext.init(null, new TrustManager[] {
 				new PermissiveX509TrustManager()

@@ -21,12 +21,23 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_catalogs = new HashMap<String, Tuple>();
+	private static final Map<String, Tuple> m_catalogs = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
 	static
 	{
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		SchemaSingleton.clear();
+
+		m_catalogs.clear();
+
 		try
 		{
 			addCatalogs();
@@ -59,7 +70,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
+			RowSet rowSet = driver.executeQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CATALOGS                                                */
@@ -79,7 +90,7 @@ public class CatalogSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.fatal(e.getMessage());
+					LogSingleton.defaultLogger.error(e.getMessage());
 				}
 			}
 

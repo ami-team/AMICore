@@ -54,7 +54,7 @@ public class AddRole extends CommandAbstractClass
 			m_parent.replace("'", "''")
 		);
 
-		List<Row> rowList = transactionalQuerier.executeSQLQuery(sql1).getAll();
+		List<Row> rowList = transactionalQuerier.executeQuery(sql1).getAll();
 
 		if(rowList.size() != 1)
 		{
@@ -72,7 +72,7 @@ public class AddRole extends CommandAbstractClass
 			parentLft
 		);
 
-		transactionalQuerier.executeSQLUpdate(sql2);
+		transactionalQuerier.executeUpdate(sql2);
 
 		/*-----------------------------------------------------------------*/
 
@@ -82,7 +82,7 @@ public class AddRole extends CommandAbstractClass
 			parentRgt
 		);
 
-		transactionalQuerier.executeSQLUpdate(sql3);
+		transactionalQuerier.executeUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD ROLE                                                        */
@@ -95,7 +95,7 @@ public class AddRole extends CommandAbstractClass
 			m_roleValidatorClass.replace("'", "''")
 		);
 
-		transactionalQuerier.executeSQLUpdate(sql4);
+		transactionalQuerier.executeUpdate(sql4);
 
 		/*-----------------------------------------------------------------*/
 

@@ -23,7 +23,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_commands = new HashMap<String, Tuple>();
+	private static final Map<String, Tuple> m_commands = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -40,13 +40,22 @@ public class CommandSingleton
 
 	static
 	{
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		m_commands.clear();
+
 		try
 		{
 			addCommands();
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.error(e.getMessage());
+			LogSingleton.defaultLogger.fatal(e.getMessage());
 		}
 	}
 
@@ -72,7 +81,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class`, `archived` FROM `router_command`");
+			RowSet rowSet = driver.executeQuery("SELECT `command`, `class`, `archived` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */

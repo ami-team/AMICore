@@ -55,7 +55,7 @@ public class MailSingleton
 		{
 			if(mode.isEmpty() == false)
 			{
-				LogSingleton.defaultLogger.error("invalid encrypting mode");
+				LogSingleton.defaultLogger.error("invalid encryption mode");
 			}
 		}
 
