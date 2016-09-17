@@ -1,64 +1,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.hep.ami</groupId>
-  <artifactId>AMIJavaCore</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+	<artifactId>AMIJavaCore</artifactId>
 
-  <name>AMIJavaCore</name>
-  <url>http://www.cern.ch/ami/</url>
+	<name>AMIJavaCore</name>
+	<url>http://www.cern.ch/ami/</url>
 
-  <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
-  <parent>
-    <groupId>net.hep.ami</groupId>
-    <artifactId>AMICore</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-  </parent>
+	<parent>
+		<groupId>net.hep.ami</groupId>
+		<artifactId>AMICore</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
-  <properties>
-    <antlr4.visitor>false</antlr4.visitor>
-    <antlr4.listener>false</antlr4.listener>
-  </properties>
+	<properties>
+		<antlr4.visitor>false</antlr4.visitor>
+		<antlr4.listener>false</antlr4.listener>
+	</properties>
 
-  <build>
+	<build>
 
-    <plugins>
-      <!--****************************************************************-->
+		<plugins>
+			<!--***********************************************************-->
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
-      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
 
-      <!--****************************************************************-->
+			<!--***********************************************************-->
 
-      <plugin>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-maven-plugin</artifactId>
-        <version>${antlr.version}</version>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>${antlr.version}</version>
 
-        <executions>
-          <execution>
-            <id>antlr4</id>
-            <goals>
-              <goal>antlr4</goal>
-            </goals>
-          </execution>
-        </executions>
+				<executions>
+					<execution>
+						<id>antlr4</id>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+					</execution>
+				</executions>
 
-        <configuration>
-          <outputDirectory>${project.build.directory}/antlr4</outputDirectory>
-        </configuration>
+				<configuration>
+					<outputDirectory>${project.build.directory}/antlr4</outputDirectory>
+				</configuration>
 
-      </plugin>
+			</plugin>
 
-      <!--****************************************************************-->
-    </plugins>
+			<!--***********************************************************-->
+		</plugins>
 
-  </build>
+	</build>
 
 </project>

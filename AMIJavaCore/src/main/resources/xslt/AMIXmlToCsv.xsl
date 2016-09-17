@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match="/"><xsl:apply-templates select="AMIMessage/Result"/><xsl:apply-templates select="AMIMessage/error"/></xsl:template>
 <xsl:output method="text"/>
@@ -27,7 +28,6 @@
 <xsl:call-template name="break">
 <xsl:with-param name="text" select="$myString"/>
 </xsl:call-template><xsl:if test="not (position() = last())">;</xsl:if></xsl:if></xsl:template>
-<xsl:template match="fieldDescriptions"></xsl:template>
 <xsl:template match="fieldDescriptions"></xsl:template>
 <xsl:template match="gLiteCondition"></xsl:template>
 <xsl:template match="gLiteEntity"></xsl:template>

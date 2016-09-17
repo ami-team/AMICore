@@ -1,42 +1,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.hep.ami</groupId>
-  <artifactId>AMIWebCore</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+	<artifactId>AMIWebCore</artifactId>
 
-  <name>AMIWebCore</name>
-  <url>http://www.cern.ch/ami/</url>
+	<name>AMIWebCore</name>
+	<url>http://www.cern.ch/ami/</url>
 
-  <packaging>war</packaging>
+	<packaging>war</packaging>
 
-  <parent>
-    <groupId>net.hep.ami</groupId>
-    <artifactId>AMICore</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-  </parent>
+	<parent>
+		<groupId>net.hep.ami</groupId>
+		<artifactId>AMICore</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
-  <dependencies>
-    <!--******************************************************************-->
+	<dependencies>
+		<!--***************************************************************-->
 
-    <dependency>
-      <groupId>net.hep.ami</groupId>
-      <artifactId>AMIJavaCore</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>net.hep.ami</groupId>
+			<artifactId>AMIJavaCore</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
-    <!--******************************************************************-->
+		<!--***************************************************************-->
 
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-servlet-api</artifactId>
-      <version>${tomcat.version}</version>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-servlet-api</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <!--******************************************************************-->
-  </dependencies>
+		<!--***************************************************************-->
+	</dependencies>
 
 </project>

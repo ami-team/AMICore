@@ -13,12 +13,16 @@ public class ConfigSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static String m_configPathName;
-	private static String m_configFileName;
+	private static boolean s_hasValidConfFile;
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> m_properties = new java.util.concurrent.ConcurrentHashMap<String, String>();
+	private static String s_configPathName;
+	private static String s_configFileName;
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Map<String, String> s_properties = new java.util.concurrent.ConcurrentHashMap<String, String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -31,16 +35,20 @@ public class ConfigSingleton
 
 	public static void reload()
 	{
-		m_configPathName = "";
-		m_configFileName = "";
+		s_hasValidConfFile = false;
 
-		m_properties.clear();
+		s_configPathName = "";
+		s_configFileName = "";
+
+		s_properties.clear();
 
 		try
 		{
 			readFromConfFile();
 			Cryptography.init(getProperty("encryption_key"));
 			readFromDataBase();
+
+			s_hasValidConfFile = true;
 		}
 		catch(Exception e)
 		{
@@ -154,8 +162,8 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		m_configPathName = file.getParentFile().getPath();
-		m_configFileName = file        .        getPath();
+		s_configPathName = file.getParentFile().getPath();
+		s_configFileName = file        .        getPath();
 
 		/*-----------------------------------------------------------------*/
 		/* GET INPUT STREAM                                                */
@@ -191,7 +199,7 @@ public class ConfigSingleton
 		{
 			node = nodeList.item(i);
 
-			m_properties.put(
+			s_properties.put(
 				XMLFactories.getAttribute(node, "name"),
 				XMLFactories.getContent(node)
 			);
@@ -241,7 +249,7 @@ public class ConfigSingleton
 			{
 				try
 				{
-					m_properties.put(
+					s_properties.put(
 						row.getValue("paramName"),
 						row.getValue("paramValue")
 					);
@@ -360,16 +368,23 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static boolean hasValidConfFile()
+	{
+		return s_hasValidConfFile;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String getConfigPathName()
 	{
-		return m_configPathName;
+		return s_configPathName;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String getConfigFileName()
 	{
-		return m_configFileName;
+		return s_configFileName;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -507,7 +522,7 @@ public class ConfigSingleton
 
 	public static String getProperty(String key)
 	{
-		String result = m_properties.get(key);
+		String result = s_properties.get(key);
 
 		return result != null ? result : "";
 	}
@@ -516,7 +531,7 @@ public class ConfigSingleton
 
 	public static String getProperty(String key, String defaultValue)
 	{
-		String result = m_properties.get(key);
+		String result = s_properties.get(key);
 
 		return result != null ? result : defaultValue;
 	}
@@ -527,7 +542,7 @@ public class ConfigSingleton
 	{
 		boolean result;
 
-		String tmpValue = m_properties.get(key);
+		String tmpValue = s_properties.get(key);
 
 		if(tmpValue != null)
 		{
@@ -556,7 +571,7 @@ public class ConfigSingleton
 	{
 		int result;
 
-		String tmpValue = m_properties.get(key);
+		String tmpValue = s_properties.get(key);
 
 		if(tmpValue != null)
 		{
@@ -583,7 +598,7 @@ public class ConfigSingleton
 	{
 		float result;
 
-		String tmpValue = m_properties.get(key);
+		String tmpValue = s_properties.get(key);
 
 		if(tmpValue != null)
 		{
@@ -610,7 +625,7 @@ public class ConfigSingleton
 	{
 		double result;
 
-		String tmpValue = m_properties.get(key);
+		String tmpValue = s_properties.get(key);
 
 		if(tmpValue != null)
 		{
@@ -644,9 +659,9 @@ public class ConfigSingleton
 			+
 			"<row>"
 			+
-			"<field name=\"configPathName\"><![CDATA[" + m_configPathName + "]]></field>"
+			"<field name=\"configPathName\"><![CDATA[" + s_configPathName + "]]></field>"
 			+
-			"<field name=\"configFileName\"><![CDATA[" + m_configFileName + "]]></field>"
+			"<field name=\"configFileName\"><![CDATA[" + s_configFileName + "]]></field>"
 			+
 			"</row>"
 			+
@@ -660,7 +675,7 @@ public class ConfigSingleton
 
 		result.append("<rowset type=\"config\"><row>");
 
-		for(Map.Entry<String, String> entry: m_properties.entrySet())
+		for(Map.Entry<String, String> entry: s_properties.entrySet())
 		{
 			name = entry.getKey();
 			value = entry.getValue();

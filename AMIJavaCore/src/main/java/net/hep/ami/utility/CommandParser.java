@@ -111,7 +111,7 @@ public class CommandParser
 
 			/*-------------------------------------------------------------*/
 
-			arguments.put(m.group(1), (m.groupCount() == 2) ? unescape(m.group(2)) : null);
+			arguments.put(m.group(1), (m.groupCount() == 2) ? unescape(m.group(2)) : "");
 
 			i += m.group(0).length();
 

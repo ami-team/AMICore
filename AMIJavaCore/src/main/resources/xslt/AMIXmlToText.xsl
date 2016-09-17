@@ -11,8 +11,6 @@
 
    <xsl:template match="processName">
    </xsl:template>
-   <xsl:template match="projectName">
-   </xsl:template>
    <xsl:template match="databaseName">
    </xsl:template>
    <xsl:template match="sqlForView">
