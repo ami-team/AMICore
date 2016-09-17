@@ -15,7 +15,7 @@
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
 
-		<xsl:text>Result:&#x0a;</xsl:text>
+		<xsl:text>result:&#x0a;</xsl:text>
 		<xsl:apply-templates select="rowset" />
 
 		<xsl:text>#</xsl:text>
