@@ -4,22 +4,14 @@
 
 	<xsl:output method="text" encoding="UTF-8"></xsl:output>
 
-	<xsl:template match="/">
-		<xsl:apply-templates select="/AMIMessage/Result" />
-	</xsl:template>
-
-	<xsl:template match="/AMIMessage/Result">
-
+	<xsl:template match="/AMIMessage">
 		<xsl:text>#AMI&#x0a;&#x0a;</xsl:text>
 
+		<xsl:apply-templates select="Result" />
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
 
-		<xsl:text>result:&#x0a;</xsl:text>
-		<xsl:apply-templates select="rowset" />
-
 		<xsl:text>#</xsl:text>
-
 	</xsl:template>
 
 	<xsl:template match="error">
@@ -32,6 +24,11 @@
 		<xsl:text>info: </xsl:text>
 		<xsl:copy-of select="." />
 		<xsl:text>&#x0a;</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="Result">
+		<xsl:text>result:&#x0a;</xsl:text>
+		<xsl:apply-templates select="rowset" />
 	</xsl:template>
 
 	<xsl:template match="rowset">
@@ -51,13 +48,14 @@
 
 		<xsl:for-each select="field">
 
-			<xsl:text>      -> </xsl:text>
-			<xsl:variable name="s1" select="@name"/>
+			<xsl:variable name="s1" select="@name" />
 			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
 			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+			<xsl:text>      -> </xsl:text>
 			<xsl:value-of select="$s3" />
 			<xsl:text> = </xsl:text>
-			<xsl:variable name="s1" select="."/>
+
+			<xsl:variable name="s1" select="." />
 			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
 			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 			<xsl:text>"</xsl:text>

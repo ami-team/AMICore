@@ -4,18 +4,14 @@
 
 	<xsl:output method="text" encoding="UTF-8"></xsl:output>
 
-	<xsl:template match="/">
-		<xsl:apply-templates select="/AMIMessage/Result" />
-	</xsl:template>
-
-	<xsl:template match="/AMIMessage/Result">
-
+	<xsl:template match="/AMIMessage">
 		<xsl:text>#AMI RESULT&#x0a;</xsl:text>
-		<xsl:apply-templates select="rowset" />
 
+		<xsl:apply-templates select="Result" />
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
 
+		<xsl:text>#</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="error">
@@ -30,7 +26,7 @@
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
-	<xsl:template match="rowset">
+	<xsl:template match="Result/rowset">
 
 		<xsl:text>&#x0a;#ROWSET </xsl:text>
 		<xsl:value-of select="@type" />
@@ -38,7 +34,7 @@
 		<xsl:text>&#x0a;#FIELDS&#x0a;</xsl:text>
 
 		<xsl:for-each select="./row[1]/field">
-			<xsl:variable name="s1" select="@name"/>
+			<xsl:variable name="s1" select="@name" />
 			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
 			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 			<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
@@ -57,7 +53,7 @@
 	<xsl:template match="row">
 
 		<xsl:for-each select="field">
-			<xsl:variable name="s1" select="."/>
+			<xsl:variable name="s1" select="." />
 			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
 			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 			<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />

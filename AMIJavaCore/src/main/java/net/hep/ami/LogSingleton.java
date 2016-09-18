@@ -44,8 +44,6 @@ public class LogSingleton
 			catch(Exception e)
 			{
 				error(e.getMessage());
-
-				throw new AppenderLoggingException(e.getMessage());
 			}
 		}
 
@@ -57,9 +55,13 @@ public class LogSingleton
 	static
 	{
 		/*-----------------------------------------------------------------*/
+		/* CREATE APPENDER                                                 */
+		/*-----------------------------------------------------------------*/
 
 		AMIFatalAppender amiFatalAppender = new AMIFatalAppender("AMIFatalAppender");
 
+		/*-----------------------------------------------------------------*/
+		/* START APPENDER                                                  */
 		/*-----------------------------------------------------------------*/
 
 		LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
@@ -70,6 +72,8 @@ public class LogSingleton
 
 		configuration.start();
 
+		/*-----------------------------------------------------------------*/
+		/* ADD APPENDER                                                    */
 		/*-----------------------------------------------------------------*/
 
 		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level"));

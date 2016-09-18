@@ -1,189 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-   <!-- Turn off auto-insertion of <?xml> tag and set indenting on -->
-   <xsl:output method="text" encoding="utf-8" indent="yes" />
-   <!-- strip whitespace from whitespace-only nodes -->
-   <xsl:strip-space elements="*" />
-   <!-- create a key for every element in the document using its name -->
-   <xsl:key name="names" match="*" use="concat(generate-id(..),'/',name())" />
-   <!-- start with the root element -->
-   <xsl:template match="/">
-      <!-- first element needs brackets around it as template does not do that -->
-      <xsl:text>{</xsl:text>
-      <!-- call the template for elements using one unique name at a time -->
-      <xsl:apply-templates select="*[generate-id(.) = generate-id(key('names', concat(generate-id(..),'/',name()))[1])]">
-         <xsl:sort select="name()" />
-      </xsl:apply-templates>
-      <xsl:text>}</xsl:text>
-   </xsl:template>
-   <xsl:template name="replace-string">
-      <xsl:param name="text" />
-      <xsl:param name="replace" />
-      <xsl:param name="with" />
-      <xsl:choose>
-         <xsl:when test="contains($text, $replace)">
-            <xsl:value-of select="substring-before($text,$replace)" />
-            <xsl:value-of select="$with" />
-            <xsl:call-template name="replace-string">
-               <xsl:with-param name="text" select="substring-after($text,$replace)" />
-               <xsl:with-param name="replace" select="$replace" />
-               <xsl:with-param name="with" select="$with" />
-            </xsl:call-template>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:value-of select="$text" />
-         </xsl:otherwise>
-      </xsl:choose>
-   </xsl:template>
-   <xsl:template name="escape-string">
-      <xsl:param name="text" />
-      <xsl:variable name="text1">
-         <xsl:call-template name="replace-string">
-            <xsl:with-param name="text" select="$text" />
-            <xsl:with-param name="replace" select="'\'" />
-            <xsl:with-param name="with" select="'\\'" />
-         </xsl:call-template>
-      </xsl:variable>
-      <xsl:variable name="text2">
-         <xsl:call-template name="replace-string">
-            <xsl:with-param name="text" select="$text1" />
-            <xsl:with-param name="replace" select="'&quot;'" />
-            <xsl:with-param name="with" select="'\&quot;'" />
-         </xsl:call-template>
-      </xsl:variable>
-      <xsl:variable name="text3">
-         <xsl:call-template name="replace-string">
-            <xsl:with-param name="text" select="$text2" />
-            <xsl:with-param name="replace" select="'&#x9;'" />
-            <xsl:with-param name="with" select="'\t'" />
-         </xsl:call-template>
-      </xsl:variable>
-      <xsl:variable name="text4">
-         <xsl:call-template name="replace-string">
-            <xsl:with-param name="text" select="$text3" />
-            <xsl:with-param name="replace" select="'&#xA;'" />
-            <xsl:with-param name="with" select="'\n'" />
-         </xsl:call-template>
-      </xsl:variable>
-      <xsl:variable name="text5">
-         <xsl:call-template name="replace-string">
-            <xsl:with-param name="text" select="$text4" />
-            <xsl:with-param name="replace" select="'&#xD;'" />
-            <xsl:with-param name="with" select="'\r'" />
-         </xsl:call-template>
-      </xsl:variable>
-      <xsl:value-of select="$text5" />
-   </xsl:template>
-   <!-- this template handles elements -->
-   <xsl:template match="*">
-      <!-- count the number of elements with the same name -->
-      <xsl:variable name="kctr" select="count(key('names', concat(generate-id(..),'/',name())))" />
-      <!-- iterate through by sets of elements with same name -->
-      <xsl:for-each select="key('names', concat(generate-id(..),'/',name()))">
-         <!-- deal with the element name and start of multiple element block -->
-         <xsl:choose>
-            <!-- <xsl:when test="($kctr > 1) and (position() = 1)"> -->
-            <xsl:when test="position() = 1">
-               <xsl:text>"</xsl:text>
-               <xsl:value-of select="name()" />
-               <xsl:text>" : [</xsl:text>
-            </xsl:when>
-            <!--
-                <xsl:when test="$kctr = 1">
-                    <xsl:text>"</xsl:text>
-                    <xsl:value-of select="name()"/>
-                    <xsl:text>" : </xsl:text>
-                </xsl:when>
-                -->
-         </xsl:choose>
-         <!-- count number of elements, text nodes and attribute nodes -->
-         <xsl:variable name="nctr" select="count(*|text()|@*)" />
-         <xsl:choose>
-            <xsl:when test="$nctr = 0">
-               <!-- no contents at all -->
-               <xsl:text></xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-               <xsl:variable name="ctr" select="count(*)" />
-               <xsl:variable name="tctr" select="count(text())" />
-               <xsl:variable name="actr" select="count(@*)" />
-               <!-- there will be contents so start an object -->
-               <xsl:text>{</xsl:text>
-               <!-- handle attribute nodes -->
-               <xsl:if test="$actr &gt; 0">
-                  <xsl:apply-templates select="@*" />
-                  <xsl:if test="($tctr &gt; 0) or ($ctr &gt; 0)">
-                     <xsl:text>,</xsl:text>
-                  </xsl:if>
-               </xsl:if>
-               <!-- call template for child elements one unique name at a time -->
-               <xsl:if test="$ctr &gt; 0">
-                  <xsl:apply-templates select="*[generate-id(.) = generate-id(key('names', concat(generate-id(..),'/',name()))[1])]">
-                     <xsl:sort select="name()" />
-                  </xsl:apply-templates>
-                  <xsl:if test="$tctr &gt; 0">
-                     <xsl:text>,</xsl:text>
-                  </xsl:if>
-               </xsl:if>
-               <!-- handle text nodes -->
-               <xsl:choose>
-                  <xsl:when test="$tctr = 1">
-                     <xsl:text>"$" :</xsl:text>
-                     <xsl:apply-templates select="text()" />
-                  </xsl:when>
-                  <xsl:when test="$tctr &gt; 1">
-                     <!--	<xsl:when test="$tctr >= 1"> -->
-                     <xsl:text>"$" : [</xsl:text>
-                     <xsl:apply-templates select="text()" />
-                     <xsl:text>]</xsl:text>
-                  </xsl:when>
-               </xsl:choose>
-               <xsl:text>}</xsl:text>
-            </xsl:otherwise>
-         </xsl:choose>
-         <!-- special processing if we are in multiple element block -->
-         <!-- <xsl:if test="$kctr > 1"> -->
-         <xsl:if test="$kctr &gt;= 1">
-            <xsl:choose>
-               <xsl:when test="position() = last()">
-                  <xsl:text>]</xsl:text>
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:text>,</xsl:text>
-               </xsl:otherwise>
-            </xsl:choose>
-         </xsl:if>
-      </xsl:for-each>
-      <xsl:if test="position() != last()">
-         <xsl:text>,</xsl:text>
-      </xsl:if>
-   </xsl:template>
-   <!-- this template handle text nodes -->
-   <xsl:template match="text()">
-      <xsl:variable name="t" select="." />
-      <xsl:text>"</xsl:text>
-      <xsl:call-template name="escape-string">
-         <xsl:with-param name="text" select="." />
-      </xsl:call-template>
-      <xsl:text>"</xsl:text>
-      <xsl:if test="position() != last()">
-         <xsl:text>,</xsl:text>
-      </xsl:if>
-   </xsl:template>
-   <!-- this template handles attribute nodes -->
-   <xsl:template match="@*">
-      <!-- attach prefix to attribute names -->
-      <xsl:text>"@</xsl:text>
-      <xsl:value-of select="name()" />
-      <xsl:text>" :</xsl:text>
-      <xsl:variable name="t" select="." />
-      <xsl:text>"</xsl:text>
-      <xsl:call-template name="escape-string">
-         <xsl:with-param name="text" select="." />
-      </xsl:call-template>
-      <xsl:text>"</xsl:text>
-      <xsl:if test="position() != last()">
-         <xsl:text>,</xsl:text>
-      </xsl:if>
-   </xsl:template>
+
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+
+	<xsl:output method="text" encoding="UTF-8"></xsl:output>
+
+	<xsl:template match="/AMIMessage">
+		<xsl:text>{"AMIMessage":{</xsl:text>
+
+		<xsl:text>"error":[</xsl:text>
+		<xsl:apply-templates select="error" />
+		<xsl:text>],</xsl:text>
+
+		<xsl:text>"info":[</xsl:text>
+		<xsl:apply-templates select="info" />
+		<xsl:text>],</xsl:text>
+
+		<xsl:text>"Result":{</xsl:text>
+		<xsl:apply-templates select="Result" />
+		<xsl:text>}</xsl:text>
+
+		<xsl:text>}}</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="error">
+		<xsl:variable name="s1" select="." />
+		<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
+
+		<xsl:text>"</xsl:text>
+		<xsl:copy-of select="$s4" />
+		<xsl:text>"</xsl:text>
+
+		<xsl:if test="not (position() = last())">,</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="info">
+		<xsl:variable name="s1" select="." />
+		<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
+
+		<xsl:text>"</xsl:text>
+		<xsl:copy-of select="$s4" />
+		<xsl:text>"</xsl:text>
+
+		<xsl:if test="not (position() = last())">,</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="Result">
+		<xsl:text>"rowset":[</xsl:text>
+
+		<xsl:apply-templates select="rowset" />
+
+		<xsl:text>]</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="rowset">
+		<xsl:text>{</xsl:text>
+
+		<xsl:text>"type":"</xsl:text>
+		<xsl:value-of select="@type" />
+		<xsl:text>",</xsl:text>
+
+		<xsl:text>"row":[</xsl:text>
+		<xsl:apply-templates select="row" />
+		<xsl:text>]</xsl:text>
+
+		<xsl:text>}</xsl:text>
+		<xsl:if test="not (position() = last())">,</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="row">
+		<xsl:text>{</xsl:text>
+
+		<xsl:text>"field":[</xsl:text>
+		<xsl:apply-templates select="field" />
+		<xsl:text>]</xsl:text>
+
+		<xsl:text>}</xsl:text>
+		<xsl:if test="not (position() = last())">,</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="field">
+		<xsl:text>{</xsl:text>
+
+		<xsl:for-each select="@*">
+			<xsl:variable name="s1" select="name()" />
+			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+			<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
+
+			<xsl:variable name="s5" select="." />
+			<xsl:variable name="s6" select="replace($s5, '&#xa;', '\\n')" />
+			<xsl:variable name="s7" select="replace($s6, '&#x9;', '\\t')" />
+			<xsl:variable name="s8" select="replace($s7, '&quot;', '\\&quot;')" />
+
+			<xsl:text>"@</xsl:text>
+			<xsl:value-of select="$s4" />
+			<xsl:text>":"</xsl:text>
+			<xsl:value-of select="$s8" />
+			<xsl:text>",</xsl:text>
+		</xsl:for-each>
+
+		<xsl:variable name="s9" select="." />
+		<xsl:variable name="sA" select="replace($s9, '&#xa;', '\\n')" />
+		<xsl:variable name="sB" select="replace($sA, '&#x9;', '\\t')" />
+		<xsl:variable name="sC" select="replace($sB, '&quot;', '\\&quot;')" />
+
+		<xsl:text>"$":"</xsl:text>
+		<xsl:value-of select="$sC" />
+		<xsl:text>"</xsl:text>
+
+		<xsl:text>}</xsl:text>
+		<xsl:if test="not (position() = last())">,</xsl:if>
+	</xsl:template>
+
 </xsl:stylesheet>

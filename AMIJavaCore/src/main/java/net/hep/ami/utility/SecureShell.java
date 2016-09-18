@@ -15,13 +15,13 @@ public class SecureShell extends ShellAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	static Properties m_properties = new Properties();
+	static final Properties s_properties = new Properties();
 
 	static
 	{
-		m_properties.put("StrictHostKeyChecking", "no");
+		s_properties.put("StrictHostKeyChecking", "no");
 
-		m_properties.put("PreferredAuthentications", "publickey,password");
+		s_properties.put("PreferredAuthentications", "publickey,password");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -32,7 +32,7 @@ public class SecureShell extends ShellAbstractClass
 
 		m_session = m_jsch.getSession(user, host, port);
 
-		m_session.setConfig(m_properties);
+		m_session.setConfig(s_properties);
 
 		if(passwordOrPrivateKey.length() > 64)
 		{

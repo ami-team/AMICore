@@ -23,7 +23,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_commands = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
+	private static final Map<String, Tuple> s_commands = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -40,7 +40,7 @@ public class CommandSingleton
 
 	static
 	{
-		CatalogSingleton.kludge();
+		CatalogSingleton.class.getName();
 
 		CommandSingleton.reload();
 	}
@@ -49,7 +49,7 @@ public class CommandSingleton
 
 	public static void reload()
 	{
-		m_commands.clear();
+		s_commands.clear();
 
 		try
 		{
@@ -134,7 +134,7 @@ public class CommandSingleton
 
 		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
 		{
-			m_commands.put(
+			s_commands.put(
 				commandName
 				,
 				new Tuple(
@@ -180,7 +180,7 @@ public class CommandSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			tuple = m_commands.get(command);
+			tuple = s_commands.get(command);
 
 			if(tuple != null)
 			{
@@ -299,7 +299,7 @@ public class CommandSingleton
 		String clazz;
 		String archived;
 
-		for(Map.Entry<String, Tuple> entry: m_commands.entrySet())
+		for(Map.Entry<String, Tuple> entry: s_commands.entrySet())
 		{
 			command = entry.getKey();
 

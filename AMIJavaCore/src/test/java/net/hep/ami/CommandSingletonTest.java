@@ -10,12 +10,15 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		arguments.put("attachCert", "");
+		LogSingleton.defaultLogger.debug("Hello World!");
+
+/*		arguments.put("attachCert", "");
 		arguments.put("amiLogin", "jodier");
 		arguments.put("amiPassword", "Xk3mgg256");
 		arguments.put("clientDN", "/C=FR/L=Grenoble/O=CNRS/OU=LPSC-AMI/CN=Jerome Odier");
 		arguments.put("issuerDN", "/C=FR/L=Grenoble/O=CNRS/OU=LPSC-AMI/CN=AMI Root Certification Authority");
 		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+*/
 /*
 		System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 

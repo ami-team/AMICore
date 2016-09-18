@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Configuration>
-  <Appenders>
-    <Console name="CONSOLE" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L)%n%m%n" />
-    </Console>
-    <File name="FILE" fileName="ami.log" append="true">
-      <JsonLayout locationInfo="true" />
-    </File>
-  </Appenders>
-  <Loggers>
-    <Root>
-      <AppenderRef ref="CONSOLE"/>
-      <AppenderRef ref="FILE"/>
-    </Root>
-  </Loggers>
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L)%n%m%n" />
+		</Console>
+		<File name="FILE" fileName="ami.log" append="true">
+			<JsonLayout locationInfo="true" />
+		</File>
+	</Appenders>
+	<Loggers>
+		<Root>
+			<AppenderRef ref="CONSOLE"/>
+			<AppenderRef ref="FILE"/>
+		</Root>
+	</Loggers>
 </Configuration>

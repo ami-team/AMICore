@@ -13,6 +13,8 @@ public class JenkinsSingleton
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
+		/* HTTP AUTHENTICATION                                             */
+		/*-----------------------------------------------------------------*/
 
 		String authorization = ConfigSingleton.getProperty("jenkins_login")
 		                       + ":" +
@@ -22,6 +24,8 @@ public class JenkinsSingleton
 		String encodedAuthorization = new String(org.bouncycastle.util.encoders.Base64.encode(authorization.getBytes()));
 
 		/*-----------------------------------------------------------------*/
+		/* HTTP CONNECTION                                                 */
+		/*-----------------------------------------------------------------*/
 
 		HttpURLConnection connection = HttpConnectionFactory.tlsConnection(ConfigSingleton.getProperty("jenkins_endpoint") + "/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)");
 
@@ -30,6 +34,10 @@ public class JenkinsSingleton
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
 		connection.connect();
+
+		/*-----------------------------------------------------------------*/
+		/* DATA                                                            */
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
@@ -47,7 +55,7 @@ public class JenkinsSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder execute(String token, String command) throws Exception
+	public static StringBuilder execute(String token, String command, String method, String data, boolean output, boolean input, int expectedResponseCode) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -61,6 +69,8 @@ public class JenkinsSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* HTTP AUTHENTICATION                                             */
+		/*-----------------------------------------------------------------*/
 
 		String authorization = ConfigSingleton.getProperty("jenkins_login")
 		                       + ":" +
@@ -70,19 +80,56 @@ public class JenkinsSingleton
 		String encodedAuthorization = new String(org.bouncycastle.util.encoders.Base64.encode(authorization.getBytes()));
 
 		/*-----------------------------------------------------------------*/
+		/* HTTP CONNECTION                                                 */
+		/*-----------------------------------------------------------------*/
 
 		HttpURLConnection connection = HttpConnectionFactory.tlsConnection(ConfigSingleton.getProperty("jenkins_endpoint") + command);
 
 		connection.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
 		connection.setRequestProperty(parts[0], parts[1]);
-		connection.setRequestMethod("POST");
-		connection.setDoOutput(false);
+		connection.setRequestMethod(method);
+		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		connection.connect();
 
+		/*-----------------------------------------------------------------*/
+		/* DATA                                                            */
+		/*-----------------------------------------------------------------*/
+
 		try
 		{
-			TextFile.read(result, connection.getInputStream());
+			/*-------------------------------------------------------------*/
+			/* OUTPUT STREAM                                               */
+			/*-------------------------------------------------------------*/
+
+			if(output)
+			{
+				connection.getOutputStream().write(data.getBytes());
+			}
+
+			/*-------------------------------------------------------------*/
+			/* INPUT STREAM                                                */
+			/*-------------------------------------------------------------*/
+
+			if(input)
+			{
+				TextFile.read(result, connection.getInputStream());
+			}
+
+			/*-------------------------------------------------------------*/
+			/* SUCCESS                                                     */
+			/*-------------------------------------------------------------*/
+
+			int responseCode = connection.getResponseCode();
+
+			if(responseCode != expectedResponseCode)
+			{
+				throw new Exception(
+					"error " + responseCode
+				);
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 		finally
 		{

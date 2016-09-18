@@ -10,8 +10,8 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<CommandValidatorInterface>> m_roleValidators = new java.util.concurrent.ConcurrentHashMap<String, Class<CommandValidatorInterface>>();
-	private static final Map<String, Class<NewUserValidatorInterface>> m_userValidators = new java.util.concurrent.ConcurrentHashMap<String, Class<NewUserValidatorInterface>>();
+	private static final Map<String, Class<CommandValidatorInterface>> s_roleValidators = new java.util.concurrent.ConcurrentHashMap<String, Class<CommandValidatorInterface>>();
+	private static final Map<String, Class<NewUserValidatorInterface>> s_userValidators = new java.util.concurrent.ConcurrentHashMap<String, Class<NewUserValidatorInterface>>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -24,8 +24,8 @@ public class RoleSingleton
 
 	public static void reload()
 	{
-		m_roleValidators.clear();
-		m_userValidators.clear();
+		s_roleValidators.clear();
+		s_userValidators.clear();
 
 		addValidators();
 	}
@@ -67,7 +67,7 @@ public class RoleSingleton
 
 		/**/ if(ClassFinder.extendsClass(clazz, CommandValidatorInterface.class))
 		{
-			m_roleValidators.put(clazz.getName(), (Class<CommandValidatorInterface>) clazz);
+			s_roleValidators.put(clazz.getName(), (Class<CommandValidatorInterface>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -76,7 +76,7 @@ public class RoleSingleton
 
 		else if(ClassFinder.extendsClass(clazz, NewUserValidatorInterface.class))
 		{
-			m_userValidators.put(clazz.getName(), (Class<NewUserValidatorInterface>) clazz);
+			s_userValidators.put(clazz.getName(), (Class<NewUserValidatorInterface>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -86,8 +86,6 @@ public class RoleSingleton
 
 	public static void checkRoles(String command, Map<String, String> arguments) throws Exception
 	{
-		/*---------------------------------*/
-		/* BYPASS                          */
 		/*---------------------------------*/
 
 		if(command.equals("GetSessionInfo")
@@ -206,7 +204,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<CommandValidatorInterface> clazz = m_roleValidators.get(validator);
+		Class<CommandValidatorInterface> clazz = s_roleValidators.get(validator);
 
 		if(clazz == null)
 		{
@@ -249,7 +247,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<NewUserValidatorInterface> clazz = m_userValidators.get(validator);
+		Class<NewUserValidatorInterface> clazz = s_userValidators.get(validator);
 
 		if(clazz == null)
 		{

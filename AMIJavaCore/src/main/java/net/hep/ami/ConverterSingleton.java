@@ -24,7 +24,7 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_converters = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
+	private static final Map<String, Tuple> s_converters = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -37,7 +37,7 @@ public class ConverterSingleton
 
 	public static void reload()
 	{
-		m_converters.clear();
+		s_converters.clear();
 
 		try
 		{
@@ -122,7 +122,7 @@ public class ConverterSingleton
 		/* ADD CONVERTER                                                   */
 		/*-----------------------------------------------------------------*/
 
-		m_converters.put(
+		s_converters.put(
 			new File(xslt).getName()
 			,
 			new Tuple(
@@ -142,7 +142,7 @@ public class ConverterSingleton
 		/* GET TRANSFORM                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple = m_converters.get(converter);
+		Tuple tuple = s_converters.get(converter);
 
 		if(tuple == null)
 		{
@@ -185,7 +185,7 @@ public class ConverterSingleton
 		String xslt;
 		String mime;
 
-		for(Map.Entry<String, Tuple> entry: m_converters.entrySet())
+		for(Map.Entry<String, Tuple> entry: s_converters.entrySet())
 		{
 			xslt = entry.getKey();
 			mime = entry.getValue().y;

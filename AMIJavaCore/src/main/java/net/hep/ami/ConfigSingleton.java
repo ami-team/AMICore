@@ -200,7 +200,8 @@ public class ConfigSingleton
 			node = nodeList.item(i);
 
 			s_properties.put(
-				XMLFactories.getAttribute(node, "name"),
+				XMLFactories.getAttribute(node,
+				                          "name"),
 				XMLFactories.getContent(node)
 			);
 		}

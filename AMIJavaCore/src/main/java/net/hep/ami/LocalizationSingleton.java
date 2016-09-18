@@ -43,6 +43,13 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static BigInteger ipv6ToInteger(String ip) throws UnknownHostException
+	{
+		return ipv6ToInteger((Inet6Address) InetAddress.getByName(ip));
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static BigInteger ipv4ToInteger(Inet4Address ip) throws UnknownHostException
 	{
 		byte[] parts = ip.getAddress();
@@ -55,13 +62,6 @@ public class LocalizationSingleton
 		}
 
 		return _toPositiveBigInteger(result, 8 * parts.length);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static BigInteger ipv6ToInteger(String ip) throws UnknownHostException
-	{
-		return ipv6ToInteger((Inet6Address) InetAddress.getByName(ip));
 	}
 
 	/*---------------------------------------------------------------------*/

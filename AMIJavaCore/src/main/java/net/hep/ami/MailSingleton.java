@@ -11,7 +11,7 @@ public class MailSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Authenticator m_authenticator = new Authenticator()
+	private static final Authenticator s_authenticator = new Authenticator()
 	{
 		@Override
 		protected PasswordAuthentication getPasswordAuthentication()
@@ -51,13 +51,6 @@ public class MailSingleton
 		{
 			result.setProperty((("mail.smtp.starttls.enable")), ((((((((((((("true"))))))))))))));
 		}
-		else
-		{
-			if(mode.isEmpty() == false)
-			{
-				LogSingleton.defaultLogger.error("invalid encryption mode");
-			}
-		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -79,7 +72,7 @@ public class MailSingleton
 		/* CREATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
 
-		Session session = Session.getInstance(getProperties(), m_authenticator);
+		Session session = Session.getInstance(getProperties(), s_authenticator);
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE MESSAGE                                                  */
