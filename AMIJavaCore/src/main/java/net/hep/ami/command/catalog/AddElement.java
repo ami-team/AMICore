@@ -20,29 +20,29 @@ public class AddElement extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_catalog = arguments.get("catalog");
-		String m_entity = arguments.get("entity");
+		String catalog = arguments.get("catalog");
+		String entity = arguments.get("entity");
 
 		String separator = arguments.containsKey("separator") ? arguments.get("separator")
 		                                                      : ","
 		;
 
-		String m_fields[] = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
-		                                                    : new String[] {}
+		String fields[] = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
+		                                                  : new String[] {}
 		;
 
-		String m_values[] = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
-		                                                    : new String[] {}
+		String values[] = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
+		                                                  : new String[] {}
 		;
 
-		if(m_catalog == null || m_entity == null || m_fields.length != m_values.length)
+		if(catalog == null || entity == null || fields.length != values.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier(m_catalog);
+		TransactionalQuerier transactionalQuerier = getQuerier(catalog);
 
 		/*-----------------------------------------------------------------*/
 
@@ -50,24 +50,24 @@ public class AddElement extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("INSERT INTO `" + m_entity + "`");
+		stringBuilder.append("INSERT INTO `" + entity + "`");
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_fields.length > 0)
+		if(fields.length > 0)
 		{
 			String part1 = "";
 			String part2 = "";
 
 			AutoJoinSingleton.SQLFieldValue fieldValue;
 
-			for(int i = 0; i < m_fields.length; i++)
+			for(int i = 0; i < fields.length; i++)
 			{
 				fieldValue = AutoJoinSingleton.resolveFieldValue(
-					m_catalog,
-					m_entity,
-					m_fields[i],
-					m_values[i]
+					catalog,
+					entity,
+					fields[i],
+					values[i]
 				);
 
 				part1 = part1.concat("," + fieldValue.field);

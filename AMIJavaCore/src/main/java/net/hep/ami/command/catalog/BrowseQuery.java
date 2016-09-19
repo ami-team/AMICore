@@ -19,29 +19,29 @@ public class BrowseQuery extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_catalog = arguments.get("catalog");
+		String catalog = arguments.get("catalog");
 
-		String m_sql = arguments.get("sql");
-		String m_glite = arguments.get("glite");
+		String sql = arguments.get("sql");
+		String glite = arguments.get("glite");
 
-		if(m_catalog == null || (m_sql == null && m_glite == null))
+		if(catalog == null || (sql == null && glite == null))
 		{
 			throw new Exception("invalid usage");
 		}
 
-		TransactionalQuerier transactionalQuerier = getQuerier(m_catalog);
+		TransactionalQuerier transactionalQuerier = getQuerier(catalog);
 
 		/*-----------------------------------------------------------------*/
 
 		RowSet queryResult;
 
-		if(m_sql != null)
+		if(sql != null)
 		{
-			queryResult = transactionalQuerier.executeQuery(m_sql);
+			queryResult = transactionalQuerier.executeQuery(sql);
 		}
 		else
 		{
-			queryResult = transactionalQuerier.executeMQLQuery(m_glite);
+			queryResult = transactionalQuerier.executeMQLQuery(glite);
 		}
 
 		/*-----------------------------------------------------------------*/

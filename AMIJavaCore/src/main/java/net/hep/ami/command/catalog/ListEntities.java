@@ -9,15 +9,9 @@ public class ListEntities extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_catalog;
-
-	/*---------------------------------------------------------------------*/
-
 	public ListEntities(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_catalog = arguments.get("catalog");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -25,7 +19,9 @@ public class ListEntities extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		if(m_catalog == null)
+		String catalog = arguments.get("catalog");
+
+		if(catalog == null)
 		{
 			throw new Exception("invalid usage");
 		}
@@ -38,7 +34,7 @@ public class ListEntities extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		for(String entity: SchemaSingleton.getTableNames(m_catalog))
+		for(String entity: SchemaSingleton.getTableNames(catalog))
 		{
 			result.append(
 				"<row>"

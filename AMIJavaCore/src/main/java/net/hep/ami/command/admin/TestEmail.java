@@ -19,19 +19,19 @@ public class TestEmail extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_from = arguments.containsKey("from") ? arguments.get("from")
-		                                              : ConfigSingleton.getProperty("log_from")
+		String from = arguments.containsKey("from") ? arguments.get("from")
+		                                            : ConfigSingleton.getProperty("log_from")
 		;
 
-		String m_to = arguments.containsKey("to") ? arguments.get("to")
-		                                          : ConfigSingleton.getProperty("log_to")
+		String to = arguments.containsKey("to") ? arguments.get("to")
+		                                        : ConfigSingleton.getProperty("log_to")
 		;
 
-		String m_cc = arguments.containsKey("cc") ? arguments.get("cc")
-		                                          : ConfigSingleton.getProperty("log_cc")
+		String cc = arguments.containsKey("cc") ? arguments.get("cc")
+		                                        : ConfigSingleton.getProperty("log_cc")
 		;
 
-		MailSingleton.sendMessage(m_from, m_to, m_cc, "This is a test", "This is a test");
+		MailSingleton.sendMessage(from, to, cc, "This is a test", "This is a test");
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}

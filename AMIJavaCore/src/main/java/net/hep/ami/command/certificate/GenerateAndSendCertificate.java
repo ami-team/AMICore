@@ -32,28 +32,28 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
-		String m_country = arguments.containsKey("country") ? arguments.get("country")
+		String country = arguments.containsKey("country") ? arguments.get("country")
+		                                                  : ""
+		;
+
+		String locality = arguments.containsKey("locality") ? arguments.get("locality")
 		                                                    : ""
 		;
 
-		String m_locality = arguments.containsKey("locality") ? arguments.get("locality")
-		                                                      : ""
+		String organization = arguments.containsKey("organization") ? arguments.get("organization")
+		                                                            : ""
 		;
 
-		String m_organization = arguments.containsKey("organization") ? arguments.get("organization")
-		                                                              : ""
+		String organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
+		                                                                        : ""
 		;
 
-		String m_organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
-		                                                                          : ""
+		String commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
+		                                                        : ""
 		;
 
-		String m_commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
-		                                                          : ""
-		;
-
-		String m_email = arguments.containsKey("email") ? arguments.get("email")
-		                                                : ""
+		String email = arguments.containsKey("email") ? arguments.get("email")
+		                                              : ""
 		;
 
 		int m_validity;
@@ -114,18 +114,18 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 				keyPair.getPublic(),
 				String.format(
 					"CN=%s, OU=%s, O=%s, L=%s, C=%s",
-					m_commonName,
-					m_organizationalUnit,
-					m_organization,
-					m_locality,
-					m_country
+					commonName,
+					organizationalUnit,
+					organization,
+					locality,
+					country
 				),
 				m_validity
 		);
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, m_email.toCharArray());
+		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, email.toCharArray());
 
 		/*-----------------------------------------------------------------*/
 
@@ -143,9 +143,9 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 				)
 			);
 
-			mainBodyPart.setFileName(m_commonName + ".crt");
+			mainBodyPart.setFileName(commonName + ".crt");
 
-			MailSingleton.sendMessage("ami@lpsc.in2p3.fr", m_email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart});
+			MailSingleton.sendMessage("ami@lpsc.in2p3.fr", email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart});
 		}
 		finally
 		{

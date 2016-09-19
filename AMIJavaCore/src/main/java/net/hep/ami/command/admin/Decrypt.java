@@ -19,9 +19,9 @@ public class Decrypt extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_string = arguments.get("string");
+		String string = arguments.get("string");
 
-		if(m_string == null)
+		if(string == null)
 		{
 			throw new Exception("invalid usage");
 		}
@@ -31,7 +31,7 @@ public class Decrypt extends CommandAbstractClass
 			throw new Exception("https connection required"); 
 		}
 
-		return new StringBuilder("<info><![CDATA[" + Cryptography.decrypt(m_string) + "]]></info>");
+		return new StringBuilder("<info><![CDATA[" + Cryptography.decrypt(string) + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -19,9 +19,9 @@ public class GetUserInfo extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_amiLogin = arguments.get("amiLogin");
+		String amiLogin = arguments.get("amiLogin");
 
-		if(m_amiLogin == null)
+		if(amiLogin == null)
 		{
 			throw new Exception("invalid usage");
 		}
@@ -36,11 +36,11 @@ public class GetUserInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = transactionalQuerier.executeQuery("SELECT `AMIUser`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + m_amiLogin + "'").getAll();
+		List<Row> rowList = transactionalQuerier.executeQuery("SELECT `AMIUser`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + amiLogin + "'").getAll();
 
 		if(rowList.size() == 0)
 		{
-			throw new Exception("invalid user `" + m_amiLogin + "`");
+			throw new Exception("invalid user `" + amiLogin + "`");
 		}
 
 		Row row1 = rowList.get(0);

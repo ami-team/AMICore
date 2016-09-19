@@ -21,43 +21,43 @@ public class AddUser extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_amiLogin = arguments.get("amiLogin");
-		String m_amiPassword = arguments.get("amiPassword");
+		String amiLogin = arguments.get("amiLogin");
+		String amiPassword = arguments.get("amiPassword");
 
-		String m_clientDN = arguments.containsKey("clientDN") ? arguments.get("clientDN")
-		                                                      : ""
+		String clientDN = arguments.containsKey("clientDN") ? arguments.get("clientDN")
+		                                                    : ""
 		;
 
-		String m_issuerDN = arguments.containsKey("issuerDN") ? arguments.get("issuerDN")
-		                                                      : ""
+		String issuerDN = arguments.containsKey("issuerDN") ? arguments.get("issuerDN")
+		                                                    : ""
 		;
 
-		String m_firstName = arguments.get("firstName");
-		String m_lastName = arguments.get("lastName");
-		String m_email = arguments.get("email");
+		String firstName = arguments.get("firstName");
+		String lastName = arguments.get("lastName");
+		String email = arguments.get("email");
 
-		if(m_amiLogin == null
+		if(amiLogin == null
 		   ||
-		   m_amiPassword == null
+		   amiPassword == null
 		   ||
-		   m_firstName == null
+		   firstName == null
 		   ||
-		   m_lastName == null
+		   lastName == null
 		   ||
-		   m_email == null
+		   email == null
 		 ) {
 			throw new Exception("invalid usage");
 		}
 
 		RoleSingleton.checkNewUser(
 			ConfigSingleton.getProperty("user_validator_class"),
-			m_amiLogin,
-			m_amiPassword,
-			m_clientDN,
-			m_issuerDN,
-			m_firstName,
-			m_lastName,
-			m_email
+			amiLogin,
+			amiPassword,
+			clientDN,
+			issuerDN,
+			firstName,
+			lastName,
+			email
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -66,18 +66,18 @@ public class AddUser extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		m_amiPassword = Cryptography.encrypt(m_amiPassword);
-		m_clientDN = Cryptography.encrypt(m_clientDN);
-		m_issuerDN = Cryptography.encrypt(m_issuerDN);
+		amiPassword = Cryptography.encrypt(amiPassword);
+		clientDN = Cryptography.encrypt(clientDN);
+		issuerDN = Cryptography.encrypt(issuerDN);
 
 		String sql = String.format("INSERT INTO `router_user` (`AMIUser`,`AMIPass`,`clientDN`,`issuerDN`,`firstName`,`lastName`,`email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
-			m_amiLogin.replace("'", "''"),
-			m_amiPassword.replace("'", "''"),
-			m_clientDN.replace("'", "''"),
-			m_issuerDN.replace("'", "''"),
-			m_firstName.replace("'", "''"),
-			m_lastName.replace("'", "''"),
-			m_email.replace("'", "''")
+			amiLogin.replace("'", "''"),
+			amiPassword.replace("'", "''"),
+			clientDN.replace("'", "''"),
+			issuerDN.replace("'", "''"),
+			firstName.replace("'", "''"),
+			lastName.replace("'", "''"),
+			email.replace("'", "''")
 		);
 
 		transactionalQuerier.executeUpdate(sql);

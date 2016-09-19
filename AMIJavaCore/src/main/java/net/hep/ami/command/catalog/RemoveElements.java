@@ -20,33 +20,33 @@ public class RemoveElements extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_catalog = arguments.get("catalog");
-		String m_entity = arguments.get("entity");
+		String catalog = arguments.get("catalog");
+		String entity = arguments.get("entity");
 
 		String separator = arguments.containsKey("separator") ? arguments.get("separator")
 		                                                      : ","
 		;
 
-		String[] m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
-		                                                          : new String[] {}
+		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
+		                                                        : new String[] {}
 		;
 
-		String[] m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
-		                                                          : new String[] {}
+		String[] keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
+		                                                        : new String[] {}
 		;
 
-		String m_where = arguments.containsKey("where") ? arguments.get("where").trim()
-		                                                : ""
+		String where = arguments.containsKey("where") ? arguments.get("where").trim()
+		                                              : ""
 		;
 
-		if(m_catalog == null || m_entity == null || m_keyFields.length != m_keyValues.length)
+		if(catalog == null || entity == null || keyFields.length != keyValues.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier(m_catalog);
+		TransactionalQuerier transactionalQuerier = getQuerier(catalog);
 
 		/*-----------------------------------------------------------------*/
 
@@ -54,34 +54,34 @@ public class RemoveElements extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("DELETE FROM `" + m_entity + "`");
+		stringBuilder.append("DELETE FROM `" + entity + "`");
 
 		/*-----------------------------------------------------------------*/
 
 		boolean wherePresent = false;
 
-		if(m_keyFields.length > 0)
+		if(keyFields.length > 0)
 		{
 			Map<String, List<String>> joins = new HashMap<String, List<String>>();
 
-			for(int i = 0; i < m_keyFields.length; i++)
+			for(int i = 0; i < keyFields.length; i++)
 			{
 				AutoJoinSingleton.resolveWithNestedSelect(
 					joins,
-					m_catalog,
-					m_entity,
-					m_keyFields[i],
-					m_keyValues[i]
+					catalog,
+					entity,
+					keyFields[i],
+					keyValues[i]
 				);
 			}
 
 			/*-------------------------------------------------------------*/
 
-			String where = AutoJoinSingleton.joinsToSQL(joins).where;
+			String _where = AutoJoinSingleton.joinsToSQL(joins).where;
 
-			if(where.isEmpty() == false)
+			if(_where.isEmpty() == false)
 			{
-				stringBuilder.append(" WHERE " + where);
+				stringBuilder.append(" WHERE " + _where);
 
 				wherePresent = true;
 			}
@@ -91,15 +91,15 @@ public class RemoveElements extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_where.isEmpty() == false)
+		if(where.isEmpty() == false)
 		{
 			if(wherePresent)
 			{
-				stringBuilder.append(" AND (" + m_where + ")");
+				stringBuilder.append(" AND (" + where + ")");
 			}
 			else
 			{
-				stringBuilder.append(" WHERE (" + m_where + ")");
+				stringBuilder.append(" WHERE (" + where + ")");
 			}
 		}
 

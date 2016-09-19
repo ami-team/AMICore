@@ -21,24 +21,24 @@ public class GenerateAuthority extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_country = arguments.containsKey("country") ? arguments.get("country")
+		String country = arguments.containsKey("country") ? arguments.get("country")
+		                                                  : ""
+		;
+
+		String locality = arguments.containsKey("locality") ? arguments.get("locality")
 		                                                    : ""
 		;
 
-		String m_locality = arguments.containsKey("locality") ? arguments.get("locality")
-		                                                      : ""
+		String organization = arguments.containsKey("organization") ? arguments.get("organization")
+		                                                            : ""
 		;
 
-		String m_organization = arguments.containsKey("organization") ? arguments.get("organization")
-		                                                              : ""
+		String organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
+		                                                                        : ""
 		;
 
-		String m_organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
-		                                                                          : ""
-		;
-
-		String m_commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
-		                                                          : ""
+		String commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
+		                                                        : ""
 		;
 
 		int m_validity;
@@ -68,11 +68,11 @@ public class GenerateAuthority extends CommandAbstractClass
 			keyPair.getPublic(),
 			String.format(
 				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
-				m_commonName,
-				m_organizationalUnit,
-				m_organization,
-				m_locality,
-				m_country
+				commonName,
+				organizationalUnit,
+				organization,
+				locality,
+				country
 			),
 			m_validity
 		);

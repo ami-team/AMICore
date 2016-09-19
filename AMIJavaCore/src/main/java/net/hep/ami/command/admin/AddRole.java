@@ -19,17 +19,17 @@ public class AddRole extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_parent = arguments.containsKey("parent") ? arguments.get("parent")
-		                                                  : "AMI_guest_role"
+		String parent = arguments.containsKey("parent") ? arguments.get("parent")
+		                                                : "AMI_guest_role"
 		;
 
-		String m_role = arguments.get("role");
+		String role = arguments.get("role");
 
-		String m_roleValidatorClass = arguments.containsKey("roleValidatorClass") ? arguments.get("roleValidatorClass")
-                                                                                          : ""
+		String roleValidatorClass = arguments.containsKey("roleValidatorClass") ? arguments.get("roleValidatorClass")
+		                                                                        : ""
 		;
 
-		if(m_role == null)
+		if(role == null)
 		{
 			throw new Exception("invalid usage");
 		}
@@ -45,14 +45,14 @@ public class AddRole extends CommandAbstractClass
 		/*-----------------------------------------------------------------*/
 
 		String sql1 = String.format("SELECT `lft`,`rgt` FROM `router_role` WHERE `role`='%s'",
-			m_parent.replace("'", "''")
+			parent.replace("'", "''")
 		);
 
 		List<Row> rowList = transactionalQuerier.executeQuery(sql1).getAll();
 
 		if(rowList.size() != 1)
 		{
-			throw new Exception("unknown role `" + m_parent + "`");
+			throw new Exception("unknown role `" + parent + "`");
 		}
 
 		String parentLft = rowList.get(0).getValue(0);
@@ -85,8 +85,8 @@ public class AddRole extends CommandAbstractClass
 		String sql4 = String.format("INSERT INTO `router_role` (`lft`,`rgt`,`role`,`validatorClass`) VALUES (%s+1,%s+2,'%s','%s')",
 			parentLft,
 			parentLft,
-			m_role.replace("'", "''"),
-			m_roleValidatorClass.replace("'", "''")
+			role.replace("'", "''"),
+			roleValidatorClass.replace("'", "''")
 		);
 
 		transactionalQuerier.executeUpdate(sql4);

@@ -21,20 +21,20 @@ public class GetSessionInfo extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		boolean m_attachCert = arguments.containsKey("attachCert");
-		boolean m_detachCert = arguments.containsKey("detachCert");
+		boolean attachCert = arguments.containsKey("attachCert");
+		boolean detachCert = arguments.containsKey("detachCert");
 
-		String m_amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
-		                                                      : ""
+		String amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
+		                                                    : ""
 		;
 
-		String m_amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
-		                                                            : ""
+		String amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
+		                                                          : ""
 		;
 
-		if(m_attachCert
+		if(attachCert
 		   &&
-		   m_detachCert
+		   detachCert
 		 ) {
 			throw new Exception("invalid usage");
 		}
@@ -53,7 +53,7 @@ public class GetSessionInfo extends CommandAbstractClass
 
 		if(rowList.size() == 0)
 		{
-			throw new Exception("invalid user `" + m_amiLogin + "`");
+			throw new Exception("invalid user `" + amiLogin + "`");
 		}
 
 		Row row1 = rowList.get(0);
@@ -90,9 +90,9 @@ public class GetSessionInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		if(m_attachCert)
+		if(attachCert)
 		{
-			m_amiPassword = Cryptography.encrypt(m_amiPassword);
+			amiPassword = Cryptography.encrypt(amiPassword);
 
 			String clientDN = Cryptography.encrypt(m_clientDN);
 			String issuerDN = Cryptography.encrypt(m_issuerDN);
@@ -101,11 +101,11 @@ public class GetSessionInfo extends CommandAbstractClass
 
 			if(VOMS_ENABLED == false)
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='1' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='1' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
 			}
 
 			if(transactionalQuerier.executeUpdate(sql) != 1)
@@ -118,9 +118,9 @@ public class GetSessionInfo extends CommandAbstractClass
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		if(m_detachCert)
+		if(detachCert)
 		{
-			m_amiPassword = Cryptography.encrypt(m_amiPassword);
+			amiPassword = Cryptography.encrypt(amiPassword);
 
 			String clientDN = Cryptography.encrypt("");
 			String issuerDN = Cryptography.encrypt("");
@@ -129,11 +129,11 @@ public class GetSessionInfo extends CommandAbstractClass
 
 			if(VOMS_ENABLED == false)
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='0' WHERE AMIUser='" + m_amiLogin + "' AND AMIPass='" + m_amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='0' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
 			}
 
 			if(transactionalQuerier.executeUpdate(sql) != 1)

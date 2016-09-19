@@ -19,12 +19,12 @@ public class ListFields extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_catalog = arguments.get("catalog");
-		String m_entity = arguments.get("entity");
+		String catalog = arguments.get("catalog");
+		String entity = arguments.get("entity");
 
-		if(m_catalog == null
+		if(catalog == null
 		   ||
-		   m_entity == null
+		   entity == null
 		 ) {
 			throw new Exception("invalid usage");
 		}
@@ -37,7 +37,7 @@ public class ListFields extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		for(String field: SchemaSingleton.getColumnNames(m_catalog, m_entity))
+		for(String field: SchemaSingleton.getColumnNames(catalog, entity))
 		{
 			result.append(
 				"<row>"

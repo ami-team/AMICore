@@ -19,12 +19,12 @@ public class AddUserRole extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_user = arguments.get("user");
-		String m_role = arguments.get("role");
+		String user = arguments.get("user");
+		String role = arguments.get("role");
 
-		if(m_user == null
+		if(user == null
 		   ||
-		   m_role == null
+		   role == null
 		 ) {
 			throw new Exception("invalid usage");
 		}
@@ -38,14 +38,14 @@ public class AddUserRole extends CommandAbstractClass
 		/*-----------------------------------------------------------------*/
 
 		String sql1 = String.format("SELECT `id` FROM `router_user` WHERE `user`='%s'",
-			m_user.replace("'", "''")
+			user.replace("'", "''")
 		);
 
 		List<Row> rowList1 = transactionalQuerier.executeQuery(sql1).getAll();
 
 		if(rowList1.size() != 1)
 		{
-			throw new Exception("unknown user `" + m_user + "`");
+			throw new Exception("unknown user `" + user + "`");
 		}
 
 		String userID = rowList1.get(0).getValue(0);
@@ -55,14 +55,14 @@ public class AddUserRole extends CommandAbstractClass
 		/*-----------------------------------------------------------------*/
 
 		String sql2 = String.format("SELECT `id` FROM `router_role` WHERE `role`='%s'",
-			m_role.replace("'", "''")
+			role.replace("'", "''")
 		);
 
 		List<Row> rowList2 = transactionalQuerier.executeQuery(sql2).getAll();
 
 		if(rowList2.size() != 1)
 		{
-			throw new Exception("unknown role `" + m_role + "`");
+			throw new Exception("unknown role `" + role + "`");
 		}
 
 		String roleID = rowList2.get(0).getValue(0);

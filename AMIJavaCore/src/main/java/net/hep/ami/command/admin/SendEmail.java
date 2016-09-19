@@ -19,27 +19,27 @@ public class SendEmail extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String m_from = arguments.containsKey("from") ? arguments.get("from")
-		                                              : ""
+		String from = arguments.containsKey("from") ? arguments.get("from")
+		                                            : ""
 		;
 
-		String m_to = arguments.containsKey("to") ? arguments.get("to")
-		                                          : ""
+		String to = arguments.containsKey("to") ? arguments.get("to")
+		                                        : ""
 		;
 
-		String m_cc = arguments.containsKey("cc") ? arguments.get("cc")
-		                                          : ""
+		String cc = arguments.containsKey("cc") ? arguments.get("cc")
+		                                        : ""
 		;
 
-		String m_subject = arguments.containsKey("subject") ? arguments.get("subject")
-		                                                    : ""
+		String subject = arguments.containsKey("subject") ? arguments.get("subject")
+		                                                  : ""
 		;
 
-		String m_message = arguments.containsKey("message") ? arguments.get("message")
-		                                                    : ""
+		String message = arguments.containsKey("message") ? arguments.get("message")
+		                                                  : ""
 		;
 
-		MailSingleton.sendMessage(m_from, m_to, m_cc, m_subject, m_message);
+		MailSingleton.sendMessage(from, to, cc, subject, message);
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}

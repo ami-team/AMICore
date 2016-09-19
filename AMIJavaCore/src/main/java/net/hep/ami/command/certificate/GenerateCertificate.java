@@ -26,28 +26,28 @@ public class GenerateCertificate extends CommandAbstractClass
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
-		String m_country = arguments.containsKey("country") ? arguments.get("country")
+		String country = arguments.containsKey("country") ? arguments.get("country")
+		                                                  : ""
+		;
+
+		String locality = arguments.containsKey("locality") ? arguments.get("locality")
 		                                                    : ""
 		;
 
-		String m_locality = arguments.containsKey("locality") ? arguments.get("locality")
-		                                                      : ""
+		String organization = arguments.containsKey("organization") ? arguments.get("organization")
+		                                                            : ""
 		;
 
-		String m_organization = arguments.containsKey("organization") ? arguments.get("organization")
-		                                                              : ""
+		String organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
+		                                                                        : ""
 		;
 
-		String m_organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
-		                                                                          : ""
+		String commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
+		                                                        : ""
 		;
 
-		String m_commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
-		                                                          : ""
-		;
-
-		String m_password = arguments.containsKey("password") ? arguments.get("password")
-		                                                      : ""
+		String password = arguments.containsKey("password") ? arguments.get("password")
+		                                                    : ""
 		;
 
 		int m_validity;
@@ -108,19 +108,19 @@ public class GenerateCertificate extends CommandAbstractClass
 				keyPair.getPublic(),
 				String.format(
 					"CN=%s, OU=%s, O=%s, L=%s, C=%s",
-					m_commonName,
-					m_organizationalUnit,
-					m_organization,
-					m_locality,
-					m_country
+					commonName,
+					organizationalUnit,
+					organization,
+					locality,
+					country
 				),
 				m_validity
 		);
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_JKS = Cryptography.generateKeyStore_JKS(keyPair.getPrivate(), new X509Certificate[] {certificate}, m_password.toCharArray());
-		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, m_password.toCharArray());
+		KeyStore keyStore_JKS = Cryptography.generateKeyStore_JKS(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
+		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
 
 		/*-----------------------------------------------------------------*/
 
@@ -159,7 +159,7 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		try
 		{
-			keyStore_JKS.store(output, m_password.toCharArray());
+			keyStore_JKS.store(output, password.toCharArray());
 
 			result.append("<field name=\"KEYSTORE_JKS\">");
 			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
@@ -174,7 +174,7 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		try
 		{
-			keyStore_PKCS12.store(output, m_password.toCharArray());
+			keyStore_PKCS12.store(output, password.toCharArray());
 
 			result.append("<field name=\"KEYSTORE_P12\">");
 			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
