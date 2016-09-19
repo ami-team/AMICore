@@ -24,7 +24,7 @@ public abstract class CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	protected Map<String, String> m_arguments;
+	private Map<String, String> m_arguments;
 
 	/*---------------------------------------------------------------------*/
 
@@ -101,7 +101,7 @@ public abstract class CommandAbstractClass
 
 		try
 		{
-			result = main();
+			result = main(m_arguments);
 		}
 		finally
 		{
@@ -123,7 +123,7 @@ public abstract class CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract StringBuilder main() throws Exception;
+	public abstract StringBuilder main(Map<String, String> arguments) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

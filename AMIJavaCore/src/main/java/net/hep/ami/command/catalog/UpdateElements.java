@@ -10,56 +10,43 @@ public class UpdateElements extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_catalog;
-	private String m_entity;
-
-	private String[] m_fields;
-	private String[] m_values;
-
-	private String[] m_keyFields;
-	private String[] m_keyValues;
-
-	private String m_where;
-
-	/*---------------------------------------------------------------------*/
-
 	public UpdateElements(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_catalog = arguments.get("catalog");
-		m_entity = arguments.get("entity");
-
-		String separator = arguments.containsKey("separator") ? arguments.get("separator")
-		                                                      : ","
-		;
-
-		m_fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
-		                                           : new String[] {}
-		;
-
-		m_values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
-		                                           : new String[] {}
-		;
-
-		m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
-                                                         : new String[] {}
-		;
-
-		m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
-                                                         : new String[] {}
-		;
-
-		m_where = arguments.containsKey("where") ? arguments.get("where").trim()
-		                                         : ""
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_catalog = arguments.get("catalog");
+		String m_entity = arguments.get("entity");
+
+		String separator = arguments.containsKey("separator") ? arguments.get("separator")
+		                                                      : ","
+		;
+
+		String[] m_fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
+		                                                    : new String[] {}
+		;
+
+		String[] m_values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
+		                                                    : new String[] {}
+		;
+
+		String[] m_keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
+                                                                  : new String[] {}
+		;
+
+		String[] m_keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
+                                                                  : new String[] {}
+		;
+
+		String m_where = arguments.containsKey("where") ? arguments.get("where").trim()
+		                                                : ""
+		;
+
 		if(m_catalog == null || m_entity == null || m_fields.length != m_values.length || m_keyFields.length != m_keyValues.length)
 		{
 			throw new Exception("invalid usage");

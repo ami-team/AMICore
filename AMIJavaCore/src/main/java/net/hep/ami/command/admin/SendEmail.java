@@ -9,48 +9,36 @@ public class SendEmail extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_from;
-
-	private String m_to;
-
-	private String m_cc;
-
-	private String m_subject;
-
-	private String m_message;
-
-	/*---------------------------------------------------------------------*/
-
 	public SendEmail(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_from = arguments.containsKey("from") ? arguments.get("from")
-		                                       : ""
-		;
-
-		m_to = arguments.containsKey("to") ? arguments.get("to")
-		                                   : ""
-		;
-
-		m_cc = arguments.containsKey("cc") ? arguments.get("cc")
-		                                   : ""
-		;
-
-		m_subject = arguments.containsKey("subject") ? arguments.get("subject")
-		                                             : ""
-		;
-
-		m_message = arguments.containsKey("message") ? arguments.get("message")
-		                                             : ""
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_from = arguments.containsKey("from") ? arguments.get("from")
+		                                              : ""
+		;
+
+		String m_to = arguments.containsKey("to") ? arguments.get("to")
+		                                          : ""
+		;
+
+		String m_cc = arguments.containsKey("cc") ? arguments.get("cc")
+		                                          : ""
+		;
+
+		String m_subject = arguments.containsKey("subject") ? arguments.get("subject")
+		                                                    : ""
+		;
+
+		String m_message = arguments.containsKey("message") ? arguments.get("message")
+		                                                    : ""
+		;
+
 		MailSingleton.sendMessage(m_from, m_to, m_cc, m_subject, m_message);
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");

@@ -9,28 +9,21 @@ public class SearchQuery extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_catalog;
-
-	private String m_sql;
-	private String m_glite;
-
-	/*---------------------------------------------------------------------*/
-
 	public SearchQuery(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_catalog = arguments.get("catalog");
-
-		m_sql = arguments.get("sql");
-		m_glite = arguments.get("glite");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_catalog = arguments.get("catalog");
+
+		String m_sql = arguments.get("sql");
+		String m_glite = arguments.get("glite");
+
 		if(m_catalog == null || (m_sql == null && m_glite == null))
 		{
 			throw new Exception("invalid usage");

@@ -9,27 +9,22 @@ public class AddCommandRole extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_command;
-	private String m_role;
-
-	/*---------------------------------------------------------------------*/
-
 	public AddCommandRole(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_command = arguments.get("command");
-		m_role = arguments.get("role");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		if(m_command == null
+		String command = arguments.get("command");
+		String role = arguments.get("role");
+
+		if(command == null
 		   ||
-		   m_role == null
+		   role == null
 		 ) {
 			throw new Exception("invalid usage");
 		}
@@ -43,14 +38,14 @@ public class AddCommandRole extends CommandAbstractClass
 		/*-----------------------------------------------------------------*/
 
 		String sql1 = String.format("SELECT `id` FROM `router_command` WHERE `command`='%s'",
-			m_command.replace("'", "''")
+			command.replace("'", "''")
 		);
 
 		List<Row> rowList1 = transactionalQuerier.executeQuery(sql1).getAll();
 
 		if(rowList1.size() != 1)
 		{
-			throw new Exception("unknown command `" + m_command + "`");
+			throw new Exception("unknown command `" + command + "`");
 		}
 
 		String commandID = rowList1.get(0).getValue(0);
@@ -60,14 +55,14 @@ public class AddCommandRole extends CommandAbstractClass
 		/*-----------------------------------------------------------------*/
 
 		String sql2 = String.format("SELECT `id` FROM `router_role` WHERE `role`='%s'",
-			m_role.replace("'", "''")
+			role.replace("'", "''")
 		);
 
 		List<Row> rowList2 = transactionalQuerier.executeQuery(sql2).getAll();
 
 		if(rowList2.size() != 1)
 		{
-			throw new Exception("unknown role `" + m_role + "`");
+			throw new Exception("unknown role `" + role + "`");
 		}
 
 		String roleID = rowList2.get(0).getValue(0);

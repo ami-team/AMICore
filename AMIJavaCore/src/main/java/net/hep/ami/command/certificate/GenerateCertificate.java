@@ -13,44 +13,44 @@ public class GenerateCertificate extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_country;
-	private String m_locality;
-	private String m_organization;
-	private String m_organizationalUnit;
-	private String m_commonName;
-	private String m_password;
-
-	private int m_validity;
-
-	/*---------------------------------------------------------------------*/
-
 	public GenerateCertificate(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
+	}
 
-		m_country = arguments.containsKey("country") ? arguments.get("country")
-		                                             : ""
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public StringBuilder main(Map<String, String> arguments) throws Exception
+	{
+		PrivateKey      caKey;
+		X509Certificate caCrt;
+
+		String m_country = arguments.containsKey("country") ? arguments.get("country")
+		                                                    : ""
 		;
 
-		m_locality = arguments.containsKey("locality") ? arguments.get("locality")
-		                                               : ""
+		String m_locality = arguments.containsKey("locality") ? arguments.get("locality")
+		                                                      : ""
 		;
 
-		m_organization = arguments.containsKey("organization") ? arguments.get("organization")
-		                                                       : ""
+		String m_organization = arguments.containsKey("organization") ? arguments.get("organization")
+		                                                              : ""
 		;
 
-		m_organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
-		                                                                   : ""
+		String m_organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
+		                                                                          : ""
 		;
 
-		m_commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
-		                                                   : ""
+		String m_commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
+		                                                          : ""
 		;
 
-		m_password = arguments.containsKey("password") ? arguments.get("password")
-		                                               : ""
+		String m_password = arguments.containsKey("password") ? arguments.get("password")
+		                                                      : ""
 		;
+
+		int m_validity;
 
 		if(arguments.containsKey("validity"))
 		{
@@ -67,15 +67,6 @@ public class GenerateCertificate extends CommandAbstractClass
 		{
 			m_validity = 1;
 		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public StringBuilder main() throws Exception
-	{
-		PrivateKey      caKey;
-		X509Certificate caCrt;
 
 		/*-----------------------------------------------------------------*/
 

@@ -16,7 +16,7 @@ public class ListRoles extends CommandAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		if(m_isSecure.equals("false"))
 		{

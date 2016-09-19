@@ -9,24 +9,19 @@ public class ListFields extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_catalog;
-	private String m_entity;
-
-	/*---------------------------------------------------------------------*/
-
 	public ListFields(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_catalog = arguments.get("catalog");
-		m_entity = arguments.get("entity");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_catalog = arguments.get("catalog");
+		String m_entity = arguments.get("entity");
+
 		if(m_catalog == null
 		   ||
 		   m_entity == null

@@ -9,22 +9,18 @@ public class Decrypt extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_string;
-
-	/*---------------------------------------------------------------------*/
-
 	public Decrypt(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_string = arguments.get("string");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_string = arguments.get("string");
+
 		if(m_string == null)
 		{
 			throw new Exception("invalid usage");

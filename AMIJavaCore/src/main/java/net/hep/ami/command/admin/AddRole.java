@@ -9,32 +9,26 @@ public class AddRole extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_parent;
-	private String m_role;
-	private String m_roleValidatorClass;
-
-	/*---------------------------------------------------------------------*/
-
 	public AddRole(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_parent = arguments.containsKey("parent") ? arguments.get("parent")
-		                                           : "AMI_guest_role"
-		;
-
-		m_role = arguments.get("role");
-
-		m_roleValidatorClass = arguments.containsKey("roleValidatorClass") ? arguments.get("roleValidatorClass")
-		                                                                   : ""
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_parent = arguments.containsKey("parent") ? arguments.get("parent")
+		                                                  : "AMI_guest_role"
+		;
+
+		String m_role = arguments.get("role");
+
+		String m_roleValidatorClass = arguments.containsKey("roleValidatorClass") ? arguments.get("roleValidatorClass")
+                                                                                          : ""
+		;
+
 		if(m_role == null)
 		{
 			throw new Exception("invalid usage");

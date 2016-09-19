@@ -1,4 +1,4 @@
-package net.hep.ami.command.monitoring;
+package net.hep.ami.command.admin;
 
 import java.io.*;
 import java.util.*;
@@ -18,7 +18,7 @@ public class GetConnectionPoolStatus extends CommandAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 

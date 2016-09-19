@@ -9,22 +9,18 @@ public class GetUserInfo extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_amiLogin;
-
-	/*---------------------------------------------------------------------*/
-
 	public GetUserInfo(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_amiLogin = arguments.get("amiLogin");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_amiLogin = arguments.get("amiLogin");
+
 		if(m_amiLogin == null)
 		{
 			throw new Exception("invalid usage");

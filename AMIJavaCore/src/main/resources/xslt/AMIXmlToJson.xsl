@@ -59,7 +59,7 @@
 	<xsl:template match="rowset">
 		<xsl:text>{</xsl:text>
 
-		<xsl:text>"type":"</xsl:text>
+		<xsl:text>"@type":"</xsl:text>
 		<xsl:value-of select="@type" />
 		<xsl:text>",</xsl:text>
 

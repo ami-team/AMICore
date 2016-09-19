@@ -11,41 +11,31 @@ public class AddUser extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_amiLogin;
-	private String m_amiPassword;
-	private String m_clientDN;
-	private String m_issuerDN;
-	private String m_firstName;
-	private String m_lastName;
-	private String m_email;
-
-	/*---------------------------------------------------------------------*/
-
 	public AddUser(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_amiLogin = arguments.get("amiLogin");
-		m_amiPassword = arguments.get("amiPassword");
-
-		m_clientDN = arguments.containsKey("clientDN") ? arguments.get("clientDN")
-		                                               : ""
-		;
-
-		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.get("issuerDN")
-		                                               : ""
-		;
-
-		m_firstName = arguments.get("firstName");
-		m_lastName = arguments.get("lastName");
-		m_email = arguments.get("email");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_amiLogin = arguments.get("amiLogin");
+		String m_amiPassword = arguments.get("amiPassword");
+
+		String m_clientDN = arguments.containsKey("clientDN") ? arguments.get("clientDN")
+		                                                      : ""
+		;
+
+		String m_issuerDN = arguments.containsKey("issuerDN") ? arguments.get("issuerDN")
+		                                                      : ""
+		;
+
+		String m_firstName = arguments.get("firstName");
+		String m_lastName = arguments.get("lastName");
+		String m_email = arguments.get("email");
+
 		if(m_amiLogin == null
 		   ||
 		   m_amiPassword == null

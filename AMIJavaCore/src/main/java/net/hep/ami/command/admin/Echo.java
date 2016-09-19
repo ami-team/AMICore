@@ -16,13 +16,13 @@ public class Echo extends CommandAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
 		result.append("<rowset><row>");
 
-		for(Map.Entry<String, String> entry: m_arguments.entrySet())
+		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
 			result.append("<field name=\"" + entry.getKey() + "\"><![CDATA[" + entry.getValue() + "]]></field>");
 		}

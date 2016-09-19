@@ -9,24 +9,19 @@ public class AddUserRole extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private String m_user;
-	private String m_role;
-
-	/*---------------------------------------------------------------------*/
-
 	public AddUserRole(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_user = arguments.get("user");
-		m_role = arguments.get("role");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String m_user = arguments.get("user");
+		String m_role = arguments.get("role");
+
 		if(m_user == null
 		   ||
 		   m_role == null

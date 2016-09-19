@@ -11,35 +11,27 @@ public class GetSessionInfo extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private boolean m_attachCert;
-	private boolean m_detachCert;
-
-	private String m_amiLogin;
-	private String m_amiPassword;
-
-	/*---------------------------------------------------------------------*/
-
 	public GetSessionInfo(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
-
-		m_attachCert = arguments.containsKey("attachCert");
-		m_detachCert = arguments.containsKey("detachCert");
-
-		m_amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
-		                                               : ""
-		;
-
-		m_amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
-		                                                     : ""
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		boolean m_attachCert = arguments.containsKey("attachCert");
+		boolean m_detachCert = arguments.containsKey("detachCert");
+
+		String m_amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
+		                                                      : ""
+		;
+
+		String m_amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
+		                                                            : ""
+		;
+
 		if(m_attachCert
 		   &&
 		   m_detachCert

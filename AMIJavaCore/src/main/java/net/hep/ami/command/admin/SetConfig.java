@@ -17,14 +17,14 @@ public class SetConfig extends CommandAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		if(m_isSecure.equals("false"))
 		{
 			throw new Exception("https connection required"); 
 		}
 
-		ConfigSingleton.writeToDataBase(m_arguments);
+		ConfigSingleton.writeToDataBase(arguments);
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}

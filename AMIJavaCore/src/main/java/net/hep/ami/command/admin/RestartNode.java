@@ -21,7 +21,7 @@ public class RestartNode extends CommandAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main() throws Exception
+	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		new SimpleShell().exec(new String[] {
 			"bash",
