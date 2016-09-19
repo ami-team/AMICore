@@ -86,7 +86,7 @@ public class CatalogSingleton
 						row.getValue("jdbcUrl"),
 						Cryptography.decrypt(row.getValue("user")),
 						Cryptography.decrypt(row.getValue("pass")),
-						row.getValue("archived")
+						row.getValue("archived").trim()
 					);
 				}
 				catch(Exception e)
@@ -128,7 +128,7 @@ public class CatalogSingleton
 		/* READ SCHEMA                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(DriverSingleton.isType(jdbcUrl, DBType.SQL))
+		if(archived.equals("0") && DriverSingleton.isType(jdbcUrl, DBType.SQL))
 		{
 			Connection connection = DriverManager.getConnection(jdbcUrl, user, pass);
 
