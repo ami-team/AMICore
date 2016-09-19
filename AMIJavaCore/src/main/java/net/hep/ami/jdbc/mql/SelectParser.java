@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.mql.antlr.*;
-import net.hep.ami.jdbc.introspection.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 public class SelectParser
 {

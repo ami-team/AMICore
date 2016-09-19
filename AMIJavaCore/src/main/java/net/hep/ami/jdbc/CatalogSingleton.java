@@ -6,7 +6,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.jdbc.introspection.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 public class CatalogSingleton
 {

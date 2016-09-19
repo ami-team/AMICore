@@ -3,7 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.introspection.*;
+import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
 
 public class AddElement extends CommandAbstractClass

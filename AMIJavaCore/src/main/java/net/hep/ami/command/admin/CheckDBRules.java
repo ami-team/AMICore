@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.introspection.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 public class CheckDBRules extends CommandAbstractClass
 {
