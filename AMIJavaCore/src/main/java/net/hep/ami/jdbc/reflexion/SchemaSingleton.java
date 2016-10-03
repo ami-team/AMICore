@@ -19,6 +19,17 @@ public class SchemaSingleton
 		public String type;
 		public int size;
 
+		public class Def
+		{
+			public String name = "";
+			public String longName = "";
+			public String nameSpace = "";
+			public String description = "";
+			public String unit = "";
+		};
+
+		public Def dict = new Def();
+
 		public Column(String _internalCatalog, String _catalog, String _table, String _name, String _type, int _size)
 		{
 			internalCatalog = _internalCatalog;
@@ -157,18 +168,17 @@ public class SchemaSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* INITIALIZE STRUCTURES                                           */
+		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = CatalogSingleton.getConnection(externalCatalog);
+		DriverAbstractClass driver1 = CatalogSingleton.getConnection(externalCatalog);
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* INITIALIZE STRUCTURES                                       */
-			/*-------------------------------------------------------------*/
-
 			long t1 = System.currentTimeMillis();
 
-			/**/	@SuppressWarnings("deprecation") DatabaseMetaData metaData = driver.getConnection().getMetaData();
+			/**/
+			/**/	@SuppressWarnings("deprecation") DatabaseMetaData metaData = driver1.getConnection().getMetaData();
 			/**/
 			/**/	ResultSet resultSet = metaData.getTables(internalCatalog, null, "%", null);
 			/**/
@@ -187,17 +197,37 @@ public class SchemaSingleton
 
 			long t2 = System.currentTimeMillis();
 
-			/*-------------------------------------------------------------*/
-			/* UPDATE EXECUTION TIME                                       */
-			/*-------------------------------------------------------------*/
-
 			m_executionTime += t2 - t1;
-
-			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
-			driver.rollbackAndRelease();
+			driver1.rollbackAndRelease();
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* READ METADATA DICTIONNARY                                       */
+		/*-----------------------------------------------------------------*/
+
+		DriverAbstractClass driver2 = CatalogSingleton.getConnection("self");
+
+		try
+		{
+			long t1 = System.currentTimeMillis();
+
+			RowSet rowSet = driver2.executeQuery("");
+
+			for(Row row: rowSet.getAll())
+			{
+
+			}
+
+			long t2 = System.currentTimeMillis();
+
+			m_executionTime += t2 - t1;
+		}
+		finally
+		{
+			driver2.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
