@@ -3,6 +3,9 @@ package net.hep.ami.jdbc.reflexion;
 import java.sql.*;
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.*;
+
 public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -102,75 +105,87 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void readSchema(Connection connection, String catalog) throws SQLException
+	public static void addSchema(Connection connection, String externalCatalog) throws SQLException
 	{
-		/*-----------------------------------------------------------------*/
-		/* READ DB METADATA                                                */
-		/*-----------------------------------------------------------------*/
+		String internalCatalog = connection.getCatalog();
 
-		long t1 = System.currentTimeMillis();
+		if(internalCatalog != null)
+		{
+			m_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
+			m_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
+			m_indices.put(externalCatalog, new HashMap<String, List<Index>>());
 
-		m_columns.put(catalog, new HashMap<String, Map<String, Column>>());
-		m_frgnKeys.put(catalog, new HashMap<String, Map<String, FrgnKey>>());
-		m_indices.put(catalog, new HashMap<String, List<Index>>());
-
-		readMetaData(
-			connection.getMetaData(),
-			connection.getCatalog(),
-			catalog
-		);
-
-		long t2 = System.currentTimeMillis();
-
-		/*-----------------------------------------------------------------*/
-		/* UPDATE EXECUTION TIME                                           */
-		/*-----------------------------------------------------------------*/
-
-		m_executionTime += t2 - t1;
-
-		/*-----------------------------------------------------------------*/
+			m_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
+			m_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog) throws SQLException
+	private static void readMetaData(String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* INTERNAL/EXTERNAL CATALOG BIJECTION                             */
-		/*-----------------------------------------------------------------*/
 
-		m_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
+		String internalCatalog = m_externalCatalogToInternalCatalog.get(externalCatalog);
 
-		m_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
-
-		/*-----------------------------------------------------------------*/
-		/* INITIALIZE STRUCTURES                                           */
-		/*-----------------------------------------------------------------*/
-
-		ResultSet resultSet = metaData.getTables(internalCatalog, null, "%", null);
-
-		List<String> names = new ArrayList<String>();
-
-		while(resultSet.next())
+		if(internalCatalog == null)
 		{
-			String name = resultSet.getString("TABLE_NAME");
-
-			m_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
-			m_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
-			m_indices.get(externalCatalog).put(name, new ArrayList<Index>());
-
-			names.add(name);
+				return;
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* READ METADATA                                                   */
+
+		if(m_columns.get(externalCatalog).isEmpty() == false
+		   ||
+		   m_frgnKeys.get(externalCatalog).isEmpty() == false
+		   ||
+		   m_indices.get(externalCatalog).isEmpty() == false
+		 ) {
+			return;
+		}
+
 		/*-----------------------------------------------------------------*/
 
-		for(String name: names)
+		DriverAbstractClass driver = CatalogSingleton.getConnection(externalCatalog);
+
+		try
 		{
-			readColumnMetaData(metaData, internalCatalog, externalCatalog, name);
-			readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
-			readIndexMetaData(metaData, internalCatalog, externalCatalog, name);
+			/*-------------------------------------------------------------*/
+			/* INITIALIZE STRUCTURES                                       */
+			/*-------------------------------------------------------------*/
+
+			long t1 = System.currentTimeMillis();
+
+			/**/	@SuppressWarnings("deprecation") DatabaseMetaData metaData = driver.getConnection().getMetaData();
+			/**/
+			/**/	ResultSet resultSet = metaData.getTables(internalCatalog, null, "%", null);
+			/**/
+			/**/	while(resultSet.next())
+			/**/	{
+			/**/		String name = resultSet.getString("TABLE_NAME");
+			/**/
+			/**/		m_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
+			/**/		m_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
+			/**/		m_indices.get(externalCatalog).put(name, new ArrayList<Index>());
+			/**/
+			/**/		readColumnMetaData(metaData, internalCatalog, externalCatalog, name);
+			/**/		readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
+			/**/		readIndexMetaData(metaData, internalCatalog, externalCatalog, name);
+			/**/	}
+
+			long t2 = System.currentTimeMillis();
+
+			/*-------------------------------------------------------------*/
+			/* UPDATE EXECUTION TIME                                       */
+			/*-------------------------------------------------------------*/
+
+			m_executionTime += t2 - t1;
+
+			/*-------------------------------------------------------------*/
+		}
+		finally
+		{
+			driver.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -291,6 +306,12 @@ public class SchemaSingleton
 
 	public static Set<String> getTableNames(String catalog) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
+		readMetaData(catalog);
+
+		/*-----------------------------------------------------------------*/
+
 		Map<String, Map<String, Column>> map = m_columns.get(catalog);
 
 		if(map != null)
@@ -298,13 +319,23 @@ public class SchemaSingleton
 			return map.keySet();
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		throw new Exception("catalog not found `" + catalog + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Set<String> getColumnNames(String catalog, String table) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
+		readMetaData(catalog);
+
+		/*-----------------------------------------------------------------*/
+
 		Map<String, Map<String, Column>> map1 = m_columns.get(catalog);
 
 		if(map1 != null)
@@ -317,13 +348,23 @@ public class SchemaSingleton
 			}
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Map<String, Column> getColumns(String catalog, String table) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
+		readMetaData(catalog);
+
+		/*-----------------------------------------------------------------*/
+
 		Map<String, Map<String, Column>> map1 = m_columns.get(catalog);
 
 		if(map1 != null)
@@ -336,13 +377,23 @@ public class SchemaSingleton
 			}
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Map<String, FrgnKey> getFgnKeys(String catalog, String table) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
+		readMetaData(catalog);
+
+		/*-----------------------------------------------------------------*/
+
 		Map<String, Map<String, FrgnKey>> map1 = m_frgnKeys.get(catalog);
 
 		if(map1 != null)
@@ -355,13 +406,23 @@ public class SchemaSingleton
 			}
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static List<Index> getIndices(String catalog, String table) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
+		readMetaData(catalog);
+
+		/*-----------------------------------------------------------------*/
+
 		Map<String, List<Index>> map1 = m_indices.get(catalog);
 
 		if(map1 != null)
@@ -374,7 +435,11 @@ public class SchemaSingleton
 			}
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

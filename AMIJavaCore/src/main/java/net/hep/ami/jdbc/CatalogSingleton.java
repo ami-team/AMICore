@@ -128,13 +128,13 @@ public class CatalogSingleton
 		/* READ SCHEMA                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(archived.equals("0") && DriverSingleton.isType(jdbcUrl, DBType.SQL))
+		if(DriverSingleton.isType(jdbcUrl, DBType.SQL))
 		{
 			Connection connection = DriverManager.getConnection(jdbcUrl, user, pass);
 
 			try
 			{
-				SchemaSingleton.readSchema(connection, catalog);
+				SchemaSingleton.addSchema(connection, catalog);
 			}
 			finally
 			{
