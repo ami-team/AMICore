@@ -109,8 +109,20 @@ public class SchemaSingleton
 	{
 		String internalCatalog = connection.getCatalog();
 
-		if(internalCatalog != null)
+		DatabaseMetaData metaData = connection.getMetaData();
+
+		if(internalCatalog != null && metaData != null)
 		{
+			ResultSet resultSet = metaData.getTables(externalCatalog, null, "%", null);
+
+			for(int i = 0; resultSet.next(); i++)
+			{
+				if(i > 50)
+				{
+					return;
+				}
+			}
+
 			m_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
 			m_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
 			m_indices.put(externalCatalog, new HashMap<String, List<Index>>());
