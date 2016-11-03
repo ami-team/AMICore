@@ -3,6 +3,7 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.jdbc.driver.annotation.*;
 
 public class BasicQuerier implements QuerierInterface
 {
@@ -135,7 +136,7 @@ public class BasicQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public DBType getJdbcType()
+	public Jdbc.Type getJdbcType()
 	{
 		return m_driver.getJdbcType();
 	}

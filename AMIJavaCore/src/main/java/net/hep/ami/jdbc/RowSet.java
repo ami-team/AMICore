@@ -13,8 +13,8 @@ public class RowSet
 
 	protected ResultSet m_resultSet;
 
-	private String m_ast;
 	private String m_sql;
+	private String m_ast;
 
 	/*---------------------------------------------------------------------*/
 
@@ -30,19 +30,12 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet) throws Exception
-	{
-		this(resultSet, null, null);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public RowSet(ResultSet resultSet, @Nullable String ast, @Nullable String sql) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String sql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
 
-		m_ast = ast;
 		m_sql = sql;
+		m_ast = ast;
 
 		/*-----------------------------------------------------------------*/
 		/* GET METADATA                                                    */
@@ -283,15 +276,23 @@ public class RowSet
 			/* IGNORE */
 		}
 
-		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+		/*-----------------------------------------------------------------*/
+
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
 
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < maxNumberOfRows && i < offset && m_resultSet.next(); i++)
+		for(int i = 0; i < offset && m_resultSet.next(); i++)
 		;
-
-		for(int i = 0; i < maxNumberOfRows && i < limit && m_resultSet.next(); i++)
+		for(int i = 0; i < limit && m_resultSet.next(); i++)
 		{
+			if(maxNumberOfRows == 0)
+			{
+				break;
+			}
+
+			maxNumberOfRows--;
+
 			result.add(new Row(this, getCurrentValue()));
 		}
 
@@ -333,13 +334,13 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<ast>");
-		if(m_ast != null) result.append(m_ast);
-		result.append("</ast>");
-
-		result.append("<sql>");
+		result.append("<sql><![CDATA[");
 		if(m_sql != null) result.append(m_sql);
-		result.append("</sql>");
+		result.append("]]></sql>");
+
+		result.append("<ast><![CDATA[");
+		if(m_ast != null) result.append(m_ast);
+		result.append("]]></ast>");
 
 		/*-----------------------------------------------------------------*/
 
@@ -352,14 +353,23 @@ public class RowSet
 			/* IGNORE */
 		}
 
-		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+		/*-----------------------------------------------------------------*/
+
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
 
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < maxNumberOfRows && i < offset && m_resultSet.next(); i++)
+		for(int i = 0; i < offset && m_resultSet.next(); i++)
 		;
-		for(int i = 0; i < maxNumberOfRows && i < limit && m_resultSet.next(); i++)
+		for(int i = 0; i < limit && m_resultSet.next(); i++)
 		{
+			if(maxNumberOfRows == 0)
+			{
+				break;
+			}
+
+			maxNumberOfRows--;
+
 			result.append(new Row(this, getCurrentValue()).toStringBuilder());
 		}
 

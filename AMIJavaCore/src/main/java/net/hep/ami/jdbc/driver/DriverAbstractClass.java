@@ -8,8 +8,9 @@ import net.hep.ami.jdbc.mql.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.utility.annotation.*;
 
-public abstract class DriverAbstractClass implements QuerierInterface, DriverInterface
+public abstract class DriverAbstractClass implements QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
 
@@ -22,7 +23,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	protected String m_internalCatalog;
 	protected String m_externalCatalog;
 
-	protected DBType m_jdbcType;
+	protected Jdbc.Type m_jdbcType;
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
 	protected String m_jdbcUrl;
@@ -42,12 +43,12 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 			throw new Exception("no `Jdbc` annotation for driver `" + getClass().getName() + "`");
 		}
 
-		DBType jdbcType = annotation.type();
+		Jdbc.Type jdbcType = annotation.type();
 		String jdbcProto = annotation.proto();
 		String jdbcClass = annotation.clazz();
 
 		/*-----------------------------------------------------------------*/
-		/* GET CONNECTION                                                  */
+		/* CREATE CONNECTION                                               */
 		/*-----------------------------------------------------------------*/
 
 		m_jdbcType = jdbcType;
@@ -67,7 +68,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		m_connection.setAutoCommit(false);
 
 		/*-----------------------------------------------------------------*/
-		/* GET STATEMENT                                                   */
+		/* CREATE STATEMENT                                                */
 		/*-----------------------------------------------------------------*/
 
 		m_statementList.add(m_connection.createStatement());
@@ -90,6 +91,28 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 
 	/*---------------------------------------------------------------------*/
 
+	static class FieldType
+	{
+		String name;
+		int size;
+
+		public FieldType(String _name, int _size)
+		{
+			name = _name;
+			size = _size;
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public abstract FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public abstract FieldType amiTypeToJDBCType(FieldType fieldType) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
 	public abstract String patch(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
@@ -100,7 +123,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 		try
 		{
 			return new RowSet(
-				m_statementList.get(0).executeQuery(patch(sql))
+				m_statementList.get(0).executeQuery(patch(sql)), sql, null
 			);
 		}
 		catch(Exception e)
@@ -114,18 +137,18 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public RowSet executeMQLQuery(String mql) throws Exception
 	{
-		if(m_jdbcType != DBType.SQL)
+		if(m_jdbcType != Jdbc.Type.SQL)
 		{
-			throw new Exception("MQL not supported");
+			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
 		}
 
 		try
 		{
-			String ast = /* TODO */ null /* TODO */;
 			String sql = SelectParser.parse(mql, this);
+			String ast = /* TODO */ null /* TODO */;
 
 			return new RowSet(
-				m_statementList.get(0).executeQuery(patch(sql)), ast, sql
+				m_statementList.get(0).executeQuery(patch(sql)), sql, ast
 			);
 		}
 		catch(Exception e)
@@ -154,9 +177,9 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public int executeMQLUpdate(String mql) throws Exception
 	{
-		if(m_jdbcType != DBType.SQL)
+		if(m_jdbcType != Jdbc.Type.SQL)
 		{
-			throw new Exception("MQL not supported");
+			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
 		}
 
 		try
@@ -174,18 +197,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
 	{
-		try
-		{
-			PreparedStatement result = m_connection.prepareStatement(patch(sql));
-
-			m_statementList.add(result);
-
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql);
-		}
+		return sqlPrepareStatement(sql, null);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -193,28 +205,19 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	@Override
 	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
 	{
-		try
-		{
-			PreparedStatement result = m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)));
-
-			m_statementList.add(result);
-
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql);
-		}
+		return mqlPrepareStatement(mql, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception
+	public PreparedStatement sqlPrepareStatement(String sql, @Nullable String columnNames[]) throws Exception
 	{
 		try
 		{
-			PreparedStatement result = m_connection.prepareStatement(patch(sql), columnNames);
+			PreparedStatement result = (columnNames == null) ? m_connection.prepareStatement(patch(sql))
+			                                                 : m_connection.prepareStatement(patch(sql), columnNames)
+			;
 
 			m_statementList.add(result);
 
@@ -229,11 +232,18 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement mqlPrepareStatement(String mql, String columnNames[]) throws Exception
+	public PreparedStatement mqlPrepareStatement(String mql, @Nullable String columnNames[]) throws Exception
 	{
+		if(m_jdbcType != Jdbc.Type.SQL)
+		{
+			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
+		}
+
 		try
 		{
-			PreparedStatement result = m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)), columnNames);
+			PreparedStatement result = (columnNames == null) ? m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)))
+			                                                 : m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)), columnNames)
+			;
 
 			m_statementList.add(result);
 
@@ -352,7 +362,7 @@ public abstract class DriverAbstractClass implements QuerierInterface, DriverInt
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public DBType getJdbcType()
+	public Jdbc.Type getJdbcType()
 	{
 		return m_jdbcType;
 	}

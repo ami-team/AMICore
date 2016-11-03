@@ -6,6 +6,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.jdbc.driver.annotation.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 public class CatalogSingleton
@@ -128,7 +129,7 @@ public class CatalogSingleton
 		/* READ SCHEMA                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(DriverSingleton.isType(jdbcUrl, DBType.SQL))
+		if(DriverSingleton.isType(jdbcUrl, Jdbc.Type.SQL))
 		{
 			Connection connection = DriverManager.getConnection(jdbcUrl, user, pass);
 

@@ -12,9 +12,9 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple4<DBType, String, String, Constructor<DriverAbstractClass>>
+	private static class Tuple extends Tuple4<Jdbc.Type, String, String, Constructor<DriverAbstractClass>>
 	{
-		public Tuple(DBType _x, String _y, String _z, Constructor<DriverAbstractClass> _t)
+		public Tuple(Jdbc.Type _x, String _y, String _z, Constructor<DriverAbstractClass> _t)
 		{
 			super(_x, _y, _z, _t);
 		}
@@ -148,7 +148,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isType(String jdbcUrl, DBType dbType) throws Exception
+	public static boolean isType(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET PROTOCOL                                                    */
@@ -178,7 +178,7 @@ public class DriverSingleton
 		/* CONNECTION                                                      */
 		/*-----------------------------------------------------------------*/
 
-		return tuple.x == dbType;
+		return tuple.x == jdbcType;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -196,7 +196,7 @@ public class DriverSingleton
 		/*-----------------------------------------------------------------*/
 
 		String jdbcProto;
-		DBType jdbcType;
+		Jdbc.Type jdbcType;
 		String jdbcClass;
 		String driverClass;
 

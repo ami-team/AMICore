@@ -17,20 +17,20 @@ public class SelectParser
 
 	private Set<String> m_tables = new HashSet<String>();
 
-	private DriverInterface m_driver;
+	private DriverAbstractClass m_driver;
 
 	private boolean m_break;
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectParser(DriverInterface driver)
+	public SelectParser(DriverAbstractClass driver)
 	{
 		m_driver = driver;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, DriverInterface driver) throws Exception
+	public static String parse(String query, DriverAbstractClass driver) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

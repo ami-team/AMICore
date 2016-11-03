@@ -4,6 +4,7 @@ import java.sql.*;
 
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.jdbc.driver.annotation.*;
 
 public class TransactionalQuerier implements QuerierInterface
 {
@@ -117,7 +118,7 @@ public class TransactionalQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public DBType getJdbcType()
+	public Jdbc.Type getJdbcType()
 	{
 		return m_driver.getJdbcType();
 	}

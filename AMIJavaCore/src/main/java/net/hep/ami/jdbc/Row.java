@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import net.hep.ami.utility.annotation.*;
+
 public class Row
 {
 	/*---------------------------------------------------------------------*/
@@ -65,7 +67,7 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuilder toStringBuilder(String type)
+	public StringBuilder toStringBuilder(@Nullable String type)
 	{
 		StringBuilder result = new StringBuilder();
 

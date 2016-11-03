@@ -10,18 +10,18 @@ public class UpdateParser
 {
 	/*---------------------------------------------------------------------*/
 
-/*	private DriverInterface m_driver;
+/*	private DriverAbstractClass m_driver;
  */
 	/*---------------------------------------------------------------------*/
 
-	public UpdateParser(DriverInterface driver)
+	public UpdateParser(DriverAbstractClass driver)
 	{
 /*		m_driver = driver;
  */	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, DriverInterface driver) throws Exception
+	public static String parse(String query, DriverAbstractClass driver) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

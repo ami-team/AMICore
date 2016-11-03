@@ -1,10 +1,9 @@
 package net.hep.ami.jdbc.driver;
 
-import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
-	type = DBType.SQL,
+	type = Jdbc.Type.SQL,
 	proto = "jdbc:h2",
 	clazz = "org.h2.Driver"
 )
@@ -21,7 +20,7 @@ public class H2Driver extends DriverAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType jdbcTypeToAMIType(DriverInterface.FieldType fieldType) throws Exception
+	public FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception
 	{
 		return fieldType;
 	}
@@ -29,7 +28,7 @@ public class H2Driver extends DriverAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType amiTypeToJDBCType(DriverInterface.FieldType fieldType) throws Exception
+	public FieldType amiTypeToJDBCType(FieldType fieldType) throws Exception
 	{
 		return fieldType;
 	}

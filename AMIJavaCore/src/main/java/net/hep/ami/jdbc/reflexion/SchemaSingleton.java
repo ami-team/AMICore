@@ -141,6 +141,10 @@ public class SchemaSingleton
 			m_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 			m_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 		}
+		else
+		{
+
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

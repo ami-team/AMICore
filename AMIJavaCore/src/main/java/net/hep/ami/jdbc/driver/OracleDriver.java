@@ -1,11 +1,10 @@
 package net.hep.ami.jdbc.driver;
 
-import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.sql.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
-	type = DBType.SQL,
+	type = Jdbc.Type.SQL,
 	proto = "jdbc:oracle",
 	clazz = "oracle.jdbc.driver.OracleDriver"
 )
@@ -22,7 +21,7 @@ public class OracleDriver extends DriverAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType jdbcTypeToAMIType(DriverInterface.FieldType fieldType) throws Exception
+	public FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception
 	{
 		return fieldType;
 	}
@@ -30,7 +29,7 @@ public class OracleDriver extends DriverAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType amiTypeToJDBCType(DriverInterface.FieldType fieldType) throws Exception
+	public FieldType amiTypeToJDBCType(FieldType fieldType) throws Exception
 	{
 		return fieldType;
 	}
@@ -48,7 +47,7 @@ public class OracleDriver extends DriverAbstractClass
 			   &&
 			   token.endsWith("`")
 			 ) {
-				token = token.replace("`", "\"");
+				token = token.replace("`", "\""); /* ne pas faire comme ça */
 			}
 		}
 
