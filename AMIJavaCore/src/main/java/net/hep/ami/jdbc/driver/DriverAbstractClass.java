@@ -16,6 +16,8 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	protected Connection m_connection;
 
+	/*---------------------------------------------------------------------*/
+
 	protected final List<Statement> m_statementList = new ArrayList<Statement>();
 
 	/*---------------------------------------------------------------------*/
@@ -35,25 +37,23 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	public DriverAbstractClass(String jdbcUrl, String user, String pass) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
+		/* GET ANNOTATION                                                  */
+		/*-----------------------------------------------------------------*/
 
 		Jdbc annotation = getClass().getAnnotation(Jdbc.class);
 
 		if(annotation == null)
 		{
-			throw new Exception("no `Jdbc` annotation for driver `" + getClass().getName() + "`");
+			throw new Exception("annotation `Jdbc` not found for driver `" + getClass().getName() + "`");
 		}
-
-		Jdbc.Type jdbcType = annotation.type();
-		String jdbcProto = annotation.proto();
-		String jdbcClass = annotation.clazz();
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE CONNECTION                                               */
 		/*-----------------------------------------------------------------*/
 
-		m_jdbcType = jdbcType;
-		m_jdbcProto = jdbcProto;
-		m_jdbcClass = jdbcClass;
+		m_jdbcType = annotation.type();
+		m_jdbcProto = annotation.proto();
+		m_jdbcClass = annotation.clazz();
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
@@ -95,11 +95,13 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	{
 		String name;
 		int size;
+		int digits;
 
-		public FieldType(String _name, int _size)
+		public FieldType(String _name, int _size, int _digits)
 		{
 			name = _name;
 			size = _size;
+			digits = _digits;
 		}
 	}
 
@@ -117,18 +119,26 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
+	private void _checkMQL() throws Exception
+	{
+		if(m_jdbcType != Jdbc.Type.SQL)
+		{
+			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@Override
 	public RowSet executeQuery(String sql) throws Exception
 	{
 		try
 		{
-			return new RowSet(
-				m_statementList.get(0).executeQuery(patch(sql)), sql, null
-			);
+			return new RowSet(m_statementList.get(0).executeQuery(patch(sql)), sql, null);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for query: " + sql);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql);
 		}
 	}
 
@@ -137,19 +147,13 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	@Override
 	public RowSet executeMQLQuery(String mql) throws Exception
 	{
-		if(m_jdbcType != Jdbc.Type.SQL)
-		{
-			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
-		}
+		_checkMQL();
 
 		try
 		{
 			String sql = SelectParser.parse(mql, this);
-			String ast = /* TODO */ null /* TODO */;
 
-			return new RowSet(
-				m_statementList.get(0).executeQuery(patch(sql)), sql, ast
-			);
+			return new RowSet(m_statementList.get(0).executeQuery(patch(sql)), sql, null);
 		}
 		catch(Exception e)
 		{
@@ -168,7 +172,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for query: " + sql);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql);
 		}
 	}
 
@@ -177,14 +181,13 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	@Override
 	public int executeMQLUpdate(String mql) throws Exception
 	{
-		if(m_jdbcType != Jdbc.Type.SQL)
-		{
-			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
-		}
+		_checkMQL();
 
 		try
 		{
-			return m_statementList.get(0).executeUpdate(patch(UpdateParser.parse(mql, this)));
+			String sql = UpdateParser.parse(mql, this);
+
+			return m_statementList.get(0).executeUpdate(patch(sql));
 		}
 		catch(Exception e)
 		{
@@ -234,15 +237,14 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	@Override
 	public PreparedStatement mqlPrepareStatement(String mql, @Nullable String columnNames[]) throws Exception
 	{
-		if(m_jdbcType != Jdbc.Type.SQL)
-		{
-			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
-		}
+		_checkMQL();
 
 		try
 		{
-			PreparedStatement result = (columnNames == null) ? m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)))
-			                                                 : m_connection.prepareStatement(patch(UpdateParser.parse(mql, this)), columnNames)
+			String sql = UpdateParser.parse(mql, this);
+
+			PreparedStatement result = (columnNames == null) ? m_connection.prepareStatement(patch(sql))
+			                                                 : m_connection.prepareStatement(patch(sql), columnNames)
 			;
 
 			m_statementList.add(result);
@@ -288,20 +290,19 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		finally
 		{
-			try
+			for(Statement statement: m_statementList)
 			{
-				for(Statement statement: m_statementList)
+				try
 				{
 					if(statement.isClosed() == false)
 					{
 						statement.close();
 					}
 				}
+				catch(SQLException e) {}
 			}
-			finally
-			{
-				m_connection.close();
-			}
+
+			m_connection.close();
 		}
 	}
 
@@ -318,20 +319,19 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		finally
 		{
-			try
+			for(Statement statement: m_statementList)
 			{
-				for(Statement statement: m_statementList)
+				try
 				{
 					if(statement.isClosed() == false)
 					{
 						statement.close();
 					}
 				}
+				catch(SQLException e) {}
 			}
-			finally
-			{
-				m_connection.close();
-			}
+
+			m_connection.close();
 		}
 	}
 
@@ -382,7 +382,6 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	{
 		return m_jdbcClass;
 	}
-
 
 	/*---------------------------------------------------------------------*/
 

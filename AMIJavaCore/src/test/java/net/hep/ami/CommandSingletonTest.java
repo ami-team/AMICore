@@ -2,6 +2,9 @@ package net.hep.ami;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.reflexion.*;
+
 public class CommandSingletonTest
 {
 	/*---------------------------------------------------------------------*/
@@ -12,15 +15,19 @@ public class CommandSingletonTest
 
 		LogSingleton.defaultLogger.debug("Hello World!");
 
-		System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
+		CatalogSingleton.listCatalogs();
+
+		SchemaSingleton.readMetaData("self");
+
+		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 
 		System.out.println("--------");
 
-		System.out.println(CommandSingleton.executeCommand("ListCatalogs", arguments).replace(">", ">\n"));
+		//System.out.println(CommandSingleton.executeCommand("ListCatalogs", arguments).replace(">", ">\n"));
 
 		System.out.println("--------");
 
-		System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
+		//System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
 /*
 		arguments.put("country", "FR");
 		arguments.put("locality", "Grenoble");

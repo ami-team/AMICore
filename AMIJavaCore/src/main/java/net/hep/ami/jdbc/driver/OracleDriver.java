@@ -47,8 +47,12 @@ public class OracleDriver extends DriverAbstractClass
 			   &&
 			   token.endsWith("`")
 			 ) {
-				token = token.replace("`", "\""); /* ne pas faire comme ça */
+				token = token.replace("\"", "\\\"")
+				             .replace("`", "\"")
+				;
 			}
+
+			result.append(token);
 		}
 
 		return result.toString();

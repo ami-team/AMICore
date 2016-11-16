@@ -135,7 +135,7 @@ public class CatalogSingleton
 
 			try
 			{
-				SchemaSingleton.addSchema(connection, catalog);
+				SchemaSingleton.addSchema(connection.getCatalog(), catalog);
 			}
 			finally
 			{

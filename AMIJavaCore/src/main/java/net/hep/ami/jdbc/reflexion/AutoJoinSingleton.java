@@ -80,6 +80,9 @@ public class AutoJoinSingleton
 
 	private static boolean _resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, @Nullable String givenTable, @Nullable String givenValue, Set<String> done) throws Exception
 	{
+		table = table.toLowerCase();
+		column = column.toLowerCase();
+
 		/*-----------------------------------------------------------------*/
 		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
@@ -159,7 +162,7 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			if(givenTable == null || _column.table.equals(givenTable))
+			if(givenTable == null || _column.table.equals(givenTable.toLowerCase()))
 			{
 				if(givenValue != null)
 				{
@@ -187,6 +190,9 @@ public class AutoJoinSingleton
 
 	private static boolean _resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, @Nullable String givenTable, @Nullable String givenValue, Set<String> done) throws Exception
 	{
+		table = table.toLowerCase();
+		column = column.toLowerCase();
+
 		/*-----------------------------------------------------------------*/
 		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
@@ -251,7 +257,7 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			if(givenTable == null || _column.table.equals(givenTable))
+			if(givenTable == null || _column.table.equals(givenTable.toLowerCase()))
 			{
 				if(givenValue != null)
 				{

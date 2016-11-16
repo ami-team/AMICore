@@ -7,13 +7,8 @@
 	<xsl:template match="/AMIMessage">
 		<xsl:text>{"AMIMessage":{</xsl:text>
 
-		<xsl:text>"error":[</xsl:text>
 		<xsl:apply-templates select="error" />
-		<xsl:text>],</xsl:text>
-
-		<xsl:text>"info":[</xsl:text>
 		<xsl:apply-templates select="info" />
-		<xsl:text>],</xsl:text>
 
 		<xsl:text>"Result":{</xsl:text>
 		<xsl:apply-templates select="Result" />
@@ -28,9 +23,11 @@
 		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
+		<xsl:text>"error":[</xsl:text>
 		<xsl:text>"</xsl:text>
 		<xsl:copy-of select="$s4" />
 		<xsl:text>"</xsl:text>
+		<xsl:text>],</xsl:text>
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
@@ -41,9 +38,11 @@
 		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
+		<xsl:text>"info":[</xsl:text>
 		<xsl:text>"</xsl:text>
 		<xsl:copy-of select="$s4" />
 		<xsl:text>"</xsl:text>
+		<xsl:text>],</xsl:text>
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
