@@ -251,16 +251,10 @@ public class ConfigSingleton
 				try
 				{
 					s_properties.put(
-						row.getValue("paramName"),
-						row.getValue("paramValue")
-					);
-/*
-					m_properties.put(
 						Cryptography.decrypt(row.getValue("paramName"))
 						,
 						Cryptography.decrypt(row.getValue("paramValue"))
 					);
-*/
 				}
 				catch(org.bouncycastle.util.encoders.DecoderException e)
 				{
