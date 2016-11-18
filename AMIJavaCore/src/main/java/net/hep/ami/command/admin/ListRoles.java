@@ -20,7 +20,7 @@ public class ListRoles extends CommandAbstractClass
 	{
 		if(m_isSecure.equals("false"))
 		{
-			throw new Exception("https connection required"); 
+			throw new Exception("HTTPS connection required"); 
 		}
 
 		return getQuerier("self").executeQuery("SELECT * FROM `router_role`").toStringBuilder();

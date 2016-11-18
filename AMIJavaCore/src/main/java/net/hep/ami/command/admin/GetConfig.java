@@ -21,7 +21,7 @@ public class GetConfig extends CommandAbstractClass
 	{
 		if(m_isSecure.equals("false"))
 		{
-			throw new Exception("https connection required"); 
+			throw new Exception("HTTPS connection required"); 
 		}
 
 		return ConfigSingleton.showConfig();

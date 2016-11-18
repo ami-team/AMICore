@@ -28,7 +28,7 @@ public class Encrypt extends CommandAbstractClass
 
 		if(m_isSecure.equals("false"))
 		{
-			throw new Exception("https connection required"); 
+			throw new Exception("HTTPS connection required"); 
 		}
 
 		return new StringBuilder("<info><![CDATA[" + Cryptography.encrypt(string) + "]]></info>");
