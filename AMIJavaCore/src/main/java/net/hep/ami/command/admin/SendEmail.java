@@ -39,6 +39,11 @@ public class SendEmail extends CommandAbstractClass
 		                                                  : ""
 		;
 
+		if(m_isSecure.equals("false"))
+		{
+			throw new Exception("HTTPS connection required"); 
+		}
+
 		MailSingleton.sendMessage(from, to, cc, subject, message);
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
