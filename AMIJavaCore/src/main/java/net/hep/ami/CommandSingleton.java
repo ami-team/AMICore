@@ -222,6 +222,10 @@ public class CommandSingleton
 			if(entry.getKey().equals("AMIUser") == false
 			   &&
 			   entry.getKey().equals("AMIPass") == false
+			   &&
+			   entry.getKey().equals("clientDN") == false
+			   &&
+			   entry.getKey().equals("issuerDN") == false
 			 ) {
 				stringBuilder.append("<argument name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
 			}
