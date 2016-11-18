@@ -36,11 +36,11 @@ public class UpdateElements extends CommandAbstractClass
 		;
 
 		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
-                                                                : new String[] {}
+		                                                        : new String[] {}
 		;
 
 		String[] keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
-                                                                : new String[] {}
+		                                                        : new String[] {}
 		;
 
 		String where = arguments.containsKey("where") ? arguments.get("where").trim()
@@ -68,14 +68,23 @@ public class UpdateElements extends CommandAbstractClass
 
 		if(fields.length > 0)
 		{
-			String part = "";
+			List<String> list = new ArrayList<String>();
+
+			AutoJoinSingleton.SQLFieldValue fieldValue;
 
 			for(int i = 0; i < fields.length; i++)
 			{
-				part = part.concat(",`" + fields[i] + "`='" + values[i].replaceFirst("'", "''") + "'");
+				fieldValue = AutoJoinSingleton.resolveFieldValue(
+					catalog,
+					entity,
+					fields[i],
+					values[i]
+				);
+
+				list.add(fieldValue.field + "=" + fieldValue.value);
 			}
 
-			stringBuilder.append(part.substring(1));
+			stringBuilder.append(String.join(",", list));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -84,6 +93,8 @@ public class UpdateElements extends CommandAbstractClass
 
 		if(keyFields.length > 0)
 		{
+			/*-------------------------------------------------------------*/
+
 			Map<String, List<String>> joins = new HashMap<String, List<String>>();
 
 			for(int i = 0; i < keyFields.length; i++)
@@ -131,7 +142,7 @@ public class UpdateElements extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		transactionalQuerier.executeUpdate(sql);
+		//transactionalQuerier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

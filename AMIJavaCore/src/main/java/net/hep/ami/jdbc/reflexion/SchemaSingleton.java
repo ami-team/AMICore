@@ -109,8 +109,10 @@ public class SchemaSingleton
 
 	public static void addSchema(String internalCatalog, String externalCatalog)
 	{
-		if(internalCatalog != null && externalCatalog != null)
-		{
+		if(internalCatalog != null
+		   &&
+		   externalCatalog != null
+		 ) {
 			System.out.println("Adding: " + internalCatalog + " " + externalCatalog);
 
 			m_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
@@ -123,8 +125,8 @@ public class SchemaSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
-	/* MUST BE PRIVATE */
-	public static void readMetaData(String externalCatalog) throws Exception
+
+	private static void readMetaData(String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -156,9 +158,15 @@ public class SchemaSingleton
 		{
 			long t1 = System.currentTimeMillis();
 
+			/**/	/*-----------------------------------------------------*/
+			/**/
 			/**/	@SuppressWarnings("deprecation") DatabaseMetaData metaData = driver1.getConnection().getMetaData();
 			/**/
 			/**/	ResultSet resultSet = metaData.getTables(internalCatalog, internalCatalog, "%", null);
+			/**/
+			/**/	Set<String> tables = new HashSet<String>();
+			/**/
+			/**/	/*-----------------------------------------------------*/
 			/**/
 			/**/	while(resultSet.next())
 			/**/	{
@@ -172,10 +180,20 @@ public class SchemaSingleton
 			/**/			m_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
 			/**/			m_indices.get(externalCatalog).put(name, new ArrayList<Index>());
 			/**/
-			/**/			readColumnMetaData(metaData, internalCatalog, externalCatalog, name);
-			/**/			readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
+			/**/			tables.add(name);
 			/**/		}
 			/**/	}
+			/**/
+			/**/	/*-----------------------------------------------------*/
+			/**/
+			/**/	readColumnMetaData(metaData, internalCatalog, externalCatalog, "%");
+			/**/
+			/**/	for(String name: tables)
+			/**/	{
+			/**/			readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
+			/**/	}
+			/**/
+			/**/	/*-----------------------------------------------------*/
 
 			long t2 = System.currentTimeMillis();
 
@@ -214,8 +232,6 @@ public class SchemaSingleton
 				table = table.toLowerCase();
 				name = name.toLowerCase();
 				type = type.toUpperCase();
-
-				System.out.println(table + " " + name + " " + type + " " + size + " " + digits);
 
 				Map<String, Column> column = m_columns.get(externalCatalog).get(table);
 
@@ -256,8 +272,6 @@ public class SchemaSingleton
 				fkcolumn = fkcolumn.toLowerCase();
 				pktable = pktable.toLowerCase();
 				pkcolumn = pkcolumn.toLowerCase();
-
-				System.out.println(name + " " + fktable + " " + fkcolumn + " " + pktable + " " + pkcolumn);
 
 				Map<String, FrgnKey> frgnKey = m_frgnKeys.get(externalCatalog).get(fktable);
 
@@ -514,6 +528,8 @@ public class SchemaSingleton
 						"<row>"
 						+
 						"<field name=\"catalog\">" + frgnKey.catalog + "</field>"
+						+
+						"<field name=\"name\">" + frgnKey.name + "</field>"
 						+
 						"<field name=\"fkTable\">" + frgnKey.fkTable + "</field>"
 						+

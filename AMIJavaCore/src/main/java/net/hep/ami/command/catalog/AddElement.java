@@ -56,8 +56,8 @@ public class AddElement extends CommandAbstractClass
 
 		if(fields.length > 0)
 		{
-			String part1 = "";
-			String part2 = "";
+			List<String> list1 = new ArrayList<String>();
+			List<String> list2 = new ArrayList<String>();
 
 			AutoJoinSingleton.SQLFieldValue fieldValue;
 
@@ -70,12 +70,11 @@ public class AddElement extends CommandAbstractClass
 					values[i]
 				);
 
-				part1 = part1.concat("," + fieldValue.field);
-
-				part2 = part2.concat("," + fieldValue.value);
+				list1.add(fieldValue.field);
+				list2.add(fieldValue.value);
 			}
 
-			stringBuilder.append(" (" + part1.substring(1) + ") VALUES (" + part2.substring(1) + ")");
+			stringBuilder.append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")");
 		}
 
 		/*-----------------------------------------------------------------*/

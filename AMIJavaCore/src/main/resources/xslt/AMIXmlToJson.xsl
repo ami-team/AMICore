@@ -7,12 +7,21 @@
 	<xsl:template match="/AMIMessage">
 		<xsl:text>{"AMIMessage":{</xsl:text>
 
+		<xsl:text>"error":[</xsl:text>
 		<xsl:apply-templates select="error" />
-		<xsl:apply-templates select="info" />
+		<xsl:text>],</xsl:text>
 
-		<xsl:text>"Result":{</xsl:text>
-		<xsl:apply-templates select="Result" />
-		<xsl:text>}</xsl:text>
+		<xsl:text>"info":[</xsl:text>
+		<xsl:apply-templates select="info" />
+		<xsl:text>],</xsl:text>
+
+		<xsl:text>"sql":[</xsl:text>
+		<xsl:apply-templates select="sql" />
+		<xsl:text>],</xsl:text>
+
+		<xsl:text>"rowset":[</xsl:text>
+		<xsl:apply-templates select="rowset" />
+		<xsl:text>]</xsl:text>
 
 		<xsl:text>}}</xsl:text>
 	</xsl:template>
@@ -23,13 +32,9 @@
 		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
-		<xsl:text>"error":[</xsl:text>
 		<xsl:text>"</xsl:text>
 		<xsl:copy-of select="$s4" />
 		<xsl:text>"</xsl:text>
-		<xsl:text>],</xsl:text>
-
-		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="info">
@@ -38,21 +43,24 @@
 		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
-		<xsl:text>"info":[</xsl:text>
 		<xsl:text>"</xsl:text>
 		<xsl:copy-of select="$s4" />
 		<xsl:text>"</xsl:text>
-		<xsl:text>],</xsl:text>
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="Result">
-		<xsl:text>"rowset":[</xsl:text>
+	<xsl:template match="sql">
+		<xsl:variable name="s1" select="." />
+		<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
-		<xsl:apply-templates select="rowset" />
+		<xsl:text>"</xsl:text>
+		<xsl:copy-of select="$s4" />
+		<xsl:text>"</xsl:text>
 
-		<xsl:text>]</xsl:text>
+		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="rowset">

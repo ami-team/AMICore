@@ -363,7 +363,7 @@ public class AutoJoinSingleton
 		/* EXTRACT FIELD AND VALUE                                         */
 		/*-----------------------------------------------------------------*/
 
- 		String[] colVal = joins.get("@").get(0).split("=", 2);
+		String[] colVal = joins.get("@").get(0).split("=", 2);
 
 		return new SQLFieldValue(colVal[0], colVal[1]);
 

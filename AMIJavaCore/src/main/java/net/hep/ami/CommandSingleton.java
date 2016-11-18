@@ -216,7 +216,17 @@ public class CommandSingleton
 		stringBuilder.append("<command><![CDATA[" + command + "]]></command>");
 
 		stringBuilder.append("<arguments>");
-		for(Map.Entry<String, String> entry: arguments.entrySet()) stringBuilder.append("<argument name=\"" + entry.getKey() + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
+
+		for(Map.Entry<String, String> entry: arguments.entrySet())
+		{
+			if(entry.getKey().equals("AMIUser") == false
+			   &&
+			   entry.getKey().equals("AMIPass") == false
+			 ) {
+				stringBuilder.append("<argument name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
+			}
+		}
+
 		stringBuilder.append("</arguments>");
 
 		stringBuilder.append("<executionDate>" + DateFormater.format(new Date()) + "</executionDate>");
@@ -250,9 +260,7 @@ public class CommandSingleton
 
 			stringBuilder.append("<executionTime>" + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "</executionTime>");
 
-			stringBuilder.append("<Result>");
 			stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
-			stringBuilder.append("</Result>");
 
 			/*-------------------------------------------------------------*/
 		}

@@ -5,30 +5,37 @@
 	<xsl:output method="text" encoding="UTF-8"></xsl:output>
 
 	<xsl:template match="/AMIMessage">
-		<xsl:text>#AMI RESULT&#x0a;</xsl:text>
+		<xsl:text>#AMI RESULT&#x0a;&#x0a;</xsl:text>
 
-		<xsl:apply-templates select="Result" />
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
+		<xsl:apply-templates select="sql" />
+		<xsl:apply-templates select="rowset" />
 
-		<xsl:text>#</xsl:text>
+		<xsl:text>&#x0a;#</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="error">
-		<xsl:text>#ERROR </xsl:text>
+		<xsl:text>#ERROR: </xsl:text>
 		<xsl:copy-of select="." />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="info">
-		<xsl:text>#INFO </xsl:text>
+		<xsl:text>#INFO: </xsl:text>
 		<xsl:copy-of select="." />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
-	<xsl:template match="Result/rowset">
+	<xsl:template match="sql">
+		<xsl:text>#SQL: </xsl:text>
+		<xsl:copy-of select="." />
+		<xsl:text>&#x0a;</xsl:text>
+	</xsl:template>
 
-		<xsl:text>&#x0a;#ROWSET </xsl:text>
+	<xsl:template match="rowset">
+
+		<xsl:text>#ROWSET </xsl:text>
 		<xsl:value-of select="@type" />
 
 		<xsl:text>&#x0a;#FIELDS&#x0a;</xsl:text>

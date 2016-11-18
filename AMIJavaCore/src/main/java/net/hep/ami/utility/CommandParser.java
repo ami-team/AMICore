@@ -73,7 +73,7 @@ public class CommandParser
 		/* PARSE ARGUMENTS                                                 */
 		/*-----------------------------------------------------------------*/
 
-		Map<String, String> arguments = new HashMap<String, String>();
+		Map<String, String> arguments = new LinkedHashMap<String, String>();
 
 		while(i < l)
 		{

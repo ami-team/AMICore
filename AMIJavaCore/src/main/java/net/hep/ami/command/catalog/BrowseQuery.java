@@ -46,7 +46,7 @@ public class BrowseQuery extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		return queryResult.toStringBuilder();
+		return queryResult.toStringBuilder().append("<sql><![CDATA[" + sql + "]]></sql>");
 	}
 
 	/*---------------------------------------------------------------------*/

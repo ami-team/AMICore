@@ -17,7 +17,7 @@ public class CommandSingletonTest
 
 		CatalogSingleton.listCatalogs();
 
-		SchemaSingleton.readMetaData("self");
+//		SchemaSingleton.readMetaData("self");
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 
@@ -26,6 +26,17 @@ public class CommandSingletonTest
 		//System.out.println(CommandSingleton.executeCommand("ListCatalogs", arguments).replace(">", ">\n"));
 
 		System.out.println("--------");
+
+		System.out.println("interface,entity,field,alias,type,rank,mask,defaultValue".split(",").length);
+
+		String[] h = "users,router_user,lastname,,1,0,0,".split(",", -1);
+
+		System.out.println(h.length);
+
+		for(String x: h)
+		{
+			System.out.println("->" + x + "<-");
+		}
 
 		//System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
 /*
