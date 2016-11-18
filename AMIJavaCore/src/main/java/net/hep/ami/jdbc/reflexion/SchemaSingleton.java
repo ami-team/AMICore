@@ -113,8 +113,6 @@ public class SchemaSingleton
 		   &&
 		   externalCatalog != null
 		 ) {
-			System.out.println("Adding: " + internalCatalog + " " + externalCatalog);
-
 			m_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
 			m_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
 			m_indices.put(externalCatalog, new HashMap<String, List<Index>>());
