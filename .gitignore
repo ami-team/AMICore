@@ -1,6 +1,7 @@
 .DS_Store
 .settings
 .classpath
+*.log
 /AMIJavaCore/target/
 /AMIWebCore/target/
 /tomcat/
