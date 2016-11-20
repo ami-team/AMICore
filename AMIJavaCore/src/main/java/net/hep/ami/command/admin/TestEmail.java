@@ -40,7 +40,7 @@ public class TestEmail extends CommandAbstractClass
 
 	public static String help()
 	{
-		return "Check email.";
+		return "Test email system.";
 	}
 
 	/*---------------------------------------------------------------------*/
