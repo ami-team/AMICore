@@ -76,11 +76,14 @@ public class RemoveUserRole extends CommandAbstractClass
 			roleID
 		);
 
-		transactionalQuerier.executeUpdate(sql3);
+		int nb = transactionalQuerier.executeUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder(
+			nb > 0 ? "<info><![CDATA[done with success]]></info>"
+			       : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/

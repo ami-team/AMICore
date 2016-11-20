@@ -80,18 +80,21 @@ public class AddUser extends CommandAbstractClass
 			email.replace("'", "''")
 		);
 
-		transactionalQuerier.executeUpdate(sql);
+		int nb = transactionalQuerier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder(
+			nb > 0 ? "<info><![CDATA[done with success]]></info>"
+			       : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Add new user.";
+		return "Add user.";
 	}
 
 	/*---------------------------------------------------------------------*/
