@@ -30,7 +30,7 @@ public abstract class CommandAbstractClass
 
 	protected long m_transactionId;
 
-	 private  boolean m_transactionIdBooker;
+	 private  boolean m_transactionBooker;
 
 	/*---------------------------------------------------------------------*/
 
@@ -61,12 +61,12 @@ public abstract class CommandAbstractClass
 		if(transactionId < 0)
 		{
 			m_transactionId = TransactionPoolSingleton.bookNewTransactionId();
-			m_transactionIdBooker = true;
+			m_transactionBooker = true;
 		}
 		else
 		{
 			m_transactionId = (((((((((((((((((transactionId)))))))))))))))));
-			m_transactionIdBooker = false;
+			m_transactionBooker = false;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -105,7 +105,7 @@ public abstract class CommandAbstractClass
 		}
 		finally
 		{
-			if(m_transactionIdBooker)
+			if(m_transactionBooker)
 			{
 				if(result != null)
 				{

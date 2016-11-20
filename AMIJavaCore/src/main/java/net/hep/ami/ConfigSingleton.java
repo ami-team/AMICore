@@ -347,14 +347,7 @@ public class ConfigSingleton
 			}
 			else
 			{
-				try
-				{
-					basicQuerier.rollbackAndRelease();
-				}
-				catch(Exception e)
-				{
-					/* IGNORE */
-				}
+				basicQuerier.rollbackAndRelease();
 			}
 		}
 
