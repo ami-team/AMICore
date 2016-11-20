@@ -37,7 +37,7 @@ public class RemoveUserRole extends CommandAbstractClass
 		/* GET USER ID                                                     */
 		/*-----------------------------------------------------------------*/
 
-		String sql1 = String.format("SELECT `id` FROM `router_user` WHERE `user`='%s'",
+		String sql1 = String.format("SELECT `id` FROM `router_user` WHERE `AMIUser`='%s'",
 			user.replace("'", "''")
 		);
 
