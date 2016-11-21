@@ -22,7 +22,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_drivers = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
+	private static final Map<String, Tuple> s_drivers = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -35,7 +35,7 @@ public class DriverSingleton
 
 	public static void reload()
 	{
-		m_drivers.clear();
+		s_drivers.clear();
 
 		addDrivers();
 	}
@@ -86,7 +86,7 @@ public class DriverSingleton
 				throw new Exception("no `Jdbc` annotation for driver `" + clazz.getName() + "`");
 			}
 
-			m_drivers.put(
+			s_drivers.put(
 				jdbc.proto()
 				,
 				new Tuple(
@@ -126,7 +126,7 @@ public class DriverSingleton
 		/* GET DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple = m_drivers.get(jdbcProto);
+		Tuple tuple = s_drivers.get(jdbcProto);
 
 		if(tuple == null)
 		{
@@ -167,7 +167,7 @@ public class DriverSingleton
 		/* GET DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple = m_drivers.get(jdbcProto);
+		Tuple tuple = s_drivers.get(jdbcProto);
 
 		if(tuple == null)
 		{
@@ -191,6 +191,12 @@ public class DriverSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Set<Map.Entry<String, Tuple>> entrySet = new TreeSet<Map.Entry<String, Tuple>>(new MapEntryKeyComparator());
+
+		entrySet.addAll(s_drivers.entrySet());
+
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -200,7 +206,7 @@ public class DriverSingleton
 		String jdbcClass;
 		String driverClass;
 
-		for(Map.Entry<String, Tuple> entry: m_drivers.entrySet())
+		for(Map.Entry<String, Tuple> entry: entrySet)
 		{
 			jdbcProto = entry.getKey();
 			jdbcType = entry.getValue().x;

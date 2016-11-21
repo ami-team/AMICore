@@ -23,7 +23,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> m_catalogs = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
+	private static final Map<String, Tuple> s_catalogs = new java.util.concurrent.ConcurrentHashMap<String, Tuple>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -38,7 +38,7 @@ public class CatalogSingleton
 	{
 		SchemaSingleton.clear();
 
-		m_catalogs.clear();
+		s_catalogs.clear();
 
 		try
 		{
@@ -114,7 +114,7 @@ public class CatalogSingleton
 		/* ADD CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
 
-		m_catalogs.put(
+		s_catalogs.put(
 			catalog
 			,
 			new Tuple(
@@ -154,7 +154,7 @@ public class CatalogSingleton
 		/* GET CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple = m_catalogs.get(catalog);
+		Tuple tuple = s_catalogs.get(catalog);
 
 		if(tuple == null)
 		{
@@ -182,6 +182,12 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Set<Map.Entry<String, Tuple>> entrySet = new TreeSet<Map.Entry<String, Tuple>>(new MapEntryKeyComparator());
+
+		entrySet.addAll(s_catalogs.entrySet());
+
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -193,7 +199,7 @@ public class CatalogSingleton
 		String pass;
 		String archived;
 
-		for(Map.Entry<String, Tuple> entry: m_catalogs.entrySet())
+		for(Map.Entry<String, Tuple> entry: entrySet)
 		{
 			catalog = entry.getKey();
 

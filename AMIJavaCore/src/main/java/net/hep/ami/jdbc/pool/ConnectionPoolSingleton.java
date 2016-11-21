@@ -13,19 +13,19 @@ public class ConnectionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final int m_initialSize = ConfigSingleton.getProperty("initial_size", 10);
-	private static final int m_maxActive = ConfigSingleton.getProperty("max_active", 100);
-	private static final int m_minIdle = ConfigSingleton.getProperty("min_idle", 10);
-	private static final int m_maxIdle = ConfigSingleton.getProperty("max_idle", 100);
+	private static final int s_initialSize = ConfigSingleton.getProperty("initial_size", 10);
+	private static final int s_maxActive = ConfigSingleton.getProperty("max_active", 100);
+	private static final int s_minIdle = ConfigSingleton.getProperty("min_idle", 10);
+	private static final int s_maxIdle = ConfigSingleton.getProperty("max_idle", 100);
 
-	private static final int m_timeBetweenEvictionRunsMillis = ConfigSingleton.getProperty("time_between_eviction_runs_millis", 5000);
-	private static final int m_minEvictableIdleTimeMillis = ConfigSingleton.getProperty("min_evictable_idle_time_millis", 30000);
-	private static final int m_validationInterval = ConfigSingleton.getProperty("validation_interval", 30000);
-	private static final int m_maxWait = ConfigSingleton.getProperty("max_wait", 30000);
+	private static final int s_timeBetweenEvictionRunsMillis = ConfigSingleton.getProperty("time_between_eviction_runs_millis", 5000);
+	private static final int s_minEvictableIdleTimeMillis = ConfigSingleton.getProperty("min_evictable_idle_time_millis", 30000);
+	private static final int s_validationInterval = ConfigSingleton.getProperty("validation_interval", 30000);
+	private static final int s_maxWait = ConfigSingleton.getProperty("max_wait", 30000);
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, DataSource> m_pools = new HashMap<String, DataSource>();
+	private static final Map<String, DataSource> s_pools = new HashMap<String, DataSource>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -52,15 +52,15 @@ public class ConnectionPoolSingleton
 			user,
 			pass,
 			/* POOL - CONTENT */
-			m_initialSize,
-			m_maxActive,
-			m_minIdle,
-			m_maxIdle,
+			s_initialSize,
+			s_maxActive,
+			s_minIdle,
+			s_maxIdle,
 			/* POOL - TIMING */
-			m_timeBetweenEvictionRunsMillis,
-			m_minEvictableIdleTimeMillis,
-			m_validationInterval,
-			m_maxWait
+			s_timeBetweenEvictionRunsMillis,
+			s_minEvictableIdleTimeMillis,
+			s_validationInterval,
+			s_maxWait
 
 		).getConnection();
 	}
@@ -100,15 +100,15 @@ public class ConnectionPoolSingleton
 			user,
 			pass,
 			/* POOL - CONTENT */
-			m_initialSize,
-			m_maxActive,
-			m_minIdle,
-			m_maxIdle,
+			s_initialSize,
+			s_maxActive,
+			s_minIdle,
+			s_maxIdle,
 			/* POOL - TIMING */
-			m_timeBetweenEvictionRunsMillis,
-			m_minEvictableIdleTimeMillis,
-			m_validationInterval,
-			m_maxWait
+			s_timeBetweenEvictionRunsMillis,
+			s_minEvictableIdleTimeMillis,
+			s_validationInterval,
+			s_maxWait
 		);
 	}
 
@@ -122,7 +122,7 @@ public class ConnectionPoolSingleton
 
 		synchronized(ConnectionPoolSingleton.class)
 		{
-		/**/	result = m_pools.get(key);
+		/**/	result = s_pools.get(key);
 		/**/
 		/**/	if(result == null)
 		/**/	{
@@ -181,7 +181,7 @@ public class ConnectionPoolSingleton
 		/**/		/* CREATE DATA SOURCE                                  */
 		/**/		/*-----------------------------------------------------*/
 		/**/
-		/**/		m_pools.put(key, result = new DataSource());
+		/**/		s_pools.put(key, result = new DataSource());
 		/**/
 		/**/		result.setPoolProperties(poolProperties);
 		/**/
@@ -207,7 +207,7 @@ public class ConnectionPoolSingleton
 		String key;
 		DataSource value;
 
-		for(Entry<String, DataSource> entry: m_pools.entrySet())
+		for(Entry<String, DataSource> entry: s_pools.entrySet())
 		{
 			key = entry.getKey();
 			value = entry.getValue();

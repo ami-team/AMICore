@@ -327,6 +327,12 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Set<Map.Entry<String, Tuple>> entrySet = new TreeSet<Map.Entry<String, Tuple>>(new MapEntryKeyComparator());
+
+		entrySet.addAll(s_commands.entrySet());
+
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -338,7 +344,7 @@ public class CommandSingleton
 		String clazz;
 		String archived;
 
-		for(Map.Entry<String, Tuple> entry: s_commands.entrySet())
+		for(Map.Entry<String, Tuple> entry: entrySet)
 		{
 			command = entry.getKey();
 
@@ -403,8 +409,7 @@ public class CommandSingleton
 					if((right.charAt(0) != '\'' || right.charAt(l - 1) != '\'')
 					   &&
 					   (right.charAt(0) != '\"' || right.charAt(l - 1) != '\"')
-					 )
-					{
+					 ) {
 						arg = left + "=\"" + right + "\"";
 					}
 				}

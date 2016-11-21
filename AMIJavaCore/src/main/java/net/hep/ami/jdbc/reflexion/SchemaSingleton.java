@@ -78,31 +78,31 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> m_internalCatalogToExternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
-	private static final Map<String, String> m_externalCatalogToInternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> m_columns = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, Column>>>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, FrgnKey>>>();
-	private static final Map<String, Map<String, List<Index>>> m_indices = new java.util.concurrent.ConcurrentHashMap<String, Map<String, List<Index>>>();
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, Column>>>();
+	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, FrgnKey>>>();
+	private static final Map<String, Map<String, List<Index>>> s_indices = new java.util.concurrent.ConcurrentHashMap<String, Map<String, List<Index>>>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static long m_executionTime = 0;
+	private static long s_executionTime = 0;
 
 	/*---------------------------------------------------------------------*/
 
 	public static void clear()
 	{
-		m_internalCatalogToExternalCatalog.clear();
-		m_externalCatalogToInternalCatalog.clear();
+		s_internalCatalogToExternalCatalog.clear();
+		s_externalCatalogToInternalCatalog.clear();
 
-		m_columns.clear();
-		m_frgnKeys.clear();
-		m_indices.clear();
+		s_columns.clear();
+		s_frgnKeys.clear();
+		s_indices.clear();
 
-		m_executionTime = 0;
+		s_executionTime = 0;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -113,12 +113,12 @@ public class SchemaSingleton
 		   &&
 		   externalCatalog != null
 		 ) {
-			m_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
-			m_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
-			m_indices.put(externalCatalog, new HashMap<String, List<Index>>());
+			s_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
+			s_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
+			s_indices.put(externalCatalog, new HashMap<String, List<Index>>());
 
-			m_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
-			m_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
+			s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
+			s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		String internalCatalog = m_externalCatalogToInternalCatalog.get(externalCatalog);
+		String internalCatalog = s_externalCatalogToInternalCatalog.get(externalCatalog);
 
 		if(internalCatalog == null)
 		{
@@ -137,11 +137,11 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_columns.get(externalCatalog).isEmpty() == false
+		if(s_columns.get(externalCatalog).isEmpty() == false
 		   ||
-		   m_frgnKeys.get(externalCatalog).isEmpty() == false
+		   s_frgnKeys.get(externalCatalog).isEmpty() == false
 		   ||
-		   m_indices.get(externalCatalog).isEmpty() == false
+		   s_indices.get(externalCatalog).isEmpty() == false
 		 ) {
 			return;
 		}
@@ -174,9 +174,9 @@ public class SchemaSingleton
 			/**/		{
 			/**/			name = name.toLowerCase();
 			/**/
-			/**/			m_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
-			/**/			m_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
-			/**/			m_indices.get(externalCatalog).put(name, new ArrayList<Index>());
+			/**/			s_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
+			/**/			s_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
+			/**/			s_indices.get(externalCatalog).put(name, new ArrayList<Index>());
 			/**/
 			/**/			tables.add(name);
 			/**/		}
@@ -195,7 +195,7 @@ public class SchemaSingleton
 
 			long t2 = System.currentTimeMillis();
 
-			m_executionTime += t2 - t1;
+			s_executionTime += t2 - t1;
 		}
 		finally
 		{
@@ -231,7 +231,7 @@ public class SchemaSingleton
 				name = name.toLowerCase();
 				type = type.toUpperCase();
 
-				Map<String, Column> column = m_columns.get(externalCatalog).get(table);
+				Map<String, Column> column = s_columns.get(externalCatalog).get(table);
 
 				if(column != null)
 				{
@@ -271,7 +271,7 @@ public class SchemaSingleton
 				pktable = pktable.toLowerCase();
 				pkcolumn = pkcolumn.toLowerCase();
 
-				Map<String, FrgnKey> frgnKey = m_frgnKeys.get(externalCatalog).get(fktable);
+				Map<String, FrgnKey> frgnKey = s_frgnKeys.get(externalCatalog).get(fktable);
 
 				if(frgnKey != null)
 				{
@@ -292,7 +292,7 @@ public class SchemaSingleton
 
 	public static String internalCatalogToExternalCatalog(String catalog) throws Exception
 	{
-		String result = m_internalCatalogToExternalCatalog.get(catalog);
+		String result = s_internalCatalogToExternalCatalog.get(catalog);
 
 		if(result != null)
 		{
@@ -306,7 +306,7 @@ public class SchemaSingleton
 
 	public static String externalCatalogToInternalCatalog(String catalog) throws Exception
 	{
-		String result = m_externalCatalogToInternalCatalog.get(catalog);
+		String result = s_externalCatalogToInternalCatalog.get(catalog);
 
 		if(result != null)
 		{
@@ -320,7 +320,7 @@ public class SchemaSingleton
 
 	public static Set<String> getCatalogNames()
 	{
-		return m_columns.keySet();
+		return s_columns.keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -333,7 +333,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, Column>> map = m_columns.get(catalog);
+		Map<String, Map<String, Column>> map = s_columns.get(catalog);
 
 		if(map != null)
 		{
@@ -357,7 +357,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, Column>> map1 = m_columns.get(catalog);
+		Map<String, Map<String, Column>> map1 = s_columns.get(catalog);
 
 		if(map1 != null)
 		{
@@ -386,7 +386,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, Column>> map1 = m_columns.get(catalog);
+		Map<String, Map<String, Column>> map1 = s_columns.get(catalog);
 
 		if(map1 != null)
 		{
@@ -415,7 +415,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, FrgnKey>> map1 = m_frgnKeys.get(catalog);
+		Map<String, Map<String, FrgnKey>> map1 = s_frgnKeys.get(catalog);
 
 		if(map1 != null)
 		{
@@ -444,7 +444,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, List<Index>> map1 = m_indices.get(catalog);
+		Map<String, List<Index>> map1 = s_indices.get(catalog);
 
 		if(map1 != null)
 		{
@@ -475,7 +475,7 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"columns\">");
 
-		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: m_columns.entrySet())
+		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: s_columns.entrySet())
 		{
 			for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
 			{
@@ -514,7 +514,7 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Map.Entry<String, Map<String, Map<String, FrgnKey>>> entry1: m_frgnKeys.entrySet())
+		for(Map.Entry<String, Map<String, Map<String, FrgnKey>>> entry1: s_frgnKeys.entrySet())
 		{
 			for(Map.Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet())
 			{
@@ -549,7 +549,7 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"indices\">");
 
-		for(Map.Entry<String, Map<String, List<Index>>> entry1: m_indices.entrySet())
+		for(Map.Entry<String, Map<String, List<Index>>> entry1: s_indices.entrySet())
 		{
 			for(Map.Entry<String, List<Index>> entry2: entry1.getValue().entrySet())
 			{
@@ -580,7 +580,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * m_executionTime) + " s at startup</info>");
+		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * s_executionTime) + " s at startup</info>");
 
 		/*-----------------------------------------------------------------*/
 

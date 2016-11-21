@@ -26,8 +26,8 @@ public class Cryptography
 
 	/*---------------------------------------------------------------------*/
 
-	private static final PaddedBufferedBlockCipher m_encryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
-	private static final PaddedBufferedBlockCipher m_decryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
+	private static final PaddedBufferedBlockCipher s_encryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
+	private static final PaddedBufferedBlockCipher s_decryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
 
 	/*---------------------------------------------------------------------*/
 
@@ -54,9 +54,9 @@ public class Cryptography
 			throw new Exception("too long password (max 32)");
 		}
 
-		m_encryptCipher.init(true, new KeyParameter(key));
+		s_encryptCipher.init(true, new KeyParameter(key));
 
-		m_decryptCipher.init(false, new KeyParameter(key));
+		s_decryptCipher.init(false, new KeyParameter(key));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -645,11 +645,11 @@ public class Cryptography
 
 		while((noBytesRead = inputStream.read(ibuff)) >= 0)
 		{
-			noBytesProcessed = m_encryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
+			noBytesProcessed = s_encryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
 			outputStreamut.write(obuff, 0, noBytesProcessed);
 		}
 
-		noBytesProcessed = m_encryptCipher.doFinal(obuff, 0);
+		noBytesProcessed = s_encryptCipher.doFinal(obuff, 0);
 		outputStreamut.write(obuff, 0, noBytesProcessed);
 	}
 
@@ -665,11 +665,11 @@ public class Cryptography
 
 		while((noBytesRead = inputStream.read(ibuff)) >= 0)
 		{
-			noBytesProcessed = m_decryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
+			noBytesProcessed = s_decryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
 			outputStream.write(obuff, 0, noBytesProcessed);
 		}
 
-		noBytesProcessed = m_decryptCipher.doFinal(obuff, 0);
+		noBytesProcessed = s_decryptCipher.doFinal(obuff, 0);
 		outputStream.write(obuff, 0, noBytesProcessed);
 	}
 

@@ -10,7 +10,7 @@ public class CheckDBRules extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern m_regex = Pattern.compile("[a-z][a-zA-Za-z0-9]*");
+	private static final Pattern s_regex = Pattern.compile("[a-z][a-zA-Za-z0-9]*");
 
 	/*---------------------------------------------------------------------*/
 
@@ -55,7 +55,7 @@ public class CheckDBRules extends CommandAbstractClass
 					   &&
 					   column.name.equals("AMIPass") == false
 					   &&
-					   m_regex.matcher(column.name).matches() == false
+					   s_regex.matcher(column.name).matches() == false
 					 ) {
 						result.append("Column name `" + column.table + "`.`" + column.name + "` should be in lowerCamelCase.\\n");
 					}

@@ -10,17 +10,17 @@ public class TransactionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<Long, Map<String, DriverAbstractClass>> m_pools = new HashMap<Long, Map<String, DriverAbstractClass>>();
+	private static final Map<Long, Map<String, DriverAbstractClass>> s_pools = new HashMap<Long, Map<String, DriverAbstractClass>>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final java.util.concurrent.atomic.AtomicLong m_cnt = new java.util.concurrent.atomic.AtomicLong(0);
+	private static final java.util.concurrent.atomic.AtomicLong s_cnt = new java.util.concurrent.atomic.AtomicLong(0);
 
 	/*---------------------------------------------------------------------*/
 
 	public static long bookNewTransactionId()
 	{
-		return m_cnt.getAndIncrement();
+		return s_cnt.getAndIncrement();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -44,11 +44,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionId);
+		/**/	transaction = s_pools.get(transactionId);
 		/**/
 		/**/	if(transaction == null)
 		/**/	{
-		/**/		m_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
+		/**/		s_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
 		/**/		transaction.put(key, result = CatalogSingleton.getConnection(catalog));
 		/**/	}
@@ -89,11 +89,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionId);
+		/**/	transaction = s_pools.get(transactionId);
 		/**/
 		/**/	if(transaction == null)
 		/**/	{
-		/**/		m_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
+		/**/		s_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
 		/**/		transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
 		/**/	}
@@ -125,11 +125,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionId);
+		/**/	transaction = s_pools.get(transactionId);
 		/**/
 		/**/	if(transaction != null)
 		/**/	{
-		/**/		m_pools.remove(transactionId);
+		/**/		s_pools.remove(transactionId);
 		/**/	}
 		}
 
@@ -160,11 +160,11 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = m_pools.get(transactionId);
+		/**/	transaction = s_pools.get(transactionId);
 		/**/
 		/**/	if(transaction != null)
 		/**/	{
-		/**/		m_pools.remove(transactionId);
+		/**/		s_pools.remove(transactionId);
 		/**/	}
 		}
 
@@ -193,7 +193,7 @@ public class TransactionPoolSingleton
 		/**/	/* ROLLBACK AND RELEASE CONNECTIONS                        */
 		/**/	/*---------------------------------------------------------*/
 		/**/
-		/**/	for(Map<String, DriverAbstractClass> transaction: m_pools.values())
+		/**/	for(Map<String, DriverAbstractClass> transaction: s_pools.values())
 		/**/	{
 		/**/		for(DriverAbstractClass connection: transaction.values())
 		/**/		{
@@ -212,7 +212,7 @@ public class TransactionPoolSingleton
 		/**/	/* CLEAR TRANSACTION POOL                                  */
 		/**/	/*---------------------------------------------------------*/
 		/**/
-		/**/	m_pools.clear();
+		/**/	s_pools.clear();
 		/**/
 		/**/	/*---------------------------------------------------------*/
 		}

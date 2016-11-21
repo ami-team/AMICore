@@ -178,6 +178,12 @@ public class ConverterSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Set<Map.Entry<String, Tuple>> entrySet = new TreeSet<Map.Entry<String, Tuple>>(new MapEntryKeyComparator());
+
+		entrySet.addAll(s_converters.entrySet());
+
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -185,7 +191,7 @@ public class ConverterSingleton
 		String xslt;
 		String mime;
 
-		for(Map.Entry<String, Tuple> entry: s_converters.entrySet())
+		for(Map.Entry<String, Tuple> entry: entrySet)
 		{
 			xslt = entry.getKey();
 			mime = entry.getValue().y;
