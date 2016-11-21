@@ -8,7 +8,7 @@ public class ClassFinder
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Set<String> m_classNames = new HashSet<String>();
+	private static final Set<String> s_classNames = new HashSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -18,7 +18,11 @@ public class ClassFinder
 		/* GET PATHS                                                       */
 		/*-----------------------------------------------------------------*/
 
-		Set<String> classPaths = new HashSet<String>(Arrays.asList(System.getProperty("java.class.path").split(":")));
+		String java_class_path = System.getProperty("java.class.path");
+
+		Set<String> classPaths = java_class_path != null ? new HashSet<String>(Arrays.asList(java_class_path.split(":")))
+			                                             : new HashSet<String>(/*-------------------------------------*/)
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -78,13 +82,13 @@ public class ClassFinder
 			/* FILE                                                        */
 			/*-------------------------------------------------------------*/
 
-			if(file.getName().toLowerCase().endsWith(".jar"))
+			if(file.getName().toLowerCase().endsWith(".jar") == false)
 			{
-				addJar(file);
+				addFile(base, file);
 			}
 			else
 			{
-				addFile(base, file);
+				addJar(file);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -154,7 +158,7 @@ public class ClassFinder
 			                     .replace('/', '.')
 			;
 
-			m_classNames.add(className);
+			s_classNames.add(className);
 		}
 	}
 
@@ -164,7 +168,7 @@ public class ClassFinder
 	{
 		Set<String> result = new HashSet<String>();
 
-		for(String className: m_classNames)
+		for(String className: s_classNames)
 		{
 			if(className.startsWith(filter))
 			{

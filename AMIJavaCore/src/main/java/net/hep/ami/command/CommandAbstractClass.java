@@ -97,17 +97,21 @@ public abstract class CommandAbstractClass
 
 	public final StringBuilder execute() throws Exception
 	{
-		StringBuilder result = null;
+		StringBuilder result;
+
+		boolean passed = false;
 
 		try
 		{
 			result = main(m_arguments);
+
+			passed = true;
 		}
 		finally
 		{
 			if(m_transactionBooker)
 			{
-				if(result != null)
+				if(passed)
 				{
 					TransactionPoolSingleton.commitAndRelease(m_transactionId);
 				}
