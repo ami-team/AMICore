@@ -291,7 +291,10 @@ public class CommandSingleton
 
 			stringBuilder.append("<executionTime>" + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "</executionTime>");
 
-			stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
+			if(content != null)
+			{
+				stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
+			}
 
 			/*-------------------------------------------------------------*/
 		}
