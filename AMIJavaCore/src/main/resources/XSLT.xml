@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!DOCTYPE ami:transforms>
+
 <transforms>
 	<transform xslt="/xslt/AMIXmlToText.xsl" mime="text/plain" />
 	<transform xslt="/xslt/AMIXmlToCsv.xsl" mime="text/csv" />
