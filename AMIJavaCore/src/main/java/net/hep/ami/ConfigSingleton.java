@@ -658,12 +658,18 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Set<Map.Entry<String, String>> entrySet = new TreeSet<Map.Entry<String, String>>(new MapEntryKeyComparator());
+
+		entrySet.addAll(s_properties.entrySet());
+
+		/*-----------------------------------------------------------------*/
+
 		String name;
 		String value;
 
 		result.append("<rowset type=\"config\"><row>");
 
-		for(Map.Entry<String, String> entry: s_properties.entrySet())
+		for(Map.Entry<String, String> entry: entrySet)
 		{
 			name = entry.getKey();
 			value = entry.getValue();

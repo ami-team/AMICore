@@ -56,25 +56,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class Index
-	{
-		public String catalog;
-		public String table;
-		public String name;
-		public String type;
-		public String column;
-		public int position;
-
-		public Index(String _catalog, String _table, String _name, String _type, String _column, int _position)
-		{
-			catalog = _catalog;
-			table = _table;
-			name = _name;
-			type = _type;
-			column = _column;
-			position = _position;
-		}
-	}
+	private static final Set<String> s_catalogs = new java.util.concurrent.ConcurrentSkipListSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -85,7 +67,6 @@ public class SchemaSingleton
 
 	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, Column>>>();
 	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, FrgnKey>>>();
-	private static final Map<String, Map<String, List<Index>>> s_indices = new java.util.concurrent.ConcurrentHashMap<String, Map<String, List<Index>>>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -95,12 +76,13 @@ public class SchemaSingleton
 
 	public static void clear()
 	{
+		s_catalogs.clear();
+
 		s_internalCatalogToExternalCatalog.clear();
 		s_externalCatalogToInternalCatalog.clear();
 
 		s_columns.clear();
 		s_frgnKeys.clear();
-		s_indices.clear();
 
 		s_executionTime = 0;
 	}
@@ -113,12 +95,13 @@ public class SchemaSingleton
 		   &&
 		   externalCatalog != null
 		 ) {
-			s_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
-			s_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
-			s_indices.put(externalCatalog, new HashMap<String, List<Index>>());
+			s_catalogs.add(externalCatalog);
 
 			s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 			s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
+
+			s_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
+			s_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
 		}
 	}
 
@@ -140,8 +123,6 @@ public class SchemaSingleton
 		if(s_columns.get(externalCatalog).isEmpty() == false
 		   ||
 		   s_frgnKeys.get(externalCatalog).isEmpty() == false
-		   ||
-		   s_indices.get(externalCatalog).isEmpty() == false
 		 ) {
 			return;
 		}
@@ -176,7 +157,6 @@ public class SchemaSingleton
 			/**/
 			/**/			s_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
 			/**/			s_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
-			/**/			s_indices.get(externalCatalog).put(name, new ArrayList<Index>());
 			/**/
 			/**/			tables.add(name);
 			/**/		}
@@ -320,7 +300,7 @@ public class SchemaSingleton
 
 	public static Set<String> getCatalogNames()
 	{
-		return s_columns.keySet();
+		return s_catalogs;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -436,35 +416,6 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Index> getIndices(String catalog, String table) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		readMetaData(catalog);
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, List<Index>> map1 = s_indices.get(catalog);
-
-		if(map1 != null)
-		{
-			List<Index> map2 = map1.get(table.toLowerCase());
-
-			if(map2 != null)
-			{
-				return map2;
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static StringBuilder getDBSchemes()
 	{
 		StringBuilder result = new StringBuilder();
@@ -536,39 +487,6 @@ public class SchemaSingleton
 						"<field name=\"pkTable\">" + frgnKey.pkTable + "</field>"
 						+
 						"<field name=\"pkColumn\">" + frgnKey.pkColumn + "</field>"
-						+
-						"</row>"
-					);
-				}
-			}
-		}
-
-		result.append("</rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<rowset type=\"indices\">");
-
-		for(Map.Entry<String, Map<String, List<Index>>> entry1: s_indices.entrySet())
-		{
-			for(Map.Entry<String, List<Index>> entry2: entry1.getValue().entrySet())
-			{
-				for(Index entry3: entry2.getValue()) 
-				{
-					result.append(
-						"<row>"
-						+
-						"<field name=\"catalog\">" + entry3.catalog + "</field>"
-						+
-						"<field name=\"table\">" + entry3.table + "</field>"
-						+
-						"<field name=\"name\">" + entry3.name + "</field>"
-						+
-						"<field name=\"type\">" + entry3.type + "</field>"
-						+
-						"<field name=\"column\">" + entry3.column + "</field>"
-						+
-						"<field name=\"position\">" + entry3.position + "</field>"
 						+
 						"</row>"
 					);
