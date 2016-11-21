@@ -97,7 +97,7 @@ public abstract class CommandAbstractClass
 
 	public final StringBuilder execute() throws Exception
 	{
-		StringBuilder result;
+		StringBuilder result = null;
 
 		boolean passed = false;
 
