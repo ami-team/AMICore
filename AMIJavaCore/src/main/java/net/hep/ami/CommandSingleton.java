@@ -154,6 +154,33 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String executeCommand(String command) throws Exception
+	{
+		CommandParser.CommandParserTuple tuple = CommandParser.parse(command);
+
+		return CommandSingleton.executeCommand(tuple.command, tuple.arguments);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String executeCommand(String command, boolean checkRoles) throws Exception
+	{
+		CommandParser.CommandParserTuple tuple = CommandParser.parse(command);
+
+		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String executeCommand(String command, boolean checkRoles, long transactionId) throws Exception
+	{
+		CommandParser.CommandParserTuple tuple = CommandParser.parse(command);
+
+		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles, transactionId);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String executeCommand(String command, Map<String, String> arguments) throws Exception
 	{
 		return executeCommand(command, arguments, true, -1);
@@ -344,6 +371,62 @@ public class CommandSingleton
 		/*-----------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	static public void main(String[] args)
+	{
+		/*-----------------------------------------------------------------*/
+
+		int idx, l;
+
+		String s = "", left, right;
+
+		for(String arg: args)
+		{
+			idx = arg.indexOf('=');
+
+			if(idx != -1)
+			{
+				l = arg.length();
+
+				left = arg.substring(0, idx + 0);
+				right = arg.substring(idx + 1, l);
+
+				l = right.length();
+
+				if(l >= 2)
+				{
+					if((right.charAt(0) != '\'' || right.charAt(l - 1) != '\'')
+					   &&
+					   (right.charAt(0) != '\"' || right.charAt(l - 1) != '\"')
+					 )
+					{
+						arg = left + "=\"" + right + "\"";
+					}
+				}
+			}
+
+			s += " " + arg;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(s, false, -1));
+
+			System.exit(0);
+		}
+		catch(Exception e)
+		{
+			System.err.println(e.getMessage());
+
+			System.exit(1);
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

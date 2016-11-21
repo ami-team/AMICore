@@ -149,10 +149,10 @@ public class FrontEnd extends HttpServlet
 				/* PARSE COMMAND                                           */
 				/*---------------------------------------------------------*/
 
-				CommandParser.CommandParserTuple result = CommandParser.parse(command);
+				CommandParser.CommandParserTuple tuple = CommandParser.parse(command);
 
 				updateSessionAndCommandArgs(
-					result.arguments,
+					tuple.arguments,
 					session,
 					req
 				);
@@ -162,8 +162,8 @@ public class FrontEnd extends HttpServlet
 				/*---------------------------------------------------------*/
 
 				data = CommandSingleton.executeCommand(
-					result.command,
-					result.arguments
+					tuple.command,
+					tuple.arguments
 				);
 
 				/*---------------------------------------------------------*/
