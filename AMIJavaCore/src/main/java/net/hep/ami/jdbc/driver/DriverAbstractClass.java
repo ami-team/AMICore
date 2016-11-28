@@ -65,8 +65,6 @@ public abstract class DriverAbstractClass implements QuerierInterface
 			m_pass
 		);
 
-		m_connection.setAutoCommit(false);
-
 		/*-----------------------------------------------------------------*/
 		/* CREATE STATEMENT                                                */
 		/*-----------------------------------------------------------------*/

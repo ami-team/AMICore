@@ -158,7 +158,7 @@ public class ConnectionPoolSingleton
 		/**/		poolProperties.setPassword(pass);
 		/**/
 		/**/		poolProperties.setDefaultAutoCommit(false);
-
+		/**/
 		/**/		/*---------------------------*/
 		/**/		/* POOL - CONTENT            */
 		/**/		/*---------------------------*/
