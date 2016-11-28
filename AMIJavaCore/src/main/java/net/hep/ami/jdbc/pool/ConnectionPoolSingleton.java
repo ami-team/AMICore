@@ -13,15 +13,31 @@ public class ConnectionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final int s_initialSize = ConfigSingleton.getProperty("initial_size", 10);
+	private static final int s_initialSize = ConfigSingleton.getProperty("initial_size", 1);
+	// The initial number of connections that are created when the pool is started.
+
 	private static final int s_maxActive = ConfigSingleton.getProperty("max_active", 100);
-	private static final int s_minIdle = ConfigSingleton.getProperty("min_idle", 10);
-	private static final int s_maxIdle = ConfigSingleton.getProperty("max_idle", 100);
+	// The maximum number of active connections that can be allocated from this pool at the same time.
+
+	private static final int s_minIdle = ConfigSingleton.getProperty("min_idle", 0);
+	// The minimum number of established connections that should be kept in the pool at all times.
+
+	private static final int s_maxIdle = ConfigSingleton.getProperty("max_idle", 50);
+	// The maximum number of connections that should be kept in the pool at all times.
+
+	/*---------------------------------------------------------------------*/
 
 	private static final int s_timeBetweenEvictionRunsMillis = ConfigSingleton.getProperty("time_between_eviction_runs_millis", 5000);
+	// The number of milliseconds to sleep between runs of the idle connection validation/cleaner thread. This value should not be set under 1 second. It dictates how often we check for idle, abandoned connections, and how often we validate idle connections.
+
 	private static final int s_minEvictableIdleTimeMillis = ConfigSingleton.getProperty("min_evictable_idle_time_millis", 30000);
+	// The minimum amount of time an object may sit idle in the pool before it is eligible for eviction.
+
 	private static final int s_validationInterval = ConfigSingleton.getProperty("validation_interval", 30000);
+	// Avoid excess validation, only run validation at most at this frequency - time in milliseconds.
+
 	private static final int s_maxWait = ConfigSingleton.getProperty("max_wait", 30000);
+	// The maximum number of milliseconds that the pool will wait before exception.
 
 	/*---------------------------------------------------------------------*/
 
@@ -176,6 +192,12 @@ public class ConnectionPoolSingleton
 		/**/
 		/**/		poolProperties.setRemoveAbandoned(false);
 		/**/		poolProperties.setLogAbandoned(false);
+		/**/
+		/**/		/*---------------------------*/
+		/**/		/* AUTO COMMIT               */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		poolProperties.setDefaultAutoCommit(false);
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE DATA SOURCE                                  */

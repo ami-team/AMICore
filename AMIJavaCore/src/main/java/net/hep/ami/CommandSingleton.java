@@ -392,7 +392,9 @@ public class CommandSingleton
 
 		int idx, l;
 
-		String s = "", left, right;
+		String s = "";
+
+		String left, right;
 
 		for(String arg: args)
 		{
