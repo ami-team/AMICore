@@ -157,6 +157,8 @@ public class ConnectionPoolSingleton
 		/**/		poolProperties.setUsername(user);
 		/**/		poolProperties.setPassword(pass);
 		/**/
+		/**/		poolProperties.setDefaultAutoCommit(false);
+
 		/**/		/*---------------------------*/
 		/**/		/* POOL - CONTENT            */
 		/**/		/*---------------------------*/
@@ -192,12 +194,6 @@ public class ConnectionPoolSingleton
 		/**/
 		/**/		poolProperties.setRemoveAbandoned(false);
 		/**/		poolProperties.setLogAbandoned(false);
-		/**/
-		/**/		/*---------------------------*/
-		/**/		/* AUTO COMMIT               */
-		/**/		/*---------------------------*/
-		/**/
-		/**/		poolProperties.setDefaultAutoCommit(false);
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE DATA SOURCE                                  */
