@@ -4,6 +4,7 @@ import java.sql.*;
 
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.utility.annotation.*;
 
 public class BasicQuerier implements QuerierInterface
 {
@@ -27,7 +28,7 @@ public class BasicQuerier implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicQuerier(String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public BasicQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass);
 	}

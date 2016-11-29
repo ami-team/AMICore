@@ -2,6 +2,7 @@ package net.hep.ami.jdbc;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.utility.annotation.*;
 
 public class RouterBuilder
 {
@@ -23,7 +24,19 @@ public class RouterBuilder
 
 	/*---------------------------------------------------------------------*/
 
-	public RouterBuilder(String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public RouterBuilder(String jdbcUrl, String user, String pass) throws Exception
+	{
+		m_driver = DriverSingleton.getConnection(
+			null,
+			jdbcUrl,
+			user,
+			pass
+		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public RouterBuilder(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(
 			catalog,
