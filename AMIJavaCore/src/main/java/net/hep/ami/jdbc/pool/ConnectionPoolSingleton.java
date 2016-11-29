@@ -1,11 +1,10 @@
 package net.hep.ami.jdbc.pool;
 
-import java.net.*;
 import java.sql.*;
 import java.util.*;
-import java.util.Map.*;
 
 import net.hep.ami.*;
+import net.hep.ami.utility.annotation.*;
 
 import org.apache.tomcat.jdbc.pool.*;
 
@@ -45,23 +44,10 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static String getKey(String url, String name)
-	{
-		try
-		{
-			return url.startsWith("jdbc:") ? name + '@' + new URI(url.substring(5)).getHost() : url;
-		}
-		catch(URISyntaxException e)
-		{
-			return url;
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass) throws Exception
+	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass) throws Exception
 	{
 		return getDataSource(
+			catalog,
 			/* DATABASE */
 			jdbc_driver,
 			jdbc_url,
@@ -83,9 +69,10 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Connection getConnection(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) throws Exception
+	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) throws Exception
 	{
 		return getDataSource(
+			catalog,
 			/* DATABASE */
 			jdbc_driver,
 			jdbc_url,
@@ -107,9 +94,10 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass)
+	public static DataSource getDataSource(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass)
 	{
 		return getDataSource(
+			catalog,
 			/* DATABASE */
 			jdbc_driver,
 			jdbc_url,
@@ -130,11 +118,11 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static DataSource getDataSource(String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait)
+	private static DataSource getDataSource(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait)
 	{
 		DataSource result;
 
-		String key = getKey(jdbc_url, user);
+		String key = user + "@" + jdbc_url;
 
 		synchronized(ConnectionPoolSingleton.class)
 		{
@@ -158,6 +146,12 @@ public class ConnectionPoolSingleton
 		/**/		poolProperties.setPassword(pass);
 		/**/
 		/**/		poolProperties.setDefaultAutoCommit(false);
+		/**/
+		/**/		/*---------------------------*/
+		/**/		/* POOL - NAME               */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		poolProperties.setName((catalog == null) ? UUID.randomUUID().toString() : catalog);
 		/**/
 		/**/		/*---------------------------*/
 		/**/		/* POOL - CONTENT            */
@@ -222,18 +216,12 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String key;
-		DataSource value;
-
-		for(Entry<String, DataSource> entry: s_pools.entrySet())
+		for(DataSource value: s_pools.values())
 		{
-			key = entry.getKey();
-			value = entry.getValue();
-
 			result.append(
 				"<row>"
 				+
-				"<field name=\"name\">" + key + "</field>"
+				"<field name=\"name\">" + value.getName() + "</field>"
 				+
 				"<field name=\"poolSize\">" + value.getPoolSize() + "</field>"
 				+

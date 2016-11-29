@@ -227,6 +227,7 @@ public class ConfigSingleton
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
+			"self",
 			getProperty("jdbc_url"),
 			getProperty("router_user"),
 			getProperty("router_pass")
@@ -281,6 +282,7 @@ public class ConfigSingleton
 		/*-----------------------------------------------------------------*/
 
 		BasicQuerier basicQuerier = new BasicQuerier(
+			"self",
 			getProperty("jdbc_url"),
 			getProperty("router_user"),
 			getProperty("router_pass")

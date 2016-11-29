@@ -4,9 +4,10 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.utility.*;
+import net.hep.ami.utility.annotation.*;
 
 public class DriverSingleton
 {
@@ -71,8 +72,6 @@ public class DriverSingleton
 
 		Class<DriverAbstractClass> clazz = (Class<DriverAbstractClass>) Class.forName(className);
 
-		/* QUOI FAIRE SI clazz EST NULL ??? */
-
 		/*-----------------------------------------------------------------*/
 		/* ADD DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
@@ -96,6 +95,7 @@ public class DriverSingleton
 					clazz.getConstructor(
 						String.class,
 						String.class,
+						String.class,
 						String.class
 					)
 				)
@@ -107,7 +107,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass) throws Exception
+	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET PROTOCOL                                                    */
@@ -138,6 +138,7 @@ public class DriverSingleton
 		/*-----------------------------------------------------------------*/
 
 		return tuple.t.newInstance(
+			catalog,
 			jdbcUrl,
 			user,
 			pass

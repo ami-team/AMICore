@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
+import net.hep.ami.utility.annotation.*;
 
 public abstract class CommandAbstractClass
 {
@@ -83,7 +84,14 @@ public abstract class CommandAbstractClass
 
 	protected TransactionalQuerier getQuerier(String jdbcUrl, String user, String pass) throws Exception
 	{
-		return new TransactionalQuerier(jdbcUrl, user, pass, m_transactionId);
+		return new TransactionalQuerier(null, jdbcUrl, user, pass, m_transactionId);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected TransactionalQuerier getQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	{
+		return new TransactionalQuerier(catalog, jdbcUrl, user, pass, m_transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

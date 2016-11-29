@@ -59,6 +59,7 @@ public class CatalogSingleton
 		/*-----------------------------------------------------------------*/
 
 		DriverAbstractClass driver = DriverSingleton.getConnection(
+			"self",
 			ConfigSingleton.getProperty("jdbc_url"),
 			ConfigSingleton.getProperty("router_user"),
 			ConfigSingleton.getProperty("router_pass")
@@ -166,6 +167,7 @@ public class CatalogSingleton
 		/*-----------------------------------------------------------------*/
 
 		return DriverSingleton.getConnection(
+			catalog,
 			tuple.x,
 			tuple.y,
 			tuple.z

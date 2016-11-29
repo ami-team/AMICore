@@ -12,9 +12,9 @@ public class SQLiteDriver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public SQLiteDriver(String jdbc_url, String user, String pass) throws Exception
+	public SQLiteDriver(String name, String jdbc_url, String user, String pass) throws Exception
 	{
-		super(jdbc_url, user, pass);
+		super(name, jdbc_url, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

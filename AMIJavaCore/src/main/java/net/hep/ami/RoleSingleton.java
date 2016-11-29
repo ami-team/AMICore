@@ -115,11 +115,7 @@ public class RoleSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier(
-			ConfigSingleton.getProperty("jdbc_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
-		);
+		BasicQuerier basicQuerier = new BasicQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 

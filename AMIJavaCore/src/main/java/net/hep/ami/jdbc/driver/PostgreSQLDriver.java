@@ -12,9 +12,9 @@ public class PostgreSQLDriver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public PostgreSQLDriver(String jdbc_url, String user, String pass) throws Exception
+	public PostgreSQLDriver(String name, String jdbc_url, String user, String pass) throws Exception
 	{
-		super(jdbc_url, user, pass);
+		super(name, jdbc_url, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

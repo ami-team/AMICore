@@ -14,17 +14,6 @@ public abstract class DriverAbstractClass implements QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
 
-	protected Connection m_connection;
-
-	/*---------------------------------------------------------------------*/
-
-	protected final List<Statement> m_statementList = new ArrayList<Statement>();
-
-	/*---------------------------------------------------------------------*/
-
-	protected String m_internalCatalog;
-	protected String m_externalCatalog;
-
 	protected Jdbc.Type m_jdbcType;
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
@@ -34,7 +23,18 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public DriverAbstractClass(String jdbcUrl, String user, String pass) throws Exception
+	private Connection m_connection;
+
+	private final List<Statement> m_statementList = new ArrayList<Statement>();
+
+	/*---------------------------------------------------------------------*/
+
+	protected String m_internalCatalog;
+	protected String m_externalCatalog;
+
+	/*---------------------------------------------------------------------*/
+
+	public DriverAbstractClass(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET ANNOTATION                                                  */
@@ -59,6 +59,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		m_pass = pass;
 
 		m_connection = ConnectionPoolSingleton.getConnection(
+			catalog,
 			m_jdbcClass,
 			m_jdbcUrl,
 			m_user,
@@ -75,13 +76,40 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		/* GET CATALOGS                                                    */
 		/*-----------------------------------------------------------------*/
 
+		boolean internalCatalogFound = true;
+
 		try
 		{
-			m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog = m_connection.getCatalog());
+			m_internalCatalog = m_connection.getCatalog();
+
+			if(m_internalCatalog == null)
+			{
+				m_internalCatalog = catalog;
+				internalCatalogFound = false;
+			}
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			m_internalCatalog = catalog;
+			internalCatalogFound = false;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(internalCatalogFound)
+		{
+			try
+			{
+				m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog);
+			}
+			catch(Exception e)
+			{
+				m_externalCatalog = catalog;
+			}
+		}
+		else
+		{
+			m_externalCatalog = catalog;
 		}
 
 		/*-----------------------------------------------------------------*/

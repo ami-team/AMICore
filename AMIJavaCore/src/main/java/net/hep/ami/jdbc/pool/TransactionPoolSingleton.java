@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.utility.annotation.*;
 
 public class TransactionPoolSingleton
 {
@@ -70,7 +71,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String jdbcUrl, String user, String pass, long transactionId) throws Exception
+	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
 		if(transactionId < 0)
 		{
@@ -95,7 +96,7 @@ public class TransactionPoolSingleton
 		/**/	{
 		/**/		s_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
 		/**/
-		/**/		transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
+		/**/		transaction.put(key, result = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass));
 		/**/	}
 		/**/	else
 		/**/	{
@@ -103,7 +104,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/		if(result == null)
 		/**/		{
-		/**/			transaction.put(key, result = DriverSingleton.getConnection(jdbcUrl, user, pass));
+		/**/			transaction.put(key, result = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass));
 		/**/		}
 		/**/	}
 		}

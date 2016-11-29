@@ -8,9 +8,9 @@ public class CommandSingletonTest
 {
 	/*---------------------------------------------------------------------*/
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception
 	{
-		@SuppressWarnings("unused")
 		Map<String, String> arguments = new HashMap<String, String>();
 
 		LogSingleton.defaultLogger.debug("Hello World!");
@@ -27,7 +27,8 @@ public class CommandSingletonTest
 
 		System.out.println("--------");
 
-		//System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
+
 /*
 		arguments.put("country", "FR");
 		arguments.put("locality", "Grenoble");

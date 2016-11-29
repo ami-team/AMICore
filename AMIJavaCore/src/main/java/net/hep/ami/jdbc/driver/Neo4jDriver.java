@@ -12,9 +12,9 @@ public class Neo4jDriver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public Neo4jDriver(String jdbc_url, String user, String pass) throws Exception
+	public Neo4jDriver(String name, String jdbc_url, String user, String pass) throws Exception
 	{
-		super(jdbc_url, user, pass);
+		super(name, jdbc_url, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

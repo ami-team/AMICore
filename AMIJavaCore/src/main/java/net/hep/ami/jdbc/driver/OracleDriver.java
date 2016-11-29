@@ -13,9 +13,9 @@ public class OracleDriver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public OracleDriver(String jdbc_url, String user, String pass) throws Exception
+	public OracleDriver(String name, String jdbc_url, String user, String pass) throws Exception
 	{
-		super(jdbc_url, user, pass);
+		super(name, jdbc_url, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

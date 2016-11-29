@@ -79,13 +79,4 @@ public class Tokenizer
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	public static void main(String[] args)
-	{
-		System.out.println(Tokenizer.tokenize("SELECT * FROM `to\\`to`.\"ti\\\"ti\" WHERE `tutu`='foo\\'bar' AND 1=1"));
-
-		System.exit(0);
-	}
-
-	/*---------------------------------------------------------------------*/
 }

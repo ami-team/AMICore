@@ -14,6 +14,7 @@ public class RouterBuilder
 	public RouterBuilder() throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(
+			"self",
 			ConfigSingleton.getProperty("jdbc_url"),
 			ConfigSingleton.getProperty("router_user"),
 			ConfigSingleton.getProperty("router_pass")
@@ -22,9 +23,10 @@ public class RouterBuilder
 
 	/*---------------------------------------------------------------------*/
 
-	public RouterBuilder(String jdbcUrl, String user, String pass) throws Exception
+	public RouterBuilder(String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(
+			catalog,
 			jdbcUrl,
 			user,
 			pass
@@ -291,7 +293,7 @@ public class RouterBuilder
 	{
 		try
 		{
-			RouterBuilder rb = new RouterBuilder("jdbc:mysql://localhost:3306/router", "root", "root");
+			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router", "root", "root");
 
 			rb.build();
 		}

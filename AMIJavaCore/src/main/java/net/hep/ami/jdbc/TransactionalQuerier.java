@@ -5,6 +5,7 @@ import java.sql.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.utility.annotation.*;
 
 public class TransactionalQuerier implements QuerierInterface
 {
@@ -23,9 +24,9 @@ public class TransactionalQuerier implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(String jdbcUrl, String user, String pass, long transactionId) throws Exception
+	public TransactionalQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(jdbcUrl, user, pass, m_transactionId = transactionId);
+		m_driver = TransactionPoolSingleton.getConnection(catalog, jdbcUrl, user, pass, m_transactionId = transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
