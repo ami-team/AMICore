@@ -107,12 +107,8 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public static String getProtocol(String jdbcUrl) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET PROTOCOL                                                    */
-		/*-----------------------------------------------------------------*/
-
 		int index = jdbcUrl.indexOf("://");
 
 		if(index < 0)
@@ -120,11 +116,18 @@ public class DriverSingleton
 			throw new Exception("invalid JDBC URL `" + jdbcUrl + "`");
 		}
 
-		String jdbcProto = jdbcUrl.substring(0, index);
+		return jdbcUrl.substring(0, index);
+	}
 
+	/*---------------------------------------------------------------------*/
+
+	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 		/* GET DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
+
+		String jdbcProto = getProtocol(jdbcUrl);
 
 		Tuple tuple = s_drivers.get(jdbcProto);
 
@@ -152,21 +155,10 @@ public class DriverSingleton
 	public static boolean isType(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* GET PROTOCOL                                                    */
-		/*-----------------------------------------------------------------*/
-
-		int index = jdbcUrl.indexOf("://");
-
-		if(index < 0)
-		{
-			throw new Exception("invalid JDBC URL `" + jdbcUrl + "`");
-		}
-
-		String jdbcProto = jdbcUrl.substring(0, index);
-
-		/*-----------------------------------------------------------------*/
 		/* GET DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
+
+		String jdbcProto = getProtocol(jdbcUrl);
 
 		Tuple tuple = s_drivers.get(jdbcProto);
 
