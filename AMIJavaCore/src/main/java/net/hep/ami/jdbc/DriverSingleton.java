@@ -38,7 +38,16 @@ public class DriverSingleton
 	{
 		s_drivers.clear();
 
-		addDrivers();
+		try
+		{
+			DriverSingleton.addDrivers();
+
+			ConfigSingleton.readFromDataBase();
+		}
+		catch(Exception e)
+		{
+			LogSingleton.defaultLogger.fatal(e.getMessage());
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -40,8 +40,6 @@ public class CommandSingleton
 
 	static
 	{
-		CatalogSingleton.class.getName();
-
 		CommandSingleton.reload();
 	}
 

@@ -13,21 +13,17 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		LogSingleton.defaultLogger.debug("Hello World!");
-
-		CatalogSingleton.listCatalogs();
-
-//		SchemaSingleton.readMetaData("self");
+//		LogSingleton.defaultLogger.debug("Hello World!");
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 
-		System.out.println("--------");
+		//System.out.println("--------");
 
 		//System.out.println(CommandSingleton.executeCommand("ListCatalogs", arguments).replace(">", ">\n"));
 
-		System.out.println("--------");
+		//System.out.println("--------");
 
-		System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
+		//System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
 
 /*
 		arguments.put("country", "FR");
@@ -39,6 +35,17 @@ public class CommandSingletonTest
 		arguments.put("validity", "10");
 		System.out.println(CommandSingleton.executeCommand("GenerateCertificate", arguments).replace(">", ">\n"));
 */
+		try
+		{
+			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
+
+			rb.build();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
 		System.exit(0);
 	}
 

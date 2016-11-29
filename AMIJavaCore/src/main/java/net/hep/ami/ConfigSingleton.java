@@ -35,8 +35,6 @@ public class ConfigSingleton
 
 	public static void reload()
 	{
-		s_hasValidConfFile = false;
-
 		s_configPathName = "";
 		s_configFileName = "";
 
@@ -44,11 +42,13 @@ public class ConfigSingleton
 
 		try
 		{
+			s_hasValidConfFile = false;
 			readFromConfFile();
-			Cryptography.init(getProperty("encryption_key"));
-			readFromDataBase();
-
 			s_hasValidConfFile = true;
+
+			Cryptography.init(
+				getProperty("encryption_key")
+			);
 		}
 		catch(Exception e)
 		{
@@ -220,7 +220,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromDataBase() throws Exception
+	public static void readFromDataBase() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */
