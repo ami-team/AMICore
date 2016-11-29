@@ -24,13 +24,6 @@ public class TransactionalQuerier implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(String jdbcUrl, String user, String pass, long transactionId) throws Exception
-	{
-		m_driver = TransactionPoolSingleton.getConnection(null, jdbcUrl, user, pass, m_transactionId = transactionId);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public TransactionalQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
 		m_driver = TransactionPoolSingleton.getConnection(catalog, jdbcUrl, user, pass, m_transactionId = transactionId);

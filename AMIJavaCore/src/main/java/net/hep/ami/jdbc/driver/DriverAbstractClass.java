@@ -76,13 +76,17 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		/* GET CATALOGS                                                    */
 		/*-----------------------------------------------------------------*/
 
-		boolean internalCatalogFound = true;
+		boolean internalCatalogFound;
 
 		try
 		{
 			m_internalCatalog = m_connection.getCatalog();
 
-			if(m_internalCatalog == null)
+			if(m_internalCatalog != null)
+			{
+				internalCatalogFound = true;
+			}
+			else
 			{
 				m_internalCatalog = catalog;
 				internalCatalogFound = false;

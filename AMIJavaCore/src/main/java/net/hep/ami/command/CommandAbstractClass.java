@@ -82,13 +82,6 @@ public abstract class CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	protected TransactionalQuerier getQuerier(String jdbcUrl, String user, String pass) throws Exception
-	{
-		return new TransactionalQuerier(null, jdbcUrl, user, pass, m_transactionId);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	protected TransactionalQuerier getQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		return new TransactionalQuerier(catalog, jdbcUrl, user, pass, m_transactionId);

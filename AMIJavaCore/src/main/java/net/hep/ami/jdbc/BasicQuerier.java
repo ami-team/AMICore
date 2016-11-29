@@ -21,13 +21,6 @@ public class BasicQuerier implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicQuerier(String jdbcUrl, String user, String pass) throws Exception
-	{
-		m_driver = DriverSingleton.getConnection(null, jdbcUrl, user, pass);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public BasicQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass);

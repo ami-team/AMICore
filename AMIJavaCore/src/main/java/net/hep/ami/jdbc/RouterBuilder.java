@@ -24,18 +24,6 @@ public class RouterBuilder
 
 	/*---------------------------------------------------------------------*/
 
-	public RouterBuilder(String jdbcUrl, String user, String pass) throws Exception
-	{
-		m_driver = DriverSingleton.getConnection(
-			null,
-			jdbcUrl,
-			user,
-			pass
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public RouterBuilder(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(
