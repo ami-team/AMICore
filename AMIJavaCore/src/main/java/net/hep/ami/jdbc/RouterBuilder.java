@@ -354,7 +354,7 @@ public class RouterBuilder extends BasicQuerier
 		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
-			"INSERT INTO `router_user` (`lft`, `rgt`, `role`) VALUES" +
+			"INSERT INTO `router_role` (`lft`, `rgt`, `role`) VALUES" +
 			" (0, 2, 'AMI_guest_role')," +
 			" (1, 2, 'AMI_admin_role')" +
 			";"
