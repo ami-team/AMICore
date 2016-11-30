@@ -121,7 +121,7 @@ public class CSVParser
 
 			for(int i = 0; (line = bufferedReader.readLine()) != null; i++)
 			{
-				if((line = line.trim()).isEmpty())
+				if((line = line.trim()).isEmpty() || line.startsWith("#"))
 				{
 					continue;
 				}
