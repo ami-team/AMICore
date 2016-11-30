@@ -1,10 +1,13 @@
 package net.hep.ami;
 
+import java.io.*;
 import java.net.*;
-import java.util.*;
+import java.sql.*;
 import java.math.*;
+import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.utility.*;
 
 public class LocalizationSingleton
 {
@@ -82,6 +85,136 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static void fill(BasicQuerier basicQuerier) throws Exception
+	{
+		final BigInteger ONE = BigInteger.valueOf(1);
+		final BigInteger TWO = BigInteger.valueOf(2);
+
+		/*-----------------------------------------------------------------*/
+		/* LOCATIONS                                                       */
+		/*-----------------------------------------------------------------*/
+
+		File locations = new File(ConfigSingleton.getConfigPathName() + File.separator + "GeoLite2-Country-Locations-en.csv");
+
+		if(locations.exists())
+		{
+			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_country_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)");
+
+			try
+			{
+				for(Map<String, String> location: CSVParser.parse(locations))
+				{
+					preparedStatement.setString(1, location.get("geoname_id"));
+					preparedStatement.setString(2, location.get("continent_code"));
+					preparedStatement.setString(3, location.get("country_iso_code"));
+					preparedStatement.addBatch();
+				}
+
+				preparedStatement.executeBatch();
+			}
+			finally
+			{
+				preparedStatement.close();
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* IPv4 BLOCKS                                                     */
+		/*-----------------------------------------------------------------*/
+
+		File blocksIPv4 = new File(ConfigSingleton.getConfigPathName() + File.separator + "GeoLite2-Country-Blocks-IPv4.csv");
+
+		if(blocksIPv4.exists())
+		{
+			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv4` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
+
+			try
+			{
+				String network;
+				String geonameId;
+
+				BigInteger base;
+
+				int index;
+
+				for(Map<String, String> block: CSVParser.parse(blocksIPv4))
+				{
+					network = block.get("network");
+					geonameId = block.get("geoname_id");
+
+					index = network.indexOf('/');
+
+					if(index > 0 && geonameId.isEmpty() == false)
+					{
+						base = ipv4ToInteger(network.substring(0, index));
+
+						preparedStatement.setString(1, network);
+						preparedStatement.setString(2, base.toString());
+						preparedStatement.setString(3, base.add(TWO.pow(32 - Integer.parseInt(network.substring(index + 1))).subtract(ONE)).toString());
+						preparedStatement.setString(4, geonameId);
+						preparedStatement.addBatch();
+					}
+				}
+
+				preparedStatement.executeBatch();
+			}
+			finally
+			{
+				preparedStatement.close();
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* IPv6 BLOCKS                                                     */
+		/*-----------------------------------------------------------------*/
+
+		File blocksIPv6 = new File(ConfigSingleton.getConfigPathName() + File.separator + "GeoLite2-Country-Blocks-IPv6.csv");
+
+		if(blocksIPv6.exists())
+		{
+			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv6` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
+
+			try
+			{
+				String network;
+				String geonameId;
+
+				BigInteger base;
+
+				int index;
+
+				for(Map<String, String> block: CSVParser.parse(blocksIPv6))
+				{
+					network = block.get("network");
+					geonameId = block.get("geoname_id");
+
+					index = network.indexOf('/');
+
+					if(index > 0 && geonameId.isEmpty() == false)
+					{
+						base = ipv6ToInteger(network.substring(0, index));
+
+						preparedStatement.setString(1, network);
+						preparedStatement.setString(2, base.toString());
+						preparedStatement.setString(3, base.add(TWO.pow(128 - Integer.parseInt(network.substring(index + 1))).subtract(ONE)).toString());
+						preparedStatement.setString(4, geonameId);
+						preparedStatement.addBatch();
+					}
+				}
+
+				preparedStatement.executeBatch();
+			}
+			finally
+			{
+				preparedStatement.close();
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Localization getCountryIPv4(BasicQuerier basicQuerier, String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -145,7 +278,7 @@ public class LocalizationSingleton
 
 		if(rowList.size() == 0)
 		{
-			throw new Exception("could not localize IPv4 `" + ip + "`");
+			throw new Exception("could not localize IPv6 `" + ip + "`");
 		}
 
 		Row row = rowList.get(0);

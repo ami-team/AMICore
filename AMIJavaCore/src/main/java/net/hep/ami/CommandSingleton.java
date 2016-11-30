@@ -7,7 +7,6 @@ import java.lang.reflect.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.jdbc.driver.*;
 
 public class CommandSingleton
 {
@@ -67,7 +66,7 @@ public class CommandSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = DriverSingleton.getConnection(
+		BasicQuerier driver = new BasicQuerier(
 			"self",
 			ConfigSingleton.getProperty("jdbc_url"),
 			ConfigSingleton.getProperty("router_user"),
@@ -149,6 +148,43 @@ public class CommandSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+	@SuppressWarnings("unchecked")
+	/*---------------------------------------------------------------------*/
+
+	public static boolean registerCommand(QuerierInterface querier, String className) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* GET CLASS OBJECT                                                */
+		/*-----------------------------------------------------------------*/
+
+		Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
+
+		/*-----------------------------------------------------------------*/
+		/* ADD COMMAND                                                     */
+		/*-----------------------------------------------------------------*/
+
+		if(clazz != null && ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
+		{
+			String simpleName = clazz.getSimpleName();
+			String name = clazz.getName();
+
+			String sql = String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `class`='%s'",
+				simpleName,
+				name,
+				name
+			);
+
+			querier.executeUpdate(sql);
+
+			return true;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return false;
 	}
 
 	/*---------------------------------------------------------------------*/

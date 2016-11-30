@@ -2,6 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
@@ -27,22 +28,14 @@ public class FindCommands extends CommandAbstractClass
 		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
-		/* FIND COMMANDS                                                   */
-		/*-----------------------------------------------------------------*/
-
-		List<String> classNames = new ArrayList<String>(ClassFinder.findClassNames("net.hep.ami.command"));
-
-		Collections.sort(classNames);
-
-		/*-----------------------------------------------------------------*/
 		/* ADD COMMANDS                                                    */
 		/*-----------------------------------------------------------------*/
 
 		Set<String> commands = new HashSet<String>();
 
-		for(String className: classNames)
+		for(String className: ClassFinder.findClassNames("net.hep.ami.command"))
 		{
-			if(RouterBuilder.addCommand(transactionalQuerier, className))
+			if(CommandSingleton.registerCommand(transactionalQuerier, className))
 			{
 				commands.add(className);
 			}

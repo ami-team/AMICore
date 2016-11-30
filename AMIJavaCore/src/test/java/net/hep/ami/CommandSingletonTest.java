@@ -39,13 +39,16 @@ public class CommandSingletonTest
 		{
 			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
 
-			rb.build();
+			rb.create();
+			rb.fill();
 
 			rb.commit();
+
+			System.out.println("done.");
 		}
 		catch(Exception e)
 		{
-			System.out.println(e.getMessage());
+			System.out.println("::" + e.getMessage());
 		}
 
 		System.exit(0);

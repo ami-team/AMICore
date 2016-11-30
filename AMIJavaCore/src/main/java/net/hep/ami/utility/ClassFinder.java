@@ -166,7 +166,7 @@ public class ClassFinder
 
 	public static Set<String> findClassNames(String filter)
 	{
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new TreeSet<String>();
 
 		for(String className: s_classNames)
 		{
