@@ -30,9 +30,9 @@ public class FindCommands extends CommandAbstractClass
 		/* FIND COMMANDS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		List<String> classes = new ArrayList<String>(ClassFinder.findClassNames("net.hep.ami.command"));
+		List<String> classNames = new ArrayList<String>(ClassFinder.findClassNames("net.hep.ami.command"));
 
-		Collections.sort(classes);
+		Collections.sort(classNames);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD COMMANDS                                                    */
@@ -40,9 +40,12 @@ public class FindCommands extends CommandAbstractClass
 
 		Set<String> commands = new HashSet<String>();
 
-		for(String className: classes)
+		for(String className: classNames)
 		{
-			addCommand(transactionalQuerier, commands, className);
+			if(RouterBuilder.addCommand(transactionalQuerier, className))
+			{
+				commands.add(className);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -55,39 +58,6 @@ public class FindCommands extends CommandAbstractClass
 	public static String help()
 	{
 		return "Automatically find commands.";
-	}
-
-	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unchecked")
-	/*---------------------------------------------------------------------*/
-
-	private void addCommand(TransactionalQuerier transactionalQuerier, Set<String> commands, String className) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-		/* GET CLASS OBJECT                                                */
-		/*-----------------------------------------------------------------*/
-
-		Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
-
-		/*-----------------------------------------------------------------*/
-		/* ADD COMMAND                                                     */
-		/*-----------------------------------------------------------------*/
-
-		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
-		{
-			String simpleName = clazz.getSimpleName();
-			String name = clazz.getName();
-
-			String sql = String.format("INSERT INTO `router_command` (`command`,`class`) VALUES ('%s','%s') ON DUPLICATE KEY UPDATE `class`='%s'",
-				simpleName,
-				name,
-				name
-			);
-
-			transactionalQuerier.executeUpdate(sql);
-
-			commands.add(name);
-		}
 	}
 
 	/*---------------------------------------------------------------------*/

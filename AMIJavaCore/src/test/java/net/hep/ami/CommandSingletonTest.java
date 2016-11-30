@@ -40,6 +40,8 @@ public class CommandSingletonTest
 			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
 
 			rb.build();
+
+			rb.commit();
 		}
 		catch(Exception e)
 		{

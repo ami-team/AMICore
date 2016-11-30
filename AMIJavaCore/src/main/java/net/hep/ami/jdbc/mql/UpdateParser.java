@@ -44,7 +44,7 @@ public class UpdateParser
 
 		new UpdateParser(driver);
 
-		return "";
+		return query;
 
 		/*-----------------------------------------------------------------*/
 	}
