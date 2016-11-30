@@ -25,10 +25,8 @@ public class RouterBuilder extends BasicQuerier
 	public void create() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-
-		/*-------------------------------*/
-		/* ROUTER_CONFIG                 */
-		/*-------------------------------*/
+		/* ROUTER_CONFIG                                                   */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_config` ("																+
@@ -49,9 +47,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_config` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_CATALOG                */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_CATALOG                                                  */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_catalog` ("																+
@@ -76,9 +74,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_catalog` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_ROLE                   */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_ROLE                                                     */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_role` ("																+
@@ -101,9 +99,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_COMMAND                */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_COMMAND                                                  */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_command` ("																+
@@ -125,9 +123,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_command` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_COMMAND_ROLE           */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_COMMAND_ROLE                                             */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_command_role` ("														+
@@ -150,9 +148,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_command_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_USER                   */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_USER                                                     */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_user` ("																+
@@ -180,9 +178,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_user` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_USER_ROLE              */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_USER_ROLE                                                */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_user_role` ("															+
@@ -205,9 +203,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_user_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_SEARCH_INTERFACE       */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_SEARCH_INTERFACE                                         */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE `router_search_interface` ("																	+
@@ -230,9 +228,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_search_interface` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_SEARCH_CRITERIA        */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_SEARCH_CRITERIA                                          */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE `router_search_criteria` ("																	+
@@ -259,9 +257,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_search_criteria` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_COUNTRY_LOCATIONS      */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_COUNTRY_LOCATIONS                                        */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE `router_country_locations` ("																	+
@@ -282,9 +280,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_country_locations` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_COUNTRY_BLOCK          */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_COUNTRY_BLOCK                                            */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE `router_country_blocks_ipv4` ("																+
@@ -308,9 +306,9 @@ public class RouterBuilder extends BasicQuerier
 			"ALTER TABLE `router_country_blocks_ipv4` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
-		/*-------------------------------*/
-		/* ROUTER_COUNTRY_BLOCK          */
-		/*-------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* ROUTER_COUNTRY_BLOCK                                            */
+		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE `router_country_blocks_ipv6` ("																+
