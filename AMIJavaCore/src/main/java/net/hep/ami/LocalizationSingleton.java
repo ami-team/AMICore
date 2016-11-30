@@ -85,7 +85,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void fill(BasicQuerier basicQuerier) throws Exception
+	public static void fill(QuerierInterface querier) throws Exception
 	{
 		final BigInteger ONE = BigInteger.valueOf(1);
 		final BigInteger TWO = BigInteger.valueOf(2);
@@ -98,7 +98,7 @@ public class LocalizationSingleton
 
 		if(locations.exists())
 		{
-			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_country_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)");
+			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)");
 
 			try
 			{
@@ -126,7 +126,7 @@ public class LocalizationSingleton
 
 		if(blocksIPv4.exists())
 		{
-			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv4` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
+			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv4` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
 
 			try
 			{
@@ -172,7 +172,7 @@ public class LocalizationSingleton
 
 		if(blocksIPv6.exists())
 		{
-			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv6` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
+			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv6` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
 
 			try
 			{
@@ -215,7 +215,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localization getCountryIPv4(BasicQuerier basicQuerier, String ip) throws Exception
+	public static Localization getCountryIPv4(QuerierInterface querier, String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
@@ -227,7 +227,10 @@ public class LocalizationSingleton
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = basicQuerier.executeQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
+		RowSet rowSet = querier.executeQuery(String.format(
+			"SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`",
+			_ip, _ip
+		));
 
 		/*-----------------------------------------------------------------*/
 		/* GET LOCALIZATION                                                */
@@ -256,7 +259,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localization getCountryIPv6(BasicQuerier basicQuerier, String ip) throws Exception
+	public static Localization getCountryIPv6(QuerierInterface querier, String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CONVERT IP                                                      */
@@ -268,7 +271,10 @@ public class LocalizationSingleton
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = basicQuerier.executeQuery(String.format("SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`", _ip, _ip));
+		RowSet rowSet = querier.executeQuery(String.format(
+			"SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`",
+			_ip, _ip
+		));
 
 		/*-----------------------------------------------------------------*/
 		/* GET LOCALIZATION                                                */

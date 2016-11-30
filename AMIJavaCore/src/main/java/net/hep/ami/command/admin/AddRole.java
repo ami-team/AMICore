@@ -29,6 +29,8 @@ public class AddRole extends CommandAbstractClass
 		                                                                        : ""
 		;
 
+		boolean insertAfter = arguments.containsKey("insertAfter");
+
 		if(role == null)
 		{
 			throw new Exception("invalid usage");
@@ -36,7 +38,7 @@ public class AddRole extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		RoleSingleton.addRole(getQuerier("self"), parent, role, roleValidatorClass);
+		RoleSingleton.addRole(getQuerier("self"), parent, role, roleValidatorClass, insertAfter);
 
 		/*-----------------------------------------------------------------*/
 
@@ -54,7 +56,7 @@ public class AddRole extends CommandAbstractClass
 
 	public static String usage()
 	{
-		return "(-parent=\"value\")? -role=\"value\" (-roleValidatorClass=\"value\")?";
+		return "(-parent=\"value\")? -role=\"value\" (-roleValidatorClass=\"value\" -insertAfter)?";
 	}
 
 	/*---------------------------------------------------------------------*/

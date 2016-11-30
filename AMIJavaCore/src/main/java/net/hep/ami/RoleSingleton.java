@@ -84,13 +84,14 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addRole(QuerierInterface querier, String parent, String role, String roleValidatorClass) throws Exception
+	public static void addRole(QuerierInterface querier, String parent, String role, String roleValidatorClass, boolean insertAfter) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET PARENT ID                                                   */
 		/*-----------------------------------------------------------------*/
 
-		String sql = String.format("SELECT `lft`, `rgt`, `rgt` - `lft` - 1 FROM `router_role` WHERE `role` = '%s'",
+		String sql = String.format(
+			"SELECT `lft`, `rgt`, `rgt` - `lft` - 1 FROM `router_role` WHERE `role` = '%s'",
 			parent.replace("'", "''")
 		);
 
@@ -101,23 +102,25 @@ public class RoleSingleton
 			throw new Exception("unknown role `" + parent + "`");
 		}
 
+		Row row = rowList.get(0);
+
 		/*-----------------------------------------------------------------*/
 
-		String parentLft = rowList.get(0).getValue(0);
-		String parentRgt = rowList.get(0).getValue(1);
-		String isLeaf = rowList.get(0).getValue(2);
+		String parentLft = row.getValue(0);
+		String parentRgt = row.getValue(1);
+		String isLeaf = row.getValue(2);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		if(isLeaf.equals("0"))
+		if(insertAfter || isLeaf.equals("0"))
 		{
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s ORDER BY `lft` DESC",
+			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
 				parentLft
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s ORDER BY `rgt` DESC",
+			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s",
 				parentLft
 			));
 
@@ -149,13 +152,14 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removeRole(QuerierInterface querier, String role) throws Exception
+	public static void removeRole(QuerierInterface querier, String role, boolean recursive) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		String sql = String.format("SELECT `lft`, `rgt`, `rgt` - `lft` - 1, `rgt` - `lft` + 1 FROM `router_role` WHERE `role` = '%s'",
+		String sql = String.format(
+			"SELECT `lft`, `rgt`, `rgt` - `lft` - 1, `rgt` - `lft` + 1 FROM `router_role` WHERE `role` = '%s'",
 			role.replace("'", "''")
 		);
 
@@ -166,26 +170,23 @@ public class RoleSingleton
 			throw new Exception("unknown role `" + role + "`");
 		}
 
+		Row row = rowList.get(0);
+
 		/*-----------------------------------------------------------------*/
 
-		String roleLft = rowList.get(0).getValue(0);
-		String roleRgt = rowList.get(0).getValue(1);
-		String isLeaf = rowList.get(0).getValue(2);
-		String width = rowList.get(0).getValue(3);
+		String roleLft = row.getValue(0);
+		String roleRgt = row.getValue(1);
+		String isLeaf = row.getValue(2);
+		String width = row.getValue(3);
 
 		/*-----------------------------------------------------------------*/
 		/* DELETE ROLE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(isLeaf.equals("0"))
+		if(recursive || isLeaf.equals("0"))
 		{
 			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` BETWEEN %s AND %s",
 				roleLft,
-				roleRgt
-			));
-
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - %s WHERE `rgt` > %s",
-				width,
 				roleRgt
 			));
 
@@ -193,11 +194,17 @@ public class RoleSingleton
 				width,
 				roleRgt
 			));
+
+			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - %s WHERE `rgt` > %s",
+				width,
+				roleRgt
+			));
 		}
 		else
 		{
-			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` = %s",
-				roleLft
+			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` = %s AND `rgt` = %s",
+				roleLft,
+				roleRgt
 			));
 
 			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - 1, `lft` = `lft` - 1 WHERE `lft` BETWEEN %s AND %s",
@@ -205,11 +212,13 @@ public class RoleSingleton
 				roleRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - 2 WHERE `rgt` > %s",
+			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` - %s WHERE `lft` > %s",
+				"2",
 				roleRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` - 2 WHERE `lft` > %s",
+			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - %s WHERE `rgt` > %s",
+				"2",
 				roleRgt
 			));
 		}
@@ -217,7 +226,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void checkRoles(String command, Map<String, String> arguments) throws Exception
+	public static void checkRoles(QuerierInterface querier, String command, Map<String, String> arguments) throws Exception
 	{
 		/*---------------------------------*/
 
@@ -245,77 +254,61 @@ public class RoleSingleton
 		AMIPass = Cryptography.encrypt(AMIPass);
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
+		/* GET ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier("self");
+		String sql = String.format(
+			"SELECT `node`.`validatorClass` FROM `router_command`, `router_user`, `router_command_role`, `router_user_role`, `router_role` AS `tree`, `router_role` AS `node` WHERE" +
+			/*-------------------------------------------------------------*/
+			/* SELECT COMMAND                                              */
+			/*-------------------------------------------------------------*/
+			" `router_command`.`command` = '%s'" +
+			/*-------------------------------------------------------------*/
+			/* SELECT USER                                                 */
+			/*-------------------------------------------------------------*/
+			" AND `router_user`.`AMIUser` = '%s'" +
+			" AND `router_user`.`AMIPass` = '%s'" +
+			/*-------------------------------------------------------------*/
+			/* SELECT COMMAND ROLE                                         */
+			/*-------------------------------------------------------------*/
+			" AND `router_command_role`.`commandFK` = `router_command`.`id`" +
+			/*-------------------------------------------------------------*/
+			/* SELECT USER ROLE                                            */
+			/*-------------------------------------------------------------*/
+			" AND `router_user_role`.`userFK` = `router_user`.`id`" +
+			/*-------------------------------------------------------------*/
+			/* SELECT ROLE                                                 */
+			/*-------------------------------------------------------------*/
+			" AND `router_command_role`.`roleFK` = `tree`.`id`" +
+			" AND `router_user_role`.`roleFK` = `node`.`id`" +
+			/*-------------------------------------------------------------*/
+			" AND `node`.`lft` BETWEEN `tree`.`lft` AND `tree`.`rgt`" +
+			/*-------------------------------------------------------------*/
+			" ORDER BY `node`.`lft` DESC",
+			/*-------------------------------------------------------------*/
+			command.replace("'", "''"),
+			AMIUser.replace("'", "''"),
+			AMIPass.replace("'", "''")
+		);
+
+		List<Row> rowList = querier.executeQuery(sql).getAll();
+
+		if(rowList.size() != 1)
+		{
+			throw new Exception("wrong role");
+		}
+
+		Row row = rowList.get(0);
 
 		/*-----------------------------------------------------------------*/
 
-		Row row;
-
-		try
-		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
-
-			RowSet rowSet = basicQuerier.executeQuery(
-				"SELECT `node`.`validatorClass` FROM `router_command`, `router_user`, `router_command_role`, `router_user_role`, `router_role` AS `tree`, `router_role` AS `node` WHERE" +
-				/*---------------------------------------------------------*/
-				/* SELECT COMMAND                                          */
-				/*---------------------------------------------------------*/
-				"	"+" `router_command`.`command` = '" + command + "'" +
-				/*---------------------------------------------------------*/
-				/* SELECT USER                                             */
-				/*---------------------------------------------------------*/
-				"	AND `router_user`.`AMIUser` = '" + AMIUser + "'" +
-				"	AND `router_user`.`AMIPass` = '" + AMIPass + "'" +
-				/*---------------------------------------------------------*/
-				/* SELECT COMMAND ROLE                                     */
-				/*---------------------------------------------------------*/
-				"	AND `router_command_role`.`commandFK` = `router_command`.`id`" +
-				/*---------------------------------------------------------*/
-				/* SELECT USER ROLE                                        */
-				/*---------------------------------------------------------*/
-				"	AND `router_user_role`.`userFK` = `router_user`.`id`" +
-				/*---------------------------------------------------------*/
-				/* SELECT ROLE                                             */
-				/*---------------------------------------------------------*/
-				"	AND `router_command_role`.`roleFK` = `tree`.`id`" +
-				"	AND `router_user_role`.`roleFK` = `node`.`id`" +
-				/*---------------------------------------------------------*/
-				"	AND `node`.`lft` BETWEEN `tree`.`lft` AND `tree`.`rgt`" +
-				/*---------------------------------------------------------*/
-				"	ORDER BY `node`.`lft` DESC"
-				/*---------------------------------------------------------*/
-			);
-
-			/*-------------------------------------------------------------*/
-			/* GET ROLE                                                    */
-			/*-------------------------------------------------------------*/
-
-			List<Row> rowList = rowSet.getAll();
-
-			if(rowList.size() != 1)
-			{
-				throw new Exception("wrong role");
-			}
-
-			row = rowList.get(0);
-
-			/*-------------------------------------------------------------*/
-		}
-		finally
-		{
-			basicQuerier.rollbackAndRelease();
-		}
+		String validatorClass = row.getValue("validatorClass");
 
 		/*-----------------------------------------------------------------*/
 		/* CHECK ROLE                                                      */
 		/*-----------------------------------------------------------------*/
 
-		checkCommand(row.getValue("validatorClass"), command, arguments);
+		checkCommand(validatorClass, command, arguments);
 
 		/*-----------------------------------------------------------------*/
 	}
