@@ -167,12 +167,12 @@ public class CommandSingleton
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(clazz != null && ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
+		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
 		{
 			String simpleName = clazz.getSimpleName();
 			String name = clazz.getName();
 
-			String sql = String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `class`='%s'",
+			String sql = String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `class` = '%s'",
 				simpleName,
 				name,
 				name
@@ -304,7 +304,7 @@ public class CommandSingleton
 			/* CHECK ROLES                                                 */
 			/*-------------------------------------------------------------*/
 
-/*			RoleSingleton.checkRoles(command, arguments);
+/*			RoleSingleton.checkRoles(command, arguments, ???);
  */
 			/*-------------------------------------------------------------*/
 			/* CREATE COMMAND INSTANCE                                     */
