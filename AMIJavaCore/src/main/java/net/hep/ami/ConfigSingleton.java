@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.DriverAbstractClass;
 import net.hep.ami.utility.*;
 
 import org.w3c.dom.*;
@@ -226,11 +227,11 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier(
+		DriverAbstractClass driver = DriverSingleton.getConnection(
 			"self",
-			getProperty("jdbc_url"),
-			getProperty("router_user"),
-			getProperty("router_pass")
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -241,7 +242,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = basicQuerier.executeQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
+			RowSet rowSet = driver.executeQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
@@ -252,9 +253,9 @@ public class ConfigSingleton
 				try
 				{
 					s_properties.put(
-						Cryptography.decrypt(row.getValue("paramName"))
+						Cryptography.decrypt(row.getValue(0))
 						,
-						Cryptography.decrypt(row.getValue("paramValue"))
+						Cryptography.decrypt(row.getValue(1))
 					);
 				}
 				catch(org.bouncycastle.util.encoders.DecoderException e)
@@ -267,7 +268,7 @@ public class ConfigSingleton
 		}
 		finally
 		{
-			basicQuerier.rollbackAndRelease();
+			driver.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -281,11 +282,11 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier(
+		DriverAbstractClass driver = DriverSingleton.getConnection(
 			"self",
-			getProperty("jdbc_url"),
-			getProperty("router_user"),
-			getProperty("router_pass")
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -298,13 +299,13 @@ public class ConfigSingleton
 			/* EXECUTE QUERY 1                                             */
 			/*-------------------------------------------------------------*/
 
-			basicQuerier.executeUpdate("DELETE FROM `router_config`");
+			driver.executeUpdate("DELETE FROM `router_config`");
 
 			/*-------------------------------------------------------------*/
 			/* EXECUTE QUERY 2                                             */
 			/*-------------------------------------------------------------*/
 
-			PreparedStatement preparedStatement = basicQuerier.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
+			PreparedStatement preparedStatement = driver.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
 
 			/*-------------------------------------------------------------*/
 
@@ -345,11 +346,11 @@ public class ConfigSingleton
 		{
 			if(success)
 			{
-				basicQuerier.commitAndRelease();
+				driver.commitAndRelease();
 			}
 			else
 			{
-				basicQuerier.rollbackAndRelease();
+				driver.rollbackAndRelease();
 			}
 		}
 

@@ -6,9 +6,9 @@ import java.util.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
-
-import org.w3c.dom.*;
 
 public class ConverterSingleton
 {
@@ -54,49 +54,51 @@ public class ConverterSingleton
 	private static void addConverters() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* GET INPUT STREAM                                                */
+		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		InputStream inputStream = ConverterSingleton.class.getResourceAsStream("/XSLT.xml");
+		DriverAbstractClass driver = DriverSingleton.getConnection(
+			"self",
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
 
 		/*-----------------------------------------------------------------*/
-		/* PARSE FILE                                                      */
-		/*-----------------------------------------------------------------*/
 
-		Document document = XMLFactories.newDocument(inputStream);
-
-		/*-----------------------------------------------------------------*/
-		/* READ FILE                                                       */
-		/*-----------------------------------------------------------------*/
-
-		NodeList nodeList = document.getElementsByTagName("transform");
-
-		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF CONVERTERS                                        */
-		/*-----------------------------------------------------------------*/
-
-		final int numberOfConverters = nodeList.getLength();
-
-		/*-----------------------------------------------------------------*/
-		/* ADD CONVERTERS                                                  */
-		/*-----------------------------------------------------------------*/
-
-		for(int i = 0; i < numberOfConverters; i++)
+		try
 		{
-			Node node = nodeList.item(i);
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
 
-			try
+			RowSet rowSet = driver.executeQuery("SELECT `xslt`, `mime` FROM `router_converter`");
+
+			/*-------------------------------------------------------------*/
+			/* ADD CONVERTERS                                              */
+			/*-------------------------------------------------------------*/
+
+			for(Row row: rowSet.iter())
 			{
-				addConverter(
-					XMLFactories.getAttribute(node, "xslt", (((((""))))))
-					,
-					XMLFactories.getAttribute(node, "mime", "text/plain")
-				);
+				try
+				{
+					addConverter(
+						row.getValue(0)
+						,
+						row.getValue(1)
+					);
+				}
+				catch(Exception e)
+				{
+					LogSingleton.defaultLogger.error(e.getMessage());
+				}
 			}
-			catch(Exception e)
-			{
-				LogSingleton.defaultLogger.error(e.getMessage());
-			}
+
+			/*-------------------------------------------------------------*/
+		}
+		finally
+		{
+			driver.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/

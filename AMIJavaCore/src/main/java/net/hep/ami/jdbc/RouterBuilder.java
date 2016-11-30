@@ -204,6 +204,29 @@ public class RouterBuilder extends BasicQuerier
 		);
 
 		/*-----------------------------------------------------------------*/
+		/* ROUTER_CONVERTER                                                */
+		/*-----------------------------------------------------------------*/
+
+		executeMQLUpdate(
+			"CREATE TABLE IF NOT EXISTS `router_converter` ("															+
+			" `id` INT(11),"																							+
+			" `xslt` VARCHAR(512),"																						+
+			" `mime` VARCHAR(128)"																						+
+			");"
+		);
+
+		executeMQLUpdate(
+			"ALTER TABLE `router_converter`"																			+
+			" ADD CONSTRAINT `pk_router_converter` PRIMARY KEY (`id`),"													+
+			" ADD CONSTRAINT `uk1_router_converter` UNIQUE KEY (`xslt`)"												+
+			";"
+		);
+
+		executeMQLUpdate(
+			"ALTER TABLE `router_converter` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
+		);
+
+		/*-----------------------------------------------------------------*/
 		/* ROUTER_SEARCH_INTERFACE                                         */
 		/*-----------------------------------------------------------------*/
 
@@ -381,6 +404,18 @@ public class RouterBuilder extends BasicQuerier
 		{
 			CommandSingleton.registerCommand(this, className);
 		}
+
+		/*-----------------------------------------------------------------*/
+		/* CONVERTERS                                                      */
+		/*-----------------------------------------------------------------*/
+
+		executeMQLUpdate(
+			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
+			" ('/xslt/AMIXmlToText.xsl', 'text/plain')," +
+			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')," +
+			" ('/xslt/AMIXmlToJson.xsl', 'application/json')" +
+			";"
+		);
 
 		/*-----------------------------------------------------------------*/
 		/* LOCALIZATION                                                    */

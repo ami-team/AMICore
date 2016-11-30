@@ -5,6 +5,7 @@ import java.util.regex.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
@@ -66,7 +67,7 @@ public class CommandSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier driver = new BasicQuerier(
+		DriverAbstractClass driver = DriverSingleton.getConnection(
 			"self",
 			ConfigSingleton.getProperty("jdbc_url"),
 			ConfigSingleton.getProperty("router_user"),
