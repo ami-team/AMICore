@@ -5,6 +5,10 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
+/*
+ * For UNIX only!
+ */
+
 public class RestartNode extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/

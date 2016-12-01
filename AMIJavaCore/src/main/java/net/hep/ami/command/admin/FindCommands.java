@@ -22,16 +22,14 @@ public class FindCommands extends CommandAbstractClass
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* GET TRANSACTIONAL QUERIER                                       */
-		/*-----------------------------------------------------------------*/
 
 		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
-		/* ADD COMMANDS                                                    */
-		/*-----------------------------------------------------------------*/
 
 		Set<String> commands = new HashSet<String>();
+
+		transactionalQuerier.executeUpdate("DELETE FROM `router_command`");
 
 		for(String className: ClassFinder.findClassNames("net.hep.ami.command"))
 		{
@@ -40,6 +38,8 @@ public class FindCommands extends CommandAbstractClass
 				commands.add(className);
 			}
 		}
+
+		CommandSingleton.reload();
 
 		/*-----------------------------------------------------------------*/
 

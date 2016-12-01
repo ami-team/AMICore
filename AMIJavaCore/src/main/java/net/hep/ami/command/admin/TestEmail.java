@@ -31,7 +31,11 @@ public class TestEmail extends CommandAbstractClass
 		                                        : ConfigSingleton.getProperty("log_cc")
 		;
 
+		/*-----------------------------------------------------------------*/
+
 		MailSingleton.sendMessage(from, to, cc, "This is a test", "This is a test");
+
+		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}

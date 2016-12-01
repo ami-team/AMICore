@@ -24,7 +24,11 @@ public class SetConfig extends CommandAbstractClass
 			throw new Exception("HTTPS connection required"); 
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		ConfigSingleton.writeToDataBase(arguments);
+
+		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}

@@ -107,8 +107,7 @@ public class RouterBuilder extends BasicQuerier
 			"CREATE TABLE IF NOT EXISTS `router_command` ("																+
 			" `id` INT(11),"																							+
 			" `command` VARCHAR(128),"																					+
-			" `class` VARCHAR(512),"																					+
-			" `archived` INT(1) DEFAULT '0'"																			+
+			" `class` VARCHAR(512)"																					+
 			");"
 		);
 
