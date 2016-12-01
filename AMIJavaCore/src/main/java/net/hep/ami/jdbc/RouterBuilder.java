@@ -399,7 +399,7 @@ public class RouterBuilder extends BasicQuerier
 		/* COMMANDS                                                        */
 		/*-----------------------------------------------------------------*/
 
-		for(String className: ClassFinder.findClassNames("net.hep.ami.command"))
+		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
 			CommandSingleton.registerCommand(this, className);
 		}

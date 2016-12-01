@@ -5,7 +5,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class FindCommands extends CommandAbstractClass
 {
@@ -31,7 +30,7 @@ public class FindCommands extends CommandAbstractClass
 
 		transactionalQuerier.executeUpdate("DELETE FROM `router_command`");
 
-		for(String className: ClassFinder.findClassNames("net.hep.ami.command"))
+		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
 			if(CommandSingleton.registerCommand(transactionalQuerier, className))
 			{

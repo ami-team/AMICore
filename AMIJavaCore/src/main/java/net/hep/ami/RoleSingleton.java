@@ -34,7 +34,7 @@ public class RoleSingleton
 
 	private static void addValidators()
 	{
-		Set<String> classeNames = ClassFinder.findClassNames("net.hep.ami.role");
+		Set<String> classeNames = ClassSingleton.findClassNames("net.hep.ami.role");
 
 		for(String className: classeNames)
 		{
@@ -65,7 +65,7 @@ public class RoleSingleton
 		/* ADD COMMAND VALIDATOR                                           */
 		/*-----------------------------------------------------------------*/
 
-		/**/ if(ClassFinder.extendsClass(clazz, CommandValidatorInterface.class))
+		/**/ if(ClassSingleton.extendsClass(clazz, CommandValidatorInterface.class))
 		{
 			s_roleValidators.put(clazz.getName(), (Class<CommandValidatorInterface>) clazz);
 		}
@@ -74,7 +74,7 @@ public class RoleSingleton
 		/* ADD NEW USER VALIDATOR                                          */
 		/*-----------------------------------------------------------------*/
 
-		else if(ClassFinder.extendsClass(clazz, NewUserValidatorInterface.class))
+		else if(ClassSingleton.extendsClass(clazz, NewUserValidatorInterface.class))
 		{
 			s_userValidators.put(clazz.getName(), (Class<NewUserValidatorInterface>) clazz);
 		}

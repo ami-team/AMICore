@@ -130,7 +130,7 @@ public class CommandSingleton
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
+		if(ClassSingleton.extendsClass(clazz, CommandAbstractClass.class))
 		{
 			s_commands.put(
 				commandName
@@ -166,7 +166,7 @@ public class CommandSingleton
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassFinder.extendsClass(clazz, CommandAbstractClass.class))
+		if(ClassSingleton.extendsClass(clazz, CommandAbstractClass.class))
 		{
 			String simpleName = clazz.getSimpleName();
 			String name = clazz.getName();

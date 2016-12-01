@@ -54,7 +54,7 @@ public class DriverSingleton
 
 	public static void addDrivers()
 	{
-		Set<String> classeNames = ClassFinder.findClassNames("net.hep.ami.jdbc.driver");
+		Set<String> classeNames = ClassSingleton.findClassNames("net.hep.ami.jdbc.driver");
 
 		for(String className: classeNames)
 		{
@@ -85,7 +85,7 @@ public class DriverSingleton
 		/* ADD DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassFinder.extendsClass(clazz, DriverAbstractClass.class))
+		if(ClassSingleton.extendsClass(clazz, DriverAbstractClass.class))
 		{
 			Jdbc jdbc = clazz.getAnnotation(Jdbc.class);
 
