@@ -94,15 +94,23 @@ public class LocalizationSingleton
 		/* LOCATIONS                                                       */
 		/*-----------------------------------------------------------------*/
 
-		File locations = new File(ConfigSingleton.getConfigPathName() + File.separator + "GeoLite2-Country-Locations-en.csv");
+		File locationsEn = new File(
+			ConfigSingleton.getConfigPathName()
+			+ File.separator +
+			"GeoLite2-Country-Locations-en.csv"
+		);
 
-		if(locations.exists())
+		if(locationsEn.exists())
 		{
+			List<Map<String, String>> locations = CSVParser.parse(locationsEn);
+
+			querier.executeUpdate("DELETE FROM `router_country_locations`");
+
 			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)");
 
 			try
 			{
-				for(Map<String, String> location: CSVParser.parse(locations))
+				for(Map<String, String> location: locations)
 				{
 					preparedStatement.setString(1, location.get("geoname_id"));
 					preparedStatement.setString(2, location.get("continent_code"));
@@ -122,10 +130,18 @@ public class LocalizationSingleton
 		/* IPv4 BLOCKS                                                     */
 		/*-----------------------------------------------------------------*/
 
-		File blocksIPv4 = new File(ConfigSingleton.getConfigPathName() + File.separator + "GeoLite2-Country-Blocks-IPv4.csv");
+		File blocksIPv4 = new File(
+			ConfigSingleton.getConfigPathName()
+			+ File.separator +
+			"GeoLite2-Country-Blocks-IPv4.csv"
+		);
 
 		if(blocksIPv4.exists())
 		{
+			List<Map<String, String>> blocks = CSVParser.parse(blocksIPv4);
+
+			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv4`");
+
 			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv4` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
 
 			try
@@ -137,7 +153,7 @@ public class LocalizationSingleton
 
 				int index;
 
-				for(Map<String, String> block: CSVParser.parse(blocksIPv4))
+				for(Map<String, String> block: blocks)
 				{
 					network = block.get("network");
 					geonameId = block.get("geoname_id");
@@ -168,10 +184,18 @@ public class LocalizationSingleton
 		/* IPv6 BLOCKS                                                     */
 		/*-----------------------------------------------------------------*/
 
-		File blocksIPv6 = new File(ConfigSingleton.getConfigPathName() + File.separator + "GeoLite2-Country-Blocks-IPv6.csv");
+		File blocksIPv6 = new File(
+			ConfigSingleton.getConfigPathName()
+			+ File.separator +
+			"GeoLite2-Country-Blocks-IPv6.csv"
+		);
 
 		if(blocksIPv6.exists())
 		{
+			List<Map<String, String>> blocks = CSVParser.parse(blocksIPv6);
+
+			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv6`");
+
 			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv6` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
 
 			try
@@ -183,7 +207,7 @@ public class LocalizationSingleton
 
 				int index;
 
-				for(Map<String, String> block: CSVParser.parse(blocksIPv6))
+				for(Map<String, String> block: blocks)
 				{
 					network = block.get("network");
 					geonameId = block.get("geoname_id");
@@ -215,21 +239,41 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localization getCountryIPv4(QuerierInterface querier, String ip) throws Exception
+	public static Localization localizeIP(QuerierInterface querier, String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* CONVERT IP                                                      */
+		/* PARSE IP                                                        */
 		/*-----------------------------------------------------------------*/
 
-		String _ip = ipv4ToInteger(ip).toString();
+		String _ip;
+		String _table;
+
+		try
+		{
+			_ip = ipv4ToInteger(ip).toString();
+			_table = "router_country_blocks_ipv4";
+		}
+		catch(Exception e1)
+		{
+			try
+			{
+				_ip = ipv6ToInteger(ip).toString();
+				_table = "router_country_blocks_ipv6";
+			}
+			catch(Exception e2)
+			{
+				throw new Exception("invalid IP `" + ip + "`");
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
 		RowSet rowSet = querier.executeQuery(String.format(
-			"SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv4` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`",
-			_ip, _ip
+			"SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `%s` AS `B`, `router_country_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
+			_table,
+			_ip
 		));
 
 		/*-----------------------------------------------------------------*/
@@ -240,7 +284,7 @@ public class LocalizationSingleton
 
 		if(rowList.size() == 0)
 		{
-			throw new Exception("could not localize IPv4 `" + ip + "`");
+			throw new Exception("could not localize IP `" + ip + "`");
 		}
 
 		Row row = rowList.get(0);
@@ -259,46 +303,56 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localization getCountryIPv6(QuerierInterface querier, String ip) throws Exception
+	static public void main(String[] args)
 	{
 		/*-----------------------------------------------------------------*/
-		/* CONVERT IP                                                      */
-		/*-----------------------------------------------------------------*/
 
-		String _ip = ipv6ToInteger(ip).toString();
-
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
-		/*-----------------------------------------------------------------*/
-
-		RowSet rowSet = querier.executeQuery(String.format(
-			"SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `router_country_blocks_ipv6` AS `B`, `router_country_locations` AS `L` WHERE `B`.`rangeBegin` <= %s AND `B`.`rangeEnd` >= %s AND `B`.`geoFK` = `L`.`id`",
-			_ip, _ip
-		));
-
-		/*-----------------------------------------------------------------*/
-		/* GET LOCALIZATION                                                */
-		/*-----------------------------------------------------------------*/
-
-		List<Row> rowList = rowSet.getAll();
-
-		if(rowList.size() == 0)
+		if(args.length != 1)
 		{
-			throw new Exception("could not localize IPv6 `" + ip + "`");
+			System.err.println("usage: " + LocalizationSingleton.class.getSimpleName() + " --fill | IP");
+
+			System.exit(1);
 		}
 
-		Row row = rowList.get(0);
-
-		/*-----------------------------------------------------------------*/
-		/* RETURN LOCALIZATION                                             */
 		/*-----------------------------------------------------------------*/
 
-		return new Localization(
-			row.getValue("continentCode"),
-			row.getValue( "countryCode" )
-		);
+		try
+		{
+			BasicQuerier basicQuerier = new BasicQuerier("self");
+
+			try
+			{
+				if(args[0].equals("--fill") == false)
+				{
+					long t1 = System.currentTimeMillis();
+					Localization localization = localizeIP(basicQuerier, args[0]);
+					long t2 = System.currentTimeMillis();
+
+					System.out.println("Continent code: " + localization.continentCode);
+					System.out.println("Country code: " + localization.countryCode);
+
+					System.out.println(String.format(Locale.US,
+						"%.3f s", 0.001f * (t2 - t1)
+					));
+				}
+				else
+				{
+					fill(basicQuerier);
+				}
+			}
+			finally
+			{
+				basicQuerier.commitAndRelease();
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 
 		/*-----------------------------------------------------------------*/
+
+		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/

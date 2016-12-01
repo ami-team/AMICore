@@ -304,15 +304,15 @@ public class RouterBuilder extends BasicQuerier
 		);
 
 		/*-----------------------------------------------------------------*/
-		/* ROUTER_COUNTRY_BLOCK                                            */
+		/* ROUTER_COUNTRY_BLOCK_IPV4                                       */
 		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE `router_country_blocks_ipv4` ("																+
 			" `id` INT(11),"																							+
 			" `network` VARCHAR(32),"																					+
-			" `rangeBegin` BIGINT(64),"																					+
-			" `rangeEnd` BIGINT(64),"																					+
+			" `rangeBegin` DECIMAL(10, 0),"																				+
+			" `rangeEnd` DECIMAL(10, 0),"																				+
 			" `geoFK` INT(11)"																							+
 			");"
 		);
@@ -330,15 +330,15 @@ public class RouterBuilder extends BasicQuerier
 		);
 
 		/*-----------------------------------------------------------------*/
-		/* ROUTER_COUNTRY_BLOCK                                            */
+		/* ROUTER_COUNTRY_BLOCK_IPV6                                       */
 		/*-----------------------------------------------------------------*/
 
 		executeMQLUpdate(
 			"CREATE TABLE `router_country_blocks_ipv6` ("																+
 			" `id` INT(11),"																							+
 			" `network` VARCHAR(64),"																					+
-			" `rangeBegin` DECIMAL(38,0),"																				+
-			" `rangeEnd` DECIMAL(38,0),"																				+
+			" `rangeBegin` DECIMAL(38, 0),"																				+
+			" `rangeEnd` DECIMAL(38, 0),"																				+
 			" `geoFK` INT(11)"																							+
 			");"
 		);
@@ -391,8 +391,8 @@ public class RouterBuilder extends BasicQuerier
 
 		executeMQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES" +
-			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + Cryptography.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'FR', 1)," +
-			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + Cryptography.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'FR', 1)" +
+			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + Cryptography.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
+			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + Cryptography.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
 			";"
 		);
 

@@ -172,13 +172,11 @@ public class CommandSingleton
 			String simpleName = clazz.getSimpleName();
 			String name = clazz.getName();
 
-			String sql = String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `class` = '%s'",
+			querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
 				simpleName,
 				name,
 				name
-			);
-
-			querier.executeUpdate(sql);
+			));
 
 			return true;
 		}
@@ -280,15 +278,19 @@ public class CommandSingleton
 
 		stringBuilder.append("<arguments>");
 
+		String key;
+
 		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
-			if(entry.getKey().equals("AMIUser") == false
+			key = entry.getKey();
+
+			if(key.equals("AMIUser") == false
 			   &&
-			   entry.getKey().equals("AMIPass") == false
+			   key.equals("AMIPass") == false
 			   &&
-			   entry.getKey().equals("clientDN") == false
+			   key.equals("clientDN") == false
 			   &&
-			   entry.getKey().equals("issuerDN") == false
+			   key.equals("issuerDN") == false
 			 ) {
 				stringBuilder.append("<argument name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
 			}

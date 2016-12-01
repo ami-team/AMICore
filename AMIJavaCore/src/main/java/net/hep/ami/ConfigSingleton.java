@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.driver.DriverAbstractClass;
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 
 import org.w3c.dom.*;
@@ -36,10 +36,10 @@ public class ConfigSingleton
 
 	public static void reload()
 	{
+		s_properties.clear();
+
 		s_configPathName = "";
 		s_configFileName = "";
-
-		s_properties.clear();
 
 		try
 		{

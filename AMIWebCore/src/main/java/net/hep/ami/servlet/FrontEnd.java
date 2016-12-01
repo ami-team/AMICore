@@ -365,8 +365,8 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private void updateSessionAndCommandArgs(Map<String, String> arguments, HttpSession session, HttpServletRequest request) throws Exception {
-
+	private void updateSessionAndCommandArgs(Map<String, String> arguments, HttpSession session, HttpServletRequest request) throws Exception
+	{
 		String AMIUser;
 		String AMIPass;
 
