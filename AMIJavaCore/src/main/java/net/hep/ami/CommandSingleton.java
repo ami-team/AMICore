@@ -100,8 +100,7 @@ public class CommandSingleton
 				}
 				catch(Exception e)
 				{
-					/* CETTE LIGNE DOIT ETRE DECOMMENTEE EN PROD */
-					//LogSingleton.defaultLogger.error(e.getMessage());
+					LogSingleton.defaultLogger.error(e.getMessage());
 				}
 			}
 
