@@ -44,6 +44,15 @@ public class CSVParser
 		while(i < l)
 		{
 			/*-------------------------------------------------------------*/
+			/* EAT COMMENT                                                 */
+			/*-------------------------------------------------------------*/
+
+			if(sql.charAt(i) == '#')
+			{
+				break;
+			}
+
+			/*-------------------------------------------------------------*/
 			/* EAT COMMA                                                   */
 			/*-------------------------------------------------------------*/
 
@@ -59,7 +68,7 @@ public class CSVParser
 			}
 
 			/*-------------------------------------------------------------*/
-			/* STRINGS                                                     */
+			/* STRING                                                      */
 			/*-------------------------------------------------------------*/
 
 			m = s_pattern2.matcher(sql.substring(i));
@@ -89,7 +98,7 @@ public class CSVParser
 			}
 
 			/*-------------------------------------------------------------*/
-			/* OTHERS                                                      */
+			/* OTHER                                                       */
 			/*-------------------------------------------------------------*/
 
 			throw new Exception("syntax error");
@@ -121,7 +130,7 @@ public class CSVParser
 
 			for(int i = 0; (line = bufferedReader.readLine()) != null; i++)
 			{
-				if((line = line.trim()).isEmpty() || line.startsWith("#"))
+				if((line = line.trim()).isEmpty())
 				{
 					continue;
 				}
