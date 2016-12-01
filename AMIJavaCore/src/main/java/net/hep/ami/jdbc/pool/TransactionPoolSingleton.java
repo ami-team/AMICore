@@ -2,10 +2,9 @@ package net.hep.ami.jdbc.pool;
 
 import java.util.*;
 
-import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.utility.LogSingleton;
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.annotation.*;
 
 public class TransactionPoolSingleton
