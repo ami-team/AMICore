@@ -4,8 +4,8 @@ import java.util.*;
 import java.security.*;
 import java.security.cert.*;
 
+import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class GenerateAuthority extends CommandAbstractClass
 {
@@ -61,9 +61,9 @@ public class GenerateAuthority extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = Cryptography.generateKeyPair(4096);
+		KeyPair keyPair = CryptographySingleton.generateKeyPair(4096);
 
-		X509Certificate certificate = Cryptography.generateCA(
+		X509Certificate certificate = CryptographySingleton.generateCA(
 			keyPair.getPrivate(),
 			keyPair.getPublic(),
 			String.format(
@@ -87,24 +87,24 @@ public class GenerateAuthority extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + CryptographySingleton.getAMIName(certificate.getSubjectX500Principal()) + "]]></field>");
+		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + CryptographySingleton.getAMIName(certificate.getIssuerX500Principal()) + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");
-		result.append(Cryptography.byteArrayToBase64String(keyPair.getPrivate().getEncoded()));
+		result.append(CryptographySingleton.byteArrayToBase64String(keyPair.getPrivate().getEncoded()));
 		result.append("-----END PRIVATE KEY-----\n");
 		result.append("</field>");
 
 		result.append("<field name=\"PUBLIC_KEY\">");
 		result.append("-----BEGIN PUBLIC KEY-----\n");
-		result.append(Cryptography.byteArrayToBase64String(keyPair.getPublic().getEncoded()));
+		result.append(CryptographySingleton.byteArrayToBase64String(keyPair.getPublic().getEncoded()));
 		result.append("-----END PUBLIC KEY-----\n");
 		result.append("</field>");
 
 		result.append("<field name=\"CERTIFICATE\">");
 		result.append("-----BEGIN CERTIFICATE-----\n");
-		result.append(Cryptography.byteArrayToBase64String(certificate.getEncoded()));
+		result.append(CryptographySingleton.byteArrayToBase64String(certificate.getEncoded()));
 		result.append("-----END CERTIFICATE-----\n");
 		result.append("</field>");
 

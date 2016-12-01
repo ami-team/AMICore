@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.annotation.*;
 
 public class RouterBuilder extends BasicQuerier
@@ -367,7 +366,7 @@ public class RouterBuilder extends BasicQuerier
 
 		executeMQLUpdate(
 			"INSERT INTO `router_catalog` (`catalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES" +
-			" ('self', '" + getJdbcUrl().replace("'", "''") + "', '" + Cryptography.encrypt(getUser()) + "', '" + Cryptography.encrypt(getPass()) + "', 0, NULL)" +
+			" ('self', '" + getJdbcUrl().replace("'", "''") + "', '" + CryptographySingleton.encrypt(getUser()) + "', '" + CryptographySingleton.encrypt(getPass()) + "', 0, NULL)" +
 			";"
 		);
 
@@ -386,12 +385,12 @@ public class RouterBuilder extends BasicQuerier
 		/* USERS                                                           */
 		/*-----------------------------------------------------------------*/
 
-		String emptyDN = Cryptography.encrypt("");
+		String emptyDN = CryptographySingleton.encrypt("");
 
 		executeMQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES" +
-			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + Cryptography.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
-			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + Cryptography.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
+			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + CryptographySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
+			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + CryptographySingleton.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
 			";"
 		);
 

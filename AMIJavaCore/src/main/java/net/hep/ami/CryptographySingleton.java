@@ -1,4 +1,4 @@
-package net.hep.ami.utility;
+package net.hep.ami;
 
 import java.io.*;
 import java.math.*;
@@ -14,11 +14,13 @@ import org.bouncycastle.cert.jcajce.*;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
 
+import net.hep.ami.utility.Tuple3;
+
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
 
-public class Cryptography
+public class CryptographySingleton
 {
 	/*---------------------------------------------------------------------*/
 

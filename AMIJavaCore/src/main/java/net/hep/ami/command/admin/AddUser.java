@@ -5,7 +5,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class AddUser extends CommandAbstractClass
 {
@@ -66,9 +65,9 @@ public class AddUser extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		amiPassword = Cryptography.encrypt(amiPassword);
-		clientDN = Cryptography.encrypt(clientDN);
-		issuerDN = Cryptography.encrypt(issuerDN);
+		amiPassword = CryptographySingleton.encrypt(amiPassword);
+		clientDN = CryptographySingleton.encrypt(clientDN);
+		issuerDN = CryptographySingleton.encrypt(issuerDN);
 
 		String sql = String.format("INSERT INTO `router_user` (`AMIUser`,`AMIPass`,`clientDN`,`issuerDN`,`firstName`,`lastName`,`email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
 			amiLogin.replace("'", "''"),

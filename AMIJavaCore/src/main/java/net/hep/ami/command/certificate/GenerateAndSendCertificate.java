@@ -5,15 +5,14 @@ import java.util.*;
 
 import javax.activation.*;
 import javax.mail.*;
-import javax.mail.internet.*;
 import javax.mail.util.*;
+import javax.mail.internet.*;
 
 import java.security.*;
 import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class GenerateAndSendCertificate extends CommandAbstractClass
 {
@@ -84,7 +83,7 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 		{
 			InputStream inputStream = new FileInputStream(fileName);
 
-			Cryptography.PEMTuple tuple = Cryptography.loadPEM(inputStream);
+			CryptographySingleton.PEMTuple tuple = CryptographySingleton.loadPEM(inputStream);
 
 			if(tuple.privateKeys.length == 0)
 			{
@@ -106,9 +105,9 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = Cryptography.generateKeyPair(2048);
+		KeyPair keyPair = CryptographySingleton.generateKeyPair(2048);
 
-		X509Certificate certificate = Cryptography.generateCertificate(
+		X509Certificate certificate = CryptographySingleton.generateCertificate(
 				caKey,
 				caCrt,
 				keyPair.getPublic(),
@@ -125,7 +124,7 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, email.toCharArray());
+		KeyStore keyStore_PKCS12 = CryptographySingleton.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, email.toCharArray());
 
 		/*-----------------------------------------------------------------*/
 

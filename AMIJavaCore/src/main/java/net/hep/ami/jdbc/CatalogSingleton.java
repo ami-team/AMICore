@@ -86,8 +86,8 @@ public class CatalogSingleton
 					addCatalog(
 						row.getValue("catalog"),
 						row.getValue("jdbcUrl"),
-						Cryptography.decrypt(row.getValue("user")),
-						Cryptography.decrypt(row.getValue("pass")),
+						CryptographySingleton.decrypt(row.getValue("user")),
+						CryptographySingleton.decrypt(row.getValue("pass")),
 						row.getValue("archived").trim()
 					);
 				}

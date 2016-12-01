@@ -7,7 +7,6 @@ import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class GenerateCertificate extends CommandAbstractClass
 {
@@ -78,7 +77,7 @@ public class GenerateCertificate extends CommandAbstractClass
 		{
 			InputStream inputStream = new FileInputStream(fileName);
 
-			Cryptography.PEMTuple tuple = Cryptography.loadPEM(inputStream);
+			CryptographySingleton.PEMTuple tuple = CryptographySingleton.loadPEM(inputStream);
 
 			if(tuple.privateKeys.length == 0)
 			{
@@ -100,9 +99,9 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = Cryptography.generateKeyPair(2048);
+		KeyPair keyPair = CryptographySingleton.generateKeyPair(2048);
 
-		X509Certificate certificate = Cryptography.generateCertificate(
+		X509Certificate certificate = CryptographySingleton.generateCertificate(
 				caKey,
 				caCrt,
 				keyPair.getPublic(),
@@ -119,8 +118,8 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_JKS = Cryptography.generateKeyStore_JKS(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
-		KeyStore keyStore_PKCS12 = Cryptography.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
+		KeyStore keyStore_JKS = CryptographySingleton.generateKeyStore_JKS(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
+		KeyStore keyStore_PKCS12 = CryptographySingleton.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
 
 		/*-----------------------------------------------------------------*/
 
@@ -134,24 +133,24 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		ByteArrayOutputStream output;
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + Cryptography.getAMIName(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + CryptographySingleton.getAMIName(certificate.getSubjectX500Principal()) + "]]></field>");
+		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + CryptographySingleton.getAMIName(certificate.getIssuerX500Principal()) + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");
-		result.append(Cryptography.byteArrayToBase64String(keyPair.getPrivate().getEncoded()));
+		result.append(CryptographySingleton.byteArrayToBase64String(keyPair.getPrivate().getEncoded()));
 		result.append("-----END PRIVATE KEY-----\n");
 		result.append("</field>");
 
 		result.append("<field name=\"PUBLIC_KEY\">");
 		result.append("-----BEGIN PUBLIC KEY-----\n");
-		result.append(Cryptography.byteArrayToBase64String(keyPair.getPublic().getEncoded()));
+		result.append(CryptographySingleton.byteArrayToBase64String(keyPair.getPublic().getEncoded()));
 		result.append("-----END PUBLIC KEY-----\n");
 		result.append("</field>");
 
 		result.append("<field name=\"CERTIFICATE\">");
 		result.append("-----BEGIN CERTIFICATE-----\n");
-		result.append(Cryptography.byteArrayToBase64String(certificate.getEncoded()));
+		result.append(CryptographySingleton.byteArrayToBase64String(certificate.getEncoded()));
 		result.append("-----END CERTIFICATE-----\n");
 		result.append("</field>");
 
@@ -162,7 +161,7 @@ public class GenerateCertificate extends CommandAbstractClass
 			keyStore_JKS.store(output, password.toCharArray());
 
 			result.append("<field name=\"KEYSTORE_JKS\">");
-			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
+			result.append(CryptographySingleton.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
 		}
 		finally
@@ -177,7 +176,7 @@ public class GenerateCertificate extends CommandAbstractClass
 			keyStore_PKCS12.store(output, password.toCharArray());
 
 			result.append("<field name=\"KEYSTORE_P12\">");
-			result.append(Cryptography.byteArrayToBase64String(output.toByteArray()));
+			result.append(CryptographySingleton.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
 		}
 		finally

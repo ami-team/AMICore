@@ -2,8 +2,8 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class Decrypt extends CommandAbstractClass
 {
@@ -31,7 +31,7 @@ public class Decrypt extends CommandAbstractClass
 			throw new Exception("HTTPS connection required"); 
 		}
 
-		return new StringBuilder("<info><![CDATA[" + Cryptography.decrypt(string) + "]]></info>");
+		return new StringBuilder("<info><![CDATA[" + CryptographySingleton.decrypt(string) + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

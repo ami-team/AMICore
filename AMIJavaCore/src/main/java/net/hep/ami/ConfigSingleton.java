@@ -47,7 +47,7 @@ public class ConfigSingleton
 			readFromConfFile();
 			s_hasValidConfFile = true;
 
-			Cryptography.init(
+			CryptographySingleton.init(
 				getProperty("encryption_key")
 			);
 		}
@@ -253,9 +253,9 @@ public class ConfigSingleton
 				try
 				{
 					s_properties.put(
-						Cryptography.decrypt(row.getValue(0))
+						CryptographySingleton.decrypt(row.getValue(0))
 						,
-						Cryptography.decrypt(row.getValue(1))
+						CryptographySingleton.decrypt(row.getValue(1))
 					);
 				}
 				catch(org.bouncycastle.util.encoders.DecoderException e)
@@ -321,8 +321,8 @@ public class ConfigSingleton
 
 					if(isReserved(name) == false)
 					{
-						preparedStatement.setString(1, Cryptography.encrypt(name));
-						preparedStatement.setString(2, Cryptography.encrypt(value));
+						preparedStatement.setString(1, CryptographySingleton.encrypt(name));
+						preparedStatement.setString(2, CryptographySingleton.encrypt(value));
 						preparedStatement.addBatch();
 					}
 				}

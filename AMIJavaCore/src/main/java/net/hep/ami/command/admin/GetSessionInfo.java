@@ -5,7 +5,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 
 public class GetSessionInfo extends CommandAbstractClass
 {
@@ -92,10 +91,10 @@ public class GetSessionInfo extends CommandAbstractClass
 
 		if(attachCert)
 		{
-			amiPassword = Cryptography.encrypt(amiPassword);
+			amiPassword = CryptographySingleton.encrypt(amiPassword);
 
-			String clientDN = Cryptography.encrypt(m_clientDN);
-			String issuerDN = Cryptography.encrypt(m_issuerDN);
+			String clientDN = CryptographySingleton.encrypt(m_clientDN);
+			String issuerDN = CryptographySingleton.encrypt(m_issuerDN);
 
 			String sql;
 
@@ -120,10 +119,10 @@ public class GetSessionInfo extends CommandAbstractClass
 
 		if(detachCert)
 		{
-			amiPassword = Cryptography.encrypt(amiPassword);
+			amiPassword = CryptographySingleton.encrypt(amiPassword);
 
-			String clientDN = Cryptography.encrypt("");
-			String issuerDN = Cryptography.encrypt("");
+			String clientDN = CryptographySingleton.encrypt("");
+			String issuerDN = CryptographySingleton.encrypt("");
 
 			String sql;
 
@@ -165,9 +164,9 @@ public class GetSessionInfo extends CommandAbstractClass
 			+
 			"<field name=\"guestUser\"><![CDATA[" + m_guestUser + "]]></field>"
 			+
-			"<field name=\"clientDNInAMI\"><![CDATA[" + Cryptography.decrypt(clientDNInAMI) + "]]></field>"
+			"<field name=\"clientDNInAMI\"><![CDATA[" + CryptographySingleton.decrypt(clientDNInAMI) + "]]></field>"
 			+
-			"<field name=\"issuerDNInAMI\"><![CDATA[" + Cryptography.decrypt(issuerDNInAMI) + "]]></field>"
+			"<field name=\"issuerDNInAMI\"><![CDATA[" + CryptographySingleton.decrypt(issuerDNInAMI) + "]]></field>"
 			+
 			"<field name=\"clientDNInSession\"><![CDATA[" + m_clientDN + "]]></field>"
 			+

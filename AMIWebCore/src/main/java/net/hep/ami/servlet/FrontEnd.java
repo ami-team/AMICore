@@ -240,11 +240,11 @@ public class FrontEnd extends HttpServlet
 		{
 			for(X509Certificate certificate: certificates)
 			{
-				if(Cryptography.isProxy(certificate) == false)
+				if(CryptographySingleton.isProxy(certificate) == false)
 				{
 					return new Tuple2<String, String>(
-						Cryptography.getAMIName(certificate.getSubjectX500Principal()),
-						Cryptography.getAMIName(certificate.getIssuerX500Principal())
+						CryptographySingleton.getAMIName(certificate.getSubjectX500Principal()),
+						CryptographySingleton.getAMIName(certificate.getIssuerX500Principal())
 					);
 				}
 			}
@@ -328,7 +328,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + Cryptography.encrypt(clientDN).replace("'", "''") + "'").getAll();
+			List<Row> rowList = basicQuerier.executeQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + CryptographySingleton.encrypt(clientDN).replace("'", "''") + "'").getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -357,7 +357,7 @@ public class FrontEnd extends HttpServlet
 
 		return new Tuple2<String, String>(
 			/******************/(row.getValue("AMIUser")),
-			Cryptography.decrypt(row.getValue("AMIPass"))
+			CryptographySingleton.decrypt(row.getValue("AMIPass"))
 		);
 
 		/*-----------------------------------------------------------------*/
