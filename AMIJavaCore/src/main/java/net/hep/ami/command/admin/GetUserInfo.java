@@ -45,14 +45,14 @@ public class GetUserInfo extends CommandAbstractClass
 
 		Row row1 = rowList.get(0);
 
+		/*-----------------------------------------------------------------*/
+
 		String AMIUser = row1.getValue("AMIUser");
 		String firstName = row1.getValue("firstName");
 		String lastName = row1.getValue("lastName");
 		String email = row1.getValue("email");
 		String valid = row1.getValue("valid");
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		boolean VALID = valid.equals("0") == false;

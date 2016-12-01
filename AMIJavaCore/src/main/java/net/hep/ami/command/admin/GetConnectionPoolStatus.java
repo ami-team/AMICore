@@ -20,13 +20,17 @@ public class GetConnectionPoolStatus extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
 		/*-----------------------------------------------------------------*/
 
 		Runtime runtime = Runtime.getRuntime();
 
 		File file = new File("/");
+
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
 
 		result.append(
 			"<rowset type=\"system\">"

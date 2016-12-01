@@ -22,19 +22,13 @@ public class GetUserStats extends CommandAbstractClass
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
 		TransactionalQuerier transactionalQuerier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
 		result.append(transactionalQuerier.executeQuery("SELECT (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=1) AS `valid`, (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=0) AS `invalid`").toStringBuilder("users"));
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		result.append(transactionalQuerier.executeQuery("SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid`=1 GROUP BY `country`").toStringBuilder("countries"));
@@ -49,13 +43,6 @@ public class GetUserStats extends CommandAbstractClass
 	public static String help()
 	{
 		return "Get user stats.";
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String usage()
-	{
-		return "";
 	}
 
 	/*---------------------------------------------------------------------*/

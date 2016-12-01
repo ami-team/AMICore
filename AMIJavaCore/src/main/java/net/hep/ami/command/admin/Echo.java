@@ -24,7 +24,7 @@ public class Echo extends CommandAbstractClass
 
 		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
-			result.append("<field name=\"" + entry.getKey() + "\"><![CDATA[" + entry.getValue() + "]]></field>");
+			result.append("<field name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"><![CDATA[" + entry.getValue() + "]]></field>");
 		}
 
 		result.append("</row></rowset>");

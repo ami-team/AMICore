@@ -21,8 +21,6 @@ public class RemoveRole extends CommandAbstractClass
 	{
 		String role = arguments.get("role");
 
-		boolean recursive = arguments.containsKey("recursive");
-
 		if(role == null)
 		{
 			throw new Exception("invalid usage");
@@ -30,7 +28,7 @@ public class RemoveRole extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		RoleSingleton.removeRole(getQuerier("self"), role, recursive);
+		RoleSingleton.removeRole(getQuerier("self"), role, arguments.containsKey("recursive"));
 
 		/*-----------------------------------------------------------------*/
 

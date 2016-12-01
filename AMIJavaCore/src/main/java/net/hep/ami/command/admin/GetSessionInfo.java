@@ -58,6 +58,8 @@ public class GetSessionInfo extends CommandAbstractClass
 
 		Row row1 = rowList.get(0);
 
+		/*-----------------------------------------------------------------*/
+
 		String AMIUser = row1.getValue("AMIUser");
 		String clientDNInAMI = row1.getValue("clientDN");
 		String issuerDNInAMI = row1.getValue("issuerDN");
@@ -66,8 +68,6 @@ public class GetSessionInfo extends CommandAbstractClass
 		String email = row1.getValue("email");
 		String valid = row1.getValue("valid");
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		String useVOMS = ConfigSingleton.getProperty("use_voms");
