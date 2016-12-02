@@ -1,9 +1,11 @@
-package net.hep.ami.utility;
+package net.hep.ami.utility.shell;
 
 import java.io.*;
 import java.util.*;
 
 import com.jcraft.jsch.*;
+
+import net.hep.ami.utility.*;
 
 public class SecureShell extends ShellAbstractClass
 {

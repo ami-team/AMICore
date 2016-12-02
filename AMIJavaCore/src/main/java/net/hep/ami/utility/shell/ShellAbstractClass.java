@@ -1,6 +1,8 @@
-package net.hep.ami.utility;
+package net.hep.ami.utility.shell;
 
 import java.io.*;
+
+import net.hep.ami.utility.*;
 
 public abstract class ShellAbstractClass
 {
