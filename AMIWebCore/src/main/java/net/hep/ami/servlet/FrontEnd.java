@@ -149,7 +149,7 @@ public class FrontEnd extends HttpServlet
 				/* PARSE COMMAND                                           */
 				/*---------------------------------------------------------*/
 
-				CommandParser.CommandParserTuple tuple = CommandParser.parse(command);
+				AMIParser.CommandParserTuple tuple = AMIParser.parse(command);
 
 				updateSessionAndCommandArgs(
 					tuple.arguments,

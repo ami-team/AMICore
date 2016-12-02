@@ -3,7 +3,7 @@ package net.hep.ami.utility;
 import java.util.*;
 import java.util.regex.*;
 
-public class CommandParser
+public class AMIParser
 {
 	/*---------------------------------------------------------------------*/
 
