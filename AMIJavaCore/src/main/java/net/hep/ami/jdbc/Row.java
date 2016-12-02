@@ -1,7 +1,5 @@
 package net.hep.ami.jdbc;
 
-import net.hep.ami.utility.annotation.*;
-
 public class Row
 {
 	/*---------------------------------------------------------------------*/

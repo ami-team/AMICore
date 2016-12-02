@@ -2,8 +2,6 @@ package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 
-import net.hep.ami.utility.annotation.*;
-
 public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/

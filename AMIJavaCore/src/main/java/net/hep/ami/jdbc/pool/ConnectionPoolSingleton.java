@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.annotation.*;
 
 import org.apache.tomcat.jdbc.pool.*;
 

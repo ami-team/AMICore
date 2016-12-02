@@ -4,10 +4,9 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
-import net.hep.ami.utility.*;
-import net.hep.ami.utility.annotation.*;
 
 public class DriverSingleton
 {

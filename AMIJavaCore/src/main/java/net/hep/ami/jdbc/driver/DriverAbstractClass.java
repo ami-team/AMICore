@@ -8,7 +8,6 @@ import net.hep.ami.jdbc.mql.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.driver.annotation.*;
-import net.hep.ami.utility.annotation.*;
 
 public abstract class DriverAbstractClass implements QuerierInterface
 {

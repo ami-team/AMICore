@@ -5,7 +5,6 @@ import java.sql.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
-import net.hep.ami.utility.annotation.*;
 
 public class TransactionalQuerier implements QuerierInterface
 {

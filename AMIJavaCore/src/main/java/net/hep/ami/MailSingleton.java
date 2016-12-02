@@ -5,8 +5,6 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
-import net.hep.ami.utility.annotation.*;
-
 public class MailSingleton
 {
 	/*---------------------------------------------------------------------*/
