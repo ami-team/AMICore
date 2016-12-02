@@ -185,9 +185,7 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Set<Map.Entry<String, Tuple>> entrySet = new TreeSet<Map.Entry<String, Tuple>>(new MapEntryKeyComparator());
-
-		entrySet.addAll(s_catalogs.entrySet());
+		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<Tuple>(s_catalogs.entrySet());
 
 		/*-----------------------------------------------------------------*/
 

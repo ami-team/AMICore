@@ -41,7 +41,6 @@ public class CommandSingletonTest
 
 		try
 		{
-
 			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
 
 			//rb.create();

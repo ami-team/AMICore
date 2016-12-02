@@ -81,9 +81,7 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 
 		try
 		{
-			InputStream inputStream = new FileInputStream(fileName);
-
-			SecuritySingleton.PEMTuple tuple = SecuritySingleton.loadPEM(inputStream);
+			SecuritySingleton.PEMTuple tuple = SecuritySingleton.loadPEM(new FileInputStream(fileName));
 
 			if(tuple.privateKeys.length == 0)
 			{

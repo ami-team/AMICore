@@ -28,15 +28,6 @@ public class ConfigSingleton
 
 	static
 	{
-		try
-		{
-			Class.forName("net.hep.ami.jdbc.DriverSingleton");
-		}
-		catch(ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-
 		reload();
 		System.out.println("ConfigSingleton");
 	}
@@ -129,7 +120,7 @@ public class ConfigSingleton
 	private static void loadConfFile() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* FIND FILE                                                       */
+		/* FIND CONFIG FILE                                                */
 		/*-----------------------------------------------------------------*/
 
 		File file;
@@ -172,19 +163,13 @@ public class ConfigSingleton
 		s_configFileName = file        .        getPath();
 
 		/*-----------------------------------------------------------------*/
-		/* GET INPUT STREAM                                                */
+		/* PARSE CONFIG FILE                                               */
 		/*-----------------------------------------------------------------*/
 
-		InputStream inputStream = new FileInputStream(file);
+		Document document = XMLFactories.newDocument(new FileInputStream(file));
 
 		/*-----------------------------------------------------------------*/
-		/* PARSE FILE                                                      */
-		/*-----------------------------------------------------------------*/
-
-		Document document = XMLFactories.newDocument(inputStream);
-
-		/*-----------------------------------------------------------------*/
-		/* READ FILE                                                       */
+		/* READ CONFIG FILE                                                */
 		/*-----------------------------------------------------------------*/
 
 		NodeList nodeList = document.getElementsByTagName("property");
@@ -234,7 +219,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void readFromDataBase() throws Exception
+	public static void readDataBase() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */
@@ -691,9 +676,7 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Set<Map.Entry<String, String>> entrySet = new TreeSet<Map.Entry<String, String>>(new MapEntryKeyComparator());
-
-		entrySet.addAll(s_properties.entrySet());
+		OrderdSetOfMapEntry<String> entrySet = new OrderdSetOfMapEntry<String>(s_properties.entrySet());
 
 		/*-----------------------------------------------------------------*/
 
