@@ -1,10 +1,10 @@
 package net.hep.ami.jdbc;
 
 import java.sql.*;
+import java.text.*;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.annotation.*;
 
 public class RowSet
@@ -172,6 +172,10 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	private static final SimpleDateFormat s_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+	/*---------------------------------------------------------------------*/
+
 	protected String[] getCurrentValue() throws SQLException
 	{
 		String[] result = new String[m_numberOfFields];
@@ -184,7 +188,7 @@ public class RowSet
 				/* TIME                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = DateFormater.format(m_resultSet.getTime(i + 1));
+				result[i] = s_simpleDateFormat.format(m_resultSet.getTime(i + 1));
 
 				if(result[i] == null)
 				{
@@ -199,7 +203,7 @@ public class RowSet
 				/* DATE                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = DateFormater.format(m_resultSet.getDate(i + 1));
+				result[i] = s_simpleDateFormat.format(m_resultSet.getDate(i + 1));
 
 				if(result[i] == null)
 				{
@@ -214,7 +218,7 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				result[i] = DateFormater.format(m_resultSet.getTimestamp(i + 1));
+				result[i] = s_simpleDateFormat.format(m_resultSet.getTimestamp(i + 1));
 
 				if(result[i] == null)
 				{

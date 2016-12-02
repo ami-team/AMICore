@@ -45,6 +45,8 @@ public class CommandSingletonTest
 			rb.commitAndRelease();
 			ClassSingleton.findClassNames("foo");
 
+			System.out.println(new Date().toString());
+
 			System.out.println("done.");
 		}
 		catch(Exception e)

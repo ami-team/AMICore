@@ -297,8 +297,6 @@ public class CommandSingleton
 
 		stringBuilder.append("</arguments>");
 
-		stringBuilder.append("<executionDate>" + DateFormater.format(new Date()) + "</executionDate>");
-
 		if(arguments.containsKey("help") == false)
 		{
 			/*-------------------------------------------------------------*/
