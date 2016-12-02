@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc;
 
 import java.util.*;
+import java.util.regex.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
@@ -26,9 +27,16 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static final Pattern s_protocolPattern = Pattern.compile(
+		"^\\s*(\\w+:\\w+)"
+	);
+
+	/*---------------------------------------------------------------------*/
+
 	static
 	{
 		reload();
+		System.out.println("DriverSingleton");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -40,8 +48,6 @@ public class DriverSingleton
 		try
 		{
 			DriverSingleton.addDrivers();
-
-			ConfigSingleton.readFromDataBase();
 		}
 		catch(Exception e)
 		{
@@ -115,73 +121,48 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getProtocol(String jdbcUrl) throws Exception
+	public static Tuple getDriver(String jdbcUrl) throws Exception
 	{
-		int index = jdbcUrl.indexOf("://");
+		/*-----------------------------------------------------------------*/
 
-		if(index < 0)
+		Matcher m = s_protocolPattern.matcher(jdbcUrl);
+
+		if(m.find() == false)
 		{
 			throw new Exception("invalid JDBC URL `" + jdbcUrl + "`");
 		}
 
-		return jdbcUrl.substring(0, index);
+		/*-----------------------------------------------------------------*/
+
+		Tuple result = s_drivers.get(m.group(1));
+
+		if(result == null)
+		{
+			throw new Exception("unknown JDBC protocol `" + m.group(1) + "`");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET DRIVER                                                      */
-		/*-----------------------------------------------------------------*/
-
-		String jdbcProto = getProtocol(jdbcUrl);
-
-		Tuple tuple = s_drivers.get(jdbcProto);
-
-		if(tuple == null)
-		{
-			throw new Exception("unknown JDBC protocol `" + jdbcProto + "`");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CONNECTION                                                      */
-		/*-----------------------------------------------------------------*/
-
-		return tuple.t.newInstance(
+		return getDriver(jdbcUrl).t.newInstance(
 			catalog,
 			jdbcUrl,
 			user,
 			pass
 		);
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static boolean isType(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET DRIVER                                                      */
-		/*-----------------------------------------------------------------*/
-
-		String jdbcProto = getProtocol(jdbcUrl);
-
-		Tuple tuple = s_drivers.get(jdbcProto);
-
-		if(tuple == null)
-		{
-			throw new Exception("unknown JDBC protocol `" + jdbcProto + "`");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CONNECTION                                                      */
-		/*-----------------------------------------------------------------*/
-
-		return tuple.x == jdbcType;
-
-		/*-----------------------------------------------------------------*/
+		return getDriver(jdbcUrl).x == jdbcType;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -217,11 +198,11 @@ public class DriverSingleton
 			result.append(
 				"<row>"
 				+
+				"<field name=\"jdbcProto\"><![CDATA[" + jdbcProto + "]]></field>"
+				+
 				"<field name=\"jdbcType\"><![CDATA[" + jdbcType + "]]></field>"
 				+
 				"<field name=\"jdbcClass\"><![CDATA[" + jdbcClass + "]]></field>"
-				+
-				"<field name=\"jdbcProto\"><![CDATA[" + jdbcProto + "]]></field>"
 				+
 				"<field name=\"driverClass\"><![CDATA[" + driverClass + "]]></field>"
 				+

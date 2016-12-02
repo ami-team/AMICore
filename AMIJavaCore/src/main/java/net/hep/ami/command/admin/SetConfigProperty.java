@@ -5,11 +5,11 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class SetConfig extends CommandAbstractClass
+public class SetConfigProperty extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public SetConfig(Map<String, String> arguments, long transactionId)
+	public SetConfigProperty(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -19,6 +19,16 @@ public class SetConfig extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String name = arguments.get("name");
+		String value = arguments.get("value");
+
+		if(name == null
+		   ||
+		   value == null
+		 ) {
+			throw new Exception("invalid usage");
+		}
+
 		if(m_isSecure.equals("false"))
 		{
 			throw new Exception("HTTPS connection required"); 
@@ -26,7 +36,9 @@ public class SetConfig extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		ConfigSingleton.writeToDataBase(arguments);
+		ConfigSingleton.setProperty(name, value);
+
+		ConfigSingleton.setPropertyToDataBase(name, value);
 
 		/*-----------------------------------------------------------------*/
 
@@ -37,7 +49,7 @@ public class SetConfig extends CommandAbstractClass
 
 	public static String help()
 	{
-		return "Set configuration.";
+		return "Set configuration property.";
 	}
 
 	/*---------------------------------------------------------------------*/

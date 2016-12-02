@@ -151,7 +151,7 @@ public class SchemaSingleton
 			/**/	{
 			/**/		String name = resultSet.getString("TABLE_NAME");
 			/**/
-			/**/		if(name != null)
+			/**/		if(name != null && name.startsWith("db_") == false && name.startsWith("x_db_") == false)
 			/**/		{
 			/**/			name = name.toLowerCase();
 			/**/

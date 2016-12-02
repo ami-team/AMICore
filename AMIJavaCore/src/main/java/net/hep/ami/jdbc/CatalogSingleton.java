@@ -30,6 +30,7 @@ public class CatalogSingleton
 	static
 	{
 		reload();
+		System.out.println("CatalogSingleton");
 	}
 
 	/*---------------------------------------------------------------------*/

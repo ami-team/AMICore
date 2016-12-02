@@ -1,7 +1,6 @@
 package net.hep.ami;
 
 import java.io.*;
-import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
@@ -29,7 +28,17 @@ public class ConfigSingleton
 
 	static
 	{
+		try
+		{
+			Class.forName("net.hep.ami.jdbc.DriverSingleton");
+		}
+		catch(ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
 		reload();
+		System.out.println("ConfigSingleton");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -44,12 +53,8 @@ public class ConfigSingleton
 		try
 		{
 			s_hasValidConfFile = false;
-			readFromConfFile();
+			loadConfFile();
 			s_hasValidConfFile = true;
-
-			SecuritySingleton.init(
-				getProperty("encryption_key")
-			);
 		}
 		catch(Exception e)
 		{
@@ -121,7 +126,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFromConfFile() throws Exception
+	private static void loadConfFile() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* FIND FILE                                                       */
@@ -217,6 +222,14 @@ public class ConfigSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* SECURITY                                                        */
+		/*-----------------------------------------------------------------*/
+
+		SecuritySingleton.init(
+			s_properties.get("encryption_key")
+		);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -248,19 +261,21 @@ public class ConfigSingleton
 			/* ADD PROPERTIES                                              */
 			/*-------------------------------------------------------------*/
 
+			String name;
+			String value;
+
 			for(Row row: rowSet.iter())
 			{
-				try
+				name = SecuritySingleton.decrypt(row.getValue(0));
+				value = SecuritySingleton.decrypt(row.getValue(1));
+
+				if(isReserved(name) == false)
 				{
 					s_properties.put(
-						SecuritySingleton.decrypt(row.getValue(0))
+						name
 						,
-						SecuritySingleton.decrypt(row.getValue(1))
+						value
 					);
-				}
-				catch(org.bouncycastle.util.encoders.DecoderException e)
-				{
-					LogSingleton.defaultLogger.error(e.getMessage());
 				}
 			}
 
@@ -276,7 +291,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void writeToDataBase(Map<String, String> properties) throws Exception
+	public static void setPropertyToDataBase(String name, String value) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */
@@ -291,67 +306,54 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		boolean success = false;
-
 		try
 		{
 			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY 1                                             */
+			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			driver.executeUpdate("DELETE FROM `router_config`");
-
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY 2                                             */
-			/*-------------------------------------------------------------*/
-
-			PreparedStatement preparedStatement = driver.sqlPrepareStatement("INSERT INTO `router_config` VALUES (?, ?)");
-
-			/*-------------------------------------------------------------*/
-
-			try
-			{
-				String name;
-				String value;
-
-				for(Map.Entry<String, String> entry: properties.entrySet())
-				{
-					name = entry.getKey();
-					value = entry.getValue();
-
-					if(isReserved(name) == false)
-					{
-						preparedStatement.setString(1, SecuritySingleton.encrypt(name));
-						preparedStatement.setString(2, SecuritySingleton.encrypt(value));
-						preparedStatement.addBatch();
-					}
-				}
-
-				preparedStatement.executeBatch();
-			}
-			finally
-			{
-				preparedStatement.close();
-			}
-
-			/*-------------------------------------------------------------*/
-			/* SUCCESS                                                     */
-			/*-------------------------------------------------------------*/
-
-			success = true;
+			driver.executeUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('" + SecuritySingleton.encrypt(name.replace("'", "''")) + "', '" + SecuritySingleton.encrypt(value.replace("'", "''")) + "')");
 
 			/*-------------------------------------------------------------*/
 		}
 		finally
 		{
-			if(success)
-			{
-				driver.commitAndRelease();
-			}
-			else
-			{
-				driver.rollbackAndRelease();
-			}
+			driver.commitAndRelease();
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void removePropertyToDataBase(String name) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* CREATE QUERIER                                                  */
+		/*-----------------------------------------------------------------*/
+
+		DriverAbstractClass driver = DriverSingleton.getConnection(
+			"self",
+			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			driver.executeUpdate("DELETE FROM `router_config` WHERE `paramName` = '" + SecuritySingleton.encrypt(name.replace("'", "''")) + "'");
+
+			/*-------------------------------------------------------------*/
+		}
+		finally
+		{
+			driver.commitAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -380,6 +382,13 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 	/* SYSTEM                                                              */
+	/*---------------------------------------------------------------------*/
+
+	public static String setSystemProperty(String key, String value)
+	{
+		return System.setProperty(key, value);
+	}
+
 	/*---------------------------------------------------------------------*/
 
 	public static String getSystemProperty(String key)
@@ -509,6 +518,20 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 	/* AMI                                                                 */
+	/*---------------------------------------------------------------------*/
+
+	public static String setProperty(String key, String value)
+	{
+		return s_properties.put(key, value);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String removeProperty(String key)
+	{
+		return s_properties.remove(key);
+	}
+
 	/*---------------------------------------------------------------------*/
 
 	public static String getProperty(String key)

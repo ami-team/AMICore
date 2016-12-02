@@ -1,8 +1,11 @@
 package net.hep.ami;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton;
 
 public class CommandSingletonTest
 {
@@ -35,17 +38,19 @@ public class CommandSingletonTest
 		arguments.put("validity", "10");
 		System.out.println(CommandSingleton.executeCommand("GenerateCertificate", arguments).replace(">", ">\n"));
 */
+
 		try
 		{
+
 			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
 
 			//rb.create();
 			//rb.fill();
 
 			rb.commitAndRelease();
-			ClassSingleton.findClassNames("foo");
 
-			System.out.println(new Date().toString());
+			//System.out.println(SchemaSingleton.getCatalogNames());
+			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
 			System.out.println("done.");
 		}
