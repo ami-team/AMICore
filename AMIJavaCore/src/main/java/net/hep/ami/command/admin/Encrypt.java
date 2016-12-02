@@ -31,7 +31,7 @@ public class Encrypt extends CommandAbstractClass
 			throw new Exception("HTTPS connection required"); 
 		}
 
-		return new StringBuilder("<info><![CDATA[" + CryptographySingleton.encrypt(string) + "]]></info>");
+		return new StringBuilder("<info><![CDATA[" + SecuritySingleton.encrypt(string) + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

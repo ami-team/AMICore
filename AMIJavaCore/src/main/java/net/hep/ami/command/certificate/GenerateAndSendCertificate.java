@@ -83,7 +83,7 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 		{
 			InputStream inputStream = new FileInputStream(fileName);
 
-			CryptographySingleton.PEMTuple tuple = CryptographySingleton.loadPEM(inputStream);
+			SecuritySingleton.PEMTuple tuple = SecuritySingleton.loadPEM(inputStream);
 
 			if(tuple.privateKeys.length == 0)
 			{
@@ -105,9 +105,9 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = CryptographySingleton.generateKeyPair(2048);
+		KeyPair keyPair = SecuritySingleton.generateKeyPair(2048);
 
-		X509Certificate certificate = CryptographySingleton.generateCertificate(
+		X509Certificate certificate = SecuritySingleton.generateCertificate(
 				caKey,
 				caCrt,
 				keyPair.getPublic(),
@@ -124,7 +124,7 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_PKCS12 = CryptographySingleton.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, email.toCharArray());
+		KeyStore keyStore_PKCS12 = SecuritySingleton.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, email.toCharArray());
 
 		/*-----------------------------------------------------------------*/
 

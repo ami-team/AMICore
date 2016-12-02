@@ -91,10 +91,10 @@ public class GetSessionInfo extends CommandAbstractClass
 
 		if(attachCert)
 		{
-			amiPassword = CryptographySingleton.encrypt(amiPassword);
+			amiPassword = SecuritySingleton.encrypt(amiPassword);
 
-			String clientDN = CryptographySingleton.encrypt(m_clientDN);
-			String issuerDN = CryptographySingleton.encrypt(m_issuerDN);
+			String clientDN = SecuritySingleton.encrypt(m_clientDN);
+			String issuerDN = SecuritySingleton.encrypt(m_issuerDN);
 
 			String sql;
 
@@ -119,10 +119,10 @@ public class GetSessionInfo extends CommandAbstractClass
 
 		if(detachCert)
 		{
-			amiPassword = CryptographySingleton.encrypt(amiPassword);
+			amiPassword = SecuritySingleton.encrypt(amiPassword);
 
-			String clientDN = CryptographySingleton.encrypt("");
-			String issuerDN = CryptographySingleton.encrypt("");
+			String clientDN = SecuritySingleton.encrypt("");
+			String issuerDN = SecuritySingleton.encrypt("");
 
 			String sql;
 
@@ -164,9 +164,9 @@ public class GetSessionInfo extends CommandAbstractClass
 			+
 			"<field name=\"guestUser\"><![CDATA[" + m_guestUser + "]]></field>"
 			+
-			"<field name=\"clientDNInAMI\"><![CDATA[" + CryptographySingleton.decrypt(clientDNInAMI) + "]]></field>"
+			"<field name=\"clientDNInAMI\"><![CDATA[" + SecuritySingleton.decrypt(clientDNInAMI) + "]]></field>"
 			+
-			"<field name=\"issuerDNInAMI\"><![CDATA[" + CryptographySingleton.decrypt(issuerDNInAMI) + "]]></field>"
+			"<field name=\"issuerDNInAMI\"><![CDATA[" + SecuritySingleton.decrypt(issuerDNInAMI) + "]]></field>"
 			+
 			"<field name=\"clientDNInSession\"><![CDATA[" + m_clientDN + "]]></field>"
 			+

@@ -31,7 +31,7 @@ public class Decrypt extends CommandAbstractClass
 			throw new Exception("HTTPS connection required"); 
 		}
 
-		return new StringBuilder("<info><![CDATA[" + CryptographySingleton.decrypt(string) + "]]></info>");
+		return new StringBuilder("<info><![CDATA[" + SecuritySingleton.decrypt(string) + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

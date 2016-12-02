@@ -65,9 +65,9 @@ public class AddUser extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		amiPassword = CryptographySingleton.encrypt(amiPassword);
-		clientDN = CryptographySingleton.encrypt(clientDN);
-		issuerDN = CryptographySingleton.encrypt(issuerDN);
+		amiPassword = SecuritySingleton.encrypt(amiPassword);
+		clientDN = SecuritySingleton.encrypt(clientDN);
+		issuerDN = SecuritySingleton.encrypt(issuerDN);
 
 		String sql = String.format("INSERT INTO `router_user` (`AMIUser`,`AMIPass`,`clientDN`,`issuerDN`,`firstName`,`lastName`,`email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
 			amiLogin.replace("'", "''"),

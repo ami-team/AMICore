@@ -250,7 +250,7 @@ public class RoleSingleton
 			throw new Exception("not authenticated");
 		}
 
-		AMIPass = CryptographySingleton.encrypt(AMIPass);
+		AMIPass = SecuritySingleton.encrypt(AMIPass);
 
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE                                                        */

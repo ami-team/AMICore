@@ -20,7 +20,7 @@ import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
 
-public class CryptographySingleton
+public class SecuritySingleton
 {
 	/*---------------------------------------------------------------------*/
 
