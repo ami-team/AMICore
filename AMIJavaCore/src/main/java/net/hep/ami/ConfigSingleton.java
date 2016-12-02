@@ -391,6 +391,13 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String removeSystemProperty(String key)
+	{
+		return System.clearProperty(key);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String getSystemProperty(String key)
 	{
 		String result = System.getProperty(key);
