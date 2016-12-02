@@ -4,7 +4,6 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
-import net.hep.ami.utility.*;
 
 public class RoleSingleton
 {

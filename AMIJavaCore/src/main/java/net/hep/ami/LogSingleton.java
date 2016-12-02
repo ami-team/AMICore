@@ -1,13 +1,9 @@
-package net.hep.ami.utility;
+package net.hep.ami;
 
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.*;
 import org.apache.logging.log4j.core.filter.*;
-
-import net.hep.ami.ConfigSingleton;
-import net.hep.ami.MailSingleton;
-
 import org.apache.logging.log4j.core.appender.*;
 
 public class LogSingleton
