@@ -3,8 +3,7 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
-import net.hep.ami.utility.shell.SimpleShell;
+import net.hep.ami.utility.shell.*;
 
 /*
  * For UNIX only!
