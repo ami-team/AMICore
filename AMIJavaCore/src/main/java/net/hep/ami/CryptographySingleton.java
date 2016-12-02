@@ -14,7 +14,7 @@ import org.bouncycastle.cert.jcajce.*;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
 
-import net.hep.ami.utility.Tuple3;
+import net.hep.ami.utility.*;
 
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
@@ -598,7 +598,7 @@ public class CryptographySingleton
 		/* CHECK VOMS PROXY                                                */
 		/*-----------------------------------------------------------------*/
 
-		String[] parts = certificate.getSubjectX500Principal().getName("RFC2253").split(",");
+		String[] parts = certificate.getSubjectX500Principal().getName("RFC2253").split(",", -1);
 
 		for(String part: parts)
 		{
@@ -621,7 +621,7 @@ public class CryptographySingleton
 	{
 		StringBuilder result = new StringBuilder();
 
-		String[] parts = principal.getName("RFC2253").split(",");
+		String[] parts = principal.getName("RFC2253").split(",", -1);
 
 		for(String part: parts)
 		{

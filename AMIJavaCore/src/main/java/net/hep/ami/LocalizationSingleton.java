@@ -253,14 +253,14 @@ public class LocalizationSingleton
 			_ip = ipv4ToInteger(ip).toString();
 			_table = "router_country_blocks_ipv4";
 		}
-		catch(Exception e1)
+		catch(UnknownHostException e1)
 		{
 			try
 			{
 				_ip = ipv6ToInteger(ip).toString();
 				_table = "router_country_blocks_ipv6";
 			}
-			catch(Exception e2)
+			catch(UnknownHostException e2)
 			{
 				throw new Exception("invalid IP `" + ip + "`");
 			}
