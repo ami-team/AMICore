@@ -189,7 +189,7 @@ public class CommandSingleton
 
 	public static String executeCommand(String command) throws Exception
 	{
-		AMIParser.CommandParserTuple tuple = AMIParser.parse(command);
+		AMIParser.CommandTuple tuple = AMIParser.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments);
 	}
@@ -198,7 +198,7 @@ public class CommandSingleton
 
 	public static String executeCommand(String command, boolean checkRoles) throws Exception
 	{
-		AMIParser.CommandParserTuple tuple = AMIParser.parse(command);
+		AMIParser.CommandTuple tuple = AMIParser.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles);
 	}
@@ -207,7 +207,7 @@ public class CommandSingleton
 
 	public static String executeCommand(String command, boolean checkRoles, long transactionId) throws Exception
 	{
-		AMIParser.CommandParserTuple tuple = AMIParser.parse(command);
+		AMIParser.CommandTuple tuple = AMIParser.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles, transactionId);
 	}

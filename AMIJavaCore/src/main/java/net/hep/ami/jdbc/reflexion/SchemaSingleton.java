@@ -422,6 +422,20 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		for(String catalog: s_catalogs)
+		{
+			try
+			{
+				readMetaData(catalog);
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		Column column;
 
 		result.append("<rowset type=\"columns\">");
@@ -498,7 +512,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * s_executionTime) + " s at startup</info>");
+		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * s_executionTime) + " s</info>");
 
 		/*-----------------------------------------------------------------*/
 

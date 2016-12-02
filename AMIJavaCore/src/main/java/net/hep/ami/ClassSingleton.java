@@ -110,6 +110,15 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static void addFile(File base, File file)
+	{
+		String className = base.toURI().relativize(file.toURI()).getPath();
+
+		addClassName(className);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	private static void addJar(File file)
 	{
 		try
@@ -149,15 +158,6 @@ public class ClassSingleton
 		{
 			/* IGNORE */
 		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void addFile(File base, File file)
-	{
-		String className = base.toURI().relativize(file.toURI()).getPath();
-
-		addClassName(className);
 	}
 
 	/*---------------------------------------------------------------------*/

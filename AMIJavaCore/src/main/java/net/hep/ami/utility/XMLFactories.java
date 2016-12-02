@@ -63,7 +63,7 @@ public class XMLFactories
 		Node attr = node.getAttributes().getNamedItem(name);
 
 		return attr != null ? attr.getNodeValue().trim()
-		                    : defaultValue
+		                    : defaultValue.trim()
 		;
 	}
 

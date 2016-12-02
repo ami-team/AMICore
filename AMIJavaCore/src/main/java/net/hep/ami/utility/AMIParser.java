@@ -7,7 +7,7 @@ public class AMIParser
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class CommandParserTuple
+	public static class CommandTuple
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -17,7 +17,7 @@ public class AMIParser
 
 		/*-----------------------------------------------------------------*/
 
-		public CommandParserTuple(String _command, Map<String, String> _arguments)
+		public CommandTuple(String _command, Map<String, String> _arguments)
 		{
 			command = _command;
 
@@ -47,7 +47,7 @@ public class AMIParser
 
 	/*---------------------------------------------------------------------*/
 
-	public static CommandParserTuple parse(String s) throws Exception
+	public static CommandTuple parse(String s) throws Exception
 	{
 		/***/ int i = 0x00000000;
 		final int l = s.length();
@@ -122,7 +122,7 @@ public class AMIParser
 		/* RETURN RESULT                                                   */
 		/*-----------------------------------------------------------------*/
 
-		return new CommandParserTuple(
+		return new CommandTuple(
 			command,
 			arguments
 		);
