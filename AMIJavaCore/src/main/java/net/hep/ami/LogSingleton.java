@@ -40,7 +40,7 @@ public class LogSingleton
 			{
 				MailSingleton.sendMessage(
 					ConfigSingleton.getProperty("log_from"),
-					ConfigSingleton.getProperty("log_to")+"kllk",
+					ConfigSingleton.getProperty("log_to"),
 					ConfigSingleton.getProperty("log_cc"),
 					title, title + "\n\n" + event.getMessage().getFormattedMessage()
 				);
