@@ -49,10 +49,6 @@ public class CommandSingletonTest
 			System.out.println(SchemaSingleton.getCatalogNames());
 			System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
-			LogSingleton.defaultLogger.error("Hello World!");
-
-			LogSingleton.defaultLogger.fatal("Hello World!");
-
 			System.out.println("done.");
 		}
 		catch(Exception e)

@@ -71,7 +71,7 @@ public class DriverSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.error(e.getMessage());
+				LogSingleton.defaultLogger.fatal(e.getMessage());
 			}
 		}
 	}
