@@ -73,9 +73,9 @@ public abstract class ShellAbstractClass
 			result = result.concat(" \"" + args[i].replace("\"", "\\\"")  + "\"");
 		}
 
-		return result;
-
 		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
