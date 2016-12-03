@@ -75,41 +75,37 @@ public class AMIParser
 
 		Map<String, String> arguments = new LinkedHashMap<String, String>();
 
-		while(i < l)
+		while(i < l && s.charAt(i) != '#')
 		{
 			/*-------------------------------------------------------------*/
 			/* EAT SPACE                                                   */
 			/*-------------------------------------------------------------*/
 
-			if(Character.isWhitespace(s.charAt(i)))
+			/**/ if(Character.isWhitespace(s.charAt(i)))
 			{
 				i++;
-
-				continue;
 			}
 
 			/*-------------------------------------------------------------*/
 			/* EAT ARGUMENT                                                */
 			/*-------------------------------------------------------------*/
 
-			if((m = s_pattern2.matcher(s.substring(i))).find()
-			   ||
-			   (m = s_pattern3.matcher(s.substring(i))).find()
-			   ||
-			   (m = s_pattern4.matcher(s.substring(i))).find()
+			else if((m = s_pattern2.matcher(s.substring(i))).find()
+			        ||
+			        (m = s_pattern3.matcher(s.substring(i))).find()
+			        ||
+			        (m = s_pattern4.matcher(s.substring(i))).find()
 			 ) {
 				arguments.put(m.group(1), (m.groupCount() == 2) ? unescape(m.group(2)) : "");
 
 				i += m.group(0).length();
-
-				continue;
 			}
 
 			/*-------------------------------------------------------------*/
-			/* EXCEPTION                                                   */
+			/* SYNTAX ERROR                                                */
 			/*-------------------------------------------------------------*/
 
-			throw new Exception("command syntax error, invalid argument syntax");
+			else throw new Exception("command syntax error, invalid argument syntax");
 
 			/*-------------------------------------------------------------*/
 		}
