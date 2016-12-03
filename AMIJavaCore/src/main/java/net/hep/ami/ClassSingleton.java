@@ -15,15 +15,11 @@ public class ClassSingleton
 
 	static
 	{
-		Set<String> classPaths = new HashSet<String>();
-
-		/*-----------------------------------------------------------------*/
-		/* GET PATHS                                                       */
 		/*-----------------------------------------------------------------*/
 
 		for(String path: ConfigSingleton.getSystemProperty("java.class.path").split(":"))
 		{
-			classPaths.add(path);
+			walk(path);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -49,7 +45,7 @@ public class ClassSingleton
 				;
 			}
 
-			classPaths.add(path);
+			walk(path);
 		}
 		catch(URISyntaxException e)
 		{
@@ -57,19 +53,15 @@ public class ClassSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* WALK                                                            */
-		/*-----------------------------------------------------------------*/
+	}
 
-		File file;
+	/*---------------------------------------------------------------------*/
 
-		for(String classPath: classPaths)
-		{
-			file = new File(classPath);
+	private static void walk(String classPath)
+	{
+		File file = new File(classPath);
 
-			walk(file, file);
-		}
-
-		/*-----------------------------------------------------------------*/
+		walk(file, file);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -130,27 +122,38 @@ public class ClassSingleton
 			ZipFile zipFile = new ZipFile(file);
 
 			/*-------------------------------------------------------------*/
-			/* READ ZIP FILE                                               */
-			/*-------------------------------------------------------------*/
 
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-			/*-------------------------------------------------------------*/
-			/* ADD CLASSES                                                 */
-			/*-------------------------------------------------------------*/
-
-			while(entries.hasMoreElements())
+			try
 			{
-				String className = entries.nextElement().getName();
+				/*---------------------------------------------------------*/
+				/* READ ZIP FILE                                           */
+				/*---------------------------------------------------------*/
 
-				addClassName(className);
+				Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+				/*---------------------------------------------------------*/
+				/* ADD CLASSES                                             */
+				/*---------------------------------------------------------*/
+
+				while(entries.hasMoreElements())
+				{
+					String className = entries.nextElement().getName();
+
+					addClassName(className);
+				}
+
+				/*---------------------------------------------------------*/
 			}
+			finally
+			{
+				/*---------------------------------------------------------*/
+				/* CLOSE ZIP FILE                                          */
+				/*---------------------------------------------------------*/
 
-			/*-------------------------------------------------------------*/
-			/* CLOSE ZIP FILE                                              */
-			/*-------------------------------------------------------------*/
+				zipFile.close();
 
-			zipFile.close();
+				/*---------------------------------------------------------*/
+			}
 
 			/*-------------------------------------------------------------*/
 		}

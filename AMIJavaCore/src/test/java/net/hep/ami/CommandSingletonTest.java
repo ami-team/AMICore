@@ -1,11 +1,9 @@
 package net.hep.ami;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton;
+import net.hep.ami.jdbc.reflexion.*;
 
 public class CommandSingletonTest
 {
@@ -48,8 +46,8 @@ public class CommandSingletonTest
 
 			rb.commitAndRelease();
 
-			//System.out.println(SchemaSingleton.getCatalogNames());
-			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
+			System.out.println(SchemaSingleton.getCatalogNames());
+			System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
 			System.out.println("done.");
 		}

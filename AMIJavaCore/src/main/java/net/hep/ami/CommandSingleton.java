@@ -13,11 +13,11 @@ public class CommandSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple4<String, String, Constructor<CommandAbstractClass>, String>
+	private static class Tuple extends Tuple3<String, String, Constructor<CommandAbstractClass>>
 	{
-		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z, String _t)
+		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z)
 		{
-			super(_x, _y, _z, _t);
+			super(_x, _y, _z);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeQuery("SELECT `command`, `class`, `archived` FROM `router_command`");
+			RowSet rowSet = driver.executeQuery("SELECT `command`, `class` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */
@@ -94,8 +94,7 @@ public class CommandSingleton
 				{
 					addCommand(
 						row.getValue("command"),
-						row.getValue("class"),
-						row.getValue("archived")
+						row.getValue("class")
 					);
 				}
 				catch(Exception e)
@@ -118,7 +117,7 @@ public class CommandSingleton
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommand(String commandName, String className, String archived) throws Exception
+	private static void addCommand(String commandName, String className) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
@@ -141,8 +140,7 @@ public class CommandSingleton
 					clazz.getConstructor(
 						Map.class,
 						long.class
-					),
-					archived
+					)
 				)
 			);
 		}
@@ -173,7 +171,6 @@ public class CommandSingleton
 
 			querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
 				simpleName,
-				name,
 				name
 			));
 
@@ -278,10 +275,12 @@ public class CommandSingleton
 		stringBuilder.append("<arguments>");
 
 		String key;
+		String value;
 
 		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
 			key = entry.getKey();
+			value = entry.getValue();
 
 			if(key.equals("AMIUser") == false
 			   &&
@@ -291,7 +290,7 @@ public class CommandSingleton
 			   &&
 			   key.equals("issuerDN") == false
 			 ) {
-				stringBuilder.append("<argument name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\" value=\"" + entry.getValue().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
+				stringBuilder.append("<argument name=\"" + key.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\" value=\"" + value.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
 			}
 		}
 
@@ -378,7 +377,6 @@ public class CommandSingleton
 		String help;
 		String usage;
 		String clazz;
-		String archived;
 
 		for(Map.Entry<String, Tuple> entry: entrySet)
 		{
@@ -387,7 +385,6 @@ public class CommandSingleton
 			help = entry.getValue().x.toString();
 			usage = entry.getValue().y.toString();
 			clazz = entry.getValue().z.getName();
-			archived = entry.getValue().t.toString();
 
 			result.append(
 				"<row>"
@@ -399,8 +396,6 @@ public class CommandSingleton
 				"<field name=\"usage\"><![CDATA[" + usage + "]]></field>"
 				+
 				"<field name=\"class\"><![CDATA[" + clazz + "]]></field>"
-				+
-				"<field name=\"archived\"><![CDATA[" + archived + "]]></field>"
 				+
 				"</row>"
 			);

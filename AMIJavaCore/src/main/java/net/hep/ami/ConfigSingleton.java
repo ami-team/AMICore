@@ -13,12 +13,12 @@ public class ConfigSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static boolean s_hasValidConfFile;
+	private static String s_configPathName;
+	private static String s_configFileName;
 
 	/*---------------------------------------------------------------------*/
 
-	private static String s_configPathName;
-	private static String s_configFileName;
+	private static boolean s_hasValidConfFile;
 
 	/*---------------------------------------------------------------------*/
 
@@ -29,7 +29,6 @@ public class ConfigSingleton
 	static
 	{
 		reload();
-		System.out.println("ConfigSingleton");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -103,7 +102,7 @@ public class ConfigSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		if(configPathName.endsWith(".xml") == false)
+		if(configPathName.toLowerCase().endsWith(".xml") == false)
 		{
 			configPathName = configPathName + File.separator + "AMI.xml";
 		}
@@ -163,10 +162,16 @@ public class ConfigSingleton
 		s_configFileName = file        .        getPath();
 
 		/*-----------------------------------------------------------------*/
+		/* GET INPUT STREAM                                                */
+		/*-----------------------------------------------------------------*/
+
+		InputStream inputStream = new FileInputStream(file);
+
+		/*-----------------------------------------------------------------*/
 		/* PARSE CONFIG FILE                                               */
 		/*-----------------------------------------------------------------*/
 
-		Document document = XMLFactories.newDocument(new FileInputStream(file));
+		Document document = XMLFactories.newDocument(inputStream);
 
 		/*-----------------------------------------------------------------*/
 		/* READ CONFIG FILE                                                */
@@ -207,7 +212,7 @@ public class ConfigSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* SECURITY                                                        */
+		/* INIT SECURITY                                                   */
 		/*-----------------------------------------------------------------*/
 
 		SecuritySingleton.init(
@@ -297,7 +302,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			driver.executeUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('" + SecuritySingleton.encrypt(name.replace("'", "''")) + "', '" + SecuritySingleton.encrypt(value.replace("'", "''")) + "')");
+			driver.executeUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('" + SecuritySingleton.encrypt(name) + "', '" + SecuritySingleton.encrypt(value) + "')");
 
 			/*-------------------------------------------------------------*/
 		}
@@ -332,7 +337,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			driver.executeUpdate("DELETE FROM `router_config` WHERE `paramName` = '" + SecuritySingleton.encrypt(name.replace("'", "''")) + "'");
+			driver.executeUpdate("DELETE FROM `router_config` WHERE `paramName` = '" + SecuritySingleton.encrypt(name) + "'");
 
 			/*-------------------------------------------------------------*/
 		}
@@ -342,13 +347,6 @@ public class ConfigSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static boolean hasValidConfFile()
-	{
-		return s_hasValidConfFile;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -363,6 +361,13 @@ public class ConfigSingleton
 	public static String getConfigFileName()
 	{
 		return s_configFileName;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static boolean hasValidConfFile()
+	{
+		return s_hasValidConfFile;
 	}
 
 	/*---------------------------------------------------------------------*/

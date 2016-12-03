@@ -115,7 +115,7 @@ public class ConverterSingleton
 		InputStream inputStream = ConverterSingleton.class.getResourceAsStream(xslt);
 
 		/*-----------------------------------------------------------------*/
-		/* PARSE FILE                                                      */
+		/* PARSE XSLT FILE                                                 */
 		/*-----------------------------------------------------------------*/
 
 		Templates templates = XMLFactories.newTemplates(inputStream);
