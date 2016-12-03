@@ -24,7 +24,7 @@ public class LogSingleton
 
 		public AMIFatalAppender(String name)
 		{
-			super(name, LevelRangeFilter.createFilter(Level.FATAL, Level.FATAL, null, null), null, true);
+			super(name, LevelRangeFilter.createFilter(Level.FATAL, Level.FATAL, null, null), null, false);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -40,14 +40,17 @@ public class LogSingleton
 			{
 				MailSingleton.sendMessage(
 					ConfigSingleton.getProperty("log_from"),
-					ConfigSingleton.getProperty("log_to"),
+					ConfigSingleton.getProperty("log_to")+"kllk",
 					ConfigSingleton.getProperty("log_cc"),
 					title, title + "\n\n" + event.getMessage().getFormattedMessage()
 				);
 			}
 			catch(Exception e)
 			{
-				error(e.getMessage());
+				if(ignoreExceptions() == false)
+				{
+					throw new AppenderLoggingException(e);
+				}
 			}
 		}
 
@@ -80,7 +83,9 @@ public class LogSingleton
 		/* ADD APPENDER                                                    */
 		/*-----------------------------------------------------------------*/
 
+		/* NOT MUTABLE */
 		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level"));
+		/* NOT MUTABLE */
 
 		/*-----------------------------------------------------------------*/
 
