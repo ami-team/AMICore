@@ -99,19 +99,19 @@ public abstract class CommandAbstractClass
 	{
 		StringBuilder result = null;
 
-		boolean passed = false;
+		boolean success = false;
 
 		try
 		{
 			result = main(m_arguments);
 
-			passed = true;
+			success = true;
 		}
 		finally
 		{
 			if(m_transactionBooker)
 			{
-				if(passed)
+				if(success)
 				{
 					TransactionPoolSingleton.commitAndRelease(m_transactionId);
 				}
