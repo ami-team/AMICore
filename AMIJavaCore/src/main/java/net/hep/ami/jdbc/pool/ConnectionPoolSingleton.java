@@ -17,7 +17,7 @@ public class ConnectionPoolSingleton
 	private static final int s_maxActive = ConfigSingleton.getProperty("max_active", 100);
 	// The maximum number of active connections that can be allocated from this pool at the same time.
 
-	private static final int s_minIdle = ConfigSingleton.getProperty("min_idle", 10);
+	private static final int s_minIdle = ConfigSingleton.getProperty("min_idle", 5);
 	// The minimum number of established connections that should be kept in the pool at all times.
 
 	private static final int s_maxIdle = ConfigSingleton.getProperty("max_idle", 25);
