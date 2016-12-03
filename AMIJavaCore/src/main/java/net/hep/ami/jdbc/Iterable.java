@@ -73,7 +73,7 @@ public class Iterable implements java.lang.Iterable<Row>
 		}
 		catch(SQLException e)
 		{
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -91,7 +91,7 @@ public class Iterable implements java.lang.Iterable<Row>
 				}
 				catch(SQLException e)
 				{
-					throw new RuntimeException(e.getMessage());
+					throw new RuntimeException(e);
 				}
 			}
 
@@ -106,7 +106,7 @@ public class Iterable implements java.lang.Iterable<Row>
 				}
 				catch(SQLException e)
 				{
-					throw new RuntimeException(e.getMessage());
+					throw new RuntimeException(e);
 				}
 			}
 

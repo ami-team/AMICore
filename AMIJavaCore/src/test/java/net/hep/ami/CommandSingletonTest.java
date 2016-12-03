@@ -41,13 +41,13 @@ public class CommandSingletonTest
 		{
 			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
 
-			//rb.create();
-			//rb.fill();
+			rb.create();
+			rb.fill();
 
 			rb.commitAndRelease();
 
-			System.out.println(SchemaSingleton.getCatalogNames());
-			System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
+//			System.out.println(SchemaSingleton.getCatalogNames());
+//			System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
 			System.out.println("done.");
 		}

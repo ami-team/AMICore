@@ -22,6 +22,10 @@ public class RouterBuilder extends BasicQuerier
 
 	public void create() throws Exception
 	{
+		executeMQLUpdate("DROP DATABASE `router_test`;");
+		executeMQLUpdate("CREATE DATABASE `router_test`;");
+		executeMQLUpdate("USE `router_test`;");
+
 		/*-----------------------------------------------------------------*/
 		/* ROUTER_CONFIG                                                   */
 		/*-----------------------------------------------------------------*/

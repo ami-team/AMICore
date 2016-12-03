@@ -9,45 +9,70 @@ public class CSVParser
 	/*---------------------------------------------------------------------*/
 
 	private static final Pattern s_pattern1 = Pattern.compile(
-		"^\\s*,\\s*"
+		"^\\s*#"
 	);
 
 	/*---------------------------------------------------------------------*/
 
 	private static final Pattern s_pattern2 = Pattern.compile(
-		"^\"(\\\\\"|[^\"])*\""
-		+ "|" +
-		"^'(\\\\'|[^'])*'"
-		+ "|" +
-		"^`(\\\\`|[^`])*`"
+		"^\\s*,\\s*"
 	);
 
 	/*---------------------------------------------------------------------*/
 
 	private static final Pattern s_pattern3 = Pattern.compile(
-		"^[^,\\s\\\"\\\'`]+"
+		"^\"((\\\\\"|[^\"])*)\""
 	);
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> tokenize(String sql) throws Exception
+	private static final Pattern s_pattern4 = Pattern.compile(
+		"^'((\\\\'|[^'])*)'"
+	);
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Pattern s_pattern5 = Pattern.compile(
+		"^`((\\\\`|[^`])*)`"
+	);
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Pattern s_pattern6 = Pattern.compile(
+		"^[^\\s#,\"'`]+"
+	);
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<String> tokenize(String csv) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
 		/***/ int i = 0x0000000000;
-		final int l = sql.length();
+		final int l = csv.length();
 
-		String word = "";
+		String value = "";
 
 		Matcher m;
 
 		while(i < l)
 		{
 			/*-------------------------------------------------------------*/
+			/* EAT SPACE                                                   */
+			/*-------------------------------------------------------------*/
+
+			if(Character.isWhitespace(csv.charAt(i)))
+			{
+				i++;
+
+				continue;
+			}
+
+			/*-------------------------------------------------------------*/
 			/* EAT COMMENT                                                 */
 			/*-------------------------------------------------------------*/
 
-			if(sql.charAt(i) == '#')
+			if((m = s_pattern1.matcher(csv.substring(i))).find())
 			{
 				break;
 			}
@@ -56,11 +81,9 @@ public class CSVParser
 			/* EAT COMMA                                                   */
 			/*-------------------------------------------------------------*/
 
-			m = s_pattern1.matcher(sql.substring(i));
-
-			if(m.find())
+			if((m = s_pattern2.matcher(csv.substring(i))).find())
 			{
-				result.add(word); word = "";
+				result.add(value); value = "";
 
 				i += m.group(0).length();
 
@@ -68,14 +91,16 @@ public class CSVParser
 			}
 
 			/*-------------------------------------------------------------*/
-			/* STRING                                                      */
+			/* EAT VALUE                                                   */
 			/*-------------------------------------------------------------*/
 
-			m = s_pattern2.matcher(sql.substring(i));
-
-			if(m.find())
-			{
-				word = m.group(0);
+			if((m = s_pattern3.matcher(csv.substring(i))).find()
+			   ||
+			   (m = s_pattern4.matcher(csv.substring(i))).find()
+			    ||
+			   (m = s_pattern5.matcher(csv.substring(i))).find()
+			 ) {
+				value = AMIParser.unescape(m.group(1));
 
 				i += m.group(0).length();
 
@@ -83,22 +108,16 @@ public class CSVParser
 			}
 
 			/*-------------------------------------------------------------*/
-			/* ATOM                                                        */
-			/*-------------------------------------------------------------*/
 
-			m = s_pattern3.matcher(sql.substring(i));
-
-			if(m.find())
+			if((m = s_pattern6.matcher(csv.substring(i))).find())
 			{
-				word = m.group(0);
+				value = /****************/(m.group(0));
 
 				i += m.group(0).length();
 
 				continue;
 			}
 
-			/*-------------------------------------------------------------*/
-			/* OTHER                                                       */
 			/*-------------------------------------------------------------*/
 
 			throw new Exception("syntax error");
@@ -106,57 +125,70 @@ public class CSVParser
 			/*-------------------------------------------------------------*/
 		}
 
-		result.add(word);
+		if(value.isEmpty() == false
+		   ||
+		   result.isEmpty() == false
+		 ) {
+			result.add(value);
+		}
 
 		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Map<String, String>> parse(File file) throws Exception
+	public static List<Map<String, String>> parse(InputStream inputStream) throws Exception
 	{
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		try
 		{
 			String line;
+
+			boolean first = true;
 
 			Map<String, String> map;
 
 			List<String> keys = null;
 			List<String> values = null;
 
-			for(int i = 0; (line = bufferedReader.readLine()) != null; i++)
+			while((line = bufferedReader.readLine()) != null)
 			{
-				if((line = line.trim()).isEmpty())
-				{
-					continue;
-				}
-
-				if(i == 0)
+				if(first)
 				{
 					keys = tokenize(line);
+
+					if(keys.size() > 0)
+					{
+						first = false;
+					}
 				}
 				else
 				{
 					values = tokenize(line);
 
-					if(keys.size() == values.size())
-					{
-						map = new HashMap<String, String>();
+					int keysSize = keys.size();
+					int valuesSize = values.size();
 
-						for(int j = 0; j < keys.size(); j++)
+					if(valuesSize > 0)
+					{
+						if(keysSize == valuesSize)
 						{
-							map.put(keys.get(j), values.get(j));
-						}
+							map = new HashMap<String, String>();
 
-						result.add(map);
-					}
-					else
-					{
-						throw new Exception("syntax error");
+							for(int j = 0; j < keysSize; j++)
+							{
+								map.put(keys.get(j), values.get(j));
+							}
+
+							result.add(map);
+						}
+						else
+						{
+							throw new Exception("syntax error");
+						}
 					}
 				}
 			}

@@ -92,28 +92,24 @@ public class AMIParser
 			/* EAT ARGUMENT                                                */
 			/*-------------------------------------------------------------*/
 
-			m = s_pattern2.matcher(s.substring(i));
+			if((m = s_pattern2.matcher(s.substring(i))).find()
+			   ||
+			   (m = s_pattern3.matcher(s.substring(i))).find()
+			   ||
+			   (m = s_pattern4.matcher(s.substring(i))).find()
+			 ) {
+				arguments.put(m.group(1), (m.groupCount() == 2) ? unescape(m.group(2)) : "");
 
-			if(m.find() == false)
-			{
-				m = s_pattern3.matcher(s.substring(i));
+				i += m.group(0).length();
 
-				if(m.find() == false)
-				{
-					m = s_pattern4.matcher(s.substring(i));
-
-					if(m.find() == false)
-					{
-						throw new Exception("command syntax error, invalid argument syntax");
-					}
-				}
+				continue;
 			}
 
 			/*-------------------------------------------------------------*/
+			/* EXCEPTION                                                   */
+			/*-------------------------------------------------------------*/
 
-			arguments.put(m.group(1), (m.groupCount() == 2) ? unescape(m.group(2)) : "");
-
-			i += m.group(0).length();
+			throw new Exception("command syntax error, invalid argument syntax");
 
 			/*-------------------------------------------------------------*/
 		}
@@ -132,7 +128,7 @@ public class AMIParser
 
 	/*---------------------------------------------------------------------*/
 
-	private static String unescape(String s)
+	protected static String unescape(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());
 
