@@ -598,7 +598,7 @@ public class SecuritySingleton
 		/* CHECK VOMS PROXY                                                */
 		/*-----------------------------------------------------------------*/
 
-		String[] parts = certificate.getSubjectX500Principal().getName("RFC2253").split(",", -1);
+		String[] parts = certificate.getSubjectX500Principal().getName("RFC2253").split(",");
 
 		for(String part: parts)
 		{
@@ -621,7 +621,7 @@ public class SecuritySingleton
 	{
 		StringBuilder result = new StringBuilder();
 
-		String[] parts = principal.getName("RFC2253").split(",", -1);
+		String[] parts = principal.getName("RFC2253").split(",");
 
 		for(String part: parts)
 		{
