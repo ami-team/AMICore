@@ -2,7 +2,7 @@ package java.lang;
 
 import java.lang.annotation.*;
 
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.SOURCE)
 
 @Target({ElementType.PARAMETER})
 

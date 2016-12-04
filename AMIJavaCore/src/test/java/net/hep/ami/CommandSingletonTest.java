@@ -51,11 +51,7 @@ public class CommandSingletonTest
 
 			//CatalogSingleton.reload();
 
-			Class.forName("net.hep.ami.jdbc.CatalogSingleton");
-
-			SchemaSingleton.getTableNames("ami-tags-v2");
-
-			ConfigSingleton.getConfigFileName();
+			System.out.println(SchemaSingleton.getTableNames("self"));
 
 			System.out.println("done.");
 		}

@@ -16,6 +16,20 @@ public class TransactionalQuerier implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
+	static
+	{
+		try
+		{
+			Class.forName("net.hep.ami.jdbc.CatalogSingleton");
+		}
+		catch(Exception e)
+		{
+			/* IGNORE */
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public TransactionalQuerier(String catalog, long transactionId) throws Exception
 	{
 		m_driver = TransactionPoolSingleton.getConnection(catalog, m_transactionId = transactionId);

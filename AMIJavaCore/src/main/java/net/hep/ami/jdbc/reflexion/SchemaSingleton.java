@@ -74,6 +74,20 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	static
+	{
+		try
+		{
+			Class.forName("net.hep.ami.jdbc.CatalogSingleton");
+		}
+		catch(Exception e)
+		{
+			/* IGNORE */
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void clear()
 	{
 		s_catalogs.clear();

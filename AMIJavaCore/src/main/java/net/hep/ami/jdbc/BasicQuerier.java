@@ -13,6 +13,20 @@ public class BasicQuerier implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
+	static
+	{
+		try
+		{
+			Class.forName("net.hep.ami.jdbc.CatalogSingleton");
+		}
+		catch(Exception e)
+		{
+			/* IGNORE */
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public BasicQuerier(String catalog) throws Exception
 	{
 		m_driver = CatalogSingleton.getConnection(catalog);
