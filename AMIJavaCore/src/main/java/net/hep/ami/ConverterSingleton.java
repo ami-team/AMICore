@@ -90,7 +90,7 @@ public class ConverterSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.error(e.getMessage());
+					LogSingleton.defaultLogger.fatal("for converter `" + row.getValue(0) + "`: " + e.getMessage());
 				}
 			}
 

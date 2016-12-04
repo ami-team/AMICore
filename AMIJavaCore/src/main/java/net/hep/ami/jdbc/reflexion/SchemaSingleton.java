@@ -89,7 +89,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addSchema(String internalCatalog, String externalCatalog)
+	public static void addSchema(String internalCatalog, String externalCatalog) throws Exception
 	{
 		if(internalCatalog != null
 		   &&
@@ -102,6 +102,10 @@ public class SchemaSingleton
 
 			s_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
 			s_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
+		}
+		else
+		{
+			throw new Exception("no metadata information");
 		}
 	}
 
@@ -168,7 +172,7 @@ public class SchemaSingleton
 			/**/
 			/**/	for(String name: tables)
 			/**/	{
-			/**/			readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
+			/**/		readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
 			/**/	}
 			/**/
 			/**/	/*-----------------------------------------------------*/

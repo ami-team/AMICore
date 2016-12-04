@@ -36,7 +36,6 @@ public class DriverSingleton
 	static
 	{
 		reload();
-		System.out.println("DriverSingleton");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -71,7 +70,7 @@ public class DriverSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.fatal(e.getMessage());
+				LogSingleton.defaultLogger.fatal("for driver `" + className + "`: " + e.getMessage());
 			}
 		}
 	}
@@ -99,6 +98,15 @@ public class DriverSingleton
 			if(jdbc == null)
 			{
 				throw new Exception("no `Jdbc` annotation for driver `" + clazz.getName() + "`");
+			}
+
+			try
+			{
+				Class.forName(jdbc.clazz());
+			}
+			catch(ClassNotFoundException e)
+			{
+				throw new Exception("class `" + jdbc.clazz() + "` not found");
 			}
 
 			s_drivers.put(

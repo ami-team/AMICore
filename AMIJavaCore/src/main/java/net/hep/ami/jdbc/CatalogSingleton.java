@@ -30,7 +30,6 @@ public class CatalogSingleton
 	static
 	{
 		reload();
-		System.out.println("CatalogSingleton");
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -85,16 +84,16 @@ public class CatalogSingleton
 				try
 				{
 					addCatalog(
-						row.getValue("catalog"),
-						row.getValue("jdbcUrl"),
-						SecuritySingleton.decrypt(row.getValue("user")),
-						SecuritySingleton.decrypt(row.getValue("pass")),
-						row.getValue("archived").trim()
+						row.getValue(0),
+						row.getValue(1),
+						SecuritySingleton.decrypt(row.getValue(2)),
+						SecuritySingleton.decrypt(row.getValue(3)),
+						row.getValue(4)
 					);
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.fatal(e.getMessage());
+					LogSingleton.defaultLogger.fatal("for catalog `" + row.getValue(0) + "`: " + e.getMessage());
 				}
 			}
 

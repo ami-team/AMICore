@@ -93,13 +93,13 @@ public class CommandSingleton
 				try
 				{
 					addCommand(
-						row.getValue("command"),
-						row.getValue("class")
+						row.getValue(0),
+						row.getValue(1)
 					);
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.error(e.getMessage());
+					LogSingleton.defaultLogger.fatal("for command `" + row.getValue(0) + "`: " + e.getMessage());
 				}
 			}
 

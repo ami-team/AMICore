@@ -39,21 +39,29 @@ public class CommandSingletonTest
 
 		try
 		{
-			RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
+			//RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
 
-			rb.create();
-			rb.fill();
+			//rb.create();
+			//rb.fill();
 
-			rb.commitAndRelease();
+			//rb.commitAndRelease();
 
 //			System.out.println(SchemaSingleton.getCatalogNames());
 //			System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
+
+			//CatalogSingleton.reload();
+
+			Class.forName("net.hep.ami.jdbc.CatalogSingleton");
+
+			SchemaSingleton.getTableNames("ami-tags-v2");
+
+			ConfigSingleton.getConfigFileName();
 
 			System.out.println("done.");
 		}
 		catch(Exception e)
 		{
-			System.out.println("::" + e.getMessage());
+			System.out.println("CommandSingletonTest: " + e.getMessage());
 		}
 
 		System.exit(0);

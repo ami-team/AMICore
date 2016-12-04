@@ -271,7 +271,7 @@ public class LocalizationSingleton
 		/*-----------------------------------------------------------------*/
 
 		RowSet rowSet = querier.executeQuery(String.format(
-			"SELECT `L`.`continentCode` AS `continentCode`, `L`.`countryCode` AS `countryCode` FROM `%s` AS `B`, `router_country_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
+			"SELECT `L`.`continentCode`, `L`.`countryCode` FROM `%s` AS `B`, `router_country_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
 			_table,
 			_ip
 		));
@@ -294,8 +294,9 @@ public class LocalizationSingleton
 		/*-----------------------------------------------------------------*/
 
 		return new Localization(
-			row.getValue("continentCode"),
-			row.getValue( "countryCode" )
+			row.getValue(0)
+			,
+			row.getValue(1)
 		);
 
 		/*-----------------------------------------------------------------*/

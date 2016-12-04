@@ -24,7 +24,7 @@ public class LogSingleton
 
 		public AMIFatalAppender(String name)
 		{
-			super(name, LevelRangeFilter.createFilter(Level.FATAL, Level.FATAL, null, null), null, false);
+			super(name, LevelRangeFilter.createFilter(Level.FATAL, Level.FATAL, null, null), null, true);
 		}
 
 		/*-----------------------------------------------------------------*/
