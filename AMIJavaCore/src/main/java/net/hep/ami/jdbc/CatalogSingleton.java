@@ -149,7 +149,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple getCatalog(String catalog) throws Exception
+	private static Tuple getCatalog(String catalog) throws Exception
 	{
 		Tuple result = s_catalogs.get(catalog);
 

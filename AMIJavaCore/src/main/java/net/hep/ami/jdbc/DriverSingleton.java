@@ -122,7 +122,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple getDriver(String jdbcUrl) throws Exception
+	private static Tuple getDriver(String jdbcUrl) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
