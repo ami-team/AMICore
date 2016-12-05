@@ -149,22 +149,23 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String catalog) throws Exception
+	public static Tuple getCatalog(String catalog) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET CATALOG                                                     */
-		/*-----------------------------------------------------------------*/
+		Tuple result = s_catalogs.get(catalog);
 
-		Tuple tuple = s_catalogs.get(catalog);
-
-		if(tuple == null)
+		if(result == null)
 		{
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CONNECTION                                                      */
-		/*-----------------------------------------------------------------*/
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static DriverAbstractClass getConnection(String catalog) throws Exception
+	{
+		Tuple tuple = getCatalog(catalog);
 
 		return DriverSingleton.getConnection(
 			catalog,
@@ -172,8 +173,15 @@ public class CatalogSingleton
 			tuple.y,
 			tuple.z
 		);
+	}
 
-		/*-----------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
+
+	public static boolean isType(String catalog, Jdbc.Type jdbcType) throws Exception
+	{
+		Tuple tuple = getCatalog(catalog);
+
+		return DriverSingleton.isType(tuple.x, jdbcType);
 	}
 
 	/*---------------------------------------------------------------------*/
