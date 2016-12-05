@@ -100,30 +100,21 @@ public class DriverSingleton
 				throw new Exception("no `Jdbc` annotation for driver `" + clazz.getName() + "`");
 			}
 
-			try
-			{
-				Class.forName(jdbc.clazz());
-
-				s_drivers.put(
-					jdbc.proto()
-					,
-					new Tuple(
-						jdbc.type(),
-						jdbc.clazz(),
-						clazz.getName(),
-						clazz.getConstructor(
-							String.class,
-							String.class,
-							String.class,
-							String.class
-						)
+			s_drivers.put(
+				jdbc.proto()
+				,
+				new Tuple(
+					jdbc.type(),
+					jdbc.clazz(),
+					clazz.getName(),
+					clazz.getConstructor(
+						String.class,
+						String.class,
+						String.class,
+						String.class
 					)
-				);
-			}
-			catch(ClassNotFoundException e)
-			{
-				throw new Exception("class `" + jdbc.clazz() + "` not found");
-			}
+				)
+			);
 		}
 
 		/*-----------------------------------------------------------------*/

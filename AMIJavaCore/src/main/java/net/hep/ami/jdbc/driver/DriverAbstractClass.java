@@ -119,8 +119,8 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	static class FieldType
 	{
 		String name;
-		int size;
-		int digits;
+		Integer size;
+		Integer digits;
 
 		public FieldType(String _name, int _size, int _digits)
 		{
