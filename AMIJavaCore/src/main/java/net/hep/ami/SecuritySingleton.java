@@ -7,6 +7,8 @@ import java.security.*;
 import java.security.cert.*;
 import java.security.spec.*;
 
+/* CERTIFICATES */
+
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.*;
@@ -14,7 +16,7 @@ import org.bouncycastle.cert.jcajce.*;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
 
-import net.hep.ami.utility.*;
+/* CRYPTOGRAPHY */
 
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
@@ -22,6 +24,38 @@ import org.bouncycastle.crypto.paddings.*;
 
 public class SecuritySingleton
 {
+	/*---------------------------------------------------------------------*/
+
+	private static class PEMTupleXZY
+	{
+		public List<StringBuilder> x;
+		public List<StringBuilder> y;
+		public List<StringBuilder> z;
+
+		PEMTupleXZY(List<StringBuilder> _x, List<StringBuilder> _y, List<StringBuilder> _z)
+		{
+			x = _x;
+			y = _y;
+			z = _z;
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static class PEMTuple
+	{
+		public PrivateKey[] privateKeys;
+		public PublicKey[] publicKeys;
+		public X509Certificate[] x509Certificates;
+
+		public PEMTuple(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates)
+		{
+			privateKeys = _privateKeys;
+			publicKeys = _publicKeys;
+			x509Certificates = _x509Certificates;
+		}
+	}
+
 	/*---------------------------------------------------------------------*/
 
 	private static final String BC = org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
@@ -67,7 +101,7 @@ public class SecuritySingleton
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
-	private static Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> parsePEM(InputStream inputStream) throws Exception
+	private static PEMTupleXZY parsePEM(InputStream inputStream) throws Exception
 	{
 		String line;
 
@@ -153,7 +187,7 @@ public class SecuritySingleton
 			bufferedReader.close();
 		}
 
-		return new Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>>(
+		return new PEMTupleXZY(
 			privateKey,
 			publicKey,
 			certificates
@@ -204,7 +238,7 @@ public class SecuritySingleton
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
+		PEMTupleXZY tuple = parsePEM(inputStream);
 
 		/*-----------------------------------------------------------------*/
 		/* GET NUMBER OF PRIVATE KEYS                                      */
@@ -238,7 +272,7 @@ public class SecuritySingleton
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
+		PEMTupleXZY tuple = parsePEM(inputStream);
 
 		/*-----------------------------------------------------------------*/
 		/* GET NUMBER OF PUBLIC KEYS                                       */
@@ -272,7 +306,7 @@ public class SecuritySingleton
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		 Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
+		PEMTupleXZY tuple = parsePEM(inputStream);
 
 		/*-----------------------------------------------------------------*/
 		/* GET NUMBER OF CERTIFICATES                                      */
@@ -300,31 +334,13 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class PEMTuple
-	{
-		public PrivateKey[] privateKeys;
-		public PublicKey[] publicKeys;
-
-		public X509Certificate[] x509Certificates;
-
-		public PEMTuple(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates)
-		{
-			privateKeys = _privateKeys;
-			publicKeys = _publicKeys;
-
-			x509Certificates = _x509Certificates;
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static PEMTuple loadPEM(InputStream inputStream) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* LOAD FILE                                                       */
 		/*-----------------------------------------------------------------*/
 
-		 Tuple3<List<StringBuilder>, List<StringBuilder>, List<StringBuilder>> tuple = parsePEM(inputStream);
+		PEMTupleXZY tuple = parsePEM(inputStream);
 
 		/*-----------------------------------------------------------------*/
 		/* GET NUMBER OF OBJECTS                                           */

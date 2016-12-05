@@ -45,6 +45,8 @@ public class ConfigSingleton
 			s_hasValidConfFile = false;
 			loadConfFile();
 			s_hasValidConfFile = true;
+
+			SecuritySingleton.init(s_properties.get("encryption_key"));
 		}
 		catch(Exception e)
 		{
@@ -210,14 +212,6 @@ public class ConfigSingleton
 		{
 			throw new Exception("invalid configuration file");
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* INIT SECURITY                                                   */
-		/*-----------------------------------------------------------------*/
-
-		SecuritySingleton.init(
-			s_properties.get("encryption_key")
-		);
 
 		/*-----------------------------------------------------------------*/
 	}

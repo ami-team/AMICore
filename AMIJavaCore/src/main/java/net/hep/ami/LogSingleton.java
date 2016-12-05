@@ -10,10 +10,6 @@ public class LogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final org.apache.logging.log4j.Logger defaultLogger = LogManager.getLogger("net.hep.ami");
-
-	/*---------------------------------------------------------------------*/
-
 	private static final class AMIFatalAppender extends AbstractAppender
 	{
 		/*-----------------------------------------------------------------*/
@@ -56,6 +52,10 @@ public class LogSingleton
 
 		/*-----------------------------------------------------------------*/
 	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static final org.apache.logging.log4j.Logger defaultLogger = LogManager.getLogger("net.hep.ami");
 
 	/*---------------------------------------------------------------------*/
 

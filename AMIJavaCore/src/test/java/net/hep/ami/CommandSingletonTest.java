@@ -5,11 +5,11 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.reflexion.*;
 
+@SuppressWarnings("all")
 public class CommandSingletonTest
 {
 	/*---------------------------------------------------------------------*/
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception
 	{
 		Map<String, String> arguments = new HashMap<String, String>();

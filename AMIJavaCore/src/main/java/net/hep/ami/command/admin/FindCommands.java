@@ -28,8 +28,6 @@ public class FindCommands extends CommandAbstractClass
 
 		Set<String> commands = new HashSet<String>();
 
-		transactionalQuerier.executeUpdate("DELETE FROM `router_command`");
-
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
 			if(CommandSingleton.registerCommand(transactionalQuerier, className))

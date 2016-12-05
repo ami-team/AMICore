@@ -338,13 +338,19 @@ public class CommandSingleton
 
 			stringBuilder.append("<executionTime>0.000</executionTime>");
 
-			stringBuilder.append("<help><![CDATA[");
-			stringBuilder.append(s_xml10Pattern.matcher(tuple.x).replaceAll("?"));
-			stringBuilder.append("]]></help>");
+			if(tuple.x != null)
+			{
+				stringBuilder.append("<help><![CDATA[");
+				stringBuilder.append(s_xml10Pattern.matcher(tuple.x).replaceAll("?"));
+				stringBuilder.append("]]></help>");
+			}
 
-			stringBuilder.append("<usage><![CDATA[");
-			stringBuilder.append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"));
-			stringBuilder.append("]]></usage>");
+			if(tuple.y != null)
+			{
+				stringBuilder.append("<usage><![CDATA[");
+				stringBuilder.append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"));
+				stringBuilder.append("]]></usage>");
+			}
 
 			/*-------------------------------------------------------------*/
 		}
