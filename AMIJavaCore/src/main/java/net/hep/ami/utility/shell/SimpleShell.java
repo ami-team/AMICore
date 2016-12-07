@@ -31,10 +31,16 @@ public class SimpleShell extends ShellAbstractClass
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void connect() throws Exception {}
+	public void connect() throws Exception
+	{
+		/* N/A */
+	}
 
 	@Override
-	public void disconnect() throws Exception {}
+	public void disconnect() throws Exception
+	{
+		/* N/A */
+	}
 
 	/*---------------------------------------------------------------------*/
 
