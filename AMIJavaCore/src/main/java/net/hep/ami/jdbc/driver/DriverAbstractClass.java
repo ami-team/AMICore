@@ -163,7 +163,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
 		}
 	}
 
@@ -182,7 +182,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql, e);
 		}
 	}
 
@@ -197,7 +197,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
 		}
 	}
 
@@ -216,7 +216,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql, e);
 		}
 	}
 
@@ -253,7 +253,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
 		}
 	}
 
@@ -278,7 +278,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for MQL query " + mql);
+			throw new Exception(e.getMessage() + " for MQL query " + mql, e);
 		}
 	}
 

@@ -50,7 +50,7 @@ public class GetSessionInfo extends CommandAbstractClass
 
 		List<Row> rowList = transactionalQuerier.executeQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')").getAll();
 
-		if(rowList.size() == 0)
+		if(rowList.isEmpty())
 		{
 			throw new Exception("invalid user `" + amiLogin + "`");
 		}

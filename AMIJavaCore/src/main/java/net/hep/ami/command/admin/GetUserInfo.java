@@ -38,7 +38,7 @@ public class GetUserInfo extends CommandAbstractClass
 
 		List<Row> rowList = transactionalQuerier.executeQuery("SELECT `AMIUser`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `AMIUser`='" + amiLogin + "'").getAll();
 
-		if(rowList.size() == 0)
+		if(rowList.isEmpty())
 		{
 			throw new Exception("invalid user `" + amiLogin + "`");
 		}

@@ -98,7 +98,7 @@ public class Iterable implements java.lang.Iterable<Row>
 			/*-------------------------------------------------------------*/
 
 			@Override
-			public Row next()
+			public Row next() throws NoSuchElementException
 			{
 				try
 				{
