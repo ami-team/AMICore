@@ -368,6 +368,10 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * @deprecated (for internal use only)
+	 */
+
 	@Deprecated
 	public Connection getConnection()
 	{
