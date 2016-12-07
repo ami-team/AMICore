@@ -4,9 +4,9 @@ public class Tuple3<A, B, C>
 {
 	/*---------------------------------------------------------------------*/
 
-	public A x;
-	public B y;
-	public C z;
+	public final A x;
+	public final B y;
+	public final C z;
 
 	/*---------------------------------------------------------------------*/
 

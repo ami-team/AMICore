@@ -11,10 +11,10 @@ public abstract class ShellAbstractClass
 
 	public static class ShellTuple
 	{
-		public Integer errorCode;
+		public final Integer errorCode;
 
-		public StringBuilder inputStringBuilder;
-		public StringBuilder errorStringBuilder;
+		public final StringBuilder inputStringBuilder;
+		public final StringBuilder errorStringBuilder;
 
 		public ShellTuple(int _errorCode, StringBuilder _inputStringBuilder, StringBuilder _errorStringBuilder)
 		{

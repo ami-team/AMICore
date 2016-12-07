@@ -12,13 +12,13 @@ public class SchemaSingleton
 
 	public static class Column
 	{
-		public String internalCatalog;
-		public String catalog;
-		public String table;
-		public String name;
-		public String type;
-		public int size;
-		public int digits;
+		public final String internalCatalog;
+		public final String catalog;
+		public final String table;
+		public final String name;
+		public final String type;
+		public final int size;
+		public final int digits;
 
 		public Column(String _internalCatalog, String _catalog, String _table, String _name, String _type, int _size, int _digits)
 		{
@@ -36,12 +36,12 @@ public class SchemaSingleton
 
 	public static class FrgnKey
 	{
-		public String catalog;
-		public String name;
-		public String fkTable;
-		public String fkColumn;
-		public String pkTable;
-		public String pkColumn;
+		public final String catalog;
+		public final String name;
+		public final String fkTable;
+		public final String fkColumn;
+		public final String pkTable;
+		public final String pkColumn;
 
 		public FrgnKey(String _catalog, String _name, String _fkTable, String _fkColumn, String _pkTable, String _pkColumn)
 		{

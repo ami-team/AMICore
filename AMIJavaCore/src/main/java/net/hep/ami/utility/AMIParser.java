@@ -11,9 +11,9 @@ public class AMIParser
 	{
 		/*-----------------------------------------------------------------*/
 
-		public String command;
+		public final String command;
 
-		public Map<String, String> arguments;
+		public final Map<String, String> arguments;
 
 		/*-----------------------------------------------------------------*/
 

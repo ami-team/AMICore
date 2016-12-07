@@ -4,10 +4,10 @@ public class Tuple4<A, B, C, D>
 {
 	/*---------------------------------------------------------------------*/
 
-	public A x;
-	public B y;
-	public C z;
-	public D t;
+	public final A x;
+	public final B y;
+	public final C z;
+	public final D t;
 
 	/*---------------------------------------------------------------------*/
 

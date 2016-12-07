@@ -28,9 +28,9 @@ public class SecuritySingleton
 
 	private static class PEMTupleXZY
 	{
-		public List<StringBuilder> x;
-		public List<StringBuilder> y;
-		public List<StringBuilder> z;
+		public final List<StringBuilder> x;
+		public final List<StringBuilder> y;
+		public final List<StringBuilder> z;
 
 		PEMTupleXZY(List<StringBuilder> _x, List<StringBuilder> _y, List<StringBuilder> _z)
 		{
@@ -44,9 +44,9 @@ public class SecuritySingleton
 
 	public static class PEMTuple
 	{
-		public PrivateKey[] privateKeys;
-		public PublicKey[] publicKeys;
-		public X509Certificate[] x509Certificates;
+		public final PrivateKey[] privateKeys;
+		public final PublicKey[] publicKeys;
+		public final X509Certificate[] x509Certificates;
 
 		public PEMTuple(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates)
 		{

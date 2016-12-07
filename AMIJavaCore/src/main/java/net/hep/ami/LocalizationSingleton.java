@@ -15,8 +15,8 @@ public class LocalizationSingleton
 
 	public static class Localization
 	{
-		public String continentCode;
-		public String countryCode;
+		public final String continentCode;
+		public final String countryCode;
 
 		public Localization(String _continentCode, String _countryCode)
 		{

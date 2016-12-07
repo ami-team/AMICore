@@ -8,8 +8,8 @@ public class AutoJoinSingleton
 
 	public static class SQLJoins
 	{
-		public String from;
-		public String where;
+		public final String from;
+		public final String where;
 
 		public SQLJoins(String _from, String _where)
 		{
@@ -22,8 +22,8 @@ public class AutoJoinSingleton
 
 	public static class SQLFieldValue
 	{
-		public String field;
-		public String value;
+		public final String field;
+		public final String value;
 
 		public SQLFieldValue(String _field, String _value)
 		{
