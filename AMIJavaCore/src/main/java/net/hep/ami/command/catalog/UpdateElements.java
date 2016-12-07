@@ -68,7 +68,7 @@ public class UpdateElements extends CommandAbstractClass
 
 		if(fields.length > 0)
 		{
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 
 			AutoJoinSingleton.SQLFieldValue fieldValue;
 
@@ -95,7 +95,7 @@ public class UpdateElements extends CommandAbstractClass
 		{
 			/*-------------------------------------------------------------*/
 
-			Map<String, List<String>> joins = new HashMap<String, List<String>>();
+			Map<String, List<String>> joins = new HashMap<>();
 
 			for(int i = 0; i < keyFields.length; i++)
 			{

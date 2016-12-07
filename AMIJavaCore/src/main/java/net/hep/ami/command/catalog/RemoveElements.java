@@ -64,7 +64,7 @@ public class RemoveElements extends CommandAbstractClass
 		{
 			/*-------------------------------------------------------------*/
 
-			Map<String, List<String>> joins = new HashMap<String, List<String>>();
+			Map<String, List<String>> joins = new HashMap<>();
 
 			for(int i = 0; i < keyFields.length; i++)
 			{

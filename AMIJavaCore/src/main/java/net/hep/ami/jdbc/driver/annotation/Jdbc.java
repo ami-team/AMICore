@@ -10,7 +10,7 @@ public @interface Jdbc
 {
 	/*---------------------------------------------------------------------*/
 
-	public static enum Type
+	public enum Type
 	{
 		SQL, NoSQL
 	}

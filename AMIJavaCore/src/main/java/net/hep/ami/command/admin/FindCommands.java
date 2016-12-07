@@ -26,7 +26,7 @@ public class FindCommands extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		Set<String> commands = new HashSet<String>();
+		Set<String> commands = new HashSet<>();
 
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{

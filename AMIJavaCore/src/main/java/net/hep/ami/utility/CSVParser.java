@@ -116,7 +116,7 @@ public class CSVParser
 
 	public static List<Map<String, String>> parse(InputStream inputStream) throws Exception
 	{
-		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> result = new ArrayList<>();
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -156,7 +156,7 @@ public class CSVParser
 							throw new Exception("syntax error");
 						}
 
-						map = new HashMap<String, String>();
+						map = new HashMap<>();
 
 						for(int j = 0; j < keysSize; j++)
 						{

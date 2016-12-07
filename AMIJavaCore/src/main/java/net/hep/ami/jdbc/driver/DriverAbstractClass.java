@@ -24,7 +24,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	private Connection m_connection;
 
-	private final List<Statement> m_statementList = new ArrayList<Statement>();
+	private final List<Statement> m_statementList = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 

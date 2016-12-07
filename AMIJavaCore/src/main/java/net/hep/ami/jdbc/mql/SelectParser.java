@@ -13,9 +13,9 @@ public class SelectParser
 {
 	/*---------------------------------------------------------------------*/
 
-	private Map<String, List<String>> m_joins = new HashMap<String, List<String>>();
+	private Map<String, List<String>> m_joins = new HashMap<>();
 
-	private Set<String> m_tables = new HashSet<String>();
+	private Set<String> m_tables = new HashSet<>();
 
 	private DriverAbstractClass m_driver;
 

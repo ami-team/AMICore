@@ -25,6 +25,10 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
+	private Tokenizer() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static List<String> tokenize(String sql)
 	{
 		List<String> result = new ArrayList<>();

@@ -70,7 +70,7 @@ public class AutoJoinSingleton
 
 		if(result == null)
 		{
-			result = new ArrayList<String>();
+			result = new ArrayList<>();
 
 			map.put(key, result);
 		}
@@ -120,7 +120,7 @@ public class AutoJoinSingleton
 
 			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values())
 			{
-				temp = new HashMap<String, List<String>>();
+				temp = new HashMap<>();
 
 				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, givenTable, givenValue, done))
 				{
@@ -229,7 +229,7 @@ public class AutoJoinSingleton
 
 			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values())
 			{
-				temp = new HashMap<String, List<String>>();
+				temp = new HashMap<>();
 
 				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, givenTable, givenValue, done))
 				{
@@ -289,7 +289,7 @@ public class AutoJoinSingleton
 	{
 		if(column.isEmpty() == false)
 		{
-			Set<String> done = new HashSet<String>();
+			Set<String> done = new HashSet<>();
 
 			String[] parts = column.split("\\.");
 
@@ -322,7 +322,7 @@ public class AutoJoinSingleton
 	{
 		if(column.isEmpty() == false)
 		{
-			Set<String> done = new HashSet<String>();
+			Set<String> done = new HashSet<>();
 
 			String[] parts = column.split("\\.");
 
@@ -357,7 +357,7 @@ public class AutoJoinSingleton
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Map<String, List<String>> joins = new HashMap<String, List<String>>();
+		Map<String, List<String>> joins = new HashMap<>();
 
 		resolveWithNestedSelect(joins, catalog, table, column, givenValue);
 

@@ -1,5 +1,6 @@
 package net.hep.ami.role;
 
+@FunctionalInterface
 public interface NewUserValidatorInterface
 {
 	/*---------------------------------------------------------------------*/

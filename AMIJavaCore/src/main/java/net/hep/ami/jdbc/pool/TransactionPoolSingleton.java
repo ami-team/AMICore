@@ -52,7 +52,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/	if(transaction == null)
 		/**/	{
-		/**/		s_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
+		/**/		s_pools.put(transactionId, transaction = new HashMap<>());
 		/**/
 		/**/		transaction.put(key, result = CatalogSingleton.getConnection(catalog));
 		/**/	}
@@ -97,7 +97,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/	if(transaction == null)
 		/**/	{
-		/**/		s_pools.put(transactionId, transaction = new HashMap<String, DriverAbstractClass>());
+		/**/		s_pools.put(transactionId, transaction = new HashMap<>());
 		/**/
 		/**/		transaction.put(key, result = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass));
 		/**/	}

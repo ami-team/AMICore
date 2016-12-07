@@ -56,17 +56,17 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Set<String> s_catalogs = new java.util.concurrent.ConcurrentSkipListSet<String>();
+	private static final Set<String> s_catalogs = new java.util.concurrent.ConcurrentSkipListSet<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new java.util.concurrent.ConcurrentHashMap<String, String>();
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, Column>>>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new java.util.concurrent.ConcurrentHashMap<String, Map<String, Map<String, FrgnKey>>>();
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -118,8 +118,8 @@ public class SchemaSingleton
 			s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 			s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 
-			s_columns.put(externalCatalog, new HashMap<String, Map<String, Column>>());
-			s_frgnKeys.put(externalCatalog, new HashMap<String, Map<String, FrgnKey>>());
+			s_columns.put(externalCatalog, new HashMap<>());
+			s_frgnKeys.put(externalCatalog, new HashMap<>());
 		}
 		else
 		{
@@ -165,7 +165,7 @@ public class SchemaSingleton
 			/**/
 			/**/	ResultSet resultSet = metaData.getTables(internalCatalog, internalCatalog, "%", null);
 			/**/
-			/**/	Set<String> tables = new HashSet<String>();
+			/**/	Set<String> tables = new HashSet<>();
 			/**/
 			/**/	/*-----------------------------------------------------*/
 			/**/
@@ -177,8 +177,8 @@ public class SchemaSingleton
 			/**/		{
 			/**/			name = name.toLowerCase();
 			/**/
-			/**/			s_columns.get(externalCatalog).put(name, new LinkedHashMap<String, Column>());
-			/**/			s_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<String, FrgnKey>());
+			/**/			s_columns.get(externalCatalog).put(name, new LinkedHashMap<>());
+			/**/			s_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<>());
 			/**/
 			/**/			tables.add(name);
 			/**/		}

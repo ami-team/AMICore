@@ -56,8 +56,8 @@ public class AddElement extends CommandAbstractClass
 
 		if(fields.length > 0)
 		{
-			List<String> list1 = new ArrayList<String>();
-			List<String> list2 = new ArrayList<String>();
+			List<String> list1 = new ArrayList<>();
+			List<String> list2 = new ArrayList<>();
 
 			AutoJoinSingleton.SQLFieldValue fieldValue;
 

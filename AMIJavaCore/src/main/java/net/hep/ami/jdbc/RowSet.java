@@ -25,7 +25,7 @@ public class RowSet
 	protected String[] m_fieldNames;
 	protected String[] m_fieldTypes;
 
-	protected final Map<String, Integer> m_fieldIndices = new HashMap<String, Integer>();
+	protected final Map<String, Integer> m_fieldIndices = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -266,7 +266,7 @@ public class RowSet
 
 	public List<Row> getAll(final int limit, final int offset) throws Exception
 	{
-		List<Row> result = new ArrayList<Row>();
+		List<Row> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 

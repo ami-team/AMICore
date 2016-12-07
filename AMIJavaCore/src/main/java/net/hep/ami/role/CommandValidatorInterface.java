@@ -2,6 +2,7 @@ package net.hep.ami.role;
 
 import java.util.*;
 
+@FunctionalInterface
 public interface CommandValidatorInterface
 {
 	/*---------------------------------------------------------------------*/

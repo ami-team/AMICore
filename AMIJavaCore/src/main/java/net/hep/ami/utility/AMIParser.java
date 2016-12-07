@@ -77,7 +77,7 @@ public class AMIParser
 		/* PARSE ARGUMENTS                                                 */
 		/*-----------------------------------------------------------------*/
 
-		Map<String, String> arguments = new LinkedHashMap<String, String>();
+		Map<String, String> arguments = new LinkedHashMap<>();
 
 		while(i < l && s.charAt(i) != '#')
 		{

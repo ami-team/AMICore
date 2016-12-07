@@ -115,9 +115,9 @@ public class SecuritySingleton
 		boolean appendPublicKey = false;
 		boolean appendCertificate = false;
 
-		List<StringBuilder> privateKey = new ArrayList<StringBuilder>();
-		List<StringBuilder> publicKey = new ArrayList<StringBuilder>();
-		List<StringBuilder> certificates = new ArrayList<StringBuilder>();
+		List<StringBuilder> privateKey = new ArrayList<>();
+		List<StringBuilder> publicKey = new ArrayList<>();
+		List<StringBuilder> certificates = new ArrayList<>();
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
