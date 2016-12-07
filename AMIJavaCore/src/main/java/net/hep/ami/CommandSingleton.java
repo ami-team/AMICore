@@ -55,7 +55,7 @@ public class CommandSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.fatal(e.getMessage());
+			LogSingleton.defaultLogger.fatal(e);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class CommandSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.fatal("for command `" + row.getValue(0) + "`: " + e.getMessage());
+					LogSingleton.defaultLogger.fatal("for command `" + row.getValue(0) + "`: " + e.getMessage(), e);
 				}
 			}
 

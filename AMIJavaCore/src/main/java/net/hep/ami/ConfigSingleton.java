@@ -50,7 +50,7 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.fatal(e.getMessage());
+			LogSingleton.defaultLogger.fatal(e);
 		}
 	}
 

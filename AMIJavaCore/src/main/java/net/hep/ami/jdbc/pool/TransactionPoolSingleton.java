@@ -203,7 +203,7 @@ public class TransactionPoolSingleton
 		/**/			}
 		/**/			catch(Exception e)
 		/**/			{
-		/**/				LogSingleton.defaultLogger.error(e.getMessage());
+		/**/				LogSingleton.defaultLogger.error(e);
 		/**/			}
 		/**/		}
 		/**/	}

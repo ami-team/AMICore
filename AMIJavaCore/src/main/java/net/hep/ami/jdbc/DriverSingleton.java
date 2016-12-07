@@ -52,7 +52,7 @@ public class DriverSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.fatal(e.getMessage());
+			LogSingleton.defaultLogger.fatal(e);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class DriverSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.fatal("for driver `" + className + "`: " + e.getMessage());
+				LogSingleton.defaultLogger.fatal("for driver `" + className + "`: " + e.getMessage(), e);
 			}
 		}
 	}
