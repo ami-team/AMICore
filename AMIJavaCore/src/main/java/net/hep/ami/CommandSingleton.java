@@ -173,9 +173,10 @@ public class CommandSingleton
 			String simpleName = clazz.getSimpleName();
 			String name = clazz.getName();
 
-			querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
+			querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `command`='%s'",
 				simpleName,
-				name
+				name,
+				simpleName
 			));
 
 			return true;
