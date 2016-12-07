@@ -9,6 +9,8 @@ public class Iterable implements java.lang.Iterable<Row>
 
 	private RowSet m_rowSet;
 
+	private boolean m_hasNext;
+
 	/*---------------------------------------------------------------------*/
 
 	private int m_i;
@@ -22,6 +24,8 @@ public class Iterable implements java.lang.Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		m_rowSet = rowSet;
+
+		m_hasNext = false;
 
 		/*-----------------------------------------------------------------*/
 
@@ -39,6 +43,8 @@ public class Iterable implements java.lang.Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		m_rowSet = rowSet;
+
+		m_hasNext = false;
 
 		/*-----------------------------------------------------------------*/
 
@@ -87,10 +93,12 @@ public class Iterable implements java.lang.Iterable<Row>
 			{
 				try
 				{
-					return m_i++ < m_limit && m_rowSet.m_resultSet.next();
+					return m_hasNext = m_i++ < m_limit && m_rowSet.m_resultSet.next();
 				}
 				catch(SQLException e)
 				{
+					m_hasNext = false;
+
 					throw new RuntimeException(e);
 				}
 			}
@@ -98,8 +106,17 @@ public class Iterable implements java.lang.Iterable<Row>
 			/*-------------------------------------------------------------*/
 
 			@Override
-			public Row next() throws NoSuchElementException
+			public Row next()
 			{
+				/*---------------------------------------------------------*/
+
+				if(m_hasNext == false)
+				{
+					throw new NoSuchElementException();
+				}
+
+				/*---------------------------------------------------------*/
+
 				try
 				{
 					return new Row(m_rowSet, m_rowSet.getCurrentValue());
@@ -108,6 +125,8 @@ public class Iterable implements java.lang.Iterable<Row>
 				{
 					throw new RuntimeException(e);
 				}
+
+				/*---------------------------------------------------------*/
 			}
 
 			/*-------------------------------------------------------------*/
