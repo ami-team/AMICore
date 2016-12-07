@@ -282,7 +282,7 @@ public class LocalizationSingleton
 
 		List<Row> rowList = rowSet.getAll();
 
-		if(rowList.size() == 0)
+		if(rowList.isEmpty())
 		{
 			throw new Exception("could not localize IP `" + ip + "`");
 		}
