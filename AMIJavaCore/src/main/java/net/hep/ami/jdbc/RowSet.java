@@ -171,7 +171,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private static final SimpleDateFormat s_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -187,7 +187,7 @@ public class RowSet
 				/* TIME                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = s_simpleDateFormat.format(m_resultSet.getTime(i + 1));
+				result[i] = m_simpleDateFormat.format(m_resultSet.getTime(i + 1));
 
 				if(result[i] == null)
 				{
@@ -202,7 +202,7 @@ public class RowSet
 				/* DATE                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = s_simpleDateFormat.format(m_resultSet.getDate(i + 1));
+				result[i] = m_simpleDateFormat.format(m_resultSet.getDate(i + 1));
 
 				if(result[i] == null)
 				{
@@ -217,7 +217,7 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				result[i] = s_simpleDateFormat.format(m_resultSet.getTimestamp(i + 1));
+				result[i] = m_simpleDateFormat.format(m_resultSet.getTimestamp(i + 1));
 
 				if(result[i] == null)
 				{
