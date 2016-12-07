@@ -655,8 +655,8 @@ public class SecuritySingleton
 
 	public static void encrypt(OutputStream outputStreamut, InputStream inputStream) throws Exception
 	{
-		int noBytesRead = 0;
-		int noBytesProcessed = 0;
+		int noBytesRead;
+		int noBytesProcessed;
 
 		byte[] ibuff = new byte[16];
 		byte[] obuff = new byte[512];
@@ -675,8 +675,8 @@ public class SecuritySingleton
 
 	public static void decrypt(OutputStream outputStream, InputStream inputStream) throws Exception
 	{
-		int noBytesRead = 0;
-		int noBytesProcessed = 0;
+		int noBytesRead;
+		int noBytesProcessed;
 
 		byte[] ibuff = new byte[16];
 		byte[] obuff = new byte[512];

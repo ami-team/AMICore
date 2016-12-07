@@ -344,7 +344,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute command validator `" + validator + "`");
+			throw new Exception("could not execute command validator `" + validator + "`", e);
 		}
 
 		if(isOk == false)
@@ -387,7 +387,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute user validator `" + validator + "`");
+			throw new Exception("could not execute user validator `" + validator + "`", e);
 		}
 
 		if(isOk == false)
