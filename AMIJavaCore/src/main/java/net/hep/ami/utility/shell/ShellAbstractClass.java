@@ -2,6 +2,7 @@ package net.hep.ami.utility.shell;
 
 import java.io.*;
 
+import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
 public abstract class ShellAbstractClass
@@ -46,7 +47,7 @@ public abstract class ShellAbstractClass
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				LogSingleton.defaultLogger.error(e);
 			}
 		}
 	}
