@@ -447,14 +447,13 @@ public class CommandSingleton
 
 				l = right.length();
 
-				if(l >= 2)
-				{
-					if((right.charAt(0) != '\'' || right.charAt(l - 1) != '\'')
-					   &&
-					   (right.charAt(0) != '\"' || right.charAt(l - 1) != '\"')
-					 ) {
-						arg = left + "=\"" + right + "\"";
-					}
+				if(l >= 2
+				   &&
+				   (right.charAt(0) != '\'' || right.charAt(l - 1) != '\'')
+				   &&
+				   (right.charAt(0) != '\"' || right.charAt(l - 1) != '\"')
+				 ) {
+					arg = left + "=\"" + right + "\"";
 				}
 			}
 
