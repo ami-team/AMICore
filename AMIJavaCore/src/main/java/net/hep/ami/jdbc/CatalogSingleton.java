@@ -27,6 +27,10 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private CatalogSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	static
 	{
 		reload();
@@ -192,7 +196,7 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<Tuple>(s_catalogs.entrySet());
+		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_catalogs.entrySet());
 
 		/*-----------------------------------------------------------------*/
 

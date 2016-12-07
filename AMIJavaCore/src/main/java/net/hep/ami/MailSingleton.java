@@ -23,6 +23,10 @@ public class MailSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private MailSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	private static Properties getProperties()
 	{
 		Properties result = new Properties();

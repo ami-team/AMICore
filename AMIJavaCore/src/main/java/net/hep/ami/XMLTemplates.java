@@ -4,6 +4,10 @@ public class XMLTemplates
 {
 	/*---------------------------------------------------------------------*/
 
+	private XMLTemplates() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String info(String message)
 	{
 		if(message == null)

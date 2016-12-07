@@ -34,6 +34,10 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private AutoJoinSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static SQLJoins joinsToSQL(Map<String, List<String>> joins)
 	{
 		String joinKey;

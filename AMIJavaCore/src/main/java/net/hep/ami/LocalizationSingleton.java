@@ -27,6 +27,10 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private LocalizationSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	private static BigInteger _toPositiveBigInteger(BigInteger bigInteger, int bitLength)
 	{
 		if(bigInteger.compareTo(BigInteger.ZERO) < 0)

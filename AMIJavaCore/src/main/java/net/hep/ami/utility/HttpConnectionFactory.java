@@ -8,6 +8,10 @@ public class HttpConnectionFactory
 {
 	/*---------------------------------------------------------------------*/
 
+	private HttpConnectionFactory() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static HttpURLConnection sslConnection(String spec) throws Exception
 	{
 		URL url = new URL(spec);

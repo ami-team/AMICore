@@ -32,6 +32,10 @@ public class CSVParser
 
 	/*---------------------------------------------------------------------*/
 
+	private CSVParser() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static List<String> tokenize(String s) throws Exception
 	{
 		List<String> result = new ArrayList<>();

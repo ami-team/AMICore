@@ -38,6 +38,10 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private CommandSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	static
 	{
 		CommandSingleton.reload();
@@ -370,7 +374,7 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<Tuple>(s_commands.entrySet());
+		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_commands.entrySet());
 
 		/*-----------------------------------------------------------------*/
 

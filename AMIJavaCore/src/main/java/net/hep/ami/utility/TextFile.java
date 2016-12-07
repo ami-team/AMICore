@@ -6,6 +6,10 @@ public class TextFile
 {
 	/*---------------------------------------------------------------------*/
 
+	private TextFile() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void read(StringBuilder stringBuilder, InputStream inputStream) throws Exception
 	{
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));

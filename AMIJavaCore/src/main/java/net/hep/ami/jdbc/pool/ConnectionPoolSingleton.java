@@ -43,6 +43,10 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private ConnectionPoolSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass) throws Exception
 	{
 		return getDataSource(

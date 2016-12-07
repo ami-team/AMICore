@@ -26,6 +26,10 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private ConfigSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	static
 	{
 		reload();
@@ -675,7 +679,7 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<String> entrySet = new OrderdSetOfMapEntry<String>(s_properties.entrySet());
+		OrderdSetOfMapEntry<String> entrySet = new OrderdSetOfMapEntry<>(s_properties.entrySet());
 
 		/*-----------------------------------------------------------------*/
 

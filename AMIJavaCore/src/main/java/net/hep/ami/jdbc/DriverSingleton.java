@@ -33,6 +33,10 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private DriverSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	static
 	{
 		reload();
@@ -174,7 +178,7 @@ public class DriverSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<Tuple>(s_drivers.entrySet());
+		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_drivers.entrySet());
 
 		/*-----------------------------------------------------------------*/
 

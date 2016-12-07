@@ -47,6 +47,10 @@ public class AMIParser
 
 	/*---------------------------------------------------------------------*/
 
+	private AMIParser() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static CommandTuple parse(String s) throws Exception
 	{
 		/***/ int i = 0x00000000;

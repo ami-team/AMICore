@@ -15,6 +15,10 @@ public class XMLFactories
 {
 	/*---------------------------------------------------------------------*/
 
+	private XMLFactories() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Document newDocument(InputStream inputStream) throws Exception
 	{
 		DocumentBuilder documentBuilderFactory = new DocumentBuilderImpl();

@@ -13,6 +13,10 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private ClassSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	static
 	{
 		/*-----------------------------------------------------------------*/
@@ -182,7 +186,7 @@ public class ClassSingleton
 
 	public static Set<String> findClassNames(String filter)
 	{
-		Set<String> result = new TreeSet<String>();
+		Set<String> result = new TreeSet<>();
 
 		for(String className: s_classNames)
 		{

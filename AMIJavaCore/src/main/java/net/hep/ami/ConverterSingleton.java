@@ -180,7 +180,7 @@ public class ConverterSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<Tuple>(s_converters.entrySet());
+		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_converters.entrySet());
 
 		/*-----------------------------------------------------------------*/
 

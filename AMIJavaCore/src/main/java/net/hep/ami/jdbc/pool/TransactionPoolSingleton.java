@@ -18,6 +18,10 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private TransactionPoolSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
 	public static long bookNewTransactionId()
 	{
 		return s_cnt.getAndIncrement();
