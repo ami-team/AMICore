@@ -104,9 +104,9 @@ public class ClassSingleton
 
 	private static void addFile(File base, File file)
 	{
-		String className = base.toURI().relativize(file.toURI()).getPath();
+		String classFile = base.toURI().relativize(file.toURI()).getPath();
 
-		addClassName(className);
+		addClassName(classFile);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -137,9 +137,9 @@ public class ClassSingleton
 
 				while(entries.hasMoreElements())
 				{
-					String className = entries.nextElement().getName();
+					String classFile = entries.nextElement().getName();
 
-					addClassName(className);
+					addClassName(classFile);
 				}
 
 				/*---------------------------------------------------------*/
@@ -165,13 +165,13 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addClassName(String className)
+	private static void addClassName(String classFile)
 	{
-		if(className.endsWith(".class") && className.contains("$") == false)
+		if(classFile.endsWith(".class") && classFile.contains("$") == false)
 		{
-			className = className.substring(0, className.length() - 6)
-			                     .replace('\\', '.')
-			                     .replace('/', '.')
+			String className = classFile.substring(0, classFile.length() - 6)
+			                            .replace('\\', '.')
+			                            .replace('/', '.')
 			;
 
 			s_classNames.add(className);
