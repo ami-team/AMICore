@@ -324,7 +324,10 @@ public abstract class DriverAbstractClass implements QuerierInterface
 						statement.close();
 					}
 				}
-				catch(SQLException e) {}
+				catch(SQLException e)
+				{
+					/* IGNORE */
+				}
 			}
 
 			m_connection.close();
@@ -353,7 +356,10 @@ public abstract class DriverAbstractClass implements QuerierInterface
 						statement.close();
 					}
 				}
-				catch(SQLException e) {}
+				catch(SQLException e)
+				{
+					/* IGNORE */
+				}
 			}
 
 			m_connection.close();

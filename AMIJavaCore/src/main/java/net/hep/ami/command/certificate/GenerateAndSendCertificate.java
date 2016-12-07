@@ -98,7 +98,7 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not open `" + fileName + "`: " + e.getMessage());
+			throw new Exception("could not open `" + fileName + "`: " + e.getMessage(), e);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -106,18 +106,18 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 		KeyPair keyPair = SecuritySingleton.generateKeyPair(2048);
 
 		X509Certificate certificate = SecuritySingleton.generateCertificate(
-				caKey,
-				caCrt,
-				keyPair.getPublic(),
-				String.format(
-					"CN=%s, OU=%s, O=%s, L=%s, C=%s",
-					commonName,
-					organizationalUnit,
-					organization,
-					locality,
-					country
-				),
-				m_validity
+			caKey,
+			caCrt,
+			keyPair.getPublic(),
+			String.format(
+				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
+				commonName,
+				organizationalUnit,
+				organization,
+				locality,
+				country
+			),
+			m_validity
 		);
 
 		/*-----------------------------------------------------------------*/
