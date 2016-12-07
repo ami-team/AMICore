@@ -396,19 +396,13 @@ public class CommandSingleton
 			usage = entry.getValue().y.toString();
 			clazz = entry.getValue().z.getName();
 
-			result.append(
-				"<row>"
-				+
-				"<field name=\"command\"><![CDATA[" + command + "]]></field>"
-				+
-				"<field name=\"help\"><![CDATA[" + help + "]]></field>"
-				+
-				"<field name=\"usage\"><![CDATA[" + usage + "]]></field>"
-				+
-				"<field name=\"class\"><![CDATA[" + clazz + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"command\"><![CDATA[").append(command).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(help).append("]]></field>")
+			      .append("<field name=\"usage\"><![CDATA[").append(usage).append("]]></field>")
+			      .append("<field name=\"class\"><![CDATA[").append(clazz).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
 		/*-----------------------------------------------------------------*/

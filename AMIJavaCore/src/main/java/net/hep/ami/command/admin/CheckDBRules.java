@@ -57,7 +57,7 @@ public class CheckDBRules extends CommandAbstractClass
 					   &&
 					   s_regex.matcher(column.name).matches() == false
 					 ) {
-						result.append("Column name `" + column.table + "`.`" + column.name + "` should be in lowerCamelCase.\\n");
+						result.append("Column name `").append(column.table).append("`.`" + column.name).append("` should be in lowerCamelCase.\\n");
 					}
 					else
 					{
@@ -71,9 +71,9 @@ public class CheckDBRules extends CommandAbstractClass
 
 		float ratio1 = (total1 > 0) ? (100.0f * (float) score1 / (float) total1) : 0.0f;
 
-		result.append("<field name=\"score\"><![CDATA[" + score1 + "]]></field>");
-		result.append("<field name=\"total\"><![CDATA[" + total1 + "]]></field>");
-		result.append("<field name=\"ratio\"><![CDATA[" + ratio1 + "]]></field>");
+		result.append("<field name=\"score\"><![CDATA[").append(score1).append("]]></field>");
+		result.append("<field name=\"total\"><![CDATA[").append(total1).append("]]></field>");
+		result.append("<field name=\"ratio\"><![CDATA[").append(ratio1).append("]]></field>");
 
 		result.append("</row>");
 
@@ -100,7 +100,7 @@ public class CheckDBRules extends CommandAbstractClass
 				{
 					if(frgnKey.fkColumn.endsWith("FK") == false)
 					{
-						result.append("Foreign key `" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "` should be sufixed with 'FK'.\\n");
+						result.append("Foreign key `").append(frgnKey.fkTable).append("`.`").append(frgnKey.fkColumn).append("` should be sufixed with 'FK'.\\n");
 					}
 					else
 					{
@@ -114,9 +114,9 @@ public class CheckDBRules extends CommandAbstractClass
 
 		float ratio2 = (total2 > 0) ? (100.0f * (float) score2 / (float) total2) : 0.0f;
 
-		result.append("<field name=\"score\"><![CDATA[" + score2 + "]]></field>");
-		result.append("<field name=\"total\"><![CDATA[" + total2 + "]]></field>");
-		result.append("<field name=\"ratio\"><![CDATA[" + ratio2 + "]]></field>");
+		result.append("<field name=\"score\"><![CDATA[").append(score2).append("]]></field>");
+		result.append("<field name=\"total\"><![CDATA[").append(total2).append("]]></field>");
+		result.append("<field name=\"ratio\"><![CDATA[").append(ratio2).append("]]></field>");
 
 		result.append("</row>");
 

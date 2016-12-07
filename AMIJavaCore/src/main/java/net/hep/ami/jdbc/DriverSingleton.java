@@ -198,19 +198,13 @@ public class DriverSingleton
 			jdbcClass = entry.getValue().y;
 			driverClass = entry.getValue().z;
 
-			result.append(
-				"<row>"
-				+
-				"<field name=\"jdbcProto\"><![CDATA[" + jdbcProto + "]]></field>"
-				+
-				"<field name=\"jdbcType\"><![CDATA[" + jdbcType + "]]></field>"
-				+
-				"<field name=\"jdbcClass\"><![CDATA[" + jdbcClass + "]]></field>"
-				+
-				"<field name=\"driverClass\"><![CDATA[" + driverClass + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"jdbcProto\"><![CDATA[").append(jdbcProto).append("]]></field>")
+			      .append("<field name=\"jdbcType\"><![CDATA[").append(jdbcType).append("]]></field>")
+			      .append("<field name=\"jdbcClass\"><![CDATA[").append(jdbcClass).append("]]></field>")
+			      .append("<field name=\"driverClass\"><![CDATA[").append(driverClass).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
 		/*-----------------------------------------------------------------*/

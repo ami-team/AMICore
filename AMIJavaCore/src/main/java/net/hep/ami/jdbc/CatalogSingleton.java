@@ -220,21 +220,14 @@ public class CatalogSingleton
 			pass = entry.getValue().z;
 			archived = entry.getValue().t;
 
-			result.append(
-				"<row>"
-				+
-				"<field name=\"catalog\"><![CDATA[" + catalog + "]]></field>"
-				+
-				"<field name=\"jdbcUrl\"><![CDATA[" + jdbcUrl + "]]></field>"
-				+
-				"<field name=\"user\"><![CDATA[" + user + "]]></field>"
-				+
-				"<field name=\"pass\"><![CDATA[" + pass + "]]></field>"
-				+
-				"<field name=\"valid\"><![CDATA[" + archived + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"catalog\"><![CDATA[").append(catalog).append("]]></field>")
+			      .append("<field name=\"jdbcUrl\"><![CDATA[").append(jdbcUrl).append("]]></field>")
+			      .append("<field name=\"user\"><![CDATA[").append(user).append("]]></field>")
+			      .append("<field name=\"pass\"><![CDATA[").append(pass).append("]]></field>")
+			      .append("<field name=\"valid\"><![CDATA[").append(archived).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
 		/*-----------------------------------------------------------------*/

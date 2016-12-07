@@ -219,35 +219,46 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		String name;
+		int poolSize;
+		int minIdle;
+		int maxIdle;
+		int maxActive;
+		int timeBetweenEvictionRunsMillis;
+		int minEvictableIdleTimeMillis;
+		long validationInterval;
+		int maxWait;
+		int numIdle;
+		int numActive;
+
 		for(DataSource value: s_pools.values())
 		{
-			result.append(
-				"<row>"
-				+
-				"<field name=\"name\">" + value.getName() + "</field>"
-				+
-				"<field name=\"poolSize\">" + value.getPoolSize() + "</field>"
-				+
-				"<field name=\"minIdle\">" + value.getMinIdle() + "</field>"
-				+
-				"<field name=\"maxIdle\">" + value.getMaxIdle() + "</field>"
-				+
-				"<field name=\"maxActive\">" + value.getMaxActive() + "</field>"
-				+
-				"<field name=\"timeBetweenEvictionRunsMillis\">" + value.getTimeBetweenEvictionRunsMillis() + "</field>"
-				+
-				"<field name=\"minEvictableIdleTimeMillis\">" + value.getMinEvictableIdleTimeMillis() + "</field>"
-				+
-				"<field name=\"validationInterval\">" + value.getValidationInterval() + "</field>"
-				+
-				"<field name=\"maxWait\">" + value.getMaxWait() + "</field>"
-				+
-				"<field name=\"numIdle\">" + value.getNumIdle() + "</field>"
-				+
-				"<field name=\"numActive\">" + value.getNumActive() + "</field>"
-				+
-				"</row>"
-			);
+			name = value.getName();
+			poolSize = value.getPoolSize();
+			minIdle = value.getMinIdle();
+			maxIdle = value.getMaxIdle();
+			maxActive = value.getMaxActive();
+			timeBetweenEvictionRunsMillis = value.getTimeBetweenEvictionRunsMillis();
+			minEvictableIdleTimeMillis = value.getMinEvictableIdleTimeMillis();
+			validationInterval = value.getValidationInterval();
+			maxWait = value.getMaxWait();
+			numIdle = value.getNumIdle();
+			numActive = value.getNumActive();
+
+			result.append("<row>")
+			      .append("<field name=\"name\">").append(name).append("</field>")
+			      .append("<field name=\"poolSize\">").append(poolSize).append("</field>")
+			      .append("<field name=\"minIdle\">").append(minIdle).append("</field>")
+			      .append("<field name=\"maxIdle\">").append(maxIdle).append("</field>")
+			      .append("<field name=\"maxActive\">").append(maxActive).append("</field>")
+			      .append("<field name=\"timeBetweenEvictionRunsMillis\">").append(timeBetweenEvictionRunsMillis).append("</field>")
+			      .append("<field name=\"minEvictableIdleTimeMillis\">").append(minEvictableIdleTimeMillis).append("</field>")
+			      .append("<field name=\"validationInterval\">").append(validationInterval).append("</field>")
+			      .append("<field name=\"maxWait\">").append(maxWait).append("</field>")
+			      .append("<field name=\"numIdle\">").append(numIdle).append("</field>")
+			      .append("<field name=\"numActive\">").append(numActive).append("</field>")
+			      .append("</row>")
+			;
 		}
 
 		/*-----------------------------------------------------------------*/

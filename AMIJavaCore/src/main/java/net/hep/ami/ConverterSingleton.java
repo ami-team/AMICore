@@ -200,15 +200,11 @@ public class ConverterSingleton
 			xslt = entry.getKey();
 			mime = entry.getValue().y;
 
-			result.append(
-				"<row>"
-				+
-				"<field name=\"xslt\"><![CDATA[" + xslt + "]]></field>"
-				+
-				"<field name=\"mime\"><![CDATA[" + mime + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"xslt\"><![CDATA[").append(xslt).append("]]></field>")
+			      .append("<field name=\"mime\"><![CDATA[").append(mime).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
 		/*-----------------------------------------------------------------*/

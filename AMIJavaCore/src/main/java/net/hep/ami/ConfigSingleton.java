@@ -663,19 +663,11 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(
-			"<rowset type=\"paths\">"
-			+
-			"<row>"
-			+
-			"<field name=\"configPathName\"><![CDATA[" + s_configPathName + "]]></field>"
-			+
-			"<field name=\"configFileName\"><![CDATA[" + s_configFileName + "]]></field>"
-			+
-			"</row>"
-			+
-			"</rowset>"
-		);
+		result.append("<rowset type=\"paths\"><row>")
+		      .append("<field name=\"configPathName\"><![CDATA[").append(s_configPathName).append("]]></field>")
+		      .append("<field name=\"configFileName\"><![CDATA[").append(s_configFileName).append("]]></field>")
+		      .append("</row></rowset>")
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -693,7 +685,7 @@ public class ConfigSingleton
 			name = entry.getKey();
 			value = entry.getValue();
 
-			result.append("<field name=\"" + name + "\"><![CDATA[" + value + "]]></field>");
+			result.append("<field name=\"").append(name).append("\"><![CDATA[").append(value).append("]]></field>");
 		}
 
 		result.append("</row></rowset>");
