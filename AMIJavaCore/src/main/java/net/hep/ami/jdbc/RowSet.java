@@ -286,7 +286,7 @@ public class RowSet
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < offset && m_resultSet.next(); i++)
-		;
+		{ }
 		for(int i = 0; i < limit && m_resultSet.next(); i++)
 		{
 			if(maxNumberOfRows == 0)
@@ -363,7 +363,7 @@ public class RowSet
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < offset && m_resultSet.next(); i++)
-		;
+		{ }
 		for(int i = 0; i < limit && m_resultSet.next(); i++)
 		{
 			if(maxNumberOfRows == 0)
