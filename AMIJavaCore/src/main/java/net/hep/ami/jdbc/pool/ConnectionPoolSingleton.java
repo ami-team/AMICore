@@ -39,7 +39,7 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, DataSource> s_pools = new HashMap<String, DataSource>();
+	private static final Map<String, DataSource> s_pools = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 

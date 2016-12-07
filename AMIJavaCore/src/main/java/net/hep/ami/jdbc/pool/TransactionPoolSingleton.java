@@ -10,7 +10,7 @@ public class TransactionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<Long, Map<String, DriverAbstractClass>> s_pools = new HashMap<Long, Map<String, DriverAbstractClass>>();
+	private static final Map<Long, Map<String, DriverAbstractClass>> s_pools = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 

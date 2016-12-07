@@ -9,7 +9,7 @@ public class ClassSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Set<String> s_classNames = new HashSet<String>();
+	private static final Set<String> s_classNames = new HashSet<>();
 
 	/*---------------------------------------------------------------------*/
 
