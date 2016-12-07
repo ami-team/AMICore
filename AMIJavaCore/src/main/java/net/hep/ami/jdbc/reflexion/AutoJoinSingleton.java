@@ -160,7 +160,7 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			if(givenTable == null || _column.table.equals(givenTable.toLowerCase()))
+			if(givenTable == null || _column.table.equalsIgnoreCase(givenTable))
 			{
 				if(givenValue != null)
 				{
@@ -255,7 +255,7 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			if(givenTable == null || _column.table.equals(givenTable.toLowerCase()))
+			if(givenTable == null || _column.table.equalsIgnoreCase(givenTable))
 			{
 				if(givenValue != null)
 				{

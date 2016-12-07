@@ -133,7 +133,7 @@ public class CSVParser
 				{
 					keys = tokenize(line);
 
-					if(keys.size() > 0)
+					if(keys.isEmpty() == false)
 					{
 						first = false;
 					}
