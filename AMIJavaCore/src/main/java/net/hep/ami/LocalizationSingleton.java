@@ -31,7 +31,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static BigInteger _toPositiveBigInteger(BigInteger bigInteger, int bitLength)
+	private static BigInteger toPositiveBigInteger(BigInteger bigInteger, int bitLength)
 	{
 		if(bigInteger.compareTo(BigInteger.ZERO) < 0)
 		{
@@ -65,10 +65,10 @@ public class LocalizationSingleton
 
 		for(byte part: parts)
 		{
-			result = result.shiftLeft(8).or(_toPositiveBigInteger(BigInteger.valueOf(part), 8));
+			result = result.shiftLeft(8).or(toPositiveBigInteger(BigInteger.valueOf(part), 8));
 		}
 
-		return _toPositiveBigInteger(result, 8 * parts.length);
+		return toPositiveBigInteger(result, 8 * parts.length);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -81,10 +81,10 @@ public class LocalizationSingleton
 
 		for(byte part: parts)
 		{
-			result = result.shiftLeft(8).or(_toPositiveBigInteger(BigInteger.valueOf(part), 8));
+			result = result.shiftLeft(8).or(toPositiveBigInteger(BigInteger.valueOf(part), 8));
 		}
 
-		return _toPositiveBigInteger(result, 8 * parts.length);
+		return toPositiveBigInteger(result, 8 * parts.length);
 	}
 
 	/*---------------------------------------------------------------------*/
