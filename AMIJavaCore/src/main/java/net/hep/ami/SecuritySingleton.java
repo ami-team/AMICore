@@ -461,7 +461,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate generateCertificate(PrivateKey CAPrivateKey, X509Certificate CACertificate, PublicKey publicKey, String subject, int validity) throws Exception
+	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, int validity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 BUILDER                                             */
@@ -478,7 +478,7 @@ public class SecuritySingleton
 		Date date2 = calendar.getTime();
 
 		X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(
-			CACertificate,
+			caCertificate,
 			serial,
 			date1,
 			date2,
@@ -497,13 +497,13 @@ public class SecuritySingleton
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.14"), false, new JcaX509ExtensionUtils().createSubjectKeyIdentifier(publicKey));
 
 		// Authority Key Identifier
-		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(CACertificate));
+		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(caCertificate));
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 CERTIFICATE                                         */
 		/*-----------------------------------------------------------------*/
 
-		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(CAPrivateKey);
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(caPrivateKey);
 
 		return new JcaX509CertificateConverter().setProvider(BC).getCertificate(
 			builder.build(contentSigner)
@@ -514,7 +514,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static KeyStore generateKeyStore_JKS(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
+	public static KeyStore generateJKSKeyStore(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("JKS");
 
@@ -527,7 +527,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static KeyStore generateKeyStore_PKCS12(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
+	public static KeyStore generatePKCS12KeyStore(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("PKCS12");
 

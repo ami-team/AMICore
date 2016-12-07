@@ -116,8 +116,8 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_JKS = SecuritySingleton.generateKeyStore_JKS(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
-		KeyStore keyStore_PKCS12 = SecuritySingleton.generateKeyStore_PKCS12(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
+		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
+		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
 
 		/*-----------------------------------------------------------------*/
 

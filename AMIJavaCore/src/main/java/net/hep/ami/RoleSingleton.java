@@ -244,17 +244,17 @@ public class RoleSingleton
 
 		/*---------------------------------*/
 
-		String AMIUser = arguments.get("AMIUser");
-		String AMIPass = arguments.get("AMIPass");
+		String amiUser = arguments.get("AMIUser");
+		String amiPass = arguments.get("AMIPass");
 
-		if(AMIUser == null
+		if(amiUser == null
 		   ||
-		   AMIPass == null
+		   amiPass == null
 		 ) {
 			throw new Exception("not authenticated");
 		}
 
-		AMIPass = SecuritySingleton.encrypt(AMIPass);
+		amiPass = SecuritySingleton.encrypt(amiPass);
 
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE                                                        */
@@ -290,8 +290,8 @@ public class RoleSingleton
 			" ORDER BY `node`.`lft` DESC",
 			/*-------------------------------------------------------------*/
 			command.replace("'", "''"),
-			AMIUser.replace("'", "''"),
-			AMIPass.replace("'", "''")
+			amiUser.replace("'", "''"),
+			amiPass.replace("'", "''")
 		);
 
 		List<Row> rowList = querier.executeQuery(sql).getAll();
