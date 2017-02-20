@@ -275,7 +275,7 @@ public class CommandSingleton
 
 		stringBuilder.append("<AMIMessage>");
 
-		stringBuilder.append("<command><![CDATA[" + command + "]]></command>");
+		stringBuilder.append("<command><![CDATA[").append(command).append("]]></command>");
 
 		stringBuilder.append("<arguments>");
 
@@ -295,7 +295,7 @@ public class CommandSingleton
 			   &&
 			   key.equals("issuerDN") == false
 			 ) {
-				stringBuilder.append("<argument name=\"" + key.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\" value=\"" + value.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"/>");
+				stringBuilder.append("<argument name=\"").append(key.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\" value=\"").append(value.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\"/>");
 			}
 		}
 
@@ -345,16 +345,18 @@ public class CommandSingleton
 
 			if(tuple.x != null)
 			{
-				stringBuilder.append("<help><![CDATA[");
-				stringBuilder.append(s_xml10Pattern.matcher(tuple.x).replaceAll("?"));
-				stringBuilder.append("]]></help>");
+				stringBuilder.append("<help><![CDATA[")
+				             .append(s_xml10Pattern.matcher(tuple.x).replaceAll("?"))
+				             .append("]]></help>")
+				;
 			}
 
 			if(tuple.y != null)
 			{
-				stringBuilder.append("<usage><![CDATA[");
-				stringBuilder.append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"));
-				stringBuilder.append("]]></usage>");
+				stringBuilder.append("<usage><![CDATA[")
+				             .append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"))
+				             .append("]]></usage>")
+				;
 			}
 
 			/*-------------------------------------------------------------*/

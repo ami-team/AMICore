@@ -104,7 +104,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static File _toFile(String configPathName)
+	private static File toFile(String configPathName)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -135,27 +135,27 @@ public class ConfigSingleton
 
 		if(path == null
 		   ||
-		   (file = _toFile(path)).exists() == false
+		   (file = toFile(path)).exists() == false
 		 ) {
 
 			path = System.getProperty("catalina.base");
 
 			if(path == null
 			   ||
-			   (file = _toFile(path + File.separator + "conf")).exists() == false
+			   (file = toFile(path + File.separator + "conf")).exists() == false
 			 ) {
 
 				path = System.getProperty((("user.home")));
 
 				if(path == null
 				   ||
-				   (file = _toFile(path + File.separator + ".ami")).exists() == false
+				   (file = toFile(path + File.separator + ".ami")).exists() == false
 				 ) {
 					/*----------------------------*/
 					/* DEFAULT FOR DEBs/RPMs      */
 					/*----------------------------*/
 
-					file = _toFile("/etc/ami");
+					file = toFile("/etc/ami");
 
 					/*----------------------------*/
 				}

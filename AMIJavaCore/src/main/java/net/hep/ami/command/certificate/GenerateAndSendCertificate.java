@@ -124,6 +124,8 @@ public class GenerateAndSendCertificate extends CommandAbstractClass
 
 		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, email.toCharArray());
 
+		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
+
 		/*-----------------------------------------------------------------*/
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();

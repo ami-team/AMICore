@@ -24,7 +24,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	private Connection m_connection;
 
-	private final List<Statement> m_statementList = new ArrayList<>();
+	private final Map<String, Statement> m_statementMap = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -69,7 +69,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		/* CREATE STATEMENT                                                */
 		/*-----------------------------------------------------------------*/
 
-		m_statementList.add(m_connection.createStatement());
+		m_statementMap.put("@", m_connection.createStatement());
 
 		/*-----------------------------------------------------------------*/
 		/* GET CATALOGS                                                    */
@@ -159,7 +159,9 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	{
 		try
 		{
-			return new RowSet(m_statementList.get(0).executeQuery(patch(sql)), sql, null);
+			String SQL = patch(sql);
+
+			return new RowSet(m_statementMap.get("@").executeQuery(SQL), sql, null);
 		}
 		catch(Exception e)
 		{
@@ -176,9 +178,9 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 		try
 		{
-			String sql = SelectParser.parse(mql, this);
+			String sql = SelectParser.parse(mql, this), SQL = patch(sql);
 
-			return new RowSet(m_statementList.get(0).executeQuery(patch(sql)), sql, null);
+			return new RowSet(m_statementMap.get("@").executeQuery(SQL), sql, null);
 		}
 		catch(Exception e)
 		{
@@ -193,7 +195,9 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	{
 		try
 		{
-			return m_statementList.get(0).executeUpdate(patch(sql));
+			String SQL = patch(sql);
+
+			return m_statementMap.get("@").executeUpdate(SQL);
 		}
 		catch(Exception e)
 		{
@@ -210,9 +214,9 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 		try
 		{
-			String sql = UpdateParser.parse(mql, this);
+			String sql = UpdateParser.parse(mql, this), SQL = patch(sql);
 
-			return m_statementList.get(0).executeUpdate(patch(sql));
+			return m_statementMap.get("@").executeUpdate(SQL);
 		}
 		catch(Exception e)
 		{
@@ -243,11 +247,18 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	{
 		try
 		{
-			PreparedStatement result = (columnNames == null) ? m_connection.prepareStatement(patch(sql))
-			                                                 : m_connection.prepareStatement(patch(sql), columnNames)
-			;
+			String SQL = patch(sql);
 
-			m_statementList.add(result);
+			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
+
+			if(result == null)
+			{
+				result = (columnNames == null) ? m_connection.prepareStatement(SQL)
+				                               : m_connection.prepareStatement(SQL, columnNames)
+				;
+
+				m_statementMap.put(SQL, result);
+			}
 
 			return result;
 		}
@@ -266,13 +277,18 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 		try
 		{
-			String sql = UpdateParser.parse(mql, this);
+			String sql = UpdateParser.parse(mql, this), SQL = patch(sql);
 
-			PreparedStatement result = (columnNames == null) ? m_connection.prepareStatement(patch(sql))
-			                                                 : m_connection.prepareStatement(patch(sql), columnNames)
-			;
+			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 
-			m_statementList.add(result);
+			if(result == null)
+			{
+				result = (columnNames == null) ? m_connection.prepareStatement(SQL)
+				                               : m_connection.prepareStatement(SQL, columnNames)
+				;
+
+				m_statementMap.put(SQL, result);
+			}
 
 			return result;
 		}
@@ -315,7 +331,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		finally
 		{
-			for(Statement statement: m_statementList)
+			for(Statement statement: m_statementMap.values())
 			{
 				try
 				{
@@ -347,7 +363,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		}
 		finally
 		{
-			for(Statement statement: m_statementList)
+			for(Statement statement: m_statementMap.values())
 			{
 				try
 				{

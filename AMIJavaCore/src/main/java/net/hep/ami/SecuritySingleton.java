@@ -637,13 +637,11 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getAMIName(javax.security.auth.x500.X500Principal principal)
+	public static String getDNName(javax.security.auth.x500.X500Principal principal)
 	{
 		StringBuilder result = new StringBuilder();
 
-		String[] parts = principal.getName("RFC2253").split(",");
-
-		for(String part: parts)
+		for(String part: principal.getName("RFC2253").split(","))
 		{
 			result.insert(0, "/" + part);
 		}

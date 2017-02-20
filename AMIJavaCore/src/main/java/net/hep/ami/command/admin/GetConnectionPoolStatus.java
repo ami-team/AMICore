@@ -24,7 +24,7 @@ public class GetConnectionPoolStatus extends CommandAbstractClass
 
 		Runtime runtime = Runtime.getRuntime();
 
-		File file = new File("/");
+		File file = new File(System.getProperty("catalina.base", "/"));
 
 		/*-----------------------------------------------------------------*/
 

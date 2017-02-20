@@ -52,7 +52,7 @@ public class PermissiveSocketFactory
 
 			sslContext.init(null, new TrustManager[] {
 				new PermissiveX509TrustManager()
-			}, null);
+			}, new java.security.SecureRandom());
 
 			/*-------------------------------------------------------------*/
 			/* CREATE SSL FACTORY                                          */
@@ -68,7 +68,7 @@ public class PermissiveSocketFactory
 
 			tlsContext.init(null, new TrustManager[] {
 				new PermissiveX509TrustManager()
-			}, null);
+			}, new java.security.SecureRandom());
 
 			/*-------------------------------------------------------------*/
 			/* CREATE TSL FACTORY                                          */

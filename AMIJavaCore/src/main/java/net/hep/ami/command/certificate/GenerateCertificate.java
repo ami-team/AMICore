@@ -119,6 +119,9 @@ public class GenerateCertificate extends CommandAbstractClass
 		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
 		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
 
+		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
+		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
+
 		/*-----------------------------------------------------------------*/
 
 		StringBuilder result = new StringBuilder();
@@ -131,8 +134,8 @@ public class GenerateCertificate extends CommandAbstractClass
 
 		ByteArrayOutputStream output;
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getAMIName(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getAMIName(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDNName(certificate.getSubjectX500Principal()) + "]]></field>");
+		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDNName(certificate.getIssuerX500Principal()) + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");

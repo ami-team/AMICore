@@ -94,18 +94,6 @@ public class FrontEnd extends HttpServlet
 		textOutput = (textOutput != null) ? textOutput.trim() : "";
 
 		/*-----------------------------------------------------------------*/
-		/* GET WRITER                                                      */
-		/*-----------------------------------------------------------------*/
-
-		PrintWriter writer = res.getWriter();
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE SESSION                                                  */
-		/*-----------------------------------------------------------------*/
-
-		HttpSession session = req.getSession(true);
-
-		/*-----------------------------------------------------------------*/
 		/* SET CONTENT DISPOSITION                                         */
 		/*-----------------------------------------------------------------*/
 
@@ -150,6 +138,8 @@ public class FrontEnd extends HttpServlet
 				/*---------------------------------------------------------*/
 
 				AMIParser.CommandTuple tuple = AMIParser.parse(command);
+
+				HttpSession session = req.getSession(true);
 
 				updateSessionAndCommandArgs(
 					tuple.arguments,
@@ -217,15 +207,17 @@ public class FrontEnd extends HttpServlet
 		/* WRITE RESULT                                                    */
 		/*-----------------------------------------------------------------*/
 
-		res.setContentType(mime);
+		PrintWriter writer = res.getWriter();
 
 		writer.print(data);
 
-		/*-----------------------------------------------------------------*/
-		/* CLOSE WRITER                                                    */
+		writer.close();
+
 		/*-----------------------------------------------------------------*/
 
-		writer.close();
+		res.setContentType(mime);
+
+		res.setStatus(200);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -243,8 +235,8 @@ public class FrontEnd extends HttpServlet
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
 					return new Tuple2<String, String>(
-						SecuritySingleton.getAMIName(certificate.getSubjectX500Principal()),
-						SecuritySingleton.getAMIName(certificate.getIssuerX500Principal())
+						SecuritySingleton.getDNName(certificate.getSubjectX500Principal()),
+						SecuritySingleton.getDNName(certificate.getIssuerX500Principal())
 					);
 				}
 			}

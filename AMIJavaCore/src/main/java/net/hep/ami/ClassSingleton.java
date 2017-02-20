@@ -21,7 +21,7 @@ public class ClassSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		for(String path: ConfigSingleton.getSystemProperty("java.class.path").split(":"))
+		for(String path: System.getProperty("java.class.path", "").split(":"))
 		{
 			walk(path);
 		}
