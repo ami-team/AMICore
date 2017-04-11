@@ -8,7 +8,7 @@ public class PermissiveSocketFactory
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class PermissiveX509TrustManager implements X509TrustManager
+	private static final class PermissiveX509TrustManager implements X509TrustManager
 	{
 		@Override
 		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException
@@ -31,17 +31,24 @@ public class PermissiveSocketFactory
 
 	/*---------------------------------------------------------------------*/
 
-	private static SSLSocketFactory m_sslSocketFactory;
-	private static SSLSocketFactory m_tlsSocketFactory;
+	private final SSLSocketFactory m_sslSocketFactory;
+	private final SSLSocketFactory m_tlsSocketFactory;
 
 	/*---------------------------------------------------------------------*/
 
-	private PermissiveSocketFactory() {}
-
-	/*---------------------------------------------------------------------*/
-
-	static
+	public PermissiveSocketFactory()
 	{
+		this(null);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public PermissiveSocketFactory(@Nullable KeyManager[] keyManagers)
+	{
+		SSLSocketFactory tmp;
+
+		/*-----------------------------------------------------------------*/
+
 		try
 		{
 			/*-------------------------------------------------------------*/
@@ -50,7 +57,7 @@ public class PermissiveSocketFactory
 
 			SSLContext sslContext = SSLContext.getInstance("SSLv3");
 
-			sslContext.init(null, new TrustManager[] {
+			sslContext.init(keyManagers, new TrustManager[] {
 				new PermissiveX509TrustManager()
 			}, new java.security.SecureRandom());
 
@@ -58,15 +65,28 @@ public class PermissiveSocketFactory
 			/* CREATE SSL FACTORY                                          */
 			/*-------------------------------------------------------------*/
 
-			m_sslSocketFactory = sslContext.getSocketFactory();
+			tmp = sslContext.getSocketFactory();
 
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			tmp = null;
+		}
+
+		m_sslSocketFactory = tmp;
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
 			/*-------------------------------------------------------------*/
 			/* CREATE TLS CONTEXT                                          */
 			/*-------------------------------------------------------------*/
 
-			SSLContext tlsContext = SSLContext.getInstance("TLSv1.2");
+			SSLContext tlsContext = SSLContext.getInstance("TLSv1");
 
-			tlsContext.init(null, new TrustManager[] {
+			tlsContext.init(keyManagers, new TrustManager[] {
 				new PermissiveX509TrustManager()
 			}, new java.security.SecureRandom());
 
@@ -74,26 +94,30 @@ public class PermissiveSocketFactory
 			/* CREATE TSL FACTORY                                          */
 			/*-------------------------------------------------------------*/
 
-			m_tlsSocketFactory = tlsContext.getSocketFactory();
+			tmp = tlsContext.getSocketFactory();
 
 			/*-------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			tmp = null;
 		}
+
+		m_tlsSocketFactory = tmp;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static SSLSocketFactory getSSLSocketFactory() throws Exception
+	public SSLSocketFactory getSSLSocketFactory() throws Exception
 	{
 		return m_sslSocketFactory;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static SSLSocketFactory getTLSSocketFactory() throws Exception
+	public SSLSocketFactory getTLSSocketFactory() throws Exception
 	{
 		return m_tlsSocketFactory;
 	}

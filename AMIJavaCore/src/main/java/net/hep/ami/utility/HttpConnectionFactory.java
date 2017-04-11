@@ -8,35 +8,39 @@ public class HttpConnectionFactory
 {
 	/*---------------------------------------------------------------------*/
 
+	private static final PermissiveSocketFactory s_socketFactory = new PermissiveSocketFactory();
+
+	/*---------------------------------------------------------------------*/
+
 	private HttpConnectionFactory() {}
 
 	/*---------------------------------------------------------------------*/
 
-	public static HttpURLConnection sslConnection(String spec) throws Exception
+	public static HttpURLConnection connection(String spec) throws Exception
 	{
-		URL url = new URL(spec);
+		HttpURLConnection result = (HttpURLConnection) new URL(spec).openConnection();
 
-		HttpsURLConnection result = (HttpsURLConnection) url.openConnection();
-
-		if(url.getProtocol().equals("https"))
+		if(result instanceof HttpsURLConnection)
 		{
-			result.setSSLSocketFactory(PermissiveSocketFactory.getSSLSocketFactory());
-		}
+			SSLSocketFactory socketFactory;
 
-		return result;
-	}
+			/**/
 
-	/*---------------------------------------------------------------------*/
+			socketFactory = s_socketFactory.getTLSSocketFactory();
 
-	public static HttpURLConnection tlsConnection(String spec) throws Exception
-	{
-		URL url = new URL(spec);
+			if(socketFactory == null)
+			{
+				socketFactory = s_socketFactory.getSSLSocketFactory();
 
-		HttpsURLConnection result = (HttpsURLConnection) url.openConnection();
+				if(socketFactory == null)
+				{
+					throw new Exception("Could not initialize connection");
+				}
+			}
 
-		if(url.getProtocol().equals("https"))
-		{
-			result.setSSLSocketFactory(PermissiveSocketFactory.getTLSSocketFactory());
+			/**/
+
+			((HttpsURLConnection) result).setSSLSocketFactory(socketFactory);
 		}
 
 		return result;

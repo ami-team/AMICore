@@ -35,6 +35,8 @@
 		<xsl:text>"</xsl:text>
 		<xsl:copy-of select="$s4" />
 		<xsl:text>"</xsl:text>
+
+		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="info">
@@ -93,30 +95,25 @@
 		<xsl:text>{</xsl:text>
 
 		<xsl:for-each select="@*">
-			<xsl:variable name="s1" select="name()" />
+			<xsl:variable name="s1" select="." />
 			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
 			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 			<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
-			<xsl:variable name="s5" select="." />
-			<xsl:variable name="s6" select="replace($s5, '&#xa;', '\\n')" />
-			<xsl:variable name="s7" select="replace($s6, '&#x9;', '\\t')" />
-			<xsl:variable name="s8" select="replace($s7, '&quot;', '\\&quot;')" />
-
 			<xsl:text>"@</xsl:text>
-			<xsl:value-of select="$s4" />
+			<xsl:value-of select="name()" />
 			<xsl:text>":"</xsl:text>
-			<xsl:value-of select="$s8" />
+			<xsl:value-of select="$s4" />
 			<xsl:text>",</xsl:text>
 		</xsl:for-each>
 
-		<xsl:variable name="s9" select="." />
-		<xsl:variable name="sA" select="replace($s9, '&#xa;', '\\n')" />
-		<xsl:variable name="sB" select="replace($sA, '&#x9;', '\\t')" />
-		<xsl:variable name="sC" select="replace($sB, '&quot;', '\\&quot;')" />
+		<xsl:variable name="s5" select="." />
+		<xsl:variable name="s6" select="replace($s5, '&#xa;', '\\n')" />
+		<xsl:variable name="s7" select="replace($s6, '&#x9;', '\\t')" />
+		<xsl:variable name="s8" select="replace($s7, '&quot;', '\\&quot;')" />
 
 		<xsl:text>"$":"</xsl:text>
-		<xsl:value-of select="$sC" />
+		<xsl:value-of select="$s8" />
 		<xsl:text>"</xsl:text>
 
 		<xsl:text>}</xsl:text>

@@ -207,17 +207,17 @@ public class FrontEnd extends HttpServlet
 		/* WRITE RESULT                                                    */
 		/*-----------------------------------------------------------------*/
 
+		res.setStatus(200);
+
+		res.setContentType(mime);
+
+		/*-----------------------------------------------------------------*/
+
 		PrintWriter writer = res.getWriter();
 
 		writer.print(data);
 
 		writer.close();
-
-		/*-----------------------------------------------------------------*/
-
-		res.setContentType(mime);
-
-		res.setStatus(200);
 
 		/*-----------------------------------------------------------------*/
 	}
