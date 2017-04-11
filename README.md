@@ -18,7 +18,7 @@ mvn -version
 
   Download [Orache JDBC driver 12c](http://www.oracle.com/technetwork/database/features/jdbc/). Edit OracleMaven.sh and set the proper JAR version:
 	```bash
-JAR=ojdbc7.jar
+JAR=ojdbc8.jar
 JAR_VERSION=12.2.0.1
 
 mvn install:install-file \
