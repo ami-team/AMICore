@@ -1,9 +1,9 @@
 #!/bin/bash
 
-JAR=ojdbc7.jar
-JAR_VERSION=12.1.0.1.0
+JAR=ojdbc8.jar
+JAR_VERSION=12.2.0.1
 
 mvn install:install-file \
 	-DgeneratePom=true \
-	-DgroupId=com.oracle.jdbc -DartifactId=ojdbc7 \
+	-DgroupId=com.oracle.jdbc -DartifactId=ojdbc8 \
 	-Dpackaging=jar -Dfile=$JAR -Dversion=$JAR_VERSION
