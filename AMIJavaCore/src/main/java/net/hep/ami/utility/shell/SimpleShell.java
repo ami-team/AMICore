@@ -14,7 +14,7 @@ public class SimpleShell extends ShellAbstractClass
 		StringBuilder inputStringBuilder = new StringBuilder();
 		StringBuilder errorStringBuilder = new StringBuilder();
 
-		Process process = Runtime.getRuntime().exec(args);
+		Process process = Runtime.getRuntime().exec(new String[] {"bash", "-c", argsToString(args)});
 
 		Thread inputThread = new StreamReader(inputStringBuilder, process.getInputStream());
 		Thread errorThread = new StreamReader(errorStringBuilder, process.getErrorStream());
