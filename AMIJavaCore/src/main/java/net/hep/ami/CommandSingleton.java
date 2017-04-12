@@ -23,7 +23,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_commands = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Tuple> s_commands = new MyHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -264,6 +264,12 @@ public class CommandSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* CHECK ROLES                                                     */
+		/*-----------------------------------------------------------------*/
+
+		/* TODO */
+
+		/*-----------------------------------------------------------------*/
 		/* EXECUTE COMMAND AND BUILD RESULT                                */
 		/*-----------------------------------------------------------------*/
 
@@ -303,12 +309,6 @@ public class CommandSingleton
 
 		if(arguments.containsKey("help") == false)
 		{
-			/*-------------------------------------------------------------*/
-			/* CHECK ROLES                                                 */
-			/*-------------------------------------------------------------*/
-
-			/* TODO */
-
 			/*-------------------------------------------------------------*/
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
@@ -377,10 +377,6 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_commands.entrySet());
-
-		/*-----------------------------------------------------------------*/
-
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -391,7 +387,7 @@ public class CommandSingleton
 		String usage;
 		String clazz;
 
-		for(Map.Entry<String, Tuple> entry: entrySet)
+		for(Map.Entry<String, Tuple> entry: s_commands.entrySet())
 		{
 			command = entry.getKey();
 

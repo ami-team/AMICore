@@ -22,7 +22,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_properties = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, String> s_properties = new MyHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -671,16 +671,12 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<String> entrySet = new OrderdSetOfMapEntry<>(s_properties.entrySet());
-
-		/*-----------------------------------------------------------------*/
-
 		String name;
 		String value;
 
 		result.append("<rowset type=\"config\"><row>");
 
-		for(Map.Entry<String, String> entry: entrySet)
+		for(Map.Entry<String, String> entry: s_properties.entrySet())
 		{
 			name = entry.getKey();
 			value = entry.getValue();

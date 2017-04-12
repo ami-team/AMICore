@@ -24,7 +24,7 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_converters = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Tuple> s_converters = new MyHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -184,10 +184,6 @@ public class ConverterSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_converters.entrySet());
-
-		/*-----------------------------------------------------------------*/
-
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -195,7 +191,7 @@ public class ConverterSingleton
 		String xslt;
 		String mime;
 
-		for(Map.Entry<String, Tuple> entry: entrySet)
+		for(Map.Entry<String, Tuple> entry: s_converters.entrySet())
 		{
 			xslt = entry.getKey();
 			mime = entry.getValue().y;

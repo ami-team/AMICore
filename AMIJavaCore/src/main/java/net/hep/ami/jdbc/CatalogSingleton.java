@@ -23,7 +23,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_catalogs = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Tuple> s_catalogs = new MyHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -196,10 +196,6 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_catalogs.entrySet());
-
-		/*-----------------------------------------------------------------*/
-
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -211,7 +207,7 @@ public class CatalogSingleton
 		String pass;
 		String archived;
 
-		for(Map.Entry<String, Tuple> entry: entrySet)
+		for(Map.Entry<String, Tuple> entry: s_catalogs.entrySet())
 		{
 			catalog = entry.getKey();
 

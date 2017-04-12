@@ -23,7 +23,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_drivers = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Tuple> s_drivers = new MyHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -178,10 +178,6 @@ public class DriverSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		OrderdSetOfMapEntry<Tuple> entrySet = new OrderdSetOfMapEntry<>(s_drivers.entrySet());
-
-		/*-----------------------------------------------------------------*/
-
 		result.append("<rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -191,7 +187,7 @@ public class DriverSingleton
 		String jdbcClass;
 		String driverClass;
 
-		for(Map.Entry<String, Tuple> entry: entrySet)
+		for(Map.Entry<String, Tuple> entry: s_drivers.entrySet())
 		{
 			jdbcProto = entry.getKey();
 			jdbcType = entry.getValue().x;
