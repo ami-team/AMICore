@@ -314,7 +314,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removePropertyToDataBase(String name) throws Exception
+	public static void removePropertyFromDataBase(String name) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */

@@ -35,7 +35,7 @@ public class RemoveConfigProperty extends CommandAbstractClass
 
 		ConfigSingleton.removeProperty(name);
 
-		ConfigSingleton.removePropertyToDataBase(name);
+		ConfigSingleton.removePropertyFromDataBase(name);
 
 		/*-----------------------------------------------------------------*/
 
