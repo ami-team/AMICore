@@ -23,7 +23,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_catalogs = new MyHashMap<>();
+	private static final Map<String, Tuple> s_catalogs = new ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 

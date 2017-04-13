@@ -23,7 +23,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_commands = new MyHashMap<>();
+	private static final Map<String, Tuple> s_commands = new ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 

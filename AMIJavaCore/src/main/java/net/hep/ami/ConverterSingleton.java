@@ -24,7 +24,7 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_converters = new MyHashMap<>();
+	private static final Map<String, Tuple> s_converters = new ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
