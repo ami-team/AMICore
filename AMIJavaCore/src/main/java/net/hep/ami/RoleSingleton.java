@@ -47,7 +47,7 @@ public class RoleSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.fatal("for validator `" + className + "`: " + e.getMessage(), e);
+				LogSingleton.defaultLogger.error(LogSingleton.FATAL, "for validator `" + className + "`", e);
 			}
 		}
 	}

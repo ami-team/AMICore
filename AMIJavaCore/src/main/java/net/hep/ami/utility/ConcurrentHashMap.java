@@ -6,7 +6,7 @@ public class ConcurrentHashMap<U, V> extends java.util.concurrent.ConcurrentHash
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1020700776762564817L;
 
 	/*---------------------------------------------------------------------*/
 

@@ -54,7 +54,7 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.fatal(e);
+			LogSingleton.defaultLogger.error(LogSingleton.FATAL, "could not read configuration", e);
 		}
 	}
 

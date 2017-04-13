@@ -4,42 +4,19 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.utility.*;
 
-import org.apache.tomcat.jdbc.pool.*;
+import com.zaxxer.hikari.*;
 
 public class ConnectionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final int s_initialSize = ConfigSingleton.getProperty("initial_size", 1);
-	// The initial number of connections that are created when the pool is started.
-
-	private static final int s_maxActive = ConfigSingleton.getProperty("max_active", 100);
-	// The maximum number of active connections that can be allocated from this pool at the same time.
-
-	private static final int s_minIdle = ConfigSingleton.getProperty("min_idle", 5);
-	// The minimum number of established connections that should be kept in the pool at all times.
-
-	private static final int s_maxIdle = ConfigSingleton.getProperty("max_idle", 25);
-	// The maximum number of connections that should be kept in the pool at all times.
+	private static final Map<String, Tuple2<HikariDataSource, HikariPoolMXBean>> s_pools = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final int s_timeBetweenEvictionRunsMillis = ConfigSingleton.getProperty("time_between_eviction_runs_millis", 5000);
-	// The number of milliseconds to sleep between runs of the idle connection validation/cleaner thread. This value should not be set under 1 second. It dictates how often we check for idle, abandoned connections, and how often we validate idle connections.
-
-	private static final int s_minEvictableIdleTimeMillis = ConfigSingleton.getProperty("min_evictable_idle_time_millis", 30000);
-	// The minimum amount of time an object may sit idle in the pool before it is eligible for eviction.
-
-	private static final int s_validationInterval = ConfigSingleton.getProperty("validation_interval", 30000);
-	// Avoid excess validation, only run validation at most at this frequency - time in milliseconds.
-
-	private static final int s_maxWait = ConfigSingleton.getProperty("max_wait", 30000);
-	// The maximum number of milliseconds that the pool will wait before exception.
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Map<String, DataSource> s_pools = new HashMap<>();
+	private static final javax.management.MBeanServer s_beanServer = java.lang.management.ManagementFactory.getPlatformMBeanServer();
 
 	/*---------------------------------------------------------------------*/
 
@@ -49,162 +26,94 @@ public class ConnectionPoolSingleton
 
 	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass) throws Exception
 	{
-		return getDataSource(
-			catalog,
-			/* DATABASE */
-			jdbc_driver,
-			jdbc_url,
-			user,
-			pass,
-			/* POOL - CONTENT */
-			s_initialSize,
-			s_maxActive,
-			s_minIdle,
-			s_maxIdle,
-			/* POOL - TIMING */
-			s_timeBetweenEvictionRunsMillis,
-			s_minEvictableIdleTimeMillis,
-			s_validationInterval,
-			s_maxWait
-
-		).getConnection();
+		return getDataSource(catalog, jdbc_driver, jdbc_url, user, pass, null).getConnection();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait) throws Exception
+	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, @Nullable Properties properties) throws Exception
 	{
-		return getDataSource(
-			catalog,
-			/* DATABASE */
-			jdbc_driver,
-			jdbc_url,
-			user,
-			pass,
-			/* POOL - CONTENT */
-			initialSize,
-			maxActive,
-			minIdle,
-			maxIdle,
-			/* POOL - TIMING */
-			timeBetweenEvictionRunsMillis,
-			minEvictableIdleTimeMillis,
-			validationInterval,
-			maxWait
-
-		).getConnection();
+		return getDataSource(catalog, jdbc_driver, jdbc_url, user, pass, properties).getConnection();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static DataSource getDataSource(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass)
+	private static HikariDataSource getDataSource(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, @Nullable Properties properties) throws Exception
 	{
-		return getDataSource(
-			catalog,
-			/* DATABASE */
-			jdbc_driver,
-			jdbc_url,
-			user,
-			pass,
-			/* POOL - CONTENT */
-			s_initialSize,
-			s_maxActive,
-			s_minIdle,
-			s_maxIdle,
-			/* POOL - TIMING */
-			s_timeBetweenEvictionRunsMillis,
-			s_minEvictableIdleTimeMillis,
-			s_validationInterval,
-			s_maxWait
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static DataSource getDataSource(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, int initialSize, int maxActive, int minIdle, int maxIdle, int timeBetweenEvictionRunsMillis, int minEvictableIdleTimeMillis, int validationInterval, int maxWait)
-	{
-		DataSource result;
+		Tuple2<HikariDataSource, HikariPoolMXBean> tuple;
 
 		String key = user + "@" + jdbc_url;
 
 		synchronized(ConnectionPoolSingleton.class)
 		{
-		/**/	result = s_pools.get(key);
+		/**/	tuple = s_pools.get(key);
 		/**/
-		/**/	if(result == null)
+		/**/	if(tuple == null)
 		/**/	{
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE POOL PROPERTIES                              */
 		/**/		/*-----------------------------------------------------*/
 		/**/
-		/**/		PoolProperties poolProperties = new PoolProperties();
+		/**/		HikariConfig config = (properties == null) ? new HikariConfig(/*------*/)
+		/**/		                                           : new HikariConfig(properties)
+		/**/		;
 		/**/
 		/**/		/*---------------------------*/
 		/**/		/* DATABASE                  */
 		/**/		/*---------------------------*/
 		/**/
-		/**/		poolProperties.setDriverClassName(jdbc_driver);
-		/**/		poolProperties.setUrl(jdbc_url);
-		/**/		poolProperties.setUsername(user);
-		/**/		poolProperties.setPassword(pass);
+		/**/		config.setDriverClassName(jdbc_driver);
+		/**/		config.setJdbcUrl(jdbc_url);
+		/**/		config.setUsername(user);
+		/**/		config.setPassword(pass);
 		/**/
-		/**/		poolProperties.setDefaultAutoCommit(false);
+		/**/		/*---------------------------*/
+		/**/
+		/**/		config.setAutoCommit(false);
+		/**/		config.setRegisterMbeans(true);
 		/**/
 		/**/		/*---------------------------*/
 		/**/		/* POOL - NAME               */
 		/**/		/*---------------------------*/
 		/**/
-		/**/		poolProperties.setName((catalog == null) ? UUID.randomUUID().toString() : catalog);
+		/**/		if(catalog != null)
+		/**/		{
+		/**/			config.setPoolName(catalog);
+		/**/		}
 		/**/
 		/**/		/*---------------------------*/
-		/**/		/* POOL - CONTENT            */
+		/**/		/* POOL - PROPERTIES         */
 		/**/		/*---------------------------*/
 		/**/
-		/**/		poolProperties.setInitialSize(initialSize);
-		/**/		poolProperties.setMaxActive(maxActive);
-		/**/		poolProperties.setMinIdle(minIdle);
-		/**/		poolProperties.setMaxIdle(maxIdle);
+		/**/		if(properties == null || properties.containsKey("connectionTimeout") == false) {
+		/**/			config.setConnectionTimeout(ConfigSingleton.getProperty("connection_timeout", 30000));
+		/**/		}
 		/**/
-		/**/		/*---------------------------*/
-		/**/		/* POOL - TIMING             */
-		/**/		/*---------------------------*/
+		/**/		if(properties == null || properties.containsKey("idleTimeout") == false) {
+		/**/			config.setIdleTimeout(ConfigSingleton.getProperty("idle_timeout", 600000));
+		/**/		}
 		/**/
-		/**/		poolProperties.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-		/**/		poolProperties.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-		/**/		poolProperties.setValidationInterval(validationInterval);
-		/**/		poolProperties.setMaxWait(maxWait);
-		/**/
-		/**/		/*---------------------------*/
-		/**/		/* CONNECTION TESTS          */
-		/**/		/*---------------------------*/
-		/**/
-		/**/		poolProperties.setTestOnBorrow(true);				/* The indication of whether objects will be validated before being borrowed from the pool. */
-		/**/		poolProperties.setTestOnReturn(true);				/* The indication of whether objects will be validated after being returned to the pool. */
-		/**/		poolProperties.setTestOnConnect(true);				/* Set to true if query validation should take place the first time on a connection. */
-		/**/		poolProperties.setTestWhileIdle(true);				/* Set to true if query validation should take place while the connection is idle. */
-		/**/
-		/**/		poolProperties.setValidationQuery("SELECT 1");
-		/**/
-		/**/		/*---------------------------*/
-		/**/		/* ABANDONED CONNECTIONS     */
-		/**/		/*---------------------------*/
-		/**/
-		/**/		poolProperties.setRemoveAbandoned(false);
-		/**/		poolProperties.setLogAbandoned(false);
+		/**/		if(properties == null || properties.containsKey("maximumPoolSize") == false) {
+		/**/			config.setMaximumPoolSize(ConfigSingleton.getProperty("maximum_pool_size", 10));
+		/**/		}
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE DATA SOURCE                                  */
 		/**/		/*-----------------------------------------------------*/
 		/**/
-		/**/		s_pools.put(key, result = new DataSource());
+		/**/		HikariDataSource dataSource = new HikariDataSource(config);
 		/**/
-		/**/		result.setPoolProperties(poolProperties);
+		/**/		/*-----------------------------------------------------*/
+		/**/		/* REGISTER DATA SOURCE                                */
+		/**/		/*-----------------------------------------------------*/
+		/**/
+		/**/		s_pools.put(key, tuple = new Tuple2<HikariDataSource, HikariPoolMXBean>(dataSource, javax.management.JMX.newMXBeanProxy(s_beanServer, new javax.management.ObjectName("com.zaxxer.hikari:type=Pool (" + dataSource.getPoolName() + ")"), HikariPoolMXBean.class)));
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/	}
 		}
 
-		return result;
+		return tuple.x;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -219,42 +128,27 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String name;
-		int poolSize;
-		int minIdle;
-		int maxIdle;
-		int maxActive;
-		int timeBetweenEvictionRunsMillis;
-		int minEvictableIdleTimeMillis;
-		long validationInterval;
-		int maxWait;
+		String poolName;
+		long connectionTimeout;
+		long idleTimeout;
+		int maximumPoolSize;
 		int numIdle;
 		int numActive;
 
-		for(DataSource value: s_pools.values())
+		for(Tuple2<HikariDataSource, HikariPoolMXBean> value: s_pools.values())
 		{
-			name = value.getName();
-			poolSize = value.getPoolSize();
-			minIdle = value.getMinIdle();
-			maxIdle = value.getMaxIdle();
-			maxActive = value.getMaxActive();
-			timeBetweenEvictionRunsMillis = value.getTimeBetweenEvictionRunsMillis();
-			minEvictableIdleTimeMillis = value.getMinEvictableIdleTimeMillis();
-			validationInterval = value.getValidationInterval();
-			maxWait = value.getMaxWait();
-			numIdle = value.getNumIdle();
-			numActive = value.getNumActive();
+			poolName = value.x.getPoolName();
+			connectionTimeout = value.x.getConnectionTimeout();
+			idleTimeout = value.x.getIdleTimeout();
+			maximumPoolSize = value.x.getMaximumPoolSize();
+			numIdle = value.y.getIdleConnections();
+			numActive = value.y.getActiveConnections();
 
 			result.append("<row>")
-			      .append("<field name=\"name\">").append(name).append("</field>")
-			      .append("<field name=\"poolSize\">").append(poolSize).append("</field>")
-			      .append("<field name=\"minIdle\">").append(minIdle).append("</field>")
-			      .append("<field name=\"maxIdle\">").append(maxIdle).append("</field>")
-			      .append("<field name=\"maxActive\">").append(maxActive).append("</field>")
-			      .append("<field name=\"timeBetweenEvictionRunsMillis\">").append(timeBetweenEvictionRunsMillis).append("</field>")
-			      .append("<field name=\"minEvictableIdleTimeMillis\">").append(minEvictableIdleTimeMillis).append("</field>")
-			      .append("<field name=\"validationInterval\">").append(validationInterval).append("</field>")
-			      .append("<field name=\"maxWait\">").append(maxWait).append("</field>")
+			      .append("<field name=\"name\">").append(poolName).append("</field>")
+			      .append("<field name=\"connectionTimeout\">").append(connectionTimeout).append("</field>")
+			      .append("<field name=\"idleTimeout\">").append(idleTimeout).append("</field>")
+			      .append("<field name=\"maximumPoolSize\">").append(maximumPoolSize).append("</field>")
 			      .append("<field name=\"numIdle\">").append(numIdle).append("</field>")
 			      .append("<field name=\"numActive\">").append(numActive).append("</field>")
 			      .append("</row>")

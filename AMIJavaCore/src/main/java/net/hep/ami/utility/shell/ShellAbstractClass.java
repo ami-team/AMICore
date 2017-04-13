@@ -47,7 +47,7 @@ public abstract class ShellAbstractClass
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.error(e);
+				LogSingleton.defaultLogger.error("reading text file", e);
 			}
 		}
 	}

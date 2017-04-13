@@ -3,6 +3,7 @@ package net.hep.ami;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.pool.ConnectionPoolSingleton;
 import net.hep.ami.jdbc.reflexion.*;
 
 @SuppressWarnings("all")
@@ -14,7 +15,7 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-//		LogSingleton.defaultLogger.debug("Hello World!");
+		LogSingleton.defaultLogger.debug("Hello World!");
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 
@@ -46,12 +47,17 @@ public class CommandSingletonTest
 
 			//rb.commitAndRelease();
 
-//			System.out.println(SchemaSingleton.getCatalogNames());
-//			System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
+			//System.out.println(SchemaSingleton.getCatalogNames());
+			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
 			//CatalogSingleton.reload();
 
-			System.out.println(SchemaSingleton.getTableNames("self"));
+			//System.out.println(SchemaSingleton.getTableNames("self"));
+
+
+			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+
+			System.out.println(ConnectionPoolSingleton.getStatus());
 
 			System.out.println("done.");
 		}
