@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import org.slf4j.*;
+
 public class LogSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -12,27 +14,23 @@ public class LogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	static
-	{
-		reload();
-	}
+	public static final Logger defaultLogger = LogSingleton.getLogger("net.hep.ami");
 
 	/*---------------------------------------------------------------------*/
 
-	public static void reload()
+	public static Logger getLogger(String name)
 	{
+		String logLevel = ConfigSingleton.getProperty("log_level", "WARN");
 
-	}
+		Logger result = org.slf4j.LoggerFactory.getLogger(name);
 
-	/*---------------------------------------------------------------------*/
+		((ch.qos.logback.classic.Logger) result).setLevel(
+			ch.qos.logback.classic.Level.toLevel(
+				logLevel
+			)
+		);
 
-	public static final org.slf4j.Logger defaultLogger = org.slf4j.LoggerFactory.getLogger("net.hep.ami");
-
-	/*---------------------------------------------------------------------*/
-
-	public static org.slf4j.Logger getLogger(String name)
-	{
-		return org.slf4j.LoggerFactory.getLogger(name);
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

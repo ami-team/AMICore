@@ -12,11 +12,10 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<mail.version>1.5.2</mail.version>
-		<servlet.version>3.1.0</servlet.version>
-
 		<slf4j.version>1.7.25</slf4j.version>
 		<logback.version>1.2.3</logback.version>
+		<mail.version>1.5.2</mail.version>
+
 		<jackson.version>2.6.3</jackson.version>
 		<saxon.version>9.6.0-7</saxon.version>
 		<bouncycastle.version>1.51</bouncycastle.version>
@@ -31,25 +30,12 @@
 
 		<hikari.version>2.6.1</hikari.version>
 
+		<servlet.version>3.1.0</servlet.version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
-		<!--***************************************************************-->
-
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>${mail.version}</version>
-
-			<exclusions>
-				<exclusion>
-					<groupId>javax.activation</groupId>
-					<artifactId>activation</artifactId>
-				</exclusion>
-			</exclusions>
-
-		</dependency>
 
 		<!--***************************************************************-->
 
@@ -73,6 +59,22 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
+		</dependency>
+
+		<!--***************************************************************-->
+
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>${mail.version}</version>
+
+			<exclusions>
+				<exclusion>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</exclusion>
+			</exclusions>
+
 		</dependency>
 
 		<!--***************************************************************-->
