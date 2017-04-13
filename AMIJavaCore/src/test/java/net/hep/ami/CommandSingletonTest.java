@@ -55,11 +55,11 @@ public class CommandSingletonTest
 			//System.out.println(SchemaSingleton.getTableNames("self"));
 
 
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 
-			System.out.println(ConnectionPoolSingleton.getStatus());
+//			System.out.println(ConnectionPoolSingleton.getStatus());
 
-			System.out.println("done.");
+//			System.out.println("done.");
 		}
 		catch(Exception e)
 		{
