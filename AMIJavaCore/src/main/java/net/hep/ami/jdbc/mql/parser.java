@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-public class SelectParser
+public class parser
 {
 	/*---------------------------------------------------------------------*/
 
@@ -23,7 +23,7 @@ public class SelectParser
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectParser(DriverAbstractClass driver)
+	public parser(DriverAbstractClass driver)
 	{
 		m_driver = driver;
 	}
@@ -51,7 +51,7 @@ public class SelectParser
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		return new SelectParser(driver).visitSelectStatement(parser.selectStatement()).toString();
+		return new parser(driver).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}

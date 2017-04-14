@@ -20,23 +20,11 @@ public interface QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public int executeMQLUpdate(String mql) throws Exception;
-
-	/*---------------------------------------------------------------------*/
-
 	public PreparedStatement sqlPrepareStatement(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public PreparedStatement mqlPrepareStatement(String mql) throws Exception;
-
-	/*---------------------------------------------------------------------*/
-
 	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception;
-
-	/*---------------------------------------------------------------------*/
-
-	public PreparedStatement mqlPrepareStatement(String mql, String columnNames[]) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

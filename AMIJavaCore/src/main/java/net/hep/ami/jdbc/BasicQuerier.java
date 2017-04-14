@@ -66,14 +66,6 @@ public class BasicQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeMQLUpdate(String mql) throws Exception
-	{
-		return m_driver.executeMQLUpdate(mql);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
 	{
 		return m_driver.sqlPrepareStatement(sql);
@@ -82,25 +74,9 @@ public class BasicQuerier implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
-	{
-		return m_driver.mqlPrepareStatement(mql);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception
 	{
 		return m_driver.sqlPrepareStatement(sql, columnNames);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public PreparedStatement mqlPrepareStatement(String mql, String columnNames[]) throws Exception
-	{
-		return m_driver.mqlPrepareStatement(mql, columnNames);
 	}
 
 	/*---------------------------------------------------------------------*/

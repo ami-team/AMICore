@@ -178,7 +178,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 		try
 		{
-			String sql = SelectParser.parse(mql, this), SQL = patch(sql);
+			String sql = parser.parse(mql, this), SQL = patch(sql);
 
 			return new RowSet(m_statementMap.get("@").executeQuery(SQL), sql, null);
 		}
@@ -208,36 +208,9 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeMQLUpdate(String mql) throws Exception
-	{
-		_checkMQL();
-
-		try
-		{
-			String sql = UpdateParser.parse(mql, this), SQL = patch(sql);
-
-			return m_statementMap.get("@").executeUpdate(SQL);
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql, e);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
 	{
 		return sqlPrepareStatement(sql, null);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public PreparedStatement mqlPrepareStatement(String mql) throws Exception
-	{
-		return mqlPrepareStatement(mql, null);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -265,36 +238,6 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		catch(Exception e)
 		{
 			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public PreparedStatement mqlPrepareStatement(String mql, @Nullable String columnNames[]) throws Exception
-	{
-		_checkMQL();
-
-		try
-		{
-			String sql = UpdateParser.parse(mql, this), SQL = patch(sql);
-
-			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
-
-			if(result == null)
-			{
-				result = (columnNames == null) ? m_connection.prepareStatement(SQL)
-				                               : m_connection.prepareStatement(SQL, columnNames)
-				;
-
-				m_statementMap.put(SQL, result);
-			}
-
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for MQL query " + mql, e);
 		}
 	}
 

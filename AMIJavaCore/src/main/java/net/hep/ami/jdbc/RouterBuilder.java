@@ -22,15 +22,15 @@ public class RouterBuilder extends BasicQuerier
 
 	public void create() throws Exception
 	{
-		executeMQLUpdate("DROP DATABASE `router_test`;");
-		executeMQLUpdate("CREATE DATABASE `router_test`;");
-		executeMQLUpdate("USE `router_test`;");
+		executeUpdate("DROP DATABASE `router_test`;");
+		executeUpdate("CREATE DATABASE `router_test`;");
+		executeUpdate("USE `router_test`;");
 
 		/*-----------------------------------------------------------------*/
 		/* ROUTER_CONFIG                                                   */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_config` ("																+
 			" `id` INT(11),"																							+
 			" `paramName` VARCHAR(128),"																				+
@@ -38,14 +38,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_config`"																				+
 			" ADD CONSTRAINT `pk_router_config` PRIMARY KEY (`id`),"													+
 			" ADD CONSTRAINT `uk1_router_config` UNIQUE KEY (`paramName`)"												+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_config` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -53,7 +53,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_CATALOG                                                  */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_catalog` ("																+
 			" `id` INT(11),"																							+
 			" `catalog` VARCHAR(128),"																					+
@@ -65,14 +65,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_catalog`"																				+
 			" ADD CONSTRAINT `pk_router_catalog` PRIMARY KEY (`id`),"													+
 			" ADD CONSTRAINT `uk1_router_catalog` UNIQUE KEY (`catalog`)"												+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_catalog` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -80,7 +80,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_ROLE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_role` ("																+
 			" `id` INT(11),"																							+
 			" `lft` INT(11),"																							+
@@ -90,14 +90,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_role`"																					+
 			" ADD CONSTRAINT `pk_router_role` PRIMARY KEY (`id`),"														+
 			" ADD CONSTRAINT `uk1_router_role` UNIQUE KEY (`role`)"														+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -105,7 +105,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_COMMAND                                                  */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_command` ("																+
 			" `id` INT(11),"																							+
 			" `command` VARCHAR(128),"																					+
@@ -113,14 +113,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_command`"																				+
 			" ADD CONSTRAINT `pk_router_command` PRIMARY KEY (`id`),"													+
 			" ADD CONSTRAINT `uk1_router_command` UNIQUE KEY (`command`)"												+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_command` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -128,7 +128,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_COMMAND_ROLE                                             */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_command_role` ("														+
 			" `id` INT(11),"																							+
 			" `commandFK` INT(11),"																						+
@@ -136,7 +136,7 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_command_role`"																			+
 			" ADD CONSTRAINT `pk_router_command_role` PRIMARY KEY (`id`),"												+
 			" ADD CONSTRAINT `uk1_router_command_role` UNIQUE KEY (`commandFK`, `roleFK`),"								+
@@ -145,7 +145,7 @@ public class RouterBuilder extends BasicQuerier
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_command_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -153,7 +153,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_USER                                                     */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_user` ("																+
 			" `id` INT(11),"																							+
 			" `AMIUser` VARCHAR(128),"																					+
@@ -168,14 +168,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_user`"																					+
 			" ADD CONSTRAINT `pk_router_user` PRIMARY KEY (`id`),"														+
 			" ADD CONSTRAINT `uk1_router_user` UNIQUE KEY (`AMIUser`)"													+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_user` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -183,7 +183,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_USER_ROLE                                                */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_user_role` ("															+
 			" `id` INT(11),"																							+
 			" `userFK` INT(11),"																						+
@@ -191,7 +191,7 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_user_role`"																			+
 			" ADD CONSTRAINT `pk_router_user_role` PRIMARY KEY (`id`),"													+
 			" ADD CONSTRAINT `uk1_router_user_role` UNIQUE KEY (`userFK`, `roleFK`),"									+
@@ -200,7 +200,7 @@ public class RouterBuilder extends BasicQuerier
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_user_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -208,7 +208,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_CONVERTER                                                */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE IF NOT EXISTS `router_converter` ("															+
 			" `id` INT(11),"																							+
 			" `xslt` VARCHAR(512),"																						+
@@ -216,14 +216,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_converter`"																			+
 			" ADD CONSTRAINT `pk_router_converter` PRIMARY KEY (`id`),"													+
 			" ADD CONSTRAINT `uk1_router_converter` UNIQUE KEY (`xslt`)"												+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_converter` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -231,7 +231,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_SEARCH_INTERFACE                                         */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE `router_search_interface` ("																	+
 			" `id` INT(11),"																							+
 			" `interface` VARCHAR(128),"																				+
@@ -241,14 +241,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_search_interface`"																		+
 			" ADD CONSTRAINT `pk_router_search_interface` PRIMARY KEY (`id`),"											+
 			" ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`interface`)"									+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_search_interface` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -256,7 +256,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_SEARCH_CRITERIA                                          */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE `router_search_criteria` ("																	+
 			" `id` INT(11),"																							+
 			" `interfaceFK` INT(11),"																					+
@@ -269,7 +269,7 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_search_criteria`"																		+
 			" ADD CONSTRAINT `pk_router_search_criteria` PRIMARY KEY (`id`),"											+
 			" ADD CONSTRAINT `uk1_router_search_criteria` UNIQUE KEY (`interfaceFK`, `entity`, `field`),"				+
@@ -277,7 +277,7 @@ public class RouterBuilder extends BasicQuerier
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_search_criteria` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -285,7 +285,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_COUNTRY_LOCATIONS                                        */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE `router_country_locations` ("																	+
 			" `id` INT(11),"																							+
 			" `continentCode` VARCHAR(2),"																				+
@@ -293,14 +293,14 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_country_locations`"																	+
 			" ADD CONSTRAINT `pk_router_country_locations` PRIMARY KEY (`id`),"											+
 			" ADD CONSTRAINT `uk1_router_country_locations` UNIQUE KEY (`continentCode`, `countryCode`)"				+
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_country_locations` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -308,7 +308,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_COUNTRY_BLOCK_IPV4                                       */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE `router_country_blocks_ipv4` ("																+
 			" `id` INT(11),"																							+
 			" `network` VARCHAR(32),"																					+
@@ -318,7 +318,7 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_country_blocks_ipv4`"																	+
 			" ADD CONSTRAINT `pk_router_country_blocks_ipv4` PRIMARY KEY (`id`),"										+
 			" ADD CONSTRAINT `uk1_router_country_blocks_ipv4` UNIQUE KEY (`network`),"									+
@@ -326,7 +326,7 @@ public class RouterBuilder extends BasicQuerier
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_country_blocks_ipv4` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -334,7 +334,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROUTER_COUNTRY_BLOCK_IPV6                                       */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"CREATE TABLE `router_country_blocks_ipv6` ("																+
 			" `id` INT(11),"																							+
 			" `network` VARCHAR(64),"																					+
@@ -344,7 +344,7 @@ public class RouterBuilder extends BasicQuerier
 			");"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_country_blocks_ipv6`"																	+
 			" ADD CONSTRAINT `pk_router_country_blocks_ipv6` PRIMARY KEY (`id`),"										+
 			" ADD CONSTRAINT `uk1_router_country_blocks_ipv6` UNIQUE KEY (`network`),"									+
@@ -352,7 +352,7 @@ public class RouterBuilder extends BasicQuerier
 			";"
 		);
 
-		executeMQLUpdate(
+		executeUpdate(
 			"ALTER TABLE `router_country_blocks_ipv6` MODIFY COLUMN `id` INT AUTO_INCREMENT;"
 		);
 
@@ -367,7 +367,7 @@ public class RouterBuilder extends BasicQuerier
 		/* SELF                                                            */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"INSERT INTO `router_catalog` (`catalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES" +
 			" ('self', '" + getJdbcUrl().replace("'", "''") + "', '" + SecuritySingleton.encrypt(getUser()) + "', '" + SecuritySingleton.encrypt(getPass()) + "', 0, NULL)" +
 			";"
@@ -377,7 +377,7 @@ public class RouterBuilder extends BasicQuerier
 		/* ROLES                                                           */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"INSERT INTO `router_role` (`lft`, `rgt`, `role`) VALUES" +
 			" (0, 3, 'AMI_guest_role')," +
 			" (1, 2, 'AMI_admin_role')" +
@@ -390,7 +390,7 @@ public class RouterBuilder extends BasicQuerier
 
 		String emptyDN = SecuritySingleton.encrypt("");
 
-		executeMQLUpdate(
+		executeUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES" +
 			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
 			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
@@ -410,7 +410,7 @@ public class RouterBuilder extends BasicQuerier
 		/* CONVERTERS                                                      */
 		/*-----------------------------------------------------------------*/
 
-		executeMQLUpdate(
+		executeUpdate(
 			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
 			" ('/xslt/AMIXmlToText.xsl', 'text/plain')," +
 			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')," +
