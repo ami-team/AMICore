@@ -146,7 +146,7 @@ public class ConnectionPoolSingleton
 		long connTimeout;
 		long idleTimeout;
 
-		for(Tuple2<HikariDataSource, HikariPoolMXBean> value: s_pools.values())
+		for(Tuple value: s_pools.values())
 		{
 			poolName = value.x.getPoolName();
 			poolSize = value.x.getMaximumPoolSize();
