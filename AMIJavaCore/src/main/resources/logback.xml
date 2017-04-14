@@ -7,13 +7,13 @@
 	<appender name="AMIFATAL" class="net.hep.ami.LogSingleton$FatalAppender" />
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
 		</encoder>
 	</appender>
 
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<encoder>
+	<appender name="LOGFILE" class="ch.qos.logback.core.FileAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
 		</encoder>
 		<file>ami.log</file>
@@ -22,8 +22,8 @@
 
 	<root level="DEBUG">
 		<appender-ref ref="AMIFATAL" />
+		<appender-ref ref="LOGFILE" />
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
 	</root>
 
 </configuration>

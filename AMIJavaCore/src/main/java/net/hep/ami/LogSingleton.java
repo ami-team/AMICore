@@ -56,20 +56,6 @@ public class LogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class JsonAppender extends AppenderBase<ILoggingEvent>
-	{
-		/*-----------------------------------------------------------------*/
-
-		@Override
-		protected void append(ILoggingEvent eventObject)
-		{
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	static
 	{
 		LogSingleton.reload();

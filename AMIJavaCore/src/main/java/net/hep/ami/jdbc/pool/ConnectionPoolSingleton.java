@@ -12,11 +12,21 @@ public class ConnectionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple2<HikariDataSource, HikariPoolMXBean>> s_pools = new HashMap<>();
+	private static class Tuple extends Tuple2<HikariDataSource, HikariPoolMXBean>
+	{
+		public Tuple(HikariDataSource _x, HikariPoolMXBean _y)
+		{
+			super(_x, _y);
+		}
+	}
 
 	/*---------------------------------------------------------------------*/
 
 	private static final javax.management.MBeanServer s_beanServer = java.lang.management.ManagementFactory.getPlatformMBeanServer();
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Map<String, Tuple> s_pools = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -40,7 +50,7 @@ public class ConnectionPoolSingleton
 
 	private static HikariDataSource getDataSource(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, @Nullable Properties properties) throws Exception
 	{
-		Tuple2<HikariDataSource, HikariPoolMXBean> tuple;
+		Tuple tuple;
 
 		String key = user + "@" + jdbc_url;
 
@@ -59,7 +69,7 @@ public class ConnectionPoolSingleton
 		/**/		;
 		/**/
 		/**/		/*---------------------------*/
-		/**/		/* DATABASE                  */
+		/**/		/* POOL - DATABASE           */
 		/**/		/*---------------------------*/
 		/**/
 		/**/		config.setDriverClassName(jdbc_driver);
@@ -70,10 +80,9 @@ public class ConnectionPoolSingleton
 		/**/		/*---------------------------*/
 		/**/
 		/**/		config.setAutoCommit(false);
-		/**/		config.setRegisterMbeans(true);
 		/**/
 		/**/		/*---------------------------*/
-		/**/		/* POOL - NAME               */
+		/**/		/* POOL - PROPERTIES         */
 		/**/		/*---------------------------*/
 		/**/
 		/**/		if(catalog != null)
@@ -81,21 +90,23 @@ public class ConnectionPoolSingleton
 		/**/			config.setPoolName(catalog);
 		/**/		}
 		/**/
-		/**/		/*---------------------------*/
-		/**/		/* POOL - PROPERTIES         */
-		/**/		/*---------------------------*/
+		/**/		if(properties == null || properties.containsKey("maximumPoolSize") == false) {
+		/**/			config.setMaximumPoolSize(ConfigSingleton.getProperty("pool_size", 10));
+		/**/		}
 		/**/
 		/**/		if(properties == null || properties.containsKey("connectionTimeout") == false) {
-		/**/			config.setConnectionTimeout(ConfigSingleton.getProperty("connection_timeout", 30000));
+		/**/			config.setConnectionTimeout(ConfigSingleton.getProperty("conn_timeout", 30000));
 		/**/		}
 		/**/
 		/**/		if(properties == null || properties.containsKey("idleTimeout") == false) {
 		/**/			config.setIdleTimeout(ConfigSingleton.getProperty("idle_timeout", 600000));
 		/**/		}
 		/**/
-		/**/		if(properties == null || properties.containsKey("maximumPoolSize") == false) {
-		/**/			config.setMaximumPoolSize(ConfigSingleton.getProperty("maximum_pool_size", 10));
-		/**/		}
+		/**/		/*---------------------------*/
+		/**/		/* POOL - MONITORING         */
+		/**/		/*---------------------------*/
+		/**/
+		/**/		config.setRegisterMbeans(true);
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/		/* CREATE DATA SOURCE                                  */
@@ -107,7 +118,7 @@ public class ConnectionPoolSingleton
 		/**/		/* REGISTER DATA SOURCE                                */
 		/**/		/*-----------------------------------------------------*/
 		/**/
-		/**/		s_pools.put(key, tuple = new Tuple2<HikariDataSource, HikariPoolMXBean>(dataSource, javax.management.JMX.newMXBeanProxy(s_beanServer, new javax.management.ObjectName("com.zaxxer.hikari:type=Pool (" + dataSource.getPoolName() + ")"), HikariPoolMXBean.class)));
+		/**/		s_pools.put(key, tuple = new Tuple(dataSource, javax.management.JMX.newMXBeanProxy(s_beanServer, new javax.management.ObjectName("com.zaxxer.hikari:type=Pool (" + dataSource.getPoolName() + ")"), HikariPoolMXBean.class)));
 		/**/
 		/**/		/*-----------------------------------------------------*/
 		/**/	}
@@ -129,28 +140,28 @@ public class ConnectionPoolSingleton
 		/*-----------------------------------------------------------------*/
 
 		String poolName;
-		long connectionTimeout;
-		long idleTimeout;
-		int maximumPoolSize;
+		int poolSize;
 		int numIdle;
 		int numActive;
+		long connTimeout;
+		long idleTimeout;
 
 		for(Tuple2<HikariDataSource, HikariPoolMXBean> value: s_pools.values())
 		{
 			poolName = value.x.getPoolName();
-			connectionTimeout = value.x.getConnectionTimeout();
-			idleTimeout = value.x.getIdleTimeout();
-			maximumPoolSize = value.x.getMaximumPoolSize();
+			poolSize = value.x.getMaximumPoolSize();
 			numIdle = value.y.getIdleConnections();
 			numActive = value.y.getActiveConnections();
+			connTimeout = value.x.getConnectionTimeout();
+			idleTimeout = value.x.getIdleTimeout();
 
 			result.append("<row>")
-			      .append("<field name=\"name\">").append(poolName).append("</field>")
-			      .append("<field name=\"connectionTimeout\">").append(connectionTimeout).append("</field>")
-			      .append("<field name=\"idleTimeout\">").append(idleTimeout).append("</field>")
-			      .append("<field name=\"maximumPoolSize\">").append(maximumPoolSize).append("</field>")
+			      .append("<field name=\"poolName\">").append(poolName).append("</field>")
+			      .append("<field name=\"poolSize\">").append(poolSize).append("</field>")
 			      .append("<field name=\"numIdle\">").append(numIdle).append("</field>")
 			      .append("<field name=\"numActive\">").append(numActive).append("</field>")
+			      .append("<field name=\"connTimeout\">").append(connTimeout).append("</field>")
+			      .append("<field name=\"idleTimeout\">").append(idleTimeout).append("</field>")
 			      .append("</row>")
 			;
 		}

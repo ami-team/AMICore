@@ -20,9 +20,10 @@ public class ReloadConfig extends CommandAbstractClass
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		LogSingleton.reload();
 		ConfigSingleton.reload();
-
 		ConverterSingleton.reload();
+
 		RoleSingleton.reload();
 		CommandSingleton.reload();
 

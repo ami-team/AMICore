@@ -15,7 +15,8 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
+//		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
+		LogSingleton.root.error("Hello World!");
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 
