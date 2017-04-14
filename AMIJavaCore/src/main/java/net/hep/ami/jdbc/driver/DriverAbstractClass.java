@@ -210,8 +210,23 @@ public abstract class DriverAbstractClass implements QuerierInterface
 	@Override
 	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
 	{
-		return sqlPrepareStatement(sql, null);
-	}
+		try
+		{
+			String SQL = patch(sql);
+
+			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
+
+			if(result == null)
+			{
+				m_statementMap.put(SQL, result = m_connection.prepareStatement(SQL));
+			}
+
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
+		}	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -226,11 +241,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 			if(result == null)
 			{
-				result = (columnNames == null) ? m_connection.prepareStatement(SQL)
-				                               : m_connection.prepareStatement(SQL, columnNames)
-				;
-
-				m_statementMap.put(SQL, result);
+				m_statementMap.put(SQL, result = m_connection.prepareStatement(SQL, columnNames));
 			}
 
 			return result;
