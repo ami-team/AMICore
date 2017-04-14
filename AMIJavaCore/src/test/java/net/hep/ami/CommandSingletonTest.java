@@ -3,7 +3,7 @@ package net.hep.ami;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.pool.ConnectionPoolSingleton;
+import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 @SuppressWarnings("all")
@@ -15,7 +15,7 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		LogSingleton.defaultLogger.debug("Hello World!");
+		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 

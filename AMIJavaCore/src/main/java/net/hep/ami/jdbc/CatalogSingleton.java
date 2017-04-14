@@ -50,7 +50,7 @@ public class CatalogSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.error(LogSingleton.FATAL, "could not add catalogs", e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add catalogs", e);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class CatalogSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.error(LogSingleton.FATAL, "for catalog `" + row.getValue(0) + "`", e);
+					LogSingleton.root.error(LogSingleton.FATAL, "for catalog `" + row.getValue(0) + "`", e);
 				}
 			}
 

@@ -207,7 +207,7 @@ public class TransactionPoolSingleton
 		/**/			}
 		/**/			catch(Exception e)
 		/**/			{
-		/**/				LogSingleton.defaultLogger.error("rollback error", e);
+		/**/				LogSingleton.root.error("rollback error", e);
 		/**/			}
 		/**/		}
 		/**/	}

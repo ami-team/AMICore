@@ -59,7 +59,7 @@ public class CommandSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.error(LogSingleton.FATAL, "could not add commands", e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add commands", e);
 		}
 	}
 
@@ -103,7 +103,7 @@ public class CommandSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.error("for command `" + row.getValue(0) + "`", e);
+					LogSingleton.root.error("for command `" + row.getValue(0) + "`", e);
 				}
 			}
 

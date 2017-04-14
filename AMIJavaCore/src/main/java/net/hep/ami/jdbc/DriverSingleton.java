@@ -56,7 +56,7 @@ public class DriverSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.error(LogSingleton.FATAL, "could not add drivers", e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add drivers", e);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class DriverSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.defaultLogger.error(LogSingleton.FATAL, "for driver `" + className + "`", e);
+				LogSingleton.root.error(LogSingleton.FATAL, "for driver `" + className + "`", e);
 			}
 		}
 	}

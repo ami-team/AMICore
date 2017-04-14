@@ -49,7 +49,7 @@ public class ConverterSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.defaultLogger.error(LogSingleton.FATAL, "could not add converters", e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add converters", e);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ConverterSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.defaultLogger.error(LogSingleton.FATAL, "for converter `" + row.getValue(0) + "`", e);
+					LogSingleton.root.error(LogSingleton.FATAL, "for converter `" + row.getValue(0) + "`", e);
 				}
 			}
 
