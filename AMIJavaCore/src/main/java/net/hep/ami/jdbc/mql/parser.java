@@ -36,9 +36,9 @@ public class parser
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		MQLSelectLexer lexer = new MQLSelectLexer(new ANTLRInputStream(query));
+		MQLLexer lexer = new MQLLexer(new ANTLRInputStream(query));
 
-		MQLSelectParser parser = new MQLSelectParser(new CommonTokenStream(lexer));
+		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -82,7 +82,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSelectStatement(MQLSelectParser.SelectStatementContext ctx)
+	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext ctx)
 	{
 		StringBuilder select = new StringBuilder();
 		StringBuilder from = new StringBuilder();
@@ -171,7 +171,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnList(MQLSelectParser.ColumnListContext ctx)
+	private StringBuilder visitColumnList(MQLParser.ColumnListContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -186,7 +186,7 @@ public class parser
 				result.append(", ");
 			}
 
-			result.append(visitColumnExpression((MQLSelectParser.ColumnContext) ctx.getChild(i)));
+			result.append(visitColumnExpression((MQLParser.ColumnContext) ctx.getChild(i)));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -196,7 +196,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnExpression(MQLSelectParser.ColumnContext ctx)
+	private StringBuilder visitColumnExpression(MQLParser.ColumnContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -215,7 +215,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLSelectParser.ExpressionOrContext ctx)
+	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -229,8 +229,8 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLSelectParser.ExpressionAndContext) {
-				result.append(visitExpressionAnd((MQLSelectParser.ExpressionAndContext) child));
+			/****/ if(child instanceof MQLParser.ExpressionAndContext) {
+				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(" OR ");
 			}
@@ -243,7 +243,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAnd(MQLSelectParser.ExpressionAndContext ctx)
+	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -257,8 +257,8 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLSelectParser.ExpressionCompContext) {
-				result.append(visitExpressionComp((MQLSelectParser.ExpressionCompContext) child));
+			/****/ if(child instanceof MQLParser.ExpressionCompContext) {
+				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(" AND ");
 			}
@@ -285,7 +285,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionComp(MQLSelectParser.ExpressionCompContext ctx)
+	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -299,8 +299,8 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLSelectParser.ExpressionAddSubContext) {
-				result.append(visitExpressionAddSub((MQLSelectParser.ExpressionAddSubContext) child));
+			/****/ if(child instanceof MQLParser.ExpressionAddSubContext) {
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(_patchNEOperator(child.getText()));
 			}
@@ -313,7 +313,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLSelectParser.ExpressionAddSubContext ctx)
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -327,8 +327,8 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLSelectParser.ExpressionMulDivContext) {
-				result.append(visitExpressionMulDiv((MQLSelectParser.ExpressionMulDivContext) child));
+			/****/ if(child instanceof MQLParser.ExpressionMulDivContext) {
+				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(child.getText());
 			}
@@ -341,7 +341,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLSelectParser.ExpressionMulDivContext ctx)
+	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -355,8 +355,8 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLSelectParser.ExpressionNotPlusMinusContext) {
-				result.append(visitExpressionNotPlusMinus((MQLSelectParser.ExpressionNotPlusMinusContext) child));
+			/****/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext) {
+				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child));
 			} else if(child instanceof TerminalNode) {
 				result.append(child.getText());
 			}
@@ -369,7 +369,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLSelectParser.ExpressionNotPlusMinusContext ctx)
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -387,16 +387,16 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLSelectParser.ExpressionGroupContext) {
-				result.append(visitExpressionGroup((MQLSelectParser.ExpressionGroupContext) child));
-			} else if(child instanceof MQLSelectParser.ExpressionFunctionContext) {
-				result.append(visitExpressionFunction((MQLSelectParser.ExpressionFunctionContext) child));
-			} else if(child instanceof MQLSelectParser.ExpressionLikeContext) {
-				result.append(visitExpressionLike((MQLSelectParser.ExpressionLikeContext) child));
-			} else if(child instanceof MQLSelectParser.ExpressionQIdContext) {
-				result.append(visitExpressionQId((MQLSelectParser.ExpressionQIdContext) child));
-			} else if(child instanceof MQLSelectParser.ExpressionLiteralContext) {
-				result.append(visitExpressionLiteral((MQLSelectParser.ExpressionLiteralContext) child));
+			/****/ if(child instanceof MQLParser.ExpressionGroupContext) {
+				result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child));
+			} else if(child instanceof MQLParser.ExpressionFunctionContext) {
+				result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
+			} else if(child instanceof MQLParser.ExpressionLikeContext) {
+				result.append(visitExpressionLike((MQLParser.ExpressionLikeContext) child));
+			} else if(child instanceof MQLParser.ExpressionQIdContext) {
+				result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
+			} else if(child instanceof MQLParser.ExpressionLiteralContext) {
+				result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child));
 			}
 		}
 
@@ -407,7 +407,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLSelectParser.ExpressionGroupContext ctx)
+	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -424,7 +424,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLSelectParser.ExpressionFunctionContext ctx)
+	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -444,7 +444,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLike(MQLSelectParser.ExpressionLikeContext ctx)
+	private StringBuilder visitExpressionLike(MQLParser.ExpressionLikeContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -461,21 +461,21 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLSelectParser.ExpressionQIdContext ctx)
+	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext ctx)
 	{
 		return visitSqlQId(ctx.qId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLSelectParser.ExpressionLiteralContext ctx)
+	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext ctx)
 	{
 		return visitSqlLiteral(ctx.literal);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlQId(MQLSelectParser.SqlQIdContext ctx)
+	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -555,7 +555,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlLiteral(MQLSelectParser.SqlLiteralContext ctx)
+	private StringBuilder visitSqlLiteral(MQLParser.SqlLiteralContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
