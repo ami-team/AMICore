@@ -2,6 +2,8 @@
 .settings
 .classpath
 *.log
+/AMICoreJava/bin/
+/AMICoreWeb/bin/
 /AMICoreJava/target/
 /AMICoreWeb/target/
 tomcat
