@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>AMICore</project>
+		<project>AMICoreJava</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
