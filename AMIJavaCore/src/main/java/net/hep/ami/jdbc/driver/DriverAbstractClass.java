@@ -226,7 +226,8 @@ public abstract class DriverAbstractClass implements QuerierInterface
 		catch(Exception e)
 		{
 			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
-		}	}
+		}
+	}
 
 	/*---------------------------------------------------------------------*/
 
