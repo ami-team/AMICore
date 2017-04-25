@@ -228,8 +228,8 @@
 	</build>
 
 	<modules>
-		<module>AMIJavaCore</module>
-		<module>AMIWebCore</module>
+		<module>AMICoreJava</module>
+		<module>AMICoreWeb</module>
 	</modules>
 
 </project>

@@ -2,9 +2,9 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>AMIJavaCore</artifactId>
+	<artifactId>AMICoreJava</artifactId>
 
-	<name>AMIJavaCore</name>
+	<name>AMICoreJava</name>
 	<url>http://www.cern.ch/ami/</url>
 
 	<packaging>jar</packaging>
