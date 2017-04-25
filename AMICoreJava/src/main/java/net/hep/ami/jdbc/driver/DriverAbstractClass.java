@@ -116,7 +116,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	static class FieldType
+	public static class FieldType
 	{
 		String name;
 		Integer size;

@@ -10,6 +10,20 @@ public class ConcurrentHashMap<U, V> extends java.util.concurrent.ConcurrentHash
 
 	/*---------------------------------------------------------------------*/
 
+	private static class AlphabeticalComparator<U, V> implements java.util.Comparator<Map.Entry<U, V>>
+	{
+		@Override
+		public int compare(Map.Entry<U, V> entry1, Map.Entry<U, V> entry2)
+		{
+			String s1 = entry1.getKey().toString();
+			String s2 = entry2.getKey().toString();
+
+			return s1.compareTo(s2);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public ConcurrentHashMap()
 	{
 		super();
@@ -45,23 +59,9 @@ public class ConcurrentHashMap<U, V> extends java.util.concurrent.ConcurrentHash
 
 	/*---------------------------------------------------------------------*/
 
-	private static class MyComparator<U, V> implements Comparator<Map.Entry<U, V>>
-	{
-		@Override
-		public int compare(Map.Entry<U, V> entry1, Map.Entry<U, V> entry2)
-		{
-			String s1 = entry1.getKey().toString();
-			String s2 = entry2.getKey().toString();
-
-			return s1.compareTo(s2);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public Set<Map.Entry<U, V>> entrySet()
 	{
-		Set<Map.Entry<U, V>> result = new TreeSet<>(new MyComparator<>());
+		Set<Map.Entry<U, V>> result = new TreeSet<>(new AlphabeticalComparator<>());
 
 		result.addAll(super.entrySet());
 

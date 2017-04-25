@@ -155,12 +155,7 @@ public class DriverSingleton
 
 	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return getDriver(jdbcUrl).t.newInstance(
-			catalog,
-			jdbcUrl,
-			user,
-			pass
-		);
+		return getDriver(jdbcUrl).t.newInstance(catalog, jdbcUrl, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

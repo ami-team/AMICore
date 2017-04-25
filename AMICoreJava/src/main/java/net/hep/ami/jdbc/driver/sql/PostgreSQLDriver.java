@@ -1,18 +1,19 @@
-package net.hep.ami.jdbc.driver;
+package net.hep.ami.jdbc.driver.sql;
 
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = Jdbc.Type.SQL,
-	proto = "jdbc:h2",
-	clazz = "org.h2.Driver"
+	proto = "jdbc:postgresql",
+	clazz = "org.postgresql.Driver"
 )
 
-public class H2Driver extends DriverAbstractClass
+public class PostgreSQLDriver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public H2Driver(String name, String jdbc_url, String user, String pass) throws Exception
+	public PostgreSQLDriver(String name, String jdbc_url, String user, String pass) throws Exception
 	{
 		super(name, jdbc_url, user, pass);
 	}

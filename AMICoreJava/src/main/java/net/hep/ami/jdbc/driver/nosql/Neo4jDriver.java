@@ -1,5 +1,6 @@
-package net.hep.ami.jdbc.driver;
+package net.hep.ami.jdbc.driver.nosql;
 
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(

@@ -1,18 +1,19 @@
-package net.hep.ami.jdbc.driver;
+package net.hep.ami.jdbc.driver.sql;
 
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = Jdbc.Type.SQL,
-	proto = "jdbc:sqlite",
-	clazz = "org.sqlite.JDBC"
+	proto = "jdbc:h2",
+	clazz = "org.h2.Driver"
 )
 
-public class SQLiteDriver extends DriverAbstractClass
+public class H2Driver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public SQLiteDriver(String name, String jdbc_url, String user, String pass) throws Exception
+	public H2Driver(String name, String jdbc_url, String user, String pass) throws Exception
 	{
 		super(name, jdbc_url, user, pass);
 	}

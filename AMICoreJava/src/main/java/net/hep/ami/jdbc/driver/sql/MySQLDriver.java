@@ -1,18 +1,19 @@
-package net.hep.ami.jdbc.driver;
+package net.hep.ami.jdbc.driver.sql;
 
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = Jdbc.Type.SQL,
-	proto = "jdbc:postgresql",
-	clazz = "org.postgresql.Driver"
+	proto = "jdbc:mysql",
+	clazz = "org.gjt.mm.mysql.Driver"
 )
 
-public class PostgreSQLDriver extends DriverAbstractClass
+public class MySQLDriver extends DriverAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public PostgreSQLDriver(String name, String jdbc_url, String user, String pass) throws Exception
+	public MySQLDriver(String name, String jdbc_url, String user, String pass) throws Exception
 	{
 		super(name, jdbc_url, user, pass);
 	}
