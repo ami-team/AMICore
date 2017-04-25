@@ -36,7 +36,7 @@ public class parser
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		MQLLexer lexer = new MQLLexer(new ANTLRInputStream(query));
+		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
 
 		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
 
