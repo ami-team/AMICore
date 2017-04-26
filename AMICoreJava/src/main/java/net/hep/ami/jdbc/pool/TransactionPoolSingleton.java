@@ -10,11 +10,11 @@ public class TransactionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<Long, Map<String, DriverAbstractClass>> s_pools = new HashMap<>();
+	private static final java.util.concurrent.atomic.AtomicLong s_cnt = new java.util.concurrent.atomic.AtomicLong(0);
 
 	/*---------------------------------------------------------------------*/
 
-	private static final java.util.concurrent.atomic.AtomicLong s_cnt = new java.util.concurrent.atomic.AtomicLong(0);
+	private static final Map<Long, Map<String, DriverAbstractClass>> s_pools = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -38,7 +38,7 @@ public class TransactionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String key = catalog;
+		String key = CatalogSingleton.getKey(catalog);
 
 		/*-----------------------------------------------------------------*/
 
@@ -83,7 +83,7 @@ public class TransactionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String key = jdbcUrl + "@" + user;
+		String key = DriverSingleton.getKey(jdbcUrl, user);
 
 		/*-----------------------------------------------------------------*/
 
@@ -129,23 +129,71 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = s_pools.get(transactionId);
-		/**/
-		/**/	if(transaction != null)
-		/**/	{
-		/**/		s_pools.remove(transactionId);
-		/**/	}
+		/**/	transaction = s_pools.remove(transactionId);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(transaction == null)
+		{
+			throw new Exception("invalid transaction id");
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* COMMIT AND RELEASE CONNECTIONS                                  */
 		/*-----------------------------------------------------------------*/
 
-		if(transaction != null)
+		int flag;
+
+		try
 		{
+			/*-------------------------------------------------------------*/
+
 			for(DriverAbstractClass driver: transaction.values())
 			{
-				driver.commitAndRelease();
+				driver.executeQuery("SELECT 1");
+			}
+
+			/*-------------------------------------------------------------*/
+
+			flag = 0;
+
+			for(DriverAbstractClass driver: transaction.values())
+			{
+				try { driver.commitAndRelease(); } catch(Exception e2) { flag = 2; }
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e1)
+		{
+			/*-------------------------------------------------------------*/
+
+			flag = 1;
+
+			for(DriverAbstractClass driver: transaction.values())
+			{
+				try { driver.rollbackAndRelease(); } catch(Exception e2) {/* IGNORE */}
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(flag > 0)
+		{
+			if(flag > 1)
+			{
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with inconsistencies");
+
+				throw new Exception("broken transaction with inconsistencies");
+			}
+			else
+			{
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction");
+
+				throw new Exception("broken transaction");
 			}
 		}
 
@@ -164,23 +212,71 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = s_pools.get(transactionId);
-		/**/
-		/**/	if(transaction != null)
-		/**/	{
-		/**/		s_pools.remove(transactionId);
-		/**/	}
+		/**/	transaction = s_pools.remove(transactionId);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(transaction == null)
+		{
+			throw new Exception("invalid transaction id");
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* ROLLBACK AND RELEASE CONNECTIONS                                */
 		/*-----------------------------------------------------------------*/
 
-		if(transaction != null)
+		int flag;
+
+		try
 		{
+			/*-------------------------------------------------------------*/
+
 			for(DriverAbstractClass driver: transaction.values())
 			{
-				driver.rollbackAndRelease();
+				driver.executeQuery("SELECT 1");
+			}
+
+			/*-------------------------------------------------------------*/
+
+			flag = 0;
+
+			for(DriverAbstractClass driver: transaction.values())
+			{
+				try { driver.rollbackAndRelease(); } catch(Exception e2) { flag = 2; }
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e1)
+		{
+			/*-------------------------------------------------------------*/
+
+			flag = 1;
+
+			for(DriverAbstractClass driver: transaction.values())
+			{
+				try { driver.rollbackAndRelease(); } catch(Exception e2) {/* IGNORE */}
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(flag > 0)
+		{
+			if(flag > 1)
+			{
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with avoided inconsistencies");
+
+				throw new Exception("broken transaction with avoided inconsistencies");
+			}
+			else
+			{
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction");
+
+				throw new Exception("broken transaction");
 			}
 		}
 
@@ -207,7 +303,7 @@ public class TransactionPoolSingleton
 		/**/			}
 		/**/			catch(Exception e)
 		/**/			{
-		/**/				LogSingleton.root.error("rollback error", e);
+		/**/				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction", e);
 		/**/			}
 		/**/		}
 		/**/	}

@@ -34,25 +34,25 @@ public class ConnectionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass) throws Exception
+	public static Connection getConnection(@Nullable String catalog, String jdbcDriver, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return getDataSource(catalog, jdbc_driver, jdbc_url, user, pass, null).getConnection();
+		return getDataSource(catalog, jdbcDriver, jdbcUrl, user, pass, null).getConnection();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Connection getConnection(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, @Nullable Properties properties) throws Exception
+	public static Connection getConnection(@Nullable String catalog, String jdbcDriver, String jdbcUrl, String user, String pass, @Nullable Properties properties) throws Exception
 	{
-		return getDataSource(catalog, jdbc_driver, jdbc_url, user, pass, properties).getConnection();
+		return getDataSource(catalog, jdbcDriver, jdbcUrl, user, pass, properties).getConnection();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static HikariDataSource getDataSource(@Nullable String catalog, String jdbc_driver, String jdbc_url, String user, String pass, @Nullable Properties properties) throws Exception
+	private static HikariDataSource getDataSource(@Nullable String catalog, String jdbcDriver, String jdbcUrl, String user, String pass, @Nullable Properties properties) throws Exception
 	{
 		Tuple tuple;
 
-		String key = user + "@" + jdbc_url;
+		String key = user + "@" + jdbcUrl;
 
 		synchronized(ConnectionPoolSingleton.class)
 		{
@@ -72,8 +72,8 @@ public class ConnectionPoolSingleton
 		/**/		/* POOL - DATABASE           */
 		/**/		/*---------------------------*/
 		/**/
-		/**/		config.setDriverClassName(jdbc_driver);
-		/**/		config.setJdbcUrl(jdbc_url);
+		/**/		config.setDriverClassName(jdbcDriver);
+		/**/		config.setJdbcUrl(jdbcUrl);
 		/**/		config.setUsername(user);
 		/**/		config.setPassword(pass);
 		/**/

@@ -167,6 +167,13 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String getKey(String jdbcUrl, String user) throws Exception
+	{
+		return user + "@" + jdbcUrl;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static StringBuilder listDrivers()
 	{
 		StringBuilder result = new StringBuilder();

@@ -181,6 +181,20 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String getKey(String catalog) throws Exception
+	{
+		Tuple tuple = s_catalogs.get(catalog);
+
+		if(tuple == null)
+		{
+			throw new Exception("unknown catalog `" + catalog + "`");
+		}
+
+		return DriverSingleton.getKey(tuple.x, tuple.y);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static StringBuilder listCatalogs()
 	{
 		StringBuilder result = new StringBuilder();
