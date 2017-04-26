@@ -136,7 +136,7 @@ public class TransactionPoolSingleton
 
 		if(transaction == null)
 		{
-			throw new Exception("invalid transaction id");
+			throw new Exception("invalid transaction identifier (" + transactionId + ")");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -219,7 +219,7 @@ public class TransactionPoolSingleton
 
 		if(transaction == null)
 		{
-			throw new Exception("invalid transaction id");
+			throw new Exception("invalid transaction identifier (" + transactionId + ")");
 		}
 
 		/*-----------------------------------------------------------------*/
