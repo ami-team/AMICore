@@ -10,7 +10,7 @@ public class TransactionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final java.util.concurrent.atomic.AtomicLong s_cnt = new java.util.concurrent.atomic.AtomicLong(0);
+	private static final java.util.concurrent.atomic.AtomicLong s_lastId = new java.util.concurrent.atomic.AtomicLong(0);
 
 	/*---------------------------------------------------------------------*/
 
@@ -24,7 +24,7 @@ public class TransactionPoolSingleton
 
 	public static long bookNewTransactionId()
 	{
-		return s_cnt.getAndIncrement();
+		return s_lastId.getAndIncrement();
 	}
 
 	/*---------------------------------------------------------------------*/
