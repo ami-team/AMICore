@@ -5,12 +5,13 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.jdbc.driver.annotation.*;
 
 public class TransactionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final java.util.concurrent.atomic.AtomicLong s_lastId = new java.util.concurrent.atomic.AtomicLong(0);
+	private static final java.util.concurrent.atomic.AtomicLong s_lastId = new java.util.concurrent.atomic.AtomicLong(1);
 
 	/*---------------------------------------------------------------------*/
 
@@ -31,8 +32,10 @@ public class TransactionPoolSingleton
 
 	public static DriverAbstractClass getConnection(String catalog, long transactionId) throws Exception
 	{
-		if(transactionId < 0)
-		{
+		if(transactionId <= 0x000000000000
+		   ||
+		   transactionId >= s_lastId.get()
+		 ) {
 			throw new Exception("invalid transaction identifier (" + transactionId + ")");
 		}
 
@@ -76,8 +79,10 @@ public class TransactionPoolSingleton
 
 	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
-		if(transactionId < 0)
-		{
+		if(transactionId <= 0x000000000000
+		   ||
+		   transactionId >= s_lastId.get()
+		 ) {
 			throw new Exception("invalid transaction identifier (" + transactionId + ")");
 		}
 
@@ -151,7 +156,10 @@ public class TransactionPoolSingleton
 
 			for(DriverAbstractClass driver: transaction.values())
 			{
-				driver.executeQuery("SELECT 1");
+				if(driver.getJdbcType() == Jdbc.Type.SQL)
+				{
+					driver.executeQuery("SELECT 1");
+				}
 			}
 
 			/*-------------------------------------------------------------*/
@@ -191,9 +199,9 @@ public class TransactionPoolSingleton
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction");
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
 
-				throw new Exception("broken transaction");
+				throw new Exception("broken transaction without inconsistency");
 			}
 		}
 
@@ -234,7 +242,10 @@ public class TransactionPoolSingleton
 
 			for(DriverAbstractClass driver: transaction.values())
 			{
-				driver.executeQuery("SELECT 1");
+				if(driver.getJdbcType() == Jdbc.Type.SQL)
+				{
+					driver.executeQuery("SELECT 1");
+				}
 			}
 
 			/*-------------------------------------------------------------*/
@@ -274,9 +285,9 @@ public class TransactionPoolSingleton
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction");
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
 
-				throw new Exception("broken transaction");
+				throw new Exception("broken transaction without inconsistency");
 			}
 		}
 
@@ -303,7 +314,7 @@ public class TransactionPoolSingleton
 		/**/			}
 		/**/			catch(Exception e)
 		/**/			{
-		/**/				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction", e);
+		/**/				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency", e);
 		/**/			}
 		/**/		}
 		/**/	}

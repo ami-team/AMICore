@@ -134,7 +134,7 @@ public class CatalogSingleton
 		/* READ SCHEMA                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(DriverSingleton.isType(jdbcUrl, Jdbc.Type.SQL))
+		if(DriverSingleton.isTypeOf(jdbcUrl, Jdbc.Type.SQL))
 		{
 			Connection connection = DriverManager.getConnection(jdbcUrl, user, pass);
 
@@ -167,7 +167,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isType(String catalog, Jdbc.Type jdbcType) throws Exception
+	public static boolean isTypeOf(String catalog, Jdbc.Type jdbcType) throws Exception
 	{
 		Tuple tuple = s_catalogs.get(catalog);
 
@@ -176,7 +176,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.isType(tuple.x, jdbcType);
+		return DriverSingleton.isTypeOf(tuple.x, jdbcType);
 	}
 
 	/*---------------------------------------------------------------------*/

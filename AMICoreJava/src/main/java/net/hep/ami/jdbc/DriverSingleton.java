@@ -160,7 +160,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isType(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
+	public static boolean isTypeOf(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
 	{
 		return getDriver(jdbcUrl).x == jdbcType;
 	}
