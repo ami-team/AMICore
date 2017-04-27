@@ -8,6 +8,7 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.Command;
 
 public class CommandSingleton
 {
@@ -191,7 +192,7 @@ public class CommandSingleton
 
 	public static String executeCommand(String command) throws Exception
 	{
-		AMIParser.CommandTuple tuple = AMIParser.parse(command);
+		Command.CommandTuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments);
 	}
@@ -200,7 +201,7 @@ public class CommandSingleton
 
 	public static String executeCommand(String command, boolean checkRoles) throws Exception
 	{
-		AMIParser.CommandTuple tuple = AMIParser.parse(command);
+		Command.CommandTuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles);
 	}
@@ -209,7 +210,7 @@ public class CommandSingleton
 
 	public static String executeCommand(String command, boolean checkRoles, long transactionId) throws Exception
 	{
-		AMIParser.CommandTuple tuple = AMIParser.parse(command);
+		Command.CommandTuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles, transactionId);
 	}

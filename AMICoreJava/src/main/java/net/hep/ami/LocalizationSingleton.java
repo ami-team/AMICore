@@ -7,7 +7,7 @@ import java.math.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
 
 public class LocalizationSingleton
 {
@@ -106,7 +106,7 @@ public class LocalizationSingleton
 
 		if(locationsEn.exists())
 		{
-			List<Map<String, String>> locations = CSVParser.parse(new FileInputStream(locationsEn));
+			List<Map<String, String>> locations = CSV.parseAsMap(new FileInputStream(locationsEn));
 
 			querier.executeUpdate("DELETE FROM `router_country_locations`");
 
@@ -142,7 +142,7 @@ public class LocalizationSingleton
 
 		if(blocksIPv4.exists())
 		{
-			List<Map<String, String>> blocks = CSVParser.parse(new FileInputStream(blocksIPv4));
+			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv4));
 
 			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv4`");
 
@@ -196,7 +196,7 @@ public class LocalizationSingleton
 
 		if(blocksIPv6.exists())
 		{
-			List<Map<String, String>> blocks = CSVParser.parse(new FileInputStream(blocksIPv6));
+			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv6));
 
 			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv6`");
 

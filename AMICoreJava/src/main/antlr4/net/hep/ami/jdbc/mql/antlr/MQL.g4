@@ -33,46 +33,46 @@ column
 /*---------------------------*/
 
 expressionOr
-  : expressionAnd (OR expressionAnd)*
-  ;
+	: expressionAnd (OR expressionAnd)*
+	;
 
 expressionAnd
-  : expressionComp (AND expressionComp)*
-  ;
+	: expressionComp (AND expressionComp)*
+	;
 
 expressionComp
-  : expressionAddSub (operator=COMP expressionAddSub)*
-  ;
+	: expressionAddSub (operator=COMP expressionAddSub)*
+	;
 
 expressionAddSub
-  : expressionMulDiv (operator=('+' | '-') expressionMulDiv)*
-  ;
+	: expressionMulDiv (operator=('+' | '-') expressionMulDiv)*
+	;
 
 expressionMulDiv
-  : expressionNotPlusMinus (operator=('*' | '/' | '%') expressionNotPlusMinus)*
-  ;
+	: expressionNotPlusMinus (operator=('*' | '/' | '%') expressionNotPlusMinus)*
+	;
 
 expressionNotPlusMinus
-  : operator=('!' | '-' | '+')? expressionX
-  ;
+	: operator=('!' | '-' | '+')? expressionX
+	;
 
 expressionX
-  : '(' expression=expressionOr ')'                                          # ExpressionGroup
-  | functionName=FUNCTION '('
-        (distinct=DISTINCT)? expression=expressionOr
-    ')'                                                                      # ExpressionFunction
-  | qId=sqlQId LIKE literal=sqlLiteral                                       # ExpressionLike
-  | literal=sqlLiteral                                                       # ExpressionLiteral
-  | qId=sqlQId                                                               # ExpressionQId
-  ;
+	: '(' expression=expressionOr ')'                                          # ExpressionGroup
+	| functionName=FUNCTION '('
+	    (distinct=DISTINCT)? expression=expressionOr
+	  ')'                                                                      # ExpressionFunction
+	| qId=sqlQId LIKE literal=sqlLiteral                                       # ExpressionLike
+	| literal=sqlLiteral                                                       # ExpressionLiteral
+	| qId=sqlQId                                                               # ExpressionQId
+	;
 
 /*---------------------------*/
 /* SQL_QID                   */
 /*---------------------------*/
 
 sqlQId
-  : tableName=ID '.' columnName=(ID | '*')
-  ;
+	: tableName=ID '.' columnName=(ID | '*')
+	;
 
 /*---------------------------*/
 /* SQL_LITERAL               */
@@ -95,20 +95,20 @@ SELECT
 	;
 
 DISTINCT
-  : D I S T I N C T
-  ;
+	: D I S T I N C T
+	;
 
 WHERE
 	: W H E R E
 	;
 
 LIMIT
-  : L I M I T
-  ;
+	: L I M I T
+	;
 
 OFFSET
-  : O F F S E T
-  ;
+	: O F F S E T
+	;
 
 AS
 	: A S
@@ -151,25 +151,25 @@ FUNCTION
 /*---------------------------*/
 
 NUMBER
-  : DIGIT+ ('.' DIGIT*)? (E [-+]? DIGIT+)?
-  | '.' DIGIT+ (E [-+]? DIGIT+)?
-  ;
+	: DIGIT+ ('.' DIGIT*)? (E [-+]? DIGIT+)?
+	| '.' DIGIT+ (E [-+]? DIGIT+)?
+	;
 
 STRING
-  : '\'' (~'\'' | '\'\'')* '\''
-  ;
+	: '\'' ('\'\'' | ~'\'')* '\''
+	;
 
 ID
-  : [a-zA-Z_][a-zA-Z0-9_#$]*
-  | '`' (~'`' | '``')+ '`'
-  | '"' (~'"' | '""')+ '"'
-  ;
+	: [a-zA-Z_][a-zA-Z0-9_#$]*
+	| '`' ('``' | ~'`')+ '`'
+	| '"' ('""' | ~'"')+ '"'
+	;
 
 /*-------------------------------------------------------------------------*/
 
 WS
-  : [ \t\n\r]+ -> channel(HIDDEN)
-  ;
+	: [ \t\n\r]+ -> skip
+	;
 
 /*-------------------------------------------------------------------------*/
 

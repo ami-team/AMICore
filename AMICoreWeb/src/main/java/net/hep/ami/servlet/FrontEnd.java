@@ -10,6 +10,7 @@ import javax.servlet.annotation.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.Command;
 
 @WebServlet(
 	name = "FrontEnd",
@@ -137,7 +138,7 @@ public class FrontEnd extends HttpServlet
 				/* PARSE COMMAND                                           */
 				/*---------------------------------------------------------*/
 
-				AMIParser.CommandTuple tuple = AMIParser.parse(command);
+				Command.CommandTuple tuple = Command.parse(command);
 
 				HttpSession session = req.getSession(true);
 

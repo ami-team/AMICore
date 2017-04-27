@@ -1,9 +1,9 @@
-package net.hep.ami.utility;
+package net.hep.ami.utility.parser;
 
 import java.util.*;
 import java.util.regex.*;
 
-public class AMIParser
+public class Command
 {
 	/*---------------------------------------------------------------------*/
 
@@ -47,7 +47,7 @@ public class AMIParser
 
 	/*---------------------------------------------------------------------*/
 
-	private AMIParser() {}
+	private Command() {}
 
 	/*---------------------------------------------------------------------*/
 
@@ -100,7 +100,7 @@ public class AMIParser
 			        ||
 			        (m = s_pattern4.matcher(s.substring(i))).find()
 			 ) {
-				arguments.put(m.group(1), (m.groupCount() == 2) ? unescape(m.group(2)) : "");
+				arguments.put(m.group(1), (m.groupCount() == 2) ? Unescape.unescape(m.group(2)) : "");
 
 				i += m.group(0).length();
 			}
@@ -124,104 +124,6 @@ public class AMIParser
 		);
 
 		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	protected static String unescape(String s)
-	{
-		StringBuilder result = new StringBuilder(s.length());
-
-		/*-----------------------------------------------------------------*/
-
-		/***/ int i = 0x00000000;
-		final int l = s.length();
-
-		String code;
-		char c;
-
-		while(i < l)
-		{
-			c = s.charAt(i++);
-
-			if(c == '\\')
-			{
-				c = s.charAt(i++);
-
-				switch(c)
-				{
-					case '\\':
-						c = '\\';
-						break;
-
-					case 'b':
-						c = '\b';
-						break;
-
-					case 'f':
-						c = '\f';
-						break;
-
-					case 'n':
-						c = '\n';
-						break;
-
-					case 'r':
-						c = '\r';
-						break;
-
-					case 't':
-						c = '\t';
-						break;
-
-					case '\"':
-						c = '\"';
-						break;
-
-					case '\'':
-						c = '\'';
-						break;
-
-					case 'u':
-						/*-------------------------------------------------*/
-						/* UNICODE                                         */
-						/*-------------------------------------------------*/
-
-						if(l - i < 4)
-						{
-							c = 'u';
-							break;
-						}
-
-						code = s.substring(i + 0, i + 4);
-						i += 4;
-
-						try
-						{ 
-							result.append(Character.toChars(Integer.parseInt(code, 16)));
-						}
-						catch(java.lang.NumberFormatException e)
-						{
-							result.append(/******************/ '?' /******************/);
-						}
-
-						continue;
-
-						/*-------------------------------------------------*/
-
-						default:
-							break;
-
-						/*-------------------------------------------------*/
-				}
-			}
-
-			result.append(c);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return result.toString();
 	}
 
 	/*---------------------------------------------------------------------*/
