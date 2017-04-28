@@ -164,13 +164,4 @@ public class JSON
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	public static void main(String[] args) throws Exception
-	{
-		System.out.println(JSON.parse("{\"foo\": \"bar\", \"kux\": 123}"));
-
-		System.exit(0);
-	}
-
-	/*---------------------------------------------------------------------*/
 }

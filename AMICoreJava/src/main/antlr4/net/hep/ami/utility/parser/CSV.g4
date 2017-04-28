@@ -51,7 +51,7 @@ STRING
 	;
 
 VALUE
-	: ~[,"'\n\r]+
+	: ~[,"'\n\r]*
 	;
 
 BREAK
