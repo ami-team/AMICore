@@ -178,7 +178,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 		try
 		{
-			String sql = parser.parse(mql, this), SQL = patch(sql);
+			String sql = parser.parse(mql, this.m_externalCatalog), SQL = patch(sql);
 
 			return new RowSet(m_statementMap.get("@").executeQuery(SQL), sql, null);
 		}

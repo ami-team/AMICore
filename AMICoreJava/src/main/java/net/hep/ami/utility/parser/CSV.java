@@ -98,8 +98,7 @@ public class CSV
 
 		/*-----------------------------------------------------------------*/
 
-		parser.setErrorHandler(new DefaultErrorStrategy() {
-		});
+		parser.setErrorHandler(new DefaultErrorStrategy());
 
 		/*-----------------------------------------------------------------*/
 
@@ -171,14 +170,14 @@ public class CSV
 		/**/ if(result.charAt(0) == '\"')
 		{
 			result = Unescape.unescape(
-				result.substring(1, result.length() - 1)
-			).replace("\"\"", "\"");
+				result.substring(1, result.length() - 1).replace("\"\"", "\"")
+			);
 		}
 		else if(result.charAt(0) == '\'')
 		{
 			result = Unescape.unescape(
-				result.substring(1, result.length() - 1)
-			).replace("\'\'", "\'");
+				result.substring(1, result.length() - 1).replace("\'\'", "\'")
+			);
 		}
 
 		return result;

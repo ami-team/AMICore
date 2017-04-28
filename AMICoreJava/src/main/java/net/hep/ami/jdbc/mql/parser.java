@@ -5,7 +5,6 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.reflexion.*;
 
@@ -17,23 +16,19 @@ public class parser
 
 	private Set<String> m_tables = new HashSet<>();
 
-	private DriverAbstractClass m_driver;
-
-	private boolean m_break;
+	private String m_catalog;
 
 	/*---------------------------------------------------------------------*/
 
-	public parser(DriverAbstractClass driver)
+	public parser(String catalog)
 	{
-		m_driver = driver;
+		m_catalog = catalog;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, DriverAbstractClass driver) throws Exception
+	public static String parse(String query, String catalog) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
@@ -41,17 +36,12 @@ public class parser
 		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
-		parser.setErrorHandler(new DefaultErrorStrategy() {
-		});
+		parser.setErrorHandler(new DefaultErrorStrategy());
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
-		return new parser(driver).visitSelectStatement(parser.selectStatement()).toString();
+		return new parser(catalog).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -106,21 +96,18 @@ public class parser
 
 		if(ctx.expression != null)
 		{
-			where.append(" WHERE ");
-			where.append(visitExpressionOr(ctx.expression));
+			where.append(" WHERE ").append(visitExpressionOr(ctx.expression));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(ctx.limit != null)
 		{
-			where.append(" LIMIT ");
-			where.append(ctx.limit.getText());
+			where.append(" LIMIT ").append(ctx.limit.getText());
 
 			if(ctx.offset != null)
 			{
-				where.append(" OFFSET ");
-				where.append(ctx.offset.getText());
+				where.append(" OFFSET ").append(ctx.offset.getText());
 			}
 		}
 
@@ -158,15 +145,12 @@ public class parser
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = new StringBuilder();
-
-		result.append(select);
-		result.append(from);
-		result.append(where);
+		return new StringBuilder().append(select)
+		                          .append(from)
+		                          .append(where)
+		;
 
 		/*-----------------------------------------------------------------*/
-
-		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -206,7 +190,10 @@ public class parser
 
 		/*-----------------------------------------------------------------*/
 
-		if(ctx.alias != null) result.append(" AS " + escapeId(ctx.alias.getText()));
+		if(ctx.alias != null)
+		{
+			result.append(" AS " + escapeId(ctx.alias.getText()));
+		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -229,9 +216,12 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLParser.ExpressionAndContext) {
+			/**/ if(child instanceof MQLParser.ExpressionAndContext)
+			{
 				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child));
-			} else if(child instanceof TerminalNode) {
+			}
+			else if(child instanceof TerminalNode)
+			{
 				result.append(" OR ");
 			}
 		}
@@ -257,9 +247,12 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLParser.ExpressionCompContext) {
+			/**/ if(child instanceof MQLParser.ExpressionCompContext)
+			{
 				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child));
-			} else if(child instanceof TerminalNode) {
+			}
+			else if(child instanceof TerminalNode)
+			{
 				result.append(" AND ");
 			}
 		}
@@ -267,20 +260,6 @@ public class parser
 		/*-----------------------------------------------------------------*/
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private String _patchNEOperator(String operator)
-	{
-		if(operator.equals("^=")
-		   ||
-		   operator.equals("<>")
-		 ) {
-			operator = "!=";
-		}
-
-		return operator;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -299,10 +278,13 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLParser.ExpressionAddSubContext) {
+			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
+			{
 				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child));
-			} else if(child instanceof TerminalNode) {
-				result.append(_patchNEOperator(child.getText()));
+			}
+			else if(child instanceof TerminalNode)
+			{
+				result.append(child.getText());
 			}
 		}
 
@@ -327,9 +309,12 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLParser.ExpressionMulDivContext) {
+			/**/ if(child instanceof MQLParser.ExpressionMulDivContext)
+			{
 				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child));
-			} else if(child instanceof TerminalNode) {
+			}
+			else if(child instanceof TerminalNode)
+			{
 				result.append(child.getText());
 			}
 		}
@@ -355,9 +340,12 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext) {
+			/**/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext)
+			{
 				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child));
-			} else if(child instanceof TerminalNode) {
+			}
+			else if(child instanceof TerminalNode)
+			{
 				result.append(child.getText());
 			}
 		}
@@ -387,15 +375,24 @@ public class parser
 		{
 			child = ctx.getChild(i);
 
-			/****/ if(child instanceof MQLParser.ExpressionGroupContext) {
+			/**/ if(child instanceof MQLParser.ExpressionGroupContext)
+			{
 				result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child));
-			} else if(child instanceof MQLParser.ExpressionFunctionContext) {
+			}
+			else if(child instanceof MQLParser.ExpressionFunctionContext)
+			{
 				result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
-			} else if(child instanceof MQLParser.ExpressionLikeContext) {
+			}
+			else if(child instanceof MQLParser.ExpressionLikeContext)
+			{
 				result.append(visitExpressionLike((MQLParser.ExpressionLikeContext) child));
-			} else if(child instanceof MQLParser.ExpressionQIdContext) {
+			}
+			else if(child instanceof MQLParser.ExpressionQIdContext)
+			{
 				result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
-			} else if(child instanceof MQLParser.ExpressionLiteralContext) {
+			}
+			else if(child instanceof MQLParser.ExpressionLiteralContext)
+			{
 				result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child));
 			}
 		}
@@ -409,35 +406,25 @@ public class parser
 
 	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext ctx)
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("(");
-		result.append(visitExpressionOr(ctx.expression));
-		result.append(")");
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return new StringBuilder().append("(")
+		                          .append(visitExpressionOr(ctx.expression))
+		                          .append(")")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext ctx)
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(ctx.functionName.getText());
-		result.append("(");
 		m_break = true;
-		if(ctx.distinct != null) result.append("DISTINCT "); result.append(visitExpressionOr(ctx.expression));
-		m_break = false;
-		result.append(")");
 
-		/*-----------------------------------------------------------------*/
+		/**/	StringBuilder result = new StringBuilder().append(ctx.functionName.getText())
+		/**/	                                          .append("(")
+		/**/	                                          .append(ctx.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(ctx.expression))
+		/**/	                                          .append(")")
+		/**/	;
+
+		m_break = false;
 
 		return result;
 	}
@@ -446,17 +433,10 @@ public class parser
 
 	private StringBuilder visitExpressionLike(MQLParser.ExpressionLikeContext ctx)
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(visitSqlQId(ctx.qId));
-		result.append(" LIKE ");
-		result.append(visitSqlLiteral(ctx.literal));
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return new StringBuilder().append(  visitSqlQId  (  ctx.qId  ))
+		                          .append(" LIKE ")
+		                          .append(visitSqlLiteral(ctx.literal))
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -475,14 +455,16 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
+	private boolean m_break = false;
+
+	/*---------------------------------------------------------------------*/
+
 	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext ctx)
 	{
 		StringBuilder result = new StringBuilder();
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-
 			String tableName = ctx.tableName.getText();
 			String columnName = ctx.columnName.getText();
 
@@ -496,9 +478,11 @@ public class parser
 
 			if(unescapeColumnName.equals("*"))
 			{
+				/*---------------------------------------------------------*/
+
 				int cnt = 0;
 
-				Set<String> columnNames = SchemaSingleton.getColumnNames(m_driver.getExternalCatalog(), unescapeTableName);
+				Set<String> columnNames = SchemaSingleton.getColumnNames(m_catalog, unescapeTableName);
 
 				for(String x: columnNames)
 				{
@@ -507,7 +491,7 @@ public class parser
 
 					AutoJoinSingleton.resolveWithNestedSelect(
 						m_joins,
-						m_driver.getExternalCatalog(),
+						m_catalog,
 						unescapeTableName,
 						unescapeColumnName,
 						null
@@ -518,32 +502,38 @@ public class parser
 						result.append(",");
 					}
 
-					result.append(escapeTableName);
-					result.append(".");
-					result.append(escapeColumnName);
+					result.append(escapeTableName)
+					      .append(".")
+					      .append(escapeColumnName)
+					;
 
 					if(m_break)
 					{
 						break;
 					}
 				}
+
+				/*---------------------------------------------------------*/
 			}
 			else
 			{
+				/*---------------------------------------------------------*/
+
 				AutoJoinSingleton.resolveWithNestedSelect(
 					m_joins,
-					m_driver.getExternalCatalog(),
+					m_catalog,
 					unescapeTableName,
 					unescapeColumnName,
 					null
 				);
 
-				result.append(escapeTableName);
-				result.append(".");
-				result.append(escapeColumnName);
-			}
+				result.append(escapeTableName)
+				      .append(".")
+				      .append(escapeColumnName)
+				;
 
-			/*-------------------------------------------------------------*/
+				/*---------------------------------------------------------*/
+			}
 		}
 		catch(Exception e)
 		{
@@ -557,15 +547,7 @@ public class parser
 
 	private StringBuilder visitSqlLiteral(MQLParser.SqlLiteralContext ctx)
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(ctx.getText());
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return new StringBuilder(ctx.getText());
 	}
 
 	/*---------------------------------------------------------------------*/
