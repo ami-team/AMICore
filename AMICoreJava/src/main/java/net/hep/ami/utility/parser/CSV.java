@@ -52,7 +52,7 @@ public class CSV
 
 		if(list.isEmpty() == false)
 		{
-			final int nb1 = list.size();
+			final int nb1 = list /****/.size();
 			final int nb2 = list.get(0).size();
 
 			for(int i = 1; i < nb1; i++)

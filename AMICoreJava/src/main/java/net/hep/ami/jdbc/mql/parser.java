@@ -367,34 +367,27 @@ public class parser
 
 		/*-----------------------------------------------------------------*/
 
-		ParseTree child;
+		ParseTree child = ctx.getChild(0);
 
-		final int nb = ctx.getChildCount();
-
-		for(int i = 0; i < nb; i++)
+		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
 		{
-			child = ctx.getChild(i);
-
-			/**/ if(child instanceof MQLParser.ExpressionGroupContext)
-			{
-				result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child));
-			}
-			else if(child instanceof MQLParser.ExpressionFunctionContext)
-			{
-				result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
-			}
-			else if(child instanceof MQLParser.ExpressionLikeContext)
-			{
-				result.append(visitExpressionLike((MQLParser.ExpressionLikeContext) child));
-			}
-			else if(child instanceof MQLParser.ExpressionQIdContext)
-			{
-				result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
-			}
-			else if(child instanceof MQLParser.ExpressionLiteralContext)
-			{
-				result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child));
-			}
+			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child));
+		}
+		else if(child instanceof MQLParser.ExpressionFunctionContext)
+		{
+			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
+		}
+		else if(child instanceof MQLParser.ExpressionLikeContext)
+		{
+			result.append(visitExpressionLike((MQLParser.ExpressionLikeContext) child));
+		}
+		else if(child instanceof MQLParser.ExpressionQIdContext)
+		{
+			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
+		}
+		else if(child instanceof MQLParser.ExpressionLiteralContext)
+		{
+			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child));
 		}
 
 		/*-----------------------------------------------------------------*/
