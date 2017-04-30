@@ -116,12 +116,12 @@ AS
 
 OR
 	: O R
-	| '||'
+	| '||' { setText("OR"); }
 	;
 
 AND
 	: A N D
-	| '&&'
+	| '&&' { setText("AND"); }
 	;
 
 LIKE
