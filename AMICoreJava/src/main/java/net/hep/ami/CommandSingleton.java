@@ -302,7 +302,7 @@ public class CommandSingleton
 			   &&
 			   key.equals("issuerDN") == false
 			 ) {
-				stringBuilder.append("<argument name=\"").append(key.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\" value=\"").append(value.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\"/>");
+				stringBuilder.append("<argument name=\"").append(key.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\" value=\"").append(value.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\" />");
 			}
 		}
 

@@ -41,9 +41,6 @@ public class ConfigSingleton
 	{
 		s_properties.clear();
 
-		s_configPathName = "";
-		s_configFileName = "";
-
 		try
 		{
 			s_hasValidConfFile = false;
@@ -230,9 +227,9 @@ public class ConfigSingleton
 
 		DriverAbstractClass driver = DriverSingleton.getConnection(
 			"self",
-			ConfigSingleton.getProperty("jdbc_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
+			getProperty("jdbc_url"),
+			getProperty("router_user"),
+			getProperty("router_pass")
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -287,9 +284,9 @@ public class ConfigSingleton
 
 		DriverAbstractClass driver = DriverSingleton.getConnection(
 			"self",
-			ConfigSingleton.getProperty("jdbc_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
+			getProperty("jdbc_url"),
+			getProperty("router_user"),
+			getProperty("router_pass")
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -300,7 +297,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			driver.executeUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('" + SecuritySingleton.encrypt(name) + "', '" + SecuritySingleton.encrypt(value) + "')");
+			driver.executeUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('" + SecuritySingleton.encrypt(name).replace("'", "''") + "', '" + SecuritySingleton.encrypt(value).replace("'", "''") + "')");
 
 			/*-------------------------------------------------------------*/
 		}
@@ -322,9 +319,9 @@ public class ConfigSingleton
 
 		DriverAbstractClass driver = DriverSingleton.getConnection(
 			"self",
-			ConfigSingleton.getProperty("jdbc_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
+			getProperty("jdbc_url"),
+			getProperty("router_user"),
+			getProperty("router_pass")
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -335,7 +332,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			driver.executeUpdate("DELETE FROM `router_config` WHERE `paramName` = '" + SecuritySingleton.encrypt(name) + "'");
+			driver.executeUpdate("DELETE FROM `router_config` WHERE `paramName` = '" + SecuritySingleton.encrypt(name).replace("'", "''") + "'");
 
 			/*-------------------------------------------------------------*/
 		}
