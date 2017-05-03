@@ -94,19 +94,11 @@ public class CSV
 
 	public static List<List<String>> parseAsList(CharStream charStream) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
 		CSVParser parser = new CSVParser(new CommonTokenStream(new CSVLexer(charStream)));
-
-		/*-----------------------------------------------------------------*/
 
 		parser.setErrorHandler(new DefaultErrorStrategy());
 
-		/*-----------------------------------------------------------------*/
-
 		return parser.file().v;
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

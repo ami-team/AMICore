@@ -24,19 +24,11 @@ public class JSON
 
 	public static Object parse(CharStream charStream) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
 		JSONParser parser = new JSONParser(new CommonTokenStream(new JSONLexer(charStream)));
-
-		/*-----------------------------------------------------------------*/
 
 		parser.setErrorHandler(new DefaultErrorStrategy());
 
-		/*-----------------------------------------------------------------*/
-
 		return parser.file().v;
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
