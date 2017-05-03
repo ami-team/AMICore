@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
 
 public class CSV
 {
@@ -52,7 +51,7 @@ public class CSV
 
 		if(list.isEmpty() == false)
 		{
-			final int nb1 = list.size();
+			final int nb1 = list.       size();
 			final int nb2 = list.get(0).size();
 
 			for(int i = 1; i < nb1; i++)
@@ -102,85 +101,23 @@ public class CSV
 
 		/*-----------------------------------------------------------------*/
 
-		return visitFile(parser.file());
+		return parser.file().v;
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static List<List<String>> visitFile(CSVParser.FileContext ctx)
+	public static void main(String[] args) throws Exception
 	{
-		List<List<String>> result = new ArrayList<>();
+		System.out.println(CSV.parseAsList(""));
+		System.out.println("----");
+		//System.out.println(CSV.parseAsList("a,b # hello \nc,d\n,k"));
+		System.out.println(CSV.parseAsList(",k,l,"));
+		System.out.println("----");
+		System.out.println(CSV.parseAsList(" # hello "));
 
-		/*-----------------------------------------------------------------*/
-
-		ParseTree child;
-
-		final int nb = ctx.getChildCount();
-
-		for(int i = 0; i < nb; i++)
-		{
-			child = ctx.getChild(i);
-
-			if(child instanceof CSVParser.RowContext)
-			{
-				result.add(visitRow((CSVParser.RowContext) child));
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static List<String> visitRow(CSVParser.RowContext ctx)
-	{
-		List<String> result = new ArrayList<>();
-
-		/*-----------------------------------------------------------------*/
-
-		ParseTree child;
-
-		final int nb = ctx.getChildCount();
-
-		for(int i = 0; i < nb; i++)
-		{
-			child = ctx.getChild(i);
-
-			if(child instanceof CSVParser.FieldContext)
-			{
-				result.add(visitField((CSVParser.FieldContext) child));
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static String visitField(CSVParser.FieldContext ctx)
-	{
-		String result = ctx.getText();
-
-		/**/ if(result.charAt(0) == '\"')
-		{
-			result = Unescape.unescape(
-				result.substring(1, result.length() - 1).replace("\"\"", "\"")
-			);
-		}
-		else if(result.charAt(0) == '\'')
-		{
-			result = Unescape.unescape(
-				result.substring(1, result.length() - 1).replace("\'\'", "\'")
-			);
-		}
-
-		return result;
+		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -1,6 +1,6 @@
 package net.hep.ami.utility.parser;
 
-public class Unescape
+public class Utility
 {
 	/*---------------------------------------------------------------------*/
 
@@ -97,6 +97,13 @@ public class Unescape
 		/*-----------------------------------------------------------------*/
 
 		return result.toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String parseString(String s)
+	{
+		return unescape(s.substring(1, s.length() - 1));
 	}
 
 	/*---------------------------------------------------------------------*/

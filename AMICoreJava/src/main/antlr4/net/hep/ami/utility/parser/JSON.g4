@@ -8,36 +8,48 @@ options {
 	language = Java;
 }
 
+@header {
+	import java.util.*;
+
+	import net.hep.ami.utility.*;
+}
+
 /*-------------------------------------------------------------------------*/
 /* JSON PARSER                                                             */
 /*-------------------------------------------------------------------------*/
 
-value
-	: object
-	| array
-	| term
+file returns [ Object v ]
+	: value { $v = $value.v; } EOF
 	;
 
-object
-	: '{' pair (',' pair)* '}'
-	| '{' '}'
+value returns [ Object v ]
+	: object { $v = (Object) $object.v; }
+	| array { $v = (Object) $array.v; }
+	| term { $v = (Object) $term.v; }
 	;
 
-pair
-	: key=STRING ':' val=value
+object returns [ Map<String, Object> v ]
+	@init { $v = new LinkedHashMap<String, Object>(); }
+	: '{' '}'
+	| '{' pair { $v.put(Utility.parseString($pair.v.x), $pair.v.y); } (',' pair { $v.put(Utility.parseString($pair.v.x), $pair.v.y); })* '}'
 	;
 
-array
-	: '[' value (',' value)* ']'
-	| '[' ']'
+array returns [ List<Object> v ]
+	@init { $v = new ArrayList<Object>(); }
+	: '[' ']'
+	| '[' value { $v.add($value.v); } (',' value { $v.add($value.v); })* ']'
 	;
 
-term
-	: STRING	# String
-	| NUMBER	# Number
-	| 'true'	# True
-	| 'false'	# False
-	| 'null'	# Null
+pair returns [ Tuple2<String, Object> v ]
+	: key=STRING ':' val=value { $v = new Tuple2<>($key.text, $val.v); }
+	;
+
+term returns [ Object v ]
+	: STRING { $v = Utility.parseString($STRING.text); }
+	| NUMBER { $v = Float.parseFloat($NUMBER.text); }
+	| 'true' { $v = true; }
+	| 'false' { $v = false; }
+	| 'null' { $v = null; }
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -64,7 +76,7 @@ WS
 /*-------------------------------------------------------------------------*/
 
 fragment ESC
-	: '\\' (["'\\/bfnrt] | 'u' HEX HEX HEX HEX)
+	: '\\' (["'/\\\b\f\n\r\t] | 'u' HEX HEX HEX HEX)
 	;
 
 fragment HEX

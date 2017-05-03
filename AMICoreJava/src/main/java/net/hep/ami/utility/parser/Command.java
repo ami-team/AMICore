@@ -100,7 +100,7 @@ public class Command
 			        ||
 			        (m = s_pattern4.matcher(s.substring(i))).find()
 			 ) {
-				arguments.put(m.group(1), (m.groupCount() == 2) ? Unescape.unescape(m.group(2)) : "");
+				arguments.put(m.group(1), (m.groupCount() == 2) ? Utility.unescape(m.group(2)) : "");
 
 				i += m.group(0).length();
 			}
