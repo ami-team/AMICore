@@ -3,6 +3,8 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.util.*;
 
+import net.hep.ami.*;
+
 public class Iterable implements java.lang.Iterable<Row>
 {
 	/*---------------------------------------------------------------------*/
@@ -133,6 +135,104 @@ public class Iterable implements java.lang.Iterable<Row>
 		};
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<Row> getList(RowSet rowSet) throws Exception
+	{
+		return getList(rowSet, Integer.MAX_VALUE, 0);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<Row> getList(RowSet rowSet, int limit, int offset) throws Exception
+	{
+		List<Row> result = new ArrayList<>();
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			rowSet.m_resultSet.beforeFirst();
+		}
+		catch(SQLException e)
+		{
+			/* IGNORE */
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+
+		/*-----------------------------------------------------------------*/
+
+		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
+		{ }
+		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
+		{
+			if(maxNumberOfRows == 0)
+			{
+				break;
+			}
+
+			maxNumberOfRows--;
+
+			result.add(new Row(rowSet, rowSet.getCurrentValue()));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static StringBuffer getStringBuffer(RowSet rowSet) throws Exception
+	{
+		return getStringBuffer(rowSet, Integer.MAX_VALUE, 0);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static StringBuffer getStringBuffer(RowSet rowSet, int limit, int offset) throws Exception
+	{
+		StringBuffer result = new StringBuffer();
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			rowSet.m_resultSet.beforeFirst();
+		}
+		catch(SQLException e)
+		{
+			/* IGNORE */
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+
+		/*-----------------------------------------------------------------*/
+
+		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
+		{ }
+		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
+		{
+			if(maxNumberOfRows == 0)
+			{
+				break;
+			}
+
+			maxNumberOfRows--;
+
+			result.append(new Row(rowSet, rowSet.getCurrentValue()).toStringBuilder());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -4,8 +4,6 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
-import net.hep.ami.*;
-
 public class RowSet
 {
 	/*---------------------------------------------------------------------*/
@@ -259,49 +257,14 @@ public class RowSet
 
 	public List<Row> getAll() throws Exception
 	{
-		return getAll(Integer.MAX_VALUE, 0);
+		return Iterable.getList(this);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public List<Row> getAll(final int limit, final int offset) throws Exception
+	public List<Row> getAll(int limit, int offset) throws Exception
 	{
-		List<Row> result = new ArrayList<>();
-
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			m_resultSet.beforeFirst();
-		}
-		catch(SQLException e)
-		{
-			/* IGNORE */
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
-
-		/*-----------------------------------------------------------------*/
-
-		for(int i = 0; i < offset && m_resultSet.next(); i++)
-		{ }
-		for(int i = 0; i < limit && m_resultSet.next(); i++)
-		{
-			if(maxNumberOfRows == 0)
-			{
-				break;
-			}
-
-			maxNumberOfRows--;
-
-			result.add(new Row(this, getCurrentValue()));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return Iterable.getList(this, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -320,7 +283,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuilder toStringBuilder(@Nullable String type, final int limit, final int offset) throws Exception
+	public StringBuilder toStringBuilder(@Nullable String type, int limit, int offset) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -347,34 +310,7 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		try
-		{
-			m_resultSet.beforeFirst();
-		}
-		catch(SQLException e)
-		{
-			/* IGNORE */
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
-
-		/*-----------------------------------------------------------------*/
-
-		for(int i = 0; i < offset && m_resultSet.next(); i++)
-		{ }
-		for(int i = 0; i < limit && m_resultSet.next(); i++)
-		{
-			if(maxNumberOfRows == 0)
-			{
-				break;
-			}
-
-			maxNumberOfRows--;
-
-			result.append(new Row(this, getCurrentValue()).toStringBuilder());
-		}
+		result.append(Iterable.getStringBuffer(this, limit, offset));
 
 		/*-----------------------------------------------------------------*/
 
