@@ -6,11 +6,11 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
 
-public class GetConnectionPoolStatus extends CommandAbstractClass
+public class GetServerStatus extends CommandAbstractClass
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetConnectionPoolStatus(Map<String, String> arguments, long transactionId)
+	public GetServerStatus(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
