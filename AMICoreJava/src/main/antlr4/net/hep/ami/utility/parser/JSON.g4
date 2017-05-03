@@ -10,8 +10,20 @@ options {
 
 @header {
 	import java.util.*;
+}
 
-	import net.hep.ami.utility.*;
+@members {
+	private static class Pair
+	{
+		final String x;
+		final Object y;
+
+		public Pair(String _x, Object _y)
+		{
+			x = Utility.parseString(_x);
+			y = /*---------------*/(_y);
+		}
+	}
 }
 
 /*-------------------------------------------------------------------------*/
@@ -31,7 +43,7 @@ value returns [ Object v ]
 object returns [ Map<String, Object> v ]
 	@init { $v = new LinkedHashMap<String, Object>(); }
 	: '{' '}'
-	| '{' pair { $v.put(Utility.parseString($pair.v.x), $pair.v.y); } (',' pair { $v.put(Utility.parseString($pair.v.x), $pair.v.y); })* '}'
+	| '{' pair { $v.put($pair.v.x, $pair.v.y); } (',' pair { $v.put($pair.v.x, $pair.v.y); })* '}'
 	;
 
 array returns [ List<Object> v ]
@@ -40,8 +52,8 @@ array returns [ List<Object> v ]
 	| '[' value { $v.add($value.v); } (',' value { $v.add($value.v); })* ']'
 	;
 
-pair returns [ Tuple2<String, Object> v ]
-	: x=STRING ':' y=value { $v = new Tuple2<>($x.text, $y.v); }
+pair returns [ Pair v ]
+	: x=STRING ':' y=value { $v = new Pair($x.text, $y.v); }
 	;
 
 term returns [ Object v ]
