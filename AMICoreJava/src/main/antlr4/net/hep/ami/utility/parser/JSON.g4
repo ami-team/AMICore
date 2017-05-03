@@ -58,7 +58,7 @@ pair returns [ Pair v ]
 
 term returns [ Object v ]
 	: STRING { $v = Utility.parseString($STRING.text); }
-	| NUMBER { $v = Float.parseFloat($NUMBER.text); }
+	| NUMBER { $v = Double.parseDouble($NUMBER.text); }
 	| 'true' { $v = true; }
 	| 'false' { $v = false; }
 	| 'null' { $v = null; }

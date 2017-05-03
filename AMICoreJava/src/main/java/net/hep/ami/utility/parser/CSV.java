@@ -37,7 +37,7 @@ public class CSV
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Map<String, String>> parseAsMap(CharStream charStream) throws Exception
+	private static List<Map<String, String>> parseAsMap(CharStream charStream) throws Exception
 	{
 		List<Map<String, String>> result = new ArrayList<>();
 
@@ -47,14 +47,11 @@ public class CSV
 
 		/*-----------------------------------------------------------------*/
 
-		final int nb1 = list.size();
-
-		/*-----------------------------------------------------------------*/
-
-		if(nb1 > 0)
+		if(list.isEmpty() == false)
 		{
 			Map<String, String> map;
 
+			final int nb1 = list /*--*/.size();
 			final int nb2 = list.get(0).size();
 
 			for(int i = 1; i < nb1; i++)
@@ -92,27 +89,13 @@ public class CSV
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<List<String>> parseAsList(CharStream charStream) throws Exception
+	private static List<List<String>> parseAsList(CharStream charStream) throws Exception
 	{
 		CSVParser parser = new CSVParser(new CommonTokenStream(new CSVLexer(charStream)));
 
 		parser.setErrorHandler(new DefaultErrorStrategy());
 
 		return parser.file().v;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void main(String[] args) throws Exception
-	{
-		System.out.println(CSV.parseAsList(""));
-		System.out.println("----");
-		//System.out.println(CSV.parseAsList("a,b # hello \nc,d\n,k"));
-		System.out.println(CSV.parseAsList(",k,l,"));
-		System.out.println("----");
-		System.out.println(CSV.parseAsList(" # hello "));
-
-		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/

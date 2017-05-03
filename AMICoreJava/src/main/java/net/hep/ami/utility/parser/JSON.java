@@ -22,28 +22,13 @@ public class JSON
 
 	/*---------------------------------------------------------------------*/
 
-	public static Object parse(CharStream charStream) throws Exception
+	private static Object parse(CharStream charStream) throws Exception
 	{
 		JSONParser parser = new JSONParser(new CommonTokenStream(new JSONLexer(charStream)));
 
 		parser.setErrorHandler(new DefaultErrorStrategy());
 
 		return parser.file().v;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void main(String[] args) throws Exception
-	{
-		System.out.println(JSON.parse("null"));
-		System.out.println(JSON.parse("true"));
-		System.out.println(JSON.parse("12.3"));
-		System.out.println(JSON.parse("[]"));
-		System.out.println(JSON.parse("[1, \"HELLO\"]"));
-		System.out.println(JSON.parse("{}"));
-		System.out.println(JSON.parse("{\"foo\": \"bar\", \"toto\": 123.4}"));
-
-		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/
