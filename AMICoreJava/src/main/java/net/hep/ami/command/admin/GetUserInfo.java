@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class GetUserInfo extends CommandAbstractClass
+public class GetUserInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

@@ -6,7 +6,7 @@ import java.util.regex.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-public class CheckDBRules extends CommandAbstractClass
+public class CheckDBRules extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

@@ -153,7 +153,7 @@ public class SchemaSingleton
 		/* INITIALIZE STRUCTURES                                           */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver1 = CatalogSingleton.getConnection(externalCatalog);
+		AbstractDriver driver1 = CatalogSingleton.getConnection(externalCatalog);
 
 		try
 		{

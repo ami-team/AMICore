@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-public class ListFields extends CommandAbstractClass
+public class ListFields extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

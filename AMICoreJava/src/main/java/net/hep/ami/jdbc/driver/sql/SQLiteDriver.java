@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.driver.annotation.*;
 	clazz = "org.sqlite.JDBC"
 )
 
-public class SQLiteDriver extends DriverAbstractClass
+public class SQLiteDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 

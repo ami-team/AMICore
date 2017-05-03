@@ -6,7 +6,7 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
 
-public class AddElement extends CommandAbstractClass
+public class AddElement extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

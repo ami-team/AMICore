@@ -8,7 +8,7 @@ import java.security.cert.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class GenerateCertificate extends CommandAbstractClass
+public class GenerateCertificate extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

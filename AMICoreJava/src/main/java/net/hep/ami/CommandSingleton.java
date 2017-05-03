@@ -14,9 +14,9 @@ public class CommandSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple3<String, String, Constructor<CommandAbstractClass>>
+	private static class Tuple extends Tuple3<String, String, Constructor<AbstractCommand>>
 	{
-		public Tuple(String _x, String _y, Constructor<CommandAbstractClass> _z)
+		public Tuple(String _x, String _y, Constructor<AbstractCommand> _z)
 		{
 			super(_x, _y, _z);
 		}
@@ -72,7 +72,7 @@ public class CommandSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = DriverSingleton.getConnection(
+		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
 			ConfigSingleton.getProperty("jdbc_url"),
 			ConfigSingleton.getProperty("router_user"),
@@ -128,13 +128,13 @@ public class CommandSingleton
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
+		Class<AbstractCommand> clazz = (Class<AbstractCommand>) Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassSingleton.extendsClass(clazz, CommandAbstractClass.class))
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class))
 		{
 			s_commands.put(
 				commandName
@@ -163,13 +163,13 @@ public class CommandSingleton
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<CommandAbstractClass> clazz = (Class<CommandAbstractClass>) Class.forName(className);
+		Class<AbstractCommand> clazz = (Class<AbstractCommand>) Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassSingleton.extendsClass(clazz, CommandAbstractClass.class))
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class))
 		{
 			String simpleName = clazz.getSimpleName();
 			String name = clazz.getName();
@@ -314,7 +314,7 @@ public class CommandSingleton
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
 
-			CommandAbstractClass commandObject = tuple.z.newInstance(
+			AbstractCommand commandObject = tuple.z.newInstance(
 				arguments,
 				transactionId
 			);

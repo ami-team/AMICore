@@ -61,7 +61,7 @@ public class ConverterSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = DriverSingleton.getConnection(
+		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
 			ConfigSingleton.getProperty("jdbc_url"),
 			ConfigSingleton.getProperty("router_user"),

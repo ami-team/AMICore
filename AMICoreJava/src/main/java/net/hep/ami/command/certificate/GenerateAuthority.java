@@ -7,7 +7,7 @@ import java.security.cert.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class GenerateAuthority extends CommandAbstractClass
+public class GenerateAuthority extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

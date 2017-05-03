@@ -9,7 +9,7 @@ import net.hep.ami.utility.shell.*;
  * For UNIX only!
  */
 
-public class RestartNode extends CommandAbstractClass
+public class RestartNode extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

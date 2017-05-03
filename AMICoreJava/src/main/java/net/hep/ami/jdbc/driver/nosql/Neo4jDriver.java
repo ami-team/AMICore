@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.driver.annotation.*;
 	clazz = "org.neo4j.jdbc.Driver"
 )
 
-public class Neo4jDriver extends DriverAbstractClass
+public class Neo4jDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 

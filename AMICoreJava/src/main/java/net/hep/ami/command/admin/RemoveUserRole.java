@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class RemoveUserRole extends CommandAbstractClass
+public class RemoveUserRole extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

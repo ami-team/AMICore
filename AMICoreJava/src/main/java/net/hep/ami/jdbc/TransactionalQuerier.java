@@ -12,7 +12,7 @@ public class TransactionalQuerier implements QuerierInterface
 
 	private long m_transactionId;
 
-	private DriverAbstractClass m_driver;
+	private AbstractDriver m_driver;
 
 	/*---------------------------------------------------------------------*/
 

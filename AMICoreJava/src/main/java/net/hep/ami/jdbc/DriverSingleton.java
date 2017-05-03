@@ -13,9 +13,9 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple4<Jdbc.Type, String, String, Constructor<DriverAbstractClass>>
+	private static class Tuple extends Tuple4<Jdbc.Type, String, String, Constructor<AbstractDriver>>
 	{
-		public Tuple(Jdbc.Type _x, String _y, String _z, Constructor<DriverAbstractClass> _t)
+		public Tuple(Jdbc.Type _x, String _y, String _z, Constructor<AbstractDriver> _t)
 		{
 			super(_x, _y, _z, _t);
 		}
@@ -89,13 +89,13 @@ public class DriverSingleton
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<DriverAbstractClass> clazz = (Class<DriverAbstractClass>) Class.forName(className);
+		Class<AbstractDriver> clazz = (Class<AbstractDriver>) Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
 		/* ADD DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassSingleton.extendsClass(clazz, DriverAbstractClass.class))
+		if(ClassSingleton.extendsClass(clazz, AbstractDriver.class))
 		{
 			Jdbc jdbc = clazz.getAnnotation(Jdbc.class);
 
@@ -153,7 +153,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public static AbstractDriver getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		return getDriver(jdbcUrl).t.newInstance(catalog, jdbcUrl, user, pass);
 	}

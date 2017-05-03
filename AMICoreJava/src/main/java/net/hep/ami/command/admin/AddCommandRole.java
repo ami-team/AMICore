@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class AddCommandRole extends CommandAbstractClass
+public class AddCommandRole extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

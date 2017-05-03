@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.driver.annotation.*;
 	clazz = "org.h2.Driver"
 )
 
-public class H2Driver extends DriverAbstractClass
+public class H2Driver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 

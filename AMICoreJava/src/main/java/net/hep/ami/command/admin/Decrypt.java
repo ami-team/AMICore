@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class Decrypt extends CommandAbstractClass
+public class Decrypt extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

@@ -9,7 +9,7 @@ public class BasicQuerier implements QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
 
-	private DriverAbstractClass m_driver;
+	private AbstractDriver m_driver;
 
 	/*---------------------------------------------------------------------*/
 

@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.driver.annotation.*;
 	clazz = "org.gjt.mm.mysql.Driver"
 )
 
-public class MySQLDriver extends DriverAbstractClass
+public class MySQLDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 

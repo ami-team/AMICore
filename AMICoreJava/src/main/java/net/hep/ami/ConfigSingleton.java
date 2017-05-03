@@ -225,7 +225,7 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = DriverSingleton.getConnection(
+		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
 			getProperty("jdbc_url"),
 			getProperty("router_user"),
@@ -282,7 +282,7 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = DriverSingleton.getConnection(
+		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
 			getProperty("jdbc_url"),
 			getProperty("router_user"),
@@ -317,7 +317,7 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = DriverSingleton.getConnection(
+		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
 			getProperty("jdbc_url"),
 			getProperty("router_user"),

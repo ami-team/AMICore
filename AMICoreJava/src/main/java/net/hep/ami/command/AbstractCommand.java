@@ -6,7 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 
-public abstract class CommandAbstractClass
+public abstract class AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
@@ -34,7 +34,7 @@ public abstract class CommandAbstractClass
 
 	/*---------------------------------------------------------------------*/
 
-	public CommandAbstractClass(Map<String, String> arguments, long transactionId)
+	public AbstractCommand(Map<String, String> arguments, long transactionId)
 	{
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */

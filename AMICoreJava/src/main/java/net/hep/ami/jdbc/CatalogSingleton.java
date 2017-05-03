@@ -62,7 +62,7 @@ public class CatalogSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass driver = DriverSingleton.getConnection(
+		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
 			ConfigSingleton.getProperty("jdbc_url"),
 			ConfigSingleton.getProperty("router_user"),
@@ -153,7 +153,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String catalog) throws Exception
+	public static AbstractDriver getConnection(String catalog) throws Exception
 	{
 		Tuple tuple = s_catalogs.get(catalog);
 

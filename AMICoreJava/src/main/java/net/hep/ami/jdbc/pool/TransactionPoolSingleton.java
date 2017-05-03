@@ -15,7 +15,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<Long, Map<String, DriverAbstractClass>> s_pools = new HashMap<>();
+	private static final Map<Long, Map<String, AbstractDriver>> s_pools = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -30,7 +30,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(String catalog, long transactionId) throws Exception
+	public static AbstractDriver getConnection(String catalog, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -45,9 +45,9 @@ public class TransactionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass result;
+		AbstractDriver result;
 
-		Map<String, DriverAbstractClass> transaction;
+		Map<String, AbstractDriver> transaction;
 
 		synchronized(TransactionPoolSingleton.class)
 		{
@@ -77,7 +77,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DriverAbstractClass getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
+	public static AbstractDriver getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -92,9 +92,9 @@ public class TransactionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		DriverAbstractClass result;
+		AbstractDriver result;
 
-		Map<String, DriverAbstractClass> transaction;
+		Map<String, AbstractDriver> transaction;
 
 		synchronized(TransactionPoolSingleton.class)
 		{
@@ -126,7 +126,7 @@ public class TransactionPoolSingleton
 
 	public static void commitAndRelease(long transactionId) throws Exception
 	{
-		Map<String, DriverAbstractClass> transaction;
+		Map<String, AbstractDriver> transaction;
 
 		/*-----------------------------------------------------------------*/
 		/* REMOVE TRANSACTION FROM POOL                                    */
@@ -154,7 +154,7 @@ public class TransactionPoolSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			for(DriverAbstractClass driver: transaction.values())
+			for(AbstractDriver driver: transaction.values())
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
@@ -166,7 +166,7 @@ public class TransactionPoolSingleton
 
 			flag = 0;
 
-			for(DriverAbstractClass driver: transaction.values())
+			for(AbstractDriver driver: transaction.values())
 			{
 				try { driver.commitAndRelease(); } catch(Exception e2) { flag = 2; }
 			}
@@ -179,7 +179,7 @@ public class TransactionPoolSingleton
 
 			flag = 1;
 
-			for(DriverAbstractClass driver: transaction.values())
+			for(AbstractDriver driver: transaction.values())
 			{
 				try { driver.rollbackAndRelease(); } catch(Exception e2) {/* IGNORE */}
 			}
@@ -212,7 +212,7 @@ public class TransactionPoolSingleton
 
 	public static void rollbackAndRelease(long transactionId) throws Exception
 	{
-		Map<String, DriverAbstractClass> transaction;
+		Map<String, AbstractDriver> transaction;
 
 		/*-----------------------------------------------------------------*/
 		/* REMOVE TRANSACTION FROM POOL                                    */
@@ -240,7 +240,7 @@ public class TransactionPoolSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			for(DriverAbstractClass driver: transaction.values())
+			for(AbstractDriver driver: transaction.values())
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
@@ -252,7 +252,7 @@ public class TransactionPoolSingleton
 
 			flag = 0;
 
-			for(DriverAbstractClass driver: transaction.values())
+			for(AbstractDriver driver: transaction.values())
 			{
 				try { driver.rollbackAndRelease(); } catch(Exception e2) { flag = 2; }
 			}
@@ -265,7 +265,7 @@ public class TransactionPoolSingleton
 
 			flag = 1;
 
-			for(DriverAbstractClass driver: transaction.values())
+			for(AbstractDriver driver: transaction.values())
 			{
 				try { driver.rollbackAndRelease(); } catch(Exception e2) {/* IGNORE */}
 			}
@@ -304,9 +304,9 @@ public class TransactionPoolSingleton
 		/**/	/* ROLLBACK AND RELEASE CONNECTIONS                        */
 		/**/	/*---------------------------------------------------------*/
 		/**/
-		/**/	for(Map<String, DriverAbstractClass> transaction: s_pools.values())
+		/**/	for(Map<String, AbstractDriver> transaction: s_pools.values())
 		/**/	{
-		/**/		for(DriverAbstractClass connection: transaction.values())
+		/**/		for(AbstractDriver connection: transaction.values())
 		/**/		{
 		/**/			try
 		/**/			{

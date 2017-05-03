@@ -6,7 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class GetSessionInfo extends CommandAbstractClass
+public class GetSessionInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

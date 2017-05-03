@@ -10,7 +10,7 @@ import net.hep.ami.jdbc.driver.annotation.*;
 	clazz = "oracle.jdbc.driver.OracleDriver"
 )
 
-public class OracleDriver extends DriverAbstractClass
+public class OracleDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 

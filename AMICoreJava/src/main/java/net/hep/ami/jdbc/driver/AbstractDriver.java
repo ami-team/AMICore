@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
-public abstract class DriverAbstractClass implements QuerierInterface
+public abstract class AbstractDriver implements QuerierInterface
 {
 	/*---------------------------------------------------------------------*/
 
@@ -33,7 +33,7 @@ public abstract class DriverAbstractClass implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public DriverAbstractClass(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public AbstractDriver(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET ANNOTATION                                                  */

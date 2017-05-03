@@ -4,7 +4,7 @@ import java.io.*;
 
 import net.hep.ami.utility.*;
 
-public class SimpleShell extends ShellAbstractClass
+public class SimpleShell extends AbstractShell
 {
 	/*---------------------------------------------------------------------*/
 

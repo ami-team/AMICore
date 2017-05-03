@@ -6,7 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class ReloadConfig extends CommandAbstractClass
+public class ReloadConfig extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

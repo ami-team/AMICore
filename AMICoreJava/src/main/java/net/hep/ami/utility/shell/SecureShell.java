@@ -7,7 +7,7 @@ import com.jcraft.jsch.*;
 
 import net.hep.ami.utility.*;
 
-public class SecureShell extends ShellAbstractClass
+public class SecureShell extends AbstractShell
 {
 	/*---------------------------------------------------------------------*/
 

@@ -6,7 +6,7 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
 
-public class GetServerStatus extends CommandAbstractClass
+public class GetServerStatus extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

@@ -4,7 +4,7 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 
-public class ListUsers extends CommandAbstractClass
+public class ListUsers extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

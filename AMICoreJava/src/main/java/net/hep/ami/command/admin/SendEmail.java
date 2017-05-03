@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class SendEmail extends CommandAbstractClass
+public class SendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class AddRole extends CommandAbstractClass
+public class AddRole extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

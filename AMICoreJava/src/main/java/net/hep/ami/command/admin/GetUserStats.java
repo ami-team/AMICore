@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.TransactionalQuerier;
 
-public class GetUserStats extends CommandAbstractClass
+public class GetUserStats extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 

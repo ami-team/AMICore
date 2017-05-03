@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.driver.annotation.*;
 	clazz = "org.postgresql.Driver"
 )
 
-public class PostgreSQLDriver extends DriverAbstractClass
+public class PostgreSQLDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 

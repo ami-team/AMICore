@@ -5,7 +5,7 @@ import java.io.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
-public abstract class ShellAbstractClass
+public abstract class AbstractShell
 {
 	/*---------------------------------------------------------------------*/
 
