@@ -41,7 +41,7 @@ array returns [ List<Object> v ]
 	;
 
 pair returns [ Tuple2<String, Object> v ]
-	: key=STRING ':' val=value { $v = new Tuple2<>($key.text, $val.v); }
+	: x=STRING ':' y=value { $v = new Tuple2<>($x.text, $y.v); }
 	;
 
 term returns [ Object v ]

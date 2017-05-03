@@ -47,11 +47,14 @@ public class CSV
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, String> map;
+		final int nb1 = list.size();
 
-		if(list.isEmpty() == false)
+		/*-----------------------------------------------------------------*/
+
+		if(nb1 > 0)
 		{
-			final int nb1 = list.       size();
+			Map<String, String> map;
+
 			final int nb2 = list.get(0).size();
 
 			for(int i = 1; i < nb1; i++)

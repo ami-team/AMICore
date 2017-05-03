@@ -101,9 +101,9 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parseString(String s)
+	public static String parseString(@Nullable String s)
 	{
-		return unescape(s.substring(1, s.length() - 1));
+		return (s != null && s.length() >= 2) ? unescape(s.substring(1, s.length() - 1)) : "";
 	}
 
 	/*---------------------------------------------------------------------*/
