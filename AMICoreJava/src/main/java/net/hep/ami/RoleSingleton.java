@@ -5,6 +5,8 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
 
+/* Nested Set Model */
+
 public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/

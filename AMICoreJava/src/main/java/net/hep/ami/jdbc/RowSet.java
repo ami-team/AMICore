@@ -95,7 +95,7 @@ public class RowSet
 	{
 		for(String table: m_fieldTables)
 		{
-			if(table.equals(tableName))
+			if(table.equalsIgnoreCase(tableName))
 			{
 				return true;
 			}
@@ -110,7 +110,7 @@ public class RowSet
 	{
 		for(String field: m_fieldNames)
 		{
-			if(field.equals(fieldName))
+			if(field.equalsIgnoreCase(fieldName))
 			{
 				return true;
 			}
@@ -125,7 +125,7 @@ public class RowSet
 	{
 		for(String type: m_fieldTypes)
 		{
-			if(type.equals(typeName))
+			if(type.equalsIgnoreCase(typeName))
 			{
 				return true;
 			}
