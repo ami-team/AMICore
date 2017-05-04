@@ -16,7 +16,7 @@ public class CommandSingletonTest
 		Map<String, String> arguments = new HashMap<String, String>();
 
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
-		LogSingleton.root.error("Hello World!");
+//		LogSingleton.root.error("Hello World!");
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 
@@ -41,12 +41,14 @@ public class CommandSingletonTest
 
 		try
 		{
-			//RouterBuilder rb = new RouterBuilder("self", "jdbc:mysql://localhost:3306/router_test", "root", "root");
+			Router router = new Router("test", "jdbc:mysql://localhost:3306/router_test", "root", "root");
 
-			//rb.create();
-			//rb.fill();
+			router.create();
+			router.fill();
 
-			//rb.commitAndRelease();
+			router.commitAndRelease();
+
+			System.out.println("done.");
 
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
@@ -55,9 +57,9 @@ public class CommandSingletonTest
 
 			//System.out.println(SchemaSingleton.getTableNames("self"));
 
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 
-			System.out.println(ConnectionPoolSingleton.getStatus());
+//			System.out.println(ConnectionPoolSingleton.getStatus());
 
 //			System.out.println("done.");
 		}

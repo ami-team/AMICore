@@ -6,7 +6,7 @@ import net.hep.ami.jdbc.driver.annotation.*;
 @Jdbc(
 	type = Jdbc.Type.SQL,
 	proto = "jdbc:mysql",
-	clazz = "org.gjt.mm.mysql.Driver"
+	clazz = "com.mysql.jdbc.Driver"
 )
 
 public class MySQLDriver extends AbstractDriver

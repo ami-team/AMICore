@@ -14,14 +14,15 @@ options {
 
 file returns [ List<List<String>> v ]
 	@init { $v = new ArrayList<List<String>>(); }
-	: (row { $v.add($row.v); } BREAK)* (row { $v.add($row.v); } | EOF)
+	: (BREAK | row { $v.add($row.v); } BREAK)* (EOF | row { $v.add($row.v); } EOF)
 	;
 
 /*-------------------------------------------------------------------------*/
 
 row returns [ List<String> v ]
 	@init { $v = new ArrayList<String>(); }
-	: (field { $v.add($field.v); } | { $v.add(""); }) (',' (field { $v.add($field.v); } | { $v.add(""); }))*
+	: field { $v.add($field.v); } (',' (field { $v.add($field.v); } | { $v.add(""); }))*
+	|       { $v.add(   ""   ); } (',' (field { $v.add($field.v); } | { $v.add(""); }))+
 	;
 
 /*-------------------------------------------------------------------------*/

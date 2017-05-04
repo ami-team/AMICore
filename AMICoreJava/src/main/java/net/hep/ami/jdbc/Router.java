@@ -64,17 +64,22 @@ public class Router extends SimpleQuerier
 
 			while((line = bufferedReader.readLine()) != null)
 			{
-				query += line.trim();
+				line = line.trim();
 
-				if(query.endsWith(";"))
-				{
-					executeUpdate(query);
+				if(line.isEmpty() == false
+				   &&
+				   line.startsWith("-") == false
+				 ) {
+					query += line + " ";
 
-					query = "";
-				}
-				else
-				{
-					query += "\n";
+					if(line.endsWith(";"))
+					{
+						LogSingleton.root.info(query);
+
+						executeUpdate(query);
+
+						query = "";
+					}
 				}
 			}
 		}

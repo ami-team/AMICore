@@ -36,7 +36,7 @@ public class TransactionPoolSingleton
 		   ||
 		   transactionId >= s_lastId.get()
 		 ) {
-			throw new Exception("invalid transaction identifier (" + transactionId + ")");
+			throw new Exception("invalid transaction identifier (" + transactionId + " - " + s_lastId.get() + "-1)");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -83,7 +83,7 @@ public class TransactionPoolSingleton
 		   ||
 		   transactionId >= s_lastId.get()
 		 ) {
-			throw new Exception("invalid transaction identifier (" + transactionId + ")");
+			throw new Exception("invalid transaction identifier (" + transactionId + " - " + s_lastId.get() + "-2)");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -137,11 +137,9 @@ public class TransactionPoolSingleton
 		/**/	transaction = s_pools.remove(transactionId);
 		}
 
-		/*-----------------------------------------------------------------*/
-
 		if(transaction == null)
 		{
-			throw new Exception("invalid transaction identifier (" + transactionId + ")");
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -223,11 +221,9 @@ public class TransactionPoolSingleton
 		/**/	transaction = s_pools.remove(transactionId);
 		}
 
-		/*-----------------------------------------------------------------*/
-
 		if(transaction == null)
 		{
-			throw new Exception("invalid transaction identifier (" + transactionId + ")");
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/
