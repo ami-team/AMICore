@@ -5,7 +5,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 
-public class Iterable implements java.lang.Iterable<Row>
+public final class Iterable implements java.lang.Iterable<Row>
 {
 	/*---------------------------------------------------------------------*/
 
@@ -95,7 +95,7 @@ public class Iterable implements java.lang.Iterable<Row>
 			{
 				try
 				{
-					return m_hasNext = m_i++ < m_limit && m_rowSet.m_resultSet.next();
+					return m_hasNext = (m_i++ < m_limit && m_rowSet.m_resultSet.next());
 				}
 				catch(SQLException e)
 				{

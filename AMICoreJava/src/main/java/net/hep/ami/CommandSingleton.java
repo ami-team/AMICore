@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.Command;
+import net.hep.ami.utility.parser.*;
 
 public class CommandSingleton
 {
@@ -157,7 +157,7 @@ public class CommandSingleton
 	@SuppressWarnings("unchecked")
 	/*---------------------------------------------------------------------*/
 
-	public static boolean registerCommand(QuerierInterface querier, String className) throws Exception
+	public static boolean registerCommand(Querier querier, String className) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */

@@ -257,7 +257,7 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier("self");
+		SimpleQuerier basicQuerier = new SimpleQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 
@@ -309,7 +309,7 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = new BasicQuerier("self");
+		SimpleQuerier basicQuerier = new SimpleQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 

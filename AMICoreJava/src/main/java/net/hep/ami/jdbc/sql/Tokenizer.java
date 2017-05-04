@@ -44,37 +44,29 @@ public class Tokenizer
 			/* EAT SPACES                                                  */
 			/*-------------------------------------------------------------*/
 
-			m = s_pattern1.matcher(sql.substring(i));
-
-			if(m.find())
+			/**/ if((m = s_pattern1.matcher(sql.substring(i))).find())
 			{
-				result.add(" ");
+				result.add((((" "))));
 
 				i += m.group(0).length();
-
-				continue;
 			}
 
 			/*-------------------------------------------------------------*/
 			/* STRING                                                      */
 			/*-------------------------------------------------------------*/
 
-			m = s_pattern2.matcher(sql.substring(i));
-
-			if(m.find())
+			else if((m = s_pattern2.matcher(sql.substring(i))).find())
 			{
 				result.add(m.group(0));
 
 				i += m.group(0).length();
-
-				continue;
 			}
 
 			/*-------------------------------------------------------------*/
 			/* OTHER                                                       */
 			/*-------------------------------------------------------------*/
 
-			result.add(String.valueOf(sql.charAt(i++)));
+			else result.add(String.valueOf(sql.charAt(i++)));
 
 			/*-------------------------------------------------------------*/
 		}

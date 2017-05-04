@@ -4,7 +4,7 @@ import java.sql.*;
 
 import net.hep.ami.jdbc.driver.annotation.*;
 
-public interface QuerierInterface
+public interface Querier
 {
 	/*---------------------------------------------------------------------*/
 
@@ -24,7 +24,7 @@ public interface QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception;
+	public PreparedStatement sqlPrepareStatement(String sql, @Nullable String columnNames[]) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

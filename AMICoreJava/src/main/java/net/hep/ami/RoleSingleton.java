@@ -89,7 +89,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addRole(QuerierInterface querier, String parent, String role, String roleValidatorClass, boolean insertAfter) throws Exception
+	public static void addRole(Querier querier, String parent, String role, String roleValidatorClass, boolean insertAfter) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET PARENT ID                                                   */
@@ -157,7 +157,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removeRole(QuerierInterface querier, String role, boolean recursive) throws Exception
+	public static void removeRole(Querier querier, String role, boolean recursive) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE                                                        */
@@ -231,7 +231,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void checkRoles(QuerierInterface querier, String command, Map<String, String> arguments) throws Exception
+	public static void checkRoles(Querier querier, String command, Map<String, String> arguments) throws Exception
 	{
 		/*---------------------------------*/
 

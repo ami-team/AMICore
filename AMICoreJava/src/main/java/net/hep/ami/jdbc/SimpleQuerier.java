@@ -5,7 +5,7 @@ import java.sql.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
-public class BasicQuerier implements QuerierInterface
+public class SimpleQuerier implements Querier
 {
 	/*---------------------------------------------------------------------*/
 
@@ -27,14 +27,14 @@ public class BasicQuerier implements QuerierInterface
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicQuerier(String catalog) throws Exception
+	public SimpleQuerier(String catalog) throws Exception
 	{
 		m_driver = CatalogSingleton.getConnection(catalog);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public BasicQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public SimpleQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass);
 	}

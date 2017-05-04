@@ -9,7 +9,7 @@ import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
-public abstract class AbstractDriver implements QuerierInterface
+public abstract class AbstractDriver implements Querier
 {
 	/*---------------------------------------------------------------------*/
 

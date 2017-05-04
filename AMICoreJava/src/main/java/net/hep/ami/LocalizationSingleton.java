@@ -89,7 +89,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void fill(QuerierInterface querier) throws Exception
+	public static void fill(Querier querier) throws Exception
 	{
 		final BigInteger ONE = BigInteger.valueOf(1);
 		final BigInteger TWO = BigInteger.valueOf(2);
@@ -243,7 +243,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Localization localizeIP(QuerierInterface querier, String ip) throws Exception
+	public static Localization localizeIP(Querier querier, String ip) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* PARSE IP                                                        */

@@ -203,13 +203,13 @@ public class Setup extends HttpServlet
 
 		/*-----------------------------------------------------------------*/
 
-		BasicQuerier basicQuerier = null;
+		SimpleQuerier basicQuerier = null;
 		BufferedWriter bufferedWriter = null;
 		StringBuilder stringBuilder = new StringBuilder();
 
 		try
 		{
-			basicQuerier = new BasicQuerier("self", jdbc_url, router_user, router_pass);
+			basicQuerier = new SimpleQuerier("self", jdbc_url, router_user, router_pass);
 
 			bufferedWriter = new BufferedWriter(new FileWriter(fileName));
 
