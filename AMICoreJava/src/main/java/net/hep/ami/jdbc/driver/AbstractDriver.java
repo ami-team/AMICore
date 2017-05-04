@@ -136,10 +136,6 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract FieldType amiTypeToJDBCType(FieldType fieldType) throws Exception;
-
-	/*---------------------------------------------------------------------*/
-
 	public abstract String patch(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/

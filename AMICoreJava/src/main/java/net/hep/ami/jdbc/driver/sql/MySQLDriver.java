@@ -29,14 +29,6 @@ public class MySQLDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType amiTypeToJDBCType(FieldType fieldType) throws Exception
-	{
-		return fieldType;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public String patch(String sql) throws Exception
 	{
 		return sql;
