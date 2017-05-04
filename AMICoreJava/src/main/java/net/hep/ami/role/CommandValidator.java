@@ -1,18 +1,15 @@
 package net.hep.ami.role;
 
+import java.util.*;
+
 @FunctionalInterface
-public interface NewUserValidatorInterface
+public interface CommandValidator
 {
 	/*---------------------------------------------------------------------*/
 
 	public boolean check(
-		String amiLogin,
-		String amiPassword,
-		String clientDN,
-		String issuerDN,
-		String firstName,
-		String lastName,
-		String email
+		String command,
+		Map<String, String> arguments
 
 	)  throws Exception;
 

@@ -11,8 +11,8 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<CommandValidatorInterface>> s_roleValidators = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final Map<String, Class<NewUserValidatorInterface>> s_userValidators = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Class<CommandValidator>> s_roleValidators = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Class<NewUserValidator>> s_userValidators = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -70,18 +70,18 @@ public class RoleSingleton
 		/* ADD COMMAND VALIDATOR                                           */
 		/*-----------------------------------------------------------------*/
 
-		/**/ if(ClassSingleton.extendsClass(clazz, CommandValidatorInterface.class))
+		/**/ if(ClassSingleton.extendsClass(clazz, CommandValidator.class))
 		{
-			s_roleValidators.put(clazz.getName(), (Class<CommandValidatorInterface>) clazz);
+			s_roleValidators.put(clazz.getName(), (Class<CommandValidator>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* ADD NEW USER VALIDATOR                                          */
 		/*-----------------------------------------------------------------*/
 
-		else if(ClassSingleton.extendsClass(clazz, NewUserValidatorInterface.class))
+		else if(ClassSingleton.extendsClass(clazz, NewUserValidator.class))
 		{
-			s_userValidators.put(clazz.getName(), (Class<NewUserValidatorInterface>) clazz);
+			s_userValidators.put(clazz.getName(), (Class<NewUserValidator>) clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -331,7 +331,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<CommandValidatorInterface> clazz = s_roleValidators.get(validator);
+		Class<CommandValidator> clazz = s_roleValidators.get(validator);
 
 		if(clazz == null)
 		{
@@ -374,7 +374,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<NewUserValidatorInterface> clazz = s_userValidators.get(validator);
+		Class<NewUserValidator> clazz = s_userValidators.get(validator);
 
 		if(clazz == null)
 		{
