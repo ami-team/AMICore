@@ -39,7 +39,12 @@ public class TextFile
 
 		try
 		{
-			stringBuilder.append(bufferedReader.readLine());
+			String s = bufferedReader.readLine();
+
+			if(s != null)
+			{
+				stringBuilder.append(s);
+			}
 		}
 		finally
 		{
@@ -55,7 +60,12 @@ public class TextFile
 
 		try
 		{
-			bufferedWriter.write(stringBuilder.toString());
+			String s = stringBuilder.toString();
+
+			if(!s.isEmpty())
+			{
+				bufferedWriter.write(s);
+			}
 		}
 		finally
 		{

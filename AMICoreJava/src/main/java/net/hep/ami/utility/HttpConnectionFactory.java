@@ -34,7 +34,7 @@ public class HttpConnectionFactory
 
 				if(socketFactory == null)
 				{
-					throw new Exception("Could not initialize connection");
+					throw new Exception("could not initialize connection");
 				}
 			}
 
