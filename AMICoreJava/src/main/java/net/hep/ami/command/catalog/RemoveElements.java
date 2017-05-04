@@ -46,7 +46,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier(catalog);
+		Querier querier = getQuerier(catalog);
 
 		/*-----------------------------------------------------------------*/
 
@@ -111,7 +111,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		transactionalQuerier.executeUpdate(sql);
+		querier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

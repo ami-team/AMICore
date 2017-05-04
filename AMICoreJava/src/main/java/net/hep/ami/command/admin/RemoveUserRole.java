@@ -31,7 +31,7 @@ public class RemoveUserRole extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier("self");
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 		/* GET USER ID                                                     */
@@ -41,7 +41,7 @@ public class RemoveUserRole extends AbstractCommand
 			user.replace("'", "''")
 		);
 
-		List<Row> rowList1 = transactionalQuerier.executeQuery(sql1).getAll();
+		List<Row> rowList1 = querier.executeQuery(sql1).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -58,7 +58,7 @@ public class RemoveUserRole extends AbstractCommand
 			role.replace("'", "''")
 		);
 
-		List<Row> rowList2 = transactionalQuerier.executeQuery(sql2).getAll();
+		List<Row> rowList2 = querier.executeQuery(sql2).getAll();
 
 		if(rowList2.size() != 1)
 		{
@@ -76,7 +76,7 @@ public class RemoveUserRole extends AbstractCommand
 			roleID
 		);
 
-		int nb = transactionalQuerier.executeUpdate(sql3);
+		int nb = querier.executeUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 

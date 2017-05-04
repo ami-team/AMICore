@@ -28,7 +28,7 @@ public class RemoveUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier("self");
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 
@@ -36,7 +36,7 @@ public class RemoveUser extends AbstractCommand
 			amiLogin.replace("'", "''")
 		);
 
-		int nb = transactionalQuerier.executeUpdate(sql);
+		int nb = querier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

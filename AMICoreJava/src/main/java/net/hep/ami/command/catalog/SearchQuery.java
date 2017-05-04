@@ -29,7 +29,9 @@ public class SearchQuery extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		TransactionalQuerier transactionalQuerier = getQuerier(catalog);
+		/*-----------------------------------------------------------------*/
+
+		Querier querier = getQuerier(catalog);
 
 		/*-----------------------------------------------------------------*/
 
@@ -37,11 +39,11 @@ public class SearchQuery extends AbstractCommand
 
 		if(sql != null)
 		{
-			queryResult = transactionalQuerier.executeQuery(sql);
+			queryResult = querier.executeQuery(sql);
 		}
 		else
 		{
-			queryResult = transactionalQuerier.executeMQLQuery(glite);
+			queryResult = querier.executeMQLQuery(glite);
 		}
 
 		/*-----------------------------------------------------------------*/

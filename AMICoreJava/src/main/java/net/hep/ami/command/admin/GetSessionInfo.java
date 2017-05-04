@@ -42,13 +42,13 @@ public class GetSessionInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier("self");
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = transactionalQuerier.executeQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')").getAll();
+		List<Row> rowList = querier.executeQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')").getAll();
 
 		if(rowList.isEmpty())
 		{
@@ -107,7 +107,7 @@ public class GetSessionInfo extends AbstractCommand
 				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='1' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
 			}
 
-			if(transactionalQuerier.executeUpdate(sql) != 1)
+			if(querier.executeUpdate(sql) != 1)
 			{
 				throw new Exception("wrong authentication");
 			}
@@ -135,7 +135,7 @@ public class GetSessionInfo extends AbstractCommand
 				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='0' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
 			}
 
-			if(transactionalQuerier.executeUpdate(sql) != 1)
+			if(querier.executeUpdate(sql) != 1)
 			{
 				throw new Exception("wrong authentication");
 			}
@@ -145,7 +145,7 @@ public class GetSessionInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = transactionalQuerier.executeQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
+		RowSet rowSet2 = querier.executeQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
 
 		/*-----------------------------------------------------------------*/
 

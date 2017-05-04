@@ -22,7 +22,7 @@ public class FindCommands extends AbstractCommand
 	{
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier("self");
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 
@@ -30,7 +30,7 @@ public class FindCommands extends AbstractCommand
 
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
-			if(CommandSingleton.registerCommand(transactionalQuerier, className))
+			if(CommandSingleton.registerCommand(querier, className))
 			{
 				commands.add(className);
 			}

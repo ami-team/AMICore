@@ -61,7 +61,7 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier("self");
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 
@@ -79,7 +79,7 @@ public class AddUser extends AbstractCommand
 			email.replace("'", "''")
 		);
 
-		int nb = transactionalQuerier.executeUpdate(sql);
+		int nb = querier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

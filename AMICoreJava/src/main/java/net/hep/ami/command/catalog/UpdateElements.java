@@ -54,7 +54,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier(catalog);
+		Querier querier = getQuerier(catalog);
 
 		/*-----------------------------------------------------------------*/
 
@@ -142,7 +142,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		transactionalQuerier.executeUpdate(sql);
+		querier.executeUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

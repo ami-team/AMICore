@@ -2,8 +2,8 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.TransactionalQuerier;
 
 public class GetUserStats extends AbstractCommand
 {
@@ -23,15 +23,15 @@ public class GetUserStats extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		TransactionalQuerier transactionalQuerier = getQuerier("self");
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(transactionalQuerier.executeQuery("SELECT (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=1) AS `valid`, (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=0) AS `invalid`").toStringBuilder("users"));
+		result.append(querier.executeQuery("SELECT (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=1) AS `valid`, (SELECT COUNT(`id`) FROM `router_user` WHERE `valid`=0) AS `invalid`").toStringBuilder("users"));
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(transactionalQuerier.executeQuery("SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid`=1 GROUP BY `country`").toStringBuilder("countries"));
+		result.append(querier.executeQuery("SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid`=1 GROUP BY `country`").toStringBuilder("countries"));
 
 		/*-----------------------------------------------------------------*/
 
