@@ -4,18 +4,18 @@ import java.io.*;
 
 import net.hep.ami.*;
 
-public class RouterBuilder extends SimpleQuerier
+public class Router extends SimpleQuerier
 {
 	/*---------------------------------------------------------------------*/
 
-	public RouterBuilder(String catalog) throws Exception
+	public Router(String catalog) throws Exception
 	{
 		super(catalog);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public RouterBuilder(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public Router(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(catalog, jdbcUrl, user, pass);
 	}
@@ -49,7 +49,7 @@ public class RouterBuilder extends SimpleQuerier
 		/* GET INPUT STREAM                                                */
 		/*-----------------------------------------------------------------*/
 
-		InputStream inputStream = RouterBuilder.class.getResourceAsStream(path);
+		InputStream inputStream = Router.class.getResourceAsStream(path);
 
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE SQL QUERIES                                             */
