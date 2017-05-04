@@ -45,7 +45,7 @@ public class CommandSingleton
 
 	static
 	{
-		CommandSingleton.reload();
+		reload();
 	}
 
 	/*---------------------------------------------------------------------*/

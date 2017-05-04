@@ -56,14 +56,7 @@ public class LogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	static
-	{
-		LogSingleton.reload();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void reload()
+	public static void reset()
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -76,7 +69,9 @@ public class LogSingleton
 		for(Logger logger: context.getLoggerList())
 		{
 			logger.setLevel(
-				level
+				logger.getName().startsWith("com.zaxxer.hikari") ? Level
+				                                                     .WARN
+				                                                 : level
 			);
 		}
 

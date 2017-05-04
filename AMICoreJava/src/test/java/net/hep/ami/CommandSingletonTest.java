@@ -17,6 +17,7 @@ public class CommandSingletonTest
 
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");
+//		LogSingleton.root.info("Hello World!");
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
 

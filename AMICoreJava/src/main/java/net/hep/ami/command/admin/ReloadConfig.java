@@ -20,15 +20,14 @@ public class ReloadConfig extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		LogSingleton.reload();
 		ConfigSingleton.reload();
 		ConverterSingleton.reload();
 
-		RoleSingleton.reload();
-		CommandSingleton.reload();
-
 		DriverSingleton.reload();
 		CatalogSingleton.reload();
+
+		RoleSingleton.reload();
+		CommandSingleton.reload();
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
