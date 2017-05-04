@@ -42,7 +42,7 @@ public class RouterBuilder extends SimpleQuerier
 			path = "/sql/postgresql.sql";
 		}
 		else {
-			throw new Exception("...");
+			throw new Exception("only `mysql`, `oracle` and `postgresql` are supported");
 		}
 
 		/*-----------------------------------------------------------------*/
