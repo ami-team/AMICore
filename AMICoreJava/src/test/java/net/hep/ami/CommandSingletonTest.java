@@ -49,8 +49,6 @@ public class CommandSingletonTest
 
 			router.commitAndRelease();
 
-			System.out.println("done.");
-
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 

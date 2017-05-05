@@ -17,9 +17,9 @@ DROP TABLE IF EXISTS `router_config`;
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_config` (
-  `id` INT(11),
-  `paramName` VARCHAR(128),
-  `paramValue` VARCHAR(512)
+  `id` INT(11) NOT NULL,
+  `paramName` VARCHAR(128) NOT NULL,
+  `paramValue` VARCHAR(512) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -28,17 +28,17 @@ ALTER TABLE `router_config`
   ADD CONSTRAINT `uk1_router_config` UNIQUE KEY (`paramName`)
 ;
 
-ALTER TABLE `router_config` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_config` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_catalog` (
-  `id` INT(11),
-  `catalog` VARCHAR(128),
-  `jdbcUrl` VARCHAR(512),
-  `user` VARCHAR(128),
-  `pass` VARCHAR(128),
-  `archived` INT(1) DEFAULT '0',
+  `id` INT(11) NOT NULL,
+  `catalog` VARCHAR(128) NOT NULL,
+  `jdbcUrl` VARCHAR(512) NOT NULL,
+  `user` VARCHAR(128) NOT NULL,
+  `pass` VARCHAR(128) NOT NULL,
+  `archived` INT(1) NOT NULL DEFAULT '0',
   `jsonSerialization` TEXT
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
@@ -48,14 +48,14 @@ ALTER TABLE `router_catalog`
   ADD CONSTRAINT `uk1_router_catalog` UNIQUE KEY (`catalog`)
 ;
 
-ALTER TABLE `router_catalog` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_catalog` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_converter` (
-  `id` INT(11),
-  `xslt` VARCHAR(128),
-  `mime` VARCHAR(128)
+  `id` INT(11) NOT NULL,
+  `xslt` VARCHAR(128) NOT NULL,
+  `mime` VARCHAR(128) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -64,15 +64,15 @@ ALTER TABLE `router_converter`
   ADD CONSTRAINT `uk1_router_converter` UNIQUE KEY (`xslt`)
 ;
 
-ALTER TABLE `router_converter` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_converter` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_role` (
-  `id` INT(11),
-  `lft` INT(11),
-  `rgt` INT(11),
-  `role` VARCHAR(128),
+  `id` INT(11) NOT NULL,
+  `lft` INT(11) NOT NULL,
+  `rgt` INT(11) NOT NULL,
+  `role` VARCHAR(128) NOT NULL,
   `roleValidatorClass` VARCHAR(256)
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
@@ -82,14 +82,14 @@ ALTER TABLE `router_role`
   ADD CONSTRAINT `uk1_router_role` UNIQUE KEY (`role`)
 ;
 
-ALTER TABLE `router_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_role` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_command` (
-  `id` INT(11),
-  `command` VARCHAR(128),
-  `class` VARCHAR(256)
+  `id` INT(11) NOT NULL,
+  `command` VARCHAR(128) NOT NULL,
+  `class` VARCHAR(256) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -98,14 +98,14 @@ ALTER TABLE `router_command`
   ADD CONSTRAINT `uk1_router_command` UNIQUE KEY (`command`)
 ;
 
-ALTER TABLE `router_command` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_command` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_command_role` (
-  `id` INT(11),
-  `commandFK` INT(11),
-  `roleFK` INT(11)
+  `id` INT(11) NOT NULL,
+  `commandFK` INT(11) NOT NULL,
+  `roleFK` INT(11) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -116,21 +116,21 @@ ALTER TABLE `router_command_role`
   ADD CONSTRAINT `fk2_router_command_role` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `router_command_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_command_role` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_user` (
-  `id` INT(11),
-  `AMIUser` VARCHAR(128),
-  `AMIPass` VARCHAR(128),
-  `clientDN` VARCHAR(512),
-  `issuerDN` VARCHAR(512),
-  `firstName` VARCHAR(128),
-  `lastName` VARCHAR(128),
+  `id` INT(11) NOT NULL,
+  `AMIUser` VARCHAR(128) NOT NULL,
+  `AMIPass` VARCHAR(128) NOT NULL,
+  `clientDN` VARCHAR(512) NOT NULL,
+  `issuerDN` VARCHAR(512) NOT NULL,
+  `firstName` VARCHAR(128) NOT NULL,
+  `lastName` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128),
   `country` VARCHAR(128),
-  `valid` INT(1) DEFAULT '1'
+  `valid` INT(1) NOT NULL DEFAULT '1'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -139,14 +139,14 @@ ALTER TABLE `router_user`
   ADD CONSTRAINT `uk1_router_user` UNIQUE KEY (`AMIUser`)
 ;
 
-ALTER TABLE `router_user` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_user` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_user_role` (
-  `id` INT(11),
-  `userFK` INT(11),
-  `roleFK` INT(11)
+  `id` INT(11) NOT NULL,
+  `userFK` INT(11) NOT NULL,
+  `roleFK` INT(11) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -157,16 +157,16 @@ ALTER TABLE `router_user_role`
   ADD CONSTRAINT `fk2_router_user_role` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `router_user_role` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_user_role` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_search_interface` (
-  `id` INT(11),
-  `interface` VARCHAR(128),
-  `catalog` VARCHAR(128),
-  `entity` VARCHAR(128),
-  `archived` INT(1) DEFAULT '0'
+  `id` INT(11) NOT NULL,
+  `interface` VARCHAR(128) NOT NULL,
+  `catalog` VARCHAR(128) NOT NULL,
+  `entity` VARCHAR(128) NOT NULL,
+  `archived` INT(1) NOT NULL DEFAULT '0'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -175,19 +175,19 @@ ALTER TABLE `router_search_interface`
   ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`interface`)
 ;
 
-ALTER TABLE `router_search_interface` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_search_interface` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_search_criteria` (
-  `id` INT(11),
-  `interfaceFK` INT(11),
-  `entity` VARCHAR(128),
-  `field` VARCHAR(128),
+  `id` INT(11) NOT NULL,
+  `interfaceFK` INT(11) NOT NULL,
+  `entity` VARCHAR(128) NOT NULL,
+  `field` VARCHAR(128) NOT NULL,
   `alias` VARCHAR(128) DEFAULT '',
-  `type` INT(11) DEFAULT '1',
-  `rank` INT(11) DEFAULT '0',
-  `mask` INT(11) DEFAULT '0'
+  `type` INT(11) NOT NULL DEFAULT '1',
+  `rank` INT(11) NOT NULL DEFAULT '0',
+  `mask` INT(11) NOT NULL DEFAULT '0'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -197,12 +197,12 @@ ALTER TABLE `router_search_criteria`
   ADD CONSTRAINT `fk1_router_search_criteria` FOREIGN KEY (`interfaceFK`) REFERENCES `router_search_interface` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `router_search_criteria` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_search_criteria` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_country_locations` (
-  `id` INT(11),
+  `id` INT(11) NOT NULL,
   `continentCode` VARCHAR(2),
   `countryCode` VARCHAR(2)
 
@@ -213,16 +213,16 @@ ALTER TABLE `router_country_locations`
   ADD CONSTRAINT `uk1_router_country_locations` UNIQUE KEY (`continentCode`, `countryCode`)
 ;
 
-ALTER TABLE `router_country_locations` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_country_locations` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_country_blocks_ipv4` (
-  `id` INT(11),
+  `id` INT(11) NOT NULL,
   `network` VARCHAR(32),
   `rangeBegin` DECIMAL(10, 0),
   `rangeEnd` DECIMAL(10, 0),
-  `geoFK` INT(11)
+  `geoFK` INT(11) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -232,16 +232,16 @@ ALTER TABLE `router_country_blocks_ipv4`
   ADD CONSTRAINT `fk1_router_country_blocks_ipv4` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `router_country_blocks_ipv4` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_country_blocks_ipv4` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_country_blocks_ipv6` (
-  `id` INT(11),
+  `id` INT(11) NOT NULL,
   `network` VARCHAR(64),
   `rangeBegin` DECIMAL(38, 0),
   `rangeEnd` DECIMAL(38, 0),
-  `geoFK` INT(11)
+  `geoFK` INT(11) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -251,6 +251,6 @@ ALTER TABLE `router_country_blocks_ipv6`
   ADD CONSTRAINT `fk1_router_country_blocks_ipv6` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `router_country_blocks_ipv6` MODIFY COLUMN `id` INT AUTO_INCREMENT;
+ALTER TABLE `router_country_blocks_ipv6` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------

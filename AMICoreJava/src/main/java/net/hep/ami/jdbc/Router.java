@@ -96,8 +96,10 @@ public class Router extends SimpleQuerier
 	public void fill() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* SELF                                                            */
+		/* CATALOGS                                                        */
 		/*-----------------------------------------------------------------*/
+
+		LogSingleton.root.info("Setup catalogs...");
 
 		executeUpdate(
 			"INSERT INTO `router_catalog` (`catalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES" +
@@ -106,8 +108,24 @@ public class Router extends SimpleQuerier
 		);
 
 		/*-----------------------------------------------------------------*/
+		/* CONVERTERS                                                      */
+		/*-----------------------------------------------------------------*/
+
+		LogSingleton.root.info("Setup converters...");
+
+		executeUpdate(
+			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
+			" ('/xslt/AMIXmlToText.xsl', 'text/plain')," +
+			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')," +
+			" ('/xslt/AMIXmlToJson.xsl', 'application/json')" +
+			";"
+		);
+
+		/*-----------------------------------------------------------------*/
 		/* ROLES                                                           */
 		/*-----------------------------------------------------------------*/
+
+		LogSingleton.root.info("Setup roles...");
 
 		executeUpdate(
 			"INSERT INTO `router_role` (`lft`, `rgt`, `role`) VALUES" +
@@ -119,6 +137,8 @@ public class Router extends SimpleQuerier
 		/*-----------------------------------------------------------------*/
 		/* USERS                                                           */
 		/*-----------------------------------------------------------------*/
+
+		LogSingleton.root.info("Setup users...");
 
 		String emptyDN = SecuritySingleton.encrypt("");
 
@@ -133,28 +153,26 @@ public class Router extends SimpleQuerier
 		/* COMMANDS                                                        */
 		/*-----------------------------------------------------------------*/
 
+		LogSingleton.root.info("Setup commands...");
+
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
 			CommandSingleton.registerCommand(this, className);
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CONVERTERS                                                      */
-		/*-----------------------------------------------------------------*/
-
-		executeUpdate(
-			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
-			" ('/xslt/AMIXmlToText.xsl', 'text/plain')," +
-			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')," +
-			" ('/xslt/AMIXmlToJson.xsl', 'application/json')" +
-			";"
-		);
-
-		/*-----------------------------------------------------------------*/
 		/* LOCALIZATION                                                    */
 		/*-----------------------------------------------------------------*/
 
+		LogSingleton.root.info("Setup localization...");
+
 		LocalizationSingleton.fill(this);
+
+		/*-----------------------------------------------------------------*/
+		/* DONE                                                            */
+		/*-----------------------------------------------------------------*/
+
+		LogSingleton.root.info("Done");
 
 		/*-----------------------------------------------------------------*/
 	}
