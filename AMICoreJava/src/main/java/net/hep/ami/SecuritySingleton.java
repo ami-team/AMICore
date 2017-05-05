@@ -109,11 +109,9 @@ public class SecuritySingleton
 	{
 		String line;
 
-		StringBuilder stringBuilder = null;
+		boolean append = false;
 
-		boolean appendPrivateKey = false;
-		boolean appendPublicKey = false;
-		boolean appendCertificate = false;
+		StringBuilder stringBuilder = null;
 
 		List<StringBuilder> privateKey = new ArrayList<>();
 		List<StringBuilder> publicKey = new ArrayList<>();
@@ -126,58 +124,44 @@ public class SecuritySingleton
 			while((line = bufferedReader.readLine()) != null)
 			{
 				/*---------------------------------------------------------*/
-				/* PRIVATE KEY                                             */
+
+				/**/ if(line.matches("-----BEGIN( | [^ ]+ )PRIVATE KEY-----")
+				        ||
+				        line.matches("-----BEGIN( | [^ ]+ )PUBLIC KEY-----")
+				        ||
+				        line.matches("-----BEGIN CERTIFICATE-----")
+				 ) {
+					stringBuilder = new StringBuilder();
+					append = true;
+				}
+
 				/*---------------------------------------------------------*/
 
-				/**/ if(line.matches("-----BEGIN( | [^ ]+ )PRIVATE KEY-----"))
-				{
-					stringBuilder = new StringBuilder();
-					appendPrivateKey = true;
-				}
 				else if(line.matches("-----END( | [^ ]+ )PRIVATE KEY-----"))
 				{
 					privateKey.add(stringBuilder);
-					appendPrivateKey = false;
-				}
-				else if(appendPrivateKey)
-				{
-					stringBuilder.append(line);
+					append = false;
 				}
 
 				/*---------------------------------------------------------*/
-				/* PUBLIC KEY                                              */
-				/*---------------------------------------------------------*/
 
-				else if(line.matches("-----BEGIN( | [^ ]+ )PUBLIC KEY-----"))
-				{
-					stringBuilder = new StringBuilder();
-					appendPublicKey = true;
-				}
 				else if(line.matches("-----END( | [^ ]+ )PUBLIC KEY-----"))
 				{
 					publicKey.add(stringBuilder);
-					appendPublicKey = false;
-				}
-				else if(appendPublicKey)
-				{
-					stringBuilder.append(line);
+					append = false;
 				}
 
 				/*---------------------------------------------------------*/
-				/* CERTIFICATE                                             */
-				/*---------------------------------------------------------*/
 
-				else if(line.equals("-----BEGIN CERTIFICATE-----"))
-				{
-					stringBuilder = new StringBuilder();
-					appendCertificate = true;
-				}
-				else if(line.equals("-----END CERTIFICATE-----"))
+				else if(line.matches("-----END CERTIFICATE-----"))
 				{
 					certificates.add(stringBuilder);
-					appendCertificate = false;
+					append = false;
 				}
-				else if(appendCertificate)
+
+				/*---------------------------------------------------------*/
+
+				else if(append)
 				{
 					stringBuilder.append(line);
 				}
@@ -622,9 +606,9 @@ public class SecuritySingleton
 
 		for(String part: parts)
 		{
-			if(part.equals("CN=limited proxy")
+			if("CN=limited proxy".equals(part)
 			   ||
-			   part.equals(/**/"CN=proxy"/**/)
+			   /**/"CN=proxy"/**/.equals(part)
 			 ) {
 				return true;
 			}

@@ -294,13 +294,13 @@ public class CommandSingleton
 			key = entry.getKey();
 			value = entry.getValue();
 
-			if(key.equals("AMIUser") == false
+			if("AMIUser".equals(key) == false
 			   &&
-			   key.equals("AMIPass") == false
+			   "AMIPass".equals(key) == false
 			   &&
-			   key.equals("clientDN") == false
+			   "clientDN".equals(key) == false
 			   &&
-			   key.equals("issuerDN") == false
+			   "issuerDN".equals(key) == false
 			 ) {
 				stringBuilder.append("<argument name=\"").append(key.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\" value=\"").append(value.replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")).append("\" />");
 			}
@@ -424,9 +424,9 @@ public class CommandSingleton
 
 		int idx, l;
 
-		String s = "";
-
 		String left, right;
+
+		StringBuilder stringBuilder = new StringBuilder();
 
 		for(String arg: args)
 		{
@@ -451,7 +451,9 @@ public class CommandSingleton
 				}
 			}
 
-			s += " " + arg;
+			stringBuilder.append(" ")
+			             .append(arg)
+			;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -460,7 +462,7 @@ public class CommandSingleton
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(s, false, -1));
+			System.out.println(CommandSingleton.executeCommand(stringBuilder.toString(), false, -1));
 
 			System.exit(0);
 		}

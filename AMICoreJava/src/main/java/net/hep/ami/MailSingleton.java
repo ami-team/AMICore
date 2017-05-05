@@ -45,11 +45,11 @@ public class MailSingleton
 		result.setProperty("mail.smtp.port", (port));
 		result.setProperty("mail.smtp.auth", "true");
 
-		/**/ if(mode.equalsIgnoreCase("ssl"))
+		/**/ if("ssl".equalsIgnoreCase(mode))
 		{
 			result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		}
-		else if(mode.equalsIgnoreCase("tls"))
+		else if("tls".equalsIgnoreCase(mode))
 		{
 			result.setProperty((("mail.smtp.starttls.enable")), ((((((((((((("true"))))))))))))));
 		}

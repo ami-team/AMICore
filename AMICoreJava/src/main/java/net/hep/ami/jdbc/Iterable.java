@@ -188,16 +188,16 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuffer getStringBuffer(RowSet rowSet) throws Exception
+	public static StringBuilder getStringBuilder(RowSet rowSet) throws Exception
 	{
 		return getStringBuffer(rowSet, Integer.MAX_VALUE, 0);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuffer getStringBuffer(RowSet rowSet, int limit, int offset) throws Exception
+	public static StringBuilder getStringBuffer(RowSet rowSet, int limit, int offset) throws Exception
 	{
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 

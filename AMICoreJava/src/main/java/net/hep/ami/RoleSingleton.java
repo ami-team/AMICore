@@ -119,7 +119,7 @@ public class RoleSingleton
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		if(insertAfter || isLeaf.equals("0"))
+		if(insertAfter || "0".equals(isLeaf))
 		{
 			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
 				parentLft
@@ -188,7 +188,7 @@ public class RoleSingleton
 		/* DELETE ROLE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(recursive || isLeaf.equals("0"))
+		if(recursive || "0".equals(isLeaf))
 		{
 			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` BETWEEN %s AND %s",
 				roleLft,
@@ -235,11 +235,11 @@ public class RoleSingleton
 	{
 		/*---------------------------------*/
 
-		if(command.equals("GetSessionInfo")
+		if("GetSessionInfo".equals(command)
 		   ||
-		   command.equals("ResetPassword")
+		   "ResetPassword".equals(command)
 		   ||
-		   command.equals("AddUser")
+		   "AddUser".equals(command)
 		 ) {
 			return;
 		}
@@ -346,7 +346,7 @@ public class RoleSingleton
 
 		try
 		{
-			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, validator, command);
+			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, command, arguments);
 		}
 		catch(Exception e)
 		{

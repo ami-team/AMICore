@@ -24,7 +24,7 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public PreparedStatement sqlPrepareStatement(String sql, @Nullable String columnNames[]) throws Exception;
+	public PreparedStatement sqlPrepareStatement(String sql, @Nullable String[] columnNames) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

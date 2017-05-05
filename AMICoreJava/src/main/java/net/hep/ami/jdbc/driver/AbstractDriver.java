@@ -228,7 +228,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql, @Nullable String columnNames[]) throws Exception
+	public PreparedStatement sqlPrepareStatement(String sql, String[] columnNames) throws Exception
 	{
 		try
 		{

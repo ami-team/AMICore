@@ -84,7 +84,7 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql, String columnNames[]) throws Exception
+	public PreparedStatement sqlPrepareStatement(String sql, String[] columnNames) throws Exception
 	{
 		return m_driver.sqlPrepareStatement(sql, columnNames);
 	}

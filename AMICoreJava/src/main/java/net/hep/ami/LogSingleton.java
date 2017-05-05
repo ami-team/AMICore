@@ -27,7 +27,7 @@ public class LogSingleton
 		@Override
 		protected void append(ILoggingEvent event)
 		{
-			if(event.getMarker() == FATAL)
+			if(FATAL.equals(event.getMarker()))
 			{
 				String title = "AMI FATAL ERROR - " + event.getLoggerName() + " :: " + event.getCallerData()[0].getClassName()
 				                                                            + " :: " + event.getCallerData()[0].getMethodName()

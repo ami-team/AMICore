@@ -469,7 +469,7 @@ public class parser
 
 			m_tables.add(unescapeTableName);
 
-			if(unescapeColumnName.equals("*"))
+			if("*".equals(unescapeColumnName))
 			{
 				/*---------------------------------------------------------*/
 
@@ -530,7 +530,7 @@ public class parser
 		}
 		catch(Exception e)
 		{
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage()); /* TODO */
 		}
 
 		return result;

@@ -179,7 +179,7 @@ public class RowSet
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
-			/**/ if(m_fieldTypes[i].equalsIgnoreCase("TIME"))
+			/**/ if("TIME".equalsIgnoreCase(m_fieldTypes[i]))
 			{
 				/*---------------------------------------------------------*/
 				/* TIME                                                    */
@@ -194,7 +194,7 @@ public class RowSet
 
 				/*---------------------------------------------------------*/
 			}
-			else if(m_fieldTypes[i].equalsIgnoreCase("DATE"))
+			else if("DATE".equalsIgnoreCase(m_fieldTypes[i]))
 			{
 				/*---------------------------------------------------------*/
 				/* DATE                                                    */
@@ -209,7 +209,7 @@ public class RowSet
 
 				/*---------------------------------------------------------*/
 			}
-			else if(m_fieldTypes[i].equalsIgnoreCase("TIMESTAMP"))
+			else if("TIMESTAMP".equalsIgnoreCase(m_fieldTypes[i]))
 			{
 				/*---------------------------------------------------------*/
 				/* TIMESTAMP                                               */

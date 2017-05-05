@@ -49,7 +49,7 @@ public class AutoJoinSingleton
 		{
 			joinKey = entry.getKey();
 
-			if(joinKey.equals("@") == false)
+			if("@".equals(joinKey) == false)
 			{
 				part1.append(joinKey + " ON (" + String.join(" AND ", entry.getValue()) + ")");
 			}

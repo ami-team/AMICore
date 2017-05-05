@@ -81,21 +81,21 @@ public class ConfigSingleton
 
 	private static boolean isReserved(String name)
 	{
-		return name.equals("host")
+		return "host".equals(name)
 		       ||
-		       name.equals("agent")
+		       "agent".equals(name)
 		       ||
-		       name.equals("admin_user")
+		       "admin_user".equals(name)
 		       ||
-		       name.equals("guest_user")
+		       "guest_user".equals(name)
 		       ||
-		       name.equals("encryption_key")
+		       "encryption_key".equals(name)
 		       ||
-		       name.equals("jdbc_url")
+		       "jdbc_url".equals(name)
 		       ||
-		       name.equals("router_user")
+		       "router_user".equals(name)
 		       ||
-		       name.equals("router_pass")
+		       "router_pass".equals(name)
 		;
 	}
 
@@ -422,13 +422,13 @@ public class ConfigSingleton
 		{
 			tmpValue = tmpValue.trim().toLowerCase();
 
-			result = tmpValue.equals("1")
+			result = "1".equals(tmpValue)
 			         ||
-			         tmpValue.equals("on")
+			         "on".equals(tmpValue)
 			         ||
-			         tmpValue.equals("yes")
+			         "yes".equals(tmpValue)
 			         ||
-			         tmpValue.equals("true")
+			         "true".equals(tmpValue)
 			;
 		}
 		else
@@ -566,13 +566,13 @@ public class ConfigSingleton
 		{
 			tmpValue = tmpValue.trim().toLowerCase();
 
-			result = tmpValue.equals("1")
+			result = "1".equals(tmpValue)
 			         ||
-			         tmpValue.equals("on")
+			         "on".equals(tmpValue)
 			         ||
-			         tmpValue.equals("yes")
+			         "yes".equals(tmpValue)
 			         ||
-			         tmpValue.equals("true")
+			         "true".equals(tmpValue)
 			;
 		}
 		else
