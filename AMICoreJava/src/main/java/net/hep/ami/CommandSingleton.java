@@ -166,7 +166,7 @@ public class CommandSingleton
 		Class<AbstractCommand> clazz = (Class<AbstractCommand>) Class.forName(className);
 
 		/*-----------------------------------------------------------------*/
-		/* ADD COMMAND                                                     */
+		/* REGISTER COMMAND                                                */
 		/*-----------------------------------------------------------------*/
 
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class))
@@ -182,10 +182,12 @@ public class CommandSingleton
 
 			return true;
 		}
+		else
+		{
+			return false;
+		}
 
 		/*-----------------------------------------------------------------*/
-
-		return false;
 	}
 
 	/*---------------------------------------------------------------------*/
