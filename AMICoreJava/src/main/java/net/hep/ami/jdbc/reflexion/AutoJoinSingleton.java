@@ -16,6 +16,23 @@ public class AutoJoinSingleton
 			from = _from;
 			where = _where;
 		}
+
+		public String toString()
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+
+			if(from.isEmpty() == false)
+			{
+				stringBuilder.append(" FROM").append(from);
+			}
+
+			if(where.isEmpty() == false)
+			{
+				stringBuilder.append(" WHERE").append(where);
+			}
+
+			return stringBuilder.toString();
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

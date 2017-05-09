@@ -8,6 +8,13 @@ public class Router extends SimpleQuerier
 {
 	/*---------------------------------------------------------------------*/
 
+	public Router() throws Exception
+	{
+		super("self");
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public Router(String catalog) throws Exception
 	{
 		super(catalog);
