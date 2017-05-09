@@ -80,16 +80,16 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean _resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, @Nullable String givenTable, @Nullable String givenValue, Set<String> done) throws Exception
+	private static boolean _resolveWithInnerJoins(Map<String, List<String>> joins, Set<String> done, String defaultCatalog, String defaultTable, String givenColumn, @Nullable String givenTable, @Nullable String givenValue) throws Exception
 	{
-		table = table.toLowerCase();
-		column = column.toLowerCase();
+		defaultTable = defaultTable.toLowerCase();
+		givenColumn = givenColumn.toLowerCase();
 
 		/*-----------------------------------------------------------------*/
 		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String key = table + '.' + column;
+		String key = defaultTable + '.' + givenColumn;
 
 		if(done.contains(key))
 		{
@@ -102,14 +102,14 @@ public class AutoJoinSingleton
 		/* GET COLUMNS AND FOREIGN KEYS                                    */
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(catalog, table);
-		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(catalog, table);
+		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(defaultCatalog, defaultTable);
+		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(defaultCatalog, defaultTable);
 
 		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column _column = columns.get(column);
+		SchemaSingleton.Column _column = columns.get(givenColumn);
 
 		if(_column == null)
 		{
@@ -122,7 +122,7 @@ public class AutoJoinSingleton
 			{
 				temp = new HashMap<>();
 
-				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, givenTable, givenValue, done))
+				if(_resolveWithInnerJoins(temp, done, defaultCatalog, frgnKey.pkTable, givenColumn, givenTable, givenValue))
 				{
 					/*-----------------------------------------------------*/
 					/* BUILD SQL JOIN                                      */
@@ -173,7 +173,7 @@ public class AutoJoinSingleton
 					/*-----------------------------------------------------*/
 
 					_getList(joins, "@").add(
-						"`" + _column.table + "`.`" + column + "`='" + givenValue.replace("'", "''") + "'"
+						"`" + _column.table + "`.`" + givenColumn + "`='" + givenValue.replace("'", "''") + "'"
 					);
 
 					/*-----------------------------------------------------*/
@@ -190,16 +190,16 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean _resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, @Nullable String givenTable, @Nullable String givenValue, Set<String> done) throws Exception
+	private static boolean _resolveWithNestedSelect(Map<String, List<String>> joins, Set<String> done, String defaultCatalog, String defaultTable, String givenColumn, @Nullable String givenTable, @Nullable String givenValue) throws Exception
 	{
-		table = table.toLowerCase();
-		column = column.toLowerCase();
+		defaultTable = defaultTable.toLowerCase();
+		givenColumn = givenColumn.toLowerCase();
 
 		/*-----------------------------------------------------------------*/
 		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String key = table + '.' + column;
+		String key = defaultTable + '.' + givenColumn;
 
 		if(done.contains(key))
 		{
@@ -212,14 +212,14 @@ public class AutoJoinSingleton
 		/* GET COLUMNS AND FOREIGN KEYS                                    */
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(catalog, table);
-		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(catalog, table);
+		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(defaultCatalog, defaultTable);
+		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(defaultCatalog, defaultTable);
 
 		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column _column = columns.get(column);
+		SchemaSingleton.Column _column = columns.get(givenColumn);
 
 		if(_column == null)
 		{
@@ -231,7 +231,7 @@ public class AutoJoinSingleton
 			{
 				temp = new HashMap<>();
 
-				if(_resolveWithInnerJoins(temp, catalog, frgnKey.pkTable, column, givenTable, givenValue, done))
+				if(_resolveWithInnerJoins(temp, done, defaultCatalog, frgnKey.pkTable, givenColumn, givenTable, givenValue))
 				{
 					/*-----------------------------------------------------*/
 					/* GET SQL JOINS                                       */
@@ -268,7 +268,7 @@ public class AutoJoinSingleton
 					/*-----------------------------------------------------*/
 
 					_getList(joins, "@").add(
-						"`" + _column.table + "`.`" + column + "`='" + givenValue.replace("'", "''") + "'"
+						"`" + _column.table + "`.`" + givenColumn + "`='" + givenValue.replace("'", "''") + "'"
 					);
 
 					/*-----------------------------------------------------*/
@@ -285,73 +285,73 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void resolveWithInnerJoins(Map<String, List<String>> joins, String catalog, String table, String column, @Nullable String givenValue) throws Exception
+	public static void resolveWithInnerJoins(Map<String, List<String>> joins, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
 	{
-		if(column.isEmpty() == false)
+		if(qid.isEmpty() == false)
 		{
 			Set<String> done = new HashSet<>();
 
-			String[] parts = column.split("\\.");
+			String[] parts = qid.split("\\.");
 
 			final int nb = parts.length;
 
 			/**/ if(nb == 1)
 			{
-				if(_resolveWithInnerJoins(joins, catalog, table, parts[0], ((null)), givenValue, done) == false)
+				if(_resolveWithInnerJoins(joins, done, defaultCatalog, defaultTable, parts[0].trim(), (((((null))))), givenValue) == false)
 				{
-					throw new Exception("could not resolve foreign key `" + column + "`");
+					throw new Exception("could not resolve foreign key `" + qid + "`");
 				}
 			}
 			else if(nb == 2)
 			{
-				if(_resolveWithInnerJoins(joins, catalog, table, parts[1], parts[0], givenValue, done) == false)
+				if(_resolveWithInnerJoins(joins, done, defaultCatalog, defaultTable, parts[1].trim(), parts[0].trim(), givenValue) == false)
 				{
-					throw new Exception("could not resolve foreign key `" + column + "`");
+					throw new Exception("could not resolve foreign key `" + qid + "`");
 				}
 			}
 			else
 			{
-				throw new Exception("could not parse column name `" + column + "`");
+				throw new Exception("could not parse column name `" + qid + "`");
 			}
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void resolveWithNestedSelect(Map<String, List<String>> joins, String catalog, String table, String column, @Nullable String givenValue) throws Exception
+	public static void resolveWithNestedSelect(Map<String, List<String>> joins, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
 	{
-		if(column.isEmpty() == false)
+		if(qid.isEmpty() == false)
 		{
 			Set<String> done = new HashSet<>();
 
-			String[] parts = column.split("\\.");
+			String[] parts = qid.split("\\.");
 
 			final int nb = parts.length;
 
 			/**/ if(nb == 1)
 			{
-				if(_resolveWithNestedSelect(joins, catalog, table, parts[0], ((null)), givenValue, done) == false)
+				if(_resolveWithNestedSelect(joins, done, defaultCatalog, defaultTable, parts[0].trim(), (((((null))))), givenValue) == false)
 				{
-					throw new Exception("could not resolve foreign key `" + column + "`");
+					throw new Exception("could not resolve foreign key `" + qid + "`");
 				}
 			}
 			else if(nb == 2)
 			{
-				if(_resolveWithNestedSelect(joins, catalog, table, parts[1], parts[0], givenValue, done) == false)
+				if(_resolveWithNestedSelect(joins, done, defaultCatalog, defaultTable, parts[1].trim(), parts[0].trim(), givenValue) == false)
 				{
-					throw new Exception("could not resolve foreign key `" + column + "`");
+					throw new Exception("could not resolve foreign key `" + qid + "`");
 				}
 			}
 			else
 			{
-				throw new Exception("could not parse column name `" + column + "`");
+				throw new Exception("could not parse column name `" + qid + "`");
 			}
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static SQLFieldValue resolveFieldValue(String catalog, String table, String column, @Nullable String givenValue) throws Exception
+	public static SQLFieldValue resolveFieldValue(String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */
@@ -359,7 +359,7 @@ public class AutoJoinSingleton
 
 		Map<String, List<String>> joins = new HashMap<>();
 
-		resolveWithNestedSelect(joins, catalog, table, column, givenValue);
+		resolveWithNestedSelect(joins, defaultCatalog, defaultTable, qid, givenValue);
 
 		/*-----------------------------------------------------------------*/
 		/* EXTRACT FIELD AND VALUE                                         */
