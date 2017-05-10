@@ -49,12 +49,16 @@ public class CommandSingletonTest
 
 			router.commitAndRelease();
 
-			Map<String, List<String>> joins = new LinkedHashMap<>();
-
-			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_user", "a.b", null);
-
+			Map<String, List<String>> joins;
+/*
+			joins = new LinkedHashMap<>();
+			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_criteria", "catalog", "foo");
 			System.out.println(joins);
-
+			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
+*/
+			joins = new LinkedHashMap<>();
+			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
+			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
 
 			//System.out.println(SchemaSingleton.getCatalogNames());

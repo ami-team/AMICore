@@ -30,27 +30,43 @@ public class SchemaSingleton
 			size = _size;
 			digits = _digits;
 		}
+
+		public String toString()
+		{
+			return "<" + type + "(" + size + "," + digits + ")>";
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static class FrgnKey
 	{
-		public final String catalog;
 		public final String name;
+		public final String fkInternalCatalog;
+		public final String fkCatalog;
 		public final String fkTable;
 		public final String fkColumn;
+		public final String pkInternalCatalog;
+		public final String pkCatalog;
 		public final String pkTable;
 		public final String pkColumn;
 
-		public FrgnKey(String _catalog, String _name, String _fkTable, String _fkColumn, String _pkTable, String _pkColumn)
+		public FrgnKey(String _name, String _fkInternalCatalog, String _fkCatalog, String _fkTable, String _fkColumn, String _pkInternalCatalog, String _pkCatalog, String _pkTable, String _pkColumn)
 		{
-			catalog = _catalog;
 			name = _name;
+			fkInternalCatalog = _fkInternalCatalog;
+			fkCatalog = _fkCatalog;
 			fkTable = _fkTable;
 			fkColumn = _fkColumn;
+			pkInternalCatalog = _pkInternalCatalog;
+			pkCatalog = _pkCatalog;
 			pkTable = _pkTable;
 			pkColumn = _pkColumn;
+		}
+
+		public String toString()
+		{
+			return "<" + fkCatalog + "." + fkTable + "." + fkColumn + "->" + pkCatalog + "." + pkTable + "." + pkColumn + ">";
 		}
 	}
 
@@ -260,30 +276,72 @@ public class SchemaSingleton
 		while(resultSet.next())
 		{
 			String name = resultSet.getString("FK_NAME");
-			String fktable = resultSet.getString("FKTABLE_NAME");
-			String fkcolumn = resultSet.getString("FKCOLUMN_NAME");
-			String pktable = resultSet.getString("PKTABLE_NAME");
-			String pkcolumn = resultSet.getString("PKCOLUMN_NAME");
+			String fkInternalCatalog = resultSet.getString("FKTABLE_CAT");
+			String fkTable = resultSet.getString("FKTABLE_NAME");
+			String fkColumn = resultSet.getString("FKCOLUMN_NAME");
+			String pkInternalCatalog = resultSet.getString("PKTABLE_CAT");
+			String pkTable = resultSet.getString("PKTABLE_NAME");
+			String pkColumn = resultSet.getString("PKCOLUMN_NAME");
 
-			if(name != null && fktable != null && fkcolumn != null && pktable != null && pkcolumn != null)
+			String fkCatalog;
+			String pkCatalog;
+
+			if(fkInternalCatalog == null)
+			{
+				fkInternalCatalog = internalCatalog;
+				fkCatalog = externalCatalog;
+			}
+			else
+			{
+				fkCatalog = s_internalCatalogToExternalCatalog.get(fkInternalCatalog);
+
+				if(fkCatalog == null)
+				{
+					fkCatalog = externalCatalog;
+				}
+			}
+
+			if(pkInternalCatalog == null)
+			{
+				pkInternalCatalog = internalCatalog;
+				pkCatalog = externalCatalog;
+			}
+			else
+			{
+				pkCatalog = s_internalCatalogToExternalCatalog.get(pkInternalCatalog);
+
+				if(pkCatalog == null)
+				{
+					pkCatalog = externalCatalog;
+				}
+			}
+
+			if(name != null && fkInternalCatalog != null && fkCatalog != null && fkTable != null && fkColumn != null && pkInternalCatalog != null && pkCatalog != null && pkTable != null && pkColumn != null)
 			{
 				name = name.toLowerCase();
-				fktable = fktable.toLowerCase();
-				fkcolumn = fkcolumn.toLowerCase();
-				pktable = pktable.toLowerCase();
-				pkcolumn = pkcolumn.toLowerCase();
+				fkInternalCatalog = fkInternalCatalog.toLowerCase();
+				fkCatalog = fkCatalog.toLowerCase();
+				fkTable = fkTable.toLowerCase();
+				fkColumn = fkColumn.toLowerCase();
+				pkInternalCatalog = pkInternalCatalog.toLowerCase();
+				pkCatalog = pkCatalog.toLowerCase();
+				pkTable = pkTable.toLowerCase();
+				pkColumn = pkColumn.toLowerCase();
 
-				Map<String, FrgnKey> frgnKey = s_frgnKeys.get(externalCatalog).get(fktable);
+				Map<String, FrgnKey> frgnKey = s_frgnKeys.get(externalCatalog).get(fkTable);
 
 				if(frgnKey != null)
 				{
-					frgnKey.put(fkcolumn, new FrgnKey(
-						externalCatalog,
+					frgnKey.put(fkColumn, new FrgnKey(
 						name,
-						fktable,
-						fkcolumn,
-						pktable,
-						pkcolumn
+						fkInternalCatalog,
+						fkCatalog,
+						fkTable,
+						fkColumn,
+						pkInternalCatalog,
+						pkCatalog,
+						pkTable,
+						pkColumn
 					));
 				}
 			}
@@ -512,13 +570,19 @@ public class SchemaSingleton
 					result.append(
 						"<row>"
 						+
-						"<field name=\"catalog\">" + frgnKey.catalog + "</field>"
-						+
 						"<field name=\"name\">" + frgnKey.name + "</field>"
+						+
+						"<field name=\"fkInternalCatalog\">" + frgnKey.fkInternalCatalog + "</field>"
+						+
+						"<field name=\"fkCatalog\">" + frgnKey.fkCatalog + "</field>"
 						+
 						"<field name=\"fkTable\">" + frgnKey.fkTable + "</field>"
 						+
-						"<field name=\"fkColumn\">" + frgnKey.fkColumn + "</field>"
+						"<field name=\"pkInternalCatalog\">" + frgnKey.pkInternalCatalog + "</field>"
+						+
+						"<field name=\"pkCatalog\">" + frgnKey.pkCatalog + "</field>"
+						+
+						"<field name=\"pkCatalog\">" + frgnKey.pkInternalCatalog + "</field>"
 						+
 						"<field name=\"pkTable\">" + frgnKey.pkTable + "</field>"
 						+
