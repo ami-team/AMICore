@@ -604,7 +604,7 @@ public class SchemaSingleton
 						+
 						"<field name=\"internalCatalog\">" + column.internalCatalog + "</field>"
 						+
-						"<field name=\"externalCatalog\">" + column.catalog + "</field>"
+						"<field name=\"catalog\">" + column.catalog + "</field>"
 						+
 						"<field name=\"table\">" + column.table + "</field>"
 						+
