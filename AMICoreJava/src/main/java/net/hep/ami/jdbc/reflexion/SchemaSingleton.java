@@ -1,7 +1,10 @@
 package net.hep.ami.jdbc.reflexion;
 
+import java.io.*;
 import java.sql.*;
 import java.util.*;
+
+import net.hep.ami.*;
 
 public class SchemaSingleton
 {
@@ -31,8 +34,10 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class Column
+	public static class Column implements Serializable
 	{
+		private static final long serialVersionUID = 9088165113864128126L;
+
 		public final String internalCatalog;
 		public final String catalog;
 		public final String table;
@@ -60,8 +65,10 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class FrgnKey
+	public static class FrgnKey implements Serializable
 	{
+		private static final long serialVersionUID = 7467966033785286381L;
+
 		public final String name;
 		public final String fkInternalCatalog;
 		public final String fkCatalog;
@@ -144,13 +151,23 @@ public class SchemaSingleton
 		   &&
 		   externalCatalog != null
 		 ) {
+			/*-------------------------------------------------------------*/
+
 			s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 			s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 
-			s_columns.put(externalCatalog, new CIHM<>());
-			s_frgnKeys.put(externalCatalog, new CIHM<>());
+			/*-------------------------------------------------------------*/
 
-			readMetaData(connection, internalCatalog, externalCatalog);
+			try
+			{
+				loadMetaDataFromFiles(externalCatalog);
+			}
+			catch(Exception e)
+			{
+				loadMetaDataFromDatabase(connection, internalCatalog, externalCatalog);
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 		else
 		{
@@ -160,10 +177,112 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readMetaData(Connection connection, String internalCatalog, String externalCatalog) throws Exception
+	@SuppressWarnings("unchecked")
+	private static void loadMetaDataFromFiles(String externalCatalog) throws Exception
+	{
+		ObjectInputStream objectInputStream;
+
+		/*-----------------------------------------------------------------*/
+
+		String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
+
+		/*-----------------------------------------------------------------*/
+
+		File file = new File(basePath);
+
+		if(file.exists() == false)
+		{
+			file.mkdirs();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_column.ser"));
+
+		try
+		{
+			s_columns.put(externalCatalog, (Map<String, Map<String, Column>>) objectInputStream.readObject());
+		}
+		finally
+		{
+			objectInputStream.close();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkey.ser"));
+
+		try
+		{
+			s_frgnKeys.put(externalCatalog, (Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
+		}
+		finally
+		{
+			objectInputStream.close();
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void saveMetaDataToFiles(String externalCatalog) throws Exception
+	{
+		ObjectOutputStream objectOutputStream;
+
+		/*-----------------------------------------------------------------*/
+
+		String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
+
+		/*-----------------------------------------------------------------*/
+
+		File file = new File(basePath);
+
+		if(file.exists() == false)
+		{
+			file.mkdirs();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_column.ser"));
+
+		try
+		{
+			objectOutputStream.writeObject(s_columns.get(externalCatalog));
+		}
+		finally
+		{
+			objectOutputStream.close();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_frgnkey.ser"));
+
+		try
+		{
+			objectOutputStream.writeObject(s_frgnKeys.get(externalCatalog));
+		}
+		finally
+		{
+			objectOutputStream.close();
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static void loadMetaDataFromDatabase(Connection connection, String internalCatalog, String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* INITIALIZE STRUCTURES                                           */
+		/*-----------------------------------------------------------------*/
+
+		s_columns.put(externalCatalog, new CIHM<>());
+		s_frgnKeys.put(externalCatalog, new CIHM<>());
+
 		/*-----------------------------------------------------------------*/
 
 		long t1 = System.currentTimeMillis();
@@ -212,6 +331,10 @@ public class SchemaSingleton
 		long t2 = System.currentTimeMillis();
 
 		s_executionTime += t2 - t1;
+
+		/*-----------------------------------------------------------------*/
+
+		saveMetaDataToFiles(externalCatalog);
 
 		/*-----------------------------------------------------------------*/
 		/* READ METADATA DICTIONNARY                                       */
@@ -394,56 +517,6 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getColumnNames(String catalog, String table) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		Map<String, Map<String, Column>> map1 = s_columns.get(catalog);
-
-		if(map1 != null)
-		{
-			Map<String, Column> map2 = map1.get(table);
-
-			if(map2 != null)
-			{
-				return map2.keySet();
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static Set<String> getFrgnKeyNames(String catalog, String table) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		Map<String, Map<String, FrgnKey>> map1 = s_frgnKeys.get(catalog);
-
-		if(map1 != null)
-		{
-			Map<String, FrgnKey> map2 = map1.get(table);
-
-			if(map2 != null)
-			{
-				return map2.keySet();
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static Map<String, Column> getColumns(String catalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -490,6 +563,20 @@ public class SchemaSingleton
 		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Set<String> getColumnNames(String catalog, String table) throws Exception
+	{
+		return getColumns(catalog, table).keySet();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Set<String> getFrgnKeyNames(String catalog, String table) throws Exception
+	{
+		return getFrgnKeys(catalog, table).keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
