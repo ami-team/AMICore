@@ -397,7 +397,7 @@ public class SchemaSingleton
 
 	public static Set<String> getCatalogNames()
 	{
-		return null;
+		return s_externalCatalogToInternalCatalog.keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
