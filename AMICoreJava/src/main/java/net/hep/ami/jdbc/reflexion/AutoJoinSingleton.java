@@ -132,7 +132,7 @@ public class AutoJoinSingleton
 		/*-----------------------------------------------------------------*/
 
 		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(givenCatalog, givenTable);
-		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(givenCatalog, givenTable);
+		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFrgnKeys(givenCatalog, givenTable);
 
 		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */
@@ -246,7 +246,7 @@ public class AutoJoinSingleton
 		/*-----------------------------------------------------------------*/
 
 		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(defaultCatalog, givenTable);
-		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(defaultCatalog, givenTable);
+		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFrgnKeys(defaultCatalog, givenTable);
 
 		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */

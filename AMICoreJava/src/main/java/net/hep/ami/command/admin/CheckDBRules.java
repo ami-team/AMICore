@@ -10,7 +10,7 @@ public class CheckDBRules extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern s_regex = Pattern.compile("[a-z][a-zA-Za-z0-9]*");
+	private static final Pattern s_regex = Pattern.compile("[a-z][a-z0-9]*");
 
 	/*---------------------------------------------------------------------*/
 
@@ -92,13 +92,13 @@ public class CheckDBRules extends AbstractCommand
 		{
 			for(String table: SchemaSingleton.getTableNames(catalog))
 			{
-				frgnKeys = SchemaSingleton.getFgnKeys(catalog, table).values();
+				frgnKeys = SchemaSingleton.getFrgnKeys(catalog, table).values();
 
 				total2 += frgnKeys.size();
 
 				for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 				{
-					if(frgnKey.fkColumn.endsWith("FK") == false)
+					if(frgnKey.fkColumn.endsWith("fk") == false)
 					{
 						result.append("Foreign key `").append(frgnKey.fkTable).append("`.`").append(frgnKey.fkColumn).append("` should be sufixed with 'FK'.\\n");
 					}

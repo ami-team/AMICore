@@ -455,6 +455,35 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static Set<String> getFrgnKeyNames(String catalog, String table) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		readMetaData(catalog);
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, Map<String, FrgnKey>> map1 = s_frgnKeys.get(catalog);
+
+		if(map1 != null)
+		{
+			Map<String, FrgnKey> map2 = map1.get(table);
+
+			if(map2 != null)
+			{
+				return map2.keySet();
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Map<String, Column> getColumns(String catalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -484,7 +513,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKey> getFgnKeys(String catalog, String table) throws Exception
+	public static Map<String, FrgnKey> getFrgnKeys(String catalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
