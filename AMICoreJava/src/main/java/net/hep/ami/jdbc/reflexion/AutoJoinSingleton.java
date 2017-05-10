@@ -222,10 +222,6 @@ public class AutoJoinSingleton
 
 	private static boolean _resolveWithNestedSelect(Map<String, List<String>> joins, Set<String> done, String defaultCatalog, String defaultTable, @Nullable String givenCatalog, @Nullable String givenTable, String givenColumn, @Nullable String givenValue) throws Exception
 	{
-		defaultCatalog = defaultCatalog.toLowerCase();
-		defaultTable = defaultTable.toLowerCase();
-		givenColumn = givenColumn.toLowerCase();
-
 		if(givenCatalog == null)
 		{
 			givenCatalog = defaultCatalog;
@@ -240,7 +236,7 @@ public class AutoJoinSingleton
 		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String key = defaultTable + '.' + givenColumn;
+		String key = (defaultTable + '.' + givenColumn).toLowerCase();
 
 		if(done.contains(key))
 		{
@@ -260,7 +256,7 @@ public class AutoJoinSingleton
 		/* RESOLVE JOINS                                                  */
 		/*----------------------------------------------------------------*/
 
-		SchemaSingleton.Column _column = columns.get(givenColumn);
+		SchemaSingleton.Column _column = columns.get(givenColumn.toLowerCase());
 
 		if(_column == null)
 		{

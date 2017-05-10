@@ -10,6 +10,30 @@ public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
 
+	public static class CIHM<U> extends LinkedHashMap<String, U>
+	{
+		private static final long serialVersionUID = -6586122357660827472L;
+
+		public CIHM()
+		{
+			super();
+		}
+
+		@Override
+		public U put(String key, U value)
+		{
+			return super.put(key.toLowerCase(), value);
+		}
+
+		@Override
+		public U get(Object key)
+		{
+			return super.get(key.toString().toLowerCase());
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static class Column
 	{
 		public final String internalCatalog;
@@ -72,17 +96,13 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Set<String> s_catalogs = new java.util.concurrent.ConcurrentSkipListSet<>();
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new CIHM<>();
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new CIHM<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new java.util.concurrent.ConcurrentHashMap<>();
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new CIHM<>();
+	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new CIHM<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -110,8 +130,6 @@ public class SchemaSingleton
 
 	public static void clear()
 	{
-		s_catalogs.clear();
-
 		s_internalCatalogToExternalCatalog.clear();
 		s_externalCatalogToInternalCatalog.clear();
 
@@ -129,13 +147,11 @@ public class SchemaSingleton
 		   &&
 		   externalCatalog != null
 		 ) {
-			s_catalogs.add(externalCatalog);
-
 			s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 			s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 
-			s_columns.put(externalCatalog, new HashMap<>());
-			s_frgnKeys.put(externalCatalog, new HashMap<>());
+			s_columns.put(externalCatalog, new CIHM<>());
+			s_frgnKeys.put(externalCatalog, new CIHM<>());
 		}
 		else
 		{
@@ -189,14 +205,19 @@ public class SchemaSingleton
 			/**/	{
 			/**/		String name = resultSet.getString("TABLE_NAME");
 			/**/
-			/**/		if(name != null && name.startsWith("db_") == false && name.startsWith("x_db_") == false)
+			/**/		if(name != null)
 			/**/		{
 			/**/			name = name.toLowerCase();
 			/**/
-			/**/			s_columns.get(externalCatalog).put(name, new LinkedHashMap<>());
-			/**/			s_frgnKeys.get(externalCatalog).put(name, new LinkedHashMap<>());
+			/**/			if(name.startsWith("db_") == false
+			/**/			   &&
+			/**/			   name.startsWith("x_db_") == false
+			/**/			 ) {
+			/**/				s_columns.get(externalCatalog).put(name, new CIHM<>());
+			/**/				s_frgnKeys.get(externalCatalog).put(name, new CIHM<>());
 			/**/
-			/**/			tables.add(name);
+			/**/				tables.add(name);
+			/**/			}
 			/**/		}
 			/**/	}
 			/**/
@@ -319,12 +340,8 @@ public class SchemaSingleton
 			if(name != null && fkInternalCatalog != null && fkCatalog != null && fkTable != null && fkColumn != null && pkInternalCatalog != null && pkCatalog != null && pkTable != null && pkColumn != null)
 			{
 				name = name.toLowerCase();
-				fkInternalCatalog = fkInternalCatalog.toLowerCase();
-				fkCatalog = fkCatalog.toLowerCase();
 				fkTable = fkTable.toLowerCase();
 				fkColumn = fkColumn.toLowerCase();
-				pkInternalCatalog = pkInternalCatalog.toLowerCase();
-				pkCatalog = pkCatalog.toLowerCase();
 				pkTable = pkTable.toLowerCase();
 				pkColumn = pkColumn.toLowerCase();
 
@@ -378,13 +395,6 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getCatalogNames()
-	{
-		return s_catalogs;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static Set<String> getTableNames(String catalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -421,7 +431,7 @@ public class SchemaSingleton
 
 		if(map1 != null)
 		{
-			Map<String, Column> map2 = map1.get(table.toLowerCase());
+			Map<String, Column> map2 = map1.get(table);
 
 			if(map2 != null)
 			{
@@ -450,7 +460,7 @@ public class SchemaSingleton
 
 		if(map1 != null)
 		{
-			Map<String, Column> map2 = map1.get(table.toLowerCase());
+			Map<String, Column> map2 = map1.get(table);
 
 			if(map2 != null)
 			{
@@ -479,7 +489,7 @@ public class SchemaSingleton
 
 		if(map1 != null)
 		{
-			Map<String, FrgnKey> map2 = map1.get(table.toLowerCase());
+			Map<String, FrgnKey> map2 = map1.get(table);
 
 			if(map2 != null)
 			{
@@ -499,20 +509,6 @@ public class SchemaSingleton
 	public static StringBuilder getDBSchemes()
 	{
 		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		for(String catalog: s_catalogs)
-		{
-			try
-			{
-				readMetaData(catalog);
-			}
-			catch(Exception e)
-			{
-				/* IGNORE */
-			}
-		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -578,11 +574,11 @@ public class SchemaSingleton
 						+
 						"<field name=\"fkTable\">" + frgnKey.fkTable + "</field>"
 						+
+						"<field name=\"fkColumn\">" + frgnKey.fkColumn + "</field>"
+						+
 						"<field name=\"pkInternalCatalog\">" + frgnKey.pkInternalCatalog + "</field>"
 						+
 						"<field name=\"pkCatalog\">" + frgnKey.pkCatalog + "</field>"
-						+
-						"<field name=\"pkCatalog\">" + frgnKey.pkInternalCatalog + "</field>"
 						+
 						"<field name=\"pkTable\">" + frgnKey.pkTable + "</field>"
 						+
