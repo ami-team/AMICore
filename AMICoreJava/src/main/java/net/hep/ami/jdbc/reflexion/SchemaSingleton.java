@@ -3,9 +3,6 @@ package net.hep.ami.jdbc.reflexion;
 import java.sql.*;
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.driver.*;
-
 public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -141,7 +138,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addSchema(String internalCatalog, String externalCatalog) throws Exception
+	public static void addSchema(Connection connection, String internalCatalog, String externalCatalog) throws Exception
 	{
 		if(internalCatalog != null
 		   &&
@@ -152,6 +149,8 @@ public class SchemaSingleton
 
 			s_columns.put(externalCatalog, new CIHM<>());
 			s_frgnKeys.put(externalCatalog, new CIHM<>());
+
+			readMetaData(connection, internalCatalog, externalCatalog);
 		}
 		else
 		{
@@ -161,85 +160,58 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readMetaData(String externalCatalog) throws Exception
+	private static void readMetaData(Connection connection, String internalCatalog, String externalCatalog) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
-		String internalCatalog = s_externalCatalogToInternalCatalog.get(externalCatalog);
-
-		if(internalCatalog == null)
-		{
-				return;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(s_columns.get(externalCatalog).isEmpty() == false
-		   ||
-		   s_frgnKeys.get(externalCatalog).isEmpty() == false
-		 ) {
-			return;
-		}
-
 		/*-----------------------------------------------------------------*/
 		/* INITIALIZE STRUCTURES                                           */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver driver1 = CatalogSingleton.getConnection(externalCatalog);
+		long t1 = System.currentTimeMillis();
 
-		try
-		{
-			long t1 = System.currentTimeMillis();
+		/**/	/*---------------------------------------------------------*/
+		/**/
+		/**/	DatabaseMetaData metaData = connection.getMetaData();
+		/**/
+		/**/	ResultSet resultSet = metaData.getTables(internalCatalog, internalCatalog, "%", null);
+		/**/
+		/**/	Set<String> tables = new HashSet<>();
+		/**/
+		/**/	/*---------------------------------------------------------*/
+		/**/
+		/**/	while(resultSet.next())
+		/**/	{
+		/**/		String name = resultSet.getString("TABLE_NAME");
+		/**/
+		/**/		if(name != null)
+		/**/		{
+		/**/			name = name.toLowerCase();
+		/**/
+		/**/			if(name.startsWith("db_") == false
+		/**/			   &&
+		/**/			   name.startsWith("x_db_") == false
+		/**/			 ) {
+		/**/				s_columns.get(externalCatalog).put(name, new CIHM<>());
+		/**/				s_frgnKeys.get(externalCatalog).put(name, new CIHM<>());
+		/**/
+		/**/				tables.add(name);
+		/**/			}
+		/**/		}
+		/**/	}
+		/**/
+		/**/	/*---------------------------------------------------------*/
+		/**/
+		/**/	readColumnMetaData(metaData, internalCatalog, externalCatalog, "%");
+		/**/
+		/**/	for(String name: tables)
+		/**/	{
+		/**/		readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
+		/**/	}
+		/**/
+		/**/	/*---------------------------------------------------------*/
 
-			/**/	/*-----------------------------------------------------*/
-			/**/
-			/**/	@SuppressWarnings("deprecation") DatabaseMetaData metaData = driver1.getConnection().getMetaData();
-			/**/
-			/**/	ResultSet resultSet = metaData.getTables(internalCatalog, internalCatalog, "%", null);
-			/**/
-			/**/	Set<String> tables = new HashSet<>();
-			/**/
-			/**/	/*-----------------------------------------------------*/
-			/**/
-			/**/	while(resultSet.next())
-			/**/	{
-			/**/		String name = resultSet.getString("TABLE_NAME");
-			/**/
-			/**/		if(name != null)
-			/**/		{
-			/**/			name = name.toLowerCase();
-			/**/
-			/**/			if(name.startsWith("db_") == false
-			/**/			   &&
-			/**/			   name.startsWith("x_db_") == false
-			/**/			 ) {
-			/**/				s_columns.get(externalCatalog).put(name, new CIHM<>());
-			/**/				s_frgnKeys.get(externalCatalog).put(name, new CIHM<>());
-			/**/
-			/**/				tables.add(name);
-			/**/			}
-			/**/		}
-			/**/	}
-			/**/
-			/**/	/*-----------------------------------------------------*/
-			/**/
-			/**/	readColumnMetaData(metaData, internalCatalog, externalCatalog, "%");
-			/**/
-			/**/	for(String name: tables)
-			/**/	{
-			/**/		readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
-			/**/	}
-			/**/
-			/**/	/*-----------------------------------------------------*/
+		long t2 = System.currentTimeMillis();
 
-			long t2 = System.currentTimeMillis();
-
-			s_executionTime += t2 - t1;
-		}
-		finally
-		{
-			driver1.rollbackAndRelease();
-		}
+		s_executionTime += t2 - t1;
 
 		/*-----------------------------------------------------------------*/
 		/* READ METADATA DICTIONNARY                                       */
@@ -406,10 +378,6 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		readMetaData(catalog);
-
-		/*-----------------------------------------------------------------*/
-
 		Map<String, Map<String, Column>> map = s_columns.get(catalog);
 
 		if(map != null)
@@ -428,10 +396,6 @@ public class SchemaSingleton
 
 	public static Set<String> getColumnNames(String catalog, String table) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
-		readMetaData(catalog);
-
 		/*-----------------------------------------------------------------*/
 
 		Map<String, Map<String, Column>> map1 = s_columns.get(catalog);
@@ -459,10 +423,6 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		readMetaData(catalog);
-
-		/*-----------------------------------------------------------------*/
-
 		Map<String, Map<String, FrgnKey>> map1 = s_frgnKeys.get(catalog);
 
 		if(map1 != null)
@@ -488,10 +448,6 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		readMetaData(catalog);
-
-		/*-----------------------------------------------------------------*/
-
 		Map<String, Map<String, Column>> map1 = s_columns.get(catalog);
 
 		if(map1 != null)
@@ -515,10 +471,6 @@ public class SchemaSingleton
 
 	public static Map<String, FrgnKey> getFrgnKeys(String catalog, String table) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
-		readMetaData(catalog);
-
 		/*-----------------------------------------------------------------*/
 
 		Map<String, Map<String, FrgnKey>> map1 = s_frgnKeys.get(catalog);
