@@ -395,6 +395,13 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static Set<String> getCatalogNames()
+	{
+		return null;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Set<String> getTableNames(String catalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
