@@ -101,7 +101,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Map<String, Map<String, Column >>> s_columns  = new java.util.concurrent.ConcurrentHashMap<>();
 	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/

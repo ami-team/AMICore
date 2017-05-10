@@ -104,10 +104,6 @@ public class AutoJoinSingleton
 
 	private static boolean _resolveWithInnerJoins(Map<String, List<String>> joins, Set<String> done, String defaultCatalog, String defaultTable, @Nullable String givenCatalog, @Nullable String givenTable, String givenColumn, @Nullable String givenValue) throws Exception
 	{
-		defaultCatalog = defaultCatalog.toLowerCase();
-		defaultTable = defaultTable.toLowerCase();
-		givenColumn = givenColumn.toLowerCase();
-
 		if(givenCatalog == null)
 		{
 			givenCatalog = defaultCatalog;
@@ -122,7 +118,7 @@ public class AutoJoinSingleton
 		/* CHECK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String key = defaultTable + '.' + givenColumn;
+		String key = (defaultTable + '.' + givenColumn).toLowerCase();
 
 		if(done.contains(key))
 		{
@@ -252,11 +248,11 @@ public class AutoJoinSingleton
 		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(defaultCatalog, givenTable);
 		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFgnKeys(defaultCatalog, givenTable);
 
-		/*----------------------------------------------------------------*/
-		/* RESOLVE JOINS                                                  */
-		/*----------------------------------------------------------------*/
+		/*-----------------------------------------------------------------*/
+		/* RESOLVE JOINS                                                   */
+		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column _column = columns.get(givenColumn.toLowerCase());
+		SchemaSingleton.Column _column = columns.get(givenColumn);
 
 		if(_column == null)
 		{
