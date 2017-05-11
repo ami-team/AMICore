@@ -5,11 +5,11 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-public class GetSchemes extends AbstractCommand
+public class GetSchemas extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetSchemes(Map<String, String> arguments, long transactionId)
+	public GetSchemas(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
