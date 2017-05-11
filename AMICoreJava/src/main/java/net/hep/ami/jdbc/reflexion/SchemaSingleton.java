@@ -156,14 +156,20 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
+			Map<String, Map<String, Column >> tmp1 = new CIHM<>();
+			Map<String, Map<String, FrgnKey>> tmp2 = new CIHM<>();
+
 			try
 			{
-				loadMetaDataFromFiles(s_columns, s_frgnKeys, externalCatalog);
+				loadSchemaFromFiles(tmp1, tmp2, externalCatalog);
 			}
 			catch(Exception e)
 			{
-				loadMetaDataFromDatabase(s_columns, s_frgnKeys, connection, internalCatalog, externalCatalog);
+				loadSchemaFromDatabase(tmp1, tmp2, connection, internalCatalog, externalCatalog);
 			}
+
+			s_columns.put(externalCatalog, tmp1);
+			s_frgnKeys.put(externalCatalog, tmp2);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -194,7 +200,13 @@ public class SchemaSingleton
 
 				try
 				{
-					SchemaSingleton.addSchema(driver.getConnection(), m_internalCatalog, m_externalCatalog);
+					Map<String, Map<String, Column >> tmp1 = new CIHM<>();
+					Map<String, Map<String, FrgnKey>> tmp2 = new CIHM<>();
+
+					loadSchemaFromDatabase(tmp1, tmp2, driver.getConnection(), m_internalCatalog, m_externalCatalog);
+
+					s_columns.put(m_externalCatalog, tmp1);
+					s_frgnKeys.put(m_externalCatalog, tmp2);
 				}
 				finally
 				{
@@ -220,9 +232,9 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void saveMetaDataToFiles(
-		Map<String, Map<String, Map<String, Column >>> columns ,
-		Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+	public static void saveSchemaToFiles(
+		Map<String, Map<String, Column >> tmp1,
+		Map<String, Map<String, FrgnKey>> tmp2,
 		String externalCatalog
 	 ) throws Exception {
 
@@ -247,7 +259,7 @@ public class SchemaSingleton
 
 		try
 		{
-			objectOutputStream.writeObject(columns.get(externalCatalog));
+			objectOutputStream.writeObject(tmp1);
 		}
 		finally
 		{
@@ -260,7 +272,7 @@ public class SchemaSingleton
 
 		try
 		{
-			objectOutputStream.writeObject(frgnKeys.get(externalCatalog));
+			objectOutputStream.writeObject(tmp2);
 		}
 		finally
 		{
@@ -272,9 +284,9 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void loadMetaDataFromFiles(
-		Map<String, Map<String, Map<String, Column >>> columns ,
-		Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+	private static void loadSchemaFromFiles(
+		Map<String, Map<String, Column >> tmp1,
+		Map<String, Map<String, FrgnKey>> tmp2,
 		String externalCatalog
 	 ) throws Exception {
 
@@ -299,7 +311,7 @@ public class SchemaSingleton
 
 		try
 		{
-			columns.put(externalCatalog, (Map<String, Map<String, Column>>) objectInputStream.readObject());
+			tmp1.putAll((Map<String, Map<String, Column>>) objectInputStream.readObject());
 		}
 		finally
 		{
@@ -312,7 +324,7 @@ public class SchemaSingleton
 
 		try
 		{
-			frgnKeys.put(externalCatalog, (Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
+			tmp2.putAll((Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
 		}
 		finally
 		{
@@ -324,9 +336,9 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void loadMetaDataFromDatabase(
-		Map<String, Map<String, Map<String, Column >>> columns ,
-		Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+	private static void loadSchemaFromDatabase(
+		Map<String, Map<String, Column >> tmp1,
+		Map<String, Map<String, FrgnKey>> tmp2,
 		Connection connection,
 		String internalCatalog,
 		String externalCatalog
@@ -334,11 +346,6 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 		/* INITIALIZE STRUCTURES                                           */
-		/*-----------------------------------------------------------------*/
-
-		Map<String, Map<String, Column >> tmp1 = new CIHM<>();
-		Map<String, Map<String, FrgnKey>> tmp2 = new CIHM<>();
-
 		/*-----------------------------------------------------------------*/
 
 		Set<String> tables = new HashSet<>();
@@ -371,25 +378,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		loadColumnMetaData(tmp1, metaData, internalCatalog, externalCatalog, "%");
+		loadColumnMetadata(tmp1, metaData, internalCatalog, externalCatalog, "%");
 
 		for(String name: tables)
 		{
-			loadFgnKeyMetaData(tmp2, metaData, internalCatalog, externalCatalog, name);
+			loadFgnKeyMetadata(tmp2, metaData, internalCatalog, externalCatalog, name);
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* SAVE SCHEMA TO FILES                                            */
 		/*-----------------------------------------------------------------*/
 
-		columns.put(externalCatalog, tmp1);
-		frgnKeys.put(externalCatalog, tmp2);
-
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
-
-		saveMetaDataToFiles(columns, frgnKeys, externalCatalog);
+		saveSchemaToFiles(tmp1, tmp2, externalCatalog);
 
 		/*-----------------------------------------------------------------*/
 		/* READ METADATA DICTIONNARY                                       */
@@ -402,7 +402,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void loadColumnMetaData(
+	private static void loadColumnMetadata(
 		Map<String, Map<String, Column>> tmp1,
 		DatabaseMetaData metaData,
 		String internalCatalog,
@@ -446,7 +446,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void loadFgnKeyMetaData(
+	private static void loadFgnKeyMetadata(
 		Map<String, Map<String, FrgnKey>> tmp2,
 		DatabaseMetaData metaData,
 		String internalCatalog,
@@ -553,7 +553,7 @@ public class SchemaSingleton
 
 	public static Set<String> getCatalogNames()
 	{
-		return s_externalCatalogToInternalCatalog.keySet();
+		return s_columns.keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
