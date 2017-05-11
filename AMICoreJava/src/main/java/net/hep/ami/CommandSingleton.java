@@ -24,7 +24,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_commands = new ConcurrentHashMap<>();
+	private static final Map<String, Tuple> s_commands = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 

@@ -23,7 +23,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_drivers = new ConcurrentHashMap<>();
+	private static final Map<String, Tuple> s_drivers = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 

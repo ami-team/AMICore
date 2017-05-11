@@ -22,7 +22,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_properties = new ConcurrentHashMap<>();
+	private static final Map<String, String> s_properties = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 

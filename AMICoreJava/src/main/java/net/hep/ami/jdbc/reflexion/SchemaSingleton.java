@@ -14,40 +14,6 @@ public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class CIHM<U> extends LinkedHashMap<String, U>
-	{
-		/*-----------------------------------------------------------------*/
-
-		private static final long serialVersionUID = -6586122357660827472L;
-
-		/*-----------------------------------------------------------------*/
-
-		public CIHM()
-		{
-			super();
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		@Override
-		public U put(String key, U value)
-		{
-			return super.put(key.toString().toLowerCase(), value);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		@Override
-		public U get(Object key)
-		{
-			return super.get(key.toString().toLowerCase());
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static class Column implements Serializable
 	{
 		private static final long serialVersionUID = 9088165113864128126L;
@@ -104,13 +70,13 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new ConcurrentHashMap<>();
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new ConcurrentHashMap<>();
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIHashMap<>();
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column >>> s_columns  = new ConcurrentHashMap<>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new ConcurrentHashMap<>();
+	private static final Map<String, Map<String, Map<String, Column >>> s_columns  = new AMIHashMap<>();
+	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -156,8 +122,8 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, Map<String, Column >> tmp1 = new CIHM<>();
-			Map<String, Map<String, FrgnKey>> tmp2 = new CIHM<>();
+			Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+			Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
 
 			try
 			{
@@ -200,8 +166,8 @@ public class SchemaSingleton
 
 				try
 				{
-					Map<String, Map<String, Column >> tmp1 = new CIHM<>();
-					Map<String, Map<String, FrgnKey>> tmp2 = new CIHM<>();
+					Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+					Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
 
 					loadSchemaFromDatabase(tmp1, tmp2, driver.getConnection(), m_internalCatalog, m_externalCatalog);
 
@@ -345,7 +311,7 @@ public class SchemaSingleton
 	 ) throws Exception {
 
 		/*-----------------------------------------------------------------*/
-		/* INITIALIZE STRUCTURES                                           */
+		/* INITIALIZE DATA STRUCTURES                                      */
 		/*-----------------------------------------------------------------*/
 
 		Set<String> tables = new HashSet<>();
@@ -368,14 +334,16 @@ public class SchemaSingleton
 				   &&
 				   name.startsWith("x_db_") == false
 				 ) {
-					tmp1.put(name, new CIHM<>());
-					tmp2.put(name, new CIHM<>());
+					tmp1.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
+					tmp2.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
 
 					tables.add(name);
 				}
 			}
 		}
 
+		/*-----------------------------------------------------------------*/
+		/* LOAD METADATA FROM DATABASE                                     */
 		/*-----------------------------------------------------------------*/
 
 		loadColumnMetadata(tmp1, metaData, internalCatalog, externalCatalog, "%");
@@ -390,12 +358,6 @@ public class SchemaSingleton
 		/*-----------------------------------------------------------------*/
 
 		saveSchemaToFiles(tmp1, tmp2, externalCatalog);
-
-		/*-----------------------------------------------------------------*/
-		/* READ METADATA DICTIONNARY                                       */
-		/*-----------------------------------------------------------------*/
-
-		/* TODO */
 
 		/*-----------------------------------------------------------------*/
 	}
