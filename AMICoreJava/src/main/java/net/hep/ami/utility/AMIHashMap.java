@@ -90,7 +90,7 @@ public class AMIHashMap<U> implements Map<String, U>, Serializable
 				break;
 
 			default:
-				throw new RuntimeException("invalid ap type");
+				throw new RuntimeException("invalid map type");
 		}
 	}
 

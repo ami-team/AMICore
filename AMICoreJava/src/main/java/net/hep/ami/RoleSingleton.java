@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
+import net.hep.ami.utility.*;
 
 /* Nested Set Model */
 
@@ -11,8 +12,8 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<CommandValidator>> s_roleValidators = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final Map<String, Class<NewUserValidator>> s_userValidators = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Class<CommandValidator>> s_roleValidators = new AMIHashMap<>();
+	private static final Map<String, Class<NewUserValidator>> s_userValidators = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -49,7 +50,7 @@ public class RoleSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "for validator `" + className + "`", e);
+				LogSingleton.root.error(LogSingleton.FATAL, "for validator `" + className + "`: " + e.getMessage(), e);
 			}
 		}
 	}

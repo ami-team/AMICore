@@ -50,7 +50,7 @@ public class CatalogSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add catalogs", e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add catalogs: " + e.getMessage(), e);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class CatalogSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, "for catalog `" + row.getValue(0) + "`", e);
+					LogSingleton.root.error(LogSingleton.FATAL, "for catalog `" + row.getValue(0) + "`: " + e.getMessage(), e);
 				}
 			}
 
@@ -109,10 +109,10 @@ public class CatalogSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* REBUILD SCHEMA CACHE IN BACKGROUND                              */
+		/* REBUILD SCHEMA CACHE                                            */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.rebuildSchemaCacheInBackground();
+		SchemaSingleton.rebuildSchemaCache();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -146,7 +146,7 @@ public class CatalogSingleton
 
 			try
 			{
-				SchemaSingleton.addSchema(connection, connection.getCatalog(), catalog);
+				SchemaSingleton.addSchema(connection, catalog);
 			}
 			finally
 			{
