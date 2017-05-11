@@ -122,8 +122,8 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
-			Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+			Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
+			Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
 
 			try
 			{
@@ -166,8 +166,8 @@ public class SchemaSingleton
 
 				try
 				{
-					Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
-					Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+					Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
+					Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
 
 					loadSchemaFromDatabase(tmp1, tmp2, driver.getConnection(), m_internalCatalog, m_externalCatalog);
 
@@ -334,8 +334,8 @@ public class SchemaSingleton
 				   &&
 				   name.startsWith("x_db_") == false
 				 ) {
-					tmp1.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
-					tmp2.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
+					tmp1.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false));
+					tmp2.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false));
 
 					tables.add(name);
 				}
