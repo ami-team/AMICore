@@ -5,31 +5,45 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.utility.*;
 
+@SuppressWarnings({"unchecked", "deprecation"})
 public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
 
 	public static class CIHM<U> extends LinkedHashMap<String, U>
 	{
+		/*-----------------------------------------------------------------*/
+
 		private static final long serialVersionUID = -6586122357660827472L;
+
+		/*-----------------------------------------------------------------*/
 
 		public CIHM()
 		{
 			super();
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		@Override
 		public U put(String key, U value)
 		{
-			return super.put(key.toLowerCase(), value);
+			return super.put(key.toString().toLowerCase(), value);
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		@Override
 		public U get(Object key)
 		{
 			return super.get(key.toString().toLowerCase());
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -55,11 +69,6 @@ public class SchemaSingleton
 			type = _type;
 			size = _size;
 			digits = _digits;
-		}
-
-		public String toString()
-		{
-			return "<" + type + "(" + size + "," + digits + ")>";
 		}
 	}
 
@@ -91,26 +100,17 @@ public class SchemaSingleton
 			pkTable = _pkTable;
 			pkColumn = _pkColumn;
 		}
-
-		public String toString()
-		{
-			return "<" + fkCatalog + "." + fkTable + "." + fkColumn + "->" + pkCatalog + "." + pkTable + "." + pkColumn + ">";
-		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new ConcurrentHashMap<>();
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column >>> s_columns  = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new java.util.concurrent.ConcurrentHashMap<>();
-
-	/*---------------------------------------------------------------------*/
-
-	private static long s_executionTime = 0;
+	private static final Map<String, Map<String, Map<String, Column >>> s_columns  = new ConcurrentHashMap<>();
+	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -139,8 +139,6 @@ public class SchemaSingleton
 
 		s_columns.clear();
 		s_frgnKeys.clear();
-
-		s_executionTime = 0;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -160,11 +158,11 @@ public class SchemaSingleton
 
 			try
 			{
-				loadMetaDataFromFiles(externalCatalog);
+				loadMetaDataFromFiles(s_columns, s_frgnKeys, externalCatalog);
 			}
 			catch(Exception e)
 			{
-				loadMetaDataFromDatabase(connection, internalCatalog, externalCatalog);
+				loadMetaDataFromDatabase(s_columns, s_frgnKeys, connection, internalCatalog, externalCatalog);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -177,57 +175,57 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	@SuppressWarnings("unchecked")
-	private static void loadMetaDataFromFiles(String externalCatalog) throws Exception
+	private static class SchemaExtractionRunnable implements Runnable
 	{
-		ObjectInputStream objectInputStream;
+		private String m_internalCatalog;
+		private String m_externalCatalog;
 
-		/*-----------------------------------------------------------------*/
-
-		String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
-
-		/*-----------------------------------------------------------------*/
-
-		File file = new File(basePath);
-
-		if(file.exists() == false)
+		public SchemaExtractionRunnable(String internalCatalog, String externalCatalog)
 		{
-			file.mkdirs();
+			m_internalCatalog = internalCatalog;
+			m_externalCatalog = externalCatalog;
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_column.ser"));
-
-		try
+		public void run()
 		{
-			s_columns.put(externalCatalog, (Map<String, Map<String, Column>>) objectInputStream.readObject());
-		}
-		finally
-		{
-			objectInputStream.close();
-		}
+			try
+			{
+				AbstractDriver driver = CatalogSingleton.getConnection(m_externalCatalog);
 
-		/*-----------------------------------------------------------------*/
-
-		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkey.ser"));
-
-		try
-		{
-			s_frgnKeys.put(externalCatalog, (Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
+				try
+				{
+					SchemaSingleton.addSchema(driver.getConnection(), m_internalCatalog, m_externalCatalog);
+				}
+				finally
+				{
+					driver.rollbackAndRelease();
+				}
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
 		}
-		finally
-		{
-			objectInputStream.close();
-		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void saveMetaDataToFiles(String externalCatalog) throws Exception
+	public static void extractSchemasInBackground() throws Exception
 	{
+		for(Map.Entry<String, String> entry: s_internalCatalogToExternalCatalog.entrySet())
+		{
+			new Thread(new SchemaExtractionRunnable(entry.getKey(), entry.getValue())).start();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void saveMetaDataToFiles(
+		Map<String, Map<String, Map<String, Column >>> columns ,
+		Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+		String externalCatalog
+	 ) throws Exception {
+
 		ObjectOutputStream objectOutputStream;
 
 		/*-----------------------------------------------------------------*/
@@ -249,7 +247,7 @@ public class SchemaSingleton
 
 		try
 		{
-			objectOutputStream.writeObject(s_columns.get(externalCatalog));
+			objectOutputStream.writeObject(columns.get(externalCatalog));
 		}
 		finally
 		{
@@ -262,7 +260,7 @@ public class SchemaSingleton
 
 		try
 		{
-			objectOutputStream.writeObject(s_frgnKeys.get(externalCatalog));
+			objectOutputStream.writeObject(frgnKeys.get(externalCatalog));
 		}
 		finally
 		{
@@ -274,67 +272,124 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void loadMetaDataFromDatabase(Connection connection, String internalCatalog, String externalCatalog) throws Exception
-	{
+	private static void loadMetaDataFromFiles(
+		Map<String, Map<String, Map<String, Column >>> columns ,
+		Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+		String externalCatalog
+	 ) throws Exception {
+
+		ObjectInputStream objectInputStream;
+
+		/*-----------------------------------------------------------------*/
+
+		String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
+
+		/*-----------------------------------------------------------------*/
+
+		File file = new File(basePath);
+
+		if(file.exists() == false)
+		{
+			file.mkdirs();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_column.ser"));
+
+		try
+		{
+			columns.put(externalCatalog, (Map<String, Map<String, Column>>) objectInputStream.readObject());
+		}
+		finally
+		{
+			objectInputStream.close();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkey.ser"));
+
+		try
+		{
+			frgnKeys.put(externalCatalog, (Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
+		}
+		finally
+		{
+			objectInputStream.close();
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static void loadMetaDataFromDatabase(
+		Map<String, Map<String, Map<String, Column >>> columns ,
+		Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+		Connection connection,
+		String internalCatalog,
+		String externalCatalog
+	 ) throws Exception {
+
 		/*-----------------------------------------------------------------*/
 		/* INITIALIZE STRUCTURES                                           */
 		/*-----------------------------------------------------------------*/
 
-		s_columns.put(externalCatalog, new CIHM<>());
-		s_frgnKeys.put(externalCatalog, new CIHM<>());
+		Map<String, Map<String, Column >> tmp1 = new CIHM<>();
+		Map<String, Map<String, FrgnKey>> tmp2 = new CIHM<>();
 
 		/*-----------------------------------------------------------------*/
 
-		long t1 = System.currentTimeMillis();
+		Set<String> tables = new HashSet<>();
 
-		/**/	/*---------------------------------------------------------*/
-		/**/
-		/**/	DatabaseMetaData metaData = connection.getMetaData();
-		/**/
-		/**/	ResultSet resultSet = metaData.getTables(internalCatalog, internalCatalog, "%", null);
-		/**/
-		/**/	Set<String> tables = new HashSet<>();
-		/**/
-		/**/	/*---------------------------------------------------------*/
-		/**/
-		/**/	while(resultSet.next())
-		/**/	{
-		/**/		String name = resultSet.getString("TABLE_NAME");
-		/**/
-		/**/		if(name != null)
-		/**/		{
-		/**/			name = name.toLowerCase();
-		/**/
-		/**/			if(name.startsWith("db_") == false
-		/**/			   &&
-		/**/			   name.startsWith("x_db_") == false
-		/**/			 ) {
-		/**/				s_columns.get(externalCatalog).put(name, new CIHM<>());
-		/**/				s_frgnKeys.get(externalCatalog).put(name, new CIHM<>());
-		/**/
-		/**/				tables.add(name);
-		/**/			}
-		/**/		}
-		/**/	}
-		/**/
-		/**/	/*---------------------------------------------------------*/
-		/**/
-		/**/	readColumnMetaData(metaData, internalCatalog, externalCatalog, "%");
-		/**/
-		/**/	for(String name: tables)
-		/**/	{
-		/**/		readFgnKeyMetaData(metaData, internalCatalog, externalCatalog, name);
-		/**/	}
-		/**/
-		/**/	/*---------------------------------------------------------*/
+		DatabaseMetaData metaData = connection.getMetaData();
 
-		long t2 = System.currentTimeMillis();
-
-		s_executionTime += t2 - t1;
+		ResultSet resultSet = metaData.getTables(internalCatalog, internalCatalog, "%", null);
 
 		/*-----------------------------------------------------------------*/
 
-		saveMetaDataToFiles(externalCatalog);
+		while(resultSet.next())
+		{
+			String name = resultSet.getString("TABLE_NAME");
+
+			if(name != null)
+			{
+				name = name.toLowerCase();
+
+				if(name.startsWith("db_") == false
+				   &&
+				   name.startsWith("x_db_") == false
+				 ) {
+					tmp1.put(name, new CIHM<>());
+					tmp2.put(name, new CIHM<>());
+
+					tables.add(name);
+				}
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		loadColumnMetaData(tmp1, metaData, internalCatalog, externalCatalog, "%");
+
+		for(String name: tables)
+		{
+			loadFgnKeyMetaData(tmp2, metaData, internalCatalog, externalCatalog, name);
+		}
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		columns.put(externalCatalog, tmp1);
+		frgnKeys.put(externalCatalog, tmp2);
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		saveMetaDataToFiles(columns, frgnKeys, externalCatalog);
 
 		/*-----------------------------------------------------------------*/
 		/* READ METADATA DICTIONNARY                                       */
@@ -347,8 +402,14 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readColumnMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String _table) throws SQLException
-	{
+	private static void loadColumnMetaData(
+		Map<String, Map<String, Column>> tmp1,
+		DatabaseMetaData metaData,
+		String internalCatalog,
+		String externalCatalog,
+		String _table
+	 ) throws SQLException {
+
 		ResultSet resultSet = metaData.getColumns(internalCatalog, internalCatalog, _table, "%");
 
 		while(resultSet.next())
@@ -365,7 +426,7 @@ public class SchemaSingleton
 				name = name.toLowerCase();
 				type = type.toUpperCase();
 
-				Map<String, Column> column = s_columns.get(externalCatalog).get(table);
+				Map<String, Column> column = tmp1.get(table);
 
 				if(column != null)
 				{
@@ -385,8 +446,14 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void readFgnKeyMetaData(DatabaseMetaData metaData, String internalCatalog, String externalCatalog, String _table) throws SQLException
-	{
+	private static void loadFgnKeyMetaData(
+		Map<String, Map<String, FrgnKey>> tmp2,
+		DatabaseMetaData metaData,
+		String internalCatalog,
+		String externalCatalog,
+		String _table
+	 ) throws SQLException {
+
 		ResultSet resultSet = metaData.getExportedKeys(internalCatalog, internalCatalog, _table);
 
 		while(resultSet.next())
@@ -409,12 +476,9 @@ public class SchemaSingleton
 			}
 			else
 			{
-				fkCatalog = s_internalCatalogToExternalCatalog.get(fkInternalCatalog);
-
-				if(fkCatalog == null)
-				{
-					fkCatalog = externalCatalog;
-				}
+				fkCatalog = s_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(fkInternalCatalog)
+				                                                                              : externalCatalog
+				;
 			}
 
 			if(pkInternalCatalog == null)
@@ -424,12 +488,9 @@ public class SchemaSingleton
 			}
 			else
 			{
-				pkCatalog = s_internalCatalogToExternalCatalog.get(pkInternalCatalog);
-
-				if(pkCatalog == null)
-				{
-					pkCatalog = externalCatalog;
-				}
+				pkCatalog = s_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(pkInternalCatalog)
+				                                                                              : externalCatalog
+				;
 			}
 
 			if(name != null && fkInternalCatalog != null && fkCatalog != null && fkTable != null && fkColumn != null && pkInternalCatalog != null && pkCatalog != null && pkTable != null && pkColumn != null)
@@ -440,7 +501,7 @@ public class SchemaSingleton
 				pkTable = pkTable.toLowerCase();
 				pkColumn = pkColumn.toLowerCase();
 
-				Map<String, FrgnKey> frgnKey = s_frgnKeys.get(externalCatalog).get(fkTable);
+				Map<String, FrgnKey> frgnKey = tmp2.get(fkTable);
 
 				if(frgnKey != null)
 				{
@@ -666,10 +727,6 @@ public class SchemaSingleton
 		}
 
 		result.append("</rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<info>" + String.format(Locale.US, "%.3f", 0.001f * s_executionTime) + " s</info>");
 
 		/*-----------------------------------------------------------------*/
 
