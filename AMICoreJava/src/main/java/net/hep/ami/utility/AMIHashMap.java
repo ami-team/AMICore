@@ -1,10 +1,15 @@
 package net.hep.ami.utility;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class AMIHashMap<U> implements Map<String, U>
+public class AMIHashMap<U> implements Map<String, U>, Serializable
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final long serialVersionUID = -3027398317853307355L;
+
 	/*---------------------------------------------------------------------*/
 
 	private static class StringComparator<U> implements Comparator<U>

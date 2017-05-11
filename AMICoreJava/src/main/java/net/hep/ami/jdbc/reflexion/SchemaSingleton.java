@@ -122,8 +122,8 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
-			Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
+			Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+			Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
 
 			try
 			{
@@ -166,8 +166,8 @@ public class SchemaSingleton
 
 				try
 				{
-					Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
-					Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false);
+					Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+					Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
 
 					loadSchemaFromDatabase(tmp1, tmp2, driver.getConnection(), m_internalCatalog, m_externalCatalog);
 
@@ -188,17 +188,20 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void extractSchemasInBackground() throws Exception
+	public static void rebuildSchemaCacheInBackground() throws Exception
 	{
-		for(Map.Entry<String, String> entry: s_internalCatalogToExternalCatalog.entrySet())
+		if(ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false))
 		{
-			new Thread(new SchemaExtractionRunnable(entry.getKey(), entry.getValue())).start();
+			for(Map.Entry<String, String> entry: s_internalCatalogToExternalCatalog.entrySet())
+			{
+				new Thread(new SchemaExtractionRunnable(entry.getKey(), entry.getValue())).start();
+			}
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void saveSchemaToFiles(
+	private static void saveSchemaToFiles(
 		Map<String, Map<String, Column >> tmp1,
 		Map<String, Map<String, FrgnKey>> tmp2,
 		String externalCatalog
@@ -334,8 +337,8 @@ public class SchemaSingleton
 				   &&
 				   name.startsWith("x_db_") == false
 				 ) {
-					tmp1.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false));
-					tmp2.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, false));
+					tmp1.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
+					tmp2.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
 
 					tables.add(name);
 				}
