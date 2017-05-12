@@ -8,7 +8,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final long serialVersionUID = -3027398317853307355L;
+	private static final long serialVersionUID = 5473885106100385148L;
 
 	/*---------------------------------------------------------------------*/
 
