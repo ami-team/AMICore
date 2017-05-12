@@ -27,11 +27,11 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Connection m_connection;
+	private final Connection m_connection;
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Map<String, Statement> m_statementMap = new HashMap<>();
+	private final Map<String, Statement> m_statementMap = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -338,6 +338,18 @@ public abstract class AbstractDriver implements Querier
 	public Connection getConnection()
 	{
 		return m_connection;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	/**
+	 * @deprecated (for internal use only)
+	 */
+
+	@Deprecated
+	public Statement getStatement()
+	{
+		return m_statementMap.get("@");
 	}
 
 	/*---------------------------------------------------------------------*/

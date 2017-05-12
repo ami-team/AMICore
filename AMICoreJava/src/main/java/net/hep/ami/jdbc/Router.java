@@ -106,7 +106,7 @@ public class Router extends SimpleQuerier
 		/* CATALOGS                                                        */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("Setup catalogs...");
+		LogSingleton.root.info("setup catalogs...");
 
 		executeUpdate(
 			"INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES" +
@@ -118,7 +118,7 @@ public class Router extends SimpleQuerier
 		/* CONVERTERS                                                      */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("Setup converters...");
+		LogSingleton.root.info("setup converters...");
 
 		executeUpdate(
 			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
@@ -132,7 +132,7 @@ public class Router extends SimpleQuerier
 		/* ROLES                                                           */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("Setup roles...");
+		LogSingleton.root.info("setup roles...");
 
 		executeUpdate(
 			"INSERT INTO `router_role` (`lft`, `rgt`, `role`) VALUES" +
@@ -145,7 +145,7 @@ public class Router extends SimpleQuerier
 		/* USERS                                                           */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("Setup users...");
+		LogSingleton.root.info("setup users...");
 
 		String emptyDN = SecuritySingleton.encrypt("");
 
@@ -160,7 +160,7 @@ public class Router extends SimpleQuerier
 		/* COMMANDS                                                        */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("Setup commands...");
+		LogSingleton.root.info("setup commands...");
 
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
@@ -171,7 +171,7 @@ public class Router extends SimpleQuerier
 		/* LOCALIZATION                                                    */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("Setup localization...");
+		LogSingleton.root.info("setup localization...");
 
 		LocalizationSingleton.fill(this);
 
@@ -179,7 +179,7 @@ public class Router extends SimpleQuerier
 		/* DONE                                                            */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("Done");
+		LogSingleton.root.info("done");
 
 		/*-----------------------------------------------------------------*/
 	}

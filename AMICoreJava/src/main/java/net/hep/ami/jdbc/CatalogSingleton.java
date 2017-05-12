@@ -144,7 +144,7 @@ public class CatalogSingleton
 
 		if(DriverSingleton.isTypeOf(jdbcUrl, Jdbc.Type.SQL))
 		{
-			SchemaSingleton.addSchema(internalCatalog, externalCatalog);
+			SchemaSingleton.addSchema(externalCatalog, internalCatalog);
 		}
 
 		/*-----------------------------------------------------------------*/

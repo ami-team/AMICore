@@ -36,9 +36,10 @@ public class MySQLDriver extends AbstractDriver
 
 	/*---------------------------------------------------------------------*/
 
+	@SuppressWarnings("deprecation")
 	public void setDB(String db) throws Exception
 	{
-		m_statementMap.get("@").executeQuery("USE " + db + ";");
+		getStatement().executeQuery("USE " + db + ";");
 	}
 
 	/*---------------------------------------------------------------------*/

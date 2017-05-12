@@ -74,8 +74,8 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIHashMap<>();
 	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIHashMap<>();
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -106,8 +106,8 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		s_internalCatalogToExternalCatalog.clear();
 		s_externalCatalogToInternalCatalog.clear();
+		s_internalCatalogToExternalCatalog.clear();
 
 		/*-----------------------------------------------------------------*/
 
@@ -119,12 +119,12 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addSchema(String internalCatalog, String externalCatalog)
+	public static void addSchema(String externalCatalog, String internalCatalog)
 	{
 		/*-----------------------------------------------------------------*/
 
-		s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 		s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
+		s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 
 		/*-----------------------------------------------------------------*/
 
@@ -138,13 +138,13 @@ public class SchemaSingleton
 
 	private static class Extractor implements Runnable
 	{
-		private String m_internalCatalog;
 		private String m_externalCatalog;
+		private String m_internalCatalog;
 
-		public Extractor(String internalCatalog, String externalCatalog)
+		public Extractor(String externalCatalog, String internalCatalog)
 		{
-			m_internalCatalog = internalCatalog;
 			m_externalCatalog = externalCatalog;
+			m_internalCatalog = internalCatalog;
 		}
 
 		public void run()
@@ -171,7 +171,7 @@ public class SchemaSingleton
 					{
 						if(ConfigSingleton.getProperty(REBUILD_SCHEMA_CACHE_PARAM_NAME, false) == false)
 						{
-							loadSchemaFromDatabase(tmp1, tmp2, m_internalCatalog, m_externalCatalog);
+							loadSchemaFromDatabase(tmp1, tmp2, m_externalCatalog, m_internalCatalog);
 
 							s_columns.put(m_externalCatalog, tmp1);
 							s_frgnKeys.put(m_externalCatalog, tmp2);
@@ -182,7 +182,7 @@ public class SchemaSingleton
 				}
 				else
 				{
-					loadSchemaFromDatabase(tmp1, tmp2, m_internalCatalog, m_externalCatalog);
+					loadSchemaFromDatabase(tmp1, tmp2, m_externalCatalog, m_internalCatalog);
 
 					s_columns.put(m_externalCatalog, tmp1);
 					s_frgnKeys.put(m_externalCatalog, tmp2);
@@ -209,14 +209,14 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		if(true) for(Map.Entry<String, String> entry: s_internalCatalogToExternalCatalog.entrySet())
+		if(true) for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 		{
 			/*-----*/ (
 				new Extractor(entry.getKey(), entry.getValue())
 			). run ();
 		}
 
-		if(isOk) for(Map.Entry<String, String> entry: s_internalCatalogToExternalCatalog.entrySet())
+		if(isOk) for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 		{
 			new Thread(
 				new Extractor(entry.getKey(), entry.getValue())
@@ -339,8 +339,8 @@ public class SchemaSingleton
 	private static void loadSchemaFromDatabase(
 		Map<String, Map<String, Column >> tmp1,
 		Map<String, Map<String, FrgnKey>> tmp2,
-		String internalCatalog,
-		String externalCatalog
+		String externalCatalog,
+		String internalCatalog
 	 ) throws Exception {
 
 		Set<String> tables = new HashSet<>();
@@ -391,11 +391,11 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			loadColumnMetadata(tmp1, metaData, internalCatalog, externalCatalog, "%");
+			loadColumnMetadata(tmp1, metaData, externalCatalog, internalCatalog, "%");
 
 			for(String name: tables)
 			{
-				loadFgnKeyMetadata(tmp2, metaData, internalCatalog, externalCatalog, name);
+				loadFgnKeyMetadata(tmp2, metaData, externalCatalog, internalCatalog, name);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -413,8 +413,8 @@ public class SchemaSingleton
 	private static void loadColumnMetadata(
 		Map<String, Map<String, Column>> tmp1,
 		DatabaseMetaData metaData,
-		String internalCatalog,
 		String externalCatalog,
+		String internalCatalog,
 		String _table
 	 ) throws SQLException {
 		/*-----------------------------------------------------------------*/
@@ -442,8 +442,8 @@ public class SchemaSingleton
 				if(column != null)
 				{
 					column.put(name, new Column(
-						internalCatalog,
 						externalCatalog,
+						internalCatalog,
 						table,
 						name,
 						type,
@@ -462,8 +462,8 @@ public class SchemaSingleton
 	private static void loadFgnKeyMetadata(
 		Map<String, Map<String, FrgnKey>> tmp2,
 		DatabaseMetaData metaData,
-		String internalCatalog,
 		String externalCatalog,
+		String internalCatalog,
 		String _table
 	 ) throws SQLException {
 		/*-----------------------------------------------------------------*/
@@ -487,8 +487,8 @@ public class SchemaSingleton
 
 			if(fkInternalCatalog == null)
 			{
-				fkInternalCatalog = internalCatalog;
 				fkCatalog = externalCatalog;
+				fkInternalCatalog = internalCatalog;
 			}
 			else
 			{
@@ -499,8 +499,8 @@ public class SchemaSingleton
 
 			if(pkInternalCatalog == null)
 			{
-				pkInternalCatalog = internalCatalog;
 				pkCatalog = externalCatalog;
+				pkInternalCatalog = internalCatalog;
 			}
 			else
 			{
