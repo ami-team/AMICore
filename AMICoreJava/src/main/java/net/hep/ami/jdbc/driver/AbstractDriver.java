@@ -13,6 +13,11 @@ public abstract class AbstractDriver implements Querier
 {
 	/*---------------------------------------------------------------------*/
 
+	protected String m_externalCatalog;
+	protected String m_internalCatalog;
+
+	/*---------------------------------------------------------------------*/
+
 	protected Jdbc.Type m_jdbcType;
 	protected String m_jdbcProto;
 	protected String m_jdbcClass;
@@ -22,21 +27,18 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	private Connection m_connection;
-
-	private final Map<String, Statement> m_statementMap = new HashMap<>();
+	protected Connection m_connection;
 
 	/*---------------------------------------------------------------------*/
 
-	protected String m_internalCatalog;
-	protected String m_externalCatalog;
+	protected final Map<String, Statement> m_statementMap = new HashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	public AbstractDriver(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* GET ANNOTATION                                                  */
+		/* GET JDBC ANNOTATION                                             */
 		/*-----------------------------------------------------------------*/
 
 		Jdbc annotation = getClass().getAnnotation(Jdbc.class);
@@ -47,7 +49,24 @@ public abstract class AbstractDriver implements Querier
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE CONNECTION                                               */
+		/* SET CATALOG INFO                                                */
+		/*-----------------------------------------------------------------*/
+
+		m_externalCatalog = externalCatalog;
+		m_internalCatalog = internalCatalog;
+
+		if(m_externalCatalog == null)
+		{
+			try
+			{
+				m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog);
+			}
+			catch(Exception e)
+			{
+				m_externalCatalog = /*--------------------------------------------*/(m_internalCatalog);
+			}
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		m_jdbcType = annotation.type();
@@ -57,8 +76,12 @@ public abstract class AbstractDriver implements Querier
 		m_user = user;
 		m_pass = pass;
 
+		/*-----------------------------------------------------------------*/
+		/* CREATE CONNECTION & STATEMENT                                   */
+		/*-----------------------------------------------------------------*/
+
 		m_connection = ConnectionPoolSingleton.getConnection(
-			catalog,
+			externalCatalog,
 			m_jdbcClass,
 			m_jdbcUrl,
 			m_user,
@@ -66,50 +89,14 @@ public abstract class AbstractDriver implements Querier
 		);
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE STATEMENT                                                */
-		/*-----------------------------------------------------------------*/
 
 		m_statementMap.put("@", m_connection.createStatement());
 
 		/*-----------------------------------------------------------------*/
-		/* GET CATALOGS                                                    */
+		/* SET DB                                                          */
 		/*-----------------------------------------------------------------*/
 
-		boolean internalCatalogFound = true;
-
-		try
-		{
-			m_internalCatalog = m_connection.getCatalog();
-
-			if(m_internalCatalog == null)
-			{
-				m_internalCatalog = catalog;
-				internalCatalogFound = false;
-			}
-		}
-		catch(Exception e)
-		{
-			m_internalCatalog = catalog;
-			internalCatalogFound = false;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(internalCatalogFound)
-		{
-			try
-			{
-				m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog);
-			}
-			catch(Exception e)
-			{
-				m_externalCatalog = catalog;
-			}
-		}
-		else
-		{
-			m_externalCatalog = catalog;
-		}
+		setDB(externalCatalog);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -137,6 +124,10 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	public abstract String patch(String sql) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public abstract void setDB(String db) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -348,17 +339,17 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getInternalCatalog()
+	public String getExternalCatalog()
 	{
-		return m_internalCatalog;
+		return m_externalCatalog;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String getExternalCatalog()
+	public String getInternalCatalog()
 	{
-		return m_externalCatalog;
+		return m_internalCatalog;
 	}
 
 	/*---------------------------------------------------------------------*/

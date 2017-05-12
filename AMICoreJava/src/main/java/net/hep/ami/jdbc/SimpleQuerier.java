@@ -34,9 +34,9 @@ public class SimpleQuerier implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public SimpleQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		m_driver = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass);
+		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

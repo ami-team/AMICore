@@ -69,9 +69,9 @@ public class ConfigSingleton
 		       &&
 		       getProperty("encryption_key").isEmpty() == false
 		       &&
-		       getProperty("jdbc_catalog").isEmpty() == false
+		       getProperty("router").isEmpty() == false
 		       &&
-		       getProperty("jdbc_url").isEmpty() == false
+		       getProperty("router_url").isEmpty() == false
 		       &&
 		       getProperty("router_user").isEmpty() == false
 		       &&
@@ -93,9 +93,9 @@ public class ConfigSingleton
 		       ||
 		       "encryption_key".equals(name)
 		       ||
-		       "jdbc_catalog".equals(name)
+		       "router".equals(name)
 		       ||
-		       "jdbc_url".equals(name)
+		       "router_url".equals(name)
 		       ||
 		       "router_user".equals(name)
 		       ||
@@ -237,7 +237,8 @@ public class ConfigSingleton
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
-			getProperty("jdbc_url"),
+			getProperty("router"),
+			getProperty("router_url"),
 			getProperty("router_user"),
 			getProperty("router_pass")
 		);
@@ -300,7 +301,8 @@ public class ConfigSingleton
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
-			getProperty("jdbc_url"),
+			getProperty("router"),
+			getProperty("router_url"),
 			getProperty("router_user"),
 			getProperty("router_pass")
 		);
@@ -335,7 +337,8 @@ public class ConfigSingleton
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
-			getProperty("jdbc_url"),
+			getProperty("router"),
+			getProperty("router_url"),
 			getProperty("router_user"),
 			getProperty("router_pass")
 		);

@@ -63,7 +63,8 @@ public class CatalogSingleton
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
-			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router"),
+			ConfigSingleton.getProperty("router_url"),
 			ConfigSingleton.getProperty("router_user"),
 			ConfigSingleton.getProperty("router_pass")
 		);
@@ -160,7 +161,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.getConnection(catalog, tuple.y, tuple.z, tuple.t);
+		return DriverSingleton.getConnection(catalog, tuple.x, tuple.y, tuple.z, tuple.t);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -188,7 +189,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.getKey(tuple.y, tuple.z);
+		return DriverSingleton.getKey(tuple.x, tuple.y, tuple.z);
 	}
 
 	/*---------------------------------------------------------------------*/

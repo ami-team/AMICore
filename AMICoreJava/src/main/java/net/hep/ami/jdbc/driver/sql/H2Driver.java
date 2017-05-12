@@ -13,9 +13,9 @@ public class H2Driver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public H2Driver(String name, String jdbc_url, String user, String pass) throws Exception
+	public H2Driver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		super(name, jdbc_url, user, pass);
+		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -32,6 +32,13 @@ public class H2Driver extends AbstractDriver
 	public String patch(String sql) throws Exception
 	{
 		return sql;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public void setDB(String db) throws Exception
+	{
+		/* TODO */
 	}
 
 	/*---------------------------------------------------------------------*/

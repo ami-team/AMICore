@@ -22,9 +22,9 @@ public class Router extends SimpleQuerier
 
 	/*---------------------------------------------------------------------*/
 
-	public Router(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public Router(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		super(catalog, jdbcUrl, user, pass);
+		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

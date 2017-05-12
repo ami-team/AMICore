@@ -115,6 +115,7 @@ public class DriverSingleton
 						String.class,
 						String.class,
 						String.class,
+						String.class,
 						String.class
 					)
 				)
@@ -153,9 +154,9 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	public static AbstractDriver getConnection(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return getDriver(jdbcUrl).t.newInstance(catalog, jdbcUrl, user, pass);
+		return getDriver(jdbcUrl).t.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -167,9 +168,9 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getKey(String jdbcUrl, String user) throws Exception
+	public static String getKey(String internalCatalog, String jdbcUrl, String user) throws Exception
 	{
-		return user + "@" + jdbcUrl;
+		return internalCatalog + "@" + jdbcUrl + "@" + user;
 	}
 
 	/*---------------------------------------------------------------------*/

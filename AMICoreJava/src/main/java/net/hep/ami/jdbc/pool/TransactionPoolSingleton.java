@@ -77,7 +77,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
+	public static AbstractDriver getConnection(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -88,7 +88,7 @@ public class TransactionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String key = DriverSingleton.getKey(jdbcUrl, user);
+		String key = DriverSingleton.getKey(internalCatalog, jdbcUrl, user);
 
 		/*-----------------------------------------------------------------*/
 
@@ -104,7 +104,7 @@ public class TransactionPoolSingleton
 		/**/	{
 		/**/		s_pools.put(transactionId, transaction = new HashMap<>());
 		/**/
-		/**/		transaction.put(key, result = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass));
+		/**/		transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass));
 		/**/	}
 		/**/	else
 		/**/	{
@@ -112,7 +112,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/		if(result == null)
 		/**/		{
-		/**/			transaction.put(key, result = DriverSingleton.getConnection(catalog, jdbcUrl, user, pass));
+		/**/			transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass));
 		/**/		}
 		/**/	}
 		}

@@ -81,9 +81,9 @@ public abstract class AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
-	protected Querier getQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass) throws Exception
+	protected Querier getQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return new TransactionalQuerier(catalog, jdbcUrl, user, pass, m_transactionId);
+		return new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

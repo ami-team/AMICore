@@ -37,9 +37,9 @@ public class TransactionalQuerier implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(@Nullable String catalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
+	public TransactionalQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(catalog, jdbcUrl, user, pass, m_transactionId = transactionId);
+		m_driver = TransactionPoolSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_transactionId = transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

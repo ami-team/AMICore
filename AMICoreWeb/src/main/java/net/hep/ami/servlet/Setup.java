@@ -209,7 +209,7 @@ public class Setup extends HttpServlet
 
 		try
 		{
-			basicQuerier = new SimpleQuerier("self", jdbc_url, router_user, router_pass);
+			basicQuerier = new SimpleQuerier("self", "router", jdbc_url, router_user, router_pass);
 
 			bufferedWriter = new BufferedWriter(new FileWriter(fileName));
 

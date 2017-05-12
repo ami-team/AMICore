@@ -42,7 +42,7 @@ public class CommandSingletonTest
 
 		try
 		{
-			Router router = new Router("test", "jdbc:mysql://localhost:3306/router_test", "root", "root");
+			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 
 			router.create();
 			router.fill();

@@ -74,7 +74,8 @@ public class CommandSingleton
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
-			ConfigSingleton.getProperty("jdbc_url"),
+			ConfigSingleton.getProperty("router"),
+			ConfigSingleton.getProperty("router_url"),
 			ConfigSingleton.getProperty("router_user"),
 			ConfigSingleton.getProperty("router_pass")
 		);
