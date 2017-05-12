@@ -91,7 +91,6 @@ public class SchemaSingleton
 		try
 		{
 			Class.forName("net.hep.ami.jdbc.CatalogSingleton");
-			System.out.println("Yes!");
 		}
 		catch(Exception e)
 		{
@@ -307,16 +306,13 @@ public class SchemaSingleton
 		{
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
-			System.out.println("***");
 				thread = new Thread(new Extractor(true, entry.getKey(), entry.getValue()));
 
 				threads.add(thread);
 				thread.start();
 			}
 
-			System.out.println("A");
 			/*------*/(new Reverser(threads)). run ();
-			System.out.println("B");
 		}
 
 		/*-----------------------------------------------------------------*/
