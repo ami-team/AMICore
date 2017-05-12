@@ -13,21 +13,21 @@ public abstract class AbstractDriver implements Querier
 {
 	/*---------------------------------------------------------------------*/
 
-	protected String m_externalCatalog;
-	protected String m_internalCatalog;
+	protected final String m_externalCatalog;
+	protected final String m_internalCatalog;
 
 	/*---------------------------------------------------------------------*/
 
-	protected Jdbc.Type m_jdbcType;
-	protected String m_jdbcProto;
-	protected String m_jdbcClass;
-	protected String m_jdbcUrl;
-	protected String m_user;
-	protected String m_pass;
+	protected final Jdbc.Type m_jdbcType;
+	protected final String m_jdbcProto;
+	protected final String m_jdbcClass;
+	protected final String m_jdbcUrl;
+	protected final String m_user;
+	protected final String m_pass;
 
 	/*---------------------------------------------------------------------*/
 
-	protected Connection m_connection;
+	protected final Connection m_connection;
 
 	/*---------------------------------------------------------------------*/
 
@@ -52,20 +52,22 @@ public abstract class AbstractDriver implements Querier
 		/* SET CATALOG INFO                                                */
 		/*-----------------------------------------------------------------*/
 
-		m_externalCatalog = externalCatalog;
-		m_internalCatalog = internalCatalog;
-
-		if(m_externalCatalog == null)
+		if(externalCatalog == null)
 		{
 			try
 			{
-				m_externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(m_internalCatalog);
+				externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(internalCatalog);
 			}
 			catch(Exception e)
 			{
-				m_externalCatalog = /*--------------------------------------------*/(m_internalCatalog);
+				externalCatalog = /*--------------------------------------------*/(internalCatalog);
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		m_externalCatalog = externalCatalog;
+		m_internalCatalog = internalCatalog;
 
 		/*-----------------------------------------------------------------*/
 
@@ -77,7 +79,7 @@ public abstract class AbstractDriver implements Querier
 		m_pass = pass;
 
 		/*-----------------------------------------------------------------*/
-		/* CREATE CONNECTION & STATEMENT                                   */
+		/* CREATE CONNECTION                                               */
 		/*-----------------------------------------------------------------*/
 
 		m_connection = ConnectionPoolSingleton.getConnection(
@@ -89,6 +91,8 @@ public abstract class AbstractDriver implements Querier
 		);
 
 		/*-----------------------------------------------------------------*/
+		/* CREATE STATEMENT                                                */
+		/*-----------------------------------------------------------------*/
 
 		m_statementMap.put("@", m_connection.createStatement());
 
@@ -96,7 +100,7 @@ public abstract class AbstractDriver implements Querier
 		/* SET DB                                                          */
 		/*-----------------------------------------------------------------*/
 
-		setDB(externalCatalog);
+		setDB(internalCatalog);
 
 		/*-----------------------------------------------------------------*/
 	}

@@ -23,7 +23,7 @@ public class MySQLDriver extends AbstractDriver
 	@Override
 	public FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception
 	{
-		return fieldType;
+		return fieldType; /* MySQL is the default */
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -31,7 +31,7 @@ public class MySQLDriver extends AbstractDriver
 	@Override
 	public String patch(String sql) throws Exception
 	{
-		return sql;
+		return sql; /* MySQL is the default */
 	}
 
 	/*---------------------------------------------------------------------*/
