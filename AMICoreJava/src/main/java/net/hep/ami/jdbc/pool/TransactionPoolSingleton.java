@@ -88,7 +88,7 @@ public class TransactionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String key = DriverSingleton.getKey(internalCatalog, jdbcUrl, user);
+		String key = DriverSingleton.getKey(internalCatalog, jdbcUrl, user, pass);
 
 		/*-----------------------------------------------------------------*/
 

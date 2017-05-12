@@ -5,11 +5,9 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 
-@SuppressWarnings({"unchecked", "deprecation"})
+@SuppressWarnings("unchecked")
 public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -93,6 +91,7 @@ public class SchemaSingleton
 		try
 		{
 			Class.forName("net.hep.ami.jdbc.CatalogSingleton");
+			System.out.println("Yes!");
 		}
 		catch(Exception e)
 		{
@@ -308,13 +307,16 @@ public class SchemaSingleton
 		{
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
+			System.out.println("***");
 				thread = new Thread(new Extractor(true, entry.getKey(), entry.getValue()));
 
 				threads.add(thread);
 				thread.start();
 			}
 
+			System.out.println("A");
 			/*------*/(new Reverser(threads)). run ();
+			System.out.println("B");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -345,7 +347,7 @@ public class SchemaSingleton
 
 		ObjectOutputStream objectOutputStream;
 
-		LogSingleton.root.info("saving schema of catalog '" + externalCatalog + "'");
+		LogSingleton.root.info("saving to file schema of catalog '" + externalCatalog + "'");
 
 		/*-----------------------------------------------------------------*/
 
@@ -399,7 +401,7 @@ public class SchemaSingleton
 
 		ObjectInputStream objectInputStream;
 
-		LogSingleton.root.info("loading schema of catalog '" + externalCatalog + "'");
+		LogSingleton.root.info("loading from file schema of catalog '" + externalCatalog + "'");
 
 		/*-----------------------------------------------------------------*/
 
@@ -454,11 +456,17 @@ public class SchemaSingleton
 
 		Set<String> tables = new HashSet<>();
 
+		LogSingleton.root.info("loading from database schema of catalog '" + externalCatalog + "'");
+
 		/*-----------------------------------------------------------------*/
 		/* CREATE DRIVER                                                   */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver driver = CatalogSingleton.getConnection(externalCatalog);
+		Connection connection = DriverManager.getConnection(
+			ConfigSingleton.getProperty("router_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
 
 		/*-----------------------------------------------------------------*/
 
@@ -467,9 +475,9 @@ public class SchemaSingleton
 			/*-------------------------------------------------------------*/
 			/* GET METADATA OBJECT                                         */
 			/*-------------------------------------------------------------*/
-
-			DatabaseMetaData metaData = driver.getConnection().getMetaData();
-
+System.out.println("33");
+			DatabaseMetaData metaData = connection.getMetaData();
+System.out.println("44");
 			/*-------------------------------------------------------------*/
 			/* LOAD METADATA FROM DATABASE                                 */
 			/*-------------------------------------------------------------*/
@@ -511,7 +519,7 @@ public class SchemaSingleton
 		}
 		finally
 		{
-			driver.rollbackAndRelease();
+			connection.close();
 		}
 
 		/*-----------------------------------------------------------------*/

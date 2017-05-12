@@ -189,7 +189,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.getKey(tuple.x, tuple.y, tuple.z);
+		return DriverSingleton.getKey(tuple.x, tuple.y, tuple.z, tuple.t);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -228,7 +228,7 @@ public class CatalogSingleton
 			      .append("<field name=\"jdbcUrl\"><![CDATA[").append(jdbcUrl).append("]]></field>")
 			      .append("<field name=\"user\"><![CDATA[").append(user).append("]]></field>")
 			      .append("<field name=\"pass\"><![CDATA[").append(pass).append("]]></field>")
-			      .append("<field name=\"valid\"><![CDATA[").append(archived).append("]]></field>")
+			      .append("<field name=\"archived\"><![CDATA[").append(archived).append("]]></field>")
 			      .append("</row>")
 			;
 		}

@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.tree.*;
 import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-public class parser
+public class Parser
 {
 	/*---------------------------------------------------------------------*/
 
@@ -20,7 +20,7 @@ public class parser
 
 	/*---------------------------------------------------------------------*/
 
-	public parser(String catalog)
+	public Parser(String catalog)
 	{
 		m_catalog = catalog;
 	}
@@ -41,7 +41,7 @@ public class parser
 
 		/*-----------------------------------------------------------------*/
 
-		return new parser(catalog).visitSelectStatement(parser.selectStatement()).toString();
+		return new Parser(catalog).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}

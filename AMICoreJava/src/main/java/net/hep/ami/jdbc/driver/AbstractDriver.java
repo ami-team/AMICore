@@ -29,6 +29,8 @@ public abstract class AbstractDriver implements Querier
 
 	private final Connection m_connection;
 
+	private final Statement m_statement;
+
 	/*---------------------------------------------------------------------*/
 
 	private final Map<String, Statement> m_statementMap = new HashMap<>();
@@ -83,7 +85,7 @@ public abstract class AbstractDriver implements Querier
 		/*-----------------------------------------------------------------*/
 
 		m_connection = ConnectionPoolSingleton.getConnection(
-			externalCatalog,
+			m_externalCatalog,
 			m_jdbcClass,
 			m_jdbcUrl,
 			m_user,
@@ -94,7 +96,7 @@ public abstract class AbstractDriver implements Querier
 		/* CREATE STATEMENT                                                */
 		/*-----------------------------------------------------------------*/
 
-		m_statementMap.put("@", m_connection.createStatement());
+		m_statementMap.put("@", m_statement = m_connection.createStatement());
 
 		/*-----------------------------------------------------------------*/
 		/* SET DB                                                          */
@@ -135,9 +137,13 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	private void _checkMQL() throws Exception
+	public String mqlToSql(String mql) throws Exception
 	{
-		if(m_jdbcType != Jdbc.Type.SQL)
+		if(m_jdbcType == Jdbc.Type.SQL)
+		{
+			return Parser.parse(mql, this.m_externalCatalog);
+		}
+		else
 		{
 			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
 		}
@@ -150,9 +156,9 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			String SQL = patch(sql);
+			/*-----------------------*/
 
-			return new RowSet(m_statementMap.get("@").executeQuery(SQL), sql, null);
+			return new RowSet(m_statement.executeQuery(patch(sql)), sql, null);
 		}
 		catch(Exception e)
 		{
@@ -165,13 +171,11 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public RowSet executeMQLQuery(String mql) throws Exception
 	{
-		_checkMQL();
-
 		try
 		{
-			String sql = parser.parse(mql, this.m_externalCatalog), SQL = patch(sql);
+			String sql = mqlToSql(mql);
 
-			return new RowSet(m_statementMap.get("@").executeQuery(SQL), sql, null);
+			return new RowSet(m_statement.executeQuery(patch(sql)), sql, null);
 		}
 		catch(Exception e)
 		{
@@ -186,9 +190,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			String SQL = patch(sql);
-
-			return m_statementMap.get("@").executeUpdate(SQL);
+			return m_statement.executeUpdate(patch(sql));
 		}
 		catch(Exception e)
 		{
@@ -349,7 +351,7 @@ public abstract class AbstractDriver implements Querier
 	@Deprecated
 	public Statement getStatement()
 	{
-		return m_statementMap.get("@");
+		return m_statement;
 	}
 
 	/*---------------------------------------------------------------------*/

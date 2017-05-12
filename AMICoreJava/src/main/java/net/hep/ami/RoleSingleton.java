@@ -40,9 +40,7 @@ public class RoleSingleton
 
 	private static void addValidators()
 	{
-		Set<String> classeNames = ClassSingleton.findClassNames("net.hep.ami.role");
-
-		for(String className: classeNames)
+		for(String className: ClassSingleton.findClassNames("net.hep.ami.role"))
 		{
 			try
 			{

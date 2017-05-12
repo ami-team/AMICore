@@ -64,9 +64,7 @@ public class DriverSingleton
 
 	public static void addDrivers()
 	{
-		Set<String> classeNames = ClassSingleton.findClassNames("net.hep.ami.jdbc.driver");
-
-		for(String className: classeNames)
+		for(String className: ClassSingleton.findClassNames("net.hep.ami.jdbc.driver"))
 		{
 			try
 			{
@@ -168,9 +166,9 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getKey(String internalCatalog, String jdbcUrl, String user) throws Exception
+	public static String getKey(String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return internalCatalog + "@" + jdbcUrl + "@" + user;
+		return internalCatalog + "@" + jdbcUrl + "@" + user + "@" + pass;
 	}
 
 	/*---------------------------------------------------------------------*/
