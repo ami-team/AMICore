@@ -292,18 +292,20 @@ public class SchemaSingleton
 
 	public static void rebuildSchemas()
 	{
-		Thread thread;
-
-		List<Thread> threads = new ArrayList<>();
-
 		/*-----------------------------------------------------------------*/
 
 		boolean isOk = ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
 
 		/*-----------------------------------------------------------------*/
+		/* FAST METHOD                                                     */
+		/*-----------------------------------------------------------------*/
 
 		if(true)
 		{
+			Thread thread;
+
+			List<Thread> threads = new ArrayList<>();
+
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
 				thread = new Thread(new Extractor(true, entry.getKey(), entry.getValue()));
@@ -316,9 +318,15 @@ public class SchemaSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* SLOW METHOD                                                     */
+		/*-----------------------------------------------------------------*/
 
 		if(isOk)
 		{
+			Thread thread;
+
+			List<Thread> threads = new ArrayList<>();
+
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
 				thread = new Thread(new Extractor(false, entry.getKey(), entry.getValue()));
@@ -360,7 +368,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_column.ser"));
+		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_columns.ser"));
 
 		try
 		{
@@ -373,7 +381,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_frgnkey.ser"));
+		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser"));
 
 		try
 		{
@@ -414,7 +422,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_column.ser"));
+		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_columns.ser"));
 
 		try
 		{
@@ -427,7 +435,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkey.ser"));
+		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser"));
 
 		try
 		{
