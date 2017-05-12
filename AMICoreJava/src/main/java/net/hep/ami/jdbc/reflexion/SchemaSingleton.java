@@ -70,10 +70,6 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final String REBUILD_SCHEMA_CACHE_PARAM_NAME = "rebuild_schema_cache";
-
-	/*---------------------------------------------------------------------*/
-
 	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>();
 	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>();
 
@@ -143,16 +139,24 @@ public class SchemaSingleton
 
 	private static class Extractor implements Runnable
 	{
+		/*-----------------------------------------------------------------*/
+
 		private final boolean m_fast;
+
 		private final String m_externalCatalog;
 		private final String m_internalCatalog;
+
+		/*-----------------------------------------------------------------*/
 
 		public Extractor(boolean fast, String externalCatalog, String internalCatalog)
 		{
 			m_fast = fast;
+
 			m_externalCatalog = externalCatalog;
 			m_internalCatalog = internalCatalog;
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		@Override
 		public void run()
@@ -202,18 +206,26 @@ public class SchemaSingleton
 				LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	private static class Reverser implements Runnable
 	{
+		/*-----------------------------------------------------------------*/
+
 		private final List<Thread> m_threads;
+
+		/*-----------------------------------------------------------------*/
 
 		public Reverser(List<Thread> threads)
 		{
 			m_threads = threads;
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		@Override
 		public void run()
@@ -274,6 +286,8 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -286,7 +300,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		boolean isOk = ConfigSingleton.getProperty(REBUILD_SCHEMA_CACHE_PARAM_NAME, false);
+		boolean isOk = ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
 
 		/*-----------------------------------------------------------------*/
 
