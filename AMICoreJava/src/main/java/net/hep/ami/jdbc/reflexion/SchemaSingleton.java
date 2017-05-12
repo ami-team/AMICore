@@ -206,11 +206,11 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static class Waiter implements Runnable
+	private static class Reverser implements Runnable
 	{
 		private final List<Thread> m_threads;
 
-		public Waiter(List<Thread> threads)
+		public Reverser(List<Thread> threads)
 		{
 			m_threads = threads;
 		}
@@ -300,7 +300,7 @@ public class SchemaSingleton
 				thread.start();
 			}
 
-			/*------*/(new Waiter(threads)). run ();
+			/*------*/(new Reverser(threads)). run ();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -315,7 +315,7 @@ public class SchemaSingleton
 				thread.start();
 			}
 
-			new Thread(new Waiter(threads)).start();
+			new Thread(new Reverser(threads)).start();
 		}
 
 		/*-----------------------------------------------------------------*/
