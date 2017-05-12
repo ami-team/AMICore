@@ -14,22 +14,22 @@ public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class Column implements Serializable
+	public static final class Column implements Serializable
 	{
 		private static final long serialVersionUID = 9088165113864128126L;
 
+		public final String externalCatalog;
 		public final String internalCatalog;
-		public final String catalog;
 		public final String table;
 		public final String name;
 		public final String type;
 		public final int size;
 		public final int digits;
 
-		public Column(String _internalCatalog, String _catalog, String _table, String _name, String _type, int _size, int _digits)
+		public Column(String _externalCatalog, String _internalCatalog, String _table, String _name, String _type, int _size, int _digits)
 		{
+			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
-			catalog = _catalog;
 			table = _table;
 			name = _name;
 			type = _type;
@@ -40,29 +40,29 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class FrgnKey implements Serializable
+	public static final class FrgnKey implements Serializable
 	{
 		private static final long serialVersionUID = 7467966033785286381L;
 
 		public final String name;
+		public final String fkExternalCatalog;
 		public final String fkInternalCatalog;
-		public final String fkCatalog;
 		public final String fkTable;
 		public final String fkColumn;
+		public final String pkExternalCatalog;
 		public final String pkInternalCatalog;
-		public final String pkCatalog;
 		public final String pkTable;
 		public final String pkColumn;
 
-		public FrgnKey(String _name, String _fkInternalCatalog, String _fkCatalog, String _fkTable, String _fkColumn, String _pkInternalCatalog, String _pkCatalog, String _pkTable, String _pkColumn)
+		public FrgnKey(String _name, String _fkExternalCatalog, String _fkInternalCatalog, String _fkTable, String _fkColumn, String _pkExternalCatalog, String _pkInternalCatalog, String _pkTable, String _pkColumn)
 		{
 			name = _name;
+			fkExternalCatalog = _fkExternalCatalog;
 			fkInternalCatalog = _fkInternalCatalog;
-			fkCatalog = _fkCatalog;
 			fkTable = _fkTable;
 			fkColumn = _fkColumn;
+			pkExternalCatalog = _pkExternalCatalog;
 			pkInternalCatalog = _pkInternalCatalog;
-			pkCatalog = _pkCatalog;
 			pkTable = _pkTable;
 			pkColumn = _pkColumn;
 		}
@@ -79,8 +79,12 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column >>> s_columns  = new AMIHashMap<>();
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIHashMap<>();
 	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new AMIHashMap<>();
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> s_reverse  = new AMIHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -113,6 +117,7 @@ public class SchemaSingleton
 
 		s_columns.clear();
 		s_frgnKeys.clear();
+		s_reverse.clear();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -153,7 +158,7 @@ public class SchemaSingleton
 			{
 				/*---------------------------------------------------------*/
 
-				Map<String, Map<String, Column >> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+				Map<String, Map<String, Column>> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
 				Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
 
 				/*--------------------------------------------------------*/
@@ -216,6 +221,8 @@ public class SchemaSingleton
 			). run ();
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		if(isOk) for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 		{
 			new Thread(
@@ -224,12 +231,48 @@ public class SchemaSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(s_columns).entrySet())
+		{
+			s_reverse.put(entry1.getKey(), new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true))
+			;
+
+			for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
+			{
+				s_reverse.get(entry1.getKey())
+				         .put(entry2.getKey(), new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true))
+				;
+
+				for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
+				{
+					s_reverse.get(entry1.getKey())
+					         .get(entry2.getKey())
+					         .put(entry3.getKey(), new ArrayList<FrgnKey>())
+					;
+				}
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		for(Map<String, Map<String, FrgnKey>> value1: s_frgnKeys.values())
+		for(Map<String, FrgnKey> value2: value1.values())
+		for(FrgnKey frgnKey: value2.values())
+		{
+			s_reverse.get(frgnKey.pkExternalCatalog)
+			         .get(frgnKey.pkTable)
+			         .get(frgnKey.pkColumn)
+			         .add(frgnKey)
+			;
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	private static void saveSchemaToFiles(
-		Map<String, Map<String, Column >> tmp1,
+		Map<String, Map<String, Column>> tmp1,
 		Map<String, Map<String, FrgnKey>> tmp2,
 		String externalCatalog
 	 ) throws Exception {
@@ -283,7 +326,7 @@ public class SchemaSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static void loadSchemaFromFiles(
-		Map<String, Map<String, Column >> tmp1,
+		Map<String, Map<String, Column>> tmp1,
 		Map<String, Map<String, FrgnKey>> tmp2,
 		String externalCatalog
 	 ) throws Exception {
@@ -337,7 +380,7 @@ public class SchemaSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static void loadSchemaFromDatabase(
-		Map<String, Map<String, Column >> tmp1,
+		Map<String, Map<String, Column>> tmp1,
 		Map<String, Map<String, FrgnKey>> tmp2,
 		String externalCatalog,
 		String internalCatalog
@@ -411,7 +454,7 @@ public class SchemaSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static void loadColumnMetadata(
-		Map<String, Map<String, Column>> tmp1,
+		Map<String, Map<String, Column>> tmp,
 		DatabaseMetaData metaData,
 		String externalCatalog,
 		String internalCatalog,
@@ -437,7 +480,7 @@ public class SchemaSingleton
 				name = name.toLowerCase();
 				type = type.toUpperCase();
 
-				Map<String, Column> column = tmp1.get(table);
+				Map<String, Column> column = tmp.get(table);
 
 				if(column != null)
 				{
@@ -460,7 +503,7 @@ public class SchemaSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static void loadFgnKeyMetadata(
-		Map<String, Map<String, FrgnKey>> tmp2,
+		Map<String, Map<String, FrgnKey>> tmp,
 		DatabaseMetaData metaData,
 		String externalCatalog,
 		String internalCatalog,
@@ -482,34 +525,34 @@ public class SchemaSingleton
 			String pkTable = resultSet.getString("PKTABLE_NAME");
 			String pkColumn = resultSet.getString("PKCOLUMN_NAME");
 
-			String fkCatalog;
-			String pkCatalog;
+			String fkExternalCatalog;
+			String pkExternalCatalog;
 
 			if(fkInternalCatalog == null)
 			{
-				fkCatalog = externalCatalog;
+				fkExternalCatalog = externalCatalog;
 				fkInternalCatalog = internalCatalog;
 			}
 			else
 			{
-				fkCatalog = s_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(fkInternalCatalog)
-				                                                                              : externalCatalog
+				fkExternalCatalog = s_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(fkInternalCatalog)
+				                                                                                      : externalCatalog
 				;
 			}
 
 			if(pkInternalCatalog == null)
 			{
-				pkCatalog = externalCatalog;
+				pkExternalCatalog = externalCatalog;
 				pkInternalCatalog = internalCatalog;
 			}
 			else
 			{
-				pkCatalog = s_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(pkInternalCatalog)
-				                                                                              : externalCatalog
+				pkExternalCatalog = s_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(pkInternalCatalog)
+				                                                                                      : externalCatalog
 				;
 			}
 
-			if(name != null && fkInternalCatalog != null && fkCatalog != null && fkTable != null && fkColumn != null && pkInternalCatalog != null && pkCatalog != null && pkTable != null && pkColumn != null)
+			if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
 			{
 				name = name.toLowerCase();
 				fkTable = fkTable.toLowerCase();
@@ -517,18 +560,18 @@ public class SchemaSingleton
 				pkTable = pkTable.toLowerCase();
 				pkColumn = pkColumn.toLowerCase();
 
-				Map<String, FrgnKey> frgnKey = tmp2.get(fkTable);
+				Map<String, FrgnKey> frgnKey = tmp.get(fkTable);
 
 				if(frgnKey != null)
 				{
 					frgnKey.put(fkColumn, new FrgnKey(
 						name,
+						fkExternalCatalog,
 						fkInternalCatalog,
-						fkCatalog,
 						fkTable,
 						fkColumn,
+						pkExternalCatalog,
 						pkInternalCatalog,
-						pkCatalog,
 						pkTable,
 						pkColumn
 					));
@@ -671,34 +714,30 @@ public class SchemaSingleton
 		result.append("<rowset type=\"columns\">");
 
 		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: s_columns.entrySet())
+		for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
+		for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
 		{
-			for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
-			{
-				for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
-				{
-					column = entry3.getValue();
+			column = entry3.getValue();
 
-					result.append(
-						"<row>"
-						+
-						"<field name=\"internalCatalog\">" + column.internalCatalog + "</field>"
-						+
-						"<field name=\"catalog\">" + column.catalog + "</field>"
-						+
-						"<field name=\"table\">" + column.table + "</field>"
-						+
-						"<field name=\"name\">" + column.name + "</field>"
-						+
-						"<field name=\"type\">" + column.type + "</field>"
-						+
-						"<field name=\"size\">" + column.size + "</field>"
-						+
-						"<field name=\"digits\">" + column.digits + "</field>"
-						+
-						"</row>"
-					);
-				}
-			}
+			result.append(
+				"<row>"
+				+
+				"<field name=\"externalCatalog\">" + column.externalCatalog + "</field>"
+				+
+				"<field name=\"internalCatalog\">" + column.internalCatalog + "</field>"
+				+
+				"<field name=\"table\">" + column.table + "</field>"
+				+
+				"<field name=\"name\">" + column.name + "</field>"
+				+
+				"<field name=\"type\">" + column.type + "</field>"
+				+
+				"<field name=\"size\">" + column.size + "</field>"
+				+
+				"<field name=\"digits\">" + column.digits + "</field>"
+				+
+				"</row>"
+			);
 		}
 
 		result.append("</rowset>");
@@ -710,38 +749,34 @@ public class SchemaSingleton
 		result.append("<rowset type=\"foreignKeys\">");
 
 		for(Map.Entry<String, Map<String, Map<String, FrgnKey>>> entry1: s_frgnKeys.entrySet())
+		for(Map.Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet())
+		for(Map.Entry<String, FrgnKey> entry3: entry2.getValue().entrySet())
 		{
-			for(Map.Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet())
-			{
-				for(Map.Entry<String, FrgnKey> entry3: entry2.getValue().entrySet())
-				{
-					frgnKey = entry3.getValue();
+			frgnKey = entry3.getValue();
 
-					result.append(
-						"<row>"
-						+
-						"<field name=\"name\">" + frgnKey.name + "</field>"
-						+
-						"<field name=\"fkInternalCatalog\">" + frgnKey.fkInternalCatalog + "</field>"
-						+
-						"<field name=\"fkCatalog\">" + frgnKey.fkCatalog + "</field>"
-						+
-						"<field name=\"fkTable\">" + frgnKey.fkTable + "</field>"
-						+
-						"<field name=\"fkColumn\">" + frgnKey.fkColumn + "</field>"
-						+
-						"<field name=\"pkInternalCatalog\">" + frgnKey.pkInternalCatalog + "</field>"
-						+
-						"<field name=\"pkCatalog\">" + frgnKey.pkCatalog + "</field>"
-						+
-						"<field name=\"pkTable\">" + frgnKey.pkTable + "</field>"
-						+
-						"<field name=\"pkColumn\">" + frgnKey.pkColumn + "</field>"
-						+
-						"</row>"
-					);
-				}
-			}
+			result.append(
+				"<row>"
+				+
+				"<field name=\"name\">" + frgnKey.name + "</field>"
+				+
+				"<field name=\"fkExternalCatalog\">" + frgnKey.fkExternalCatalog + "</field>"
+				+
+				"<field name=\"fkInternalCatalog\">" + frgnKey.fkInternalCatalog + "</field>"
+				+
+				"<field name=\"fkTable\">" + frgnKey.fkTable + "</field>"
+				+
+				"<field name=\"fkColumn\">" + frgnKey.fkColumn + "</field>"
+				+
+				"<field name=\"pkExternalCatalog\">" + frgnKey.pkExternalCatalog + "</field>"
+				+
+				"<field name=\"pkInternalCatalog\">" + frgnKey.pkInternalCatalog + "</field>"
+				+
+				"<field name=\"pkTable\">" + frgnKey.pkTable + "</field>"
+				+
+				"<field name=\"pkColumn\">" + frgnKey.pkColumn + "</field>"
+				+
+				"</row>"
+			);
 		}
 
 		result.append("</rowset>");
