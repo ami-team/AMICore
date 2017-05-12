@@ -69,6 +69,8 @@ public class ConfigSingleton
 		       &&
 		       getProperty("encryption_key").isEmpty() == false
 		       &&
+		       getProperty("jdbc_catalog").isEmpty() == false
+		       &&
 		       getProperty("jdbc_url").isEmpty() == false
 		       &&
 		       getProperty("router_user").isEmpty() == false
@@ -90,6 +92,8 @@ public class ConfigSingleton
 		       "guest_user".equals(name)
 		       ||
 		       "encryption_key".equals(name)
+		       ||
+		       "jdbc_catalog".equals(name)
 		       ||
 		       "jdbc_url".equals(name)
 		       ||
