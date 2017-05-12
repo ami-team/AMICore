@@ -232,7 +232,23 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	@Override
 	public Collection<U> values()
 	{
-		return m_underlyingMap.values();
+		Collection<U> result;
+
+		if(m_isOrdered)
+		{
+			result = new ArrayList<>();
+
+			for(String key: this.keySet())
+			{
+				result.add(m_underlyingMap.get(key));
+			}
+		}
+		else
+		{
+			result = m_underlyingMap.values();
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

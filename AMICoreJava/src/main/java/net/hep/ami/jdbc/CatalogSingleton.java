@@ -113,7 +113,7 @@ public class CatalogSingleton
 		/* REBUILD SCHEMA CACHE                                            */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.rebuildSchemaCache();
+		SchemaSingleton.rebuildSchemas();
 
 		/*-----------------------------------------------------------------*/
 	}

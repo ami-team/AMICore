@@ -143,15 +143,18 @@ public class SchemaSingleton
 
 	private static class Extractor implements Runnable
 	{
-		private String m_externalCatalog;
-		private String m_internalCatalog;
+		private final boolean m_fast;
+		private final String m_externalCatalog;
+		private final String m_internalCatalog;
 
-		public Extractor(String externalCatalog, String internalCatalog)
+		public Extractor(boolean fast, String externalCatalog, String internalCatalog)
 		{
+			m_fast = fast;
 			m_externalCatalog = externalCatalog;
 			m_internalCatalog = internalCatalog;
 		}
 
+		@Override
 		public void run()
 		{
 			try
@@ -163,7 +166,7 @@ public class SchemaSingleton
 
 				/*--------------------------------------------------------*/
 
-				if(Thread.currentThread().getId() == 0L)
+				if(m_fast)
 				{
 					try
 					{
@@ -174,15 +177,12 @@ public class SchemaSingleton
 					}
 					catch(Exception e)
 					{
-						if(ConfigSingleton.getProperty(REBUILD_SCHEMA_CACHE_PARAM_NAME, false) == false)
-						{
-							loadSchemaFromDatabase(tmp1, tmp2, m_externalCatalog, m_internalCatalog);
+						loadSchemaFromDatabase(tmp1, tmp2, m_externalCatalog, m_internalCatalog);
 
-							s_columns.put(m_externalCatalog, tmp1);
-							s_frgnKeys.put(m_externalCatalog, tmp2);
+						s_columns.put(m_externalCatalog, tmp1);
+						s_frgnKeys.put(m_externalCatalog, tmp2);
 
-							saveSchemaToFiles(tmp1, tmp2, m_externalCatalog);
-						}
+						saveSchemaToFiles(tmp1, tmp2, m_externalCatalog);
 					}
 				}
 				else
@@ -206,76 +206,117 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void buildReverseTable()
+	private static class Waiter implements Runnable
 	{
-		/*-----------------------------------------------------------------*/
+		private final List<Thread> m_threads;
 
-		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(s_columns).entrySet())
+		public Waiter(List<Thread> threads)
 		{
-			s_reverse.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
-			;
+			m_threads = threads;
+		}
 
-			for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
+		@Override
+		public void run()
+		{
+			/*-------------------------------------------------------------*/
+			/* WAIT FOR PENDING THREADS                                    */
+			/*-------------------------------------------------------------*/
+
+			for(Thread thread: m_threads)
 			{
-				s_reverse.get(entry1.getKey())
-				         .put(entry2.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
-				;
-
-				for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
+				try
 				{
-					s_reverse.get(entry1.getKey())
-					         .get(entry2.getKey())
-					         .put(entry3.getKey(), new ArrayList<FrgnKey>())
-					;
+					thread.join();
+				}
+				catch(InterruptedException e)
+				{
+					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 				}
 			}
+
+			/*-------------------------------------------------------------*/
+			/* FILL STRUCTURE                                              */
+			/*-------------------------------------------------------------*/
+
+			for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(s_columns).entrySet())
+			{
+				s_reverse.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
+				;
+
+				for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
+				{
+					s_reverse.get(entry1.getKey())
+					         .put(entry2.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
+					;
+
+					for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
+					{
+						s_reverse.get(entry1.getKey())
+						         .get(entry2.getKey())
+						         .put(entry3.getKey(), new ArrayList<FrgnKey>())
+						;
+					}
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
+			for(Map<String, Map<String, FrgnKey>> value1: s_frgnKeys.values())
+			for(Map<String, FrgnKey> value2: value1.values())
+			for(FrgnKey frgnKey: value2.values())
+			{
+				s_reverse.get(frgnKey.pkExternalCatalog)
+				         .get(frgnKey.pkTable)
+				         .get(frgnKey.pkColumn)
+				         .add(frgnKey)
+				;
+			}
+
+			/*-------------------------------------------------------------*/
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		for(Map<String, Map<String, FrgnKey>> value1: s_frgnKeys.values())
-		for(Map<String, FrgnKey> value2: value1.values())
-		for(FrgnKey frgnKey: value2.values())
-		{
-			s_reverse.get(frgnKey.pkExternalCatalog)
-			         .get(frgnKey.pkTable)
-			         .get(frgnKey.pkColumn)
-			         .add(frgnKey)
-			;
-		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void rebuildSchemaCache()
+	public static void rebuildSchemas()
 	{
+		Thread thread;
+
+		List<Thread> threads = new ArrayList<>();
+
 		/*-----------------------------------------------------------------*/
 
 		boolean isOk = ConfigSingleton.getProperty(REBUILD_SCHEMA_CACHE_PARAM_NAME, false);
 
 		/*-----------------------------------------------------------------*/
 
-		if(true) for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
+		if(true)
 		{
-			/*-----*/ (
-				new Extractor(entry.getKey(), entry.getValue())
-			). run ();
+			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
+			{
+				thread = new Thread(new Extractor(true, entry.getKey(), entry.getValue()));
+
+				threads.add(thread);
+				thread.start();
+			}
+
+			/*------*/(new Waiter(threads)). run ();
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		if(isOk) for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
+		if(isOk)
 		{
-			new Thread(
-				new Extractor(entry.getKey(), entry.getValue())
-			).start();
+			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
+			{
+				thread = new Thread(new Extractor(false, entry.getKey(), entry.getValue()));
+
+				threads.add(thread);
+				thread.start();
+			}
+
+			new Thread(new Waiter(threads)).start();
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		buildReverseTable();
 
 		/*-----------------------------------------------------------------*/
 	}
