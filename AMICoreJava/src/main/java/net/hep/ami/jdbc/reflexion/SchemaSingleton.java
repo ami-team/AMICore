@@ -104,37 +104,29 @@ public class SchemaSingleton
 
 	public static void clear()
 	{
+		/*-----------------------------------------------------------------*/
+
 		s_internalCatalogToExternalCatalog.clear();
 		s_externalCatalogToInternalCatalog.clear();
 
+		/*-----------------------------------------------------------------*/
+
 		s_columns.clear();
 		s_frgnKeys.clear();
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addSchema(Connection connection, String externalCatalog) throws Exception
+	public static void addSchema(String internalCatalog, String externalCatalog) throws Exception
 	{
-		String internalCatalog;
-
-		/*-----------------------------------------------------------------*/
-
-		internalCatalog = connection.getCatalog();
-
-		if(internalCatalog == null)
-		{
-			internalCatalog = connection.getSchema();
-
-			if(internalCatalog == null)
-			{
-				throw new Exception("no metadata available");
-			}
-		}
-
 		/*-----------------------------------------------------------------*/
 
 		s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 		s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
+
+		/*-----------------------------------------------------------------*/
 
 		s_columns.put(externalCatalog, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
 		s_frgnKeys.put(externalCatalog, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));

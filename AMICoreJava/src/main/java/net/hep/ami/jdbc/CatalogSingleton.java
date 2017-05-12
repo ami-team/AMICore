@@ -1,6 +1,5 @@
 package net.hep.ami.jdbc;
 
-import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -13,11 +12,11 @@ public class CatalogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple4<String, String, String, String>
+	private static class Tuple extends Tuple5<String, String, String, String, String>
 	{
-		public Tuple(String _x, String _y, String _z, String _t)
+		public Tuple(String _x, String _y, String _z, String _t, String _u)
 		{
-			super(_x, _y, _z, _t);
+			super(_x, _y, _z, _t, _u);
 		}
 	}
 
@@ -77,7 +76,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeQuery("SELECT `catalog`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
+			RowSet rowSet = driver.executeQuery("SELECT `externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CATALOGS                                                */
@@ -90,9 +89,10 @@ public class CatalogSingleton
 					addCatalog(
 						row.getValue(0),
 						row.getValue(1),
-						SecuritySingleton.decrypt(row.getValue(2)),
+						row.getValue(2),
 						SecuritySingleton.decrypt(row.getValue(3)),
-						row.getValue(4)
+						SecuritySingleton.decrypt(row.getValue(4)),
+						row.getValue(5)
 					);
 				}
 				catch(Exception e)
@@ -119,16 +119,17 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addCatalog(String catalog, String jdbcUrl, String user, String pass, String archived) throws Exception
+	private static void addCatalog(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String archived) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ADD CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
 
 		s_catalogs.put(
-			catalog
+			externalCatalog
 			,
 			new Tuple(
+				internalCatalog,
 				jdbcUrl,
 				user,
 				pass,
@@ -142,16 +143,7 @@ public class CatalogSingleton
 
 		if(DriverSingleton.isTypeOf(jdbcUrl, Jdbc.Type.SQL))
 		{
-			Connection connection = DriverManager.getConnection(jdbcUrl, user, pass);
-
-			try
-			{
-				SchemaSingleton.addSchema(connection, catalog);
-			}
-			finally
-			{
-				connection.close();
-			}
+			SchemaSingleton.addSchema(internalCatalog, externalCatalog);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -168,7 +160,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.getConnection(catalog, tuple.x, tuple.y, tuple.z);
+		return DriverSingleton.getConnection(catalog, tuple.y, tuple.z, tuple.t);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -182,7 +174,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.isTypeOf(tuple.x, jdbcType);
+		return DriverSingleton.isTypeOf(tuple.y, jdbcType);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -196,7 +188,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.getKey(tuple.x, tuple.y);
+		return DriverSingleton.getKey(tuple.y, tuple.z);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -211,8 +203,9 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String catalog;
+		String externalCatalog;
 
+		String internalCatalog;
 		String jdbcUrl;
 		String user;
 		String pass;
@@ -220,15 +213,17 @@ public class CatalogSingleton
 
 		for(Map.Entry<String, Tuple> entry: s_catalogs.entrySet())
 		{
-			catalog = entry.getKey();
+			externalCatalog = entry.getKey();
 
-			jdbcUrl = entry.getValue().x;
-			user = entry.getValue().y;
-			pass = entry.getValue().z;
-			archived = entry.getValue().t;
+			internalCatalog = entry.getValue().x;
+			jdbcUrl = entry.getValue().y;
+			user = entry.getValue().z;
+			pass = entry.getValue().t;
+			archived = entry.getValue().u;
 
 			result.append("<row>")
-			      .append("<field name=\"catalog\"><![CDATA[").append(catalog).append("]]></field>")
+			      .append("<field name=\"externalCatalog\"><![CDATA[").append(externalCatalog).append("]]></field>")
+			      .append("<field name=\"internalCatalog\"><![CDATA[").append(internalCatalog).append("]]></field>")
 			      .append("<field name=\"jdbcUrl\"><![CDATA[").append(jdbcUrl).append("]]></field>")
 			      .append("<field name=\"user\"><![CDATA[").append(user).append("]]></field>")
 			      .append("<field name=\"pass\"><![CDATA[").append(pass).append("]]></field>")

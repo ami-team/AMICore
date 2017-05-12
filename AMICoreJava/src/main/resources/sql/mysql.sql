@@ -34,7 +34,8 @@ ALTER TABLE `router_config` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE `router_catalog` (
   `id` INT(11) NOT NULL,
-  `catalog` VARCHAR(128) NOT NULL,
+  `externalcatalog` VARCHAR(128) NOT NULL,
+  `internalCatalog` VARCHAR(128) NOT NULL,
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
@@ -45,7 +46,7 @@ CREATE TABLE `router_catalog` (
 
 ALTER TABLE `router_catalog`
   ADD CONSTRAINT `pk_router_catalog` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_catalog` UNIQUE KEY (`catalog`)
+  ADD CONSTRAINT `uk1_router_catalog` UNIQUE KEY (`externalcatalog`)
 ;
 
 ALTER TABLE `router_catalog` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
