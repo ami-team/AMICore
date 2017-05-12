@@ -26,7 +26,7 @@ public class SecuritySingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class PEMTupleXZY
+	private static final class PEMTupleXZY
 	{
 		public final List<StringBuilder> x;
 		public final List<StringBuilder> y;
@@ -42,7 +42,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class PEMTuple
+	public static final class PEMTuple
 	{
 		public final PrivateKey[] privateKeys;
 		public final PublicKey[] publicKeys;

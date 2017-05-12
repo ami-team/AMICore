@@ -20,7 +20,7 @@ public class LogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class FatalAppender extends AppenderBase<ILoggingEvent>
+	public static final class FatalAppender extends AppenderBase<ILoggingEvent>
 	{
 		/*-----------------------------------------------------------------*/
 

@@ -13,7 +13,7 @@ public class LocalizationSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class Localization
+	public static final class Localization
 	{
 		public final String continentCode;
 		public final String countryCode;

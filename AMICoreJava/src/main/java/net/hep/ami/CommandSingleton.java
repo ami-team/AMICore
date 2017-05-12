@@ -14,7 +14,7 @@ public class CommandSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple3<String, String, Constructor<AbstractCommand>>
+	private static final class Tuple extends Tuple3<String, String, Constructor<AbstractCommand>>
 	{
 		public Tuple(String _x, String _y, Constructor<AbstractCommand> _z)
 		{
@@ -24,7 +24,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_commands = new AMIHashMap<>();
+	private static final Map<String, Tuple> s_commands = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 

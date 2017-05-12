@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class AMIHashMap<U> implements Map<String, U>, Serializable
+public class AMIMap<U> implements Map<String, U>, Serializable
 {
 	/*---------------------------------------------------------------------*/
 
@@ -58,14 +58,14 @@ public class AMIHashMap<U> implements Map<String, U>, Serializable
 
 	/*---------------------------------------------------------------------*/
 
-	public AMIHashMap()
+	public AMIMap()
 	{
 		this(Type.CONCURENT_HASH_MAP, true, false);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public AMIHashMap(Type type, boolean isOrdered, boolean isCaseInsensitive)
+	public AMIMap(Type type, boolean isOrdered, boolean isCaseInsensitive)
 	{
 		m_isOrdered = isOrdered;
 

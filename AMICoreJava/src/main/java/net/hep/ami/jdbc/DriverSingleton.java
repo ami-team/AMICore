@@ -13,7 +13,7 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple4<Jdbc.Type, String, String, Constructor<AbstractDriver>>
+	private static final class Tuple extends Tuple4<Jdbc.Type, String, String, Constructor<AbstractDriver>>
 	{
 		public Tuple(Jdbc.Type _x, String _y, String _z, Constructor<AbstractDriver> _t)
 		{
@@ -23,7 +23,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_drivers = new AMIHashMap<>();
+	private static final Map<String, Tuple> s_drivers = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 

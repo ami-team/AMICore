@@ -74,17 +74,17 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIHashMap<>();
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIHashMap<>();
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>();
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIHashMap<>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new AMIHashMap<>();
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>();
+	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> s_reverse  = new AMIHashMap<>();
+	private static final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> s_reverse  = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -133,8 +133,8 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		s_columns.put(externalCatalog, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
-		s_frgnKeys.put(externalCatalog, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
+		s_columns.put(externalCatalog, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+		s_frgnKeys.put(externalCatalog, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -158,8 +158,8 @@ public class SchemaSingleton
 			{
 				/*---------------------------------------------------------*/
 
-				Map<String, Map<String, Column>> tmp1 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
-				Map<String, Map<String, FrgnKey>> tmp2 = new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true);
+				Map<String, Map<String, Column>> tmp1 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
+				Map<String, Map<String, FrgnKey>> tmp2 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
 
 				/*--------------------------------------------------------*/
 
@@ -206,6 +206,49 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static void buildReverseTable()
+	{
+		/*-----------------------------------------------------------------*/
+
+		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(s_columns).entrySet())
+		{
+			s_reverse.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
+			;
+
+			for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
+			{
+				s_reverse.get(entry1.getKey())
+				         .put(entry2.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
+				;
+
+				for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
+				{
+					s_reverse.get(entry1.getKey())
+					         .get(entry2.getKey())
+					         .put(entry3.getKey(), new ArrayList<FrgnKey>())
+					;
+				}
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		for(Map<String, Map<String, FrgnKey>> value1: s_frgnKeys.values())
+		for(Map<String, FrgnKey> value2: value1.values())
+		for(FrgnKey frgnKey: value2.values())
+		{
+			s_reverse.get(frgnKey.pkExternalCatalog)
+			         .get(frgnKey.pkTable)
+			         .get(frgnKey.pkColumn)
+			         .add(frgnKey)
+			;
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void rebuildSchemaCache()
 	{
 		/*-----------------------------------------------------------------*/
@@ -232,39 +275,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(s_columns).entrySet())
-		{
-			s_reverse.put(entry1.getKey(), new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true))
-			;
-
-			for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
-			{
-				s_reverse.get(entry1.getKey())
-				         .put(entry2.getKey(), new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true))
-				;
-
-				for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
-				{
-					s_reverse.get(entry1.getKey())
-					         .get(entry2.getKey())
-					         .put(entry3.getKey(), new ArrayList<FrgnKey>())
-					;
-				}
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		for(Map<String, Map<String, FrgnKey>> value1: s_frgnKeys.values())
-		for(Map<String, FrgnKey> value2: value1.values())
-		for(FrgnKey frgnKey: value2.values())
-		{
-			s_reverse.get(frgnKey.pkExternalCatalog)
-			         .get(frgnKey.pkTable)
-			         .get(frgnKey.pkColumn)
-			         .add(frgnKey)
-			;
-		}
+		buildReverseTable();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -424,8 +435,8 @@ public class SchemaSingleton
 					   &&
 					   name.startsWith("x_db_") == false
 					 ) {
-						tmp1.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
-						tmp2.put(name, new AMIHashMap<>(AMIHashMap.Type.LINKED_HASH_MAP, false, true));
+						tmp1.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+						tmp2.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
 
 						tables.add(name);
 					}

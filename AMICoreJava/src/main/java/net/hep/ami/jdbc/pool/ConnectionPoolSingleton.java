@@ -12,7 +12,7 @@ public class ConnectionPoolSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple2<HikariDataSource, HikariPoolMXBean>
+	private static final class Tuple extends Tuple2<HikariDataSource, HikariPoolMXBean>
 	{
 		public Tuple(HikariDataSource _x, HikariPoolMXBean _y)
 		{

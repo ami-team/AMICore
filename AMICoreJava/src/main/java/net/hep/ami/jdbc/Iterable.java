@@ -9,15 +9,18 @@ public final class Iterable implements java.lang.Iterable<Row>
 {
 	/*---------------------------------------------------------------------*/
 
-	private RowSet m_rowSet;
+	private final RowSet m_rowSet;
 
-	private boolean m_hasNext;
+	/*---------------------------------------------------------------------*/
+
+	private final int m_limit;
+	private final int m_offset;
 
 	/*---------------------------------------------------------------------*/
 
 	private int m_i;
-	private int m_limit;
-	private int m_offset;
+
+	private boolean m_hasNext;
 
 	/*---------------------------------------------------------------------*/
 
@@ -27,13 +30,16 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 		m_rowSet = rowSet;
 
-		m_hasNext = false;
+		/*-----------------------------------------------------------------*/
+
+		m_limit = Integer.MAX_VALUE;
+		m_offset = 0x0000000000000000;
 
 		/*-----------------------------------------------------------------*/
 
 		m_i = 0;
-		m_limit = Integer.MAX_VALUE;
-		m_offset = 0x0000000000000000;
+
+		m_hasNext = false;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -46,13 +52,16 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 		m_rowSet = rowSet;
 
-		m_hasNext = false;
+		/*-----------------------------------------------------------------*/
+
+		m_limit = limit;
+		m_offset = offset;
 
 		/*-----------------------------------------------------------------*/
 
 		m_i = 0;
-		m_limit = limit;
-		m_offset = offset;
+
+		m_hasNext = false;
 
 		/*-----------------------------------------------------------------*/
 	}

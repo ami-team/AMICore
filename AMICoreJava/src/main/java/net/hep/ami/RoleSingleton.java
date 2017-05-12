@@ -12,8 +12,8 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<CommandValidator>> s_roleValidators = new AMIHashMap<>();
-	private static final Map<String, Class<NewUserValidator>> s_userValidators = new AMIHashMap<>();
+	private static final Map<String, Class<CommandValidator>> s_roleValidators = new AMIMap<>();
+	private static final Map<String, Class<NewUserValidator>> s_userValidators = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 

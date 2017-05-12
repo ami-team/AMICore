@@ -6,7 +6,7 @@ public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class SQLJoins
+	public static final class SQLJoins
 	{
 		public final String from;
 		public final String where;
@@ -37,7 +37,7 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static class SQLFieldValue
+	public static final class SQLFieldValue
 	{
 		public final String field;
 		public final String value;

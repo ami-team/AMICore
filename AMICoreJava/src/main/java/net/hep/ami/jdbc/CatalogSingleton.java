@@ -12,7 +12,7 @@ public class CatalogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple5<String, String, String, String, String>
+	private static final class Tuple extends Tuple5<String, String, String, String, String>
 	{
 		public Tuple(String _x, String _y, String _z, String _t, String _u)
 		{
@@ -22,7 +22,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_catalogs = new AMIHashMap<>();
+	private static final Map<String, Tuple> s_catalogs = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 

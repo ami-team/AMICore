@@ -14,7 +14,7 @@ public class ConverterSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static class Tuple extends Tuple2<Templates, String>
+	private static final class Tuple extends Tuple2<Templates, String>
 	{
 		public Tuple(Templates _x, String _y)
 		{
@@ -24,7 +24,7 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_converters = new AMIHashMap<>();
+	private static final Map<String, Tuple> s_converters = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 
