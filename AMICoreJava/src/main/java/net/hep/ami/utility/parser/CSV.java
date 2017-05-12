@@ -98,12 +98,5 @@ public class CSV
 		return parser.file().v;
 	}
 
-	public static void main(String[] args) throws Exception
-	{
-		System.out.println(CSV.parseAsList("a,b\n\nc,d"));
-
-		System.exit(0);
-	}
-
 	/*---------------------------------------------------------------------*/
 }

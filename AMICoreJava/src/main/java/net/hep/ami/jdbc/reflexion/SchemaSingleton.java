@@ -471,9 +471,9 @@ public class SchemaSingleton
 			/*-------------------------------------------------------------*/
 			/* GET METADATA OBJECT                                         */
 			/*-------------------------------------------------------------*/
-System.out.println("33");
+
 			DatabaseMetaData metaData = connection.getMetaData();
-System.out.println("44");
+
 			/*-------------------------------------------------------------*/
 			/* LOAD METADATA FROM DATABASE                                 */
 			/*-------------------------------------------------------------*/
