@@ -36,7 +36,7 @@ public class TransactionPoolSingleton
 		   ||
 		   transactionId >= s_lastId.get()
 		 ) {
-			throw new Exception("invalid transaction identifier (" + transactionId + " - " + s_lastId.get() + "-1)");
+			throw new Exception("invalid transaction identifier (" + transactionId + " - " + s_lastId.get() + ")");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -83,7 +83,7 @@ public class TransactionPoolSingleton
 		   ||
 		   transactionId >= s_lastId.get()
 		 ) {
-			throw new Exception("invalid transaction identifier (" + transactionId + " - " + s_lastId.get() + "-2)");
+			throw new Exception("invalid transaction identifier (" + transactionId + " - " + s_lastId.get() + ")");
 		}
 
 		/*-----------------------------------------------------------------*/
