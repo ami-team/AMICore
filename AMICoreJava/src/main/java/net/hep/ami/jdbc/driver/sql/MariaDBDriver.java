@@ -5,15 +5,15 @@ import net.hep.ami.jdbc.driver.annotation.*;
 
 @Jdbc(
 	type = Jdbc.Type.SQL,
-	proto = "jdbc:mysql",
-	clazz = "com.mysql.jdbc.Driver"
+	proto = "jdbc:mariadb",
+	clazz = "org.mariadb.jdbc.Driver"
 )
 
-public class MySQLDriver extends AbstractDriver
+public class MariaDBDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public MySQLDriver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public MariaDBDriver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}
