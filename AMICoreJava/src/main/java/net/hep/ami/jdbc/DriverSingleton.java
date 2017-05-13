@@ -13,9 +13,9 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple5<String, Jdbc.Type, String, String, Constructor<AbstractDriver>>
+	private static final class Tuple extends Tuple5<Jdbc.Type, String, String, String, Constructor<AbstractDriver>>
 	{
-		public Tuple(String _x, Jdbc.Type _y, String _z, String _t, Constructor<AbstractDriver> _u)
+		public Tuple(Jdbc.Type _x, String _y, String _z, String _t, Constructor<AbstractDriver> _u)
 		{
 			super(_x, _y, _z, _t, _u);
 		}
@@ -113,8 +113,8 @@ public class DriverSingleton
 				jdbc.proto()
 				,
 				new Tuple(
-					jdbc.proto(),
 					jdbc.type(),
+					jdbc.proto(),
 					jdbc.clazz(),
 					clazz.getName(),
 					clazz.getConstructor(
@@ -169,7 +169,7 @@ public class DriverSingleton
 
 	public static boolean isTypeOf(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
 	{
-		return getDriver(jdbcUrl).y == jdbcType;
+		return getDriver(jdbcUrl).x == jdbcType;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -194,8 +194,8 @@ public class DriverSingleton
 		for(Tuple tuple: s_drivers.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"jdbcProto\"><![CDATA[").append(tuple.x).append("]]></field>")
-			      .append("<field name=\"jdbcType\"><![CDATA[").append(tuple.y).append("]]></field>")
+			      .append("<field name=\"jdbcType\"><![CDATA[").append(tuple.x).append("]]></field>")
+			      .append("<field name=\"jdbcProto\"><![CDATA[").append(tuple.y).append("]]></field>")
 			      .append("<field name=\"jdbcClass\"><![CDATA[").append(tuple.z).append("]]></field>")
 			      .append("<field name=\"driverClass\"><![CDATA[").append(tuple.t).append("]]></field>")
 			      .append("</row>")
