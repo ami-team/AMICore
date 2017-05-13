@@ -142,7 +142,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return patchSQL(Parser.parse(mql, this.m_externalCatalog));
+			return patchSQL(MQLToSQL.parse(mql, this.m_externalCatalog));
 		}
 		else
 		{

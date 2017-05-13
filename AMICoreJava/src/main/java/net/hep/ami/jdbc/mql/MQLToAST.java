@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.tree.*;
 import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-public class Parser
+public class MQLToAST
 {
 	/*---------------------------------------------------------------------*/
 
@@ -20,7 +20,7 @@ public class Parser
 
 	/*---------------------------------------------------------------------*/
 
-	public Parser(String catalog)
+	public MQLToAST(String catalog)
 	{
 		m_catalog = catalog;
 	}
@@ -41,7 +41,7 @@ public class Parser
 
 		/*-----------------------------------------------------------------*/
 
-		return new Parser(catalog).visitSelectStatement(parser.selectStatement()).toString();
+		return new MQLToAST(catalog).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}
