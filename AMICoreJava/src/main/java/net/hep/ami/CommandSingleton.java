@@ -348,18 +348,18 @@ public class CommandSingleton
 
 			stringBuilder.append("<executionTime>0.000</executionTime>");
 
-			if(tuple.x != null)
+			if(tuple.y != null)
 			{
 				stringBuilder.append("<help><![CDATA[")
-				             .append(s_xml10Pattern.matcher(tuple.x).replaceAll("?"))
+				             .append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"))
 				             .append("]]></help>")
 				;
 			}
 
-			if(tuple.y != null)
+			if(tuple.z != null)
 			{
 				stringBuilder.append("<usage><![CDATA[")
-				             .append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"))
+				             .append(s_xml10Pattern.matcher(tuple.z).replaceAll("?"))
 				             .append("]]></usage>")
 				;
 			}
