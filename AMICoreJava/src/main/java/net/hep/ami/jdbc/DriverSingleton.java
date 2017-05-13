@@ -13,9 +13,9 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple5<Jdbc.Type, String, String, String, Constructor<AbstractDriver>>
+	private static final class Tuple extends Tuple5<Jdbc.Type, String, String, String, Constructor<?>>
 	{
-		public Tuple(Jdbc.Type _x, String _y, String _z, String _t, Constructor<AbstractDriver> _u)
+		public Tuple(Jdbc.Type _x, String _y, String _z, String _t, Constructor<?> _u)
 		{
 			super(_x, _y, _z, _t, _u);
 		}
@@ -85,8 +85,6 @@ public class DriverSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unchecked")
-	/*---------------------------------------------------------------------*/
 
 	private static void addDriver(String className) throws Exception
 	{
@@ -94,39 +92,43 @@ public class DriverSingleton
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<AbstractDriver> clazz = (Class<AbstractDriver>) Class.forName(className);
+		Class<?> clazz = Class.forName(className);
+
+		if(ClassSingleton.extendsClass(clazz, AbstractDriver.class) == false)
+		{
+			throw new Exception("class '" + className + "' doesn't extend 'AbstractDriver'");
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* ADD DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassSingleton.extendsClass(clazz, AbstractDriver.class))
+		Jdbc jdbc = clazz.getAnnotation(Jdbc.class);
+
+		if(jdbc == null)
 		{
-			Jdbc jdbc = clazz.getAnnotation(Jdbc.class);
-
-			if(jdbc == null)
-			{
-				throw new Exception("no `Jdbc` annotation for driver `" + clazz.getName() + "`");
-			}
-
-			s_drivers.put(
-				jdbc.proto()
-				,
-				new Tuple(
-					jdbc.type(),
-					jdbc.proto(),
-					jdbc.clazz(),
-					clazz.getName(),
-					clazz.getConstructor(
-						String.class,
-						String.class,
-						String.class,
-						String.class,
-						String.class
-					)
-				)
-			);
+			throw new Exception("no `Jdbc` annotation for driver `" + className + "`");
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		s_drivers.put(
+			jdbc.proto()
+			,
+			new Tuple(
+				jdbc.type(),
+				jdbc.proto(),
+				jdbc.clazz(),
+				clazz.getName(),
+				clazz.getConstructor(
+					String.class,
+					String.class,
+					String.class,
+					String.class,
+					String.class
+				)
+			)
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -162,7 +164,7 @@ public class DriverSingleton
 
 	public static AbstractDriver getConnection(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return getDriver(jdbcUrl).u.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass);
+		return (AbstractDriver) getDriver(jdbcUrl).u.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -298,8 +298,7 @@ public class LocalizationSingleton
 		/*-----------------------------------------------------------------*/
 
 		return new Localization(
-			row.getValue(0)
-			,
+			row.getValue(0),
 			row.getValue(1)
 		);
 

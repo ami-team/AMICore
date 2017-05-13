@@ -129,7 +129,7 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract String patch(String sql) throws Exception;
+	public abstract String patchSQL(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -137,11 +137,12 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public String mqlToSql(String mql) throws Exception
+	@Override
+	public String mqlToSQL(String mql) throws Exception
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return Parser.parse(mql, this.m_externalCatalog);
+			return patchSQL(Parser.parse(mql, this.m_externalCatalog));
 		}
 		else
 		{
@@ -156,9 +157,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			/*-----------------------*/
-
-			return new RowSet(m_statement.executeQuery(patch(sql)), sql, null);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), sql, null);
 		}
 		catch(Exception e)
 		{
@@ -173,9 +172,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			String sql = mqlToSql(mql);
-
-			return new RowSet(m_statement.executeQuery(patch(sql)), sql, null);
+			return new RowSet(m_statement.executeQuery(mqlToSQL(mql)), mql, null);
 		}
 		catch(Exception e)
 		{
@@ -190,7 +187,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			return m_statement.executeUpdate(patch(sql));
+			return m_statement.executeUpdate(patchSQL(sql));
 		}
 		catch(Exception e)
 		{
@@ -205,7 +202,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			String SQL = patch(sql);
+			String SQL = patchSQL(sql);
 
 			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 
@@ -229,7 +226,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			String SQL = patch(sql);
+			String SQL = patchSQL(sql);
 
 			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 

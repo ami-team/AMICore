@@ -8,6 +8,10 @@ public interface Querier
 {
 	/*---------------------------------------------------------------------*/
 
+	public String mqlToSQL(String mql) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
 	public RowSet executeQuery(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/

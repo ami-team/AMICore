@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.regex.*;
 import java.lang.reflect.*;
 
+import net.hep.ami.command.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -14,9 +14,9 @@ public class CommandSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple4<String, String, String, Constructor<AbstractCommand>>
+	private static final class Tuple extends Tuple4<String, String, String, Constructor<?>>
 	{
-		public Tuple(String _x, String _y, String _z, Constructor<AbstractCommand> _t)
+		public Tuple(String _x, String _y, String _z, Constructor<?> _t)
 		{
 			super(_x, _y, _z, _t);
 		}
@@ -120,8 +120,6 @@ public class CommandSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unchecked")
-	/*---------------------------------------------------------------------*/
 
 	private static void addCommand(String commandName, String className) throws Exception
 	{
@@ -129,65 +127,94 @@ public class CommandSingleton
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<AbstractCommand> clazz = (Class<AbstractCommand>) Class.forName(className);
+		Class<?> clazz = Class.forName(className);
+
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
+		{
+			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class))
-		{
-			s_commands.put(
-				commandName
-				,
-				new Tuple(
-					commandName,
-					clazz.getMethod("help").invoke(null).toString(),
-					clazz.getMethod("usage").invoke(null).toString(),
-					clazz.getConstructor(
-						Map.class,
-						long.class
-					)
+		s_commands.put(
+			commandName
+			,
+			new Tuple(
+				commandName,
+				clazz.getMethod("help").invoke(null).toString(),
+				clazz.getMethod("usage").invoke(null).toString(),
+				clazz.getConstructor(
+					Map.class,
+					long.class
 				)
-			);
-		}
+			)
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unchecked")
-	/*---------------------------------------------------------------------*/
 
-	public static boolean registerCommand(Querier querier, String className) throws Exception
+	public static void registerCommand(Querier querier, @Nullable String commandName, String className) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<AbstractCommand> clazz = (Class<AbstractCommand>) Class.forName(className);
+		Class<?> clazz = Class.forName(className);
+
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
+		{
+			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* REGISTER COMMAND                                                */
 		/*-----------------------------------------------------------------*/
 
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class))
+		if(commandName == null)
 		{
-			String simpleName = clazz.getSimpleName();
-			String name = clazz.getName();
-
-			querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `command`='%s'",
-				simpleName,
-				name,
-				simpleName
-			));
-
-			return true;
+			commandName = clazz.getName();
 		}
-		else
+
+		querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `command` = '%s'",
+			commandName,
+			className,
+			commandName
+		));
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void unregisterCommand(Querier querier,  @Nullable String commandName, String className) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* GET CLASS OBJECT                                                */
+		/*-----------------------------------------------------------------*/
+
+		Class<?> clazz = Class.forName(className);
+
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
-			return false;
+			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
 		}
+
+		/*-----------------------------------------------------------------*/
+		/* UNREGISTER COMMAND                                              */
+		/*-----------------------------------------------------------------*/
+
+		if(commandName == null)
+		{
+			commandName = clazz.getName();
+		}
+
+		querier.executeUpdate(String.format("DELETE FROM `router_command` WHERE `simpleName` = `%s`",
+			commandName
+		));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -282,16 +309,18 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+		             .append("\n")
+		             .append("<AMIMessage>")
+		             .append("<command><![CDATA[").append(command).append("]]></command>")
+		;
 
-		stringBuilder.append("<AMIMessage>");
-
-		stringBuilder.append("<command><![CDATA[").append(command).append("]]></command>");
-
-		stringBuilder.append("<arguments>");
+		/*-----------------------------------------------------------------*/
 
 		String key;
 		String value;
+
+		stringBuilder.append("<arguments>");
 
 		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
@@ -312,13 +341,15 @@ public class CommandSingleton
 
 		stringBuilder.append("</arguments>");
 
+		/*-----------------------------------------------------------------*/
+
 		if(arguments.containsKey("help") == false)
 		{
 			/*-------------------------------------------------------------*/
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
 
-			AbstractCommand commandObject = tuple.t.newInstance(
+			AbstractCommand commandObject = (AbstractCommand) tuple.t.newInstance(
 				arguments,
 				transactionId
 			);
@@ -367,6 +398,8 @@ public class CommandSingleton
 			/*-------------------------------------------------------------*/
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		stringBuilder.append("</AMIMessage>");
 
 		/*-----------------------------------------------------------------*/
@@ -404,68 +437,6 @@ public class CommandSingleton
 		/*-----------------------------------------------------------------*/
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	static public void main(String[] args)
-	{
-		/*-----------------------------------------------------------------*/
-		/* SHELL BARRIER                                                   */
-		/*-----------------------------------------------------------------*/
-
-		int idx, l;
-
-		String left, right;
-
-		StringBuilder stringBuilder = new StringBuilder();
-
-		for(String arg: args)
-		{
-			idx = arg.indexOf('=');
-
-			if(idx != -1)
-			{
-				l = arg.length();
-
-				left = arg.substring(0, idx + 0);
-				right = arg.substring(idx + 1, l);
-
-				l = right.length();
-
-				if(l >= 2
-				   &&
-				   (right.charAt(0) != '\'' || right.charAt(l - 1) != '\'')
-				   &&
-				   (right.charAt(0) != '\"' || right.charAt(l - 1) != '\"')
-				 ) {
-					arg = left + "=\"" + right + "\"";
-				}
-			}
-
-			stringBuilder.append(" ")
-			             .append(arg)
-			;
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE COMMAND                                                 */
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			System.out.println(CommandSingleton.executeCommand(stringBuilder.toString(), false, -1));
-
-			System.exit(0);
-		}
-		catch(Exception e)
-		{
-			System.err.println(e.getMessage());
-
-			System.exit(1);
-		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

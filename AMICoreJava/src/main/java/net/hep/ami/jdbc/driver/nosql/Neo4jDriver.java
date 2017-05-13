@@ -29,7 +29,7 @@ public class Neo4jDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String patch(String sql) throws Exception
+	public String patchSQL(String sql) throws Exception
 	{
 		return sql;
 	}

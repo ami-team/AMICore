@@ -315,7 +315,11 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			driver.executeUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('" + SecuritySingleton.encrypt(name).replace("'", "''") + "', '" + SecuritySingleton.encrypt(value).replace("'", "''") + "')");
+			driver.executeUpdate(String.format("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `paramName`='%s'",
+				SecuritySingleton.encrypt(name).replace("'", "''"),
+				SecuritySingleton.encrypt(value).replace("'", "''"),
+				SecuritySingleton.encrypt(name).replace("'", "''")
+			));
 
 			/*-------------------------------------------------------------*/
 		}
@@ -351,7 +355,9 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			driver.executeUpdate("DELETE FROM `router_config` WHERE `paramName` = '" + SecuritySingleton.encrypt(name).replace("'", "''") + "'");
+			driver.executeUpdate(String.format("DELETE FROM `router_config` WHERE `paramName` = '%s'",
+				SecuritySingleton.encrypt(name).replace("'", "''")
+			));
 
 			/*-------------------------------------------------------------*/
 		}
@@ -679,22 +685,28 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"paths\"><row>")
+		result.append("<rowset type=\"paths\">")
+		      .append("<row>")
 		      .append("<field name=\"configPathName\"><![CDATA[").append(s_configPathName).append("]]></field>")
 		      .append("<field name=\"configFileName\"><![CDATA[").append(s_configFileName).append("]]></field>")
-		      .append("</row></rowset>")
+		      .append("</row>")
+		      .append("</rowset>")
 		;
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"config\"><row>");
+		result.append("<rowset type=\"config\">")
+		      .append("<row>")
+		;
 
 		for(Map.Entry<String, String> entry: s_properties.entrySet())
 		{
 			result.append("<field name=\"").append(entry.getKey()).append("\"><![CDATA[").append(entry.getValue()).append("]]></field>");
 		}
 
-		result.append("</row></rowset>");
+		result.append("</row>")
+		      .append("</rowset>")
+		;
 
 		/*-----------------------------------------------------------------*/
 

@@ -12,8 +12,8 @@ public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Class<CommandValidator>> s_roleValidators = new AMIMap<>();
-	private static final Map<String, Class<NewUserValidator>> s_userValidators = new AMIMap<>();
+	private static final Map<String, Class<?>> s_roleValidators = new AMIMap<>();
+	private static final Map<String, Class<?>> s_userValidators = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -54,8 +54,6 @@ public class RoleSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unchecked")
-	/*---------------------------------------------------------------------*/
 
 	private static void addValidator(String className) throws Exception
 	{
@@ -71,7 +69,7 @@ public class RoleSingleton
 
 		/**/ if(ClassSingleton.extendsClass(clazz, CommandValidator.class))
 		{
-			s_roleValidators.put(clazz.getName(), (Class<CommandValidator>) clazz);
+			s_roleValidators.put(clazz.getName(), clazz);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -80,8 +78,14 @@ public class RoleSingleton
 
 		else if(ClassSingleton.extendsClass(clazz, NewUserValidator.class))
 		{
-			s_userValidators.put(clazz.getName(), (Class<NewUserValidator>) clazz);
+			s_userValidators.put(clazz.getName(), clazz);
 		}
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		else throw new Exception("");
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -330,7 +334,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<CommandValidator> clazz = s_roleValidators.get(validator);
+		Class<?> clazz = s_roleValidators.get(validator);
 
 		if(clazz == null)
 		{
@@ -373,7 +377,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<NewUserValidator> clazz = s_userValidators.get(validator);
+		Class<?> clazz = s_userValidators.get(validator);
 
 		if(clazz == null)
 		{

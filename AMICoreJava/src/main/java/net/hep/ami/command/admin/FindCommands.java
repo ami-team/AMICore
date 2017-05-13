@@ -30,11 +30,19 @@ public class FindCommands extends AbstractCommand
 
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
-			if(CommandSingleton.registerCommand(querier, className))
+			try
 			{
+				CommandSingleton.registerCommand(querier, null, className);
+
 				commands.add(className);
 			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		CommandSingleton.reload();
 

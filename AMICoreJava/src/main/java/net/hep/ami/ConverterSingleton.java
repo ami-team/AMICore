@@ -88,8 +88,7 @@ public class ConverterSingleton
 				try
 				{
 					addConverter(
-						row.getValue(0)
-						,
+						row.getValue(0),
 						row.getValue(1)
 					);
 				}

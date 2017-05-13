@@ -164,7 +164,14 @@ public class Router extends SimpleQuerier
 
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
-			CommandSingleton.registerCommand(this, className);
+			try
+			{
+				CommandSingleton.registerCommand(this, null, className);
+			}
+			catch(Exception e)
+			{
+				LogSingleton.root.error(e.getMessage(), e);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

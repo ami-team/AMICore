@@ -42,6 +42,14 @@ public class SimpleQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public String mqlToSQL(String mql) throws Exception
+	{
+		return m_driver.mqlToSQL(mql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public RowSet executeQuery(String sql) throws Exception
 	{
 		return m_driver.executeQuery(sql);

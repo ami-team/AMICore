@@ -30,7 +30,7 @@ public class OracleDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String patch(String sql) throws Exception
+	public String patchSQL(String sql) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 

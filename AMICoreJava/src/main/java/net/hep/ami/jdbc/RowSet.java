@@ -10,7 +10,7 @@ public class RowSet
 
 	protected ResultSet m_resultSet;
 
-	private String m_sql;
+	private String m_xql;
 	private String m_ast;
 
 	/*---------------------------------------------------------------------*/
@@ -27,11 +27,11 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet, @Nullable String sql, @Nullable String ast) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String xql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
 
-		m_sql = sql;
+		m_xql = xql;
 		m_ast = ast;
 
 		/*-----------------------------------------------------------------*/
@@ -84,7 +84,7 @@ public class RowSet
 
 	public String getSQL()
 	{
-		return m_sql;
+		return m_xql;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -300,9 +300,9 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<sql><![CDATA[");
-		if(m_sql != null) result.append(m_sql);
-		result.append("]]></sql>");
+		result.append("<xql><![CDATA[");
+		if(m_xql != null) result.append(m_xql);
+		result.append("]]></xql>");
 
 		result.append("<ast><![CDATA[");
 		if(m_ast != null) result.append(m_ast);
