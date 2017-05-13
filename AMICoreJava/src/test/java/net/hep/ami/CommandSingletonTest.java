@@ -61,6 +61,9 @@ public class CommandSingletonTest
 			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
 
+			System.out.println(AutoJoinSingleton.class.getName());
+			System.out.println(AutoJoinSingleton.class.getSimpleName());
+
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 

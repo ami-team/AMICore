@@ -96,7 +96,7 @@ public class DriverSingleton
 
 		if(ClassSingleton.extendsClass(clazz, AbstractDriver.class) == false)
 		{
-			throw new Exception("class '" + className + "' doesn't extend 'AbstractDriver'");
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/

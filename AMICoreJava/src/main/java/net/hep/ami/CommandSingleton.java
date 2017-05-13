@@ -131,7 +131,7 @@ public class CommandSingleton
 
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
-			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -174,15 +174,12 @@ public class CommandSingleton
 		/* REGISTER COMMAND                                                */
 		/*-----------------------------------------------------------------*/
 
-		if(commandName == null)
-		{
-			commandName = clazz.getName();
-		}
+		if(commandName == null) commandName = clazz.getSimpleName();
 
 		querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `command` = '%s'",
-			commandName,
-			className,
-			commandName
+			commandName.replace("'", "''"),
+			className.replace("'", "''"),
+			commandName.replace("'", "''")
 		));
 
 		/*-----------------------------------------------------------------*/
@@ -190,33 +187,11 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void unregisterCommand(Querier querier,  @Nullable String commandName, String className) throws Exception
+	public static void unregisterCommand(Querier querier, String commandName) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET CLASS OBJECT                                                */
-		/*-----------------------------------------------------------------*/
-
-		Class<?> clazz = Class.forName(className);
-
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
-		{
-			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* UNREGISTER COMMAND                                              */
-		/*-----------------------------------------------------------------*/
-
-		if(commandName == null)
-		{
-			commandName = clazz.getName();
-		}
-
 		querier.executeUpdate(String.format("DELETE FROM `router_command` WHERE `simpleName` = `%s`",
-			commandName
+			commandName.replace("'", "''")
 		));
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

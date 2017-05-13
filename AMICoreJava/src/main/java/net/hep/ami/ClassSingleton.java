@@ -110,7 +110,7 @@ public class ClassSingleton
 	{
 		String classFile = base.toURI().relativize(file.toURI()).getPath();
 
-		addClassFile(classFile);
+		addClass(classFile);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -143,7 +143,7 @@ public class ClassSingleton
 				{
 					String classFile = entries.nextElement().getName();
 
-					addClassFile(classFile);
+					addClass(classFile);
 				}
 
 				/*---------------------------------------------------------*/
@@ -169,7 +169,7 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addClassFile(String classFile)
+	private static void addClass(String classFile)
 	{
 		if(classFile.endsWith(".class") && classFile.contains("$") == false)
 		{
