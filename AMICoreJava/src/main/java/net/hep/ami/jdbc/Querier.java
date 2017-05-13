@@ -12,6 +12,10 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
+	public String mqlToAST(String mql) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
 	public RowSet executeQuery(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/

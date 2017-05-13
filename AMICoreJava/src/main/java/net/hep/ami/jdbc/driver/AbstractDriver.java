@@ -153,6 +153,21 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public String mqlToAST(String mql) throws Exception
+	{
+		if(m_jdbcType == Jdbc.Type.SQL)
+		{
+			return /*----*/(MQLToAST.parse(mql, this.m_externalCatalog));
+		}
+		else
+		{
+			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public RowSet executeQuery(String sql) throws Exception
 	{
 		try

@@ -60,6 +60,14 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public String mqlToAST(String mql) throws Exception
+	{
+		return m_driver.mqlToAST(mql);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public RowSet executeQuery(String sql) throws Exception
 	{
 		return m_driver.executeQuery(sql);
