@@ -14,11 +14,11 @@ public class ConverterSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple2<Templates, String>
+	private static final class Tuple extends Tuple3<String, String, Templates>
 	{
-		public Tuple(Templates _x, String _y)
+		public Tuple(String _x, String _y, Templates _z)
 		{
-			super(_x, _y);
+			super(_x, _y, _z);
 		}
 	}
 
@@ -129,12 +129,15 @@ public class ConverterSingleton
 		/* ADD CONVERTER                                                   */
 		/*-----------------------------------------------------------------*/
 
+		String name = new File(xslt).getName();
+
 		s_converters.put(
-			new File(xslt).getName()
+			name
 			,
 			new Tuple(
-				templates,
-				mime
+				name,
+				mime,
+				templates
 			)
 		);
 
@@ -163,7 +166,7 @@ public class ConverterSingleton
 		Source source = new StreamSource(reader);
 		Result target = new StreamResult(writer);
 
-		Transformer transformer = tuple.x.newTransformer();
+		Transformer transformer = tuple.z.newTransformer();
 
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		transformer.transform(source, target);
@@ -189,17 +192,11 @@ public class ConverterSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String xslt;
-		String mime;
-
-		for(Map.Entry<String, Tuple> entry: s_converters.entrySet())
+		for(Tuple tuple: s_converters.values())
 		{
-			xslt = entry.getKey();
-			mime = entry.getValue().y;
-
 			result.append("<row>")
-			      .append("<field name=\"xslt\"><![CDATA[").append(xslt).append("]]></field>")
-			      .append("<field name=\"mime\"><![CDATA[").append(mime).append("]]></field>")
+			      .append("<field name=\"xslt\"><![CDATA[").append(tuple.x).append("]]></field>")
+			      .append("<field name=\"mime\"><![CDATA[").append(tuple.y).append("]]></field>")
 			      .append("</row>")
 			;
 		}

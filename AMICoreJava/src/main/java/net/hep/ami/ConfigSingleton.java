@@ -687,17 +687,11 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String name;
-		String value;
-
 		result.append("<rowset type=\"config\"><row>");
 
 		for(Map.Entry<String, String> entry: s_properties.entrySet())
 		{
-			name = entry.getKey();
-			value = entry.getValue();
-
-			result.append("<field name=\"").append(name).append("\"><![CDATA[").append(value).append("]]></field>");
+			result.append("<field name=\"").append(entry.getKey()).append("\"><![CDATA[").append(entry.getValue()).append("]]></field>");
 		}
 
 		result.append("</row></rowset>");

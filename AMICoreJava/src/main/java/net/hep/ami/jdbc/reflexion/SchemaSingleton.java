@@ -111,6 +111,9 @@ public class SchemaSingleton
 
 		s_columns.clear();
 		s_frgnKeys.clear();
+
+		/*-----------------------------------------------------------------*/
+
 		s_reverse.clear();
 
 		/*-----------------------------------------------------------------*/
@@ -800,19 +803,19 @@ public class SchemaSingleton
 			result.append(
 				"<row>"
 				+
-				"<field name=\"externalCatalog\">" + column.externalCatalog + "</field>"
+				"<field name=\"externalCatalog\"><![CDATA[" + column.externalCatalog + "]]></field>"
 				+
-				"<field name=\"internalCatalog\">" + column.internalCatalog + "</field>"
+				"<field name=\"internalCatalog\"><![CDATA[" + column.internalCatalog + "]]></field>"
 				+
-				"<field name=\"table\">" + column.table + "</field>"
+				"<field name=\"table\"><![CDATA[" + column.table + "]]></field>"
 				+
-				"<field name=\"name\">" + column.name + "</field>"
+				"<field name=\"name\"><![CDATA[" + column.name + "]]></field>"
 				+
-				"<field name=\"type\">" + column.type + "</field>"
+				"<field name=\"type\"><![CDATA[" + column.type + "]]></field>"
 				+
-				"<field name=\"size\">" + column.size + "</field>"
+				"<field name=\"size\"><![CDATA[" + column.size + "]]></field>"
 				+
-				"<field name=\"digits\">" + column.digits + "</field>"
+				"<field name=\"digits\"><![CDATA[" + column.digits + "]]></field>"
 				+
 				"</row>"
 			);
@@ -835,23 +838,23 @@ public class SchemaSingleton
 			result.append(
 				"<row>"
 				+
-				"<field name=\"name\">" + frgnKey.name + "</field>"
+				"<field name=\"name\"><![CDATA[" + frgnKey.name + "]]></field>"
 				+
-				"<field name=\"fkExternalCatalog\">" + frgnKey.fkExternalCatalog + "</field>"
+				"<field name=\"fkExternalCatalog\"><![CDATA[" + frgnKey.fkExternalCatalog + "]]></field>"
 				+
-				"<field name=\"fkInternalCatalog\">" + frgnKey.fkInternalCatalog + "</field>"
+				"<field name=\"fkInternalCatalog\"><![CDATA[" + frgnKey.fkInternalCatalog + "]]></field>"
 				+
-				"<field name=\"fkTable\">" + frgnKey.fkTable + "</field>"
+				"<field name=\"fkTable\"><![CDATA[" + frgnKey.fkTable + "]]></field>"
 				+
-				"<field name=\"fkColumn\">" + frgnKey.fkColumn + "</field>"
+				"<field name=\"fkColumn\"><![CDATA[" + frgnKey.fkColumn + "]]></field>"
 				+
-				"<field name=\"pkExternalCatalog\">" + frgnKey.pkExternalCatalog + "</field>"
+				"<field name=\"pkExternalCatalog\"><![CDATA[" + frgnKey.pkExternalCatalog + "]]></field>"
 				+
-				"<field name=\"pkInternalCatalog\">" + frgnKey.pkInternalCatalog + "</field>"
+				"<field name=\"pkInternalCatalog\"><![CDATA[" + frgnKey.pkInternalCatalog + "]]></field>"
 				+
-				"<field name=\"pkTable\">" + frgnKey.pkTable + "</field>"
+				"<field name=\"pkTable\"><![CDATA[" + frgnKey.pkTable + "]]></field>"
 				+
-				"<field name=\"pkColumn\">" + frgnKey.pkColumn + "</field>"
+				"<field name=\"pkColumn\"><![CDATA[" + frgnKey.pkColumn + "]]></field>"
 				+
 				"</row>"
 			);

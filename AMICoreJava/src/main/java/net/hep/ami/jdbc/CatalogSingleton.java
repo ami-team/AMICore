@@ -12,11 +12,11 @@ public class CatalogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple5<String, String, String, String, String>
+	private static final class Tuple extends Tuple6<String, String, String, String, String, String>
 	{
-		public Tuple(String _x, String _y, String _z, String _t, String _u)
+		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v)
 		{
-			super(_x, _y, _z, _t, _u);
+			super(_x, _y, _z, _t, _u, _v);
 		}
 	}
 
@@ -39,13 +39,15 @@ public class CatalogSingleton
 
 	public static void reload()
 	{
-		SchemaSingleton.clear();
-
 		s_catalogs.clear();
+
+		SchemaSingleton.clear();
 
 		try
 		{
-			addCatalogs();
+			CatalogSingleton.addCatalogs();
+
+			SchemaSingleton.rebuildSchemas();
 		}
 		catch(Exception e)
 		{
@@ -110,12 +112,6 @@ public class CatalogSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* REBUILD SCHEMA CACHE                                            */
-		/*-----------------------------------------------------------------*/
-
-		SchemaSingleton.rebuildSchemas();
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -130,6 +126,7 @@ public class CatalogSingleton
 			externalCatalog
 			,
 			new Tuple(
+				externalCatalog,
 				internalCatalog,
 				jdbcUrl,
 				user,
@@ -139,7 +136,7 @@ public class CatalogSingleton
 		);
 
 		/*-----------------------------------------------------------------*/
-		/* READ SCHEMA                                                     */
+		/* ADD SCHEMA                                                      */
 		/*-----------------------------------------------------------------*/
 
 		if(DriverSingleton.isTypeOf(jdbcUrl, Jdbc.Type.SQL))
@@ -161,7 +158,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.getConnection(catalog, tuple.x, tuple.y, tuple.z, tuple.t);
+		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.z, tuple.t, tuple.u);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -175,7 +172,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.isTypeOf(tuple.y, jdbcType);
+		return DriverSingleton.isTypeOf(tuple.z, jdbcType);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -189,7 +186,7 @@ public class CatalogSingleton
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return DriverSingleton.getKey(tuple.x, tuple.y, tuple.z, tuple.t);
+		return DriverSingleton.getKey(tuple.y, tuple.z, tuple.t, tuple.u);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -204,31 +201,15 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String externalCatalog;
-
-		String internalCatalog;
-		String jdbcUrl;
-		String user;
-		String pass;
-		String archived;
-
-		for(Map.Entry<String, Tuple> entry: s_catalogs.entrySet())
+		for(Tuple tuple: s_catalogs.values())
 		{
-			externalCatalog = entry.getKey();
-
-			internalCatalog = entry.getValue().x;
-			jdbcUrl = entry.getValue().y;
-			user = entry.getValue().z;
-			pass = entry.getValue().t;
-			archived = entry.getValue().u;
-
 			result.append("<row>")
-			      .append("<field name=\"externalCatalog\"><![CDATA[").append(externalCatalog).append("]]></field>")
-			      .append("<field name=\"internalCatalog\"><![CDATA[").append(internalCatalog).append("]]></field>")
-			      .append("<field name=\"jdbcUrl\"><![CDATA[").append(jdbcUrl).append("]]></field>")
-			      .append("<field name=\"user\"><![CDATA[").append(user).append("]]></field>")
-			      .append("<field name=\"pass\"><![CDATA[").append(pass).append("]]></field>")
-			      .append("<field name=\"archived\"><![CDATA[").append(archived).append("]]></field>")
+			      .append("<field name=\"externalCatalog\"><![CDATA[").append(tuple.x).append("]]></field>")
+			      .append("<field name=\"internalCatalog\"><![CDATA[").append(tuple.y).append("]]></field>")
+			      .append("<field name=\"jdbcUrl\"><![CDATA[").append(tuple.z).append("]]></field>")
+			      .append("<field name=\"user\"><![CDATA[").append(tuple.t).append("]]></field>")
+			      .append("<field name=\"pass\"><![CDATA[").append(tuple.u).append("]]></field>")
+			      .append("<field name=\"archived\"><![CDATA[").append(tuple.v).append("]]></field>")
 			      .append("</row>")
 			;
 		}

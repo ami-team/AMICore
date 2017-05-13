@@ -139,29 +139,15 @@ public class ConnectionPoolSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String poolName;
-		int poolSize;
-		int numIdle;
-		int numActive;
-		long connTimeout;
-		long idleTimeout;
-
 		for(Tuple value: s_pools.values())
 		{
-			poolName = value.x.getPoolName();
-			poolSize = value.x.getMaximumPoolSize();
-			numIdle = value.y.getIdleConnections();
-			numActive = value.y.getActiveConnections();
-			connTimeout = value.x.getConnectionTimeout();
-			idleTimeout = value.x.getIdleTimeout();
-
 			result.append("<row>")
-			      .append("<field name=\"poolName\">").append(poolName).append("</field>")
-			      .append("<field name=\"poolSize\">").append(poolSize).append("</field>")
-			      .append("<field name=\"numIdle\">").append(numIdle).append("</field>")
-			      .append("<field name=\"numActive\">").append(numActive).append("</field>")
-			      .append("<field name=\"connTimeout\">").append(connTimeout).append("</field>")
-			      .append("<field name=\"idleTimeout\">").append(idleTimeout).append("</field>")
+			      .append("<field name=\"poolName\">").append(value.x.getPoolName()).append("</field>")
+			      .append("<field name=\"poolSize\">").append(value.x.getMaximumPoolSize()).append("</field>")
+			      .append("<field name=\"numIdle\">").append(value.y.getIdleConnections()).append("</field>")
+			      .append("<field name=\"numActive\">").append(value.y.getActiveConnections()).append("</field>")
+			      .append("<field name=\"connTimeout\">").append(value.x.getConnectionTimeout()).append("</field>")
+			      .append("<field name=\"idleTimeout\">").append(value.x.getIdleTimeout()).append("</field>")
 			      .append("</row>")
 			;
 		}

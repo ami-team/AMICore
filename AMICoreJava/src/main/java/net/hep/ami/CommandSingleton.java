@@ -14,11 +14,11 @@ public class CommandSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple3<String, String, Constructor<AbstractCommand>>
+	private static final class Tuple extends Tuple4<String, String, String, Constructor<AbstractCommand>>
 	{
-		public Tuple(String _x, String _y, Constructor<AbstractCommand> _z)
+		public Tuple(String _x, String _y, String _z, Constructor<AbstractCommand> _t)
 		{
-			super(_x, _y, _z);
+			super(_x, _y, _z, _t);
 		}
 	}
 
@@ -141,6 +141,7 @@ public class CommandSingleton
 				commandName
 				,
 				new Tuple(
+					commandName,
 					clazz.getMethod("help").invoke(null).toString(),
 					clazz.getMethod("usage").invoke(null).toString(),
 					clazz.getConstructor(
@@ -317,7 +318,7 @@ public class CommandSingleton
 			/* CREATE COMMAND INSTANCE                                     */
 			/*-------------------------------------------------------------*/
 
-			AbstractCommand commandObject = tuple.z.newInstance(
+			AbstractCommand commandObject = tuple.t.newInstance(
 				arguments,
 				transactionId
 			);
@@ -385,25 +386,13 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		String command;
-
-		String help;
-		String usage;
-		String clazz;
-
-		for(Map.Entry<String, Tuple> entry: s_commands.entrySet())
+		for(Tuple tuple: s_commands.values())
 		{
-			command = entry.getKey();
-
-			help = entry.getValue().x.toString();
-			usage = entry.getValue().y.toString();
-			clazz = entry.getValue().z.getName();
-
 			result.append("<row>")
-			      .append("<field name=\"command\"><![CDATA[").append(command).append("]]></field>")
-			      .append("<field name=\"help\"><![CDATA[").append(help).append("]]></field>")
-			      .append("<field name=\"usage\"><![CDATA[").append(usage).append("]]></field>")
-			      .append("<field name=\"class\"><![CDATA[").append(clazz).append("]]></field>")
+			      .append("<field name=\"command\"><![CDATA[").append(tuple.x).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
+			      .append("<field name=\"usage\"><![CDATA[").append(tuple.z).append("]]></field>")
+			      .append("<field name=\"class\"><![CDATA[").append(tuple.t).append("]]></field>")
 			      .append("</row>")
 			;
 		}
