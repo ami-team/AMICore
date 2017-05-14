@@ -36,6 +36,7 @@ public class PostgreSQLDriver extends AbstractDriver
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void setDB(String db) throws Exception
 	{
 		/* EMPTY */

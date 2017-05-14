@@ -36,6 +36,7 @@ public class MySQLDriver extends AbstractDriver
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	@SuppressWarnings("deprecation")
 	public void setDB(String db) throws Exception
 	{

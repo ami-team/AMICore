@@ -36,6 +36,7 @@ public class Neo4jDriver extends AbstractDriver
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public void setDB(String db) throws Exception
 	{
 		/* TODO */
