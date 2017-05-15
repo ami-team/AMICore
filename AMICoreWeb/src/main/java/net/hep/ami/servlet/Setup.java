@@ -234,8 +234,7 @@ public class Setup extends HttpServlet
 			/* WRITE CONFIG FILE                                           */
 			/*-------------------------------------------------------------*/
 
-			FileWriter fileWriter = new FileWriter(ConfigSingleton.getConfigFileName());
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(ConfigSingleton.getConfigFileName()));
 
 			try
 			{
@@ -243,7 +242,7 @@ public class Setup extends HttpServlet
 			}
 			finally
 			{
-				fileWriter.close();
+				bufferedWriter.close();
 			}
 
 			/*-------------------------------------------------------------*/
