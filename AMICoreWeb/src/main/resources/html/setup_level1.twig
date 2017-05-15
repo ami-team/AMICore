@@ -100,25 +100,25 @@
 
 							<div class="form-group">
 								<label for="host" class="control-label">host<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-								<input type="text" name="host" value="%%HOST%%" class="form-control" id="host" />
+								<input type="text" name="host" value="{{HOST}}" class="form-control" id="host" />
 							</div>
 
 							<div class="form-group">
 								<label for="agent" class="control-label">agent<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-								<input type="text" name="agent" value="%%AGENT%%" class="form-control" id="agent" />
+								<input type="text" name="agent" value="{{AGENT}}" class="form-control" id="agent" />
 							</div>
 
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="admin_user" class="control-label">admin_user<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="text" name="admin_user" value="%%ADMIN_USER%%" class="form-control" id="admin_user" />
+										<input type="text" name="admin_user" value="{{ADMIN_USER}}" class="form-control" id="admin_user" />
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="admin_pass" class="control-label">admin_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="password" name="admin_pass" value="%%ADMIN_PASS%%" autocomplete="off" class="form-control" id="admin_pass" />
+										<input type="password" name="admin_pass" value="{{ADMIN_PASS}}" autocomplete="off" class="form-control" id="admin_pass" />
 									</div>
 								</div>
 							</div>
@@ -127,20 +127,20 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="guest_user" class="control-label">guest_user<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="text" name="guest_user" value="%%GUEST_USER%%" class="form-control" id="guest_user" />
+										<input type="text" name="guest_user" value="{{GUEST_USER}}" class="form-control" id="guest_user" />
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="guest_pass" class="control-label">guest_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="password" name="guest_pass" value="%%GUEST_PASS%%" autocomplete="off" class="form-control" id="guest_pass" />
+										<input type="password" name="guest_pass" value="{{GUEST_PASS}}" autocomplete="off" class="form-control" id="guest_pass" />
 									</div>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label for="encryption_key" class="control-label">encryption_key<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-								<input type="password" name="encryption_key" value="%%ENCRYPTION_KEY%%" autocomplete="off" class="form-control" id="encryption_key" />
+								<input type="password" name="encryption_key" value="{{ENCRYPTION_KEY}}" autocomplete="off" class="form-control" id="encryption_key" />
 							</div>
 
 						</div>
@@ -158,21 +158,26 @@
 							<div class="text-right"><kbd>Router database</kbd></div>
 
 							<div class="form-group">
-								<label for="jdbc_url" class="control-label">jdbc_url<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-								<input type="text" name="jdbc_url" value="%%JDBC_URL%%" class="form-control" id="jdbc_url" />
+								<label for="router" class="control-label">router<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+								<input type="text" name="router" value="{{ROUTER}}" class="form-control" id="router" />
+							</div>
+
+							<div class="form-group">
+								<label for="router_url" class="control-label">router_url<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+								<input type="text" name="router_url" value="{{ROUTER_URL}}" class="form-control" id="router_url" />
 							</div>
 
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="router_user" class="control-label">router_user<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="text" name="router_user" value="%%ROUTER_USER%%" class="form-control" id="router_user" />
+										<input type="text" name="router_user" value="{{ROUTER_USER}}" class="form-control" id="router_user" />
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="router_pass" class="control-label">router_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="password" name="router_pass" value="%%ROUTER_PASS%%" autocomplete="off" class="form-control" id="router_pass" />
+										<input type="password" name="router_pass" value="{{ROUTER_PASS}}" autocomplete="off" class="form-control" id="router_pass" />
 									</div>
 								</div>
 							</div>

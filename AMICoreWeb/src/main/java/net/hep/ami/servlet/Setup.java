@@ -55,17 +55,28 @@ public class Setup extends HttpServlet
 		level = (level != null) ? level.trim() : "1";
 
 		/*-----------------------------------------------------------------*/
-		/* WRITE FORM                                                      */
+		/* WRITE HTML                                                      */
 		/*-----------------------------------------------------------------*/
+
+		res.setStatus(200);
 
 		res.setContentType("text/html");
 
+		/*-----------------------------------------------------------------*/
+
 		PrintWriter writer = res.getWriter();
 
-		/****/ if(level.equals("1")) {
-			writer.write(level1(req));
-		} else if(level.equals("2")) {
-			writer.write(level2(req));
+		try
+		{
+			/****/ if(level.equals("1")) {
+				writer.write(level1(req));
+			} else if(level.equals("2")) {
+				writer.write(level2(req));
+			}
+		}
+		catch(Exception e)
+		{
+			writer.write("<html><body><![CDATA[" + e.getMessage() + "]]></body></html>");
 		}
 
 		writer.close();
@@ -75,7 +86,7 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private String level1(HttpServletRequest req)
+	private String level1(HttpServletRequest req) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* VARIABLES (SERVER)                                              */
@@ -96,36 +107,46 @@ public class Setup extends HttpServlet
 		String encryption_key = ConfigSingleton.getProperty("encryption_key");
 
 		/*-----------------------------------------------------------------*/
-		/* VARIABLES (DATABASE)                                            */
+		/* VARIABLES (ROUTER DATABASE)                                     */
 		/*-----------------------------------------------------------------*/
 
-		String jdbc_url = ConfigSingleton.getProperty("jdbc_url");
+		String router = ConfigSingleton.getProperty("router");
+
+		String router_url = ConfigSingleton.getProperty("router_url");
 
 		String router_user = ConfigSingleton.getProperty("router_user");
 
 		String router_pass = ConfigSingleton.getProperty("router_pass");
 
 		/*-----------------------------------------------------------------*/
+		/* BUILD HTML                                                      */
+		/*-----------------------------------------------------------------*/
 
 		StringBuilder stringBuilder = new StringBuilder();
 
-		try
-		{
-			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level1.html"));
+		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level1.twig"));
 
-			return stringBuilder.toString().replace("%%HOST%%", host).replace("%%AGENT%%", agent).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass).replace("%%GUEST_USER%%", guest_user).replace("%%GUEST_PASS%%", guest_pass).replace("%%ENCRYPTION_KEY%%", encryption_key).replace("%%JDBC_URL%%", jdbc_url).replace("%%ROUTER_USER%%", router_user).replace("%%ROUTER_PASS%%", router_pass);
-		}
-		catch(Exception e)
-		{
-			return "<html><body><![CDATA[" + e.getMessage() + "]]></body></html>";
-		}
+		return stringBuilder.toString()
+		                    .replace("{{HOST}}", host)
+		                    .replace("{{AGENT}}", agent)
+		                    .replace("{{ADMIN_USER}}", admin_user)
+		                    .replace("{{ADMIN_PASS}}", admin_pass)
+		                    .replace("{{GUEST_USER}}", guest_user)
+		                    .replace("{{GUEST_PASS}}", guest_pass)
+		                    .replace("{{ENCRYPTION_KEY}}", encryption_key)
+		                    /**/
+		                    .replace("{{ROUTER}}", router)
+		                    .replace("{{ROUTER_URL}}", router_url)
+		                    .replace("{{ROUTER_USER}}", router_user)
+		                    .replace("{{ROUTER_PASS}}", router_pass)
+		;
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private String level2(HttpServletRequest req)
+	private String level2(HttpServletRequest req) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (SERVER)                                     */
@@ -156,8 +177,11 @@ public class Setup extends HttpServlet
 		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
 		/*-----------------------------------------------------------------*/
 
-		String jdbc_url = req.getParameter("jdbc_url");
-		jdbc_url = (jdbc_url != null) ? jdbc_url.trim() : "";
+		String router = req.getParameter("router");
+		router = (router != null) ? router.trim() : "";
+
+		String router_url = req.getParameter("router_url");
+		router_url = (router_url != null) ? router_url.trim() : "";
 
 		String router_user = req.getParameter("router_user");
 		router_user = (router_user != null) ? router_user.trim() : "";
@@ -165,8 +189,6 @@ public class Setup extends HttpServlet
 		String router_pass = req.getParameter("router_pass");
 		router_pass = (router_pass != null) ? router_pass.trim() : "";
 
-		/*-----------------------------------------------------------------*/
-		/* PATCH HOST                                                      */
 		/*-----------------------------------------------------------------*/
 
 		while(host.endsWith("/"))
@@ -189,87 +211,65 @@ public class Setup extends HttpServlet
 		                 "  <property name=\"guest_pass\"><![CDATA[" + guest_pass + "]]></property>\n" +
 		                 "  <property name=\"encryption_key\"><![CDATA[" + encryption_key + "]]></property>\n" +
 		                 "\n" +
-		                 "  <property name=\"jdbc_url\"><![CDATA[" + jdbc_url + "]]></property>\n" +
+		                 "  <property name=\"router\"><![CDATA[" + router + "]]></property>\n" +
+		                 "  <property name=\"router_url\"><![CDATA[" + router_url + "]]></property>\n" +
 		                 "  <property name=\"router_user\"><![CDATA[" + router_user + "]]></property>\n" +
 		                 "  <property name=\"router_pass\"><![CDATA[" + router_pass + "]]></property>\n" +
 		                 "</properties>\n"
 		;
 
 		/*-----------------------------------------------------------------*/
-		/* CHECK AND SAVE CONFIG FILE                                      */
-		/*-----------------------------------------------------------------*/
 
-		String fileName = ConfigSingleton.getConfigFileName();
-
-		/*-----------------------------------------------------------------*/
-
-		SimpleQuerier basicQuerier = null;
-		BufferedWriter bufferedWriter = null;
 		StringBuilder stringBuilder = new StringBuilder();
 
 		try
 		{
-			basicQuerier = new SimpleQuerier("self", "router", jdbc_url, router_user, router_pass);
+			/*-------------------------------------------------------------*/
+			/* CHECK ROUTER DATABASE                                       */
+			/*-------------------------------------------------------------*/
 
-			bufferedWriter = new BufferedWriter(new FileWriter(fileName));
+			new SimpleQuerier("self", "router", router_url, router_user, router_pass).rollbackAndRelease();
 
-			bufferedWriter.write(content);
+			/*-------------------------------------------------------------*/
+			/* WRITE CONFIG FILE                                           */
+			/*-------------------------------------------------------------*/
+
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(ConfigSingleton.getConfigFileName()));
 
 			try
 			{
-				TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_success.html"));
-
-				return stringBuilder.toString().replace("%%HOST%%", host).replace("%%ADMIN_USER%%", admin_user).replace("%%ADMIN_PASS%%", admin_pass);
+				bufferedWriter.write(content);
 			}
-			catch(Exception f)
+			finally
 			{
-				return "<html><body><![CDATA[" + f.getMessage() + "]]></body></html>";
+				bufferedWriter.close();
 			}
 
+			/*-------------------------------------------------------------*/
+			/* BUILD HTML                                                  */
+			/*-------------------------------------------------------------*/
+
+			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_success.twig"));
+
+			return stringBuilder.toString()
+			                    .replace("{{HOST}}", host)
+			                    .replace("{{ADMIN_USER}}", admin_user)
+			                    .replace("{{ADMIN_PASS}}", admin_pass)
+			;
+
+			/*-------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
-			try
-			{
-				TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_error.html"));
-
-				return stringBuilder.toString().replace("%%MESSAGE%%", e.getMessage());
-			}
-			catch(Exception f)
-			{
-				return "<html><body><![CDATA[" + f.getMessage() + "]]></body></html>";
-			}
-
-		}
-		finally
-		{
+			/*-------------------------------------------------------------*/
+			/* BUILD HTML                                                  */
 			/*-------------------------------------------------------------*/
 
-			if(basicQuerier != null)
-			{
-				try
-				{
-					basicQuerier.rollbackAndRelease();
-				}
-				catch(Exception e)
-				{
-					/* IGNORE */
-				}
-			}
+			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_error.twig"));
 
-			/*-------------------------------------------------------------*/
-
-			if(bufferedWriter != null)
-			{
-				try
-				{
-					bufferedWriter.close();
-				}
-				catch(Exception e)
-				{
-					/* IGNORE */
-				}
-			}
+			return stringBuilder.toString()
+			                    .replace("{{MESSAGE}}", e.getMessage())
+			;
 
 			/*-------------------------------------------------------------*/
 		}

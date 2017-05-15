@@ -113,7 +113,7 @@ public class FrontEnd extends HttpServlet
 
 		String data;
 
-		if(ConfigSingleton.hasValidConfFile() != false)
+		if(ConfigSingleton.hasValidConfFile())
 		{
 			try
 			{
@@ -235,7 +235,7 @@ public class FrontEnd extends HttpServlet
 			{
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
-					return new Tuple2<String, String>(
+					return new Tuple2<>(
 						SecuritySingleton.getDNName(certificate.getSubjectX500Principal()),
 						SecuritySingleton.getDNName(certificate.getIssuerX500Principal())
 					);
@@ -243,7 +243,7 @@ public class FrontEnd extends HttpServlet
 			}
 		}
 
-		return new Tuple2<String, String>(
+		return new Tuple2<>(
 			"",
 			""
 		);
@@ -293,7 +293,7 @@ public class FrontEnd extends HttpServlet
 		/* RETURN LINK                                                     */
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple2<String, String>(
+		return new Tuple2<>(
 			row.getValue( "command" ),
 			row.getValue("converter")
 		);
@@ -327,7 +327,7 @@ public class FrontEnd extends HttpServlet
 			/* GET CREDENTIALS                                             */
 			/*-------------------------------------------------------------*/
 
-			if(rowList.size() == 0)
+			if(rowList.isEmpty())
 			{
 				return new Tuple2<String, String>(
 					s_guest_user,
@@ -348,8 +348,8 @@ public class FrontEnd extends HttpServlet
 		/* RETURN CREDENTIALS                                              */
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple2<String, String>(
-			/******************/(row.getValue("AMIUser")),
+		return new Tuple2<>(
+			/***********************/(row.getValue("AMIUser")),
 			SecuritySingleton.decrypt(row.getValue("AMIPass"))
 		);
 
