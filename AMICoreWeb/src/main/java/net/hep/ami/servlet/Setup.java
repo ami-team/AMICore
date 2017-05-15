@@ -228,13 +228,14 @@ public class Setup extends HttpServlet
 			/* CHECK ROUTER DATABASE                                       */
 			/*-------------------------------------------------------------*/
 
-			new SimpleQuerier("self", "router", router_url, router_user, router_pass).rollbackAndRelease();
+			new SimpleQuerier("self", router, router_url, router_user, router_pass).rollbackAndRelease();
 
 			/*-------------------------------------------------------------*/
 			/* WRITE CONFIG FILE                                           */
 			/*-------------------------------------------------------------*/
 
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(ConfigSingleton.getConfigFileName()));
+			FileWriter fileWriter = new FileWriter(ConfigSingleton.getConfigFileName());
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
 			try
 			{
@@ -242,7 +243,7 @@ public class Setup extends HttpServlet
 			}
 			finally
 			{
-				bufferedWriter.close();
+				fileWriter.close();
 			}
 
 			/*-------------------------------------------------------------*/
