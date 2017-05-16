@@ -172,6 +172,8 @@ public class Setup extends HttpServlet
 		String guest_user = "guest";
 		String guest_pass =   ""   ;
 
+		String catalina_base = System.getProperty("catalina.base");
+
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
 		/*-----------------------------------------------------------------*/
@@ -254,6 +256,7 @@ public class Setup extends HttpServlet
 			                    .replace("{{HOST}}", host)
 			                    .replace("{{ADMIN_USER}}", admin_user)
 			                    .replace("{{ADMIN_PASS}}", admin_pass)
+			                    .replace("{{CATALINA_BASE}}", catalina_base)
 			;
 
 			/*-------------------------------------------------------------*/
