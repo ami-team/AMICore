@@ -164,14 +164,13 @@ public class Setup extends HttpServlet
 		String admin_pass = req.getParameter("admin_pass");
 		admin_pass = (admin_pass != null) ? admin_pass.trim() : "";
 
-		String guest_user = req.getParameter("guest_user");
-		guest_user = (guest_user != null) ? guest_user.trim() : "";
-
-		String guest_pass = req.getParameter("guest_pass");
-		guest_pass = (guest_pass != null) ? guest_pass.trim() : "";
-
 		String encryption_key = req.getParameter("encryption_key");
 		encryption_key = (encryption_key != null) ? encryption_key.trim() : "";
+
+		/*-----------------------------------------------------------------*/
+
+		String guest_user = "guest";
+		String guest_pass =   ""   ;
 
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
