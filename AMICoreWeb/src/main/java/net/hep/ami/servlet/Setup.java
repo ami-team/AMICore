@@ -72,6 +72,8 @@ public class Setup extends HttpServlet
 				writer.write(level1(req));
 			} else if(level.equals("2")) {
 				writer.write(level2(req));
+			} else if(level.equals("3")) {
+				writer.write(level3(req));
 			}
 		}
 		catch(Exception e)
@@ -87,6 +89,25 @@ public class Setup extends HttpServlet
 	/*---------------------------------------------------------------------*/
 
 	private String level1(HttpServletRequest req) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* BUILD HTML                                                      */
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder stringBuilder = new StringBuilder();
+
+		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level1.twig"));
+
+		return stringBuilder.toString()
+
+		;
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private String level2(HttpServletRequest req) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* VARIABLES (SERVER)                                              */
@@ -124,7 +145,7 @@ public class Setup extends HttpServlet
 
 		StringBuilder stringBuilder = new StringBuilder();
 
-		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level1.twig"));
+		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level2.twig"));
 
 		return stringBuilder.toString()
 		                    .replace("{{HOST}}", host)
@@ -146,7 +167,7 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private String level2(HttpServletRequest req) throws Exception
+	private String level3(HttpServletRequest req) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (SERVER)                                     */
@@ -171,8 +192,6 @@ public class Setup extends HttpServlet
 
 		String guest_user = "guest";
 		String guest_pass =   ""   ;
-
-		String catalina_base = System.getProperty("catalina.base");
 
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
@@ -250,13 +269,13 @@ public class Setup extends HttpServlet
 			/* BUILD HTML                                                  */
 			/*-------------------------------------------------------------*/
 
-			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_success.twig"));
+			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level3_success.twig"));
 
 			return stringBuilder.toString()
 			                    .replace("{{HOST}}", host)
 			                    .replace("{{ADMIN_USER}}", admin_user)
 			                    .replace("{{ADMIN_PASS}}", admin_pass)
-			                    .replace("{{CATALINA_BASE}}", catalina_base)
+			                    .replace("{{CATALINA_BASE}}", System.getProperty("catalina.base", ""))
 			;
 
 			/*-------------------------------------------------------------*/
@@ -267,7 +286,7 @@ public class Setup extends HttpServlet
 			/* BUILD HTML                                                  */
 			/*-------------------------------------------------------------*/
 
-			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/html/setup_level2_error.twig"));
+			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level3_error.twig"));
 
 			return stringBuilder.toString()
 			                    .replace("{{MESSAGE}}", e.getMessage())

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8"/>
+
+		<title>Server setup</title>
+
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+		<style type="text/css">
+			.navbar-default,
+			.modal-header {
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				background: rgb(255, 255, 255) url("images/stripe1.png");
+			}
+
+
+			.modal-footer {
+				border-bottom-left-radius: 6px;
+				border-bottom-right-radius: 6px;
+				background: rgb(245, 245, 245) url("images/stripe2.png");
+			}
+		</style>
+
+		<script type="text/javascript">
+
+			function validateForm()
+			{
+				return true;
+			}
+
+		</script>
+	</head>
+	<body style="background: white url('images/background.jpg') fixed;">
+
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header" style="line-height: 46px;">
+					<button class="navbar-toggle" data-toggle="collapse" data-target="#ami_navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<img src="images/logo.png" alt="Logo" style="max-height: 44px;" />
+				</div>
+				<div class="collapse navbar-collapse" id="ami_navbar">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="mailto:ami@lpsc.in2p3.fr"><i class="fa fa-envelope-o"></i> Contact</a></li>
+						<li><a href="http://www.cern.ch/ami/" target="_blank">About</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div class="modal-dialog modal-lg">
+			<form method="post" action="" class="modal-content" onsubmit="return validateForm();">
+
+				<div class="modal-header">
+					<h3 class="modal-title"><i class="fa fa-magic"></i> Server setup</h3>
+				</div>
+
+				<div class="modal-body">
+
+					<input type="hidden" name="Level" value="2" />
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
+				</div>
+
+			</form>
+		</div>
+
+		<script type="text/javascript">
+
+			$('.amitt').tooltip({delay: {show: 500, hide: 100}});
+
+		</script>
+
+	</body>
+</html>

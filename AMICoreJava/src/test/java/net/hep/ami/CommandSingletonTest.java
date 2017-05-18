@@ -42,7 +42,7 @@ public class CommandSingletonTest
 
 		try
 		{
-			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
+			Router router = new Router("test", "router_test", "jdbc:mysql://localhostj:3306/", "root", "root");
 
 			//router.create();
 			//router.fill();
@@ -76,7 +76,7 @@ public class CommandSingletonTest
 		}
 		catch(Exception e)
 		{
-			System.out.println("CommandSingletonTest: " + e.getMessage());
+//			e.printStackTrace(System.out);
 		}
 
 		System.exit(0);

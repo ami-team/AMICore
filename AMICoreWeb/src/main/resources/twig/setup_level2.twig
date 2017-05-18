@@ -30,8 +30,8 @@
 
 		<script type="text/javascript">
 
-			function validateForm() {
-
+			function validateForm()
+			{
 				var error = '';
 
 				$.each($(':input').serializeArray(), function(index, param) {
@@ -41,8 +41,8 @@
 					}
 				});
 
-				if(error !== '') {
-
+				if(error !== '')
+				{
 					error = '<div class="alert alert-danger alert-dismissible">\n'
 						+
 					        '  <button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>\n'
@@ -176,7 +176,7 @@
 								</div>
 							</div>
 
-							<input type="hidden" name="Level" value="2" />
+							<input type="hidden" name="Level" value="3" />
 
 						</div>
 
