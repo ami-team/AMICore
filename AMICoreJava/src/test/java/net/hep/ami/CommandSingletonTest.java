@@ -1,10 +1,13 @@
 package net.hep.ami;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.utility.TextFile;
 
 @SuppressWarnings("all")
 public class CommandSingletonTest
@@ -14,6 +17,15 @@ public class CommandSingletonTest
 	public static void main(String[] args) throws Exception
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
+
+		try(InputStream inputStream = new FileInputStream("/Users/jeodier/.ami/AMI.xml"))
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+			TextFile.read(stringBuilder, inputStream);
+			System.out.println(stringBuilder);
+		}
+
+		System.out.println(ConfigSingleton.showConfig().toString().replace(">", ">\n"));
 
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");
@@ -55,12 +67,12 @@ public class CommandSingletonTest
 			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_criteria", "catalog", "foo");
 			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
-*/
+
 			joins = new LinkedHashMap<>();
 			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
 			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
-
+*/
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
