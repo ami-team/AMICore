@@ -90,7 +90,9 @@ public class Setup extends HttpServlet
 
 	static String getConfigPath()
 	{
-		String result = System.getProperty("user.home", "/fake1357") + File.separator + ".ami";
+		String result;
+
+		result = System.getProperty("user.home", "/fake1357") + File.separator + ".ami";
 
 		if(new File(result).exists() == false)
 		{

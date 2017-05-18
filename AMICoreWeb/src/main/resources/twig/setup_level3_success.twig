@@ -30,12 +30,8 @@
 
 		<script type="text/javascript">
 
-			function restartAMI()
+			function go()
 			{
-				/*-----------------------------------------*/
-
-				$('button').prop('disabled', true);
-
 				/*-----------------------------------------*/
 
 				var data = {Command: 'RestartAMI -AMIUser="{{ADMIN_USER}}" -AMIPass="{{ADMIN_PASS}}"'};
@@ -48,6 +44,10 @@
 
 					}, 5000);
 				});
+
+				/*-----------------------------------------*/
+
+				$('button').prop('disabled', true);
 
 				/*-----------------------------------------*/
 			}
@@ -113,7 +113,7 @@
 				</div>
 
 				<div class="modal-footer">
-					<button class="btn btn-success" onclick="restartAMI();">Restart AMI</button>
+					<button class="btn btn-success" onclick="go();">Restart AMI</button>
 				</div>
 
 			</div>

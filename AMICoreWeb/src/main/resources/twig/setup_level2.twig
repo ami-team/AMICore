@@ -34,20 +34,17 @@
 			{
 				/*-----------------------------------------*/
 
-				$('button').prop('disabled', true);
-
-				/*-----------------------------------------*/
-
 				var error = '';
 
 				$.each($(':input').serializeArray(), function(index, param) {
 
-					if(param.name !== 'admin_pass' && param.name !== 'guest_pass' && param.name !== 'router_pass' && param.value === '') {
+					if(param.name !== 'admin_pass' && param.name !== 'guest_pass' && param.name !== 'router_pass' && param.name !== 'router_reset' && param.value === '')
+					{
 						error += ' Field `' + param.name + '` empty.';
 					}
 				});
 
-				if(error !== '')
+				if(error)
 				{
 					error = '<div class="alert alert-danger alert-dismissible">\n'
 						+
@@ -64,6 +61,10 @@
 
 					return false;
 				}
+
+				/*-----------------------------------------*/
+
+				$('button').prop('disabled', true);
 
 				/*-----------------------------------------*/
 
