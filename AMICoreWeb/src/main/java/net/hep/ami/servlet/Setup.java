@@ -88,6 +88,25 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
+	static String getConfigPath()
+	{
+		String result = System.getProperty("user.home", "/fake1357") + File.separator + ".ami";
+
+		if(new File(result).exists() == false)
+		{
+			result = System.getProperty("catalina.base", "/fake1357");
+
+			if(new File(result).exists() == false)
+			{
+				result = "/etc/ami";
+			}
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	private String level1(HttpServletRequest req) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -99,7 +118,7 @@ public class Setup extends HttpServlet
 		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level1.twig"));
 
 		return stringBuilder.toString()
-
+		                    .replace("{{AMI_CONFIG_PATH}}", getConfigPath())
 		;
 
 		/*-----------------------------------------------------------------*/
@@ -259,7 +278,7 @@ public class Setup extends HttpServlet
 			/* WRITE CONFIG FILE                                           */
 			/*-------------------------------------------------------------*/
 
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(ConfigSingleton.getConfigFileName()));
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(getConfigPath() + File.separator + "AMI.xml"));
 
 			try
 			{
