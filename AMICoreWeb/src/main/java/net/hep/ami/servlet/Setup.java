@@ -245,10 +245,15 @@ public class Setup extends HttpServlet
 		try
 		{
 			/*-------------------------------------------------------------*/
-			/* CHECK ROUTER DATABASE                                       */
+			/* SETUP ROUTER DATABASE                                       */
 			/*-------------------------------------------------------------*/
 
-			new SimpleQuerier("self", router, router_url, router_user, router_pass).rollbackAndRelease();
+			Router db = new Router("self", router, router_url, router_user, router_pass);
+
+//			db.create();
+//			db.fill();
+
+			db.rollbackAndRelease();
 
 			/*-------------------------------------------------------------*/
 			/* WRITE CONFIG FILE                                           */
@@ -275,7 +280,7 @@ public class Setup extends HttpServlet
 			                    .replace("{{HOST}}", host)
 			                    .replace("{{ADMIN_USER}}", admin_user)
 			                    .replace("{{ADMIN_PASS}}", admin_pass)
-			                    .replace("{{CATALINA_BASE}}", System.getProperty("catalina.base", ""))
+			                    .replace("{{CATALINA_BASE}}", System.getProperty("catalina.base", "?"))
 			;
 
 			/*-------------------------------------------------------------*/
