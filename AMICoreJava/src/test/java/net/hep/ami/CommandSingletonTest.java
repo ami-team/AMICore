@@ -26,6 +26,7 @@ public class CommandSingletonTest
 		}
 
 		System.out.println(ConfigSingleton.showConfig().toString().replace(">", ">\n"));
+		System.out.println(CatalogSingleton.listCatalogs().toString().replace(">", ">\n"));
 
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");

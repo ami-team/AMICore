@@ -42,14 +42,11 @@ public class TextFile
 
 	public static void write(OutputStream outputStream, StringBuilder stringBuilder) throws Exception
 	{
-		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 
-		String s = stringBuilder.toString();
+		outputStreamWriter.write(stringBuilder.toString());
 
-		if(!s.isEmpty())
-		{
-			bufferedWriter.write(s);
-		}
+		outputStreamWriter.flush();
 	}
 
 	/*---------------------------------------------------------------------*/
