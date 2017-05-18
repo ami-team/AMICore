@@ -94,6 +94,7 @@ public abstract class AbstractShell
 	/*---------------------------------------------------------------------*/
 
 	public abstract void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception;
+
 	public abstract void writeTextFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception;
 
 	/*---------------------------------------------------------------------*/

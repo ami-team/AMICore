@@ -117,9 +117,7 @@ public class SecuritySingleton
 		List<StringBuilder> publicKey = new ArrayList<>();
 		List<StringBuilder> certificates = new ArrayList<>();
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-		try
+		try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
 		{
 			while((line = bufferedReader.readLine()) != null)
 			{
@@ -168,11 +166,6 @@ public class SecuritySingleton
 
 				/*---------------------------------------------------------*/
 			}
-
-		}
-		finally
-		{
-			bufferedReader.close();
 		}
 
 		return new PEMTupleXZY(

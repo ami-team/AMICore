@@ -110,9 +110,7 @@ public class LocalizationSingleton
 
 			querier.executeUpdate("DELETE FROM `router_country_locations`");
 
-			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)");
-
-			try
+			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)"))
 			{
 				for(Map<String, String> location: locations)
 				{
@@ -123,10 +121,6 @@ public class LocalizationSingleton
 				}
 
 				preparedStatement.executeBatch();
-			}
-			finally
-			{
-				preparedStatement.close();
 			}
 		}
 
@@ -146,9 +140,7 @@ public class LocalizationSingleton
 
 			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv4`");
 
-			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv4` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
-
-			try
+			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv4` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
 			{
 				String network;
 				String geonameId;
@@ -178,10 +170,6 @@ public class LocalizationSingleton
 
 				preparedStatement.executeBatch();
 			}
-			finally
-			{
-				preparedStatement.close();
-			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -200,9 +188,7 @@ public class LocalizationSingleton
 
 			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv6`");
 
-			PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv6` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)");
-
-			try
+			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv6` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
 			{
 				String network;
 				String geonameId;
@@ -231,10 +217,6 @@ public class LocalizationSingleton
 				}
 
 				preparedStatement.executeBatch();
-			}
-			finally
-			{
-				preparedStatement.close();
 			}
 		}
 
