@@ -129,7 +129,7 @@ public class CommandSingleton
 
 		Class<?> clazz = Class.forName(className);
 
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false || Modifier.isAbstract(clazz.getModifiers()))
 		{
 			return;
 		}
