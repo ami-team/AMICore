@@ -128,9 +128,7 @@ public class GenerateAndSendCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-		try
+		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
 		{
 			keyStore_PKCS12.store(output, "".toCharArray());
 
@@ -145,10 +143,6 @@ public class GenerateAndSendCertificate extends AbstractCommand
 			mainBodyPart.setFileName(commonName + ".crt");
 
 			MailSingleton.sendMessage("ami@lpsc.in2p3.fr", email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart});
-		}
-		finally
-		{
-			output.close();
 		}
 
 		/*-----------------------------------------------------------------*/

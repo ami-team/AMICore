@@ -132,8 +132,6 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		ByteArrayOutputStream output;
-
 		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDNName(certificate.getSubjectX500Principal()) + "]]></field>");
 		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDNName(certificate.getIssuerX500Principal()) + "]]></field>");
 
@@ -155,9 +153,7 @@ public class GenerateCertificate extends AbstractCommand
 		result.append("-----END CERTIFICATE-----\n");
 		result.append("</field>");
 
-		output = new ByteArrayOutputStream();
-
-		try
+		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
 		{
 			keyStore_JKS.store(output, password.toCharArray());
 
@@ -165,24 +161,14 @@ public class GenerateCertificate extends AbstractCommand
 			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
 		}
-		finally
-		{
-			output.close();
-		}
 
-		output = new ByteArrayOutputStream();
-
-		try
+		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
 		{
 			keyStore_PKCS12.store(output, password.toCharArray());
 
 			result.append("<field name=\"KEYSTORE_P12\">");
 			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
 			result.append("</field>");
-		}
-		finally
-		{
-			output.close();
 		}
 
 		/*-----------------------------------------------------------------*/

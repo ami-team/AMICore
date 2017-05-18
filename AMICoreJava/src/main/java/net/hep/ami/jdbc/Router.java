@@ -229,9 +229,7 @@ public class Router implements Querier
 		/* EXECUTE SQL QUERIES                                             */
 		/*-----------------------------------------------------------------*/
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-		try
+		try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
 		{
 			String line = "";
 			String query = "";
@@ -243,6 +241,8 @@ public class Router implements Querier
 				if(line.isEmpty() == false
 				   &&
 				   line.startsWith("-") == false
+				   &&
+				   line.startsWith("#") == false
 				 ) {
 					query += line + " ";
 
@@ -256,10 +256,6 @@ public class Router implements Querier
 					}
 				}
 			}
-		}
-		finally
-		{
-			bufferedReader.close();
 		}
 
 		/*-----------------------------------------------------------------*/

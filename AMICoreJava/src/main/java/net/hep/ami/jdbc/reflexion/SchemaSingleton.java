@@ -352,8 +352,6 @@ public class SchemaSingleton
 		String externalCatalog
 	 ) throws Exception {
 
-		ObjectOutputStream objectOutputStream;
-
 		LogSingleton.root.info("saving to file schema of catalog '" + externalCatalog + "'");
 
 		/*-----------------------------------------------------------------*/
@@ -371,28 +369,16 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_columns.ser"));
-
-		try
+		try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_columns.ser")))
 		{
 			objectOutputStream.writeObject(tmp1);
-		}
-		finally
-		{
-			objectOutputStream.close();
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser"));
-
-		try
+		try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser")))
 		{
 			objectOutputStream.writeObject(tmp2);
-		}
-		finally
-		{
-			objectOutputStream.close();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -405,8 +391,6 @@ public class SchemaSingleton
 		Map<String, Map<String, FrgnKey>> tmp2,
 		String externalCatalog
 	 ) throws Exception {
-
-		ObjectInputStream objectInputStream;
 
 		LogSingleton.root.info("loading from file schema of catalog '" + externalCatalog + "'");
 
@@ -425,28 +409,16 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_columns.ser"));
-
-		try
+		try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_columns.ser")))
 		{
 			tmp1.putAll((Map<String, Map<String, Column>>) objectInputStream.readObject());
-		}
-		finally
-		{
-			objectInputStream.close();
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser"));
-
-		try
+		try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser")))
 		{
 			tmp2.putAll((Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
-		}
-		finally
-		{
-			objectInputStream.close();
 		}
 
 		/*-----------------------------------------------------------------*/
