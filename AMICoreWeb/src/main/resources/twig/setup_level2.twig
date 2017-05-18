@@ -36,11 +36,18 @@
 
 				var error = '';
 
+				var reset = false;
+
 				$.each($(':input').serializeArray(), function(index, param) {
 
 					if(param.name !== 'admin_pass' && param.name !== 'guest_pass' && param.name !== 'router_pass' && param.name !== 'router_reset' && param.value === '')
 					{
 						error += ' Field `' + param.name + '` empty.';
+					}
+
+					if(param.name === 'router_reset')
+					{
+						reset = true;
 					}
 				});
 
@@ -66,7 +73,9 @@
 
 				/*-----------------------------------------*/
 
-				return true;
+				return reset ? confirm('Reset the AMI database?') : true;
+
+				/*-----------------------------------------*/
 			}
 
 		</script>
