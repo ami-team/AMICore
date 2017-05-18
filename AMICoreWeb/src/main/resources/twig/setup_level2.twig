@@ -44,6 +44,8 @@
 					}
 				});
 
+				/*-----------------------------------------*/
+
 				if(error)
 				{
 					error = '<div class="alert alert-danger alert-dismissible">\n'
@@ -61,10 +63,6 @@
 
 					return false;
 				}
-
-				/*-----------------------------------------*/
-
-				$('button').prop('disabled', true);
 
 				/*-----------------------------------------*/
 
@@ -200,15 +198,13 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
+					<button type="submit" class="btn btn-primary" id="next"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
 				</div>
 
 			</form>
 		</div>
 
 		<script type="text/javascript">
-
-			$('.btn').prop('disabled', false);
 
 			$('.amitt').tooltip({delay: {show: 500, hide: 100}});
 

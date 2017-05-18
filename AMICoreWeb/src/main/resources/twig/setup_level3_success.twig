@@ -46,10 +46,6 @@
 				});
 
 				/*-----------------------------------------*/
-
-				$('button').prop('disabled', true);
-
-				/*-----------------------------------------*/
 			}
 
 		</script>
@@ -100,7 +96,7 @@
 							<h3>Now What!</h3>
 
 							<ul>
-								<li class="text-danger">Remove the servlet "Setup" in "<strong>{{CATALINA_BASE}}/webapps/AMI/WEB-INF/web.xml</strong>".</li>
+								<li class="text-danger">Remove the "Setup" servlet in "<strong>{{CATALINA_BASE}}/webapps/AMI/WEB-INF/web.xml</strong>".</li>
 								<li>Customize your home page.</li>
 								<li>Create your catalogs.</li>
 								<li>Enjoy!</li>
@@ -113,15 +109,13 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-success" onclick="go();">Restart AMI</button>
+					<button type="button" class="btn btn-success" id="next" onclick="go();">Restart AMI</button>
 				</div>
 
 			</div>
 		</div>
 
 		<script type="text/javascript">
-
-			$('.btn').prop('disabled', false);
 
 			$('.amitt').tooltip({delay: {show: 500, hide: 100}});
 
