@@ -272,13 +272,18 @@ public class Setup extends HttpServlet
 
 			Router db = new Router("self", router, router_url, router_user, router_pass);
 
-			if(router_reset.equals("on"))
+			try
 			{
-				db.create();
-				db.fill();
+				if(router_reset.equals("on"))
+				{
+					db.create();
+					db.fill();
+				}
 			}
-
-			db.rollbackAndRelease();
+			finally
+			{
+				db.commitAndRelease();
+			}
 
 			/*-------------------------------------------------------------*/
 			/* WRITE CONFIG FILE                                           */
