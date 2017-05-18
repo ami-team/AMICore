@@ -44,8 +44,15 @@ public class Setup extends HttpServlet
 		/* SET DEFAULT ENCODING                                            */
 		/*-----------------------------------------------------------------*/
 
-		req.setCharacterEncoding("UTF-8");
-		res.setCharacterEncoding("UTF-8");
+		try
+		{
+			req.setCharacterEncoding("UTF-8");
+			res.setCharacterEncoding("UTF-8");
+		}
+		catch(UnsupportedEncodingException e)
+		{
+			/* IGNORE */
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES                                              */
@@ -58,15 +65,11 @@ public class Setup extends HttpServlet
 		/* WRITE HTML                                                      */
 		/*-----------------------------------------------------------------*/
 
-		res.setStatus(200);
-
 		res.setContentType("text/html");
 
 		/*-----------------------------------------------------------------*/
 
-		PrintWriter writer = res.getWriter();
-
-		try
+		try(PrintWriter writer = res.getWriter())
 		{
 			/****/ if(level.equals("1")) {
 				writer.write(level1(req));
@@ -75,13 +78,13 @@ public class Setup extends HttpServlet
 			} else if(level.equals("3")) {
 				writer.write(level3(req));
 			}
+
+			res.setStatus(200);
 		}
 		catch(Exception e)
 		{
-			writer.write("<html><body><![CDATA[" + e.getMessage() + "]]></body></html>");
+			res.setStatus(500);
 		}
-
-		writer.close();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -91,6 +94,8 @@ public class Setup extends HttpServlet
 	static String getConfigPath()
 	{
 		String result;
+
+		/*-----------------------------------------------------------------*/
 
 		result = System.getProperty("user.home", "/fake1357") + File.separator + ".ami";
 
@@ -104,6 +109,8 @@ public class Setup extends HttpServlet
 			}
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		return result;
 	}
 
@@ -111,11 +118,11 @@ public class Setup extends HttpServlet
 
 	private String level1(HttpServletRequest req) throws Exception
 	{
+		StringBuilder stringBuilder = new StringBuilder();
+
 		/*-----------------------------------------------------------------*/
 		/* BUILD HTML                                                      */
 		/*-----------------------------------------------------------------*/
-
-		StringBuilder stringBuilder = new StringBuilder();
 
 		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level1.twig"));
 
@@ -130,6 +137,8 @@ public class Setup extends HttpServlet
 
 	private String level2(HttpServletRequest req) throws Exception
 	{
+		StringBuilder stringBuilder = new StringBuilder();
+
 		/*-----------------------------------------------------------------*/
 		/* VARIABLES (SERVER)                                              */
 		/*-----------------------------------------------------------------*/
@@ -164,8 +173,6 @@ public class Setup extends HttpServlet
 		/* BUILD HTML                                                      */
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder stringBuilder = new StringBuilder();
-
 		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level2.twig"));
 
 		return stringBuilder.toString()
@@ -190,6 +197,8 @@ public class Setup extends HttpServlet
 
 	private String level3(HttpServletRequest req) throws Exception
 	{
+		StringBuilder stringBuilder = new StringBuilder();
+
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (SERVER)                                     */
 		/*-----------------------------------------------------------------*/
@@ -264,8 +273,6 @@ public class Setup extends HttpServlet
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder stringBuilder = new StringBuilder();
-
 		try
 		{
 			/*-------------------------------------------------------------*/
@@ -276,7 +283,7 @@ public class Setup extends HttpServlet
 
 			try
 			{
-				if(router_reset.equals("on"))
+				if("on".equals(router_reset))
 				{
 					db.create();
 					db.fill();
@@ -291,15 +298,9 @@ public class Setup extends HttpServlet
 			/* WRITE CONFIG FILE                                           */
 			/*-------------------------------------------------------------*/
 
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(getConfigPath() + File.separator + "AMI.xml"));
-
-			try
+			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(getConfigPath() + File.separator + "AMI.xml")))
 			{
 				bufferedWriter.write(content);
-			}
-			finally
-			{
-				bufferedWriter.close();
 			}
 
 			/*-------------------------------------------------------------*/
