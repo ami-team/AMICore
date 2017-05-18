@@ -32,6 +32,12 @@
 
 			function validateForm()
 			{
+				/*-----------------------------------------*/
+
+				$('button').prop('disabled', true);
+
+				/*-----------------------------------------*/
+
 				var error = '';
 
 				$.each($(':input').serializeArray(), function(index, param) {
@@ -58,6 +64,8 @@
 
 					return false;
 				}
+
+				/*-----------------------------------------*/
 
 				return true;
 			}

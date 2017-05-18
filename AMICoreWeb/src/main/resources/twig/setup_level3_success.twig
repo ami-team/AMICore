@@ -32,7 +32,11 @@
 
 			function restartAMI()
 			{
+				/*-----------------------------------------*/
+
 				$('button').prop('disabled', true);
+
+				/*-----------------------------------------*/
 
 				var data = {Command: 'RestartAMI -AMIUser="{{ADMIN_USER}}" -AMIPass="{{ADMIN_PASS}}"'};
 
@@ -40,10 +44,12 @@
 
 					setTimeout(function() {
 
-						location.replace('%%HOST%%/AMI');
+						location.replace('{{HOST}}/AMI');
 
 					}, 5000);
 				});
+
+				/*-----------------------------------------*/
 			}
 
 		</script>
