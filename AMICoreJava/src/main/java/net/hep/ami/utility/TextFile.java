@@ -14,20 +14,13 @@ public class TextFile
 	{
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		try
-		{
-			String line;
+		String line;
 
-			while((line = bufferedReader.readLine()) != null)
-			{
-				stringBuilder.append(line)
-				             .append('\n')
-				;
-			}
-		}
-		finally
+		while((line = bufferedReader.readLine()) != null)
 		{
-			bufferedReader.close();
+			stringBuilder.append(line)
+			             .append('\n')
+			;
 		}
 	}
 
@@ -37,18 +30,11 @@ public class TextFile
 	{
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		try
-		{
-			String s = bufferedReader.readLine();
+		String s = bufferedReader.readLine();
 
-			if(s != null)
-			{
-				stringBuilder.append(s);
-			}
-		}
-		finally
+		if(s != null)
 		{
-			bufferedReader.close();
+			stringBuilder.append(s);
 		}
 	}
 
@@ -58,18 +44,11 @@ public class TextFile
 	{
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
 
-		try
-		{
-			String s = stringBuilder.toString();
+		String s = stringBuilder.toString();
 
-			if(!s.isEmpty())
-			{
-				bufferedWriter.write(s);
-			}
-		}
-		finally
+		if(!s.isEmpty())
 		{
-			bufferedWriter.close();
+			bufferedWriter.write(s);
 		}
 	}
 

@@ -67,8 +67,6 @@ public class SecureShell extends AbstractShell
 	@Override
 	public ShellTuple exec(String[] args) throws Exception
 	{
-		int exitStatus;
-
 		StringBuilder inputStringBuilder = new StringBuilder();
 		StringBuilder errorStringBuilder = new StringBuilder();
 
@@ -82,21 +80,22 @@ public class SecureShell extends AbstractShell
 
 		try
 		{
-			Thread inputThread = new StreamReader(inputStringBuilder, channel.getInputStream());
-			Thread errorThread = new StreamReader(errorStringBuilder, channel.getErrStream());
-
-			inputThread.start();
-			errorThread.start();
-
-			inputThread.join();
-			errorThread.join();
-
-			while(channel.isClosed() == false)
+			try(InputStream inputStream = channel.getInputStream(); InputStream errorStream = channel.getErrStream())
 			{
-				Thread.sleep(1);
-			}
+				Thread inputThread = new StreamReader(inputStringBuilder, inputStream);
+				Thread errorThread = new StreamReader(errorStringBuilder, errorStream);
 
-			exitStatus = channel.getExitStatus();
+				inputThread.start();
+				errorThread.start();
+
+				inputThread.join();
+				errorThread.join();
+
+				while(channel.isClosed() == false)
+				{
+					Thread.sleep(1);
+				}
+			}
 		}
 		finally
 		{
@@ -105,7 +104,7 @@ public class SecureShell extends AbstractShell
 
 		/*-----------------------------------------------------------------*/
 
-		return new ShellTuple(exitStatus, inputStringBuilder, errorStringBuilder);
+		return new ShellTuple(channel.getExitStatus(), inputStringBuilder, errorStringBuilder);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -123,15 +122,9 @@ public class SecureShell extends AbstractShell
 		{
 			channel.cd(fpath);
 
-			InputStream inputStream = channel.get(fname);
-
-			try
+			try(InputStream inputStream = channel.get(fname))
 			{
 				TextFile.read(stringBuilder, inputStream);
-			}
-			finally
-			{
-				inputStream.close();
 			}
 
 			channel.exit();
@@ -155,15 +148,9 @@ public class SecureShell extends AbstractShell
 		{
 			channel.cd(fpath);
 
-			OutputStream outputStream = channel.put(fname);
-
-			try
+			try(OutputStream outputStream = channel.put(fname))
 			{
 				TextFile.write(outputStream, stringBuilder);
-			}
-			finally
-			{
-				outputStream.close();
 			}
 
 			channel.exit();

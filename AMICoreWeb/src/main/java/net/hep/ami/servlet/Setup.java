@@ -173,7 +173,10 @@ public class Setup extends HttpServlet
 		/* BUILD HTML                                                      */
 		/*-----------------------------------------------------------------*/
 
-		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level2.twig"));
+		try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level2.twig"))
+		{
+			TextFile.read(stringBuilder, inputStream);
+		}
 
 		return stringBuilder.toString()
 		                    .replace("{{HOST}}", host)
@@ -197,7 +200,8 @@ public class Setup extends HttpServlet
 
 	private String level3(HttpServletRequest req) throws Exception
 	{
-		StringBuilder stringBuilder = new StringBuilder();
+		StringBuilder stringBuilder1 = new StringBuilder();
+		StringBuilder stringBuilder2 = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (SERVER)                                     */
@@ -253,22 +257,22 @@ public class Setup extends HttpServlet
 		/* BUILD CONFIG FILE                                               */
 		/*-----------------------------------------------------------------*/
 
-		String content = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-		                 "\n" +
-		                 "<properties>\n" +
-		                 "  <property name=\"host\"><![CDATA[" + host + "]]></property>\n" +
-		                 "  <property name=\"agent\"><![CDATA[" + agent + "]]></property>\n" +
-		                 "  <property name=\"admin_user\"><![CDATA[" + admin_user + "]]></property>\n" +
-		                 "  <property name=\"admin_pass\"><![CDATA[" + admin_pass + "]]></property>\n" +
-		                 "  <property name=\"guest_user\"><![CDATA[" + guest_user + "]]></property>\n" +
-		                 "  <property name=\"guest_pass\"><![CDATA[" + guest_pass + "]]></property>\n" +
-		                 "  <property name=\"encryption_key\"><![CDATA[" + encryption_key + "]]></property>\n" +
-		                 "\n" +
-		                 "  <property name=\"router\"><![CDATA[" + router + "]]></property>\n" +
-		                 "  <property name=\"router_url\"><![CDATA[" + router_url + "]]></property>\n" +
-		                 "  <property name=\"router_user\"><![CDATA[" + router_user + "]]></property>\n" +
-		                 "  <property name=\"router_pass\"><![CDATA[" + router_pass + "]]></property>\n" +
-		                 "</properties>\n"
+		stringBuilder1.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n")
+		       .append("\n")
+		       .append("<properties>\n")
+		       .append("  <property name=\"host\"><![CDATA[" + host + "]]></property>\n")
+		       .append("  <property name=\"agent\"><![CDATA[" + agent + "]]></property>\n")
+		       .append("  <property name=\"admin_user\"><![CDATA[" + admin_user + "]]></property>\n")
+		       .append("  <property name=\"admin_pass\"><![CDATA[" + admin_pass + "]]></property>\n")
+		       .append("  <property name=\"guest_user\"><![CDATA[" + guest_user + "]]></property>\n")
+		       .append("  <property name=\"guest_pass\"><![CDATA[" + guest_pass + "]]></property>\n")
+		       .append("  <property name=\"encryption_key\"><![CDATA[" + encryption_key + "]]></property>\n")
+		       .append("\n")
+		       .append("  <property name=\"router\"><![CDATA[" + router + "]]></property>\n")
+		       .append("  <property name=\"router_url\"><![CDATA[" + router_url + "]]></property>\n")
+		       .append("  <property name=\"router_user\"><![CDATA[" + router_user + "]]></property>\n")
+		       .append("  <property name=\"router_pass\"><![CDATA[" + router_pass + "]]></property>\n")
+		       .append("</properties>\n")
 		;
 
 		/*-----------------------------------------------------------------*/
@@ -298,18 +302,23 @@ public class Setup extends HttpServlet
 			/* WRITE CONFIG FILE                                           */
 			/*-------------------------------------------------------------*/
 
-			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(getConfigPath() + File.separator + "AMI.xml")))
+			try(OutputStream outputStream = new FileOutputStream(getConfigPath() + File.separator + "AMI.xml"))
 			{
-				bufferedWriter.write(content);
+				TextFile.write(outputStream, stringBuilder1);
 			}
 
 			/*-------------------------------------------------------------*/
 			/* BUILD HTML                                                  */
 			/*-------------------------------------------------------------*/
 
-			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level3_success.twig"));
+			try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level3_success.twig"))
+			{
+				TextFile.read(stringBuilder2, inputStream);
+			}
 
-			return stringBuilder.toString()
+			/*-------------------------------------------------------------*/
+
+			return stringBuilder2.toString()
 			                    .replace("{{HOST}}", host)
 			                    .replace("{{ADMIN_USER}}", admin_user)
 			                    .replace("{{ADMIN_PASS}}", admin_pass)
@@ -324,9 +333,14 @@ public class Setup extends HttpServlet
 			/* BUILD HTML                                                  */
 			/*-------------------------------------------------------------*/
 
-			TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level3_error.twig"));
+			try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level3_error.twig"))
+			{
+				TextFile.read(stringBuilder2, inputStream);
+			}
 
-			return stringBuilder.toString()
+			/*-------------------------------------------------------------*/
+
+			return stringBuilder2.toString()
 			                    .replace("{{MESSAGE}}", e.getMessage())
 			;
 
