@@ -228,6 +228,9 @@ public class Setup extends HttpServlet
 		String router_pass = req.getParameter("router_pass");
 		router_pass = (router_pass != null) ? router_pass.trim() : "";
 
+		String router_reset = req.getParameter("router_reset");
+		router_reset = (router_reset != null) ? router_reset.trim() : "";
+
 		/*-----------------------------------------------------------------*/
 
 		while(host.endsWith("/"))
@@ -269,8 +272,11 @@ public class Setup extends HttpServlet
 
 			Router db = new Router("self", router, router_url, router_user, router_pass);
 
-//			db.create();
-//			db.fill();
+			if(router_reset.equals("on"))
+			{
+				db.create();
+				db.fill();
+			}
 
 			db.rollbackAndRelease();
 
