@@ -1,6 +1,7 @@
 package net.hep.ami.servlet;
 
 import java.io.*;
+import java.util.*;
 
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -38,7 +39,7 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private void doCommand(HttpServletRequest req, HttpServletResponse res) throws IOException
+	private void doCommand(HttpServletRequest req, HttpServletResponse res)
 	{
 		/*-----------------------------------------------------------------*/
 		/* SET DEFAULT ENCODING                                            */
@@ -55,35 +56,49 @@ public class Setup extends HttpServlet
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* GET/POST VARIABLES                                              */
+		/* GET CURRENT YEAR                                                */
 		/*-----------------------------------------------------------------*/
 
-		String level = req.getParameter("Level");
-		level = (level != null) ? level.trim() : "1";
+		String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
 		/*-----------------------------------------------------------------*/
 		/* WRITE HTML                                                      */
 		/*-----------------------------------------------------------------*/
 
-		res.setContentType("text/html");
-
-		/*-----------------------------------------------------------------*/
-
-		try(PrintWriter writer = res.getWriter())
+		try
 		{
-			/****/ if(level.equals("1")) {
-				writer.write(level1(req));
-			} else if(level.equals("2")) {
-				writer.write(level2(req));
-			} else if(level.equals("3")) {
-				writer.write(level3(req));
+			/*-------------------------------------------------------------*/
+
+			String data;
+
+			String level = req.getParameter("Level");
+
+			/****/ if("3".equals(level)) {
+				data = level3(req, year);
+			} else if("2".equals(level)) {
+				data = level2(req, year);
+			} else {
+				data = level1(req, year);
 			}
 
-			res.setStatus(200);
+			/*-------------------------------------------------------------*/
+
+			try(PrintWriter writer = res.getWriter())
+			{
+				res.setStatus(HttpServletResponse.SC_OK);
+
+				res.setContentType("text/html");
+
+				writer.write(data);
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
-			res.setStatus(500);
+			LogSingleton.root.error(e.getMessage(), e);
+
+			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -116,7 +131,7 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private String level1(HttpServletRequest req) throws Exception
+	private String level1(HttpServletRequest req, String year) throws Exception
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -127,6 +142,7 @@ public class Setup extends HttpServlet
 		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level1.twig"));
 
 		return stringBuilder.toString()
+		                    .replace("{{YEAR}}", year)
 		                    .replace("{{AMI_CONFIG_PATH}}", getConfigPath())
 		;
 
@@ -135,7 +151,7 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private String level2(HttpServletRequest req) throws Exception
+	private String level2(HttpServletRequest req, String year) throws Exception
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -178,7 +194,11 @@ public class Setup extends HttpServlet
 			TextFile.read(stringBuilder, inputStream);
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		return stringBuilder.toString()
+		                    .replace("{{YEAR}}", year)
+		                    /**/
 		                    .replace("{{HOST}}", host)
 		                    .replace("{{AGENT}}", agent)
 		                    .replace("{{ADMIN_USER}}", admin_user)
@@ -198,7 +218,7 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private String level3(HttpServletRequest req) throws Exception
+	private String level3(HttpServletRequest req, String year) throws Exception
 	{
 		StringBuilder stringBuilder1 = new StringBuilder();
 		StringBuilder stringBuilder2 = new StringBuilder();
@@ -319,10 +339,11 @@ public class Setup extends HttpServlet
 			/*-------------------------------------------------------------*/
 
 			return stringBuilder2.toString()
-			                    .replace("{{HOST}}", host)
-			                    .replace("{{ADMIN_USER}}", admin_user)
-			                    .replace("{{ADMIN_PASS}}", admin_pass)
-			                    .replace("{{CATALINA_BASE}}", System.getProperty("catalina.base", "?"))
+			                     .replace("{{YEAR}}", year)
+			                     .replace("{{HOST}}", host)
+			                     .replace("{{ADMIN_USER}}", admin_user)
+			                     .replace("{{ADMIN_PASS}}", admin_pass)
+			                     .replace("{{CATALINA_BASE}}", System.getProperty("catalina.base", "?"))
 			;
 
 			/*-------------------------------------------------------------*/
@@ -341,7 +362,8 @@ public class Setup extends HttpServlet
 			/*-------------------------------------------------------------*/
 
 			return stringBuilder2.toString()
-			                    .replace("{{MESSAGE}}", e.getMessage())
+			                     .replace("{{YEAR}}", year)
+			                     .replace("{{MESSAGE}}", e.getMessage())
 			;
 
 			/*-------------------------------------------------------------*/

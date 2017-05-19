@@ -46,14 +46,21 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private void doCommand(HttpServletRequest req, HttpServletResponse res) throws IOException
+	private void doCommand(HttpServletRequest req, HttpServletResponse res)
 	{
 		/*-----------------------------------------------------------------*/
 		/* SET UTF-8 AS DEFAULT ENCODING                                   */
 		/*-----------------------------------------------------------------*/
 
-		req.setCharacterEncoding("UTF-8");
-		res.setCharacterEncoding("UTF-8");
+		try
+		{
+			req.setCharacterEncoding("UTF-8");
+			res.setCharacterEncoding("UTF-8");
+		}
+		catch(UnsupportedEncodingException e)
+		{
+			/* IGNORE */
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* CROSS-ORIGIN RESOURCE SHARING                                   */
@@ -208,17 +215,20 @@ public class FrontEnd extends HttpServlet
 		/* WRITE RESULT                                                    */
 		/*-----------------------------------------------------------------*/
 
-		res.setStatus(200);
+		try(PrintWriter writer = res.getWriter())
+		{
+			res.setStatus(HttpServletResponse.SC_OK);
 
-		res.setContentType(mime);
+			res.setContentType(mime);
 
-		/*-----------------------------------------------------------------*/
+			writer.print(data);
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.error(e.getMessage(), e);
 
-		PrintWriter writer = res.getWriter();
-
-		writer.print(data);
-
-		writer.close();
+			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -269,7 +279,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id`='" + linkId.replace("'", "''") + "'").getAll();
+			List<Row> rowList = basicQuerier.executeQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id` = '" + linkId.replace("'", "''") + "'").getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET LINK                                                    */
@@ -321,7 +331,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeQuery("SELECT `AMIUser`,`AMIPass` FROM `router_user` WHERE `clientDN`='" + SecuritySingleton.encrypt(clientDN).replace("'", "''") + "'").getAll();
+			List<Row> rowList = basicQuerier.executeQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = '" + SecuritySingleton.encrypt(clientDN).replace("'", "''") + "'").getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -329,7 +339,7 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.isEmpty())
 			{
-				return new Tuple2<String, String>(
+				return new Tuple2<>(
 					s_guest_user,
 					s_guest_pass
 				);

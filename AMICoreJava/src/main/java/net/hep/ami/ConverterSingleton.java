@@ -159,13 +159,14 @@ public class ConverterSingleton
 		/* APPLY TRANSFORM                                                 */
 		/*-----------------------------------------------------------------*/
 
-		Source source = new StreamSource(reader);
-		Result target = new StreamResult(writer);
-
 		Transformer transformer = tuple.z.newTransformer();
 
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-		transformer.transform(source, target);
+
+		transformer.transform(
+			new StreamSource(reader),
+			new StreamResult(writer)
+		);
 
 		/*-----------------------------------------------------------------*/
 		/* RETURN MIME                                                     */
