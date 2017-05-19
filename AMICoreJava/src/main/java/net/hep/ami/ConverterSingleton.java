@@ -112,35 +112,32 @@ public class ConverterSingleton
 
 	private static void addConverter(String xslt, String mime) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET INPUT STREAM                                                */
-		/*-----------------------------------------------------------------*/
+		try(InputStream inputStream = ConverterSingleton.class.getResourceAsStream(xslt))
+		{
+			/*-------------------------------------------------------------*/
+			/* PARSE XSLT FILE                                             */
+			/*-------------------------------------------------------------*/
 
-		InputStream inputStream = ConverterSingleton.class.getResourceAsStream(xslt);
+			Templates templates = XMLFactories.newTemplates(inputStream);
 
-		/*-----------------------------------------------------------------*/
-		/* PARSE XSLT FILE                                                 */
-		/*-----------------------------------------------------------------*/
+			/*-------------------------------------------------------------*/
+			/* ADD CONVERTER                                               */
+			/*-------------------------------------------------------------*/
 
-		Templates templates = XMLFactories.newTemplates(inputStream);
+			String name = new File(xslt).getName();
 
-		/*-----------------------------------------------------------------*/
-		/* ADD CONVERTER                                                   */
-		/*-----------------------------------------------------------------*/
+			s_converters.put(
+				name
+				,
+				new Tuple(
+					name,
+					mime,
+					templates
+				)
+			);
 
-		String name = new File(xslt).getName();
-
-		s_converters.put(
-			name
-			,
-			new Tuple(
-				name,
-				mime,
-				templates
-			)
-		);
-
-		/*-----------------------------------------------------------------*/
+			/*-------------------------------------------------------------*/
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

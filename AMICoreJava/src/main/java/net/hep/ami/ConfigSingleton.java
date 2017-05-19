@@ -169,44 +169,45 @@ public class ConfigSingleton
 		s_configFileName = file        .        getPath();
 
 		/*-----------------------------------------------------------------*/
-		/* GET INPUT STREAM                                                */
-		/*-----------------------------------------------------------------*/
 
-		InputStream inputStream = new FileInputStream(file);
-
-		/*-----------------------------------------------------------------*/
-		/* PARSE CONFIG FILE                                               */
-		/*-----------------------------------------------------------------*/
-
-		Document document = XMLFactories.newDocument(inputStream);
-
-		/*-----------------------------------------------------------------*/
-		/* READ CONFIG FILE                                                */
-		/*-----------------------------------------------------------------*/
-
-		NodeList nodeList = document.getElementsByTagName("property");
-
-		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF PROPERTIES                                        */
-		/*-----------------------------------------------------------------*/
-
-		final int numberOfNodes = nodeList.getLength();
-
-		/*-----------------------------------------------------------------*/
-		/* ADD PROPERTIES                                                  */
-		/*-----------------------------------------------------------------*/
-
-		Node node;
-
-		for(int i = 0; i < numberOfNodes; i++)
+		try(InputStream inputStream = new FileInputStream(file))
 		{
-			node = nodeList.item(i);
+			/*-------------------------------------------------------------*/
+			/* PARSE CONFIG FILE                                           */
+			/*-------------------------------------------------------------*/
 
-			s_properties.put(
-				XMLFactories.getAttribute(node,
-				                          "name"),
-				XMLFactories.getContent(node)
-			);
+			Document document = XMLFactories.newDocument(inputStream);
+
+			/*-------------------------------------------------------------*/
+			/* READ CONFIG FILE                                            */
+			/*-------------------------------------------------------------*/
+
+			NodeList nodeList = document.getElementsByTagName("property");
+
+			/*-------------------------------------------------------------*/
+			/* GET NUMBER OF PROPERTIES                                    */
+			/*-------------------------------------------------------------*/
+
+			final int numberOfNodes = nodeList.getLength();
+
+			/*-------------------------------------------------------------*/
+			/* ADD PROPERTIES                                              */
+			/*-------------------------------------------------------------*/
+
+			Node node;
+
+			for(int i = 0; i < numberOfNodes; i++)
+			{
+				node = nodeList.item(i);
+
+				s_properties.put(
+					XMLFactories.getAttribute(node,
+					                          "name"),
+					XMLFactories.getContent(node)
+				);
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/

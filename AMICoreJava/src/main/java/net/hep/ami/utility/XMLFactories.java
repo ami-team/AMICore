@@ -2,7 +2,6 @@ package net.hep.ami.utility;
 
 import java.io.*;
 
-import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
@@ -21,32 +20,22 @@ public class XMLFactories
 
 	public static Document newDocument(InputStream inputStream) throws Exception
 	{
-		DocumentBuilder documentBuilderFactory = new DocumentBuilderImpl();
+		DocumentBuilderImpl documentBuilder = new DocumentBuilderImpl();
 
-		try
-		{
-			return documentBuilderFactory.parse(inputStream);
-		}
-		finally
-		{
-			inputStream.close();
-		}
+		return documentBuilder.parse(
+			inputStream
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Templates newTemplates(InputStream inputStream) throws Exception
 	{
-		TransformerFactory transformerFactory = new TransformerFactoryImpl();
+		TransformerFactoryImpl transformerFactory = new TransformerFactoryImpl();
 
-		try
-		{
-			return transformerFactory.newTemplates(new StreamSource(inputStream));
-		}
-		finally
-		{
-			inputStream.close();
-		}
+		return transformerFactory.newTemplates(new StreamSource(
+			inputStream
+		));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -67,7 +56,7 @@ public class XMLFactories
 		Node attr = node.getAttributes().getNamedItem(name);
 
 		return attr != null ? attr.getNodeValue().trim()
-		                    : defaultValue.trim()
+		                    : defaultValue
 		;
 	}
 
