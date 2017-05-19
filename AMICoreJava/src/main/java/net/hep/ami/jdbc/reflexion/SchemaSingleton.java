@@ -7,7 +7,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 
-@SuppressWarnings("unchecked")
 public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -73,11 +72,8 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>();
-	private static final Map<String, Map<String, Map<String, FrgnKey>>> s_frgnKeys = new AMIMap<>();
-
-	/*---------------------------------------------------------------------*/
-
+	private static final Map<String, Map<String, Map<String,     Column    >>> s_columns = new AMIMap<>();
+	private static final Map<String, Map<String, Map<String,     FrgnKey    >>> s_frgnKeys = new AMIMap<>();
 	private static final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> s_reverse = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
@@ -111,9 +107,6 @@ public class SchemaSingleton
 
 		s_columns.clear();
 		s_frgnKeys.clear();
-
-		/*-----------------------------------------------------------------*/
-
 		s_reverse.clear();
 
 		/*-----------------------------------------------------------------*/
@@ -137,7 +130,7 @@ public class SchemaSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unused")
+	@SuppressWarnings({"unused", "unchecked"})
 	/*---------------------------------------------------------------------*/
 
 	private static class Extractor implements Runnable
@@ -318,7 +311,7 @@ public class SchemaSingleton
 			LogSingleton.root.info("loading from database schema of catalog '" + m_externalCatalog + "'");
 
 			/*-------------------------------------------------------------*/
-			/* CREATE DRIVER                                               */
+			/* CREATE CONNECTION                                           */
 			/*-------------------------------------------------------------*/
 
 			Connection connection = DriverManager.getConnection(
@@ -367,10 +360,10 @@ public class SchemaSingleton
 
 				/*---------------------------------------------------------*/
 
-				loadColumnMetadata(metaData, "%");
-
 				for(String name: tables)
 				{
+					loadColumnMetadata(metaData, name);
+
 					loadFgnKeyMetadata(metaData, name);
 				}
 
@@ -518,11 +511,8 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		private final Map<String, Map<String, Map<String, Column>>> m_columns;
-		private final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys;
-
-		/*-----------------------------------------------------------------*/
-
+		private final Map<String, Map<String, Map<String,     Column    >>> m_columns;
+		private final Map<String, Map<String, Map<String,     FrgnKey    >>> m_frgnKeys;
 		private final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> m_reverse;
 
 		/*-----------------------------------------------------------------*/
@@ -532,16 +522,22 @@ public class SchemaSingleton
 		/*-----------------------------------------------------------------*/
 
 		public Executor(
-			Map<String, Map<String, Map<String, Column>>> columns,
-			Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+			Map<String, Map<String, Map<String,     Column    >>> columns,
+			Map<String, Map<String, Map<String,     FrgnKey    >>> frgnKeys,
 			Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> reverse,
 			List<Thread> threads
 		 ) {
+			/*-------------------------------------------------------------*/
+
 			m_columns = columns;
 			m_frgnKeys = frgnKeys;
 			m_reverse = reverse;
 
+			/*-------------------------------------------------------------*/
+
 			m_threads = threads;
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -555,7 +551,14 @@ public class SchemaSingleton
 
 			for(Thread thread: m_threads)
 			{
-				thread.start();
+				try
+				{
+					thread.start();
+				}
+				catch(IllegalThreadStateException e)
+				{
+					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+				}
 			}
 
 			/*-------------------------------------------------------------*/
@@ -570,7 +573,7 @@ public class SchemaSingleton
 				}
 				catch(InterruptedException e)
 				{
-					Thread.currentThread().interrupt();
+					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 				}
 			}
 
@@ -643,12 +646,12 @@ public class SchemaSingleton
 						s_frgnKeys,
 						entry.getKey(),
 						entry.getValue(),
-						true
+						true // fast
 					), "Fast metadata extractor for '" + entry.getKey() + "'"
 				));
 			}
 
-			/*------*/(new Executor(s_columns, s_frgnKeys, s_reverse, threads)). run ();
+			new Executor(s_columns, s_frgnKeys, s_reverse, threads).run();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -668,7 +671,7 @@ public class SchemaSingleton
 						s_frgnKeys,
 						entry.getKey(),
 						entry.getValue(),
-						false
+						false // slow
 					), "Slow metadata extractor for '" + entry.getKey() + "'"
 				));
 			}
