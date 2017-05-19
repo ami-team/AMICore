@@ -18,16 +18,6 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		try(InputStream inputStream = new FileInputStream("/Users/jeodier/.ami/AMI.xml"))
-		{
-			StringBuilder stringBuilder = new StringBuilder();
-			TextFile.read(stringBuilder, inputStream);
-			System.out.println(stringBuilder);
-		}
-
-		System.out.println(ConfigSingleton.showConfig().toString().replace(">", ">\n"));
-		System.out.println(CatalogSingleton.listCatalogs().toString().replace(">", ">\n"));
-
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
@@ -55,7 +45,7 @@ public class CommandSingletonTest
 
 		try
 		{
-			Router router = new Router("test", "router_test", "jdbc:mysql://localhostj:3306/", "root", "root");
+			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 
 			//router.create();
 			//router.fill();
@@ -65,15 +55,15 @@ public class CommandSingletonTest
 			Map<String, List<String>> joins;
 /*
 			joins = new LinkedHashMap<>();
-			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_criteria", "catalog", "foo");
+			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_criteria", "router_catalog", "foo");
 			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
-
+*/
 			joins = new LinkedHashMap<>();
 			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
 			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
-*/
+
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
@@ -89,7 +79,7 @@ public class CommandSingletonTest
 		}
 		catch(Exception e)
 		{
-//			e.printStackTrace(System.out);
+			e.printStackTrace(System.out);
 		}
 
 		System.exit(0);

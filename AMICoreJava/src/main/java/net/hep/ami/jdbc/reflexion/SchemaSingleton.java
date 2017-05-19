@@ -78,7 +78,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> s_reverse  = new AMIMap<>();
+	private static final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> s_reverse = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -137,24 +137,58 @@ public class SchemaSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
+	@SuppressWarnings("unused")
+	/*---------------------------------------------------------------------*/
 
 	private static class Extractor implements Runnable
 	{
 		/*-----------------------------------------------------------------*/
 
-		private final boolean m_fast;
+		private final Map<String, String> m_externalCatalogToInternalCatalog;
+		private final Map<String, String> m_internalCatalogToExternalCatalog;
+
+		private final Map<String, Map<String, Map<String, Column>>> m_columns;
+		private final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys;
+
+		/*-----------------------------------------------------------------*/
 
 		private final String m_externalCatalog;
 		private final String m_internalCatalog;
 
+		private final boolean m_fast;
+
 		/*-----------------------------------------------------------------*/
 
-		public Extractor(boolean fast, String externalCatalog, String internalCatalog)
-		{
-			m_fast = fast;
+		public Map<String, Map<String, Column>> m_tmp1;
+		public Map<String, Map<String, FrgnKey>> m_tmp2;
+
+		/*-----------------------------------------------------------------*/
+
+		public Extractor(
+			Map<String, String> externalCatalogToInternalCatalog,
+			Map<String, String> internalCatalogToExternalCatalog,
+			Map<String, Map<String, Map<String, Column>>> columns,
+			Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+			String externalCatalog,
+			String internalCatalog,
+			boolean fast
+		 ) {
+			/*-------------------------------------------------------------*/
+
+			m_externalCatalogToInternalCatalog = externalCatalogToInternalCatalog;
+			m_internalCatalogToExternalCatalog = internalCatalogToExternalCatalog;
+
+			m_columns = columns;
+			m_frgnKeys = frgnKeys;
+
+			/*-------------------------------------------------------------*/
 
 			m_externalCatalog = externalCatalog;
 			m_internalCatalog = internalCatalog;
+
+			m_fast = fast;
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -162,45 +196,32 @@ public class SchemaSingleton
 		@Override
 		public void run()
 		{
+			m_tmp1 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
+			m_tmp2 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
+
 			try
 			{
-				/*---------------------------------------------------------*/
-
-				Map<String, Map<String, Column>> tmp1 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
-				Map<String, Map<String, FrgnKey>> tmp2 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
-
-				/*--------------------------------------------------------*/
-
 				if(m_fast)
 				{
 					try
 					{
-						loadSchemaFromFiles(tmp1, tmp2, m_externalCatalog);
-
-						s_columns.put(m_externalCatalog, tmp1);
-						s_frgnKeys.put(m_externalCatalog, tmp2);
+						loadSchemaFromFiles();
+						apply();
+						/* Yeahhhhhh!!! */
 					}
 					catch(Exception e)
 					{
-						loadSchemaFromDatabase(tmp1, tmp2, m_externalCatalog, m_internalCatalog);
-
-						s_columns.put(m_externalCatalog, tmp1);
-						s_frgnKeys.put(m_externalCatalog, tmp2);
-
-						saveSchemaToFiles(tmp1, tmp2, m_externalCatalog);
+						loadSchemaFromDatabase();
+						apply();
+						saveSchemaToFiles();
 					}
 				}
 				else
 				{
-					loadSchemaFromDatabase(tmp1, tmp2, m_externalCatalog, m_internalCatalog);
-
-					s_columns.put(m_externalCatalog, tmp1);
-					s_frgnKeys.put(m_externalCatalog, tmp2);
-
-					saveSchemaToFiles(tmp1, tmp2, m_externalCatalog);
+					loadSchemaFromDatabase();
+					apply();
+					saveSchemaToFiles();
 				}
-
-				/*---------------------------------------------------------*/
 			}
 			catch(Exception e)
 			{
@@ -209,20 +230,317 @@ public class SchemaSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		private void apply()
+		{
+			m_columns.put(m_externalCatalog, m_tmp1);
+			m_frgnKeys.put(m_externalCatalog, m_tmp2);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		private void saveSchemaToFiles() throws Exception
+		{
+			LogSingleton.root.info("saving to file schema of catalog '" + m_externalCatalog + "'");
+
+			/*-------------------------------------------------------------*/
+
+			String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
+
+			/*-------------------------------------------------------------*/
+
+			File file = new File(basePath);
+
+			if(file.exists() == false)
+			{
+				file.mkdirs();
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + m_externalCatalog + "_columns.ser")))
+			{
+				objectOutputStream.writeObject(m_tmp1);
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + m_externalCatalog + "_frgnkeys.ser")))
+			{
+				objectOutputStream.writeObject(m_tmp2);
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		private void loadSchemaFromFiles() throws Exception
+		{
+			LogSingleton.root.info("loading from file schema of catalog '" + m_externalCatalog + "'");
+
+			/*-------------------------------------------------------------*/
+
+			String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
+
+			/*-------------------------------------------------------------*/
+
+			File file = new File(basePath);
+
+			if(file.exists() == false)
+			{
+				file.mkdirs();
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + m_externalCatalog + "_columns.ser")))
+			{
+				m_tmp1.putAll((Map<String, Map<String, Column>>) objectInputStream.readObject());
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + m_externalCatalog + "_frgnkeys.ser")))
+			{
+				m_tmp2.putAll((Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		private void loadSchemaFromDatabase() throws Exception
+		{
+			Set<String> tables = new HashSet<>();
+
+			LogSingleton.root.info("loading from database schema of catalog '" + m_externalCatalog + "'");
+
+			/*-------------------------------------------------------------*/
+			/* CREATE DRIVER                                               */
+			/*-------------------------------------------------------------*/
+
+			Connection connection = DriverManager.getConnection(
+				ConfigSingleton.getProperty("router_url"),
+				ConfigSingleton.getProperty("router_user"),
+				ConfigSingleton.getProperty("router_pass")
+			);
+
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				/*---------------------------------------------------------*/
+				/* GET METADATA OBJECT                                     */
+				/*---------------------------------------------------------*/
+
+				DatabaseMetaData metaData = connection.getMetaData();
+
+				/*---------------------------------------------------------*/
+				/* LOAD METADATA FROM DATABASE                             */
+				/*---------------------------------------------------------*/
+
+				ResultSet resultSet = metaData.getTables(m_internalCatalog, m_internalCatalog, "%", null);
+
+				/*---------------------------------------------------------*/
+
+				while(resultSet.next())
+				{
+					String name = resultSet.getString("TABLE_NAME");
+
+					if(name != null)
+					{
+						name = name.toLowerCase();
+
+						if(name.startsWith("db_") == false
+						   &&
+						   name.startsWith("x_db_") == false
+						 ) {
+							m_tmp1.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+							m_tmp2.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+
+							tables.add(name);
+						}
+					}
+				}
+
+				/*---------------------------------------------------------*/
+
+				loadColumnMetadata(metaData, "%");
+
+				for(String name: tables)
+				{
+					loadFgnKeyMetadata(metaData, name);
+				}
+
+				/*---------------------------------------------------------*/
+			}
+			finally
+			{
+				connection.close();
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		private void loadColumnMetadata(
+			DatabaseMetaData metaData,
+			String _table
+		 ) throws SQLException {
+			/*-------------------------------------------------------------*/
+
+			ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_internalCatalog, _table, "%");
+
+			/*-------------------------------------------------------------*/
+
+			while(resultSet.next())
+			{
+				String table = resultSet.getString("TABLE_NAME");
+				String name = resultSet.getString("COLUMN_NAME");
+				String type = resultSet.getString("TYPE_NAME");
+				int size = resultSet.getInt("COLUMN_SIZE");
+				int digits = resultSet.getInt("DECIMAL_DIGITS");
+
+				if(table != null && name != null && type != null)
+				{
+					table = table.toLowerCase();
+					name = name.toLowerCase();
+					type = type.toUpperCase();
+
+					Map<String, Column> column = m_tmp1.get(table);
+
+					if(column != null)
+					{
+						column.put(name, new Column(
+							m_externalCatalog,
+							m_internalCatalog,
+							table,
+							name,
+							type,
+							size,
+							digits
+						));
+					}
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		private void loadFgnKeyMetadata(
+			DatabaseMetaData metaData,
+			String _table
+		 ) throws SQLException {
+			/*-------------------------------------------------------------*/
+
+			ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_internalCatalog, _table);
+
+			/*-------------------------------------------------------------*/
+
+			while(resultSet.next())
+			{
+				String name = resultSet.getString("FK_NAME");
+				String fkInternalCatalog = resultSet.getString("FKTABLE_CAT");
+				String fkTable = resultSet.getString("FKTABLE_NAME");
+				String fkColumn = resultSet.getString("FKCOLUMN_NAME");
+				String pkInternalCatalog = resultSet.getString("PKTABLE_CAT");
+				String pkTable = resultSet.getString("PKTABLE_NAME");
+				String pkColumn = resultSet.getString("PKCOLUMN_NAME");
+
+				String fkExternalCatalog;
+				String pkExternalCatalog;
+
+				if(fkInternalCatalog == null)
+				{
+					fkExternalCatalog = m_externalCatalog;
+					fkInternalCatalog = m_internalCatalog;
+				}
+				else
+				{
+					fkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(fkInternalCatalog)
+					                                                                                      : m_externalCatalog
+					;
+				}
+
+				if(pkInternalCatalog == null)
+				{
+					pkExternalCatalog = m_externalCatalog;
+					pkInternalCatalog = m_internalCatalog;
+				}
+				else
+				{
+					pkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(pkInternalCatalog)
+					                                                                                      : m_externalCatalog
+					;
+				}
+
+				if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
+				{
+					name = name.toLowerCase();
+					fkTable = fkTable.toLowerCase();
+					fkColumn = fkColumn.toLowerCase();
+					pkTable = pkTable.toLowerCase();
+					pkColumn = pkColumn.toLowerCase();
+
+					Map<String, FrgnKey> frgnKey = m_tmp2.get(fkTable);
+
+					if(frgnKey != null)
+					{
+						frgnKey.put(fkColumn, new FrgnKey(
+							name,
+							fkExternalCatalog,
+							fkInternalCatalog,
+							fkTable,
+							fkColumn,
+							pkExternalCatalog,
+							pkInternalCatalog,
+							pkTable,
+							pkColumn
+						));
+					}
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static class Reverser implements Runnable
+	private static class Executor implements Runnable
 	{
+		/*-----------------------------------------------------------------*/
+
+		private final Map<String, Map<String, Map<String, Column>>> m_columns;
+		private final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys;
+
+		/*-----------------------------------------------------------------*/
+
+		private final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> m_reverse;
+
 		/*-----------------------------------------------------------------*/
 
 		private final List<Thread> m_threads;
 
 		/*-----------------------------------------------------------------*/
 
-		public Reverser(List<Thread> threads)
-		{
+		public Executor(
+			Map<String, Map<String, Map<String, Column>>> columns,
+			Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+			Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> reverse,
+			List<Thread> threads
+		 ) {
+			m_columns = columns;
+			m_frgnKeys = frgnKeys;
+			m_reverse = reverse;
+
 			m_threads = threads;
 		}
 
@@ -232,7 +550,16 @@ public class SchemaSingleton
 		public void run()
 		{
 			/*-------------------------------------------------------------*/
-			/* WAIT FOR PENDING THREADS                                    */
+			/* START THREADS                                               */
+			/*-------------------------------------------------------------*/
+
+			for(Thread thread: m_threads)
+			{
+				thread.start();
+			}
+
+			/*-------------------------------------------------------------*/
+			/* WAIT FOR THREADS                                            */
 			/*-------------------------------------------------------------*/
 
 			for(Thread thread: m_threads)
@@ -243,28 +570,28 @@ public class SchemaSingleton
 				}
 				catch(InterruptedException e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+					Thread.currentThread().interrupt();
 				}
 			}
 
 			/*-------------------------------------------------------------*/
-			/* FILL STRUCTURE                                              */
+			/* POST TREATMENT                                              */
 			/*-------------------------------------------------------------*/
 
-			for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(s_columns).entrySet())
+			for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(m_columns).entrySet())
 			{
-				s_reverse.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
+				m_reverse.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
 				;
 
 				for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
 				{
-					s_reverse.get(entry1.getKey())
+					m_reverse.get(entry1.getKey())
 					         .put(entry2.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
 					;
 
 					for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
 					{
-						s_reverse.get(entry1.getKey())
+						m_reverse.get(entry1.getKey())
 						         .get(entry2.getKey())
 						         .put(entry3.getKey(), new ArrayList<FrgnKey>())
 						;
@@ -274,11 +601,11 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(Map<String, Map<String, FrgnKey>> value1: s_frgnKeys.values())
+			for(Map<String, Map<String, FrgnKey>> value1: m_frgnKeys.values())
 			for(Map<String, FrgnKey> value2: value1.values())
 			for(FrgnKey frgnKey: value2.values())
 			{
-				s_reverse.get(frgnKey.pkExternalCatalog)
+				m_reverse.get(frgnKey.pkExternalCatalog)
 				         .get(frgnKey.pkTable)
 				         .get(frgnKey.pkColumn)
 				         .add(frgnKey)
@@ -305,19 +632,23 @@ public class SchemaSingleton
 
 		if(true)
 		{
-			Thread thread;
-
 			List<Thread> threads = new ArrayList<>();
 
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
-				thread = new Thread(new Extractor(true, entry.getKey(), entry.getValue()));
-
-				threads.add(thread);
-				thread.start();
+				threads.add(new Thread(new Extractor(
+						s_externalCatalogToInternalCatalog,
+						s_internalCatalogToExternalCatalog,
+						s_columns,
+						s_frgnKeys,
+						entry.getKey(),
+						entry.getValue(),
+						true
+					), "Fast metadata extractor for '" + entry.getKey() + "'"
+				));
 			}
 
-			/*------*/(new Reverser(threads)). run ();
+			/*------*/(new Executor(s_columns, s_frgnKeys, s_reverse, threads)). run ();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -326,310 +657,23 @@ public class SchemaSingleton
 
 		if(isOk)
 		{
-			Thread thread;
-
 			List<Thread> threads = new ArrayList<>();
 
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
-				thread = new Thread(new Extractor(false, entry.getKey(), entry.getValue()));
-
-				threads.add(thread);
-				thread.start();
+				threads.add(new Thread(new Extractor(
+						s_externalCatalogToInternalCatalog,
+						s_internalCatalogToExternalCatalog,
+						s_columns,
+						s_frgnKeys,
+						entry.getKey(),
+						entry.getValue(),
+						false
+					), "Slow metadata extractor for '" + entry.getKey() + "'"
+				));
 			}
 
-			new Thread(new Reverser(threads)).start();
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void saveSchemaToFiles(
-		Map<String, Map<String, Column>> tmp1,
-		Map<String, Map<String, FrgnKey>> tmp2,
-		String externalCatalog
-	 ) throws Exception {
-
-		LogSingleton.root.info("saving to file schema of catalog '" + externalCatalog + "'");
-
-		/*-----------------------------------------------------------------*/
-
-		String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
-
-		/*-----------------------------------------------------------------*/
-
-		File file = new File(basePath);
-
-		if(file.exists() == false)
-		{
-			file.mkdirs();
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_columns.ser")))
-		{
-			objectOutputStream.writeObject(tmp1);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser")))
-		{
-			objectOutputStream.writeObject(tmp2);
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void loadSchemaFromFiles(
-		Map<String, Map<String, Column>> tmp1,
-		Map<String, Map<String, FrgnKey>> tmp2,
-		String externalCatalog
-	 ) throws Exception {
-
-		LogSingleton.root.info("loading from file schema of catalog '" + externalCatalog + "'");
-
-		/*-----------------------------------------------------------------*/
-
-		String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
-
-		/*-----------------------------------------------------------------*/
-
-		File file = new File(basePath);
-
-		if(file.exists() == false)
-		{
-			file.mkdirs();
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_columns.ser")))
-		{
-			tmp1.putAll((Map<String, Map<String, Column>>) objectInputStream.readObject());
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + externalCatalog + "_frgnkeys.ser")))
-		{
-			tmp2.putAll((Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void loadSchemaFromDatabase(
-		Map<String, Map<String, Column>> tmp1,
-		Map<String, Map<String, FrgnKey>> tmp2,
-		String externalCatalog,
-		String internalCatalog
-	 ) throws Exception {
-
-		Set<String> tables = new HashSet<>();
-
-		LogSingleton.root.info("loading from database schema of catalog '" + externalCatalog + "'");
-
-		/*-----------------------------------------------------------------*/
-		/* CREATE DRIVER                                                   */
-		/*-----------------------------------------------------------------*/
-
-		Connection connection = DriverManager.getConnection(
-			ConfigSingleton.getProperty("router_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
-		);
-
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			/*-------------------------------------------------------------*/
-			/* GET METADATA OBJECT                                         */
-			/*-------------------------------------------------------------*/
-
-			DatabaseMetaData metaData = connection.getMetaData();
-
-			/*-------------------------------------------------------------*/
-			/* LOAD METADATA FROM DATABASE                                 */
-			/*-------------------------------------------------------------*/
-
-			ResultSet resultSet = metaData.getTables(internalCatalog, internalCatalog, "%", null);
-
-			/*-------------------------------------------------------------*/
-
-			while(resultSet.next())
-			{
-				String name = resultSet.getString("TABLE_NAME");
-
-				if(name != null)
-				{
-					name = name.toLowerCase();
-
-					if(name.startsWith("db_") == false
-					   &&
-					   name.startsWith("x_db_") == false
-					 ) {
-						tmp1.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
-						tmp2.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
-
-						tables.add(name);
-					}
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-
-			loadColumnMetadata(tmp1, metaData, externalCatalog, internalCatalog, "%");
-
-			for(String name: tables)
-			{
-				loadFgnKeyMetadata(tmp2, metaData, externalCatalog, internalCatalog, name);
-			}
-
-			/*-------------------------------------------------------------*/
-		}
-		finally
-		{
-			connection.close();
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void loadColumnMetadata(
-		Map<String, Map<String, Column>> tmp,
-		DatabaseMetaData metaData,
-		String externalCatalog,
-		String internalCatalog,
-		String _table
-	 ) throws SQLException {
-		/*-----------------------------------------------------------------*/
-
-		ResultSet resultSet = metaData.getColumns(internalCatalog, internalCatalog, _table, "%");
-
-		/*-----------------------------------------------------------------*/
-
-		while(resultSet.next())
-		{
-			String table = resultSet.getString("TABLE_NAME");
-			String name = resultSet.getString("COLUMN_NAME");
-			String type = resultSet.getString("TYPE_NAME");
-			int size = resultSet.getInt("COLUMN_SIZE");
-			int digits = resultSet.getInt("DECIMAL_DIGITS");
-
-			if(table != null && name != null && type != null)
-			{
-				table = table.toLowerCase();
-				name = name.toLowerCase();
-				type = type.toUpperCase();
-
-				Map<String, Column> column = tmp.get(table);
-
-				if(column != null)
-				{
-					column.put(name, new Column(
-						externalCatalog,
-						internalCatalog,
-						table,
-						name,
-						type,
-						size,
-						digits
-					));
-				}
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void loadFgnKeyMetadata(
-		Map<String, Map<String, FrgnKey>> tmp,
-		DatabaseMetaData metaData,
-		String externalCatalog,
-		String internalCatalog,
-		String _table
-	 ) throws SQLException {
-		/*-----------------------------------------------------------------*/
-
-		ResultSet resultSet = metaData.getExportedKeys(internalCatalog, internalCatalog, _table);
-
-		/*-----------------------------------------------------------------*/
-
-		while(resultSet.next())
-		{
-			String name = resultSet.getString("FK_NAME");
-			String fkInternalCatalog = resultSet.getString("FKTABLE_CAT");
-			String fkTable = resultSet.getString("FKTABLE_NAME");
-			String fkColumn = resultSet.getString("FKCOLUMN_NAME");
-			String pkInternalCatalog = resultSet.getString("PKTABLE_CAT");
-			String pkTable = resultSet.getString("PKTABLE_NAME");
-			String pkColumn = resultSet.getString("PKCOLUMN_NAME");
-
-			String fkExternalCatalog;
-			String pkExternalCatalog;
-
-			if(fkInternalCatalog == null)
-			{
-				fkExternalCatalog = externalCatalog;
-				fkInternalCatalog = internalCatalog;
-			}
-			else
-			{
-				fkExternalCatalog = s_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(fkInternalCatalog)
-				                                                                                      : externalCatalog
-				;
-			}
-
-			if(pkInternalCatalog == null)
-			{
-				pkExternalCatalog = externalCatalog;
-				pkInternalCatalog = internalCatalog;
-			}
-			else
-			{
-				pkExternalCatalog = s_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? s_internalCatalogToExternalCatalog.get(pkInternalCatalog)
-				                                                                                      : externalCatalog
-				;
-			}
-
-			if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
-			{
-				name = name.toLowerCase();
-				fkTable = fkTable.toLowerCase();
-				fkColumn = fkColumn.toLowerCase();
-				pkTable = pkTable.toLowerCase();
-				pkColumn = pkColumn.toLowerCase();
-
-				Map<String, FrgnKey> frgnKey = tmp.get(fkTable);
-
-				if(frgnKey != null)
-				{
-					frgnKey.put(fkColumn, new FrgnKey(
-						name,
-						fkExternalCatalog,
-						fkInternalCatalog,
-						fkTable,
-						fkColumn,
-						pkExternalCatalog,
-						pkInternalCatalog,
-						pkTable,
-						pkColumn
-					));
-				}
-			}
+			new Thread(new Executor(s_columns, s_frgnKeys, s_reverse, threads)).start();
 		}
 
 		/*-----------------------------------------------------------------*/
