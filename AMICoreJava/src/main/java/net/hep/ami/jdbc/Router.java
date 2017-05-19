@@ -346,6 +346,30 @@ public class Router implements Querier
 		LocalizationSingleton.fill(this);
 
 		/*-----------------------------------------------------------------*/
+		/* RESET                                                           */
+		/*-----------------------------------------------------------------*/
+
+		LogSingleton.root.info("reset server...");
+
+		String[] classNames = {
+			"net.hep.ami.ConfigSingleton",
+			"net.hep.ami.ConverterSingleton",
+			"net.hep.ami.jdbc.DriverSingleton",
+			"net.hep.ami.jdbc.CatalogSingleton",
+			"net.hep.ami.RoleSingleton",
+			"net.hep.ami.CommandSingleton",
+		};
+
+		Class<?> clazz;
+
+		for(String className: classNames)
+		{
+			clazz = Class.forName(className);
+
+			clazz.getMethod("reload", clazz).invoke(null);
+		}
+
+		/*-----------------------------------------------------------------*/
 		/* DONE                                                            */
 		/*-----------------------------------------------------------------*/
 
