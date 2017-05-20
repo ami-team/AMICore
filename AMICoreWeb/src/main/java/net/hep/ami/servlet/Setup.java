@@ -318,38 +318,44 @@ public class Setup extends HttpServlet
 		try
 		{
 			/*-------------------------------------------------------------*/
-			/* SETUP ROUTER DATABASE                                       */
+			/* SETUP SERVER CONFIG                                         */
 			/*-------------------------------------------------------------*/
 
 			Router db = new Router("self", router, router_url, router_user, router_pass);
 
 			try
 			{
+				/*---------------------------------------------------------*/
+
+				try(OutputStream outputStream = new FileOutputStream(getConfigPath() + File.separator + "AMI.xml"))
+				{
+					TextFile.write(outputStream, stringBuilder1);
+				}
+
+				ConfigSingleton.reload();
+
+				/*---------------------------------------------------------*/
+
 				if("on".equals(req.getParameter("router_reset")))
 				{
 					db.create();
 					db.fill();
 				}
-			}
-			finally
-			{
+
+				/*---------------------------------------------------------*/
+
 				db.commitAndRelease();
+			}
+			catch(Exception e)
+			{
+				db.rollbackAndRelease();
 			}
 
 			/*-------------------------------------------------------------*/
-			/* RELOAD CONFIGURATION                                        */
+			/* LOAD SERVER CONFIG                                          */
 			/*-------------------------------------------------------------*/
 
 			Router.reload();
-
-			/*-------------------------------------------------------------*/
-			/* WRITE CONFIG FILE                                           */
-			/*-------------------------------------------------------------*/
-
-			try(OutputStream outputStream = new FileOutputStream(getConfigPath() + File.separator + "AMI.xml"))
-			{
-				TextFile.write(outputStream, stringBuilder1);
-			}
 
 			/*-------------------------------------------------------------*/
 			/* BUILD HTML                                                  */

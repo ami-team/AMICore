@@ -73,9 +73,16 @@
 
 				/*-----------------------------------------*/
 
-				return reset ? confirm('Reset the AMI database?') : true;
+				if(reset === false || confirm('Reset the AMI database?'))
+				{
+					$('button[type="submit"]').prop('disabled', true);
+
+					return true;
+				}
 
 				/*-----------------------------------------*/
+
+				return false;
 			}
 
 		</script>

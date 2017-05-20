@@ -358,19 +358,14 @@ public class Router implements Querier
 
 	public static void reload() throws Exception
 	{
-		final String[] classNames = {
-			"net.hep.ami.ConfigSingleton",
-			"net.hep.ami.ConverterSingleton",
-			"net.hep.ami.jdbc.DriverSingleton",
-			"net.hep.ami.jdbc.CatalogSingleton",
-			"net.hep.ami.RoleSingleton",
-			"net.hep.ami.CommandSingleton",
-		};
+		ConfigSingleton.reload();
+		ConverterSingleton.reload();
 
-		for(String className: classNames)
-		{
-			Class.forName(className).getDeclaredMethod("reload").invoke(null);
-		}
+		DriverSingleton.reload();
+		CatalogSingleton.reload();
+
+		RoleSingleton.reload();
+		CommandSingleton.reload();
 	}
 
 	/*---------------------------------------------------------------------*/
