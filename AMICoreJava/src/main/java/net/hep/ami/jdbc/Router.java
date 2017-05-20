@@ -346,12 +346,19 @@ public class Router implements Querier
 		LocalizationSingleton.fill(this);
 
 		/*-----------------------------------------------------------------*/
-		/* RESET                                                           */
+		/* DONE                                                            */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.root.info("reset server...");
+		LogSingleton.root.info("done");
 
-		String[] classNames = {
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload() throws Exception
+	{
+		final String[] classNames = {
 			"net.hep.ami.ConfigSingleton",
 			"net.hep.ami.ConverterSingleton",
 			"net.hep.ami.jdbc.DriverSingleton",
@@ -360,22 +367,10 @@ public class Router implements Querier
 			"net.hep.ami.CommandSingleton",
 		};
 
-		Class<?> clazz;
-
 		for(String className: classNames)
 		{
-			clazz = Class.forName(className);
-
-			clazz.getMethod("reload", clazz).invoke(null);
+			Class.forName(className).getDeclaredMethod("reload").invoke(null);
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* DONE                                                            */
-		/*-----------------------------------------------------------------*/
-
-		LogSingleton.root.info("done");
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

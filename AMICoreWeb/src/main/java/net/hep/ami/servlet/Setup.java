@@ -156,34 +156,57 @@ public class Setup extends HttpServlet
 		StringBuilder stringBuilder = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-		/* VARIABLES (SERVER)                                              */
+		/* GET/POST VARIABLES (SERVER)                                     */
 		/*-----------------------------------------------------------------*/
 
-		String host = ConfigSingleton.getProperty("host");
+		String host = req.getParameter("host");
+		host = (host != null) ? host.trim()
+		                      : ConfigSingleton.getProperty("host")
+		;
 
-		String agent = ConfigSingleton.getProperty("agent");
+		String agent = req.getParameter("agent");
+		agent = (agent != null) ? agent.trim()
+		                        : ConfigSingleton.getProperty("agent")
+		;
 
-		String admin_user = ConfigSingleton.getProperty("admin_user");
+		String admin_user = req.getParameter("admin_user");
+		admin_user = (admin_user != null) ? admin_user.trim()
+		                                  : ConfigSingleton.getProperty("admin_user")
+		;
 
-		String admin_pass = ConfigSingleton.getProperty("admin_pass");
+		String admin_pass = req.getParameter("admin_pass");
+		admin_pass = (admin_pass != null) ? admin_pass.trim()
+		                                  : ConfigSingleton.getProperty("admin_pass")
+		;
 
-		String guest_user = ConfigSingleton.getProperty("guest_user");
-
-		String guest_pass = ConfigSingleton.getProperty("guest_pass");
-
-		String encryption_key = ConfigSingleton.getProperty("encryption_key");
+		String encryption_key = req.getParameter("encryption_key");
+		encryption_key = (encryption_key != null) ? encryption_key.trim()
+		                                          : ConfigSingleton.getProperty("encryption_key")
+		;
 
 		/*-----------------------------------------------------------------*/
-		/* VARIABLES (ROUTER DATABASE)                                     */
+		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
 		/*-----------------------------------------------------------------*/
 
-		String router = ConfigSingleton.getProperty("router");
+		String router = req.getParameter("router");
+		router = (router != null) ? router.trim()
+		                          : ConfigSingleton.getProperty("router")
+		;
 
-		String router_url = ConfigSingleton.getProperty("router_url");
+		String router_url = req.getParameter("router_url");
+		router_url = (router_url != null) ? router_url.trim()
+		                                  : ConfigSingleton.getProperty("router_url")
+		;
 
-		String router_user = ConfigSingleton.getProperty("router_user");
+		String router_user = req.getParameter("router_user");
+		router_user = (router_user != null) ? router_user.trim()
+		                                    : ConfigSingleton.getProperty("router_user")
+		;
 
-		String router_pass = ConfigSingleton.getProperty("router_pass");
+		String router_pass = req.getParameter("router_pass");
+		router_pass = (router_pass != null) ? router_pass.trim()
+		                                    : ConfigSingleton.getProperty("router_pass")
+		;
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD HTML                                                      */
@@ -203,8 +226,6 @@ public class Setup extends HttpServlet
 		                    .replace("{{AGENT}}", agent)
 		                    .replace("{{ADMIN_USER}}", admin_user)
 		                    .replace("{{ADMIN_PASS}}", admin_pass)
-		                    .replace("{{GUEST_USER}}", guest_user)
-		                    .replace("{{GUEST_PASS}}", guest_pass)
 		                    .replace("{{ENCRYPTION_KEY}}", encryption_key)
 		                    /**/
 		                    .replace("{{ROUTER}}", router)
@@ -243,11 +264,6 @@ public class Setup extends HttpServlet
 		encryption_key = (encryption_key != null) ? encryption_key.trim() : "";
 
 		/*-----------------------------------------------------------------*/
-
-		String guest_user = "guest";
-		String guest_pass =   ""   ;
-
-		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
 		/*-----------------------------------------------------------------*/
 
@@ -263,15 +279,17 @@ public class Setup extends HttpServlet
 		String router_pass = req.getParameter("router_pass");
 		router_pass = (router_pass != null) ? router_pass.trim() : "";
 
-		String router_reset = req.getParameter("router_reset");
-		router_reset = (router_reset != null) ? router_reset.trim() : "";
-
 		/*-----------------------------------------------------------------*/
 
 		while(host.endsWith("/"))
 		{
 			host = host.substring(0, host.length() - 1);
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		String guest_user = "guest";
+		String guest_pass =   ""   ;
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD CONFIG FILE                                               */
@@ -307,7 +325,7 @@ public class Setup extends HttpServlet
 
 			try
 			{
-				if("on".equals(router_reset))
+				if("on".equals(req.getParameter("router_reset")))
 				{
 					db.create();
 					db.fill();
@@ -317,6 +335,12 @@ public class Setup extends HttpServlet
 			{
 				db.commitAndRelease();
 			}
+
+			/*-------------------------------------------------------------*/
+			/* RELOAD CONFIGURATION                                        */
+			/*-------------------------------------------------------------*/
+
+			Router.reload();
 
 			/*-------------------------------------------------------------*/
 			/* WRITE CONFIG FILE                                           */
@@ -340,9 +364,18 @@ public class Setup extends HttpServlet
 
 			return stringBuilder2.toString()
 			                     .replace("{{YEAR}}", year)
+			                     /**/
 			                     .replace("{{HOST}}", host)
+			                     .replace("{{AGENT}}", agent)
 			                     .replace("{{ADMIN_USER}}", admin_user)
 			                     .replace("{{ADMIN_PASS}}", admin_pass)
+			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
+			                     /**/
+			                     .replace("{{ROUTER}}", router)
+			                     .replace("{{ROUTER_URL}}", router_url)
+			                     .replace("{{ROUTER_USER}}", router_user)
+			                     .replace("{{ROUTER_PASS}}", router_pass)
+			                     /**/
 			                     .replace("{{CATALINA_BASE}}", System.getProperty("catalina.base", "?"))
 			;
 
@@ -363,6 +396,18 @@ public class Setup extends HttpServlet
 
 			return stringBuilder2.toString()
 			                     .replace("{{YEAR}}", year)
+			                     /**/
+			                     .replace("{{HOST}}", host)
+			                     .replace("{{AGENT}}", agent)
+			                     .replace("{{ADMIN_USER}}", admin_user)
+			                     .replace("{{ADMIN_PASS}}", admin_pass)
+			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
+			                     /**/
+			                     .replace("{{ROUTER}}", router)
+			                     .replace("{{ROUTER_URL}}", router_url)
+			                     .replace("{{ROUTER_USER}}", router_user)
+			                     .replace("{{ROUTER_PASS}}", router_pass)
+			                     /**/
 			                     .replace("{{MESSAGE}}", e.getMessage())
 			;
 

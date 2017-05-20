@@ -27,19 +27,6 @@
 				background: rgb(245, 245, 245) url("images/stripe2.png");
 			}
 		</style>
-
-		<script type="text/javascript">
-
-			function go()
-			{
-				/*-----------------------------------------*/
-
-				window.history.back();
-
-				/*-----------------------------------------*/
-			}
-
-		</script>
 	</head>
 	<body style="background: white url('images/background.jpg') fixed;">
 
@@ -64,7 +51,7 @@
 		</nav>
 
 		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
+			<form method="post" action="" class="modal-content">
 
 				<div class="modal-header">
 					<h3 class="modal-title"><i class="fa fa-magic"></i> AMI wizard</h3>
@@ -92,13 +79,28 @@
 
 					</div>
 
+					<input type="hidden" name="host" value="{{HOST}}" />
+					<input type="hidden" name="agent" value="{{AGENT}}" />
+					<input type="hidden" name="admin_user" value="{{ADMIN_USER}}" />
+					<input type="hidden" name="admin_pass" value="{{ADMIN_PASS}}" />
+					<input type="hidden" name="guest_user" value="{{GUEST_USER}}" />
+					<input type="hidden" name="guest_pass" value="{{GUEST_PASS}}" />
+					<input type="hidden" name="encryption_key" value="{{ENCRYPTION_KEY}}" />
+
+					<input type="hidden" name="router" value="{{ROUTER}}" />
+					<input type="hidden" name="router_url" value="{{ROUTER_URL}}" />
+					<input type="hidden" name="router_user" value="{{ROUTER_USER}}" />
+					<input type="hidden" name="router_pass" value="{{ROUTER_PASS}}" />
+
+					<input type="hidden" name="Level" value="2" />
+
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" id="next" onclick="go();"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></button>
+					<button type="submit" class="btn btn-danger"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></button>
 				</div>
 
-			</div>
+			</form>
 		</div>
 
 		<p class="text-center">Copyright © 2001-{{YEAR}}, <a href="http://lpsc.in2p3.fr/" target="_blank">LPSC/IN2P3/CNRS</a>. All right reserved.</p>

@@ -27,28 +27,6 @@
 				background: rgb(245, 245, 245) url("images/stripe2.png");
 			}
 		</style>
-
-		<script type="text/javascript">
-
-			function go()
-			{
-				/*-----------------------------------------*/
-
-				var data = {Command: 'RestartAMI -AMIUser="{{ADMIN_USER}}" -AMIPass="{{ADMIN_PASS}}"'};
-
-				$.ajax({url: '{{HOST}}/AMI/FrontEnd', data: data, type: 'POST'}).always(function() {
-
-					setTimeout(function() {
-
-						location.replace('{{HOST}}/AMI');
-
-					}, 5000);
-				});
-
-				/*-----------------------------------------*/
-			}
-
-		</script>
 	</head>
 	<body style="background: white url('images/background.jpg') fixed;">
 
@@ -109,7 +87,7 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-success" id="next" onclick="go();">Restart AMI</button>
+					<!-- empty -->
 				</div>
 
 			</div>

@@ -2,7 +2,6 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
-import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
@@ -20,14 +19,7 @@ public class ReloadConfig extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		ConfigSingleton.reload();
-		ConverterSingleton.reload();
-
-		DriverSingleton.reload();
-		CatalogSingleton.reload();
-
-		RoleSingleton.reload();
-		CommandSingleton.reload();
+		Router.reload();
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
