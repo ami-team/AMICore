@@ -359,13 +359,14 @@ public class Router implements Querier
 	public static void reload() throws Exception
 	{
 		ConfigSingleton.reload();
-		ConverterSingleton.reload();
 
 		DriverSingleton.reload();
 		CatalogSingleton.reload();
 
-		RoleSingleton.reload();
 		CommandSingleton.reload();
+		ConverterSingleton.reload();
+
+		RoleSingleton.reload();
 	}
 
 	/*---------------------------------------------------------------------*/
