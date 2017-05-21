@@ -19,9 +19,11 @@ public class ReloadConfig extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		long t1 = System.currentTimeMillis();
 		Router.reload();
+		long t2 = System.currentTimeMillis();
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success in " + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "s]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
