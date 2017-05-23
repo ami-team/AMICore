@@ -13,15 +13,15 @@ public class MQLToAST
 
 	private int m_cnt;
 
-	private final String m_catalog;
+	private List<String> m_ruleNames;
 
 	/*---------------------------------------------------------------------*/
 
-	public MQLToAST(String catalog)
+	public MQLToAST(List<String> ruleNames)
 	{
 		m_cnt = 0;
 
-		m_catalog = catalog;
+		m_ruleNames = ruleNames;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -43,7 +43,9 @@ public class MQLToAST
 		StringBuilder nodes = new StringBuilder();
 		StringBuilder edges = new StringBuilder();
 
-		new MQLToAST(catalog).visit(nodes, edges, Arrays.asList(parser.getRuleNames()), 0, parser.selectStatement());
+		nodes.append("\tnode0").append(" [shape=cylinder, label=\"").append(catalog).append("\"];\n");
+
+		new MQLToAST(Arrays.asList(parser.getRuleNames())).visit(nodes, edges, parser.selectStatement(), 0);
 
 		return new StringBuilder().append("digraph ast {\n")
 		                          .append("\trankdir=TB;\n")
@@ -58,24 +60,21 @@ public class MQLToAST
 
 	/*---------------------------------------------------------------------*/
 
-	private void visit(StringBuilder nodes, StringBuilder edges, List<String> foo, int oldId, ParseTree ctx)
+	private void visit(StringBuilder nodes, StringBuilder edges, ParseTree parseTree, int oldId)
 	{
-		int newId;
+		int newId = oldId;
 
-		final int nb = ctx.getChildCount();
+		final int nb = parseTree.getChildCount();
 
 		/*-----------------------------------------------------------------*/
 
-		if(ctx instanceof TerminalNode)
+		if(parseTree instanceof TerminalNode)
 		{
 			newId = ++m_cnt;
 
-			if(oldId > 0)
-			{
-				edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
-			}
+			edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
 
-			nodes.append("\tnode").append(newId).append(" [label=\"").append(Trees.getNodeText(ctx, foo).replace("\"", "\\\"")).append("\"];\n");
+			nodes.append("\tnode").append(newId).append(" [label=\"").append(Trees.getNodeText(parseTree, m_ruleNames).replace("\"", "\\\"")).append("\"];\n");
 		}
 		else
 		{
@@ -83,16 +82,9 @@ public class MQLToAST
 			{
 				newId = ++m_cnt;
 
-				if(oldId > 0)
-				{
-					edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
-				}
+				edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
 
-				nodes.append("\tnode").append(newId).append(" [label=\"#").append(Trees.getNodeText(ctx, foo).replace("\"", "\\\"")).append("\"];\n");
-			}
-			else
-			{
-				newId = oldId;
+				nodes.append("\tnode").append(newId).append(" [label=\"#").append(Trees.getNodeText(parseTree, m_ruleNames).replace("\"", "\\\"")).append("\"];\n");
 			}
 		}
 
@@ -100,7 +92,7 @@ public class MQLToAST
 
 		for(int i = 0; i < nb; i++)
 		{
-			visit(nodes, edges, foo, newId, ctx.getChild(i));
+			visit(nodes, edges, parseTree.getChild(i), newId);
 		}
 
 		/*-----------------------------------------------------------------*/
