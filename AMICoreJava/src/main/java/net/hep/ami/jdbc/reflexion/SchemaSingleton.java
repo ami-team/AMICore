@@ -152,8 +152,8 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		public Map<String, Map<String, Column>> m_tmp1;
-		public Map<String, Map<String, FrgnKey>> m_tmp2;
+		private Map<String, Map<String, Column>> m_tmp1;
+		private Map<String, Map<String, FrgnKey>> m_tmp2;
 
 		/*-----------------------------------------------------------------*/
 
