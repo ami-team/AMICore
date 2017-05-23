@@ -43,7 +43,7 @@ public class MQLToAST
 		StringBuilder nodes = new StringBuilder();
 		StringBuilder edges = new StringBuilder();
 
-		nodes.append("\tnode0").append(" [shape=cylinder, label=\"").append(catalog).append("\"];\n");
+		nodes.append("\tnode0").append(" [shape=\"cylinder\", label=\"").append(catalog).append("\"];\n");
 
 		new MQLToAST(Arrays.asList(parser.getRuleNames())).visit(nodes, edges, parser.selectStatement(), 0);
 
