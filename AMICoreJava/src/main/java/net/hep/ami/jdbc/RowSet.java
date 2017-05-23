@@ -8,20 +8,18 @@ public class RowSet
 {
 	/*---------------------------------------------------------------------*/
 
-	protected ResultSet m_resultSet;
+	protected final ResultSet m_resultSet;
 
-	private String m_xql;
-	private String m_ast;
-
-	/*---------------------------------------------------------------------*/
-
-	private int m_numberOfFields;
+	private final String m_xql;
+	private final String m_ast;
 
 	/*---------------------------------------------------------------------*/
 
-	protected String[] m_fieldTables;
-	protected String[] m_fieldNames;
-	protected String[] m_fieldTypes;
+	private final int m_numberOfFields;
+
+	protected final String[] m_fieldTables;
+	protected final String[] m_fieldNames;
+	protected final String[] m_fieldTypes;
 
 	protected final Map<String, Integer> m_fieldIndices = new HashMap<>();
 
