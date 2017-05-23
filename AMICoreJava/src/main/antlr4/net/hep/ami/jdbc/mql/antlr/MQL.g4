@@ -202,7 +202,7 @@ fragment Y: [yY];
 fragment Z: [zZ];
 
 fragment INT
-	: [0-9]
+	: [0-9]+
 	;
 
 fragment EXP

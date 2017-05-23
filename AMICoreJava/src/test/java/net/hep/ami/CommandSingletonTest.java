@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.mql.MQLToAST;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.TextFile;
@@ -59,11 +60,11 @@ public class CommandSingletonTest
 			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
 */
-			joins = new LinkedHashMap<>();
+/*			joins = new LinkedHashMap<>();
 			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
 			System.out.println(joins);
 			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
-
+*/
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
@@ -75,7 +76,11 @@ public class CommandSingletonTest
 
 			//System.out.println(ConnectionPoolSingleton.getStatus());
 
-//			System.out.println("done.");
+			//System.out.println(MQLToAST.parse("SELECT `foo`.`bar`", "toto"));
+
+			System.out.println(MQLToAST.parse("SELECT `foo`.* WHERE `foo`.`bar`='kux' OR `foo`.`bar`=-777", "toto"));
+
+			//System.out.println("done.");
 		}
 		catch(Exception e)
 		{
