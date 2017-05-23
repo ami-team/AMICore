@@ -2,6 +2,7 @@ package net.hep.ami.jdbc;
 
 import java.sql.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
@@ -21,7 +22,7 @@ public class SimpleQuerier implements Querier
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 		}
 	}
 

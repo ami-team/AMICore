@@ -90,7 +90,7 @@ public class SchemaSingleton
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 		}
 	}
 
@@ -338,23 +338,22 @@ public class SchemaSingleton
 
 				/*---------------------------------------------------------*/
 
+				String temp;
+
 				while(resultSet.next())
 				{
-					String name = resultSet.getString("TABLE_NAME");
+					temp = resultSet.getString("TABLE_NAME");
 
-					if(name != null)
-					{
-						name = name.toLowerCase();
+					if(temp != null
+					   &&
+					   temp.toLowerCase().startsWith("db_") == false
+					   &&
+					   temp.toLowerCase().startsWith("x_db_") == false
+					 ) {
+						m_tmp1.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+						m_tmp2.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
 
-						if(name.startsWith("db_") == false
-						   &&
-						   name.startsWith("x_db_") == false
-						 ) {
-							m_tmp1.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
-							m_tmp2.put(name, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
-
-							tables.add(name);
-						}
+						tables.add(temp);
 					}
 				}
 

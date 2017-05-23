@@ -79,7 +79,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			LogSingleton.root.warn(e.getMessage(), e);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -167,7 +167,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			LogSingleton.root.warn(e.getMessage(), e);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -216,7 +216,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			LogSingleton.root.warn(e.getMessage(), e);
 		}
 
 		/*-----------------------------------------------------------------*/
