@@ -4,9 +4,9 @@ public class Row
 {
 	/*---------------------------------------------------------------------*/
 
-	private RowSet m_rowSet;
+	private final RowSet m_rowSet;
 
-	private String[] m_values;
+	private final String[] m_values;
 
 	/*---------------------------------------------------------------------*/
 
