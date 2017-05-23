@@ -55,7 +55,7 @@ public class CommandSingletonTest
 
 			router = new Router();
 
-//			System.out.println(router.mqlToSQL("SELECT router_user.*"));
+			System.out.println(router.mqlToSQL("SELECT router_user.*"));
 //			System.out.println(router.mqlToAST("SELECT router_user.*"));
 
 			router.commitAndRelease();
@@ -85,7 +85,7 @@ public class CommandSingletonTest
 
 			//System.out.println(MQLToAST.parse("SELECT `foo`.`bar`", "toto"));
 
-			System.out.println(MQLToAST.parse("SELECT `foo`.* WHERE `foo`.`bar`='kux' OR `foo`.`bar`=-777", "toto"));
+			//System.out.println(MQLToAST.parse("SELECT `foo`.* WHERE `foo`.`bar`='kux' OR `foo`.`bar`=-777", "toto"));
 
 			//System.out.println("done.");
 		}

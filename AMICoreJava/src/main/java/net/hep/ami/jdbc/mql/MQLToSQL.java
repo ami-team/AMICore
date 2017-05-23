@@ -530,7 +530,7 @@ public class MQLToSQL
 		}
 		catch(Exception e)
 		{
-			System.out.println(e.getMessage()); /* TODO */
+			e.printStackTrace(); /* TODO */
 		}
 
 		return result;
