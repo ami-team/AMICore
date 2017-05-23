@@ -9,7 +9,7 @@ public class SimpleQuerier implements Querier
 {
 	/*---------------------------------------------------------------------*/
 
-	private AbstractDriver m_driver;
+	private final AbstractDriver m_driver;
 
 	/*---------------------------------------------------------------------*/
 

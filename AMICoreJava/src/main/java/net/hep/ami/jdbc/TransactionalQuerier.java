@@ -10,9 +10,9 @@ public class TransactionalQuerier implements Querier
 {
 	/*---------------------------------------------------------------------*/
 
-	private long m_transactionId;
+	private final long m_transactionId;
 
-	private AbstractDriver m_driver;
+	private final AbstractDriver m_driver;
 
 	/*---------------------------------------------------------------------*/
 
