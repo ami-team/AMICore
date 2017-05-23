@@ -19,7 +19,7 @@ public class MQLToAST
 
 	public MQLToAST(List<String> ruleNames)
 	{
-		m_cnt = 0;
+		m_cnt = 0x00;
 
 		m_ruleNames = ruleNames;
 	}

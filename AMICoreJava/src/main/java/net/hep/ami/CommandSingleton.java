@@ -131,6 +131,8 @@ public class CommandSingleton
 
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false || (clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
 		{
+			LogSingleton.root.debug("class '" + className + "' doesn't extend 'AbstractCommand'");
+
 			return;
 		}
 
@@ -165,9 +167,11 @@ public class CommandSingleton
 
 		Class<?> clazz = Class.forName(className);
 
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false || (clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
 		{
 			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
+
+			/* ✞ */
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -53,6 +53,13 @@ public class CommandSingletonTest
 
 			router.commitAndRelease();
 
+			router = new Router();
+
+//			System.out.println(router.mqlToSQL("SELECT router_user.*"));
+//			System.out.println(router.mqlToAST("SELECT router_user.*"));
+
+			router.commitAndRelease();
+
 			Map<String, List<String>> joins;
 /*
 			joins = new LinkedHashMap<>();
