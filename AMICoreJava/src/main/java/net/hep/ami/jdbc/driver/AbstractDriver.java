@@ -191,7 +191,7 @@ public abstract class AbstractDriver implements Querier
 		try
 		{
 			String SQL = mqlToSQL(mql);
-			String ast =     null     ;
+			String ast = mqlToAST(mql);
 
 			return new RowSet(m_statement.executeQuery(SQL), mql, ast);
 		}

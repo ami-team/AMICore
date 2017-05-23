@@ -56,7 +56,7 @@ public class CommandSingletonTest
 			router = new Router();
 
 			System.out.println(router.mqlToSQL("SELECT router_user.*"));
-//			System.out.println(router.mqlToAST("SELECT router_user.*"));
+			System.out.println(router.mqlToAST("SELECT router_user.*"));
 
 			router.commitAndRelease();
 
