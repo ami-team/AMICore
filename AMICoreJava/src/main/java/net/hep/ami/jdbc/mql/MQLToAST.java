@@ -13,7 +13,7 @@ public class MQLToAST
 
 	private int m_cnt;
 
-	private List<String> m_ruleNames;
+	private final List<String> m_ruleNames;
 
 	/*---------------------------------------------------------------------*/
 
