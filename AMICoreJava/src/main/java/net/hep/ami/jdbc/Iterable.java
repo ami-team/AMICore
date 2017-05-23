@@ -77,7 +77,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 		{
 			m_rowSet.m_resultSet.beforeFirst();
 		}
-		catch(SQLException e)
+		catch(Exception e)
 		{
 			/* IGNORE */
 		}
@@ -165,7 +165,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 		{
 			rowSet.m_resultSet.beforeFirst();
 		}
-		catch(SQLException e)
+		catch(Exception e)
 		{
 			/* IGNORE */
 		}
@@ -214,7 +214,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 		{
 			rowSet.m_resultSet.beforeFirst();
 		}
-		catch(SQLException e)
+		catch(Exception e)
 		{
 			/* IGNORE */
 		}
