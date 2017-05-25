@@ -173,8 +173,9 @@ public abstract class AbstractDriver implements Querier
 		try
 		{
 			String SQL = patchSQL(sql);
+			String AST =     null     ;
 
-			return new RowSet(m_statement.executeQuery(SQL), SQL, null, null);
+			return new RowSet(m_statement.executeQuery(SQL), SQL, null, AST);
 		}
 		catch(Exception e)
 		{
