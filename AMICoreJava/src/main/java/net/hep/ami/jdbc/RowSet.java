@@ -18,11 +18,17 @@ public class RowSet
 
 	private final int m_numberOfFields;
 
-	protected final String[] m_fieldTables;
-	protected final String[] m_fieldNames;
-	protected final String[] m_fieldTypes;
+	protected String[] m_fieldTables;
+	protected String[] m_fieldNames;
+	protected String[] m_fieldTypes;
+
+	/*---------------------------------------------------------------------*/
 
 	protected final Map<String, Integer> m_fieldIndices = new HashMap<>();
+
+	/*---------------------------------------------------------------------*/
+
+	private final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -173,10 +179,6 @@ public class RowSet
 		                                       : null
 		;
 	}
-
-	/*---------------------------------------------------------------------*/
-
-	private final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
