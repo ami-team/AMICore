@@ -9,7 +9,6 @@
 
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
-		<xsl:apply-templates select="sql" />
 		<xsl:apply-templates select="rowset" />
 
 		<xsl:text>&#x0a;#</xsl:text>
@@ -28,7 +27,19 @@
 	</xsl:template>
 
 	<xsl:template match="sql">
-		<xsl:text>Sql: </xsl:text>
+		<xsl:text>  Sql: </xsl:text>
+		<xsl:copy-of select="." />
+		<xsl:text>&#x0a;</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="mql">
+		<xsl:text>  Mql: </xsl:text>
+		<xsl:copy-of select="." />
+		<xsl:text>&#x0a;</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="ast">
+		<xsl:text>  Ast: </xsl:text>
 		<xsl:copy-of select="." />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
@@ -37,6 +48,9 @@
 		<xsl:text>Rowset: </xsl:text>
 		<xsl:value-of select="@type" />
 		<xsl:text>&#x0a;</xsl:text>
+		<xsl:apply-templates select="sql" />
+		<xsl:apply-templates select="mql" />
+		<xsl:apply-templates select="ast" />
 		<xsl:apply-templates select="row" />
 	</xsl:template>
 

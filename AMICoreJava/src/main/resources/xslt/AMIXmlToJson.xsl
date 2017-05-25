@@ -7,21 +7,25 @@
 	<xsl:template match="/AMIMessage">
 		<xsl:text>{"AMIMessage":{</xsl:text>
 
-		<xsl:text>"error":[</xsl:text>
-		<xsl:apply-templates select="error" />
-		<xsl:text>],</xsl:text>
+		<xsl:if test="error">
+			<xsl:text>"error":[</xsl:text>
+			<xsl:apply-templates select="error" />
+			<xsl:text>]</xsl:text>
+			<xsl:if test="info|rowset">,</xsl:if>
+		</xsl:if>
 
-		<xsl:text>"info":[</xsl:text>
-		<xsl:apply-templates select="info" />
-		<xsl:text>],</xsl:text>
+		<xsl:if test="info">
+			<xsl:text>"info":[</xsl:text>
+			<xsl:apply-templates select="info" />
+			<xsl:text>]</xsl:text>
+			<xsl:if test="rowset">,</xsl:if>
+		</xsl:if>
 
-		<xsl:text>"sql":[</xsl:text>
-		<xsl:apply-templates select="sql" />
-		<xsl:text>],</xsl:text>
-
-		<xsl:text>"rowset":[</xsl:text>
-		<xsl:apply-templates select="rowset" />
-		<xsl:text>]</xsl:text>
+		<xsl:if test="rowset">
+			<xsl:text>"rowset":[</xsl:text>
+			<xsl:apply-templates select="rowset" />
+			<xsl:text>]</xsl:text>
+		</xsl:if>
 
 		<xsl:text>}}</xsl:text>
 	</xsl:template>
@@ -32,9 +36,9 @@
 		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
-		<xsl:text>"</xsl:text>
+		<xsl:text>{"$":"</xsl:text>
 		<xsl:copy-of select="$s4" />
-		<xsl:text>"</xsl:text>
+		<xsl:text>"}</xsl:text>
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
@@ -45,28 +49,42 @@
 		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
 
-		<xsl:text>"</xsl:text>
+		<xsl:text>{"$":"</xsl:text>
 		<xsl:copy-of select="$s4" />
-		<xsl:text>"</xsl:text>
-
-		<xsl:if test="not (position() = last())">,</xsl:if>
-	</xsl:template>
-
-	<xsl:template match="sql">
-		<xsl:variable name="s1" select="." />
-		<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
-		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
-		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
-
-		<xsl:text>"</xsl:text>
-		<xsl:copy-of select="$s4" />
-		<xsl:text>"</xsl:text>
+		<xsl:text>"}</xsl:text>
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="rowset">
 		<xsl:text>{</xsl:text>
+
+		<xsl:variable name="s1" select="sql" />
+		<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+		<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+		<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
+
+		<xsl:text>"@sql":"</xsl:text>
+		<xsl:value-of select="$s4" />
+		<xsl:text>",</xsl:text>
+
+		<xsl:variable name="s5" select="mql" />
+		<xsl:variable name="s6" select="replace($s5, '&#xa;', '\\n')" />
+		<xsl:variable name="s7" select="replace($s6, '&#x9;', '\\t')" />
+		<xsl:variable name="s8" select="replace($s7, '&quot;', '\\&quot;')" />
+
+		<xsl:text>"@mql":"</xsl:text>
+		<xsl:value-of select="$s8" />
+		<xsl:text>",</xsl:text>
+
+		<xsl:variable name="s9" select="ast" />
+		<xsl:variable name="sA" select="replace($s9, '&#xa;', '\\n')" />
+		<xsl:variable name="sB" select="replace($sA, '&#x9;', '\\t')" />
+		<xsl:variable name="sC" select="replace($sB, '&quot;', '\\&quot;')" />
+
+		<xsl:text>"@ast":"</xsl:text>
+		<xsl:value-of select="$sC" />
+		<xsl:text>",</xsl:text>
 
 		<xsl:text>"@type":"</xsl:text>
 		<xsl:value-of select="@type" />

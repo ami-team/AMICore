@@ -9,7 +9,6 @@
 
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
-		<xsl:apply-templates select="sql" />
 		<xsl:apply-templates select="rowset" />
 
 		<xsl:text>&#x0a;#</xsl:text>
@@ -23,12 +22,6 @@
 
 	<xsl:template match="info">
 		<xsl:text>#INFO: </xsl:text>
-		<xsl:copy-of select="." />
-		<xsl:text>&#x0a;</xsl:text>
-	</xsl:template>
-
-	<xsl:template match="sql">
-		<xsl:text>#SQL: </xsl:text>
 		<xsl:copy-of select="." />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>

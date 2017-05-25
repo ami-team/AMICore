@@ -173,9 +173,8 @@ public abstract class AbstractDriver implements Querier
 		try
 		{
 			String SQL = patchSQL(sql);
-			String ast =     null     ;
 
-			return new RowSet(m_statement.executeQuery(SQL), sql, ast);
+			return new RowSet(m_statement.executeQuery(SQL), SQL, null, null);
 		}
 		catch(Exception e)
 		{
@@ -191,9 +190,9 @@ public abstract class AbstractDriver implements Querier
 		try
 		{
 			String SQL = mqlToSQL(mql);
-			String ast = mqlToAST(mql);
+			String AST = mqlToAST(mql);
 
-			return new RowSet(m_statement.executeQuery(SQL), mql, ast);
+			return new RowSet(m_statement.executeQuery(SQL), SQL, mql, AST);
 		}
 		catch(Exception e)
 		{

@@ -10,7 +10,8 @@ public class RowSet
 
 	protected final ResultSet m_resultSet;
 
-	private final String m_xql;
+	private final String m_sql;
+	private final String m_mql;
 	private final String m_ast;
 
 	/*---------------------------------------------------------------------*/
@@ -25,11 +26,12 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet, @Nullable String xql, @Nullable String ast) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
 
-		m_xql = xql;
+		m_sql = sql;
+		m_mql = mql;
 		m_ast = ast;
 
 		/*-----------------------------------------------------------------*/
@@ -73,16 +75,23 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public String getAST()
+	public String getSQL()
 	{
-		return m_ast;
+		return m_sql;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getSQL()
+	public String getMQL()
 	{
-		return m_xql;
+		return m_mql;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getAST()
+	{
+		return m_ast;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -298,9 +307,13 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<xql><![CDATA[");
-		if(m_xql != null) result.append(m_xql);
-		result.append("]]></xql>");
+		result.append("<sql><![CDATA[");
+		if(m_sql != null) result.append(m_sql);
+		result.append("]]></sql>");
+
+		result.append("<mql><![CDATA[");
+		if(m_mql != null) result.append(m_mql);
+		result.append("]]></mql>");
 
 		result.append("<ast><![CDATA[");
 		if(m_ast != null) result.append(m_ast);
