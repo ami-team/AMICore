@@ -788,6 +788,30 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static Map<String, ArrayList<FrgnKey>> getReverse(String catalog, String table) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Map<String, Map<String, ArrayList<FrgnKey>>> map1 = s_reverse.get(catalog);
+
+		if(map1 != null)
+		{
+			Map<String, ArrayList<FrgnKey>> map2 = map1.get(table);
+
+			if(map2 != null)
+			{
+				return map2;
+			}
+		}
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Set<String> getColumnNames(String catalog, String table) throws Exception
 	{
 		return getColumns(catalog, table).keySet();
@@ -798,6 +822,13 @@ public class SchemaSingleton
 	public static Set<String> getFrgnKeyNames(String catalog, String table) throws Exception
 	{
 		return getFrgnKeys(catalog, table).keySet();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Set<String> getReserceNames(String catalog, String table) throws Exception
+	{
+		return getReverse(catalog, table).keySet();
 	}
 
 	/*---------------------------------------------------------------------*/

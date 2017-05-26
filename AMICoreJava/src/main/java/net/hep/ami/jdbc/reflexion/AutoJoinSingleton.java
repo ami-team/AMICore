@@ -2,6 +2,8 @@ package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
+
 public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -128,26 +130,29 @@ public class AutoJoinSingleton
 		done.add(key);
 
 		/*-----------------------------------------------------------------*/
-		/* GET COLUMNS AND FOREIGN KEYS                                    */
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(givenCatalog, givenTable);
-		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFrgnKeys(givenCatalog, givenTable);
-
-		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column _column = columns.get(givenColumn);
+		SchemaSingleton.Column _column = SchemaSingleton.getColumns(givenCatalog, givenTable).get(givenColumn);
 
 		if(_column == null)
 		{
+			/*-------------------------------------------------------------*/
+
+			List<Collection<FrgnKey>> relations = new ArrayList<>();
+
+			relations.add(SchemaSingleton.getFrgnKeys(givenCatalog, givenTable).values());
+			relations.addAll(SchemaSingleton.getReverse(givenCatalog, givenTable).values());
+
+			/*-------------------------------------------------------------*/
+
 			String joinKey;
 			String joinValue;
 
 			Map<String, List<String>> temp;
 
-			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values())
+			for(Collection<FrgnKey> frgnKeys: relations)
+			for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 			{
 				temp = new HashMap<>();
 
@@ -242,25 +247,28 @@ public class AutoJoinSingleton
 		done.add(key);
 
 		/*-----------------------------------------------------------------*/
-		/* GET COLUMNS AND FOREIGN KEYS                                    */
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> columns = SchemaSingleton.getColumns(defaultCatalog, givenTable);
-		Map<String, SchemaSingleton.FrgnKey> fgnKeys = SchemaSingleton.getFrgnKeys(defaultCatalog, givenTable);
-
-		/*-----------------------------------------------------------------*/
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column _column = columns.get(givenColumn);
+		SchemaSingleton.Column _column = SchemaSingleton.getColumns(defaultCatalog, givenTable).get(givenColumn);
 
 		if(_column == null)
 		{
+			/*-------------------------------------------------------------*/
+
+			List<Collection<FrgnKey>> relations = new ArrayList<>();
+
+			relations.add(SchemaSingleton.getFrgnKeys(givenCatalog, givenTable).values());
+			relations.addAll(SchemaSingleton.getReverse(givenCatalog, givenTable).values());
+
+			/*-------------------------------------------------------------*/
+
 			SQLJoins sqlParts;
 
 			Map<String, List<String>> temp;
 
-			for(SchemaSingleton.FrgnKey frgnKey: fgnKeys.values())
+			for(Collection<FrgnKey> frgnKeys: relations)
+			for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 			{
 				temp = new HashMap<>();
 
