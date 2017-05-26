@@ -64,7 +64,7 @@ public class RemoveElements extends AbstractCommand
 		{
 			/*-------------------------------------------------------------*/
 
-			Map<String, List<String>> joins = new HashMap<>();
+			AutoJoinSingleton.AMIJoins joins = new AutoJoinSingleton.AMIJoins();
 
 			for(int i = 0; i < keyFields.length; i++)
 			{
@@ -79,7 +79,7 @@ public class RemoveElements extends AbstractCommand
 
 			/*-------------------------------------------------------------*/
 
-			String _where = AutoJoinSingleton.joinsToSQL(joins).where;
+			String _where = joins.toSQL().where;
 
 			if(_where.isEmpty() == false)
 			{

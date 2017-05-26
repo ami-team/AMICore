@@ -68,20 +68,21 @@ public class UpdateElements extends AbstractCommand
 
 		if(fields.length > 0)
 		{
-			List<String> list = new ArrayList<>();
+			Map<String, List<String>> joins;
 
-			AutoJoinSingleton.SQLFieldValue fieldValue;
+			List<String> list = new ArrayList<>();
 
 			for(int i = 0; i < fields.length; i++)
 			{
-				fieldValue = AutoJoinSingleton.resolveFieldValue(
+				joins = AutoJoinSingleton.resolveWithNestedSelect(
+					new AutoJoinSingleton.AMIJoins(),
 					catalog,
 					entity,
 					fields[i],
 					values[i]
 				);
 
-				list.add(fieldValue.field + "=" + fieldValue.value);
+				list.add(joins.get("@").get(0));
 			}
 
 			stringBuilder.append(String.join(",", list));
@@ -95,7 +96,7 @@ public class UpdateElements extends AbstractCommand
 		{
 			/*-------------------------------------------------------------*/
 
-			Map<String, List<String>> joins = new HashMap<>();
+			AutoJoinSingleton.AMIJoins joins = new AutoJoinSingleton.AMIJoins();
 
 			for(int i = 0; i < keyFields.length; i++)
 			{
@@ -110,7 +111,7 @@ public class UpdateElements extends AbstractCommand
 
 			/*-------------------------------------------------------------*/
 
-			String _where = AutoJoinSingleton.joinsToSQL(joins).where;
+			String _where = joins.toSQL().where;
 
 			if(_where.isEmpty() == false)
 			{

@@ -60,27 +60,23 @@ public class CommandSingletonTest
 
 			router.commitAndRelease();
 
-			Map<String, List<String>> joins;
+			AutoJoinSingleton.AMIJoins joins;
 
-			joins = new LinkedHashMap<>();
+			joins = new AutoJoinSingleton.AMIJoins();
 			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_criteria", "router_search_interface.interface", "foo");
-			//System.out.println(joins);
-			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
+			System.out.println(joins.toSQL());
 
-			joins = new LinkedHashMap<>();
+			joins = new AutoJoinSingleton.AMIJoins();
 			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
-			//System.out.println(joins);
-			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
+			System.out.println(joins.toSQL());
 
-			joins = new LinkedHashMap<>();
+			joins = new AutoJoinSingleton.AMIJoins();
 			AutoJoinSingleton.resolveWithNestedSelect(joins, "self", "router_search_criteria", "router_search_interface.interface", "foo");
-			//System.out.println(joins);
-			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
+			System.out.println(joins.toSQL());
 
-			joins = new LinkedHashMap<>();
+			joins = new AutoJoinSingleton.AMIJoins();
 			AutoJoinSingleton.resolveWithNestedSelect(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
-			//System.out.println(joins);
-			System.out.println(AutoJoinSingleton.joinsToSQL(joins));
+			System.out.println(joins.toSQL());
 
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));

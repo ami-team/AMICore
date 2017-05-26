@@ -252,11 +252,4 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	public String toString()
-	{
-		return m_underlyingMap.toString();
-	}
-
-	/*---------------------------------------------------------------------*/
 }

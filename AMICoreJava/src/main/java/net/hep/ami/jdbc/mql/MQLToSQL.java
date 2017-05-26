@@ -16,7 +16,7 @@ public class MQLToSQL
 
 	private final Set<String> m_tables = new HashSet<>();
 
-	private final Map<String, List<String>> m_joins = new HashMap<>();
+	private final AutoJoinSingleton.AMIJoins m_joins = new AutoJoinSingleton.AMIJoins();
 
 	/*---------------------------------------------------------------------*/
 
@@ -132,7 +132,7 @@ public class MQLToSQL
 
 				from.append(escapeId(table));
 
-				String joins = AutoJoinSingleton.joinsToSQL(m_joins).from;
+				String joins = m_joins.toSQL().from;
 
 				if(joins.isEmpty() == false)
 				{
@@ -481,7 +481,7 @@ public class MQLToSQL
 				escapeColumnName = escapeId(x);
 				unescapeColumnName = unescapeId(x);
 
-				AutoJoinSingleton.resolveWithNestedSelect(
+				AutoJoinSingleton.resolveWithInnerJoins(
 					m_joins,
 					m_catalog,
 					unescapeTableName,
@@ -511,7 +511,7 @@ public class MQLToSQL
 		{
 			/*-------------------------------------------------------------*/
 
-			AutoJoinSingleton.resolveWithNestedSelect(
+			AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
 				m_catalog,
 				unescapeTableName,
