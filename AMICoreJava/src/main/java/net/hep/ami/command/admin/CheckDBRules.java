@@ -84,7 +84,7 @@ public class CheckDBRules extends AbstractCommand
 		int score2 = 0;
 		int total2 = 0;
 
-		Collection<SchemaSingleton.FrgnKey> frgnKeys;
+		Collection<SchemaSingleton.FrgnKeys> frgnKeys;
 
 		result.append("<field name=\"report\"><![CDATA[");
 
@@ -92,15 +92,15 @@ public class CheckDBRules extends AbstractCommand
 		{
 			for(String table: SchemaSingleton.getTableNames(catalog))
 			{
-				frgnKeys = SchemaSingleton.getFrgnKeys(catalog, table).values();
+				frgnKeys = SchemaSingleton.getForwardFKs(catalog, table).values();
 
 				total2 += frgnKeys.size();
 
-				for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
+				for(SchemaSingleton.FrgnKeys frgnKey: frgnKeys)
 				{
-					if(frgnKey.fkColumn.endsWith("fk") == false)
+					if(frgnKey.get(0).fkColumn.endsWith("fk") == false)
 					{
-						result.append("Foreign key `").append(frgnKey.fkTable).append("`.`").append(frgnKey.fkColumn).append("` should be sufixed with 'FK'.\\n");
+						result.append("Foreign key `").append(frgnKey.get(0).fkTable).append("`.`").append(frgnKey.get(0).fkColumn).append("` should be sufixed with 'FK'.\\n");
 					}
 					else
 					{

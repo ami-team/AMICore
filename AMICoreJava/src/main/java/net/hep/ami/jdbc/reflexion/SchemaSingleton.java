@@ -33,6 +33,11 @@ public class SchemaSingleton
 			size = _size;
 			digits = _digits;
 		}
+
+		public String toString()
+		{
+			return "`" + internalCatalog + "`.`" + table + "`.`" + name + "`";
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -63,6 +68,33 @@ public class SchemaSingleton
 			pkTable = _pkTable;
 			pkColumn = _pkColumn;
 		}
+
+		public String toString()
+		{
+			return "`" + fkInternalCatalog + "`.`" + fkTable + "`.`" + fkColumn + "` -> `" + pkInternalCatalog + "`.`" + pkTable + "`.`" + pkColumn + "`";
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static final class FrgnKeys extends ArrayList<FrgnKey>
+	{
+		private static final long serialVersionUID = -1572786326208277391L;
+
+		public FrgnKeys()
+		{
+			super();
+		}
+
+		public FrgnKeys(FrgnKey frgnKey)
+		{
+			super(); add(frgnKey);
+		}
+
+		public FrgnKeys(FrgnKeys frgnKeys)
+		{
+			super(); addAll(frgnKeys);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -72,9 +104,9 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String,     Column    >>> s_columns = new AMIMap<>();
-	private static final Map<String, Map<String, Map<String,     FrgnKey    >>> s_frgnKeys = new AMIMap<>();
-	private static final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> s_reverse = new AMIMap<>();
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>();
+	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_forwardFKs = new AMIMap<>();
+	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_backwardFKs = new AMIMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -106,8 +138,8 @@ public class SchemaSingleton
 		/*-----------------------------------------------------------------*/
 
 		s_columns.clear();
-		s_frgnKeys.clear();
-		s_reverse.clear();
+		s_forwardFKs.clear();
+		s_backwardFKs.clear();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -123,8 +155,13 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		s_columns.put(externalCatalog, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
-		s_frgnKeys.put(externalCatalog, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+		s_columns.put(externalCatalog,
+			new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true)
+		);
+
+		s_forwardFKs.put(externalCatalog,
+			new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true)
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -141,7 +178,7 @@ public class SchemaSingleton
 		private final Map<String, String> m_internalCatalogToExternalCatalog;
 
 		private final Map<String, Map<String, Map<String, Column>>> m_columns;
-		private final Map<String, Map<String, Map<String, FrgnKey>>> m_frgnKeys;
+		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_frgnKeys;
 
 		/*-----------------------------------------------------------------*/
 
@@ -153,7 +190,7 @@ public class SchemaSingleton
 		/*-----------------------------------------------------------------*/
 
 		private Map<String, Map<String, Column>> m_tmp1;
-		private Map<String, Map<String, FrgnKey>> m_tmp2;
+		private Map<String, Map<String, FrgnKeys>> m_tmp2;
 
 		/*-----------------------------------------------------------------*/
 
@@ -161,7 +198,7 @@ public class SchemaSingleton
 			Map<String, String> externalCatalogToInternalCatalog,
 			Map<String, String> internalCatalogToExternalCatalog,
 			Map<String, Map<String, Map<String, Column>>> columns,
-			Map<String, Map<String, Map<String, FrgnKey>>> frgnKeys,
+			Map<String, Map<String, Map<String, FrgnKeys>>> frgnKeys,
 			String externalCatalog,
 			String internalCatalog,
 			boolean fast
@@ -296,7 +333,7 @@ public class SchemaSingleton
 
 			try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + m_externalCatalog + "_frgnkeys.ser")))
 			{
-				m_tmp2.putAll((Map<String, Map<String, FrgnKey>>) objectInputStream.readObject());
+				m_tmp2.putAll((Map<String, Map<String, FrgnKeys>>) objectInputStream.readObject());
 			}
 
 			/*-------------------------------------------------------------*/
@@ -479,11 +516,11 @@ public class SchemaSingleton
 					pkTable = pkTable.toLowerCase();
 					pkColumn = pkColumn.toLowerCase();
 
-					Map<String, FrgnKey> frgnKey = m_tmp2.get(fkTable);
+					Map<String, FrgnKeys> frgnKey = m_tmp2.get(fkTable);
 
 					if(frgnKey != null)
 					{
-						frgnKey.put(fkColumn, new FrgnKey(
+						frgnKey.put(fkColumn, new FrgnKeys(new FrgnKey(
 							name,
 							fkExternalCatalog,
 							fkInternalCatalog,
@@ -493,7 +530,7 @@ public class SchemaSingleton
 							pkInternalCatalog,
 							pkTable,
 							pkColumn
-						));
+						)));
 					}
 				}
 			}
@@ -510,9 +547,9 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		private final Map<String, Map<String, Map<String,     Column    >>> m_columns;
-		private final Map<String, Map<String, Map<String,     FrgnKey    >>> m_frgnKeys;
-		private final Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> m_reverse;
+		private final Map<String, Map<String, Map<String, Column>>> m_columns;
+		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_forwardFKs;
+		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_backwardFKs;
 
 		/*-----------------------------------------------------------------*/
 
@@ -521,16 +558,16 @@ public class SchemaSingleton
 		/*-----------------------------------------------------------------*/
 
 		public Executor(
-			Map<String, Map<String, Map<String,     Column    >>> columns,
-			Map<String, Map<String, Map<String,     FrgnKey    >>> frgnKeys,
-			Map<String, Map<String, Map<String, ArrayList<FrgnKey>>>> reverse,
+			Map<String, Map<String, Map<String, Column>>> columns,
+			Map<String, Map<String, Map<String, FrgnKeys>>> forwardFKs,
+			Map<String, Map<String, Map<String, FrgnKeys>>> backwardFKs,
 			List<Thread> threads
 		 ) {
 			/*-------------------------------------------------------------*/
 
 			m_columns = columns;
-			m_frgnKeys = frgnKeys;
-			m_reverse = reverse;
+			m_forwardFKs = forwardFKs;
+			m_backwardFKs = backwardFKs;
 
 			/*-------------------------------------------------------------*/
 
@@ -582,20 +619,20 @@ public class SchemaSingleton
 
 			for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(m_columns).entrySet())
 			{
-				m_reverse.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
+				m_backwardFKs.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
 				;
 
 				for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
 				{
-					m_reverse.get(entry1.getKey())
-					         .put(entry2.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
+					m_backwardFKs.get(entry1.getKey())
+					             .put(entry2.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
 					;
 
 					for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
 					{
-						m_reverse.get(entry1.getKey())
-						         .get(entry2.getKey())
-						         .put(entry3.getKey(), new ArrayList<FrgnKey>())
+						m_backwardFKs.get(entry1.getKey())
+						             .get(entry2.getKey())
+						             .put(entry3.getKey(), new FrgnKeys())
 						;
 					}
 				}
@@ -603,14 +640,18 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(Map<String, Map<String, FrgnKey>> value1: m_frgnKeys.values())
-			for(Map<String, FrgnKey> value2: value1.values())
-			for(FrgnKey frgnKey: value2.values())
+			FrgnKey frgnKey;
+
+			for(Map<String, Map<String, FrgnKeys>> value1: m_forwardFKs.values())
+			for(Map<String, FrgnKeys> value2: value1.values())
+			for(FrgnKeys frgnKeys: value2.values())
 			{
-				m_reverse.get(frgnKey.pkExternalCatalog)
-				         .get(frgnKey.pkTable)
-				         .get(frgnKey.pkColumn)
-				         .add(frgnKey)
+				frgnKey = frgnKeys.get(0);
+
+				m_backwardFKs.get(frgnKey.pkExternalCatalog)
+				             .get(frgnKey.pkTable)
+				             .get(frgnKey.pkColumn)
+				             .add(frgnKey)
 				;
 			}
 
@@ -642,7 +683,7 @@ public class SchemaSingleton
 						s_externalCatalogToInternalCatalog,
 						s_internalCatalogToExternalCatalog,
 						s_columns,
-						s_frgnKeys,
+						s_forwardFKs,
 						entry.getKey(),
 						entry.getValue(),
 						true // fast
@@ -650,7 +691,7 @@ public class SchemaSingleton
 				));
 			}
 
-			new Executor(s_columns, s_frgnKeys, s_reverse, threads).run();
+			new Executor(s_columns, s_forwardFKs, s_backwardFKs, threads).run();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -667,7 +708,7 @@ public class SchemaSingleton
 						s_externalCatalogToInternalCatalog,
 						s_internalCatalogToExternalCatalog,
 						s_columns,
-						s_frgnKeys,
+						s_forwardFKs,
 						entry.getKey(),
 						entry.getValue(),
 						false // slow
@@ -675,7 +716,7 @@ public class SchemaSingleton
 				));
 			}
 
-			new Thread(new Executor(s_columns, s_frgnKeys, s_reverse, threads)).start();
+			new Thread(new Executor(s_columns, s_forwardFKs, s_backwardFKs, threads)).start();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -763,15 +804,15 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKey> getFrgnKeys(String catalog, String table) throws Exception
+	public static Map<String, FrgnKeys> getForwardFKs(String catalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, FrgnKey>> map1 = s_frgnKeys.get(catalog);
+		Map<String, Map<String, FrgnKeys>> map1 = s_forwardFKs.get(catalog);
 
 		if(map1 != null)
 		{
-			Map<String, FrgnKey> map2 = map1.get(table);
+			Map<String, FrgnKeys> map2 = map1.get(table);
 
 			if(map2 != null)
 			{
@@ -788,15 +829,15 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, ArrayList<FrgnKey>> getReverse(String catalog, String table) throws Exception
+	public static Map<String, FrgnKeys> getBackwardFKs(String catalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, ArrayList<FrgnKey>>> map1 = s_reverse.get(catalog);
+		Map<String, Map<String, FrgnKeys>> map1 = s_backwardFKs.get(catalog);
 
 		if(map1 != null)
 		{
-			Map<String, ArrayList<FrgnKey>> map2 = map1.get(table);
+			Map<String, FrgnKeys> map2 = map1.get(table);
 
 			if(map2 != null)
 			{
@@ -819,16 +860,16 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getFrgnKeyNames(String catalog, String table) throws Exception
+	public static Set<String> getForwardFKNames(String catalog, String table) throws Exception
 	{
-		return getFrgnKeys(catalog, table).keySet();
+		return getForwardFKs(catalog, table).keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getReserceNames(String catalog, String table) throws Exception
+	public static Set<String> getBackwardFKNames(String catalog, String table) throws Exception
 	{
-		return getReverse(catalog, table).keySet();
+		return getBackwardFKs(catalog, table).keySet();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -878,11 +919,11 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Map.Entry<String, Map<String, Map<String, FrgnKey>>> entry1: s_frgnKeys.entrySet())
-		for(Map.Entry<String, Map<String, FrgnKey>> entry2: entry1.getValue().entrySet())
-		for(Map.Entry<String, FrgnKey> entry3: entry2.getValue().entrySet())
+		for(Map.Entry<String, Map<String, Map<String, FrgnKeys>>> entry1: s_forwardFKs.entrySet())
+		for(Map.Entry<String, Map<String, FrgnKeys>> entry2: entry1.getValue().entrySet())
+		for(Map.Entry<String, FrgnKeys> entry3: entry2.getValue().entrySet())
 		{
-			frgnKey = entry3.getValue();
+			frgnKey = entry3.getValue().get(0);
 
 			result.append(
 				"<row>"
