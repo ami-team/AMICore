@@ -57,13 +57,15 @@ public class AutoJoinSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		public List<String> getOrAdd(String key)
+		public List<String> getOrAdd(String joinKey)
 		{
-			List<String> result = get(key);
+			List<String> result = get(joinKey);
 
 			if(result == null)
 			{
-				put(key, result = new ArrayList<>());
+				result = new ArrayList<>();
+
+				put(joinKey, result);
 			}
 
 			return result;
