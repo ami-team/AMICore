@@ -48,11 +48,11 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private String unescapeId(String id)
+	private String unquoteId(String id)
 	{
 		if(id.charAt(0) == '`')
 		{
-			return id.substring(1, id.length() - 1);
+			return id.substring(1, id.length() - 1).trim();
 		}
 
 		return id;
@@ -60,7 +60,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private String escapeId(String id)
+	private String quoteId(String id)
 	{
 		if(id.charAt(0) != '`')
 		{
@@ -130,7 +130,7 @@ public class MQLToSQL
 					from.append(", ");
 				}
 
-				from.append(escapeId(table));
+				from.append(quoteId(table));
 
 				String joins = m_joins.toSQL().from;
 
@@ -192,7 +192,7 @@ public class MQLToSQL
 
 		if(context.alias != null)
 		{
-			result.append(" AS " + escapeId(context.alias.getText()));
+			result.append(" AS " + quoteId(context.alias.getText()));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -462,11 +462,11 @@ public class MQLToSQL
 		String tableName = context.tableName.getText();
 		String columnName = context.columnName.getText();
 
-		String escapeTableName = escapeId(tableName);
-		String unescapeTableName = unescapeId(tableName);
+		String escapeTableName = quoteId(tableName);
+		String unescapeTableName = unquoteId(tableName);
 
-		String escapeColumnName = escapeId(columnName);
-		String unescapeColumnName = unescapeId(columnName);
+		String escapeColumnName = quoteId(columnName);
+		String unescapeColumnName = unquoteId(columnName);
 
 		m_tables.add(unescapeTableName);
 
@@ -478,8 +478,8 @@ public class MQLToSQL
 
 			for(String x: SchemaSingleton.getColumnNames(m_catalog, unescapeTableName))
 			{
-				escapeColumnName = escapeId(x);
-				unescapeColumnName = unescapeId(x);
+				escapeColumnName = quoteId(x);
+				unescapeColumnName = unquoteId(x);
 
 				AutoJoinSingleton.resolveWithInnerJoins(
 					m_joins,

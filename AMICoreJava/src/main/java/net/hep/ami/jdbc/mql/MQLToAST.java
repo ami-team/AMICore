@@ -60,22 +60,24 @@ public class MQLToAST
 
 	/*---------------------------------------------------------------------*/
 
-	private String unescape(String id)
+	private String unquote(String s)
 	{
-		/**/ if(id.charAt(0) == '`')
+		char c = s.charAt(0);
+
+		/**/ if(c == '`')
 		{
-			return id.substring(1, id.length() - 1).replace("``", "`");
+			return s.substring(1, s.length() - 1).replace("``", "`").trim();
 		}
-		else if(id.charAt(0) == '\"')
+		else if(c == '\"')
 		{
-			return id.substring(1, id.length() - 1).replace("\"\"", "\"");
+			return s.substring(1, s.length() - 1).replace("\"\"", "\"").trim();
 		}
-		else if(id.charAt(0) == '\'')
+		else if(c == '\'')
 		{
-			return id.substring(1, id.length() - 1).replace("\'\'", "\'");
+			return s.substring(1, s.length() - 1).replace("\'\'", "\'").trim();
 		}
 
-		return id;
+		return s;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -94,7 +96,7 @@ public class MQLToAST
 
 			edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
 
-			nodes.append("\tnode").append(newId).append(" [label=\"").append(unescape(Trees.getNodeText(parseTree, m_ruleNames)).replace("\"", "\\\"")).append("\"];\n");
+			nodes.append("\tnode").append(newId).append(" [label=\"").append(unquote(Trees.getNodeText(parseTree, m_ruleNames)).replace("\"", "\\\"")).append("\"];\n");
 		}
 		else
 		{
@@ -104,7 +106,7 @@ public class MQLToAST
 
 				edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
 
-				nodes.append("\tnode").append(newId).append(" [label=\"#").append(unescape(Trees.getNodeText(parseTree, m_ruleNames)).replace("\"", "\\\"")).append("\"];\n");
+				nodes.append("\tnode").append(newId).append(" [label=\"#").append(unquote(Trees.getNodeText(parseTree, m_ruleNames)).replace("\"", "\\\"")).append("\"];\n");
 			}
 		}
 

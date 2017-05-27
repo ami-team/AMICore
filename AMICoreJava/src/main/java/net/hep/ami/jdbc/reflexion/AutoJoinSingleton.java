@@ -219,14 +219,15 @@ public class AutoJoinSingleton
 						{
 							case WITH_INNER_JOINS:
 								_mergeInnerJoins(joins, temp, frgnKey);
-								break;
+								return true;
 
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
-								break;
-						}
+								return true;
 
-						return true;
+							default:
+								return false;
+						}
 					}
 				}
 			}
@@ -251,14 +252,15 @@ public class AutoJoinSingleton
 						{
 							case WITH_INNER_JOINS:
 								_mergeInnerJoins(joins, temp, frgnKey);
-								break;
+								return true;
 
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
-								break;
-						}
+								return true;
 
-						return true;
+							default:
+								return false;
+						}
 					}
 				}
 			}
@@ -290,6 +292,22 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static String unquote(String s)
+	{
+		final int l = s.length() - 1;
+
+		if(s.charAt(0) == '`'
+		   &&
+		   s.charAt(l) == '`'
+		 ) {
+			return s.substring(1, l).replace("``", "`").trim();
+		}
+
+		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	private static AMIJoins resolve(AMIJoins joins, int method, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -308,19 +326,19 @@ public class AutoJoinSingleton
 		{
 			givenCatalog = defaultCatalog;
 			givenTable = defaultTable;
-			givenColumn = parts[0].trim();
+			givenColumn = unquote(parts[0]);
 		}
 		else if(nb == 2)
 		{
 			givenCatalog = defaultCatalog;
-			givenTable = parts[0].trim();
-			givenColumn = parts[1].trim();
+			givenTable = unquote(parts[0]);
+			givenColumn = unquote(parts[1]);
 		}
 		else if(nb == 3)
 		{
-			givenCatalog = parts[0].trim();
-			givenTable = parts[1].trim();
-			givenColumn = parts[2].trim();
+			givenCatalog = unquote(parts[0]);
+			givenTable = unquote(parts[1]);
+			givenColumn = unquote(parts[2]);
 		}
 		else
 		{
