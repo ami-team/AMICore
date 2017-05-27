@@ -79,7 +79,7 @@ public class SchemaSingleton
 
 	public static final class FrgnKeys extends ArrayList<FrgnKey>
 	{
-		private static final long serialVersionUID = -1572786326208277391L;
+		private static final long serialVersionUID = 646216521092672318L;
 
 		public FrgnKeys()
 		{

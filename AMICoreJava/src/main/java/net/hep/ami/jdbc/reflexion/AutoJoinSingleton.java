@@ -8,14 +8,20 @@ public class AutoJoinSingleton
 
 	public static final class SQLJoins
 	{
+		/*-----------------------------------------------------------------*/
+
 		public final String from;
 		public final String where;
+
+		/*-----------------------------------------------------------------*/
 
 		public SQLJoins(String _from, String _where)
 		{
 			from = _from;
 			where = _where;
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		public String toString()
 		{
@@ -33,15 +39,37 @@ public class AutoJoinSingleton
 
 			return stringBuilder.toString();
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static final class AMIJoins extends HashMap<String, List<String>>
 	{
+		/*-----------------------------------------------------------------*/
+
 		private static final long serialVersionUID = 5606411046465630272L;
 
+		/*-----------------------------------------------------------------*/
+
 		public static final String WHERE = "@";
+
+		/*-----------------------------------------------------------------*/
+
+		public List<String> getOrAdd(String key)
+		{
+			List<String> result = get(key);
+
+			if(result == null)
+			{
+				put(key, result = new ArrayList<>());
+			}
+
+			return result;
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		public SQLJoins toSQL()
 		{
@@ -66,6 +94,8 @@ public class AutoJoinSingleton
 
 			return new SQLJoins(part1.toString(), part2.toString());
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -79,23 +109,7 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static List<String> _getList(Map<String, List<String>> map, String key)
-	{
-		List<String> result = map.get(key);
-
-		if(result == null)
-		{
-			result = new ArrayList<>();
-
-			map.put(key, result);
-		}
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void _mergeInnerJoins(AMIJoins joins, Map<String, List<String>> temp, SchemaSingleton.FrgnKey frgnKey)
+	private static void _mergeInnerJoins(AMIJoins joins, AMIJoins temp, SchemaSingleton.FrgnKey frgnKey)
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD SQL JOIN                                                  */
@@ -114,12 +128,12 @@ public class AutoJoinSingleton
 
 		for(Map.Entry<String, List<String>> entry2: temp.entrySet())
 		{
-			_getList(joins, entry2.getKey()).addAll(
+			joins.getOrAdd(entry2.getKey()).addAll(
 				entry2.getValue()
 			);
 		}
 
-		_getList(joins, joinKey).add(
+		joins.getOrAdd(joinKey).add(
 			joinValue
 		);
 
@@ -151,7 +165,7 @@ public class AutoJoinSingleton
 		/* MERGE                                                           */
 		/*-----------------------------------------------------------------*/
 
-		_getList(joins, joinKey).add(
+		joins.getOrAdd(joinKey).add(
 			joinValue
 		);
 
@@ -224,10 +238,9 @@ public class AutoJoinSingleton
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
 								return true;
-
-							default:
-								return false;
 						}
+
+						return false;
 					}
 				}
 			}
@@ -257,10 +270,9 @@ public class AutoJoinSingleton
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
 								return true;
-
-							default:
-								return false;
 						}
+
+						return false;
 					}
 				}
 			}
@@ -275,7 +287,7 @@ public class AutoJoinSingleton
 				/* CONDITION ON VALUE                                      */
 				/*---------------------------------------------------------*/
 
-				_getList(joins, AMIJoins.WHERE).add(
+				joins.getOrAdd(AMIJoins.WHERE).add(
 					"`" + column.internalCatalog + "`.`" + column.table + "`.`" + column.name + "` = '" + givenValue.replace("'", "''") + "'"
 				);
 
