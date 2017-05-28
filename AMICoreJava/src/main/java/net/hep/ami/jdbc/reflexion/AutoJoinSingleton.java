@@ -205,7 +205,9 @@ public class AutoJoinSingleton
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column column = SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn);
+		SchemaSingleton.Column column = defaultCatalog.equals(givenCatalog) && defaultTable.equals(givenTable) ? SchemaSingleton.getColumns(givenCatalog, givenTable).get(givenColumn)
+		                                                                                                       : null
+		;
 
 		/*-----------------------------------------------------------------*/
 
