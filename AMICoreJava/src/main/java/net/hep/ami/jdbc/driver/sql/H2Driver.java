@@ -21,14 +21,6 @@ public class H2Driver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception
-	{
-		return fieldType;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public String patchSQL(String sql) throws Exception
 	{
 		return sql;

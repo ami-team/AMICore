@@ -109,26 +109,6 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public static class FieldType
-	{
-		String name;
-		Integer size;
-		Integer digits;
-
-		public FieldType(String _name, int _size, int _digits)
-		{
-			name = _name;
-			size = _size;
-			digits = _digits;
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public abstract FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception;
-
-	/*---------------------------------------------------------------------*/
-
 	public abstract String patchSQL(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/

@@ -30,11 +30,15 @@ public class SecureShell extends AbstractShell
 
 	public SecureShell(String host, int port, String user, String passwordOrPrivateKey) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		m_jsch = new JSch();
 
 		m_session = m_jsch.getSession(user, host, port);
 
 		m_session.setConfig(s_properties);
+
+		/*-----------------------------------------------------------------*/
 
 		if(passwordOrPrivateKey.length() > 64)
 		{
@@ -44,6 +48,8 @@ public class SecureShell extends AbstractShell
 		{
 			m_session.setPassword(passwordOrPrivateKey);
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -93,7 +99,7 @@ public class SecureShell extends AbstractShell
 
 				while(channel.isClosed() == false)
 				{
-					Thread.sleep(1);
+					Thread.sleep(10);
 				}
 			}
 		}

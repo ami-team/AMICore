@@ -103,7 +103,14 @@ public class Utility
 
 	public static String parseString(@Nullable String s)
 	{
-		return (s != null && s.length() >= 2) ? unescape(s.substring(1, s.length() - 1)) : "";
+		if(s == null)
+		{
+			return "";
+		}
+
+		final int l = s.length();
+
+		return (l >= 2) ? unescape(s.substring(0 + 1, l - 1)) : "";
 	}
 
 	/*---------------------------------------------------------------------*/

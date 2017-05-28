@@ -22,14 +22,6 @@ public class OracleDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception
-	{
-		return fieldType;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public String patchSQL(String sql) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
@@ -40,7 +32,8 @@ public class OracleDriver extends AbstractDriver
 			   &&
 			   token.endsWith("`")
 			 ) {
-				token = token.replace("\"", "\\\"")
+				token = token.replace("\"", "\"\"")
+				             .replace("``", "\"\"")
 				             .replace("`", "\"")
 				;
 			}

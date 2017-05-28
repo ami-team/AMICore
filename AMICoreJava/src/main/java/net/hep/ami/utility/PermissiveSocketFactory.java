@@ -4,6 +4,8 @@ import java.security.cert.*;
 
 import javax.net.ssl.*;
 
+import net.hep.ami.LogSingleton;
+
 public class PermissiveSocketFactory
 {
 	/*---------------------------------------------------------------------*/
@@ -48,11 +50,13 @@ public class PermissiveSocketFactory
 		SSLSocketFactory tmp;
 
 		/*-----------------------------------------------------------------*/
+		/* SSL                                                             */
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
 			/*-------------------------------------------------------------*/
-			/* CREATE SSL CONTEXT                                          */
+			/* CREATE CONTEXT                                              */
 			/*-------------------------------------------------------------*/
 
 			SSLContext sslContext = SSLContext.getInstance("SSLv3");
@@ -62,7 +66,7 @@ public class PermissiveSocketFactory
 			}, new java.security.SecureRandom());
 
 			/*-------------------------------------------------------------*/
-			/* CREATE SSL FACTORY                                          */
+			/* CREATE FACTORY                                              */
 			/*-------------------------------------------------------------*/
 
 			tmp = sslContext.getSocketFactory();
@@ -71,17 +75,21 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
+			LogSingleton.root.error(e.getMessage(), e);
+
 			tmp = null;
 		}
 
 		m_sslSocketFactory = tmp;
 
 		/*-----------------------------------------------------------------*/
+		/* TLS                                                             */
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
 			/*-------------------------------------------------------------*/
-			/* CREATE TLS CONTEXT                                          */
+			/* CREATE CONTEXT                                              */
 			/*-------------------------------------------------------------*/
 
 			SSLContext tlsContext = SSLContext.getInstance("TLSv1");
@@ -91,7 +99,7 @@ public class PermissiveSocketFactory
 			}, new java.security.SecureRandom());
 
 			/*-------------------------------------------------------------*/
-			/* CREATE TSL FACTORY                                          */
+			/* CREATE FACTORY                                              */
 			/*-------------------------------------------------------------*/
 
 			tmp = tlsContext.getSocketFactory();
@@ -100,6 +108,8 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
+			LogSingleton.root.error(e.getMessage(), e);
+
 			tmp = null;
 		}
 

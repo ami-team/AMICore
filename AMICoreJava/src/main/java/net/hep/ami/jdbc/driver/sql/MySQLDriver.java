@@ -21,14 +21,6 @@ public class MySQLDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public FieldType jdbcTypeToAMIType(FieldType fieldType) throws Exception
-	{
-		return fieldType; /* MySQL/MariaDB is the default */
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public String patchSQL(String sql) throws Exception
 	{
 		return sql; /* MySQL/MariaDB is the default */
