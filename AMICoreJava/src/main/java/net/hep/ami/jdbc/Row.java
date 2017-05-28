@@ -19,9 +19,16 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldTable(int columnIndex)
+	public String getFieldCatalog(int columnIndex)
 	{
-		return m_rowSet.getTableOfField(columnIndex);
+		return m_rowSet.getCatalogOfField(columnIndex);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getFieldEntity(int columnIndex)
+	{
+		return m_rowSet.getEntityOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -86,8 +93,10 @@ public class Row
 
 		for(int i = 0; i < numberOfValues; i++)
 		{
-			result.append("<field table=\"")
-			      .append(m_rowSet.m_fieldTables[i])
+			result.append("<field catalog=\"")
+			      .append(m_rowSet.m_fieldCatalogs[i])
+			      .append("\" entity=\"")
+			      .append(m_rowSet.m_fieldEntities[i])
 			      .append("\" name=\"")
 			      .append(m_rowSet.m_fieldNames[i])
 			      .append("\" type=\"")

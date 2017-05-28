@@ -459,44 +459,58 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		String tableName = context.tableName.getText();
-		String columnName = context.columnName.getText();
+		String externalCatalogName = (context.catalogName != null) ? context.catalogName.getText() : m_catalog;
 
-		String escapeTableName = quoteId(tableName);
-		String unescapeTableName = unquoteId(tableName);
+		String internalCatalogName = SchemaSingleton.externalCatalogToInternalCatalog(externalCatalogName);
 
-		String escapeColumnName = quoteId(columnName);
-		String unescapeColumnName = unquoteId(columnName);
+		String entityName = context.entityName.getText();
+		String fieldName = context.fieldName.getText();
 
-		m_tables.add(unescapeTableName);
+		String escapeInternalCatalogName = quoteId(internalCatalogName);
+		String unescapeExternalCatalogName = unquoteId(externalCatalogName);
 
-		if("*".equals(unescapeColumnName))
+		String escapeEntityName = quoteId(entityName);
+		String unescapeEntityName = unquoteId(entityName);
+
+		String escapeFieldName = quoteId(fieldName);
+		String unescapeFieldName = unquoteId(fieldName);
+
+		m_tables.add(unescapeEntityName);
+
+		if("*".equals(unescapeFieldName))
 		{
 			/*-------------------------------------------------------------*/
 
 			int cnt = 0;
 
-			for(String x: SchemaSingleton.getColumnNames(m_catalog, unescapeTableName))
+			for(String x: SchemaSingleton.getColumnNames(unescapeExternalCatalogName, unescapeEntityName))
 			{
-				escapeColumnName = quoteId(x);
-				unescapeColumnName = unquoteId(x);
-
-				AutoJoinSingleton.resolveWithInnerJoins(
-					m_joins,
-					m_catalog,
-					unescapeTableName,
-					unescapeColumnName,
-					null
-				);
-
 				if(cnt++ > 0)
 				{
 					result.append(",");
 				}
 
-				result.append(escapeTableName)
+				escapeFieldName = quoteId(x);
+				unescapeFieldName = unquoteId(x);
+
+				AutoJoinSingleton.resolveWithInnerJoins(
+					m_joins,
+					unescapeExternalCatalogName,
+					unescapeEntityName,
+					unescapeFieldName,
+					null
+				);
+
+				if(unescapeExternalCatalogName.equals(m_catalog) == false)
+				{
+					result.append(escapeInternalCatalogName)
+					      .append(".")
+					;
+				}
+
+				result.append(escapeEntityName)
 				      .append(".")
-				      .append(escapeColumnName)
+				      .append(escapeFieldName)
 				;
 
 				if(m_break)
@@ -513,15 +527,22 @@ public class MQLToSQL
 
 			AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
-				m_catalog,
-				unescapeTableName,
-				unescapeColumnName,
+				unescapeExternalCatalogName,
+				unescapeEntityName,
+				unescapeFieldName,
 				null
 			);
 
-			result.append(escapeTableName)
+			if(unescapeExternalCatalogName.equals(m_catalog) == false)
+			{
+				result.append(escapeInternalCatalogName)
+				      .append(".")
+				;
+			}
+
+			result.append(escapeEntityName)
 			      .append(".")
-			      .append(escapeColumnName)
+			      .append(escapeFieldName)
 			;
 
 			/*-------------------------------------------------------------*/

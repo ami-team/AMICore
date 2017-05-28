@@ -4,6 +4,8 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
+import net.hep.ami.jdbc.reflexion.SchemaSingleton;
+
 public class RowSet
 {
 	/*---------------------------------------------------------------------*/
@@ -18,9 +20,10 @@ public class RowSet
 
 	private final int m_numberOfFields;
 
-	protected String[] m_fieldTables;
-	protected String[] m_fieldNames;
-	protected String[] m_fieldTypes;
+	protected final String[] m_fieldCatalogs;
+	protected final String[] m_fieldEntities;
+	protected final String[] m_fieldNames;
+	protected final String[] m_fieldTypes;
 
 	/*---------------------------------------------------------------------*/
 
@@ -52,7 +55,8 @@ public class RowSet
 
 		m_numberOfFields = resultSetMetaData.getColumnCount();
 
-		m_fieldTables = new String[m_numberOfFields];
+		m_fieldCatalogs = new String[m_numberOfFields];
+		m_fieldEntities = new String[m_numberOfFields];
 		m_fieldNames = new String[m_numberOfFields];
 		m_fieldTypes = new String[m_numberOfFields];
 
@@ -60,23 +64,51 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                            */
 		/*-----------------------------------------------------------------*/
 
+		String catalog;
+
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
-			m_fieldTables[i] = resultSetMetaData.getTableName(i + 1);
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				catalog = resultSetMetaData.getCatalogName(i + 1);
+
+				if(catalog.isEmpty() == false)
+				{
+					m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(catalog);
+				}
+				else
+				{
+					catalog = resultSetMetaData.getSchemaName(i + 1);
+
+					if(catalog.isEmpty() == false)
+					{
+						m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(catalog);
+					}
+					else
+					{
+						m_fieldCatalogs[i] = "N/A";
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				m_fieldCatalogs[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
 			m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
 			m_fieldTypes[i] = resultSetMetaData.getColumnTypeName(i + 1);
 
 			m_fieldIndices.put(m_fieldNames[i], i);
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public ResultSet getResultSet()
-	{
-		return m_resultSet;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -102,11 +134,26 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean isATable(String tableName)
+	public boolean isACatalog(String catalogName)
 	{
-		for(String table: m_fieldTables)
+		for(String catalog: m_fieldCatalogs)
 		{
-			if(table.equalsIgnoreCase(tableName))
+			if(catalog.equalsIgnoreCase(catalogName))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean isAnEtity(String entityName)
+	{
+		for(String entity: m_fieldEntities)
+		{
+			if(entity.equalsIgnoreCase(entityName))
 			{
 				return true;
 			}
@@ -145,7 +192,6 @@ public class RowSet
 		return false;
 	}
 
-
 	/*---------------------------------------------------------------------*/
 
 	public int getNumberOfFields()
@@ -155,9 +201,18 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public String getTableOfField(int fieldIndex)
+	public String getCatalogOfField(int fieldIndex)
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldTables[fieldIndex]
+		return (fieldIndex < m_numberOfFields) ? m_fieldCatalogs[fieldIndex]
+		                                       : null
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getEntityOfField(int fieldIndex)
+	{
+		return (fieldIndex < m_numberOfFields) ? m_fieldEntities[fieldIndex]
 		                                       : null
 		;
 	}
