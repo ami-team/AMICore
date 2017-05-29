@@ -284,7 +284,10 @@ public class MQLToSQL
 			}
 			else if(child instanceof TerminalNode)
 			{
-				result.append(child.getText());
+				result.append(" ")
+				      .append(child.getText())
+				      .append(" ")
+				;
 			}
 		}
 
@@ -315,7 +318,10 @@ public class MQLToSQL
 			}
 			else if(child instanceof TerminalNode)
 			{
-				result.append(child.getText());
+				result.append(" ")
+				      .append(child.getText())
+				      .append(" ")
+				;
 			}
 		}
 
@@ -346,7 +352,10 @@ public class MQLToSQL
 			}
 			else if(child instanceof TerminalNode)
 			{
-				result.append(child.getText());
+				result.append(" ")
+				      .append(child.getText())
+				      .append(" ")
+				;
 			}
 		}
 
@@ -412,15 +421,11 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
 	{
-		m_break = true;
-
-		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
-		/**/	                                          .append("(")
-		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
-		/**/	                                          .append(")")
-		/**/	;
-
-		m_break = false;
+		StringBuilder result = new StringBuilder().append(context.functionName.getText())
+		                                          .append("(")
+		                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
+		                                          .append(")")
+		;
 
 		return result;
 	}
@@ -451,10 +456,6 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean m_break = false;
-
-	/*---------------------------------------------------------------------*/
-
 	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext context) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
@@ -467,10 +468,10 @@ public class MQLToSQL
 
 		String internalCatalogName = SchemaSingleton.externalCatalogToInternalCatalog(externalCatalogName);
 
-		/*-----------------------------------------------------------------*/
-
 		String entityName = context.entityName.getText();
 		String fieldName = context.fieldName.getText();
+
+		/*-----------------------------------------------------------------*/
 
 		String escapeInternalCatalogName = quoteId(internalCatalogName);
 		String unescapeExternalCatalogName = unquoteId(externalCatalogName);
@@ -487,43 +488,8 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		List<String> columnNames;
-
-		if("*".equals(unescapeFieldName))
+		if("*".equals(unescapeFieldName) == false)
 		{
-			/*-------------------------------------------------------------*/
-			/*                                                             */
-			/*-------------------------------------------------------------*/
-
-			columnNames = SchemaSingleton.getColumnNames(unescapeExternalCatalogName, unescapeEntityName);
-
-			if(m_break)
-			{
-				columnNames.subList(0, 0);
-			}
-
-			/*-------------------------------------------------------------*/
-		}
-		else
-		{
-			/*-------------------------------------------------------------*/
-			/*                                                             */
-			/*-------------------------------------------------------------*/
-
-			columnNames = Arrays.asList(unescapeFieldName);
-
-			/*-------------------------------------------------------------*/
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		int cnt = 0;
-
-		for(String columnName: columnNames)
-		{
-			escapeFieldName = quoteId(columnName);
-			unescapeFieldName = unquoteId(columnName);
-
 			AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
 				unescapeExternalCatalogName,
@@ -531,11 +497,6 @@ public class MQLToSQL
 				unescapeFieldName,
 				null
 			);
-
-			if(cnt++ > 0)
-			{
-				result.append(", ");
-			}
 
 			if(unescapeExternalCatalogName.equals(m_catalog) == false)
 			{
@@ -548,6 +509,10 @@ public class MQLToSQL
 			      .append(".")
 			      .append(escapeFieldName)
 			;
+		}
+		else
+		{
+			result.append("*");
 		}
 
 		/*-----------------------------------------------------------------*/
