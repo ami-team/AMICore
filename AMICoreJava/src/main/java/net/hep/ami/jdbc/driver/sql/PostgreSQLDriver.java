@@ -1,5 +1,6 @@
 package net.hep.ami.jdbc.driver.sql;
 
+import net.hep.ami.jdbc.sql.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
@@ -23,7 +24,24 @@ public class PostgreSQLDriver extends AbstractDriver
 	@Override
 	public String patchSQL(String sql) throws Exception
 	{
-		return sql;
+		StringBuilder result = new StringBuilder();
+
+		for(String token: Tokenizer.tokenize(sql))
+		{
+			if(token.startsWith("`")
+			   &&
+			   token.endsWith("`")
+			 ) {
+				token = token.replace("\"", "\"\"")
+				             .replace("``", "\"\"")
+				             .replace("`", "\"")
+				;
+			}
+
+			result.append(token);
+		}
+
+		return result.toString();
 	}
 
 	/*---------------------------------------------------------------------*/
