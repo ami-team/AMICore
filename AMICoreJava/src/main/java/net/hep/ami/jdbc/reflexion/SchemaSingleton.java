@@ -724,6 +724,20 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String internalCatalogToExternalCatalog_noException(String catalog) throws Exception
+	{
+		return s_internalCatalogToExternalCatalog.get(catalog);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String externalCatalogToInternalCatalog_noException(String catalog) throws Exception
+	{
+		return s_externalCatalogToInternalCatalog.get(catalog);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String internalCatalogToExternalCatalog(String catalog) throws Exception
 	{
 		String result = s_internalCatalogToExternalCatalog.get(catalog);
@@ -752,9 +766,11 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getCatalogNames()
+	public static List<String> getCatalogNames()
 	{
-		return s_columns.keySet();
+		return new ArrayList<>(
+			s_columns.keySet()
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -853,23 +869,29 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getColumnNames(String catalog, String table) throws Exception
+	public static List<String> getColumnNames(String catalog, String table) throws Exception
 	{
-		return getColumns(catalog, table).keySet();
+		return new ArrayList<>(
+			getColumns(catalog, table).keySet()
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getForwardFKNames(String catalog, String table) throws Exception
+	public static List<String> getForwardFKNames(String catalog, String table) throws Exception
 	{
-		return getForwardFKs(catalog, table).keySet();
+		return new ArrayList<>(
+			getForwardFKs(catalog, table).keySet()
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getBackwardFKNames(String catalog, String table) throws Exception
+	public static List<String> getBackwardFKNames(String catalog, String table) throws Exception
 	{
-		return getBackwardFKs(catalog, table).keySet();
+		return new ArrayList<>(
+			getBackwardFKs(catalog, table).keySet()
+		);
 	}
 
 	/*---------------------------------------------------------------------*/

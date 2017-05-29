@@ -120,7 +120,7 @@ public class AutoJoinSingleton
 		String joinKey = "INNER JOIN `" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
 
 		String joinValue = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`"
-		                 + "=" +
+		                 + " = " +
 		                   "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`"
 		;
 
@@ -192,7 +192,7 @@ public class AutoJoinSingleton
 		/* BREAK CYCLES                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String key = (defaultTable + '.' + givenColumn).toLowerCase();
+		String key = (defaultCatalog + '.' + defaultTable + '.' + givenColumn).toLowerCase();
 
 		if(done.contains(key))
 		{

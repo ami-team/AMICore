@@ -14,7 +14,7 @@ public class MQLToSQL
 
 	private final String m_catalog;
 
-	private final Set<String> m_tables = new HashSet<>();
+	private final Set<String> m_entities = new HashSet<>();
 
 	private final AutoJoinSingleton.AMIJoins m_joins = new AutoJoinSingleton.AMIJoins();
 
@@ -113,7 +113,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_tables.isEmpty() == false)
+		if(m_entities.isEmpty() == false)
 		{
 			/*-------------------------------------------------------------*/
 			/* FROM PART                                                   */
@@ -123,7 +123,7 @@ public class MQLToSQL
 
 			from.append(" FROM ");
 
-			for(String table: m_tables)
+			for(String table: m_entities)
 			{
 				if(cnt++ > 0)
 				{
@@ -459,9 +459,15 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		String externalCatalogName = (context.catalogName != null) ? context.catalogName.getText() : m_catalog;
+		/*-----------------------------------------------------------------*/
+
+		String externalCatalogName = (context.catalogName != null) ? context.catalogName.getText()
+		                                                           : /*---------------*/ m_catalog
+		;
 
 		String internalCatalogName = SchemaSingleton.externalCatalogToInternalCatalog(externalCatalogName);
+
+		/*-----------------------------------------------------------------*/
 
 		String entityName = context.entityName.getText();
 		String fieldName = context.fieldName.getText();
@@ -475,48 +481,25 @@ public class MQLToSQL
 		String escapeFieldName = quoteId(fieldName);
 		String unescapeFieldName = unquoteId(fieldName);
 
-		m_tables.add(unescapeEntityName);
+		/*-----------------------------------------------------------------*/
+
+		m_entities.add(unescapeEntityName);
+
+		/*-----------------------------------------------------------------*/
+
+		List<String> columnNames;
 
 		if("*".equals(unescapeFieldName))
 		{
 			/*-------------------------------------------------------------*/
+			/*                                                             */
+			/*-------------------------------------------------------------*/
 
-			int cnt = 0;
+			columnNames = SchemaSingleton.getColumnNames(unescapeExternalCatalogName, unescapeEntityName);
 
-			for(String x: SchemaSingleton.getColumnNames(unescapeExternalCatalogName, unescapeEntityName))
+			if(m_break)
 			{
-				if(cnt++ > 0)
-				{
-					result.append(",");
-				}
-
-				escapeFieldName = quoteId(x);
-				unescapeFieldName = unquoteId(x);
-
-				AutoJoinSingleton.resolveWithInnerJoins(
-					m_joins,
-					unescapeExternalCatalogName,
-					unescapeEntityName,
-					unescapeFieldName,
-					null
-				);
-
-				if(unescapeExternalCatalogName.equals(m_catalog) == false)
-				{
-					result.append(escapeInternalCatalogName)
-					      .append(".")
-					;
-				}
-
-				result.append(escapeEntityName)
-				      .append(".")
-				      .append(escapeFieldName)
-				;
-
-				if(m_break)
-				{
-					break;
-				}
+				columnNames.subList(0, 0);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -524,6 +507,22 @@ public class MQLToSQL
 		else
 		{
 			/*-------------------------------------------------------------*/
+			/*                                                             */
+			/*-------------------------------------------------------------*/
+
+			columnNames = Arrays.asList(unescapeFieldName);
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		int cnt = 0;
+
+		for(String columnName: columnNames)
+		{
+			escapeFieldName = quoteId(columnName);
+			unescapeFieldName = unquoteId(columnName);
 
 			AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
@@ -532,6 +531,11 @@ public class MQLToSQL
 				unescapeFieldName,
 				null
 			);
+
+			if(cnt++ > 0)
+			{
+				result.append(", ");
+			}
 
 			if(unescapeExternalCatalogName.equals(m_catalog) == false)
 			{
@@ -544,9 +548,9 @@ public class MQLToSQL
 			      .append(".")
 			      .append(escapeFieldName)
 			;
-
-			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}

@@ -64,37 +64,28 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                            */
 		/*-----------------------------------------------------------------*/
 
-		String catalog;
-
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
 			/*-------------------------------------------------------------*/
 
 			try
 			{
-				catalog = resultSetMetaData.getCatalogName(i + 1);
-
-				if(catalog.isEmpty() == false)
-				{
-					m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(catalog);
-				}
-				else
-				{
-					catalog = resultSetMetaData.getSchemaName(i + 1);
-
-					if(catalog.isEmpty() == false)
-					{
-						m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(catalog);
-					}
-					else
-					{
-						m_fieldCatalogs[i] = "N/A";
-					}
-				}
+				m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(
+					resultSetMetaData.getCatalogName(i + 1)
+				);
 			}
-			catch(Exception e)
+			catch(Exception e1)
 			{
-				m_fieldCatalogs[i] = "N/A";
+				try
+				{
+					m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(
+						resultSetMetaData.getSchemaName(i + 1)
+					);
+				}
+				catch(Exception e2)
+				{
+					m_fieldCatalogs[i] = "N/A";
+				}
 			}
 
 			/*-------------------------------------------------------------*/
@@ -102,6 +93,8 @@ public class RowSet
 			m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
 			m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
 			m_fieldTypes[i] = resultSetMetaData.getColumnTypeName(i + 1);
+
+			/*-------------------------------------------------------------*/
 
 			m_fieldIndices.put(m_fieldNames[i], i);
 
