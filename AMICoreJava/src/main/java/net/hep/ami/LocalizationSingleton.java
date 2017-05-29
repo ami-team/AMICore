@@ -108,9 +108,9 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> locations = CSV.parseAsMap(new FileInputStream(locationsEn));
 
-			querier.executeUpdate("DELETE FROM `router_country_locations`");
+			querier.executeUpdate("DELETE FROM `router_locations`");
 
-			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)"))
+			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)"))
 			{
 				for(Map<String, String> location: locations)
 				{
@@ -138,9 +138,9 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv4));
 
-			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv4`");
+			querier.executeUpdate("DELETE FROM `router_ipv4_blocks`");
 
-			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv4` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
+			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_ipv4_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
 			{
 				String network;
 				String geonameId;
@@ -186,9 +186,9 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv6));
 
-			querier.executeUpdate("DELETE FROM `router_country_blocks_ipv6`");
+			querier.executeUpdate("DELETE FROM `router_ipv6_blocks`");
 
-			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_country_blocks_ipv6` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
+			try(PreparedStatement preparedStatement = querier.sqlPrepareStatement("INSERT INTO `router_ipv6_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
 			{
 				String network;
 				String geonameId;
@@ -237,14 +237,14 @@ public class LocalizationSingleton
 		try
 		{
 			_ip = ipv4ToInteger(ip).toString();
-			_table = "router_country_blocks_ipv4";
+			_table = "router_ipv4_blocks";
 		}
 		catch(UnknownHostException e1)
 		{
 			try
 			{
 				_ip = ipv6ToInteger(ip).toString();
-				_table = "router_country_blocks_ipv6";
+				_table = "router_ipv6_blocks";
 			}
 			catch(UnknownHostException e2)
 			{
@@ -257,7 +257,7 @@ public class LocalizationSingleton
 		/*-----------------------------------------------------------------*/
 
 		RowSet rowSet = querier.executeQuery(String.format(
-			"SELECT `L`.`continentCode`, `L`.`countryCode` FROM `%s` AS `B`, `router_country_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
+			"SELECT `L`.`continentCode`, `L`.`countryCode` FROM `%s` AS `B`, `router_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
 			_table,
 			_ip
 		));

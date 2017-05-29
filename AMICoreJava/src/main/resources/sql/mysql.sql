@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `router_country_blocks_ipv6`;
-DROP TABLE IF EXISTS `router_country_blocks_ipv4`;
-DROP TABLE IF EXISTS `router_country_locations`;
+DROP TABLE IF EXISTS `router_ipv6_blocks`;
+DROP TABLE IF EXISTS `router_ipv4_blocks`;
+DROP TABLE IF EXISTS `router_locations`;
 DROP TABLE IF EXISTS `router_search_criteria`;
 DROP TABLE IF EXISTS `router_search_interface`;
 DROP TABLE IF EXISTS `router_user_role`;
@@ -202,23 +202,23 @@ ALTER TABLE `router_search_criteria` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_IN
 
 ------------------------------------------------------------------------------
 
-CREATE TABLE `router_country_locations` (
+CREATE TABLE `router_locations` (
   `id` INT(11) NOT NULL,
   `continentCode` VARCHAR(2),
   `countryCode` VARCHAR(2)
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
-ALTER TABLE `router_country_locations`
-  ADD CONSTRAINT `pk1_router_country_locations` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_country_locations` UNIQUE KEY (`continentCode`, `countryCode`)
+ALTER TABLE `router_locations`
+  ADD CONSTRAINT `pk1_router_locations` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_locations` UNIQUE KEY (`continentCode`, `countryCode`)
 ;
 
-ALTER TABLE `router_country_locations` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `router_locations` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
-CREATE TABLE `router_country_blocks_ipv4` (
+CREATE TABLE `router_ipv4_blocks` (
   `id` INT(11) NOT NULL,
   `network` VARCHAR(32),
   `rangeBegin` DECIMAL(10, 0),
@@ -227,17 +227,17 @@ CREATE TABLE `router_country_blocks_ipv4` (
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
-ALTER TABLE `router_country_blocks_ipv4`
-  ADD CONSTRAINT `pk1_router_country_blocks_ipv4` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_country_blocks_ipv4` UNIQUE KEY (`network`),
-  ADD CONSTRAINT `fk1_router_country_blocks_ipv4` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE `router_ipv4_blocks`
+  ADD CONSTRAINT `pk1_router_ipv4_blocks` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_ipv4_blocks` UNIQUE KEY (`network`),
+  ADD CONSTRAINT `fk1_router_ipv4_blocks` FOREIGN KEY (`geoFK`) REFERENCES `router_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `router_country_blocks_ipv4` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `router_ipv4_blocks` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 
-CREATE TABLE `router_country_blocks_ipv6` (
+CREATE TABLE `router_ipv6_blocks` (
   `id` INT(11) NOT NULL,
   `network` VARCHAR(64),
   `rangeBegin` DECIMAL(38, 0),
@@ -246,12 +246,12 @@ CREATE TABLE `router_country_blocks_ipv6` (
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
-ALTER TABLE `router_country_blocks_ipv6`
-  ADD CONSTRAINT `pk1_router_country_blocks_ipv6` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_country_blocks_ipv6` UNIQUE KEY (`network`),
-  ADD CONSTRAINT `fk1_router_country_blocks_ipv6` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE `router_ipv6_blocks`
+  ADD CONSTRAINT `pk1_router_ipv6_blocks` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_ipv6_blocks` UNIQUE KEY (`network`),
+  ADD CONSTRAINT `fk1_router_ipv6_blocks` FOREIGN KEY (`geoFK`) REFERENCES `router_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `router_country_blocks_ipv6` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `router_ipv6_blocks` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
