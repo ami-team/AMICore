@@ -14,7 +14,7 @@ public class MQLToSQL
 
 	private final String m_catalog;
 
-	private final Set<String> m_entities = new HashSet<>();
+	private final Set<String> m_tables = new HashSet<>();
 
 	private final AutoJoinSingleton.AMIJoins m_joins = new AutoJoinSingleton.AMIJoins();
 
@@ -113,7 +113,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_entities.isEmpty() == false)
+		if(m_tables.isEmpty() == false)
 		{
 			/*-------------------------------------------------------------*/
 			/* FROM PART                                                   */
@@ -123,7 +123,7 @@ public class MQLToSQL
 
 			from.append(" FROM ");
 
-			for(String table: m_entities)
+			for(String table: m_tables)
 			{
 				if(cnt++ > 0)
 				{
@@ -482,7 +482,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		m_entities.add(unescapeEntityName);
+		m_tables.add(unescapeEntityName);
 
 		/*-----------------------------------------------------------------*/
 
