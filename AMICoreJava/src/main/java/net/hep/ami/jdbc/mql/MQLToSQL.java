@@ -161,16 +161,22 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
+		ParseTree child;
+
 		final int nb = context.getChildCount();
 
 		for(int i = 0; i < nb; i++)
 		{
-			if(i > 0)
+			child = context.getChild(i);
+
+			/**/ if(child instanceof MQLParser.ColumnContext)
+			{
+				result.append(visitColumnExpression((MQLParser.ColumnContext) child));
+			}
+			else if(child instanceof TerminalNode)
 			{
 				result.append(", ");
 			}
-
-			result.append(visitColumnExpression((MQLParser.ColumnContext) context.getChild(i)));
 		}
 
 		/*-----------------------------------------------------------------*/
