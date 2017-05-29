@@ -36,7 +36,7 @@ CREATE TABLE `router_catalog` (
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
-  `archived` INT NOT NULL DEFAULT '0',
+  `archived` BOOLEAN NOT NULL DEFAULT '0',
   `jsonSerialization` TEXT
 );
 
@@ -113,7 +113,7 @@ CREATE TABLE `router_user` (
   `lastName` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128),
   `country` VARCHAR(128),
-  `valid` INT NOT NULL DEFAULT '1'
+  `valid` BOOLEAN NOT NULL DEFAULT '1'
 );
 
 ALTER TABLE `router_user`
@@ -143,7 +143,7 @@ CREATE TABLE `router_search_interface` (
   `interface` VARCHAR(128) NOT NULL,
   `catalog` VARCHAR(128) NOT NULL,
   `entity` VARCHAR(128) NOT NULL,
-  `archived` INT NOT NULL DEFAULT '0'
+  `archived` BOOLEAN NOT NULL DEFAULT '0'
 );
 
 ALTER TABLE `router_search_interface`
