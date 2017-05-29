@@ -1,17 +1,230 @@
 ------------------------------------------------------------------------------
 
-DROP TABLE `router_country_blocks_ipv6`;
-DROP TABLE `router_country_blocks_ipv4`;
-DROP TABLE `router_country_locations`;
-DROP TABLE `router_search_criteria`;
-DROP TABLE `router_search_interface`;
-DROP TABLE `router_user_role`;
-DROP TABLE `router_user`;
-DROP TABLE `router_command_role`;
-DROP TABLE `router_command`;
-DROP TABLE `router_role`;
-DROP TABLE `router_converter`;
-DROP TABLE `router_catalog`;
-DROP TABLE `router_config`;
+DROP TABLE IF EXISTS `router_country_blocks_ipv6`;
+DROP TABLE IF EXISTS `router_country_blocks_ipv4`;
+DROP TABLE IF EXISTS `router_country_locations`;
+DROP TABLE IF EXISTS `router_search_criteria`;
+DROP TABLE IF EXISTS `router_search_interface`;
+DROP TABLE IF EXISTS `router_user_role`;
+DROP TABLE IF EXISTS `router_user`;
+DROP TABLE IF EXISTS `router_command_role`;
+DROP TABLE IF EXISTS `router_command`;
+DROP TABLE IF EXISTS `router_role`;
+DROP TABLE IF EXISTS `router_converter`;
+DROP TABLE IF EXISTS `router_catalog`;
+DROP TABLE IF EXISTS `router_config`;
 
 ------------------------------------------------------------------------------
+
+CREATE TABLE `router_config` (
+  `id` SERIAL NOT NULL,
+  `paramName` VARCHAR(128) NOT NULL,
+  `paramValue` VARCHAR(512) NOT NULL
+) ;
+
+ALTER TABLE `router_config` 
+  ADD CONSTRAINT `pk_router_config` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_config` UNIQUE (`paramName`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_catalog` (
+  `id` SERIAL NOT NULL,
+  `externalcatalog` VARCHAR(128) NOT NULL,
+  `internalCatalog` VARCHAR(128) NOT NULL,
+  `jdbcUrl` VARCHAR(512) NOT NULL,
+  `user` VARCHAR(128) NOT NULL,
+  `pass` VARCHAR(128) NOT NULL,
+  `archived` INT NOT NULL DEFAULT '0',
+  `jsonSerialization` TEXT
+
+) ;
+
+ALTER TABLE `router_catalog`
+  ADD CONSTRAINT `pk_router_catalog` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_catalog` UNIQUE (`externalcatalog`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_converter` (
+  `id` SERIAL NOT NULL,
+  `xslt` VARCHAR(128) NOT NULL,
+  `mime` VARCHAR(128) NOT NULL
+
+) ;
+
+ALTER TABLE `router_converter`
+  ADD CONSTRAINT `pk_router_converter` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_converter` UNIQUE (`xslt`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_role` (
+  `id` SERIAL NOT NULL,
+  `lft` INT NOT NULL,
+  `rgt` INT NOT NULL,
+  `role` VARCHAR(128) NOT NULL,
+  `roleValidatorClass` VARCHAR(256)
+
+) ;
+
+ALTER TABLE `router_role`
+  ADD CONSTRAINT `pk_router_role` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_role` UNIQUE (`role`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_command` (
+  `id` SERIAL NOT NULL,
+  `command` VARCHAR(128) NOT NULL,
+  `class` VARCHAR(256) NOT NULL
+
+) ;
+
+ALTER TABLE `router_command`
+  ADD CONSTRAINT `pk_router_command` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_command` UNIQUE (`command`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_command_role` (
+  `id` SERIAL NOT NULL,
+  `commandFK` INT NOT NULL,
+  `roleFK` INT NOT NULL
+
+) ;
+
+ALTER TABLE `router_command_role`
+  ADD CONSTRAINT `pk_router_command_role` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_command_role` UNIQUE  (`commandFK`, `roleFK`),
+  ADD CONSTRAINT `fk1_router_command_role` FOREIGN KEY (`commandFK`) REFERENCES `router_command` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk2_router_command_role` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_user` (
+  `id` SERIAL NOT NULL,
+  `AMIUser` VARCHAR(128) NOT NULL,
+  `AMIPass` VARCHAR(128) NOT NULL,
+  `clientDN` VARCHAR(512) NOT NULL,
+  `issuerDN` VARCHAR(512) NOT NULL,
+  `firstName` VARCHAR(128) NOT NULL,
+  `lastName` VARCHAR(128) NOT NULL,
+  `email` VARCHAR(128),
+  `country` VARCHAR(128),
+  `valid` INT NOT NULL DEFAULT '1'
+
+) ;
+
+ALTER TABLE `router_user`
+  ADD CONSTRAINT `pk_router_user` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_user` UNIQUE (`AMIUser`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_user_role` (
+  `id` SERIAL NOT NULL,
+  `userFK` INT NOT NULL,
+  `roleFK` INT NOT NULL
+
+) ;
+
+ALTER TABLE `router_user_role`
+  ADD CONSTRAINT `pk_router_user_role` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_user_role` UNIQUE (`userFK`, `roleFK`),
+  ADD CONSTRAINT `fk1_router_user_role` FOREIGN KEY (`userFK`) REFERENCES `router_user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk2_router_user_role` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_search_interface` (
+  `id` SERIAL NOT NULL,
+  `interface` VARCHAR(128) NOT NULL,
+  `catalog` VARCHAR(128) NOT NULL,
+  `entity` VARCHAR(128) NOT NULL,
+  `archived` INT NOT NULL DEFAULT '0'
+
+) ;
+
+ALTER TABLE `router_search_interface`
+  ADD CONSTRAINT `pk_router_search_interface` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_search_interface` UNIQUE (`interface`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_search_criteria` (
+  `id` SERIAL NOT NULL,
+  `interfaceFK` INT NOT NULL,
+  `entity` VARCHAR(128) NOT NULL,
+  `field` VARCHAR(128) NOT NULL,
+  `alias` VARCHAR(128) DEFAULT '',
+  `type` INT NOT NULL DEFAULT '1',
+  `rank` INT NOT NULL DEFAULT '0',
+  `mask` INT NOT NULL DEFAULT '0'
+
+) ;
+
+ALTER TABLE `router_search_criteria`
+  ADD CONSTRAINT `pk_router_search_criteria` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_search_criteria` UNIQUE (`interfaceFK`, `entity`, `field`),
+  ADD CONSTRAINT `fk1_router_search_criteria` FOREIGN KEY (`interfaceFK`) REFERENCES `router_search_interface` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_country_locations` (
+  `id` SERIAL NOT NULL,
+  `continentCode` VARCHAR(2),
+  `countryCode` VARCHAR(2)
+
+) ;
+
+ALTER TABLE `router_country_locations`
+  ADD CONSTRAINT `pk_router_country_locations` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_country_locations` UNIQUE (`continentCode`, `countryCode`)
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_country_blocks_ipv4` (
+  `id` SERIAL NOT NULL,
+  `network` VARCHAR(32),
+  `rangeBegin` DECIMAL(10, 0),
+  `rangeEnd` DECIMAL(10, 0),
+  `geoFK` INT NOT NULL
+
+) ;
+
+ALTER TABLE `router_country_blocks_ipv4`
+  ADD CONSTRAINT `pk_router_country_blocks_ipv4` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_country_blocks_ipv4` UNIQUE (`network`),
+  ADD CONSTRAINT `fk1_router_country_blocks_ipv4` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_country_blocks_ipv6` (
+  `id` SERIAL NOT NULL,
+  `network` VARCHAR(64),
+  `rangeBegin` DECIMAL(38, 0),
+  `rangeEnd` DECIMAL(38, 0),
+  `geoFK` INT NOT NULL
+
+) ;
+
+ALTER TABLE `router_country_blocks_ipv6`
+  ADD CONSTRAINT `pk_router_country_blocks_ipv6` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_country_blocks_ipv6` UNIQUE (`network`),
+  ADD CONSTRAINT `fk1_router_country_blocks_ipv6` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+------------------------------------------------------------------------------
+
