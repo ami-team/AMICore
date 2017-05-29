@@ -66,7 +66,7 @@ CREATE TABLE `router_catalog` (
   `user` VARCHAR2(128),
   `pass` VARCHAR2(128),
   `archived` INT(1) DEFAULT '0',
-  `jsonSerialization` TEXT
+  `jsonSerialization` CLOB
 );
 
 ALTER TABLE `router_catalog`
