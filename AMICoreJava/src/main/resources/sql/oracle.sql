@@ -65,7 +65,7 @@ CREATE TABLE `router_catalog` (
   `jdbcUrl` VARCHAR2(512),
   `user` VARCHAR2(128),
   `pass` VARCHAR2(128),
-  `archived` INT(1) DEFAULT '0',
+  `archived` NUMBER(1, 0) DEFAULT '0',
   `jsonSerialization` CLOB
 );
 
@@ -212,7 +212,7 @@ CREATE TABLE `router_user` (
   `lastName` VARCHAR2(128),
   `email` VARCHAR2(128),
   `country` VARCHAR2(128),
-  `valid` INT(1) DEFAULT '1'
+  `valid` NUMBER(1, 0) DEFAULT '1'
 );
 
 ALTER TABLE `router_user`
@@ -273,7 +273,7 @@ CREATE TABLE `router_search_interface` (
   `interface` VARCHAR2(128),
   `catalog` VARCHAR2(128),
   `entity` VARCHAR2(128),
-  `archived` INT(1) DEFAULT '0'
+  `archived` NUMBER(1, 0) DEFAULT '0'
 );
 
 ALTER TABLE `router_search_interface`
