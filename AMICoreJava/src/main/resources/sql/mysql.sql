@@ -24,7 +24,7 @@ CREATE TABLE `router_config` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_config`
-  ADD CONSTRAINT `pk_router_config` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_config` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_config` UNIQUE KEY (`paramName`)
 ;
 
@@ -45,7 +45,7 @@ CREATE TABLE `router_catalog` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_catalog`
-  ADD CONSTRAINT `pk_router_catalog` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_catalog` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_catalog` UNIQUE KEY (`externalcatalog`)
 ;
 
@@ -61,7 +61,7 @@ CREATE TABLE `router_converter` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_converter`
-  ADD CONSTRAINT `pk_router_converter` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_converter` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_converter` UNIQUE KEY (`xslt`)
 ;
 
@@ -79,7 +79,7 @@ CREATE TABLE `router_role` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_role`
-  ADD CONSTRAINT `pk_router_role` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_role` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_role` UNIQUE KEY (`role`)
 ;
 
@@ -95,7 +95,7 @@ CREATE TABLE `router_command` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_command`
-  ADD CONSTRAINT `pk_router_command` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_command` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_command` UNIQUE KEY (`command`)
 ;
 
@@ -111,7 +111,7 @@ CREATE TABLE `router_command_role` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_command_role`
-  ADD CONSTRAINT `pk_router_command_role` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_command_role` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_command_role` UNIQUE KEY (`commandFK`, `roleFK`),
   ADD CONSTRAINT `fk1_router_command_role` FOREIGN KEY (`commandFK`) REFERENCES `router_command` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk2_router_command_role` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -136,7 +136,7 @@ CREATE TABLE `router_user` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_user`
-  ADD CONSTRAINT `pk_router_user` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_user` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_user` UNIQUE KEY (`AMIUser`)
 ;
 
@@ -152,7 +152,7 @@ CREATE TABLE `router_user_role` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_user_role`
-  ADD CONSTRAINT `pk_router_user_role` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_user_role` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_user_role` UNIQUE KEY (`userFK`, `roleFK`),
   ADD CONSTRAINT `fk1_router_user_role` FOREIGN KEY (`userFK`) REFERENCES `router_user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk2_router_user_role` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -172,7 +172,7 @@ CREATE TABLE `router_search_interface` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_search_interface`
-  ADD CONSTRAINT `pk_router_search_interface` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`interface`)
 ;
 
@@ -193,7 +193,7 @@ CREATE TABLE `router_search_criteria` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `pk_router_search_criteria` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_search_criteria` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_search_criteria` UNIQUE KEY (`interfaceFK`, `entity`, `field`),
   ADD CONSTRAINT `fk1_router_search_criteria` FOREIGN KEY (`interfaceFK`) REFERENCES `router_search_interface` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ;
@@ -210,7 +210,7 @@ CREATE TABLE `router_country_locations` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_country_locations`
-  ADD CONSTRAINT `pk_router_country_locations` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_country_locations` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_country_locations` UNIQUE KEY (`continentCode`, `countryCode`)
 ;
 
@@ -228,7 +228,7 @@ CREATE TABLE `router_country_blocks_ipv4` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_country_blocks_ipv4`
-  ADD CONSTRAINT `pk_router_country_blocks_ipv4` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_country_blocks_ipv4` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_country_blocks_ipv4` UNIQUE KEY (`network`),
   ADD CONSTRAINT `fk1_router_country_blocks_ipv4` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
@@ -247,7 +247,7 @@ CREATE TABLE `router_country_blocks_ipv6` (
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_country_blocks_ipv6`
-  ADD CONSTRAINT `pk_router_country_blocks_ipv6` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_country_blocks_ipv6` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_country_blocks_ipv6` UNIQUE KEY (`network`),
   ADD CONSTRAINT `fk1_router_country_blocks_ipv6` FOREIGN KEY (`geoFK`) REFERENCES `router_country_locations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
