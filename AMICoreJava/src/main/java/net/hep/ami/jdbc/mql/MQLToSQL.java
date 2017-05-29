@@ -421,13 +421,11 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
 	{
-		StringBuilder result = new StringBuilder().append(context.functionName.getText())
-		                                          .append("(")
-		                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
-		                                          .append(")")
+		return new StringBuilder().append(context.functionName.getText())
+		                          .append("(")
+		                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
+		                          .append(")")
 		;
-
-		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
