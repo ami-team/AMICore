@@ -323,17 +323,20 @@ public class Router implements Querier
 		/* COMMANDS                                                        */
 		/*-----------------------------------------------------------------*/
 
+		String commandName;
+
 		LogSingleton.root.info("setup commands...");
 
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
-			try
+			commandName = className.substring(className.lastIndexOf('.') + 1);
+
+			if("AbstractCommand".equals(commandName) == false)
 			{
-				CommandSingleton.registerCommand(this, null, className);
-			}
-			catch(Exception e)
-			{
-				LogSingleton.root.error(e.getMessage(), e);
+				executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
+					commandName.replace("'", "''"),
+					className.replace("'", "''")
+				));
 			}
 		}
 
