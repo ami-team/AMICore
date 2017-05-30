@@ -278,7 +278,7 @@ END;
 
 CREATE TABLE `router_catalog` (
   `id` NUMBER(*, 0),
-  `externalcatalog` VARCHAR2(128),
+  `externalCatalog` VARCHAR2(128),
   `internalCatalog` VARCHAR2(128),
   `jdbcUrl` VARCHAR2(512),
   `user` VARCHAR2(128),

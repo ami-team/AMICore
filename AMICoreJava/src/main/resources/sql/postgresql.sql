@@ -31,7 +31,7 @@ ALTER TABLE `router_config`
 
 CREATE TABLE `router_catalog` (
   `id` SERIAL NOT NULL,
-  `externalcatalog` VARCHAR(128) NOT NULL,
+  `externalCatalog` VARCHAR(128) NOT NULL,
   `internalCatalog` VARCHAR(128) NOT NULL,
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
