@@ -39,14 +39,14 @@ CREATE TABLE `router_catalog` (
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
-  `archived` BOOLEAN NOT NULL DEFAULT '0',
+  `archived` SMALLINT NOT NULL DEFAULT '0',
   `jsonSerialization` TEXT
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_catalog`
   ADD CONSTRAINT `pk1_router_catalog` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_catalog` UNIQUE KEY (`externalcatalog`)
+  ADD CONSTRAINT `uk1_router_catalog` UNIQUE KEY (`externalCatalog`)
 ;
 
 ALTER TABLE `router_catalog` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
@@ -131,7 +131,7 @@ CREATE TABLE `router_user` (
   `lastName` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128),
   `country` VARCHAR(128),
-  `valid` BOOLEAN NOT NULL DEFAULT '1'
+  `valid` SMALLINT NOT NULL DEFAULT '1'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -167,7 +167,7 @@ CREATE TABLE `router_search_interface` (
   `interface` VARCHAR(128) NOT NULL,
   `catalog` VARCHAR(128) NOT NULL,
   `entity` VARCHAR(128) NOT NULL,
-  `archived` BOOLEAN NOT NULL DEFAULT '0'
+  `archived` SMALLINT NOT NULL DEFAULT '0'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
