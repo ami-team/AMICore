@@ -632,7 +632,7 @@ public class SecuritySingleton
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
-	public static void encrypt(OutputStream outputStreamut, InputStream inputStream) throws Exception
+	private static void encrypt(OutputStream outputStreamut, InputStream inputStream) throws Exception
 	{
 		int noBytesRead;
 		int noBytesProcessed;
@@ -652,7 +652,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void decrypt(OutputStream outputStream, InputStream inputStream) throws Exception
+	private static void decrypt(OutputStream outputStream, InputStream inputStream) throws Exception
 	{
 		int noBytesRead;
 		int noBytesProcessed;
@@ -675,9 +675,12 @@ public class SecuritySingleton
 	public static byte[] encrypt(byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+ 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		encrypt(outputStream, inputStream);
+		if(data.length > 0)
+		{
+			encrypt(outputStream, inputStream);
+		}
 
 		return outputStream.toByteArray();
 	}
@@ -689,7 +692,10 @@ public class SecuritySingleton
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		decrypt(outputStream, inputStream);
+		if(data.length > 0)
+		{
+			decrypt(outputStream, inputStream);
+		}
 
 		return outputStream.toByteArray();
 	}
@@ -698,18 +704,18 @@ public class SecuritySingleton
 
 	public static String encrypt(String s) throws Exception
 	{
-		return new String(
+		return s.isEmpty() == false ? new String(
 			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes()))
-		);
+		) : "";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String decrypt(String s) throws Exception
 	{
-		return new String(
+		return s.isEmpty() == false ? new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString()))
-		);
+		) : "";
 	}
 
 	/*---------------------------------------------------------------------*/
