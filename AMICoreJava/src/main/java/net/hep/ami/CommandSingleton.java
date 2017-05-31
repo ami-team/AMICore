@@ -129,9 +129,14 @@ public class CommandSingleton
 
 		Class<?> clazz = Class.forName(className);
 
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false || (clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
+		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
 		{
-			LogSingleton.root.debug("class '" + className + "' doesn't extend 'AbstractCommand'");
+			return;
+		}
+
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
+		{
+			LogSingleton.root.error("class '" + className + "' doesn't extend 'AbstractCommand'");
 
 			return;
 		}
@@ -167,11 +172,16 @@ public class CommandSingleton
 
 		Class<?> clazz = Class.forName(className);
 
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false || (clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
+		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
+		{
+			return;
+		}
+		
+		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
 			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
 
-			/* ✞ */
+			/*  */
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -180,11 +190,20 @@ public class CommandSingleton
 
 		if(commandName == null) commandName = clazz.getSimpleName();
 
-		querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `command` = '%s'",
-			commandName.replace("'", "''"),
-			className.replace("'", "''"),
-			commandName.replace("'", "''")
-		));
+		try
+		{
+			querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
+				commandName.replace("'", "''"),
+				className.replace("'", "''")
+			));
+		}
+		catch(Exception e)
+		{
+			querier.executeUpdate(String.format("UPDATE `router_command` SET `class` = '%s' WHERE `command` = '%s'",
+				className.replace("'", "''"),
+				commandName.replace("'", "''")
+			));			
+		}
 
 		/*-----------------------------------------------------------------*/
 	}

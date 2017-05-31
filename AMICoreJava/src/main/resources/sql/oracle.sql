@@ -278,7 +278,7 @@ END;
 
 CREATE TABLE `router_catalog` (
   `id` NUMBER(*, 0),
-  `externalcatalog` VARCHAR2(128),
+  `externalCatalog` VARCHAR2(128),
   `internalCatalog` VARCHAR2(128),
   `jdbcUrl` VARCHAR2(512),
   `user` VARCHAR2(128),
@@ -292,7 +292,7 @@ ALTER TABLE `router_catalog`
 ;
 
 ALTER TABLE `router_catalog`
-  ADD CONSTRAINT `uk1_router_catalog` UNIQUE (`externalcatalog`)
+  ADD CONSTRAINT `uk1_router_catalog` UNIQUE (`externalCatalog`)
 ;
 
 ALTER TABLE `router_catalog`
@@ -300,7 +300,7 @@ ALTER TABLE `router_catalog`
 ;
 
 ALTER TABLE `router_catalog`
-  ADD CONSTRAINT `ck2_router_catalog` CHECK(`externalcatalog` IS NOT NULL)
+  ADD CONSTRAINT `ck2_router_catalog` CHECK(`externalCatalog` IS NOT NULL)
 ;
 
 ALTER TABLE `router_catalog`

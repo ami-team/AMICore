@@ -31,18 +31,18 @@ ALTER TABLE `router_config`
 
 CREATE TABLE `router_catalog` (
   `id` SERIAL NOT NULL,
-  `externalcatalog` VARCHAR(128) NOT NULL,
+  `externalCatalog` VARCHAR(128) NOT NULL,
   `internalCatalog` VARCHAR(128) NOT NULL,
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
-  `archived` BOOLEAN NOT NULL DEFAULT '0',
+  `archived` SMALLINT NOT NULL DEFAULT '0',
   `jsonSerialization` TEXT
 );
 
 ALTER TABLE `router_catalog`
   ADD CONSTRAINT `pk1_router_catalog` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_catalog` UNIQUE (`externalcatalog`)
+  ADD CONSTRAINT `uk1_router_catalog` UNIQUE (`externalCatalog`)
 ;
 
 ------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ CREATE TABLE `router_user` (
   `lastName` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128),
   `country` VARCHAR(128),
-  `valid` BOOLEAN NOT NULL DEFAULT '1'
+  `valid` SMALLINT NOT NULL DEFAULT '1'
 );
 
 ALTER TABLE `router_user`
@@ -143,7 +143,7 @@ CREATE TABLE `router_search_interface` (
   `interface` VARCHAR(128) NOT NULL,
   `catalog` VARCHAR(128) NOT NULL,
   `entity` VARCHAR(128) NOT NULL,
-  `archived` BOOLEAN NOT NULL DEFAULT '0'
+  `archived` SMALLINT NOT NULL DEFAULT '0'
 );
 
 ALTER TABLE `router_search_interface`
