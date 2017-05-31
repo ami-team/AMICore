@@ -86,7 +86,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addRole(Querier querier, String parent, String role, String roleValidatorClass, boolean insertAfter) throws Exception
+	public static void addRole(Querier querier, String parent, String role, String roleValidatorClass, boolean insertHead) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET PARENT ID                                                   */
@@ -116,7 +116,7 @@ public class RoleSingleton
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		if(insertAfter || "0".equals(isLeaf))
+		if(insertHead || "0".equals(isLeaf))
 		{
 			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
 				parentLft
@@ -134,11 +134,11 @@ public class RoleSingleton
 		}
 		else
 		{
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s ORDER BY `lft` DESC",
+			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
 				parentRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s ORDER BY `rgt` DESC",
+			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s",
 				parentRgt
 			));
 
