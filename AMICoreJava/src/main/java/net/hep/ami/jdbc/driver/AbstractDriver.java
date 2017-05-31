@@ -199,7 +199,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
+	public PreparedStatement prepareStatement(String sql) throws Exception
 	{
 		try
 		{
@@ -223,7 +223,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql, String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, String[] columnNames) throws Exception
 	{
 		try
 		{

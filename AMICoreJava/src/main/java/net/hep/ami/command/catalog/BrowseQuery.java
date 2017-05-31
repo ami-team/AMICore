@@ -63,7 +63,7 @@ public class BrowseQuery extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -glite=\"\"))";
+		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -mql=\"\"))";
 	}
 
 	/*---------------------------------------------------------------------*/

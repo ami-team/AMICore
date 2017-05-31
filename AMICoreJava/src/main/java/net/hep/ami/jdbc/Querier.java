@@ -16,11 +16,11 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet executeQuery(String sql) throws Exception;
+	public RowSet executeMQLQuery(String mql, String entity) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet executeMQLQuery(String mql, String entity) throws Exception;
+	public RowSet executeQuery(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -28,11 +28,11 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public PreparedStatement sqlPrepareStatement(String sql) throws Exception;
+	public PreparedStatement prepareStatement(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public PreparedStatement sqlPrepareStatement(String sql, @Nullable String[] columnNames) throws Exception;
+	public PreparedStatement prepareStatement(String sql, @Nullable String[] columnNames) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

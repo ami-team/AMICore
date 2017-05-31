@@ -65,17 +65,17 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeQuery(String sql) throws Exception
+	public RowSet executeMQLQuery(String mql, String entity) throws Exception
 	{
-		return m_driver.executeQuery(sql);
+		return m_driver.executeMQLQuery(mql, entity);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String mql, String entity) throws Exception
+	public RowSet executeQuery(String sql) throws Exception
 	{
-		return m_driver.executeMQLQuery(mql, entity);
+		return m_driver.executeQuery(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -89,17 +89,17 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
+	public PreparedStatement prepareStatement(String sql) throws Exception
 	{
-		return m_driver.sqlPrepareStatement(sql);
+		return m_driver.prepareStatement(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql, String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, String[] columnNames) throws Exception
 	{
-		return m_driver.sqlPrepareStatement(sql, columnNames);
+		return m_driver.prepareStatement(sql, columnNames);
 	}
 
 	/*---------------------------------------------------------------------*/
