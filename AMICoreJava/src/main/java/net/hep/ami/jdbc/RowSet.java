@@ -91,9 +91,9 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1).toLowerCase();
-			m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1).toLowerCase();
-			m_fieldTypes[i] = resultSetMetaData.getColumnTypeName(i + 1).toUpperCase();
+			m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
+			m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
+			m_fieldTypes[i] = resultSetMetaData.getColumnTypeName(i + 1);
 
 			/*-------------------------------------------------------------*/
 
