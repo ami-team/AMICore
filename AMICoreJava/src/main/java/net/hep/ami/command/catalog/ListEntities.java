@@ -65,7 +65,7 @@ public class ListEntities extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"value\"";
+		return "-catalog=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

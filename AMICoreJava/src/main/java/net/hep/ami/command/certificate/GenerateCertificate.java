@@ -191,7 +191,7 @@ public class GenerateCertificate extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-country=\"value\" -locality=\"value\" -organization=\"value\" -organizationalUnit=\"value\" -commonName=\"value\" -password=\"value\"";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -password=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

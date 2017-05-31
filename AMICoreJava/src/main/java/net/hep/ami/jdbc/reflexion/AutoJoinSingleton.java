@@ -6,6 +6,35 @@ public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/
 
+	public static final class SQLQId
+	{
+		/*-----------------------------------------------------------------*/
+
+		public final String catalog;
+		public final String table;
+		public final String column;
+
+		/*-----------------------------------------------------------------*/
+
+		public SQLQId(String _catalog, String _table, String _column)
+		{
+			catalog = _catalog;
+			table = _table;
+			column = _column;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String toString()
+		{
+			return "`" + catalog + "`.`" + table + "`.`" + column + "`";
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static final class SQLJoins
 	{
 		/*-----------------------------------------------------------------*/
@@ -176,7 +205,7 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean _resolve(
+	private static SQLQId _resolve(
 		AMIJoins joins,
 		Set<String> done,
 		int method,
@@ -196,7 +225,7 @@ public class AutoJoinSingleton
 
 		if(done.contains(key))
 		{
-			return false;
+			return null;
 		}
 
 		done.add(key);
@@ -213,6 +242,8 @@ public class AutoJoinSingleton
 
 		if(column == null)
 		{
+			SQLQId qId;
+
 			AMIJoins temp;
 
 			Collection<SchemaSingleton.FrgnKeys> lists;
@@ -231,20 +262,22 @@ public class AutoJoinSingleton
 				{
 					temp = new AMIJoins();
 
-					if(_resolve(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenCatalog, givenTable, givenColumn, givenValue))
+					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenCatalog, givenTable, givenColumn, givenValue);
+
+					if(qId != null)
 					{
 						switch(method)
 						{
 							case WITH_INNER_JOINS:
 								_mergeInnerJoins(joins, temp, frgnKey);
-								return true;
+								break;
 
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
-								return true;
+								break;
 						}
 
-						return false;
+						return qId;
 					}
 				}
 			}
@@ -263,20 +296,20 @@ public class AutoJoinSingleton
 				{
 					temp = new AMIJoins();
 
-					if(_resolve(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenCatalog, givenTable, givenColumn, givenValue))
+					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenCatalog, givenTable, givenColumn, givenValue);
+
+					if(qId != null)
 					{
 						switch(method)
 						{
 							case WITH_INNER_JOINS:
 								_mergeInnerJoins(joins, temp, frgnKey);
-								return true;
 
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
-								return true;
 						}
 
-						return false;
+						return qId;
 					}
 				}
 			}
@@ -285,6 +318,8 @@ public class AutoJoinSingleton
 		}
 		else
 		{
+			SQLQId qId = new SQLQId(column.internalCatalog, column.table, column.name);
+
 			if(givenValue != null)
 			{
 				/*---------------------------------------------------------*/
@@ -292,18 +327,18 @@ public class AutoJoinSingleton
 				/*---------------------------------------------------------*/
 
 				joins.getOrAdd(AMIJoins.WHERE).add(
-					"`" + column.internalCatalog + "`.`" + column.table + "`.`" + column.name + "` = '" + givenValue.replace("'", "''") + "'"
+					qId.toString() + " = '" + givenValue.replace("'", "''") + "'"
 				);
 
 				/*---------------------------------------------------------*/
 			}
 
-			return true;
+			return qId;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return false;
+		return null;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -324,11 +359,11 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static AMIJoins resolve(AMIJoins joins, int method, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
+	private static SQLQId resolve(AMIJoins joins, int method, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		String[] parts = qid.trim().split("\\.");
+		String[] parts = qId.trim().split("\\.");
 
 		final int nb = parts.length;
 
@@ -358,33 +393,35 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			throw new Exception("could not parse column name `" + qid + "`");
+			throw new Exception("could not parse column name `" + qId + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		if(_resolve(joins, new HashSet<>(), method, defaultCatalog, defaultTable, givenCatalog, givenTable, givenColumn, givenValue) == false)
+		SQLQId result = _resolve(joins, new HashSet<>(), method, defaultCatalog, defaultTable, givenCatalog, givenTable, givenColumn, givenValue);
+
+		if(result == null)
 		{
-			throw new Exception("could not resolve column name `" + qid + "`");
+			throw new Exception("could not resolve column name `" + qId + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return joins;
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static AMIJoins resolveWithInnerJoins(AMIJoins joins, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
+	public static SQLQId resolveWithInnerJoins(AMIJoins joins, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(joins, WITH_INNER_JOINS, defaultCatalog, defaultTable, qid, givenValue);
+		return resolve(joins, WITH_INNER_JOINS, defaultCatalog, defaultTable, qId, givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static AMIJoins resolveWithNestedSelect(AMIJoins joins, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
+	public static SQLQId resolveWithNestedSelect(AMIJoins joins, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(joins, WITH_NESTED_SELECT, defaultCatalog, defaultTable, qid, givenValue);
+		return resolve(joins, WITH_NESTED_SELECT, defaultCatalog, defaultTable, qId, givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/

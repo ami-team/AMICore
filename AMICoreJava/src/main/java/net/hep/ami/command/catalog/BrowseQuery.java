@@ -20,11 +20,12 @@ public class BrowseQuery extends AbstractCommand
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		String catalog = arguments.get("catalog");
+		String entity = arguments.get("entity");
 
 		String sql = arguments.get("sql");
-		String glite = arguments.get("glite");
+		String mql = arguments.get("mql");
 
-		if(catalog == null || (sql == null && glite == null))
+		if(catalog == null || (sql == null && (mql == null || entity == null)))
 		{
 			throw new Exception("invalid usage");
 		}
@@ -43,7 +44,7 @@ public class BrowseQuery extends AbstractCommand
 		}
 		else
 		{
-			queryResult = querier.executeMQLQuery(glite);
+			queryResult = querier.executeMQLQuery(mql, entity);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -55,14 +56,14 @@ public class BrowseQuery extends AbstractCommand
 
 	public static String help()
 	{
-		return "Execute a simple SQL or gLite query.";
+		return "Execute a simple SQL or MQL query.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-catalog=\"value\" (-sql=\"value\" | -glite=\"value\")";
+		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -mql=\"\"))";
 	}
 
 	/*---------------------------------------------------------------------*/

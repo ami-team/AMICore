@@ -13,20 +13,26 @@ public class MQLToAST
 
 	private int m_cnt;
 
+	private final String m_catalog;
+	private final String m_entity;
+
 	private final List<String> m_ruleNames;
 
 	/*---------------------------------------------------------------------*/
 
-	public MQLToAST(List<String> ruleNames)
+	public MQLToAST(String catalog, String entity, List<String> ruleNames)
 	{
 		m_cnt = 0x00;
+
+		m_catalog = catalog;
+		m_entity = entity;
 
 		m_ruleNames = ruleNames;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, String catalog) throws Exception
+	public static String parse(String query, String catalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -40,44 +46,28 @@ public class MQLToAST
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder nodes = new StringBuilder();
-		StringBuilder edges = new StringBuilder();
-
-		nodes.append("\tnode0").append(" [shape=\"cylinder\", label=\"").append(catalog).append("\"];\n");
-
-		new MQLToAST(Arrays.asList(parser.getRuleNames())).visit(nodes, edges, parser.selectStatement(), 0);
-
-		return new StringBuilder().append("digraph ast {\n")
-		                          .append("\trankdir=TB;\n")
-		                          .append(nodes)
-		                          .append(edges)
-		                          .append("}")
-		                          .toString()
-		;
+		return new MQLToAST(catalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private String unquote(String s)
+	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context)
 	{
-		char c = s.charAt(0);
+		StringBuilder nodes = new StringBuilder();
+		StringBuilder edges = new StringBuilder();
 
-		/**/ if(c == '`')
-		{
-			return s.substring(1, s.length() - 1).replace("``", "`").trim();
-		}
-		else if(c == '\"')
-		{
-			return s.substring(1, s.length() - 1).replace("\"\"", "\"").trim();
-		}
-		else if(c == '\'')
-		{
-			return s.substring(1, s.length() - 1).replace("\'\'", "\'").trim();
-		}
+		nodes.append("\tnode0 [shape=\"cylinder\", label=\"`").append(m_catalog).append("`.`").append(m_entity).append("`\"];\n");
 
-		return s;
+		visit(nodes, edges, context, 0);
+
+		return new StringBuilder().append("digraph ast {\n")
+		                          .append("\trankdir=TB;\n")
+		                          .append(nodes)
+		                          .append(edges)
+		                          .append("}")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -96,7 +86,7 @@ public class MQLToAST
 
 			edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
 
-			nodes.append("\tnode").append(newId).append(" [label=\"").append(unquote(Trees.getNodeText(parseTree, m_ruleNames)).replace("\"", "\\\"")).append("\"];\n");
+			nodes.append("\tnode").append(newId).append(" [label=\"").append(Trees.getNodeText(parseTree, m_ruleNames).replace("\"", "\\\"")).append("\"];\n");
 		}
 		else
 		{
@@ -106,7 +96,7 @@ public class MQLToAST
 
 				edges.append("\tnode").append(oldId).append(" -> node").append(newId).append(";\n");
 
-				nodes.append("\tnode").append(newId).append(" [label=\"#").append(unquote(Trees.getNodeText(parseTree, m_ruleNames)).replace("\"", "\\\"")).append("\"];\n");
+				nodes.append("\tnode").append(newId).append(" [label=\"#").append(Trees.getNodeText(parseTree, m_ruleNames).replace("\"", "\\\"")).append("\"];\n");
 			}
 		}
 

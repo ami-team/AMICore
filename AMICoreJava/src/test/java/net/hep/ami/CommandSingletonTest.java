@@ -55,8 +55,8 @@ public class CommandSingletonTest
 
 			router = new Router();
 
-			System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'"));
-			System.out.println(router.mqlToAST("SELECT router_user.*"));
+			System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'", "router_user"));
+			//System.out.println(router.mqlToAST("SELECT router_user.*", "router_user"));
 
 			router.commitAndRelease();
 

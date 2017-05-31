@@ -53,17 +53,25 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String mql) throws Exception
+	public String mqlToSQL(String mql, String entity) throws Exception
 	{
-		return m_driver.mqlToSQL(mql);
+		return m_driver.mqlToSQL(mql, entity);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String mql) throws Exception
+	public String mqlToAST(String mql, String entity) throws Exception
 	{
-		return m_driver.mqlToAST(mql);
+		return m_driver.mqlToAST(mql, entity);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public RowSet executeMQLQuery(String mql, String entity) throws Exception
+	{
+		return m_driver.executeMQLQuery(mql, entity);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -77,14 +85,6 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String mql) throws Exception
-	{
-		return m_driver.executeMQLQuery(mql);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
 	public int executeUpdate(String sql) throws Exception
 	{
 		return m_driver.executeUpdate(sql);
@@ -93,17 +93,17 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql) throws Exception
+	public PreparedStatement prepareStatement(String sql) throws Exception
 	{
-		return m_driver.sqlPrepareStatement(sql);
+		return m_driver.prepareStatement(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPrepareStatement(String sql, String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, String[] columnNames) throws Exception
 	{
-		return m_driver.sqlPrepareStatement(sql, columnNames);
+		return m_driver.prepareStatement(sql, columnNames);
 	}
 
 	/*---------------------------------------------------------------------*/

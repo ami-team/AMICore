@@ -13,6 +13,7 @@ public class MQLToSQL
 	/*---------------------------------------------------------------------*/
 
 	private final String m_catalog;
+	private final String m_entity;
 
 	private final Set<String> m_tables = new HashSet<>();
 
@@ -20,14 +21,19 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	public MQLToSQL(String catalog)
+	private boolean m_break = false;
+
+	/*---------------------------------------------------------------------*/
+
+	public MQLToSQL(String catalog, String entity)
 	{
 		m_catalog = catalog;
+		m_entity = entity;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, String catalog) throws Exception
+	public static String parse(String query, String catalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -41,7 +47,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return new MQLToSQL(catalog).visitSelectStatement(parser.selectStatement()).toString();
+		return new MQLToSQL(catalog, entity).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -427,11 +433,17 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
 	{
-		return new StringBuilder().append(context.functionName.getText())
-		                          .append("(")
-		                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
-		                          .append(")")
-		;
+		m_break = true;
+
+		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
+		/**/	                                          .append("(")
+		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
+		/**/	                                          .append(")")
+		/**/	;
+
+		m_break = false;
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -466,57 +478,41 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		String externalCatalogName = (context.catalogName != null) ? context.catalogName.getText()
-		                                                           : /*---------------*/ m_catalog
-		;
+		String catalogName = (context.catalogName != null) ? unquoteId(context.catalogName.getText()) : m_catalog;
 
-		String internalCatalogName = SchemaSingleton.externalCatalogToInternalCatalog(externalCatalogName);
+		String entityName = (context.entityName != null) ? unquoteId(context.entityName.getText()) : m_entity;
 
-		String entityName = context.entityName.getText();
-		String fieldName = context.fieldName.getText();
+		String fieldName = unquoteId(context.fieldName.getText());
 
 		/*-----------------------------------------------------------------*/
 
-		String escapeInternalCatalogName = quoteId(internalCatalogName);
-		String unescapeExternalCatalogName = unquoteId(externalCatalogName);
+		int cnt = 0;
 
-		String escapeEntityName = quoteId(entityName);
-		String unescapeEntityName = unquoteId(entityName);
+		AutoJoinSingleton.SQLQId resolvedQId;
 
-		String escapeFieldName = quoteId(fieldName);
-		String unescapeFieldName = unquoteId(fieldName);
-
-		/*-----------------------------------------------------------------*/
-
-		m_tables.add(unescapeEntityName);
-
-		/*-----------------------------------------------------------------*/
-
-		if("*".equals(unescapeFieldName) == false)
+		for(String qId: "*".equals(fieldName) ? SchemaSingleton.getColumnNames(catalogName, entityName) : Arrays.asList(context.getText()))
 		{
-			AutoJoinSingleton.resolveWithInnerJoins(
+			resolvedQId = AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
-				unescapeExternalCatalogName,
-				unescapeEntityName,
-				unescapeFieldName,
+				m_catalog,
+				m_entity,
+				qId,
 				null
 			);
 
-			if(unescapeExternalCatalogName.equals(m_catalog) == false)
+			if(cnt++ > 0)
 			{
-				result.append(escapeInternalCatalogName)
-				      .append(".")
-				;
+				result.append(", ");
 			}
 
-			result.append(escapeEntityName)
-			      .append(".")
-			      .append(escapeFieldName)
-			;
-		}
-		else
-		{
-			result.append("*");
+			m_tables.add(resolvedQId.table);
+
+			result.append(resolvedQId.toString());
+
+			if(m_break)
+			{
+				break;
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -128,7 +128,7 @@ public class GenerateAuthority extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-country=\"value\" -locality=\"value\" -organization=\"value\" -organizationalUnit=\"value\" -commonName=\"value\"";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
