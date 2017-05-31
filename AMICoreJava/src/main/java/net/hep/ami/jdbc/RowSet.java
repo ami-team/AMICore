@@ -4,7 +4,8 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
-import net.hep.ami.jdbc.reflexion.SchemaSingleton;
+import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 public class RowSet
 {
@@ -27,7 +28,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Map<String, Integer> m_fieldIndices = new HashMap<>();
+	protected final Map<String, Integer> m_fieldIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 
@@ -290,6 +291,11 @@ public class RowSet
 				result[i] = m_resultSet.getString(i + 1);
 
 				/*---------------------------------------------------------*/
+			}
+
+			if(result[i] == null)
+			{
+				result[i] = "";
 			}
 		}
 
