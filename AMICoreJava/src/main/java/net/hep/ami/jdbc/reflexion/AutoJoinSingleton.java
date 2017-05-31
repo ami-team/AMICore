@@ -6,6 +6,35 @@ public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/
 
+	public static final class SQLQId
+	{
+		/*-----------------------------------------------------------------*/
+
+		public final String catalog;
+		public final String table;
+		public final String column;
+
+		/*-----------------------------------------------------------------*/
+
+		public SQLQId(String _catalog, String _table, String _column)
+		{
+			catalog = _catalog;
+			table = _table;
+			column = _column;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String toString()
+		{
+			return "`" + catalog + "`.`" + table + "`.`" + column + "`";
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static final class SQLJoins
 	{
 		/*-----------------------------------------------------------------*/
@@ -176,7 +205,7 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static String _resolve(
+	private static SQLQId _resolve(
 		AMIJoins joins,
 		Set<String> done,
 		int method,
@@ -213,7 +242,7 @@ public class AutoJoinSingleton
 
 		if(column == null)
 		{
-			String qid;
+			SQLQId qId;
 
 			AMIJoins temp;
 
@@ -233,9 +262,9 @@ public class AutoJoinSingleton
 				{
 					temp = new AMIJoins();
 
-					qid = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenCatalog, givenTable, givenColumn, givenValue);
+					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenCatalog, givenTable, givenColumn, givenValue);
 
-					if(qid != null)
+					if(qId != null)
 					{
 						switch(method)
 						{
@@ -248,7 +277,7 @@ public class AutoJoinSingleton
 								break;
 						}
 
-						return qid;
+						return qId;
 					}
 				}
 			}
@@ -267,9 +296,9 @@ public class AutoJoinSingleton
 				{
 					temp = new AMIJoins();
 
-					qid = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenCatalog, givenTable, givenColumn, givenValue);
+					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenCatalog, givenTable, givenColumn, givenValue);
 
-					if(qid != null)
+					if(qId != null)
 					{
 						switch(method)
 						{
@@ -280,7 +309,7 @@ public class AutoJoinSingleton
 								_mergeNestedSelect(joins, temp, frgnKey);
 						}
 
-						return qid;
+						return qId;
 					}
 				}
 			}
@@ -289,7 +318,7 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			String qid = "`" + column.internalCatalog + "`.`" + column.table + "`.`" + column.name + "`";
+			SQLQId qId = new SQLQId(column.internalCatalog, column.table, column.name);
 
 			if(givenValue != null)
 			{
@@ -298,13 +327,13 @@ public class AutoJoinSingleton
 				/*---------------------------------------------------------*/
 
 				joins.getOrAdd(AMIJoins.WHERE).add(
-					qid + " = '" + givenValue.replace("'", "''") + "'"
+					qId.toString() + " = '" + givenValue.replace("'", "''") + "'"
 				);
 
 				/*---------------------------------------------------------*/
 			}
 
-			return qid;
+			return qId;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -330,11 +359,11 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static String resolve(AMIJoins joins, int method, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
+	private static SQLQId resolve(AMIJoins joins, int method, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		String[] parts = qid.trim().split("\\.");
+		String[] parts = qId.trim().split("\\.");
 
 		final int nb = parts.length;
 
@@ -364,16 +393,16 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			throw new Exception("could not parse column name `" + qid + "`");
+			throw new Exception("could not parse column name `" + qId + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		String result = _resolve(joins, new HashSet<>(), method, defaultCatalog, defaultTable, givenCatalog, givenTable, givenColumn, givenValue);
+		SQLQId result = _resolve(joins, new HashSet<>(), method, defaultCatalog, defaultTable, givenCatalog, givenTable, givenColumn, givenValue);
 
 		if(result == null)
 		{
-			throw new Exception("could not resolve column name `" + qid + "`");
+			throw new Exception("could not resolve column name `" + qId + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -383,16 +412,16 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String resolveWithInnerJoins(AMIJoins joins, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
+	public static SQLQId resolveWithInnerJoins(AMIJoins joins, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(joins, WITH_INNER_JOINS, defaultCatalog, defaultTable, qid, givenValue);
+		return resolve(joins, WITH_INNER_JOINS, defaultCatalog, defaultTable, qId, givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String resolveWithNestedSelect(AMIJoins joins, String defaultCatalog, String defaultTable, String qid, @Nullable String givenValue) throws Exception
+	public static SQLQId resolveWithNestedSelect(AMIJoins joins, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(joins, WITH_NESTED_SELECT, defaultCatalog, defaultTable, qid, givenValue);
+		return resolve(joins, WITH_NESTED_SELECT, defaultCatalog, defaultTable, qId, givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/

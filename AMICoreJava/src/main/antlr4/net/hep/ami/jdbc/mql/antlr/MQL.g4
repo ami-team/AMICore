@@ -71,7 +71,9 @@ expressionX
 /*---------------------------*/
 
 sqlQId
-	: (catalogName=ID '.')? (entityName=ID '.')? fieldName=(ID | '*')
+	: catalogName=ID '.' entityName=ID '.' fieldName=(ID | '*')
+	| entityName=ID '.' fieldName=(ID | '*')
+	| fieldName=(ID | '*')
 	;
 
 /*---------------------------*/

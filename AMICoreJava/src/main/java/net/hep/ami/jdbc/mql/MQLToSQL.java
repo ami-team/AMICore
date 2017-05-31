@@ -21,6 +21,10 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
+	private boolean m_break = false;
+
+	/*---------------------------------------------------------------------*/
+
 	public MQLToSQL(String catalog, String entity)
 	{
 		m_catalog = catalog;
@@ -429,11 +433,17 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
 	{
-		return new StringBuilder().append(context.functionName.getText())
-		                          .append("(")
-		                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
-		                          .append(")")
-		;
+		m_break = true;
+
+		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
+		/**/	                                          .append("(")
+		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
+		/**/	                                          .append(")")
+		/**/	;
+
+		m_break = false;
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -468,31 +478,41 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		String fieldName = context.fieldName.getText();
+		String catalogName = (context.catalogName != null) ? unquoteId(context.catalogName.getText()) : m_catalog;
 
-		String qid = context.getText();
+		String entityName = (context.entityName != null) ? unquoteId(context.entityName.getText()) : m_entity;
+
+		String fieldName = unquoteId(context.fieldName.getText());
 
 		/*-----------------------------------------------------------------*/
 
-		if(fieldName.contains("*") == false)
+		int cnt = 0;
+
+		AutoJoinSingleton.SQLQId resolvedQId;
+
+		for(String qId: "*".equals(fieldName) ? SchemaSingleton.getColumnNames(catalogName, entityName) : Arrays.asList(context.getText()))
 		{
-			String QID = AutoJoinSingleton.resolveWithInnerJoins(
+			resolvedQId = AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
 				m_catalog,
 				m_entity,
-				qid,
+				qId,
 				null
 			);
 
-			m_tables.add(unquoteId(QID.split("\\.")[1]));
+			if(cnt++ > 0)
+			{
+				result.append(", ");
+			}
 
-			result.append(QID);
-		}
-		else
-		{
-			m_tables.add(m_entity);
+			m_tables.add(resolvedQId.table);
 
-			result.append("*");
+			result.append(resolvedQId.toString());
+
+			if(m_break)
+			{
+				break;
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

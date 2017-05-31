@@ -13,13 +13,19 @@ public class MQLToAST
 
 	private int m_cnt;
 
+	private final String m_catalog;
+	private final String m_entity;
+
 	private final List<String> m_ruleNames;
 
 	/*---------------------------------------------------------------------*/
 
-	public MQLToAST(List<String> ruleNames)
+	public MQLToAST(String catalog, String entity, List<String> ruleNames)
 	{
 		m_cnt = 0x00;
+
+		m_catalog = catalog;
+		m_entity = entity;
 
 		m_ruleNames = ruleNames;
 	}
@@ -40,20 +46,7 @@ public class MQLToAST
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder nodes = new StringBuilder();
-		StringBuilder edges = new StringBuilder();
-
-		nodes.append("\tnode0").append(" [shape=\"cylinder\", label=\"").append(catalog).append(".").append(entity).append("\"];\n");
-
-		new MQLToAST(Arrays.asList(parser.getRuleNames())).visit(nodes, edges, parser.selectStatement(), 0);
-
-		return new StringBuilder().append("digraph ast {\n")
-		                          .append("\trankdir=TB;\n")
-		                          .append(nodes)
-		                          .append(edges)
-		                          .append("}")
-		                          .toString()
-		;
+		return new MQLToAST(catalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -78,6 +71,25 @@ public class MQLToAST
 		}
 
 		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context)
+	{
+		StringBuilder nodes = new StringBuilder();
+		StringBuilder edges = new StringBuilder();
+
+		nodes.append("\tnode0 [shape=\"cylinder\", label=\"").append(unquote(m_catalog)).append(".").append(unquote(m_entity)).append("\"];\n");
+
+		visit(nodes, edges, context, 0);
+
+		return new StringBuilder().append("digraph ast {\n")
+		                          .append("\trankdir=TB;\n")
+		                          .append(nodes)
+		                          .append(edges)
+		                          .append("}")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
