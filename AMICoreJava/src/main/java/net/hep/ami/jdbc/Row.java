@@ -50,7 +50,7 @@ public class Row
 	public String getValue(int columnIndex)
 	{
 		return columnIndex < m_values.length ? m_values[columnIndex]
-		                                     : null
+		                                     : ""
 		;
 	}
 
@@ -59,7 +59,7 @@ public class Row
 	public String getValue(String fieldName)
 	{
 		return m_rowSet.m_fieldIndices.containsKey(fieldName) ? m_values[m_rowSet.m_fieldIndices.get(fieldName)]
-		                                                      : null
+		                                                      : ""
 		;
 	}
 

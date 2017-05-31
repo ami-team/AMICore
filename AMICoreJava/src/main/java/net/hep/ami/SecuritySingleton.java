@@ -672,30 +672,24 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static byte[] encrypt(byte[] data) throws Exception
+	private static byte[] encrypt(byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
  		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		if(data.length > 0)
-		{
-			encrypt(outputStream, inputStream);
-		}
+		encrypt(outputStream, inputStream);
 
 		return outputStream.toByteArray();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static byte[] decrypt(byte[] data) throws Exception
+	private static byte[] decrypt(byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
-		if(data.length > 0)
-		{
-			decrypt(outputStream, inputStream);
-		}
+		decrypt(outputStream, inputStream);
 
 		return outputStream.toByteArray();
 	}
