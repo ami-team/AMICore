@@ -68,21 +68,21 @@ public class UpdateElements extends AbstractCommand
 
 		if(fields.length > 0)
 		{
-			Map<String, List<String>> joins;
+			AutoJoinSingleton.AMIJoins joins;
 
 			List<String> list = new ArrayList<>();
 
 			for(int i = 0; i < fields.length; i++)
 			{
-				joins = AutoJoinSingleton.resolveWithNestedSelect(
-					new AutoJoinSingleton.AMIJoins(),
+				AutoJoinSingleton.resolveWithNestedSelect(
+					joins = new AutoJoinSingleton.AMIJoins(),
 					catalog,
 					entity,
 					fields[i],
 					values[i]
 				);
 
-				list.add(joins.get("@").get(0));
+				list.add(joins.get(AutoJoinSingleton.AMIJoins.WHERE).get(0));
 			}
 
 			stringBuilder.append(String.join(",", list));

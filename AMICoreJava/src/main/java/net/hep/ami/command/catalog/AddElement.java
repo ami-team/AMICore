@@ -58,22 +58,22 @@ public class AddElement extends AbstractCommand
 		{
 			String[] parts;
 
-			Map<String, List<String>> joins;
+			AutoJoinSingleton.AMIJoins joins;
 
 			List<String> list1 = new ArrayList<>();
 			List<String> list2 = new ArrayList<>();
 
 			for(int i = 0; i < fields.length; i++)
 			{
-				joins = AutoJoinSingleton.resolveWithNestedSelect(
-					new AutoJoinSingleton.AMIJoins(),
+				AutoJoinSingleton.resolveWithNestedSelect(
+					joins = new AutoJoinSingleton.AMIJoins(),
 					catalog,
 					entity,
 					fields[i],
 					values[i]
 				);
 
-				parts = joins.get("@").get(0).split("=", 2);
+				parts = joins.get(AutoJoinSingleton.AMIJoins.WHERE).get(0).split("=", 2);
 
 				list1.add(parts[0]);
 				list2.add(parts[1]);

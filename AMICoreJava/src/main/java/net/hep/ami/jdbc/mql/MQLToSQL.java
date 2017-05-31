@@ -468,61 +468,30 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		String externalCatalogName = (context.catalogName != null) ? context.catalogName.getText()
-		                                                           : m_catalog
-		;
-
-		String entityName = (context.entityName != null) ? context.entityName.getText()
-		                                                 : m_entity
-		;
-
 		String fieldName = context.fieldName.getText();
 
-		/*-----------------------------------------------------------------*/
-
-		String internalCatalogName = SchemaSingleton.externalCatalogToInternalCatalog(externalCatalogName);
+		String qid = context.getText();
 
 		/*-----------------------------------------------------------------*/
 
-		String escapeInternalCatalogName = quoteId(internalCatalogName);
-		String unescapeExternalCatalogName = unquoteId(externalCatalogName);
-
-		String escapeEntityName = quoteId(entityName);
-		String unescapeEntityName = unquoteId(entityName);
-
-		String escapeFieldName = quoteId(fieldName);
-		String unescapeFieldName = unquoteId(fieldName);
-
-		/*-----------------------------------------------------------------*/
-
-		m_tables.add(unescapeEntityName);
-
-		/*-----------------------------------------------------------------*/
-
-		if("*".equals(unescapeFieldName) == false)
+		if(fieldName.contains("*") == false)
 		{
-			AutoJoinSingleton.resolveWithInnerJoins(
+			String QID = AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
-				unescapeExternalCatalogName,
-				unescapeEntityName,
-				unescapeFieldName,
+				m_catalog,
+				m_entity,
+				qid,
 				null
 			);
 
-			if(unescapeExternalCatalogName.equals(m_catalog) == false)
-			{
-				result.append(escapeInternalCatalogName)
-				      .append(".")
-				;
-			}
+			m_tables.add(unquoteId(QID.split("\\.")[1]));
 
-			result.append(escapeEntityName)
-			      .append(".")
-			      .append(escapeFieldName)
-			;
+			result.append(QID);
 		}
 		else
 		{
+			m_tables.add(m_entity);
+
 			result.append("*");
 		}
 
