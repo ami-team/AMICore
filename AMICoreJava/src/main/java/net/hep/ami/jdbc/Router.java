@@ -49,17 +49,17 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String mql) throws Exception
+	public String mqlToSQL(String mql, String entity) throws Exception
 	{
-		return m_driver.mqlToSQL(mql);
+		return m_driver.mqlToSQL(mql, entity);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String mql) throws Exception
+	public String mqlToAST(String mql, String entity) throws Exception
 	{
-		return m_driver.mqlToAST(mql);
+		return m_driver.mqlToAST(mql, entity);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -73,9 +73,9 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String mql) throws Exception
+	public RowSet executeMQLQuery(String mql, String entity) throws Exception
 	{
-		return m_driver.executeMQLQuery(mql);
+		return m_driver.executeMQLQuery(mql, entity);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -8,11 +8,11 @@ public interface Querier
 {
 	/*---------------------------------------------------------------------*/
 
-	public String mqlToSQL(String mql) throws Exception;
+	public String mqlToSQL(String mql, String entity) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public String mqlToAST(String mql) throws Exception;
+	public String mqlToAST(String mql, String entity) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -20,7 +20,7 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet executeMQLQuery(String mql) throws Exception;
+	public RowSet executeMQLQuery(String mql, String entity) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

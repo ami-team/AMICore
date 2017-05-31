@@ -68,7 +68,7 @@ public class ListFields extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"value\" -entity=\"value\"";
+		return "-catalog=\"\" -entity=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

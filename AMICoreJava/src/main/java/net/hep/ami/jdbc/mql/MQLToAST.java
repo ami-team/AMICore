@@ -26,7 +26,7 @@ public class MQLToAST
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, String catalog) throws Exception
+	public static String parse(String query, String catalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -43,7 +43,7 @@ public class MQLToAST
 		StringBuilder nodes = new StringBuilder();
 		StringBuilder edges = new StringBuilder();
 
-		nodes.append("\tnode0").append(" [shape=\"cylinder\", label=\"").append(catalog).append("\"];\n");
+		nodes.append("\tnode0").append(" [shape=\"cylinder\", label=\"").append(catalog).append(".").append(entity).append("\"];\n");
 
 		new MQLToAST(Arrays.asList(parser.getRuleNames())).visit(nodes, edges, parser.selectStatement(), 0);
 

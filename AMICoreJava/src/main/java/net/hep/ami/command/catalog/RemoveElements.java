@@ -129,7 +129,7 @@ public class RemoveElements extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? (-keyFields=\"comma_separated_values\" -keyValues=\"comma_separated_values\")? (-where=\"value\")?";
+		return "-catalog=\"\" -entity=\"\" (-separator=\"\")? (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

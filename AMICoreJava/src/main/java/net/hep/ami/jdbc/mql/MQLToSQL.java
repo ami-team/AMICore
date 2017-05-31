@@ -13,6 +13,7 @@ public class MQLToSQL
 	/*---------------------------------------------------------------------*/
 
 	private final String m_catalog;
+	private final String m_entity;
 
 	private final Set<String> m_tables = new HashSet<>();
 
@@ -20,14 +21,15 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	public MQLToSQL(String catalog)
+	public MQLToSQL(String catalog, String entity)
 	{
 		m_catalog = catalog;
+		m_entity = entity;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, String catalog) throws Exception
+	public static String parse(String query, String catalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -41,7 +43,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return new MQLToSQL(catalog).visitSelectStatement(parser.selectStatement()).toString();
+		return new MQLToSQL(catalog, entity).visitSelectStatement(parser.selectStatement()).toString();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -467,13 +469,18 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		String externalCatalogName = (context.catalogName != null) ? context.catalogName.getText()
-		                                                           : /*---------------*/ m_catalog
+		                                                           : m_catalog
 		;
 
-		String internalCatalogName = SchemaSingleton.externalCatalogToInternalCatalog(externalCatalogName);
+		String entityName = (context.entityName != null) ? context.entityName.getText()
+		                                                 : m_entity
+		;
 
-		String entityName = context.entityName.getText();
 		String fieldName = context.fieldName.getText();
+
+		/*-----------------------------------------------------------------*/
+
+		String internalCatalogName = SchemaSingleton.externalCatalogToInternalCatalog(externalCatalogName);
 
 		/*-----------------------------------------------------------------*/
 

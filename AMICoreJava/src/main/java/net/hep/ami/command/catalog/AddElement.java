@@ -106,7 +106,7 @@ public class AddElement extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"value\" -entity=\"value\" (-separator=\"value\")? -fields=\"comma_separated_values\" -values=\"comma_separated_values\"";
+		return "-catalog=\"\" -entity=\"\" (-separator=\"\")? -fields=\"\" -values=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

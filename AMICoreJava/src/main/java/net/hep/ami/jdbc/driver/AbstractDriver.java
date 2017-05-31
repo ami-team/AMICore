@@ -118,11 +118,11 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String mql) throws Exception
+	public String mqlToSQL(String mql, String entity) throws Exception
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return patchSQL(MQLToSQL.parse(mql, this.m_externalCatalog));
+			return patchSQL(MQLToSQL.parse(mql, this.m_externalCatalog, entity));
 		}
 		else
 		{
@@ -133,15 +133,33 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String mql) throws Exception
+	public String mqlToAST(String mql, String entity) throws Exception
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return /*----*/(MQLToAST.parse(mql, this.m_externalCatalog));
+			return /*----*/(MQLToAST.parse(mql, this.m_externalCatalog, entity));
 		}
 		else
 		{
 			throw new Exception("MQL not supported for driver `" + getClass().getName() + "`");
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public RowSet executeMQLQuery(String mql, String entity) throws Exception
+	{
+		try
+		{
+			String SQL = mqlToSQL(mql, entity);
+			String AST = mqlToAST(mql, entity);
+
+			return new RowSet(m_statement.executeQuery(SQL), SQL, mql, AST);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for MQL query: " + mql, e);
 		}
 	}
 
@@ -160,24 +178,6 @@ public abstract class AbstractDriver implements Querier
 		catch(Exception e)
 		{
 			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public RowSet executeMQLQuery(String mql) throws Exception
-	{
-		try
-		{
-			String SQL = mqlToSQL(mql);
-			String AST = mqlToAST(mql);
-
-			return new RowSet(m_statement.executeQuery(SQL), SQL, mql, AST);
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql, e);
 		}
 	}
 
