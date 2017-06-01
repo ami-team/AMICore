@@ -88,7 +88,9 @@ public class CommandSingletonTest
 
 			//System.out.println(SchemaSingleton.getTableNames("self"));
 
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+
+			System.out.println("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
 
 			//System.out.println(ConnectionPoolSingleton.getStatus());
 

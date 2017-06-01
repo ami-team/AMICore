@@ -125,6 +125,20 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static String buildTestRequest(String catalog)
+	{
+		try
+		{
+			return "SELECT 1 FROM `" + SchemaSingleton.getTableNames(catalog).get(0) + "`";
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void commitAndRelease(long transactionId) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
@@ -153,11 +167,18 @@ public class TransactionPoolSingleton
 		{
 			/*-------------------------------------------------------------*/
 
+			String sql;
+
 			for(AbstractDriver driver: transaction.values())
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					driver.executeQuery("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
+					sql = buildTestRequest(driver.getExternalCatalog());
+
+					if(sql != null)
+					{
+						driver.executeQuery(sql);
+					}
 				}
 			}
 
@@ -237,11 +258,18 @@ public class TransactionPoolSingleton
 		{
 			/*-------------------------------------------------------------*/
 
+			String sql;
+
 			for(AbstractDriver driver: transaction.values())
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					driver.executeQuery("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
+					sql = buildTestRequest(driver.getExternalCatalog());
+
+					if(sql != null)
+					{
+						driver.executeQuery(sql);
+					}
 				}
 			}
 

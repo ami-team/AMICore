@@ -775,7 +775,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getTableNames(String catalog) throws Exception
+	public static List<String> getTableNames(String catalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -783,7 +783,9 @@ public class SchemaSingleton
 
 		if(map != null)
 		{
-			return map.keySet();
+			return new ArrayList<>(
+				map.keySet()
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
