@@ -101,6 +101,8 @@ public abstract class AbstractCommand
 
 		Exception e = null;
 
+		/*-----------------------------------------------------------------*/
+
 		try
 		{
 			result = main(m_arguments);
@@ -109,27 +111,29 @@ public abstract class AbstractCommand
 		{
 			e = f;
 		}
-		finally
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_transactionBooker)
 		{
-			if(m_transactionBooker)
+			if(e == null)
 			{
-				if(e == null)
+				TransactionPoolSingleton.commitAndRelease(m_transactionId);
+			}
+			else
+			{
+				try
 				{
-					TransactionPoolSingleton.commitAndRelease(m_transactionId);
+					TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
 				}
-				else
+				catch(Exception f)
 				{
-					try
-					{
-						TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
-					}
-					catch(Exception f)
-					{
-						throw new Exception(e.getMessage() + ", " + f.getMessage(), e);
-					}
+					throw new Exception(e.getMessage() + ", " + f.getMessage(), e);
 				}
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}

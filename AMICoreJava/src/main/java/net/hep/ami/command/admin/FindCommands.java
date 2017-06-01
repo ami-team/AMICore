@@ -3,7 +3,6 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 public class FindCommands extends AbstractCommand
@@ -22,17 +21,13 @@ public class FindCommands extends AbstractCommand
 	{
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*-----------------------------------------------------------------*/
-
 		Set<String> commands = new HashSet<>();
 
 		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
 			try
 			{
-				CommandSingleton.registerCommand(querier, null, className);
+				CommandSingleton.registerCommand(getQuerier("self"), null, className);
 
 				commands.add(className);
 			}

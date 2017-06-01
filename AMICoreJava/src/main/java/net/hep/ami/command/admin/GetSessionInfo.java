@@ -48,7 +48,7 @@ public class GetSessionInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeQuery("SELECT `AMIUser`,`clientDN`,`issuerDN`,`lastName`,`firstName`,`email`,`valid` FROM `router_user` WHERE `id`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "')").getAll();
+		List<Row> rowList = querier.executeQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `id` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' OR `AMIUser` = '" + m_guestUser + "')").getAll();
 
 		if(rowList.isEmpty())
 		{
@@ -100,11 +100,11 @@ public class GetSessionInfo extends AbstractCommand
 
 			if(VOMS_ENABLED == false)
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN` = '" + clientDN + "', `issuerDN` = '" + issuerDN + "' WHERE `AMIUser` = '" + amiLogin + "' AND `AMIPass` = '" + amiPassword + "'";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='1' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN` = '" + clientDN + "', `issuerDN` = '" + issuerDN + "', `valid` = '1' WHERE `AMIUser` = '" + amiLogin + "' AND `AMIPass` = '" + amiPassword + "'";
 			}
 
 			if(querier.executeUpdate(sql) != 1)
@@ -128,11 +128,11 @@ public class GetSessionInfo extends AbstractCommand
 
 			if(VOMS_ENABLED == false)
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN` = '" + clientDN + "', `issuerDN` = '" + issuerDN + "' WHERE `AMIUser` = '" + amiLogin + "' AND `AMIPass` = '" + amiPassword + "'";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='0' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN` = '" + clientDN + "', `issuerDN` = '" + issuerDN + "', `valid` = '0' WHERE `AMIUser` = '" + amiLogin + "' AND `AMIPass` = '" + amiPassword + "'";
 			}
 
 			if(querier.executeUpdate(sql) != 1)
@@ -145,7 +145,7 @@ public class GetSessionInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = querier.executeQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK`=(SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser`='" + m_AMIUser + "' OR `AMIUser`='" + m_guestUser + "') AND `router_user_role`.`roleFK`=`router_role`.`id`");
+		RowSet rowSet2 = querier.executeQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' OR `AMIUser` = '" + m_guestUser + "') AND `router_user_role`.`roleFK` = `router_role`.`id`");
 
 		/*-----------------------------------------------------------------*/
 
@@ -224,7 +224,7 @@ public class GetSessionInfo extends AbstractCommand
 
 	public static String usage()
 	{
-		return "((-attachCert | -detachCert) -amiLogin=\"value\" -amiPassword=\"value\")? (-AMIUser=\"value\" -AMIPass=\"value\")?";
+		return "((-attachCert | -detachCert) -amiLogin=\"\" -amiPassword=\"\")? (-AMIUser=\"\" -AMIPass=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

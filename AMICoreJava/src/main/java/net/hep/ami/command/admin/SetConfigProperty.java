@@ -38,7 +38,7 @@ public class SetConfigProperty extends AbstractCommand
 
 		ConfigSingleton.setProperty(name, value);
 
-		ConfigSingleton.setPropertyToDataBase(name, value);
+		ConfigSingleton.setPropertyToDataBase(getQuerier("self"), name, value);
 
 		/*-----------------------------------------------------------------*/
 
@@ -50,6 +50,13 @@ public class SetConfigProperty extends AbstractCommand
 	public static String help()
 	{
 		return "Set configuration property.";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String usage()
+	{
+		return "-name=\"\" -value=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

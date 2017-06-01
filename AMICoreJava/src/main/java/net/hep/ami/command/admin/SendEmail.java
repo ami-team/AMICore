@@ -39,11 +39,6 @@ public class SendEmail extends AbstractCommand
 		                                                  : ""
 		;
 
-		if(m_isSecure.equals("false"))
-		{
-			throw new Exception("HTTPS connection required"); 
-		}
-
 		/*-----------------------------------------------------------------*/
 
 		MailSingleton.sendMessage(from, to, cc, subject, message);
@@ -57,14 +52,14 @@ public class SendEmail extends AbstractCommand
 
 	public static String help()
 	{
-		return "Send email.";
+		return "Send an email.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "(-from=\"value\")? (-to=\"value\")? (-cc=\"value\")? -subject=\"value\" -message=\"value\"";
+		return "-from=\"\" -to=\"\" (-cc=\"\")? -subject=\"\" -message=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

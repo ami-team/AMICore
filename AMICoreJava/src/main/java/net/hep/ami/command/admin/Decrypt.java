@@ -45,7 +45,7 @@ public class Decrypt extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-string=\"value\"";
+		return "-string=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

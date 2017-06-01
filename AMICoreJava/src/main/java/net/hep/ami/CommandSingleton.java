@@ -176,13 +176,13 @@ public class CommandSingleton
 		{
 			return;
 		}
-		
+
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
 			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
 
-			/*  */
-		}
+/*			return;
+ */		}
 
 		/*-----------------------------------------------------------------*/
 		/* REGISTER COMMAND                                                */
@@ -202,7 +202,7 @@ public class CommandSingleton
 			querier.executeUpdate(String.format("UPDATE `router_command` SET `class` = '%s' WHERE `command` = '%s'",
 				className.replace("'", "''"),
 				commandName.replace("'", "''")
-			));			
+			));
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -294,80 +294,31 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void setPropertyToDataBase(String name, String value) throws Exception
+	public static void setPropertyToDataBase(Querier querier, String name, String value) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
-		/*-----------------------------------------------------------------*/
-
-		AbstractDriver driver = DriverSingleton.getConnection(
-			"self",
-			getProperty("router"),
-			getProperty("router_url"),
-			getProperty("router_user"),
-			getProperty("router_pass")
-		);
-
-		/*-----------------------------------------------------------------*/
-
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
-
-			driver.executeUpdate(String.format("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('%s', '%s') ON DUPLICATE KEY UPDATE `paramName`='%s'",
+			querier.executeUpdate(String.format("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('%s', '%s')",
 				SecuritySingleton.encrypt(name).replace("'", "''"),
+				SecuritySingleton.encrypt(value).replace("'", "''")
+			));
+		}
+		catch(Exception e)
+		{
+			querier.executeUpdate(String.format("UPDATE `router_config` SET `paramValue` = '%s' WHERE `paramName` = '%s'",
 				SecuritySingleton.encrypt(value).replace("'", "''"),
 				SecuritySingleton.encrypt(name).replace("'", "''")
 			));
-
-			/*-------------------------------------------------------------*/
 		}
-		finally
-		{
-			driver.commitAndRelease();
-		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removePropertyFromDataBase(String name) throws Exception
+	public static void removePropertyFromDataBase(Querier querier, String name) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
-		/*-----------------------------------------------------------------*/
-
-		AbstractDriver driver = DriverSingleton.getConnection(
-			"self",
-			getProperty("router"),
-			getProperty("router_url"),
-			getProperty("router_user"),
-			getProperty("router_pass")
-		);
-
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
-
-			driver.executeUpdate(String.format("DELETE FROM `router_config` WHERE `paramName` = '%s'",
-				SecuritySingleton.encrypt(name).replace("'", "''")
-			));
-
-			/*-------------------------------------------------------------*/
-		}
-		finally
-		{
-			driver.commitAndRelease();
-		}
-
-		/*-----------------------------------------------------------------*/
+		querier.executeUpdate(String.format("DELETE FROM `router_config` WHERE `paramName` = '%s'",
+			SecuritySingleton.encrypt(name).replace("'", "''")
+		));
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -35,7 +35,7 @@ public class RemoveConfigProperty extends AbstractCommand
 
 		ConfigSingleton.removeProperty(name);
 
-		ConfigSingleton.removePropertyFromDataBase(name);
+		ConfigSingleton.removePropertyFromDataBase(getQuerier("self"), name);
 
 		/*-----------------------------------------------------------------*/
 
@@ -47,6 +47,13 @@ public class RemoveConfigProperty extends AbstractCommand
 	public static String help()
 	{
 		return "Remove configuration property.";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String usage()
+	{
+		return "-name=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

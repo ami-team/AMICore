@@ -3,7 +3,6 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 public class AddUser extends AbstractCommand
@@ -61,15 +60,11 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*-----------------------------------------------------------------*/
-
 		amiPassword = SecuritySingleton.encrypt(amiPassword);
 		clientDN = SecuritySingleton.encrypt(clientDN);
 		issuerDN = SecuritySingleton.encrypt(issuerDN);
 
-		String sql = String.format("INSERT INTO `router_user` (`AMIUser`,`AMIPass`,`clientDN`,`issuerDN`,`firstName`,`lastName`,`email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
+		int nb = getQuerier("self").executeUpdate(String.format("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
 			amiLogin.replace("'", "''"),
 			amiPassword.replace("'", "''"),
 			clientDN.replace("'", "''"),
@@ -77,9 +72,7 @@ public class AddUser extends AbstractCommand
 			firstName.replace("'", "''"),
 			lastName.replace("'", "''"),
 			email.replace("'", "''")
-		);
-
-		int nb = querier.executeUpdate(sql);
+		));
 
 		/*-----------------------------------------------------------------*/
 

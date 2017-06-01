@@ -66,7 +66,7 @@ public class LocalizeIP extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-ip=\"value\"";
+		return "-ip=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

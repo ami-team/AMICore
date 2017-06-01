@@ -2,7 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
-import net.hep.ami.command.AbstractCommand;
+import net.hep.ami.command.*;
 
 public class Echo extends AbstractCommand
 {

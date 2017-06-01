@@ -23,7 +23,7 @@ public class ListUsers extends AbstractCommand
 			throw new Exception("HTTPS connection required"); 
 		}
 
-		return getQuerier("self").executeQuery("SELECT * FROM `router_user` WHERE `valid`='1'").toStringBuilder();
+		return getQuerier("self").executeQuery("SELECT `AMIUser`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user`").toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
