@@ -19,48 +19,54 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldCatalog(int columnIndex)
+	public String getFieldCatalog(int columnIndex) throws Exception
 	{
 		return m_rowSet.getCatalogOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldEntity(int columnIndex)
+	public String getFieldEntity(int columnIndex) throws Exception
 	{
 		return m_rowSet.getEntityOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldName(int columnIndex)
+	public String getFieldName(int columnIndex) throws Exception
 	{
 		return m_rowSet.getNameOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldType(int columnIndex)
+	public String getFieldType(int columnIndex) throws Exception
 	{
 		return m_rowSet.getTypeOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(int columnIndex)
+	public String getValue(int fieldIndex) throws Exception
 	{
-		return columnIndex < m_values.length ? m_values[columnIndex]
-		                                     : ""
-		;
+		if(fieldIndex >= m_values.length)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_values[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(String fieldName)
+	public String getValue(String fieldName) throws Exception
 	{
-		return m_rowSet.m_fieldIndices.containsKey(fieldName) ? m_values[m_rowSet.m_fieldIndices.get(fieldName)]
-		                                                      : ""
-		;
+		if(m_rowSet.m_fieldIndices.containsKey(fieldName) == false)
+		{
+			throw new Exception("bad field name");
+		}
+
+		return m_values[m_rowSet.m_fieldIndices.get(fieldName)];
 	}
 
 	/*---------------------------------------------------------------------*/

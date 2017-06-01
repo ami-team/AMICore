@@ -32,7 +32,11 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+	/*---------------------------------------------------------------------*/
+
+	private boolean m_lock = false;
 
 	/*---------------------------------------------------------------------*/
 
@@ -195,38 +199,50 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public String getCatalogOfField(int fieldIndex)
+	public String getCatalogOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldCatalogs[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldCatalogs[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getEntityOfField(int fieldIndex)
+	public String getEntityOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldEntities[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldEntities[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getNameOfField(int fieldIndex)
+	public String getNameOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldNames[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldNames[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getTypeOfField(int fieldIndex)
+	public String getTypeOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldTypes[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldTypes[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -243,7 +259,7 @@ public class RowSet
 				/* TIME                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_simpleDateFormat.format(m_resultSet.getTime(i + 1));
+				result[i] = m_dateFormat.format(m_resultSet.getTime(i + 1));
 
 				if(result[i] == null)
 				{
@@ -258,7 +274,7 @@ public class RowSet
 				/* DATE                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_simpleDateFormat.format(m_resultSet.getDate(i + 1));
+				result[i] = m_dateFormat.format(m_resultSet.getDate(i + 1));
 
 				if(result[i] == null)
 				{
@@ -273,7 +289,7 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_simpleDateFormat.format(m_resultSet.getTimestamp(i + 1));
+				result[i] = m_dateFormat.format(m_resultSet.getTimestamp(i + 1));
 
 				if(result[i] == null)
 				{
@@ -304,12 +320,22 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	protected void lock() throws Exception
+	{
+		if(m_lock)
+		{
+			throw new Exception("rowset already read");
+		}
+
+		m_lock = true;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public Iterable iter() throws Exception
 	{
 		return new Iterable(this);
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public Iterable iter(int limit, int offset) throws Exception
 	{
@@ -320,14 +346,12 @@ public class RowSet
 
 	public List<Row> getAll() throws Exception
 	{
-		return Iterable.getList(this);
+		return Iterable.getAll(this);
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public List<Row> getAll(int limit, int offset) throws Exception
 	{
-		return Iterable.getList(this, limit, offset);
+		return Iterable.getAll(this, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -336,8 +360,6 @@ public class RowSet
 	{
 		return toStringBuilder(null, Integer.MAX_VALUE, 0);
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder(@Nullable String type) throws Exception
 	{

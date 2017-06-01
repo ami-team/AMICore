@@ -89,7 +89,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removeRole(Querier querier, String role, boolean recursive) throws Exception
+	public static void removeRole(Querier querier, String role, boolean cascade) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE                                                        */
@@ -120,7 +120,7 @@ public class RoleSingleton
 		/* DELETE ROLE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(recursive || "0".equals(isLeaf))
+		if(cascade || "0".equals(isLeaf))
 		{
 			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` BETWEEN %s AND %s",
 				roleLft,
@@ -230,7 +230,7 @@ public class RoleSingleton
 
 		List<Row> rowList = querier.executeQuery(sql).getAll();
 
-		if(rowList.size() != 1)
+		if(rowList.size() == 0)
 		{
 			throw new Exception("wrong role");
 		}

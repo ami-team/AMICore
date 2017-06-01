@@ -26,6 +26,8 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	protected Iterable(RowSet rowSet) throws Exception
 	{
+		rowSet.lock();
+
 		/*-----------------------------------------------------------------*/
 
 		m_rowSet = rowSet;
@@ -48,6 +50,8 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	protected Iterable(RowSet rowSet, int limit, int offset) throws Exception
 	{
+		rowSet.lock();
+
 		/*-----------------------------------------------------------------*/
 
 		m_rowSet = rowSet;
@@ -71,17 +75,6 @@ public final class Iterable implements java.lang.Iterable<Row>
 	@Override
 	public Iterator<Row> iterator()
 	{
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			m_rowSet.m_resultSet.beforeFirst();
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.debug(e.getMessage(), e);
-		}
-
 		/*-----------------------------------------------------------------*/
 
 		try
@@ -148,27 +141,18 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Row> getList(RowSet rowSet) throws Exception
+	public static List<Row> getAll(RowSet rowSet) throws Exception
 	{
-		return getList(rowSet, Integer.MAX_VALUE, 0);
+		return getAll(rowSet, Integer.MAX_VALUE, 0);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Row> getList(RowSet rowSet, int limit, int offset) throws Exception
+	public static List<Row> getAll(RowSet rowSet, int limit, int offset) throws Exception
 	{
+		rowSet.lock();
+
 		List<Row> result = new ArrayList<>();
-
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			rowSet.m_resultSet.beforeFirst();
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.debug(e.getMessage(), e);
-		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -206,18 +190,9 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	public static StringBuilder getStringBuffer(RowSet rowSet, int limit, int offset) throws Exception
 	{
+		rowSet.lock();
+
 		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			rowSet.m_resultSet.beforeFirst();
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.debug(e.getMessage(), e);
-		}
 
 		/*-----------------------------------------------------------------*/
 
