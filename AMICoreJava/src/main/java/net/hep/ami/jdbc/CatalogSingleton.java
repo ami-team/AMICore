@@ -85,7 +85,7 @@ public class CatalogSingleton
 			/* ADD CATALOGS                                                */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet.iter())
+			for(Row row: rowSet.iterate())
 			{
 				try
 				{

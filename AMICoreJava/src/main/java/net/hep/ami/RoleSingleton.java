@@ -21,72 +21,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	static
-	{
-		reload();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void reload()
-	{
-		s_roleValidators.clear();
-		s_userValidators.clear();
-
-		addValidators();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void addValidators()
-	{
-		for(String className: ClassSingleton.findClassNames("net.hep.ami.role"))
-		{
-			try
-			{
-				addValidator(className);
-			}
-			catch(Exception e)
-			{
-				LogSingleton.root.error(LogSingleton.FATAL, "for validator `" + className + "`: " + e.getMessage(), e);
-			}
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void addValidator(String className) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-		/* GET CLASS OBJECT                                                */
-		/*-----------------------------------------------------------------*/
-
-		Class<?> clazz = Class.forName(className);
-
-		/*-----------------------------------------------------------------*/
-		/* ADD COMMAND VALIDATOR                                           */
-		/*-----------------------------------------------------------------*/
-
-		/**/ if(ClassSingleton.extendsClass(clazz, CommandValidator.class))
-		{
-			s_roleValidators.put(clazz.getName(), clazz);
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* ADD NEW USER VALIDATOR                                          */
-		/*-----------------------------------------------------------------*/
-
-		else if(ClassSingleton.extendsClass(clazz, NewUserValidator.class))
-		{
-			s_userValidators.put(clazz.getName(), clazz);
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void addRole(Querier querier, String parent, String role, String roleValidatorClass, boolean insertHead) throws Exception
+	public static void addRole(Querier querier, String parent, String role, String roleValidatorClass, boolean insertAfter) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET PARENT ID                                                   */
@@ -116,7 +51,7 @@ public class RoleSingleton
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		if(insertHead || "0".equals(isLeaf))
+		if(insertAfter || "0".equals(isLeaf))
 		{
 			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
 				parentLft
@@ -154,7 +89,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removeRole(Querier querier, String role, boolean recursive) throws Exception
+	public static void removeRole(Querier querier, String role, boolean cascade) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE                                                        */
@@ -185,7 +120,7 @@ public class RoleSingleton
 		/* DELETE ROLE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(recursive || "0".equals(isLeaf))
+		if(cascade || "0".equals(isLeaf))
 		{
 			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` BETWEEN %s AND %s",
 				roleLft,
@@ -295,7 +230,7 @@ public class RoleSingleton
 
 		List<Row> rowList = querier.executeQuery(sql).getAll();
 
-		if(rowList.size() != 1)
+		if(rowList.size() == 0)
 		{
 			throw new Exception("wrong role");
 		}
@@ -317,6 +252,48 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static Class<?> getRoleValidator(String className) throws Exception
+	{
+		Class<?> result = s_roleValidators.get(className);
+
+		if(result == null)
+		{
+			result = Class.forName(className);
+
+			if(ClassSingleton.extendsClass(result, CommandValidator.class))
+			{
+				throw new Exception("class '" + className + "' doesn't extend 'CommandValidator'");
+			}
+
+			s_roleValidators.put(className, result);
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static Class<?> getUserValidator(String className) throws Exception
+	{
+		Class<?> result = s_userValidators.get(className);
+
+		if(result == null)
+		{
+			result = Class.forName(className);
+
+			if(ClassSingleton.extendsClass(result, NewUserValidator.class))
+			{
+				throw new Exception("class '" + className + "' doesn't extend 'NewUserValidator'");
+			}
+
+			s_userValidators.put(className, result);
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void checkCommand(String validator, String command, Map<String, String> arguments) throws Exception
 	{
 		if(validator == null || validator.isEmpty())
@@ -328,12 +305,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = s_roleValidators.get(validator);
-
-		if(clazz == null)
-		{
-			throw new Exception("could not find command validator `" + validator + "`");
-		}
+		Class<?> clazz = getRoleValidator(validator);
 
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                               */
@@ -352,7 +324,7 @@ public class RoleSingleton
 
 		if(isOk == false)
 		{
-			throw new Exception("the operation is not authorized");
+			throw new Exception("operation not authorized");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -371,12 +343,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = s_userValidators.get(validator);
-
-		if(clazz == null)
-		{
-			throw new Exception("could not find user validator `" + validator + "`");
-		}
+		Class<?> clazz = getUserValidator(validator);
 
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                               */
@@ -395,7 +362,7 @@ public class RoleSingleton
 
 		if(isOk == false)
 		{
-			throw new Exception("the operation is not authorized");
+			throw new Exception("operation not authorized");
 		}
 
 		/*-----------------------------------------------------------------*/

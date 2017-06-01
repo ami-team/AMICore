@@ -510,7 +510,7 @@ CREATE TABLE `router_user` (
   `firstName` VARCHAR2(128),
   `lastName` VARCHAR2(128),
   `email` VARCHAR2(128),
-  `country` VARCHAR2(128),
+  `country` VARCHAR2(128) DEFAULT 'N/A',
   `valid` NUMBER(1, 0) DEFAULT '1'
 );
 
@@ -535,23 +535,15 @@ ALTER TABLE `router_user`
 ;
 
 ALTER TABLE `router_user`
-  ADD CONSTRAINT `ck4_router_user` CHECK(`clientDN` IS NOT NULL)
+  ADD CONSTRAINT `ck4_router_user` CHECK(`firstName` IS NOT NULL)
 ;
 
 ALTER TABLE `router_user`
-  ADD CONSTRAINT `ck5_router_user` CHECK(`issuerDN` IS NOT NULL)
+  ADD CONSTRAINT `ck5_router_user` CHECK(`lastName` IS NOT NULL)
 ;
 
 ALTER TABLE `router_user`
-  ADD CONSTRAINT `ck6_router_user` CHECK(`firstName` IS NOT NULL)
-;
-
-ALTER TABLE `router_user`
-  ADD CONSTRAINT `ck7_router_user` CHECK(`lastName` IS NOT NULL)
-;
-
-ALTER TABLE `router_user`
-  ADD CONSTRAINT `ck8_router_user` CHECK(`valid` IS NOT NULL)
+  ADD CONSTRAINT `ck6_router_user` CHECK(`valid` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_user` START WITH 1 INCREMENT BY 1 CACHE 10;

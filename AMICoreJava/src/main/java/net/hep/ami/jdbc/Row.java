@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import java.sql.*;
+
 public class Row
 {
 	/*---------------------------------------------------------------------*/
@@ -10,57 +12,65 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	protected Row(RowSet rowSet, String[] values)
+	protected Row(RowSet rowSet) throws SQLException
 	{
-		m_rowSet = rowSet;
-
-		m_values = values;
+		m_values = (m_rowSet = rowSet).getCurrentValue();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldCatalog(int columnIndex)
+	public String getFieldCatalog(int columnIndex) throws Exception
 	{
 		return m_rowSet.getCatalogOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldEntity(int columnIndex)
+	public String getFieldEntity(int columnIndex) throws Exception
 	{
 		return m_rowSet.getEntityOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldName(int columnIndex)
+	public String getFieldName(int columnIndex) throws Exception
 	{
 		return m_rowSet.getNameOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldType(int columnIndex)
+	public String getFieldType(int columnIndex) throws Exception
 	{
 		return m_rowSet.getTypeOfField(columnIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(int columnIndex)
+	public String getValue(int fieldIndex) throws Exception
 	{
-		return columnIndex < m_values.length ? m_values[columnIndex]
-		                                     : null
-		;
+		if(fieldIndex < 0 || fieldIndex >= m_rowSet.m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_values[
+			fieldIndex
+		];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(String fieldName)
+	public String getValue(String fieldName) throws Exception
 	{
-		return m_rowSet.m_fieldIndices.containsKey(fieldName) ? m_values[m_rowSet.m_fieldIndices.get(fieldName)]
-		                                                      : null
-		;
+		if(m_rowSet.m_fieldIndices.containsKey(fieldName) == false)
+		{
+			throw new Exception("field not in row");
+		}
+
+		return m_values[
+			m_rowSet.m_fieldIndices.get(fieldName)
+		];
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -89,9 +99,7 @@ public class Row
 
 		/*-----------------------------------------------------------------*/
 
-		final int numberOfValues = m_values.length;
-
-		for(int i = 0; i < numberOfValues; i++)
+		for(int i = 0; i < m_rowSet.m_numberOfFields; i++)
 		{
 			result.append("<field catalog=\"")
 			      .append(m_rowSet.m_fieldCatalogs[i])

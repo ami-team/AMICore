@@ -310,12 +310,10 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup users...");
 
-		String emptyDN = SecuritySingleton.encrypt("");
-
 		executeUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES" +
-			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
-			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', '" + emptyDN + "', '" + emptyDN + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES" +
+			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
+			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
 			";"
 		);
 
@@ -368,8 +366,6 @@ public class Router implements Querier
 
 		CommandSingleton.reload();
 		ConverterSingleton.reload();
-
-		RoleSingleton.reload();
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -4,7 +4,8 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
-import net.hep.ami.jdbc.reflexion.SchemaSingleton;
+import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 public class RowSet
 {
@@ -12,13 +13,15 @@ public class RowSet
 
 	protected final ResultSet m_resultSet;
 
-	private final String m_sql;
-	private final String m_mql;
-	private final String m_ast;
+	protected final String m_sql;
+	protected final String m_mql;
+	protected final String m_ast;
 
 	/*---------------------------------------------------------------------*/
 
-	private final int m_numberOfFields;
+	protected final int m_numberOfFields;
+
+	/*---------------------------------------------------------------------*/
 
 	protected final String[] m_fieldCatalogs;
 	protected final String[] m_fieldEntities;
@@ -27,11 +30,22 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Map<String, Integer> m_fieldIndices = new HashMap<>();
+	protected final Map<String, Integer> m_fieldIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 
-	private final SimpleDateFormat m_simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+	/*---------------------------------------------------------------------*/
+
+	private boolean m_lock = false;
+
+	/*---------------------------------------------------------------------*/
+
+	public RowSet(ResultSet resultSet) throws Exception
+	{
+		this(resultSet, null, null, null);
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -39,9 +53,9 @@ public class RowSet
 	{
 		m_resultSet = resultSet;
 
-		m_sql = sql;
-		m_mql = mql;
-		m_ast = ast;
+		m_sql = sql != null ? sql : "";
+		m_mql = mql != null ? mql : "";
+		m_ast = ast != null ? ast : "";
 
 		/*-----------------------------------------------------------------*/
 		/* GET METADATA                                                    */
@@ -194,38 +208,50 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public String getCatalogOfField(int fieldIndex)
+	public String getCatalogOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldCatalogs[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldCatalogs[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getEntityOfField(int fieldIndex)
+	public String getEntityOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldEntities[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldEntities[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getNameOfField(int fieldIndex)
+	public String getNameOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldNames[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldNames[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getTypeOfField(int fieldIndex)
+	public String getTypeOfField(int fieldIndex) throws Exception
 	{
-		return (fieldIndex < m_numberOfFields) ? m_fieldTypes[fieldIndex]
-		                                       : null
-		;
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldTypes[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -233,6 +259,8 @@ public class RowSet
 	protected String[] getCurrentValue() throws SQLException
 	{
 		String[] result = new String[m_numberOfFields];
+
+		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
@@ -242,7 +270,7 @@ public class RowSet
 				/* TIME                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_simpleDateFormat.format(m_resultSet.getTime(i + 1));
+				result[i] = m_dateFormat.format(m_resultSet.getTime(i + 1));
 
 				if(result[i] == null)
 				{
@@ -257,7 +285,7 @@ public class RowSet
 				/* DATE                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_simpleDateFormat.format(m_resultSet.getDate(i + 1));
+				result[i] = m_dateFormat.format(m_resultSet.getDate(i + 1));
 
 				if(result[i] == null)
 				{
@@ -272,7 +300,7 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_simpleDateFormat.format(m_resultSet.getTimestamp(i + 1));
+				result[i] = m_dateFormat.format(m_resultSet.getTimestamp(i + 1));
 
 				if(result[i] == null)
 				{
@@ -291,95 +319,69 @@ public class RowSet
 
 				/*---------------------------------------------------------*/
 			}
+
+			if(result[i] == null)
+			{
+				result[i] = "";
+			}
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Iterable iter() throws Exception
+	protected void lock() throws Exception
 	{
-		return new Iterable(this);
+		if(m_lock)
+		{
+			throw new Exception("rowset already read");
+		}
+
+		m_lock = true;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Iterable iter(int limit, int offset) throws Exception
+	public RowSetIterable iterate() throws Exception
 	{
-		return new Iterable(this, limit, offset);
+		return new RowSetIterable(this);
+	}
+
+	public RowSetIterable iterate(int limit, int offset) throws Exception
+	{
+		return new RowSetIterable(this, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public List<Row> getAll() throws Exception
 	{
-		return Iterable.getList(this);
+		return RowSetIterable.getAll(this);
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public List<Row> getAll(int limit, int offset) throws Exception
 	{
-		return Iterable.getList(this, limit, offset);
+		return RowSetIterable.getAll(this, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder() throws Exception
 	{
-		return toStringBuilder(null, Integer.MAX_VALUE, 0);
+		return RowSetIterable.getStringBuilder(this);
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder(@Nullable String type) throws Exception
 	{
-		return toStringBuilder(type, Integer.MAX_VALUE, 0);
+		return RowSetIterable.getStringBuilder(this, type);
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder(@Nullable String type, int limit, int offset) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		if(type == null)
-		{
-			result.append("<rowset>");
-		}
-		else
-		{
-			result.append("<rowset type=\"" + type + "\">");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<sql><![CDATA[");
-		if(m_sql != null) result.append(m_sql);
-		result.append("]]></sql>");
-
-		result.append("<mql><![CDATA[");
-		if(m_mql != null) result.append(m_mql);
-		result.append("]]></mql>");
-
-		result.append("<ast><![CDATA[");
-		if(m_ast != null) result.append(m_ast);
-		result.append("]]></ast>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(Iterable.getStringBuffer(this, limit, offset));
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return RowSetIterable.getStringBuilder(this, type, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/

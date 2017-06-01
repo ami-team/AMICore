@@ -125,12 +125,12 @@ CREATE TABLE `router_user` (
   `id` INT(11) NOT NULL,
   `AMIUser` VARCHAR(128) NOT NULL,
   `AMIPass` VARCHAR(128) NOT NULL,
-  `clientDN` VARCHAR(512) NOT NULL,
-  `issuerDN` VARCHAR(512) NOT NULL,
+  `clientDN` VARCHAR(512),
+  `issuerDN` VARCHAR(512),
   `firstName` VARCHAR(128) NOT NULL,
   `lastName` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128),
-  `country` VARCHAR(128),
+  `country` VARCHAR(128) DEFAULT 'N/A',
   `valid` SMALLINT NOT NULL DEFAULT '1'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;

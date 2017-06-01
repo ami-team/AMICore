@@ -100,7 +100,7 @@ public class AddUser extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-amiLogin=\"value\" -amiPassword=\"value\" (-clientDN=\"value\")? (-issuerDN=\"value\")? -firstName=\"value\" -lastName=\"value\" -email=\"value\"";
+		return "-amiLogin=\"\" -amiPassword=\"\" (-clientDN=\"\")? (-issuerDN=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

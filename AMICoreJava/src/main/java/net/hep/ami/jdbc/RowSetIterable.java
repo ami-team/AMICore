@@ -5,7 +5,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 
-public final class Iterable implements java.lang.Iterable<Row>
+public final class RowSetIterable implements Iterable<Row>
 {
 	/*---------------------------------------------------------------------*/
 
@@ -24,30 +24,17 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	protected Iterable(RowSet rowSet) throws Exception
+	protected RowSetIterable(RowSet rowSet) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
-		m_rowSet = rowSet;
-
-		/*-----------------------------------------------------------------*/
-
-		m_limit = Integer.MAX_VALUE;
-		m_offset = 0x0000000000000000;
-
-		/*-----------------------------------------------------------------*/
-
-		m_i = 0;
-
-		m_hasNext = false;
-
-		/*-----------------------------------------------------------------*/
+		this(rowSet, Integer.MAX_VALUE, 0);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	protected Iterable(RowSet rowSet, int limit, int offset) throws Exception
+	protected RowSetIterable(RowSet rowSet, int limit, int offset) throws Exception
 	{
+		rowSet.lock();
+
 		/*-----------------------------------------------------------------*/
 
 		m_rowSet = rowSet;
@@ -71,17 +58,6 @@ public final class Iterable implements java.lang.Iterable<Row>
 	@Override
 	public Iterator<Row> iterator()
 	{
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			m_rowSet.m_resultSet.beforeFirst();
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.debug(e.getMessage(), e);
-		}
-
 		/*-----------------------------------------------------------------*/
 
 		try
@@ -130,7 +106,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 				try
 				{
-					return new Row(m_rowSet, m_rowSet.getCurrentValue());
+					return new Row(m_rowSet);
 				}
 				catch(SQLException e)
 				{
@@ -148,27 +124,18 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Row> getList(RowSet rowSet) throws Exception
+	public static List<Row> getAll(RowSet rowSet) throws Exception
 	{
-		return getList(rowSet, Integer.MAX_VALUE, 0);
+		return getAll(rowSet, Integer.MAX_VALUE, 0);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<Row> getList(RowSet rowSet, int limit, int offset) throws Exception
+	public static List<Row> getAll(RowSet rowSet, int limit, int offset) throws Exception
 	{
+		rowSet.lock();
+
 		List<Row> result = new ArrayList<>();
-
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			rowSet.m_resultSet.beforeFirst();
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.debug(e.getMessage(), e);
-		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -187,7 +154,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 			maxNumberOfRows--;
 
-			result.add(new Row(rowSet, rowSet.getCurrentValue()));
+			result.add(new Row(rowSet));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -199,25 +166,41 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	public static StringBuilder getStringBuilder(RowSet rowSet) throws Exception
 	{
-		return getStringBuffer(rowSet, Integer.MAX_VALUE, 0);
+		return getStringBuilder(rowSet, null, Integer.MAX_VALUE, 0);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder getStringBuffer(RowSet rowSet, int limit, int offset) throws Exception
+	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type) throws Exception
 	{
+		return getStringBuilder(rowSet, type, Integer.MAX_VALUE, 0);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type, int limit, int offset) throws Exception
+	{
+		rowSet.lock();
+
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		try
+		if(type == null)
 		{
-			rowSet.m_resultSet.beforeFirst();
+			result.append("<rowset>");
 		}
-		catch(Exception e)
+		else
 		{
-			LogSingleton.root.debug(e.getMessage(), e);
+			result.append("<rowset type=\"" + type + "\">");
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<sql><![CDATA[").append(rowSet.m_sql).append("]]></sql>")
+		      .append("<mql><![CDATA[").append(rowSet.m_mql).append("]]></mql>")
+		      .append("<ast><![CDATA[").append(rowSet.m_ast).append("]]></ast>")
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -236,8 +219,12 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 			maxNumberOfRows--;
 
-			result.append(new Row(rowSet, rowSet.getCurrentValue()).toStringBuilder());
+			result.append(new Row(rowSet).toStringBuilder());
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
 

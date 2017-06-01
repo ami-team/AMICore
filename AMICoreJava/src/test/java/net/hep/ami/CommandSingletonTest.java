@@ -78,6 +78,9 @@ public class CommandSingletonTest
 			AutoJoinSingleton.resolveWithNestedSelect(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
 			System.out.println(joins.toSQL());
 
+			System.out.println("::" + SecuritySingleton.encrypt("") + "::");
+			System.out.println("::" + SecuritySingleton.decrypt("") + "::");
+
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
@@ -86,6 +89,8 @@ public class CommandSingletonTest
 			//System.out.println(SchemaSingleton.getTableNames("self"));
 
 			//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+
+			System.out.println("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
 
 			//System.out.println(ConnectionPoolSingleton.getStatus());
 

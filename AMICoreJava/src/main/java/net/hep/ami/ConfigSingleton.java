@@ -261,7 +261,7 @@ public class ConfigSingleton
 			String name;
 			String value;
 
-			for(Row row: rowSet.iter())
+			for(Row row: rowSet.iterate())
 			{
 				name = SecuritySingleton.decrypt(row.getValue(0));
 				value = SecuritySingleton.decrypt(row.getValue(1));
