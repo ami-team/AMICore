@@ -97,7 +97,7 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("<rowset type=\"role\">");
 
-		for(Row row2: rowSet2.iter())
+		for(Row row2: rowSet2.iterate())
 		{
 			result.append(
 				"<row>"

@@ -83,7 +83,7 @@ public class ConverterSingleton
 			/* ADD CONVERTERS                                              */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet.iter())
+			for(Row row: rowSet.iterate())
 			{
 				try
 				{

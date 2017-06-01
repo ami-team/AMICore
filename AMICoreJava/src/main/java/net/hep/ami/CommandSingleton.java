@@ -94,7 +94,7 @@ public class CommandSingleton
 			/* ADD COMMANDS                                                */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet.iter())
+			for(Row row: rowSet.iterate())
 			{
 				try
 				{

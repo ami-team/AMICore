@@ -195,7 +195,7 @@ public class GetSessionInfo extends AbstractCommand
 
 		result.append("<rowset type=\"role\">");
 
-		for(Row row: rowSet2.iter())
+		for(Row row: rowSet2.iterate())
 		{
 			result.append(
 				"<row>"

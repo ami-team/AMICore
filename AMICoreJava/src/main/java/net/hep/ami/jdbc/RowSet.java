@@ -42,6 +42,13 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	public RowSet(ResultSet resultSet) throws Exception
+	{
+		this(resultSet, null, null, null);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public RowSet(ResultSet resultSet, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
@@ -338,12 +345,12 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public Iterable iter() throws Exception
+	public Iterable iterate() throws Exception
 	{
 		return new Iterable(this);
 	}
 
-	public Iterable iter(int limit, int offset) throws Exception
+	public Iterable iterate(int limit, int offset) throws Exception
 	{
 		return new Iterable(this, limit, offset);
 	}

@@ -99,9 +99,7 @@ public class Row
 
 		/*-----------------------------------------------------------------*/
 
-		final int numberOfValues = m_values.length;
-
-		for(int i = 0; i < numberOfValues; i++)
+		for(int i = 0; i < m_rowSet.m_numberOfFields; i++)
 		{
 			result.append("<field catalog=\"")
 			      .append(m_rowSet.m_fieldCatalogs[i])
