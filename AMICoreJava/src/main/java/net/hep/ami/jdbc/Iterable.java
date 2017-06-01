@@ -123,7 +123,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 				try
 				{
-					return new Row(m_rowSet, m_rowSet.getCurrentValue());
+					return new Row(m_rowSet);
 				}
 				catch(SQLException e)
 				{
@@ -171,7 +171,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 			maxNumberOfRows--;
 
-			result.add(new Row(rowSet, rowSet.getCurrentValue()));
+			result.add(new Row(rowSet));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -183,16 +183,41 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	public static StringBuilder getStringBuilder(RowSet rowSet) throws Exception
 	{
-		return getStringBuffer(rowSet, Integer.MAX_VALUE, 0);
+		return getStringBuilder(rowSet, null, Integer.MAX_VALUE, 0);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder getStringBuffer(RowSet rowSet, int limit, int offset) throws Exception
+	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type) throws Exception
+	{
+		return getStringBuilder(rowSet, type, Integer.MAX_VALUE, 0);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type, int limit, int offset) throws Exception
 	{
 		rowSet.lock();
 
 		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		if(type == null)
+		{
+			result.append("<rowset>");
+		}
+		else
+		{
+			result.append("<rowset type=\"" + type + "\">");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<sql><![CDATA[").append(rowSet.m_sql).append("]]></sql>")
+		      .append("<mql><![CDATA[").append(rowSet.m_mql).append("]]></mql>")
+		      .append("<ast><![CDATA[").append(rowSet.m_ast).append("]]></ast>")
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -211,8 +236,12 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 			maxNumberOfRows--;
 
-			result.append(new Row(rowSet, rowSet.getCurrentValue()).toStringBuilder());
+			result.append(new Row(rowSet).toStringBuilder());
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
 

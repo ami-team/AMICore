@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import java.sql.SQLException;
+
 public class Row
 {
 	/*---------------------------------------------------------------------*/
@@ -10,11 +12,9 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	protected Row(RowSet rowSet, String[] values)
+	protected Row(RowSet rowSet) throws SQLException
 	{
-		m_rowSet = rowSet;
-
-		m_values = values;
+		m_values = (m_rowSet = rowSet).getCurrentValue();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -49,12 +49,14 @@ public class Row
 
 	public String getValue(int fieldIndex) throws Exception
 	{
-		if(fieldIndex >= m_values.length)
+		if(fieldIndex < 0 || fieldIndex >= m_rowSet.m_numberOfFields)
 		{
 			throw new Exception("index out of range");
 		}
 
-		return m_values[fieldIndex];
+		return m_values[
+			fieldIndex
+		];
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -63,10 +65,12 @@ public class Row
 	{
 		if(m_rowSet.m_fieldIndices.containsKey(fieldName) == false)
 		{
-			throw new Exception("bad field name");
+			throw new Exception("field not in row");
 		}
 
-		return m_values[m_rowSet.m_fieldIndices.get(fieldName)];
+		return m_values[
+			m_rowSet.m_fieldIndices.get(fieldName)
+		];
 	}
 
 	/*---------------------------------------------------------------------*/

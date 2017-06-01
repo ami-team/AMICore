@@ -13,13 +13,15 @@ public class RowSet
 
 	protected final ResultSet m_resultSet;
 
-	private final String m_sql;
-	private final String m_mql;
-	private final String m_ast;
+	protected final String m_sql;
+	protected final String m_mql;
+	protected final String m_ast;
 
 	/*---------------------------------------------------------------------*/
 
-	private final int m_numberOfFields;
+	protected final int m_numberOfFields;
+
+	/*---------------------------------------------------------------------*/
 
 	protected final String[] m_fieldCatalogs;
 	protected final String[] m_fieldEntities;
@@ -44,9 +46,9 @@ public class RowSet
 	{
 		m_resultSet = resultSet;
 
-		m_sql = sql;
-		m_mql = mql;
-		m_ast = ast;
+		m_sql = sql != null ? sql : "";
+		m_mql = mql != null ? mql : "";
+		m_ast = ast != null ? ast : "";
 
 		/*-----------------------------------------------------------------*/
 		/* GET METADATA                                                    */
@@ -201,7 +203,7 @@ public class RowSet
 
 	public String getCatalogOfField(int fieldIndex) throws Exception
 	{
-		if(fieldIndex >= m_numberOfFields)
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
 		{
 			throw new Exception("index out of range");
 		}
@@ -213,7 +215,7 @@ public class RowSet
 
 	public String getEntityOfField(int fieldIndex) throws Exception
 	{
-		if(fieldIndex >= m_numberOfFields)
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
 		{
 			throw new Exception("index out of range");
 		}
@@ -225,7 +227,7 @@ public class RowSet
 
 	public String getNameOfField(int fieldIndex) throws Exception
 	{
-		if(fieldIndex >= m_numberOfFields)
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
 		{
 			throw new Exception("index out of range");
 		}
@@ -237,7 +239,7 @@ public class RowSet
 
 	public String getTypeOfField(int fieldIndex) throws Exception
 	{
-		if(fieldIndex >= m_numberOfFields)
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
 		{
 			throw new Exception("index out of range");
 		}
@@ -250,6 +252,8 @@ public class RowSet
 	protected String[] getCurrentValue() throws SQLException
 	{
 		String[] result = new String[m_numberOfFields];
+
+		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
@@ -315,6 +319,8 @@ public class RowSet
 			}
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		return result;
 	}
 
@@ -358,56 +364,17 @@ public class RowSet
 
 	public StringBuilder toStringBuilder() throws Exception
 	{
-		return toStringBuilder(null, Integer.MAX_VALUE, 0);
+		return Iterable.getStringBuilder(this);
 	}
 
 	public StringBuilder toStringBuilder(@Nullable String type) throws Exception
 	{
-		return toStringBuilder(type, Integer.MAX_VALUE, 0);
+		return Iterable.getStringBuilder(this, type);
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder(@Nullable String type, int limit, int offset) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		if(type == null)
-		{
-			result.append("<rowset>");
-		}
-		else
-		{
-			result.append("<rowset type=\"" + type + "\">");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<sql><![CDATA[");
-		if(m_sql != null) result.append(m_sql);
-		result.append("]]></sql>");
-
-		result.append("<mql><![CDATA[");
-		if(m_mql != null) result.append(m_mql);
-		result.append("]]></mql>");
-
-		result.append("<ast><![CDATA[");
-		if(m_ast != null) result.append(m_ast);
-		result.append("]]></ast>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(Iterable.getStringBuffer(this, limit, offset));
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return Iterable.getStringBuilder(this, type, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
