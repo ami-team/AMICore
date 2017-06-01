@@ -99,25 +99,34 @@ public abstract class AbstractCommand
 	{
 		StringBuilder result = null;
 
-		boolean success = false;
+		Exception e = null;
 
 		try
 		{
 			result = main(m_arguments);
-
-			success = true;
+		}
+		catch(Exception f)
+		{
+			e = f;
 		}
 		finally
 		{
 			if(m_transactionBooker)
 			{
-				if(success)
+				if(e == null)
 				{
 					TransactionPoolSingleton.commitAndRelease(m_transactionId);
 				}
 				else
 				{
-					TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
+					try
+					{
+						TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
+					}
+					catch(Exception f)
+					{
+						throw new Exception(e.getMessage() + ", " + f.getMessage(), e);
+					}
 				}
 			}
 		}

@@ -6,7 +6,6 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton;
 
 public class TransactionPoolSingleton
 {
@@ -125,20 +124,6 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static String buildTestRequest(String catalog)
-	{
-		try
-		{
-			return "SELECT 1 FROM `" + SchemaSingleton.getTableNames(catalog).get(0) + "`";
-		}
-		catch(Exception e)
-		{
-			return null;
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static void commitAndRelease(long transactionId) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
@@ -167,18 +152,11 @@ public class TransactionPoolSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			String sql;
-
 			for(AbstractDriver driver: transaction.values())
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					sql = buildTestRequest(driver.getExternalCatalog());
-
-					if(sql != null)
-					{
-						driver.executeQuery(sql);
-					}
+					driver.executeQuery("SELECT 1");
 				}
 			}
 
@@ -258,18 +236,11 @@ public class TransactionPoolSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			String sql;
-
 			for(AbstractDriver driver: transaction.values())
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					sql = buildTestRequest(driver.getExternalCatalog());
-
-					if(sql != null)
-					{
-						driver.executeQuery(sql);
-					}
+					driver.executeQuery("SELECT 1");
 				}
 			}
 

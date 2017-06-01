@@ -100,11 +100,11 @@ public class GetSessionInfo extends AbstractCommand
 
 			if(VOMS_ENABLED == false)
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='1' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='1' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
 			}
 
 			if(querier.executeUpdate(sql) != 1)
@@ -128,11 +128,11 @@ public class GetSessionInfo extends AbstractCommand
 
 			if(VOMS_ENABLED == false)
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='0' WHERE AMIUser='" + amiLogin + "' AND AMIPass='" + amiPassword + "'";
+				sql = "UPDATE `router_user` SET `clientDN`='" + clientDN + "',`issuerDN`='" + issuerDN + "',`valid`='0' WHERE `AMIUser`='" + amiLogin + "' AND `AMIPass`='" + amiPassword + "'";
 			}
 
 			if(querier.executeUpdate(sql) != 1)
