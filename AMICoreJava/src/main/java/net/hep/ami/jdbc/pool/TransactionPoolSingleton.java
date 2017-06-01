@@ -6,6 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton;
 
 public class TransactionPoolSingleton
 {
@@ -156,7 +157,7 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					driver.executeQuery("SELECT 1");
+					driver.executeQuery("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
 				}
 			}
 
@@ -240,7 +241,7 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					driver.executeQuery("SELECT 1");
+					driver.executeQuery("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
 				}
 			}
 
