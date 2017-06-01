@@ -5,7 +5,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 
-public final class Iterable implements java.lang.Iterable<Row>
+public final class RowSetIterable implements Iterable<Row>
 {
 	/*---------------------------------------------------------------------*/
 
@@ -24,7 +24,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	protected Iterable(RowSet rowSet) throws Exception
+	protected RowSetIterable(RowSet rowSet) throws Exception
 	{
 		rowSet.lock();
 
@@ -48,7 +48,7 @@ public final class Iterable implements java.lang.Iterable<Row>
 
 	/*---------------------------------------------------------------------*/
 
-	protected Iterable(RowSet rowSet, int limit, int offset) throws Exception
+	protected RowSetIterable(RowSet rowSet, int limit, int offset) throws Exception
 	{
 		rowSet.lock();
 

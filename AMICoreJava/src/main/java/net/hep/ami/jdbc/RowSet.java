@@ -345,43 +345,43 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public Iterable iterate() throws Exception
+	public RowSetIterable iterate() throws Exception
 	{
-		return new Iterable(this);
+		return new RowSetIterable(this);
 	}
 
-	public Iterable iterate(int limit, int offset) throws Exception
+	public RowSetIterable iterate(int limit, int offset) throws Exception
 	{
-		return new Iterable(this, limit, offset);
+		return new RowSetIterable(this, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public List<Row> getAll() throws Exception
 	{
-		return Iterable.getAll(this);
+		return RowSetIterable.getAll(this);
 	}
 
 	public List<Row> getAll(int limit, int offset) throws Exception
 	{
-		return Iterable.getAll(this, limit, offset);
+		return RowSetIterable.getAll(this, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder() throws Exception
 	{
-		return Iterable.getStringBuilder(this);
+		return RowSetIterable.getStringBuilder(this);
 	}
 
 	public StringBuilder toStringBuilder(@Nullable String type) throws Exception
 	{
-		return Iterable.getStringBuilder(this, type);
+		return RowSetIterable.getStringBuilder(this, type);
 	}
 
 	public StringBuilder toStringBuilder(@Nullable String type, int limit, int offset) throws Exception
 	{
-		return Iterable.getStringBuilder(this, type, limit, offset);
+		return RowSetIterable.getStringBuilder(this, type, limit, offset);
 	}
 
 	/*---------------------------------------------------------------------*/
