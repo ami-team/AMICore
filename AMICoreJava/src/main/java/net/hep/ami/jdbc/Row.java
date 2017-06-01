@@ -1,6 +1,6 @@
 package net.hep.ami.jdbc;
 
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Row
 {

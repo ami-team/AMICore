@@ -26,24 +26,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 	protected RowSetIterable(RowSet rowSet) throws Exception
 	{
-		rowSet.lock();
-
-		/*-----------------------------------------------------------------*/
-
-		m_rowSet = rowSet;
-
-		/*-----------------------------------------------------------------*/
-
-		m_limit = Integer.MAX_VALUE;
-		m_offset = 0x0000000000000000;
-
-		/*-----------------------------------------------------------------*/
-
-		m_i = 0;
-
-		m_hasNext = false;
-
-		/*-----------------------------------------------------------------*/
+		this(rowSet, Integer.MAX_VALUE, 0);
 	}
 
 	/*---------------------------------------------------------------------*/
