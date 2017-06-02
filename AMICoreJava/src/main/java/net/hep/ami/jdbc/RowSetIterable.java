@@ -1,6 +1,5 @@
 package net.hep.ami.jdbc;
 
-import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -64,7 +63,7 @@ public final class RowSetIterable implements Iterable<Row>
 		{
 			while(m_i++ < m_offset && m_rowSet.m_resultSet.next());
 		}
-		catch(SQLException e)
+		catch(Exception e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -82,7 +81,7 @@ public final class RowSetIterable implements Iterable<Row>
 				{
 					return m_hasNext = (m_i++ < m_limit && m_rowSet.m_resultSet.next());
 				}
-				catch(SQLException e)
+				catch(Exception e)
 				{
 					m_hasNext = false;
 
@@ -108,7 +107,7 @@ public final class RowSetIterable implements Iterable<Row>
 				{
 					return new Row(m_rowSet);
 				}
-				catch(SQLException e)
+				catch(Exception e)
 				{
 					throw new RuntimeException(e);
 				}

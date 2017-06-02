@@ -1,7 +1,5 @@
 package net.hep.ami.jdbc;
 
-import java.sql.*;
-
 public class Row
 {
 	/*---------------------------------------------------------------------*/
@@ -12,7 +10,7 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	protected Row(RowSet rowSet) throws SQLException
+	protected Row(RowSet rowSet) throws Exception
 	{
 		m_values = (m_rowSet = rowSet).getCurrentValue();
 	}

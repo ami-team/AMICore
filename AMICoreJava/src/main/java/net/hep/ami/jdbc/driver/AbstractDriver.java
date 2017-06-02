@@ -287,7 +287,7 @@ public abstract class AbstractDriver implements Querier
 						statement.close();
 					}
 				}
-				catch(SQLException e)
+				catch(Exception e)
 				{
 					LogSingleton.root.error(
 						e.getMessage(), e
@@ -321,7 +321,7 @@ public abstract class AbstractDriver implements Querier
 						statement.close();
 					}
 				}
-				catch(SQLException e)
+				catch(Exception e)
 				{
 					LogSingleton.root.error(
 						e.getMessage(), e

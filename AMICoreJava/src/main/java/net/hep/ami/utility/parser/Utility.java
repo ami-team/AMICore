@@ -72,10 +72,10 @@ public class Utility
 						code = s.substring(i + 0, i + 4); i += 4;
 
 						try
-						{ 
+						{
 							result.append(Character.toChars(Integer.parseInt(code, 16)));
 						}
-						catch(java.lang.NumberFormatException e)
+						catch(NumberFormatException e)
 						{
 							result.append(/******************/ '?' /******************/);
 						}

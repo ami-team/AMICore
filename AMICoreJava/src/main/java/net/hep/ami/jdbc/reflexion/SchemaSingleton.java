@@ -591,7 +591,7 @@ public class SchemaSingleton
 				{
 					thread.start();
 				}
-				catch(IllegalThreadStateException e)
+				catch(Exception e)
 				{
 					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 				}
@@ -607,7 +607,7 @@ public class SchemaSingleton
 				{
 					thread.join();
 				}
-				catch(InterruptedException e)
+				catch(Exception e)
 				{
 					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 				}
