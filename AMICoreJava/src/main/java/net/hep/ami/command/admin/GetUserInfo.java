@@ -55,7 +55,7 @@ public class GetUserInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		boolean VALID = valid.equals("0") == false;
+		boolean VALID = "0".equals(valid) == false;
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */

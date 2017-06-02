@@ -18,7 +18,7 @@ public class ListUsers extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		if(m_isSecure.equals("false"))
+		if("false".equals(m_isSecure))
 		{
 			throw new Exception("HTTPS connection required"); 
 		}

@@ -51,9 +51,9 @@ public class CheckDBRules extends AbstractCommand
 
 				for(SchemaSingleton.Column column: columns)
 				{
-					if(column.name.equals("AMIUser") == false
+					if("AMIUser".equals(column.name) == false
 					   &&
-					   column.name.equals("AMIPass") == false
+					   "AMIPass".equals(column.name) == false
 					   &&
 					   s_regex.matcher(column.name).matches() == false
 					 ) {

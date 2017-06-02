@@ -26,7 +26,7 @@ public class Decrypt extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		if(m_isSecure.equals("false"))
+		if("false".equals(m_isSecure))
 		{
 			throw new Exception("HTTPS connection required"); 
 		}
