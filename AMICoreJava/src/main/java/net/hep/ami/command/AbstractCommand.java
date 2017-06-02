@@ -118,17 +118,17 @@ public abstract class AbstractCommand
 		{
 			if(e == null)
 			{
-				TransactionPoolSingleton.commitAndRelease(m_transactionId);
+				TransactionPoolSingleton.commitAndRelease(m_transactionId, e);
 			}
 			else
 			{
 				try
 				{
-					TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
+					TransactionPoolSingleton.rollbackAndRelease(m_transactionId, e);
 				}
 				catch(Exception f)
 				{
-					throw new Exception(e.getMessage() + ", " + f.getMessage(), e);
+					throw new Exception(e.getMessage() + ", " + f.getMessage(), f);
 				}
 			}
 		}

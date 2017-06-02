@@ -98,6 +98,11 @@ public class CommandSingletonTest
 
 			//System.out.println(MQLToAST.parse("SELECT `foo`.* WHERE `foo`.`bar`='kux' OR `foo`.`bar`=-777", "toto"));
 
+			Exception f = new Exception("toto");
+
+			Exception e = new Exception("hello", f);
+			e.printStackTrace();
+
 			//System.out.println("done.");
 		}
 		catch(Exception e)

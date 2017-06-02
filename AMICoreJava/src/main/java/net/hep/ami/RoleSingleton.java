@@ -230,7 +230,7 @@ public class RoleSingleton
 
 		List<Row> rowList = querier.executeQuery(sql).getAll();
 
-		if(rowList.size() == 0)
+		if(rowList.isEmpty())
 		{
 			throw new Exception("wrong role");
 		}
