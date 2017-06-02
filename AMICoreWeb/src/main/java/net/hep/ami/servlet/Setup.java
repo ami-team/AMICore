@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 
 import javax.servlet.http.*;
+
+import org.slf4j.*;
+
 import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
@@ -20,6 +23,10 @@ public class Setup extends HttpServlet
 	/*---------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 5570607624197246874L;
+
+	/*---------------------------------------------------------------------*/
+
+	public static final Logger logger = LoggerFactory.getLogger("SETUP");
 
 	/*---------------------------------------------------------------------*/
 
@@ -348,6 +355,8 @@ public class Setup extends HttpServlet
 			}
 			catch(Exception e)
 			{
+				logger.error(e.getMessage(), e);
+
 				db.rollbackAndRelease();
 			}
 
@@ -389,6 +398,12 @@ public class Setup extends HttpServlet
 		}
 		catch(Exception e)
 		{
+			/*-------------------------------------------------------------*/
+			/* LOG ERROR                                                   */
+			/*-------------------------------------------------------------*/
+
+			logger.error(e.getMessage(), e);
+
 			/*-------------------------------------------------------------*/
 			/* BUILD HTML                                                  */
 			/*-------------------------------------------------------------*/
