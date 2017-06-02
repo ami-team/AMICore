@@ -34,6 +34,7 @@ public class SchemaSingleton
 			digits = _digits;
 		}
 
+		@Override
 		public String toString()
 		{
 			return "`" + internalCatalog + "`.`" + table + "`.`" + name + "`";
@@ -69,6 +70,7 @@ public class SchemaSingleton
 			pkColumn = _pkColumn;
 		}
 
+		@Override
 		public String toString()
 		{
 			return "`" + fkInternalCatalog + "`.`" + fkTable + "`.`" + fkColumn + "` -> `" + pkInternalCatalog + "`.`" + pkTable + "`.`" + pkColumn + "`";
