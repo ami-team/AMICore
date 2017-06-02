@@ -73,16 +73,16 @@ public class GetSessionInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		boolean VALID = valid.equals("0") == false;
+		boolean VALID = "0".equals(valid) == false;
 
-		boolean CERT_ENABLED = m_isSecure.equals("0") == false;
+		boolean CERT_ENABLED = "0".equals(m_isSecure) == false;
 
 		boolean VOMS_ENABLED = !(
-				"0".equals(useVOMS) == false
-				&&
-				"no".equals(useVOMS) == false
-				&&
-				"false".equals(useVOMS) == false
+			"0".equals(useVOMS) == false
+			&&
+			"no".equals(useVOMS) == false
+			&&
+			"false".equals(useVOMS) == false
 		);
 
 		/*-----------------------------------------------------------------*/
