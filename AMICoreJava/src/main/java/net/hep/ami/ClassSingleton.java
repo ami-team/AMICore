@@ -48,24 +48,31 @@ public class ClassSingleton
 				                            .getParent()
 				;
 			}
-
-			walk(path);
 		}
-		catch(URISyntaxException e)
+		catch(Exception e)
 		{
-			/* INGORE */
+			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+
+			path = null;
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		walk(path);
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(String classPath)
+	private static void walk(@Nullable String classPath)
 	{
-		File file = new File(classPath);
+		if(classPath != null)
+		{
+			File file = new File(classPath);
 
-		walk(file, file);
+			walk(file, file);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
