@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.driver;
 import java.sql.*;
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.mql.*;
 import net.hep.ami.jdbc.pool.*;
@@ -288,7 +289,9 @@ public abstract class AbstractDriver implements Querier
 				}
 				catch(SQLException e)
 				{
-					/* IGNORE */
+					LogSingleton.root.error(
+						e.getMessage(), e
+					);
 				}
 			}
 
@@ -320,7 +323,9 @@ public abstract class AbstractDriver implements Querier
 				}
 				catch(SQLException e)
 				{
-					/* IGNORE */
+					LogSingleton.root.error(
+						e.getMessage(), e
+					);
 				}
 			}
 

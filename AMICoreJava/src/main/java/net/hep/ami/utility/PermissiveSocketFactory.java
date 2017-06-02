@@ -4,7 +4,7 @@ import java.security.cert.*;
 
 import javax.net.ssl.*;
 
-import net.hep.ami.LogSingleton;
+import net.hep.ami.*;
 
 public class PermissiveSocketFactory
 {

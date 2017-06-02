@@ -46,7 +46,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 		HASH_MAP,
 		LINKED_HASH_MAP,
 		CONCURENT_HASH_MAP
-	};
+	}
 
 	/*---------------------------------------------------------------------*/
 
