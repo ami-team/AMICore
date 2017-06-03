@@ -27,9 +27,11 @@ public class OracleDriver extends AbstractDriver
 	@Override
 	public String patchSQL(String sql) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		/*-----------------------------------------------------------------*/
 
 		List<String> tokens = Tokenizer.tokenize(sql);
+
+		/*-----------------------------------------------------------------*/
 
 		if(tokens.size() == 2
 		   &&
@@ -39,6 +41,10 @@ public class OracleDriver extends AbstractDriver
 		 ) {
 			return "SELECT 1 FROM \"dual\"";
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
 
 		for(String token: tokens)
 		{
@@ -54,6 +60,8 @@ public class OracleDriver extends AbstractDriver
 
 			result.append(token);
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result.toString();
 	}
