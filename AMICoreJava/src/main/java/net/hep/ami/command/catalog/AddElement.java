@@ -27,11 +27,11 @@ public class AddElement extends AbstractCommand
 		                                                      : ","
 		;
 
-		String fields[] = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
+		String[] fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
 		                                                  : new String[] {}
 		;
 
-		String values[] = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
+		String[] values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
 		                                                  : new String[] {}
 		;
 
