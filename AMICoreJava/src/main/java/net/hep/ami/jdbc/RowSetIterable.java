@@ -28,14 +28,14 @@ public final class RowSetIterable implements Iterable<Row>
 
 	protected RowSetIterable(RowSet rowSet, int limit, int offset) throws Exception
 	{
-		rowSet.lock();
-
 		/*-----------------------------------------------------------------*/
 
 		if((m_rowSet = rowSet) == null)
 		{
 			throw new NullPointerException();
 		}
+
+		rowSet.lock();
 
 		/*-----------------------------------------------------------------*/
 

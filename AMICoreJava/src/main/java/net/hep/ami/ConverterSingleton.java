@@ -118,7 +118,7 @@ public class ConverterSingleton
 			/* PARSE XSLT FILE                                             */
 			/*-------------------------------------------------------------*/
 
-			Templates templates = XMLFactories.newTemplates(inputStream);
+			Templates templates = XMLFactory.newTemplates(inputStream);
 
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTER                                               */

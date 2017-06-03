@@ -176,7 +176,7 @@ public class ConfigSingleton
 			/* PARSE CONFIG FILE                                           */
 			/*-------------------------------------------------------------*/
 
-			Document document = XMLFactories.newDocument(inputStream);
+			Document document = XMLFactory.newDocument(inputStream);
 
 			/*-------------------------------------------------------------*/
 			/* READ CONFIG FILE                                            */
@@ -188,12 +188,12 @@ public class ConfigSingleton
 			/* ADD PROPERTIES                                              */
 			/*-------------------------------------------------------------*/
 
-			for(Node node: XMLFactories.toIterable(nodeList))
+			for(Node node: XMLFactory.toIterable(nodeList))
 			{
 				s_properties.put(
-					XMLFactories.getAttribute(node,
+					XMLFactory.getAttribute(node,
 					                          "name"),
-					XMLFactories.getContent(node)
+					XMLFactory.getContent(node)
 				);
 			}
 

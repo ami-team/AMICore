@@ -13,11 +13,11 @@ import net.sf.saxon.dom.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
-public class XMLFactories
+public class XMLFactory
 {
 	/*---------------------------------------------------------------------*/
 
-	private XMLFactories() {}
+	private XMLFactory() {}
 
 	/*---------------------------------------------------------------------*/
 
