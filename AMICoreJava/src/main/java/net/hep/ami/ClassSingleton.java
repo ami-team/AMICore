@@ -5,6 +5,8 @@ import java.net.*;
 import java.util.*;
 import java.util.zip.*;
 
+import net.hep.ami.utility.*;
+
 public class ClassSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -132,24 +134,10 @@ public class ClassSingleton
 
 			try(ZipFile zipFile = new ZipFile(file))
 			{
-				/*---------------------------------------------------------*/
-				/* READ ZIP FILE                                           */
-				/*---------------------------------------------------------*/
-
-				Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-				/*---------------------------------------------------------*/
-				/* ADD CLASSES                                             */
-				/*---------------------------------------------------------*/
-
-				while(entries.hasMoreElements())
+				for(ZipEntry entries: Misc.toIterable(zipFile.entries()))
 				{
-					String classFile = entries.nextElement().getName();
-
-					addClass(classFile);
+					addClass(entries.getName());
 				}
-
-				/*---------------------------------------------------------*/
 			}
 
 			/*-------------------------------------------------------------*/

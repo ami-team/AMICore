@@ -15,11 +15,7 @@ public final class RowSetIterable implements Iterable<Row>
 	private final int m_limit;
 	private final int m_offset;
 
-	/*---------------------------------------------------------------------*/
-
 	private int m_i;
-
-	private boolean m_hasNext;
 
 	/*---------------------------------------------------------------------*/
 
@@ -36,18 +32,17 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 
-		m_rowSet = rowSet;
+		if((m_rowSet = rowSet) == null)
+		{
+			throw new NullPointerException();
+		}
 
 		/*-----------------------------------------------------------------*/
 
 		m_limit = limit;
 		m_offset = offset;
 
-		/*-----------------------------------------------------------------*/
-
 		m_i = 0;
-
-		m_hasNext = false;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -74,6 +69,10 @@ public final class RowSetIterable implements Iterable<Row>
 		{
 			/*-------------------------------------------------------------*/
 
+			private boolean m_hasNext = false;
+
+			/*-------------------------------------------------------------*/
+
 			@Override
 			public boolean hasNext()
 			{
@@ -94,25 +93,19 @@ public final class RowSetIterable implements Iterable<Row>
 			@Override
 			public Row next()
 			{
-				/*---------------------------------------------------------*/
-
-				if(m_hasNext == false)
+				if(m_hasNext)
 				{
-					throw new NoSuchElementException();
+					try
+					{
+						return new Row(m_rowSet);
+					}
+					catch(Exception e)
+					{
+						throw new RuntimeException(e);
+					}
 				}
 
-				/*---------------------------------------------------------*/
-
-				try
-				{
-					return new Row(m_rowSet);
-				}
-				catch(Exception e)
-				{
-					throw new RuntimeException(e);
-				}
-
-				/*---------------------------------------------------------*/
+				throw new NoSuchElementException();
 			}
 
 			/*-------------------------------------------------------------*/

@@ -185,21 +185,11 @@ public class ConfigSingleton
 			NodeList nodeList = document.getElementsByTagName("property");
 
 			/*-------------------------------------------------------------*/
-			/* GET NUMBER OF PROPERTIES                                    */
-			/*-------------------------------------------------------------*/
-
-			final int numberOfNodes = nodeList.getLength();
-
-			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
 			/*-------------------------------------------------------------*/
 
-			Node node;
-
-			for(int i = 0; i < numberOfNodes; i++)
+			for(Node node: XMLFactories.toIterable(nodeList))
 			{
-				node = nodeList.item(i);
-
 				s_properties.put(
 					XMLFactories.getAttribute(node,
 					                          "name"),
