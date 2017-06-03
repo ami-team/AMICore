@@ -88,14 +88,21 @@ public class XMLFactories
 					private /***/ int m_i = 0x000000000000000000;
 					private final int m_l = nodeList.getLength();
 
+					@Override
 					public boolean hasNext()
 					{
 						return m_i < m_l;
 					}
 
+					@Override
 					public Node next()
 					{
-						return nodeList.item(m_i++);
+						if(m_i < m_l)
+						{
+							return nodeList.item(m_i++);
+						}
+
+						throw new NoSuchElementException();
 					}
 				};
 			}

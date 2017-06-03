@@ -23,11 +23,13 @@ public class Misc
 			{
 				return new Iterator<E>()
 				{
+					@Override
 					public boolean hasNext()
 					{
 						return enumeration.hasMoreElements();
 					}
 
+					@Override
 					public E next()
 					{
 						return enumeration.nextElement();
