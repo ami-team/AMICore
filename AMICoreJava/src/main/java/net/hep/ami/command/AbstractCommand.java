@@ -103,7 +103,7 @@ public abstract class AbstractCommand
 	{
 		StringBuilder result = null;
 
-		Exception e = null;
+		Exception e1 = null;
 
 		/*-----------------------------------------------------------------*/
 
@@ -111,16 +111,16 @@ public abstract class AbstractCommand
 		{
 			result = main(m_arguments);
 		}
-		catch(Exception f)
+		catch(Exception e2)
 		{
-			e = f;
+			e1 = e2;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(m_transactionBooker)
 		{
-			if(e == null)
+			if(e1 == null)
 			{
 				TransactionPoolSingleton.commitAndRelease(m_transactionId);
 			}
@@ -130,9 +130,11 @@ public abstract class AbstractCommand
 				{
 					TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
 				}
-				catch(Exception f)
+				catch(Exception e2)
 				{
-					throw new Exception(e.getMessage() + ", " + f.getMessage(), f.initCause(e));
+					e2.initCause(e1);
+
+					throw new Exception(e1.getMessage() + ", " + e2.getMessage(), e2);
 				}
 			}
 		}
