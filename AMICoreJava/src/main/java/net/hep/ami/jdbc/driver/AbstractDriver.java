@@ -288,7 +288,7 @@ public abstract class AbstractDriver implements Querier
 				catch(Exception e)
 				{
 					LogSingleton.root.error(
-						e.getMessage(), e
+						"could not close statement", e
 					);
 				}
 			}
@@ -322,7 +322,7 @@ public abstract class AbstractDriver implements Querier
 				catch(Exception e)
 				{
 					LogSingleton.root.error(
-						e.getMessage(), e
+						"could not close statement", e
 					);
 				}
 			}

@@ -11,7 +11,7 @@ public class ClassSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Set<String> s_classNames = new HashSet<>();
+	private static final Set<String> s_classNames = AMIMap.newSet(AMIMap.Type.CONCURENT_HASH_MAP, false, false);
 
 	/*---------------------------------------------------------------------*/
 
@@ -21,6 +21,17 @@ public class ClassSingleton
 
 	static
 	{
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		/*-----------------------------------------------------------------*/
+
+		s_classNames.clear();
+
 		/*-----------------------------------------------------------------*/
 
 		for(String path: System.getProperty("java.class.path", "").split(":"))
@@ -53,9 +64,9 @@ public class ClassSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add classes", e);
 
-			path = null;
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -69,12 +80,9 @@ public class ClassSingleton
 
 	private static void walk(@Nullable String classPath)
 	{
-		if(classPath != null)
-		{
-			File file = new File(classPath);
+		File file = new File(classPath);
 
-			walk(file, file);
-		}
+		walk(file, file);
 	}
 
 	/*---------------------------------------------------------------------*/

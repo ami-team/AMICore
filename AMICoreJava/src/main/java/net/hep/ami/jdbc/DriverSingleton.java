@@ -54,7 +54,7 @@ public class DriverSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add drivers: " + e.getMessage(), e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add drivers", e);
 		}
 
 		try
@@ -63,7 +63,7 @@ public class DriverSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not read config: " + e.getMessage(), e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not read config", e);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class DriverSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "for driver `" + className + "`: " + e.getMessage(), e);
+				LogSingleton.root.error(LogSingleton.FATAL, "for driver `{}`", className, e);
 			}
 		}
 	}

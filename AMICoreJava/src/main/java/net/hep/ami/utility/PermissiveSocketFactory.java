@@ -75,7 +75,7 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LogSingleton.root.error("could not initialize SSL context", e);
 
 			tmp = null;
 		}
@@ -108,7 +108,7 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LogSingleton.root.error("could not initialize TLS context", e);
 
 			tmp = null;
 		}

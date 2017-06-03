@@ -124,7 +124,7 @@ public class SchemaSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class SchemaSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+				LogSingleton.root.error(LogSingleton.FATAL, "could not extract catalog schemas", e);
 			}
 		}
 
@@ -273,7 +273,7 @@ public class SchemaSingleton
 
 		private void saveSchemaToFiles() throws Exception
 		{
-			LogSingleton.root.info("saving to file schema of catalog '" + m_externalCatalog + "'");
+			LogSingleton.root.info("saving to file schema of catalog '{}'", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 
@@ -309,7 +309,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromFiles() throws Exception
 		{
-			LogSingleton.root.info("loading from file schema of catalog '" + m_externalCatalog + "'");
+			LogSingleton.root.info("loading from file schema of catalog '{}'", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 
@@ -347,7 +347,7 @@ public class SchemaSingleton
 		{
 			Set<String> tables = new HashSet<>();
 
-			LogSingleton.root.info("loading from database schema of catalog '" + m_externalCatalog + "'");
+			LogSingleton.root.info("loading from database schema of catalog '{}'", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 			/* CREATE CONNECTION                                           */
@@ -595,7 +595,7 @@ public class SchemaSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+					LogSingleton.root.error(LogSingleton.FATAL, "could not start thread", e);
 				}
 			}
 
@@ -611,7 +611,7 @@ public class SchemaSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+					LogSingleton.root.error(LogSingleton.FATAL, "could not join thread", e);
 				}
 			}
 
@@ -742,6 +742,8 @@ public class SchemaSingleton
 
 	public static String internalCatalogToExternalCatalog(String catalog) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		String result = s_internalCatalogToExternalCatalog.get(catalog);
 
 		if(result != null)
@@ -749,13 +751,19 @@ public class SchemaSingleton
 			return result;
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		throw new Exception("internal catalog not found `" + catalog + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String externalCatalogToInternalCatalog(String catalog) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		String result = s_externalCatalogToInternalCatalog.get(catalog);
 
 		if(result != null)
@@ -763,7 +771,11 @@ public class SchemaSingleton
 			return result;
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		throw new Exception("external catalog not found `" + catalog + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -96,6 +96,13 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 
 	/*---------------------------------------------------------------------*/
 
+	public static Set<String> newSet(Type type, boolean isOrdered, boolean isCaseInsensitive)
+	{
+		return Collections.newSetFromMap(new AMIMap<>(type, isOrdered, isCaseInsensitive));
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@Override
 	public int size()
 	{

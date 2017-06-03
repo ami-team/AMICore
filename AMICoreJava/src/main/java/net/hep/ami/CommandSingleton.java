@@ -105,7 +105,7 @@ public class CommandSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error("for command `" + row.getValue(0) + "`: " + e.getMessage(), e);
+					LogSingleton.root.error("for command `{}`: {}" , row.getValue(0), e.getMessage(), e);
 				}
 			}
 
@@ -136,7 +136,7 @@ public class CommandSingleton
 
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
-			LogSingleton.root.error("class '" + className + "' doesn't extend 'AbstractCommand'");
+			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", className);
 
 			return;
 		}

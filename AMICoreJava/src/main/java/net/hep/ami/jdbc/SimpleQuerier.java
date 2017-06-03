@@ -22,7 +22,7 @@ public class SimpleQuerier implements Querier
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
 		}
 	}
 

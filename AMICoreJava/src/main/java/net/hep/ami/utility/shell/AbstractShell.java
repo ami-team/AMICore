@@ -47,7 +47,7 @@ public abstract class AbstractShell
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error("reading text file", e);
+				LogSingleton.root.error("could not read text file", e);
 			}
 		}
 	}

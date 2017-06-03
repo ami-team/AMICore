@@ -198,13 +198,13 @@ public class TransactionPoolSingleton
 		{
 			if(flag > 1)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with inconsistencies");
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with inconsistencies", cause);
 
 				throw new Exception("broken transaction with inconsistencies", cause);
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency", cause);
 
 				throw new Exception("broken transaction without inconsistency", cause);
 			}
@@ -289,13 +289,13 @@ public class TransactionPoolSingleton
 		{
 			if(flag > 1)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with avoided inconsistencies");
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with avoided inconsistencies", cause);
 
 				throw new Exception("broken transaction with avoided inconsistencies", cause);
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency", cause);
 
 				throw new Exception("broken transaction without inconsistency", cause);
 			}

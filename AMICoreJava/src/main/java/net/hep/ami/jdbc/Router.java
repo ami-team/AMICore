@@ -17,8 +17,13 @@ public class Router implements Querier
 
 	public Router() throws Exception
 	{
-		this("self");
-	}
+		this(
+			"self",
+			ConfigSingleton.getProperty("router"),
+			ConfigSingleton.getProperty("router_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -359,6 +364,7 @@ public class Router implements Querier
 
 	public static void reload() throws Exception
 	{
+		ClassSingleton.reload();
 		ConfigSingleton.reload();
 
 		DriverSingleton.reload();
