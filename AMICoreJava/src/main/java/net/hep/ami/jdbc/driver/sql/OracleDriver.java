@@ -1,6 +1,9 @@
 package net.hep.ami.jdbc.driver.sql;
 
 import net.hep.ami.jdbc.sql.*;
+
+import java.util.List;
+
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
@@ -26,7 +29,18 @@ public class OracleDriver extends AbstractDriver
 	{
 		StringBuilder result = new StringBuilder();
 
-		for(String token: Tokenizer.tokenize(sql))
+		List<String> tokens = Tokenizer.tokenize(sql);
+
+		if(tokens.size() == 2
+		   &&
+		   "SELECT".equalsIgnoreCase(tokens.get(0))
+		   &&
+		   "1".equalsIgnoreCase(tokens.get(1))
+		 ) {
+			return "SELECT 1 FROM \"dual\"";
+		}
+
+		for(String token: tokens)
 		{
 			if(token.startsWith("`")
 			   &&
