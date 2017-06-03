@@ -2,6 +2,8 @@ package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 
+import net.hep.ami.LogSingleton;
+
 public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -275,6 +277,9 @@ public class AutoJoinSingleton
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
 								break;
+
+							default:
+								LogSingleton.root.error("internal error");
 						}
 
 						return qId;
@@ -304,9 +309,14 @@ public class AutoJoinSingleton
 						{
 							case WITH_INNER_JOINS:
 								_mergeInnerJoins(joins, temp, frgnKey);
+								break;
 
 							case WITH_NESTED_SELECT:
 								_mergeNestedSelect(joins, temp, frgnKey);
+								break;
+
+							default:
+								LogSingleton.root.error("internal error");
 						}
 
 						return qId;
