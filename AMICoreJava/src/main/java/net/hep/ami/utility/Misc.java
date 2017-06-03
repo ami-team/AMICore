@@ -17,24 +17,18 @@ public class Misc
 			throw new NullPointerException();
 		}
 
-		return new Iterable<E>()
+		return () -> new Iterator<E>()
 		{
-			public Iterator<E> iterator()
+			@Override
+			public boolean hasNext()
 			{
-				return new Iterator<E>()
-				{
-					@Override
-					public boolean hasNext()
-					{
-						return enumeration.hasMoreElements();
-					}
+				return enumeration.hasMoreElements();
+			}
 
-					@Override
-					public E next()
-					{
-						return enumeration.nextElement();
-					}
-				};
+			@Override
+			public E next()
+			{
+				return enumeration.nextElement();
 			}
 		};
 	}

@@ -79,32 +79,26 @@ public class XMLFactories
 			throw new NullPointerException();
 		}
 
-		return new Iterable<Node>()
+		return () -> new Iterator<Node>()
 		{
-			public Iterator<Node> iterator()
+			private /***/ int m_i = 0x000000000000000000;
+			private final int m_l = nodeList.getLength();
+
+			@Override
+			public boolean hasNext()
 			{
-				return new Iterator<Node>()
+				return m_i < m_l;
+			}
+
+			@Override
+			public Node next()
+			{
+				if(m_i < m_l)
 				{
-					private /***/ int m_i = 0x000000000000000000;
-					private final int m_l = nodeList.getLength();
+					return nodeList.item(m_i++);
+				}
 
-					@Override
-					public boolean hasNext()
-					{
-						return m_i < m_l;
-					}
-
-					@Override
-					public Node next()
-					{
-						if(m_i < m_l)
-						{
-							return nodeList.item(m_i++);
-						}
-
-						throw new NoSuchElementException();
-					}
-				};
+				throw new NoSuchElementException();
 			}
 		};
 	}
