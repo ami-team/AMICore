@@ -10,17 +10,17 @@ public abstract class AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	protected final String m_AMIUser;
-	protected final String m_AMIPass;
-	protected final String m_clientDN;
-	protected final String m_issuerDN;
-	protected final String m_isSecure;
-	protected final String m_AMIAgent;
-
-	/*---------------------------------------------------------------------*/
-
 	protected final String m_guestUser;
 	protected final String m_guestPass;
+
+	protected final String m_AMIUser;
+	protected final String m_AMIPass;
+
+	protected final String m_clientDN;
+	protected final String m_issuerDN;
+
+	protected final String m_isSecure;
+	protected final String m_AMIAgent;
 
 	/*---------------------------------------------------------------------*/
 
@@ -40,6 +40,11 @@ public abstract class AbstractCommand
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/
 
+		m_guestUser = ConfigSingleton.getProperty("guest_user");
+		m_guestPass = ConfigSingleton.getProperty("guest_pass");
+
+		/*-----------------------------------------------------------------*/
+
 		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : "";
 		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : "";
 
@@ -48,11 +53,6 @@ public abstract class AbstractCommand
 
 		m_isSecure = arguments.containsKey("isSecure") ? arguments.remove("isSecure") : "";
 		m_AMIAgent = arguments.containsKey("AMIAgent") ? arguments.remove("AMIAgent") : "";
-
-		/*-----------------------------------------------------------------*/
-
-		m_guestUser = ConfigSingleton.getProperty("guest_user");
-		m_guestPass = ConfigSingleton.getProperty("guest_pass");
 
 		/*-----------------------------------------------------------------*/
 		/* CONSTRUCTOR PARAMETERS                                          */
