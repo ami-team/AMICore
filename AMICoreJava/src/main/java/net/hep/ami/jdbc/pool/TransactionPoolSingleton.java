@@ -126,13 +126,6 @@ public class TransactionPoolSingleton
 
 	public static void commitAndRelease(long transactionId) throws Exception
 	{
-		commitAndRelease(transactionId);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void commitAndRelease(long transactionId, @Nullable Throwable cause) throws Exception
-	{
 		Map<String, AbstractDriver> transaction;
 
 		/*-----------------------------------------------------------------*/
@@ -198,15 +191,15 @@ public class TransactionPoolSingleton
 		{
 			if(flag > 1)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with inconsistencies", cause);
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with inconsistencies");
 
-				throw new Exception("broken transaction with inconsistencies", cause);
+				throw new Exception("broken transaction with inconsistencies");
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency", cause);
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
 
-				throw new Exception("broken transaction without inconsistency", cause);
+				throw new Exception("broken transaction without inconsistency");
 			}
 		}
 
@@ -216,13 +209,6 @@ public class TransactionPoolSingleton
 	/*---------------------------------------------------------------------*/
 
 	public static void rollbackAndRelease(long transactionId) throws Exception
-	{
-		rollbackAndRelease(transactionId);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void rollbackAndRelease(long transactionId, @Nullable Throwable cause) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
 
@@ -289,15 +275,15 @@ public class TransactionPoolSingleton
 		{
 			if(flag > 1)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with avoided inconsistencies", cause);
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with avoided inconsistencies");
 
-				throw new Exception("broken transaction with avoided inconsistencies", cause);
+				throw new Exception("broken transaction with avoided inconsistencies");
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency", cause);
+				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
 
-				throw new Exception("broken transaction without inconsistency", cause);
+				throw new Exception("broken transaction without inconsistency");
 			}
 		}
 

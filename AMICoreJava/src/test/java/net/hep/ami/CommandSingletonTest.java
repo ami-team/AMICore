@@ -98,9 +98,16 @@ public class CommandSingletonTest
 
 			//System.out.println(MQLToAST.parse("SELECT `foo`.* WHERE `foo`.`bar`='kux' OR `foo`.`bar`=-777", "toto"));
 
-			Exception e = new Exception("toto");
+			Exception e = new Exception("foo");
 
-			LogSingleton.root.error("hello!", (Exception) null);
+			Exception f = new Exception("bar");
+
+			f.initCause(e);
+
+			f.printStackTrace();
+			System.out.println(f.getMessage());
+
+/*			LogSingleton.root.error("hello!", (Exception) null);
 
 			LogSingleton.root.error("hello!", e);
 
@@ -109,7 +116,7 @@ public class CommandSingletonTest
 			LogSingleton.root.error("hello {}, {}!", "world1", "world2", e);
 
 			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", "foo");
-
+*/
 			//System.out.println("done.");
 		}
 		catch(Exception e)
