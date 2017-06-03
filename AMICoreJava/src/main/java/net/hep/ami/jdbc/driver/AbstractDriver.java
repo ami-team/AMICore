@@ -57,13 +57,11 @@ public abstract class AbstractDriver implements Querier
 
 		if(externalCatalog == null)
 		{
-			try
+			externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog_noException(internalCatalog);
+
+			if(externalCatalog == null)
 			{
-				externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog(internalCatalog);
-			}
-			catch(Exception e)
-			{
-				externalCatalog = /*--------------------------------------------*/(internalCatalog);
+				externalCatalog = /*--------------------------------------------------------*/(internalCatalog);
 			}
 		}
 
