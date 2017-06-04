@@ -56,7 +56,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 		try
 		{
-			while(m_i++ < m_offset && m_rowSet.m_resultSet.next()) { /* do nothing  */ }
+			while(m_i++ < m_offset && m_rowSet.m_resultSet.next()) { /* DO NOTHING  */ }
 		}
 		catch(Exception e)
 		{
@@ -136,7 +136,7 @@ public final class RowSetIterable implements Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
-		{ /* do nothing  */ }
+		{ /* DO NOTHING  */ }
 		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
 		{
 			if(maxNumberOfRows == 0)
@@ -201,7 +201,7 @@ public final class RowSetIterable implements Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
-		{ /* do nothing  */ }
+		{ /* DO NOTHING  */ }
 		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
 		{
 			if(maxNumberOfRows == 0)

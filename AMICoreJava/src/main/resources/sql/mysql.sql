@@ -204,8 +204,8 @@ ALTER TABLE `router_search_criteria` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_IN
 
 CREATE TABLE `router_locations` (
   `id` INT(11) NOT NULL,
-  `continentCode` VARCHAR(2),
-  `countryCode` VARCHAR(2)
+  `continentCode` VARCHAR(3) NOT NULL DEFAULT 'N/A',
+  `countryCode` VARCHAR(3) NOT NULL DEFAULT 'N/A'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -220,9 +220,9 @@ ALTER TABLE `router_locations` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMEN
 
 CREATE TABLE `router_ipv4_blocks` (
   `id` INT(11) NOT NULL,
-  `network` VARCHAR(32),
-  `rangeBegin` DECIMAL(10, 0),
-  `rangeEnd` DECIMAL(10, 0),
+  `network` VARCHAR(32) NOT NULL,
+  `rangeBegin` DECIMAL(10, 0) NOT NULL,
+  `rangeEnd` DECIMAL(10, 0) NOT NULL,
   `geoFK` INT(11) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
@@ -239,9 +239,9 @@ ALTER TABLE `router_ipv4_blocks` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREM
 
 CREATE TABLE `router_ipv6_blocks` (
   `id` INT(11) NOT NULL,
-  `network` VARCHAR(64),
-  `rangeBegin` DECIMAL(38, 0),
-  `rangeEnd` DECIMAL(38, 0),
+  `network` VARCHAR(64) NOT NULL,
+  `rangeBegin` DECIMAL(38, 0) NOT NULL,
+  `rangeEnd` DECIMAL(38, 0) NOT NULL,
   `geoFK` INT(11) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;

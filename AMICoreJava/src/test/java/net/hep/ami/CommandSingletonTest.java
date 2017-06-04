@@ -48,14 +48,14 @@ public class CommandSingletonTest
 		{
 			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 
-			//router.create();
-			//router.fill();
+			router.create();
+			router.fill();
 
 			router.commitAndRelease();
 
 			router = new Router();
 
-			System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'", "router_user"));
+			//System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'", "router_user"));
 			//System.out.println(router.mqlToAST("SELECT router_user.*", "router_user"));
 
 			router.commitAndRelease();

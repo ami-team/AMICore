@@ -717,8 +717,8 @@ END;
 
 CREATE TABLE `router_locations` (
   `id` NUMBER(*, 0),
-  `continentCode` VARCHAR2(2),
-  `countryCode` VARCHAR2(2)
+  `continentCode` VARCHAR2(3) DEFAULT 'N/A',
+  `countryCode` VARCHAR2(3) DEFAULT 'N/A'
 );
 
 ALTER TABLE `router_locations`
@@ -731,6 +731,14 @@ ALTER TABLE `router_locations`
 
 ALTER TABLE `router_locations`
   ADD CONSTRAINT `ck1_router_locations` CHECK(`id` IS NOT NULL)
+;
+
+ALTER TABLE `router_locations`
+  ADD CONSTRAINT `ck2_router_locations` CHECK(`continentCode` IS NOT NULL)
+;
+
+ALTER TABLE `router_locations`
+  ADD CONSTRAINT `ck3_router_locations` CHECK(`countryCode` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_locations` START WITH 1 INCREMENT BY 1 CACHE 10;
@@ -766,7 +774,19 @@ ALTER TABLE `router_ipv4_blocks`
 ;
 
 ALTER TABLE `router_ipv4_blocks`
-  ADD CONSTRAINT `ck2_router_ipv4_blocks` CHECK(`geoFK` IS NOT NULL)
+  ADD CONSTRAINT `ck2_router_ipv4_blocks` CHECK(`network` IS NOT NULL)
+;
+
+ALTER TABLE `router_ipv4_blocks`
+  ADD CONSTRAINT `ck3_router_ipv4_blocks` CHECK(`rangeBegin` IS NOT NULL)
+;
+
+ALTER TABLE `router_ipv4_blocks`
+  ADD CONSTRAINT `ck4_router_ipv4_blocks` CHECK(`rangeEnd` IS NOT NULL)
+;
+
+ALTER TABLE `router_ipv4_blocks`
+  ADD CONSTRAINT `ck5_router_ipv4_blocks` CHECK(`geoFK` IS NOT NULL)
 ;
 
 ALTER TABLE `router_ipv4_blocks`
@@ -806,7 +826,19 @@ ALTER TABLE `router_ipv6_blocks`
 ;
 
 ALTER TABLE `router_ipv6_blocks`
-  ADD CONSTRAINT `ck2_router_ipv6_blocks` CHECK(`geoFK` IS NOT NULL)
+  ADD CONSTRAINT `ck2_router_ipv6_blocks` CHECK(`network` IS NOT NULL)
+;
+
+ALTER TABLE `router_ipv6_blocks`
+  ADD CONSTRAINT `ck3_router_ipv6_blocks` CHECK(`rangeBegin` IS NOT NULL)
+;
+
+ALTER TABLE `router_ipv6_blocks`
+  ADD CONSTRAINT `ck4_router_ipv6_blocks` CHECK(`rangeEnd` IS NOT NULL)
+;
+
+ALTER TABLE `router_ipv6_blocks`
+  ADD CONSTRAINT `ck5_router_ipv6_blocks` CHECK(`geoFK` IS NOT NULL)
 ;
 
 ALTER TABLE `router_ipv6_blocks`

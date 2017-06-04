@@ -56,7 +56,7 @@ public class OracleDriver extends AbstractDriver
 	@Override
 	public void setDB(String db) throws Exception
 	{
-		/* EMPTY */
+		/* DO NOTHING */
 	}
 
 	/*---------------------------------------------------------------------*/
