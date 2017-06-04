@@ -123,8 +123,8 @@ public class LocalizationSingleton
 					countryISOCode = location.get("country_iso_code");
 
 					preparedStatement.setString(1, geonameId);
-					preparedStatement.setString(2, continentCode.isEmpty() == false ? continentCode : null);
-					preparedStatement.setString(3, countryISOCode.isEmpty() == false ? countryISOCode : null);
+					preparedStatement.setString(2, continentCode.isEmpty() == false ? continentCode : "N/A");
+					preparedStatement.setString(3, countryISOCode.isEmpty() == false ? countryISOCode : "N/A");
 					preparedStatement.addBatch();
 				}
 
