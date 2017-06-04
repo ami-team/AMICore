@@ -1,9 +1,8 @@
 package net.hep.ami.jdbc.driver.sql;
 
+import java.util.*;
+
 import net.hep.ami.jdbc.sql.*;
-
-import java.util.List;
-
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.driver.annotation.*;
 
@@ -33,13 +32,9 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		if(tokens.size() == 2
-		   &&
-		   "SELECT".equalsIgnoreCase(tokens.get(0))
-		   &&
-		   "1".equalsIgnoreCase(tokens.get(1))
-		 ) {
-			return "SELECT 1 FROM \"dual\"";
+		if(tokens.size() == 2 && "SELECT".equalsIgnoreCase(tokens.get(0)))
+		{
+			return "SELECT " + Tokenizer.backQuotesToDoubleQuotes(tokens.get(1)) + " FROM \"dual\"";
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -48,17 +43,7 @@ public class OracleDriver extends AbstractDriver
 
 		for(String token: tokens)
 		{
-			if(token.startsWith("`")
-			   &&
-			   token.endsWith("`")
-			 ) {
-				token = token.replace("\"", "\"\"")
-				             .replace("``", "\"\"")
-				             .replace("`", "\"")
-				;
-			}
-
-			result.append(token);
+			result.append(Tokenizer.backQuotesToDoubleQuotes(token));
 		}
 
 		/*-----------------------------------------------------------------*/

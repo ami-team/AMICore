@@ -75,4 +75,21 @@ public class Tokenizer
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	public static String backQuotesToDoubleQuotes(String token)
+	{
+		if(token.startsWith("`")
+		   &&
+		   token.endsWith("`")
+		 ) {
+			token = token.replace("\"", "\"\"")
+			             .replace("``", "\"\"")
+			             .replace("`", "\"")
+			;
+		}
+
+		return token;
+	}
+
+	/*---------------------------------------------------------------------*/
 }
