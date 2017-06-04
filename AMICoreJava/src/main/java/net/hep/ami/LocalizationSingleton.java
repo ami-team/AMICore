@@ -112,11 +112,19 @@ public class LocalizationSingleton
 
 			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)"))
 			{
+				String geonameId;
+				String continentCode;
+				String countryISOCode;
+
 				for(Map<String, String> location: locations)
 				{
-					preparedStatement.setString(1, location.get("geoname_id"));
-					preparedStatement.setString(2, location.get("continent_code"));
-					preparedStatement.setString(3, location.get("country_iso_code"));
+					geonameId = location.get("geoname_id");
+					continentCode = location.get("continent_code");
+					countryISOCode = location.get("country_iso_code");
+
+					preparedStatement.setString(1, geonameId);
+					preparedStatement.setString(2, continentCode.isEmpty() == false ? continentCode : null);
+					preparedStatement.setString(3, countryISOCode.isEmpty() == false ? countryISOCode : null);
 					preparedStatement.addBatch();
 				}
 
