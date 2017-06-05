@@ -31,18 +31,18 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		if(tokens.size() == 2 && "SELECT".equalsIgnoreCase(tokens.get(0)))
-		{
-			return "SELECT " + Tokenizer.backQuotesToDoubleQuotes(tokens.get(1)) + " FROM \"dual\"";
-		}
-
-		/*-----------------------------------------------------------------*/
-
 		StringBuilder result = new StringBuilder();
 
 		for(String token: tokens)
 		{
 			result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(tokens.size() == 2 && "SELECT".equalsIgnoreCase(tokens.get(0)))
+		{
+			result.append(" FROM \"dual\"");
 		}
 
 		/*-----------------------------------------------------------------*/
