@@ -2,7 +2,7 @@ package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 
-import net.hep.ami.LogSingleton;
+import net.hep.ami.*;
 
 public class AutoJoinSingleton
 {
