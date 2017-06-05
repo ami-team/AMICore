@@ -5,7 +5,6 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.jdbc.mql.antlr.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 public class MQLToSQL
