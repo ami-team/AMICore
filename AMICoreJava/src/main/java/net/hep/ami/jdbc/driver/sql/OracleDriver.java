@@ -40,7 +40,7 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		if(tokens.size() == 2 && "SELECT".equalsIgnoreCase(tokens.get(0)))
+		if(sql.toUpperCase().contains("FROM") == false)
 		{
 			result.append(" FROM \"dual\"");
 		}
