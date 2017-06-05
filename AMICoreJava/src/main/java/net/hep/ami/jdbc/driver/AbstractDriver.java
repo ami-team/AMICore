@@ -7,7 +7,6 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.query.mql.*;
 
 public abstract class AbstractDriver implements Querier
 {
@@ -120,7 +119,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return patchSQL(MQLToSQL.parse(mql, this.m_externalCatalog, entity));
+			return patchSQL(net.hep.ami.jdbc.query.mql.MQLToSQL.parse(mql, this.m_externalCatalog, entity));
 		}
 		else
 		{
@@ -135,7 +134,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return /*----*/(MQLToAST.parse(mql, this.m_externalCatalog, entity));
+			return /*----*/(net.hep.ami.jdbc.query.mql.MQLToAST.parse(mql, this.m_externalCatalog, entity));
 		}
 		else
 		{
