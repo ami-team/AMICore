@@ -1,14 +1,12 @@
 package net.hep.ami;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.mql.MQLToAST;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.utility.TextFile;
+import net.hep.ami.utility.*;
 
 @SuppressWarnings("all")
 public class CommandSingletonTest
@@ -48,15 +46,15 @@ public class CommandSingletonTest
 		{
 			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 
-			router.create();
-			router.fill();
+			//router.create();
+			//router.fill();
 
 			router.commitAndRelease();
 
 			router = new Router();
 
-			//System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'", "router_user"));
-			//System.out.println(router.mqlToAST("SELECT router_user.*", "router_user"));
+			System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'", "router_user"));
+			System.out.println(router.mqlToAST("SELECT router_user.*", "router_user"));
 
 			router.commitAndRelease();
 

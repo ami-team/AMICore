@@ -2,9 +2,8 @@ package net.hep.ami.jdbc.driver.sql;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.sql.*;
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.jdbc.driver.annotation.*;
+import net.hep.ami.jdbc.query.sql.*;
 
 @Jdbc(
 	type = Jdbc.Type.SQL,

@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.sql;
+package net.hep.ami.jdbc.query.sql;
 
 import java.util.*;
 import java.util.regex.*;

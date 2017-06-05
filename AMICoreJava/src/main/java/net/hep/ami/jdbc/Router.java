@@ -5,7 +5,6 @@ import java.sql.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.jdbc.driver.annotation.*;
 
 public class Router implements Querier
 {

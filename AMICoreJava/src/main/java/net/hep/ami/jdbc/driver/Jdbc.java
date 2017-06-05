@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.driver.annotation;
+package net.hep.ami.jdbc.driver;
 
 import java.lang.annotation.*;
 

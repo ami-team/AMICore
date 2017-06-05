@@ -5,7 +5,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.jdbc.driver.annotation.*;
 
 public class TransactionPoolSingleton
 {

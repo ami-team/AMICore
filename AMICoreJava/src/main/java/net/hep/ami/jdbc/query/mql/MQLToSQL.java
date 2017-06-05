@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.mql;
+package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
 
