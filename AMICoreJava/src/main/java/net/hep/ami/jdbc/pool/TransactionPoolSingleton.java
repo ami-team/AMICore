@@ -293,6 +293,10 @@ public class TransactionPoolSingleton
 
 	public static void clear()
 	{
+		/*-----------------------------------------------------------------*/
+
+		int cnt = 0;
+
 		synchronized(TransactionPoolSingleton.class)
 		{
 		/**/	/*---------------------------------------------------------*/
@@ -309,7 +313,7 @@ public class TransactionPoolSingleton
 		/**/			}
 		/**/			catch(Exception e)
 		/**/			{
-		/**/				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency", e);
+		/**/				cnt++;
 		/**/			}
 		/**/		}
 		/**/	}
@@ -322,6 +326,15 @@ public class TransactionPoolSingleton
 		/**/
 		/**/	/*---------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(cnt > 0)
+		{
+			LogSingleton.root.error(LogSingleton.FATAL, "{} broken transaction(s) without inconsistency", cnt);
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
