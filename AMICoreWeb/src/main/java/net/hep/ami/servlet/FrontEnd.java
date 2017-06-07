@@ -246,8 +246,8 @@ public class FrontEnd extends HttpServlet
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
 					return new Tuple2<>(
-						SecuritySingleton.getDNName(certificate.getSubjectX500Principal()),
-						SecuritySingleton.getDNName(certificate.getIssuerX500Principal())
+						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
+						SecuritySingleton.getDN(certificate.getIssuerX500Principal())
 					);
 				}
 			}

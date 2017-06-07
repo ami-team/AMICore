@@ -532,7 +532,7 @@ public class SecuritySingleton
 		int i = 0;
 		int j = 0;
 
-		final int length = string.length();
+		final int l = string.length();
 
 		StringBuilder result = new StringBuilder();
 
@@ -540,11 +540,9 @@ public class SecuritySingleton
 		{
 			j = i + 64;
 
-			if(j > length)
+			if(j > l)
 			{
-				j = length;
-
-				result.append(string.substring(i, j));
+				result.append(string.substring(i, l));
 				result.append("\n");
 
 				break;
@@ -614,7 +612,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getDNName(javax.security.auth.x500.X500Principal principal)
+	public static String getDN(javax.security.auth.x500.X500Principal principal)
 	{
 		StringBuilder result = new StringBuilder();
 

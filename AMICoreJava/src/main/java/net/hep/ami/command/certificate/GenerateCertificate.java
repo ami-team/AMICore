@@ -132,8 +132,8 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDNName(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDNName(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDN(certificate.getSubjectX500Principal()) + "]]></field>");
+		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDN(certificate.getIssuerX500Principal()) + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");
