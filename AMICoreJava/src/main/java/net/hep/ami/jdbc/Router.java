@@ -53,41 +53,41 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String mql, String entity) throws Exception
+	public String mqlToSQL(String entity, String mql) throws Exception
 	{
-		return m_driver.mqlToSQL(mql, entity);
+		return m_driver.mqlToSQL(entity, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String mql, String entity) throws Exception
+	public String mqlToAST(String entity, String mql) throws Exception
 	{
-		return m_driver.mqlToAST(mql, entity);
+		return m_driver.mqlToAST(entity, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String mql, String entity) throws Exception
+	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
 	{
-		return m_driver.executeMQLQuery(mql, entity);
+		return m_driver.executeMQLQuery(entity, mql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql) throws Exception
+	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
-		return m_driver.executeSQLQuery(sql);
+		return m_driver.executeSQLQuery(sql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeSQLUpdate(String sql) throws Exception
+	public int executeSQLUpdate(String sql, Object... args) throws Exception
 	{
-		return m_driver.executeSQLUpdate(sql);
+		return m_driver.executeSQLUpdate(sql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -335,10 +335,10 @@ public class Router implements Querier
 
 			if("AbstractCommand".equals(commandName) == false)
 			{
-				executeSQLUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
-					commandName.replace("'", "''"),
-					className.replace("'", "''")
-				));
+				executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)",
+					commandName,
+					className
+				);
 			}
 		}
 

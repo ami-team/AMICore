@@ -32,7 +32,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String query, String catalog, String entity) throws Exception
+	public static String parse(String catalog, String entity, String query) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 

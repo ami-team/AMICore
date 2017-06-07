@@ -5,6 +5,7 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
+import net.hep.ami.jdbc.query.sql.Tokenizer;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
 
@@ -44,13 +45,13 @@ public class CommandSingletonTest
 
 		try
 		{
-			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
+//			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 
 			//router.create();
 			//router.fill();
 
-			router.commitAndRelease();
-
+//			router.commitAndRelease();
+/*
 			router = new Router();
 
 			System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'", "router_user"));
@@ -78,7 +79,7 @@ public class CommandSingletonTest
 
 			System.out.println("::" + SecuritySingleton.encrypt("") + "::");
 			System.out.println("::" + SecuritySingleton.decrypt("") + "::");
-
+*/
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
@@ -86,9 +87,9 @@ public class CommandSingletonTest
 
 			//System.out.println(SchemaSingleton.getTableNames("self"));
 
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 
-			System.out.println("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
+//			System.out.println("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
 
 			//System.out.println(ConnectionPoolSingleton.getStatus());
 
@@ -115,6 +116,8 @@ public class CommandSingletonTest
 
 			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", "foo");
 */
+			System.out.println(Tokenizer.tokenize("SELECT `foo`.* WHERE `foo`.`bar`!='kux' OR `foo`.`bar`=-777"));
+
 			//System.out.println("done.");
 		}
 		catch(Exception e)

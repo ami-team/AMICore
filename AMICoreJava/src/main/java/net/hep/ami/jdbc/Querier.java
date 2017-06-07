@@ -8,23 +8,23 @@ public interface Querier
 {
 	/*---------------------------------------------------------------------*/
 
-	public String mqlToSQL(String mql, String entity) throws Exception;
+	public String mqlToSQL(String entity, String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public String mqlToAST(String mql, String entity) throws Exception;
+	public String mqlToAST(String entity, String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet executeMQLQuery(String mql, String entity) throws Exception;
+	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet executeSQLQuery(String sql) throws Exception;
+	public RowSet executeSQLQuery(String sql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
-	public int executeSQLUpdate(String sql) throws Exception;
+	public int executeSQLUpdate(String sql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

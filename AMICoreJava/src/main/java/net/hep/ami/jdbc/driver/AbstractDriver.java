@@ -6,6 +6,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
+import net.hep.ami.jdbc.query.sql.Tokenizer;
 import net.hep.ami.jdbc.reflexion.*;
 
 public abstract class AbstractDriver implements Querier
@@ -114,12 +115,84 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	private String format(String s, Object... args) throws Exception
+	{
+		StringBuilder stringBuilder = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		/***/ int i = 0x000000000;
+		final int l = args.length;
+
+		if(l == 0)
+		{
+			return s;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		Object arg;
+
+		for(String token: Tokenizer.tokenize(s))
+		{
+			if("?".equals(token))
+			{
+				/*---------------------------------------------------------*/
+
+				if(i >= l)
+				{
+					throw new Exception("");
+				}
+
+				/*---------------------------------------------------------*/
+
+				arg = args[i++];
+
+				/**/ if(arg == null)
+				{
+					stringBuilder.append("NULL");
+				}
+				else if(arg instanceof Float
+				        ||
+				        arg instanceof Double
+				        ||
+				        arg instanceof Integer
+				 ) {
+					stringBuilder.append(arg);
+				}
+				else
+				{
+					stringBuilder.append("'")
+					             .append(arg.toString().replace("'", "''"))
+					             .append("'")
+					;
+				}
+
+				/*---------------------------------------------------------*/
+			}
+			else
+			{
+				/*---------------------------------------------------------*/
+
+				stringBuilder.append(token);
+
+				/*---------------------------------------------------------*/
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return stringBuilder.toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@Override
-	public String mqlToSQL(String mql, String entity) throws Exception
+	public String mqlToSQL(String entity, String mql) throws Exception
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return patchSQL(net.hep.ami.jdbc.query.mql.MQLToSQL.parse(mql, this.m_externalCatalog, entity));
+			return patchSQL(net.hep.ami.jdbc.query.mql.MQLToSQL.parse(this.m_externalCatalog, entity, mql));
 		}
 		else
 		{
@@ -130,11 +203,11 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String mql, String entity) throws Exception
+	public String mqlToAST(String entity, String mql) throws Exception
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return /*----*/(net.hep.ami.jdbc.query.mql.MQLToAST.parse(mql, this.m_externalCatalog, entity));
+			return /*----*/(net.hep.ami.jdbc.query.mql.MQLToAST.parse(this.m_externalCatalog, entity, mql));
 		}
 		else
 		{
@@ -145,12 +218,14 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String mql, String entity) throws Exception
+	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
 	{
+		mql = format(mql, args);
+
 		try
 		{
-			String SQL = mqlToSQL(mql, entity);
-			String AST = mqlToAST(mql, entity);
+			String SQL = mqlToSQL(entity, mql);
+			String AST = mqlToAST(entity, mql);
 
 			return new RowSet(m_statement.executeQuery(SQL), SQL, mql, AST);
 		}
@@ -163,8 +238,10 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql) throws Exception
+	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
+		sql = format(sql, args);
+
 		try
 		{
 			String SQL = patchSQL(sql);
@@ -181,8 +258,10 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeSQLUpdate(String sql) throws Exception
+	public int executeSQLUpdate(String sql, Object... args) throws Exception
 	{
+		sql = format(sql, args);
+
 		try
 		{
 			return m_statement.executeUpdate(patchSQL(sql));

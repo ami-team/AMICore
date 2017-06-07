@@ -288,17 +288,17 @@ public class ConfigSingleton
 	{
 		try
 		{
-			querier.executeSQLUpdate(String.format("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES ('%s', '%s')",
-				SecuritySingleton.encrypt(name).replace("'", "''"),
-				SecuritySingleton.encrypt(value).replace("'", "''")
-			));
+			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES (?, ?)",
+				SecuritySingleton.encrypt(name),
+				SecuritySingleton.encrypt(value)
+			);
 		}
 		catch(Exception e)
 		{
-			querier.executeSQLUpdate(String.format("UPDATE `router_config` SET `paramValue` = '%s' WHERE `paramName` = '%s'",
-				SecuritySingleton.encrypt(value).replace("'", "''"),
-				SecuritySingleton.encrypt(name).replace("'", "''")
-			));
+			querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ? WHERE `paramName` = ?",
+				SecuritySingleton.encrypt(value),
+				SecuritySingleton.encrypt(name)
+			);
 		}
 	}
 
@@ -306,9 +306,9 @@ public class ConfigSingleton
 
 	public static void removePropertyInDataBase(Querier querier, String name) throws Exception
 	{
-		querier.executeSQLUpdate(String.format("DELETE FROM `router_config` WHERE `paramName` = '%s'",
-			SecuritySingleton.encrypt(name).replace("'", "''")
-		));
+		querier.executeSQLUpdate("DELETE FROM `router_config` WHERE `paramName` = ?",
+			SecuritySingleton.encrypt(name)
+		);
 	}
 
 	/*---------------------------------------------------------------------*/

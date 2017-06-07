@@ -200,17 +200,17 @@ public class CommandSingleton
 
 		try
 		{
-			querier.executeSQLUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
-				commandName.replace("'", "''"),
-				className.replace("'", "''")
-			));
+			querier.executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)",
+				commandName,
+				className
+			);
 		}
 		catch(Exception e)
 		{
-			querier.executeSQLUpdate(String.format("UPDATE `router_command` SET `class` = '%s' WHERE `command` = '%s'",
-				className.replace("'", "''"),
-				commandName.replace("'", "''")
-			));
+			querier.executeSQLUpdate("UPDATE `router_command` SET `class` = ? WHERE `command` = ?",
+				className,
+				commandName
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -220,9 +220,9 @@ public class CommandSingleton
 
 	public static void unregisterCommand(Querier querier, String commandName) throws Exception
 	{
-		querier.executeSQLUpdate(String.format("DELETE FROM `router_command` WHERE `simpleName` = `%s`",
-			commandName.replace("'", "''")
-		));
+		querier.executeSQLUpdate("DELETE FROM `router_command` WHERE `simpleName` = ?",
+			commandName
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
