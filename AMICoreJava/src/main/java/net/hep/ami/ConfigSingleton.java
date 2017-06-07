@@ -18,7 +18,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean s_hasValidConfFile;
+	private static boolean s_isValidConfFile;
 
 	/*---------------------------------------------------------------------*/
 
@@ -43,9 +43,9 @@ public class ConfigSingleton
 
 		try
 		{
-			s_hasValidConfFile = false;
+			s_isValidConfFile = false;
 			loadConfFile();
-			s_hasValidConfFile = true;
+			s_isValidConfFile = true;
 
 			SecuritySingleton.init(s_properties.get("encryption_key"));
 		}
@@ -327,9 +327,9 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean hasValidConfFile()
+	public static boolean isValidConfFile()
 	{
-		return s_hasValidConfFile;
+		return s_isValidConfFile;
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -120,7 +120,7 @@ public class FrontEnd extends HttpServlet
 
 		String data;
 
-		if(ConfigSingleton.hasValidConfFile())
+		if(ConfigSingleton.isValidConfFile())
 		{
 			try
 			{
