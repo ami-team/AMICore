@@ -1,9 +1,9 @@
 package net.hep.ami;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 import java.util.zip.*;
+import java.util.stream.*;
 
 import net.hep.ami.utility.*;
 
@@ -34,51 +34,30 @@ public class ClassSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(String path: System.getProperty("java.class.path", "").split(":"))
+		String path = ClassSingleton.class.getResource("/net/hep/ami/ClassSingleton.class").getPath();
+
+		/*-----------------------------------------------------------------*/
+
+		int index = path.indexOf("!/"); // check if this is a JAR file
+
+		if(index > 0)
 		{
-			walk(path);
+			path = new File(path.substring(5, index)).getParent();
+		}
+		else
+		{
+			path = new File(path).getParentFile()
+			                     .getParentFile()
+			                     .getParentFile()
+			                     .getParent()
+			;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		URL url = ClassSingleton.class.getResource("/net/hep/ami/ClassSingleton.class");
-
-		int index = url.getFile().indexOf("!/");
-
-		String path;
-
-		try
+		for(String PATH: System.getProperty("java.class.path", "").split(":"))
 		{
-			if(index > 0)
-			{
-				/*---------------------------------------------------------*/
-				/* JAR FILE                                                */
-				/*---------------------------------------------------------*/
-
-				path = new File(url.getFile().substring(0, index)).getParent();
-
-				/*---------------------------------------------------------*/
-			}
-			else
-			{
-				/*---------------------------------------------------------*/
-				/* CLASS FILE                                              */
-				/*---------------------------------------------------------*/
-
-				path = new File(url.getFile()).getParentFile()
-				                              .getParentFile()
-				                              .getParentFile()
-				                              .getParent()
-				;
-
-				/*---------------------------------------------------------*/
-			}
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add classes", e);
-
-			return;
+			walk(PATH);
 		}
 
 		walk(path);
@@ -120,11 +99,11 @@ public class ClassSingleton
 
 			if(file.getName().toLowerCase().endsWith(".jar") == false)
 			{
-				addFile(base, file);
+				addClassFile(base, file);
 			}
 			else
 			{
-				addJar(file);
+				addJarFile(file);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -133,32 +112,18 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addFile(File base, File file)
+	private static void addClassFile(File base, File file)
 	{
-		String classFile = base.toURI().relativize(file.toURI()).getPath();
-
-		addClass(classFile);
+		addClass(base.toURI().relativize(file.toURI()).getPath());
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addJar(File file)
+	private static void addJarFile(File file)
 	{
-		try
+		try(ZipFile zipFile = new ZipFile(file))
 		{
-			/*-------------------------------------------------------------*/
-			/* OPEN ZIP FILE                                               */
-			/*-------------------------------------------------------------*/
-
-			try(ZipFile zipFile = new ZipFile(file))
-			{
-				for(ZipEntry entries: Misc.toIterable(zipFile.entries()))
-				{
-					addClass(entries.getName());
-				}
-			}
-
-			/*-------------------------------------------------------------*/
+			zipFile.stream().forEach(x -> addClass(x.getName()));
 		}
 		catch(Exception e)
 		{
@@ -170,7 +135,7 @@ public class ClassSingleton
 
 	private static void addClass(String classFile)
 	{
-		if(classFile.endsWith(".class") && classFile.contains("$") == false)
+		if(classFile.endsWith(".class") && classFile.indexOf('$') == -1)
 		{
 			String className = classFile.substring(0, classFile.length() - 6)
 			                            .replace('\\', '.')
@@ -185,17 +150,7 @@ public class ClassSingleton
 
 	public static Set<String> findClassNames(String filter)
 	{
-		Set<String> result = new TreeSet<>();
-
-		for(String className: s_classNames)
-		{
-			if(className.startsWith(filter))
-			{
-				result.add(className);
-			}
-		}
-
-		return result;
+		return s_classNames.stream().filter(x -> x.startsWith(filter)).collect(Collectors.toSet());
 	}
 
 	/*---------------------------------------------------------------------*/
