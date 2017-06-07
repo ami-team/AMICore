@@ -348,7 +348,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup localization...");
 
-		LocalizationSingleton.fill(this);
+		LocalizationSingleton.importCSVToAMI(this);
 
 		/*-----------------------------------------------------------------*/
 		/* DONE                                                            */

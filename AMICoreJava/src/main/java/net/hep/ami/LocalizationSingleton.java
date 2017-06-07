@@ -43,21 +43,21 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv4ToInteger(String ip) throws UnknownHostException
+	private static BigInteger ipv4ToInteger(String ip) throws UnknownHostException
 	{
 		return ipv4ToInteger((Inet4Address) InetAddress.getByName(ip));
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv6ToInteger(String ip) throws UnknownHostException
+	private static BigInteger ipv6ToInteger(String ip) throws UnknownHostException
 	{
 		return ipv6ToInteger((Inet6Address) InetAddress.getByName(ip));
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv4ToInteger(Inet4Address ip) throws UnknownHostException
+	private static BigInteger ipv4ToInteger(Inet4Address ip) throws UnknownHostException
 	{
 		byte[] parts = ip.getAddress();
 
@@ -73,7 +73,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static BigInteger ipv6ToInteger(Inet6Address ip) throws UnknownHostException
+	private static BigInteger ipv6ToInteger(Inet6Address ip) throws UnknownHostException
 	{
 		byte[] parts = ip.getAddress();
 
@@ -89,7 +89,7 @@ public class LocalizationSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void fill(Querier querier) throws Exception
+	public static void importCSVToAMI(Querier querier) throws Exception
 	{
 		final BigInteger ONE = BigInteger.valueOf(1);
 		final BigInteger TWO = BigInteger.valueOf(2);
