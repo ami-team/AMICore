@@ -86,7 +86,7 @@ public class CommandSingletonTest
 
 			//System.out.println(SchemaSingleton.getTableNames("self"));
 
-			//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 
 			System.out.println("SELECT 1 FROM " + SchemaSingleton.externalCatalogToInternalCatalog_noException("self"));
 
@@ -96,7 +96,7 @@ public class CommandSingletonTest
 
 			//System.out.println(MQLToAST.parse("SELECT `foo`.* WHERE `foo`.`bar`='kux' OR `foo`.`bar`=-777", "toto"));
 
-			Exception e = new Exception("foo");
+/*			Exception e = new Exception("foo");
 
 			Exception f = new Exception("bar");
 
@@ -104,7 +104,7 @@ public class CommandSingletonTest
 
 			f.printStackTrace();
 			System.out.println(f.getMessage());
-
+ */
 /*			LogSingleton.root.error("hello!", (Exception) null);
 
 			LogSingleton.root.error("hello!", e);

@@ -43,23 +43,35 @@ public class ClassSingleton
 
 		URL url = ClassSingleton.class.getResource("/net/hep/ami/ClassSingleton.class");
 
+		int index = url.getFile().indexOf("!/");
+
 		String path;
 
 		try
 		{
-			try
+			if(index > 0)
 			{
-				JarURLConnection connection = (JarURLConnection) url.openConnection();
+				/*---------------------------------------------------------*/
+				/* JAR FILE                                                */
+				/*---------------------------------------------------------*/
 
-				path = new File(connection.getJarFileURL().toURI()).getParent();
+				path = new File(url.getFile().substring(0, index)).getParent();
+
+				/*---------------------------------------------------------*/
 			}
-			catch(ClassCastException | IOException e)
+			else
 			{
-				path = new File(url.toURI()).getParentFile()
-				                            .getParentFile()
-				                            .getParentFile()
-				                            .getParent()
+				/*---------------------------------------------------------*/
+				/* CLASS FILE                                              */
+				/*---------------------------------------------------------*/
+
+				path = new File(url.getFile()).getParentFile()
+				                              .getParentFile()
+				                              .getParentFile()
+				                              .getParent()
 				;
+
+				/*---------------------------------------------------------*/
 			}
 		}
 		catch(Exception e)
@@ -68,8 +80,6 @@ public class ClassSingleton
 
 			return;
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		walk(path);
 
