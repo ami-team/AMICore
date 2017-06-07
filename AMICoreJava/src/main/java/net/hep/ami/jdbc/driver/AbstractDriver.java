@@ -148,10 +148,10 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
 	{
-		mql = Tokenizer.format(mql, args);
-
 		try
 		{
+			mql = Tokenizer.format(mql, args);
+
 			String SQL = mqlToSQL(entity, mql);
 			String AST = mqlToAST(entity, mql);
 
@@ -168,10 +168,10 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
-		sql = Tokenizer.format(sql, args);
-
 		try
 		{
+			sql = Tokenizer.format(sql, args);
+
 			String SQL = patchSQL(sql);
 			String AST =     null     ;
 
@@ -188,10 +188,10 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public int executeSQLUpdate(String sql, Object... args) throws Exception
 	{
-		sql = Tokenizer.format(sql, args);
-
 		try
 		{
+			sql = Tokenizer.format(sql, args);
+
 			return m_statement.executeUpdate(patchSQL(sql));
 		}
 		catch(Exception e)

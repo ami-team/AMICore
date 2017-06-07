@@ -32,7 +32,7 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public PreparedStatement prepareStatement(String sql, @Nullable String[] columnNames) throws Exception;
+	public PreparedStatement prepareStatement(String sql, String[] columnNames) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

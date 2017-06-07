@@ -64,15 +64,15 @@ public class AddUser extends AbstractCommand
 		clientDN = SecuritySingleton.encrypt(clientDN);
 		issuerDN = SecuritySingleton.encrypt(issuerDN);
 
-		int nb = getQuerier("self").executeSQLUpdate(String.format("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
-			amiLogin.replace("'", "''"),
-			amiPassword.replace("'", "''"),
-			clientDN.replace("'", "''"),
-			issuerDN.replace("'", "''"),
-			firstName.replace("'", "''"),
-			lastName.replace("'", "''"),
-			email.replace("'", "''")
-		));
+		int nb = getQuerier("self").executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+			amiLogin,
+			amiPassword,
+			clientDN,
+			issuerDN,
+			firstName,
+			lastName,
+			email
+		);
 
 		/*-----------------------------------------------------------------*/
 
