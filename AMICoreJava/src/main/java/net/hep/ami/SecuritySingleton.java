@@ -26,7 +26,7 @@ public class SecuritySingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final class PEMTuple
+	public static final class PEM
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -42,14 +42,14 @@ public class SecuritySingleton
 
 		/*-----------------------------------------------------------------*/
 
-		public PEMTuple(InputStream inputStream) throws Exception
+		public PEM(InputStream inputStream) throws Exception
 		{
 			this(inputStream, PRIVATE_KEY | PUBLIC_KEY | X509_CERTIFICATE);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		public PEMTuple(InputStream inputStream, int flag) throws Exception
+		public PEM(InputStream inputStream, int flag) throws Exception
 		{
 			/*-------------------------------------------------------------*/
 			/* LOAD FILE                                                   */
@@ -145,9 +145,12 @@ public class SecuritySingleton
 
 			for(int i = 0; i < numberOfPrivateKeys; i++)
 			{
-				privateKeys[i] = buildPrivateKey(org.bouncycastle.util.encoders.Base64.decode(
-					list1.get(i).toString()
-				));
+				privateKeys[i] = KeyFactory.getInstance("RSA", BC).generatePrivate(
+
+					new PKCS8EncodedKeySpec(org.bouncycastle.util.encoders.Base64.decode(
+						list1.get(i).toString()
+					))
+				);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -156,9 +159,12 @@ public class SecuritySingleton
 
 			for(int i = 0; i < numberOfPublicKeys; i++)
 			{
-				publicKeys[i] = buildPublicKey(org.bouncycastle.util.encoders.Base64.decode(
-					list2.get(i).toString()
-				));
+				publicKeys[i] = KeyFactory.getInstance("RSA", BC).generatePublic(
+
+					new X509EncodedKeySpec(org.bouncycastle.util.encoders.Base64.decode(
+						list2.get(i).toString()
+					))
+				);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -167,9 +173,12 @@ public class SecuritySingleton
 
 			for(int i = 0; i < numberOfCertificates; i++)
 			{
-				x509Certificates[i] = buildCertificate(org.bouncycastle.util.encoders.Base64.decode(
-					list3.get(i).toString()
-				));
+				x509Certificates[i] = (X509Certificate) CertificateFactory.getInstance("X509", BC).generateCertificate(
+
+					new ByteArrayInputStream(org.bouncycastle.util.encoders.Base64.decode(
+						list3.get(i).toString()
+					))
+				);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -273,63 +282,6 @@ public class SecuritySingleton
 	/*---------------------------------------------------------------------*/
 	/* KEYES AND CERTIFICATES                                              */
 	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
-
-	private static PrivateKey buildPrivateKey(byte[] encoded) throws Exception
-	{
-		return KeyFactory.getInstance("RSA", BC).generatePrivate(
-
-			new PKCS8EncodedKeySpec(
-				encoded
-			)
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static PublicKey buildPublicKey(byte[] encoded) throws Exception
-	{
-		return KeyFactory.getInstance("RSA", BC).generatePublic(
-
-			new X509EncodedKeySpec(
-				encoded
-			)
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static X509Certificate buildCertificate(byte[] encoded) throws Exception
-	{
-		return (X509Certificate) CertificateFactory.getInstance("X509", BC).generateCertificate(
-
-			new ByteArrayInputStream(
-				encoded
-			)
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static PrivateKey[] loadPrivateKeys(InputStream inputStream) throws Exception
-	{
-		return new PEMTuple(inputStream, PEMTuple.PRIVATE_KEY).privateKeys;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static PublicKey[] loadPublicKeys(InputStream inputStream) throws Exception
-	{
-		return new PEMTuple(inputStream, PEMTuple.PUBLIC_KEY).publicKeys;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static X509Certificate[] loadCertificates(InputStream inputStream) throws Exception
-	{
-		return new PEMTuple(inputStream, PEMTuple.X509_CERTIFICATE).x509Certificates;
-	}
-
 	/*---------------------------------------------------------------------*/
 
 	public static KeyPair generateKeyPair(int keysize) throws Exception
