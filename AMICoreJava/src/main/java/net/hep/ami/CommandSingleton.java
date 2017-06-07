@@ -105,7 +105,7 @@ public class CommandSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error("for command `{}`: {}" , row.getValue(0), e.getMessage(), e);
+					LogSingleton.root.error("for command `{}`" , row.getValue(0), e);
 				}
 			}
 
@@ -136,13 +136,18 @@ public class CommandSingleton
 
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
-			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", className);
-
-			return;
+			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
 		}
 
 		/*-----------------------------------------------------------------*/
 		/* ADD COMMAND                                                     */
+		/*-----------------------------------------------------------------*/
+
+		if(commandName == null)
+		{
+			commandName = clazz.getSimpleName();
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		s_commands.put(
@@ -180,15 +185,18 @@ public class CommandSingleton
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
 			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
-
-/*			return;
- */		}
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* REGISTER COMMAND                                                */
 		/*-----------------------------------------------------------------*/
 
-		if(commandName == null) commandName = clazz.getSimpleName();
+		if(commandName == null)
+		{
+			commandName = clazz.getSimpleName();
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
