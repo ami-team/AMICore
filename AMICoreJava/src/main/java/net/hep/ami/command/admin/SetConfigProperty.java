@@ -38,7 +38,7 @@ public class SetConfigProperty extends AbstractCommand
 
 		ConfigSingleton.setProperty(name, value);
 
-		ConfigSingleton.setPropertyToDataBase(getQuerier("self"), name, value);
+		ConfigSingleton.setPropertyInDataBase(getQuerier("self"), name, value);
 
 		/*-----------------------------------------------------------------*/
 

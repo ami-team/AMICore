@@ -284,7 +284,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void setPropertyToDataBase(Querier querier, String name, String value) throws Exception
+	public static void setPropertyInDataBase(Querier querier, String name, String value) throws Exception
 	{
 		try
 		{
@@ -304,7 +304,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removePropertyFromDataBase(Querier querier, String name) throws Exception
+	public static void removePropertyInDataBase(Querier querier, String name) throws Exception
 	{
 		querier.executeUpdate(String.format("DELETE FROM `router_config` WHERE `paramName` = '%s'",
 			SecuritySingleton.encrypt(name).replace("'", "''")
