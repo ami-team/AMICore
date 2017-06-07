@@ -81,7 +81,7 @@ public class GenerateAndSendCertificate extends AbstractCommand
 
 		try
 		{
-			SecuritySingleton.PEMTuple tuple = SecuritySingleton.loadPEM(new FileInputStream(fileName));
+			SecuritySingleton.PEMTuple tuple = new SecuritySingleton.PEMTuple(new FileInputStream(fileName));
 
 			if(tuple.privateKeys.length == 0)
 			{

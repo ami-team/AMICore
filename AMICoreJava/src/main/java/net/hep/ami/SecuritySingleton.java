@@ -44,16 +44,117 @@ public class SecuritySingleton
 
 	public static final class PEMTuple
 	{
+		/*-----------------------------------------------------------------*/
+
 		public final PrivateKey[] privateKeys;
 		public final PublicKey[] publicKeys;
 		public final X509Certificate[] x509Certificates;
 
-		public PEMTuple(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates)
+		/*-----------------------------------------------------------------*/
+
+		public PEMTuple(InputStream inputStream) throws Exception
 		{
-			privateKeys = _privateKeys;
-			publicKeys = _publicKeys;
-			x509Certificates = _x509Certificates;
+			/*-------------------------------------------------------------*/
+			/* LOAD FILE                                                   */
+			/*-------------------------------------------------------------*/
+
+			PEMTupleXZY tuple = parsePEM(inputStream);
+
+			/*-------------------------------------------------------------*/
+			/* GET NUMBER OF OBJECTS                                       */
+			/*-------------------------------------------------------------*/
+
+			final int numberOfPrivateKeys = tuple.x.size();
+			final int numberOfPublicKeys = tuple.y.size();
+			final int numberOfCertificates = tuple.z.size();
+
+			/*-------------------------------------------------------------*/
+			/* BUILD OBJECTS                                               */
+			/*-------------------------------------------------------------*/
+
+			privateKeys = new PrivateKey[numberOfPrivateKeys];
+
+			for(int i = 0; i < numberOfPrivateKeys; i++)
+			{
+				privateKeys[i] = buildPrivateKey(org.bouncycastle.util.encoders.Base64.decode(
+					tuple.x.get(i).toString()
+				));
+			}
+
+			/*-------------------------------------------------------------*/
+
+			publicKeys = new PublicKey[numberOfPublicKeys];
+
+			for(int i = 0; i < numberOfPublicKeys; i++)
+			{
+				publicKeys[i] = buildPublicKey(org.bouncycastle.util.encoders.Base64.decode(
+					tuple.y.get(i).toString()
+				));
+			}
+
+			/*-------------------------------------------------------------*/
+
+			x509Certificates = new X509Certificate[numberOfCertificates];
+
+			for(int i = 0; i < numberOfCertificates; i++)
+			{
+				x509Certificates[i] = buildCertificate(org.bouncycastle.util.encoders.Base64.decode(
+					tuple.z.get(i).toString()
+				));
+			}
+
+			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String toString()
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+
+			/*-------------------------------------------------------------*/
+
+			for(PrivateKey privateKey: privateKeys)
+			{
+				stringBuilder.append("-----BEGIN PRIVATE KEY-----\n")
+				             .append(byteArrayToBase64String(privateKey.getEncoded()))
+				             .append("-----END PRIVATE KEY-----\n")
+				;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			for(PublicKey _publicKey: publicKeys)
+			{
+				stringBuilder.append("-----BEGIN PUBLIC KEY-----\n")
+				             .append(byteArrayToBase64String(_publicKey.getEncoded()))
+				             .append("-----END PUBLIC KEY-----\n")
+				;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			for(X509Certificate x509Certificate: x509Certificates)
+			{
+				try
+				{
+					stringBuilder.append("-----BEGIN CERTIFICATE-----\n")
+					             .append(byteArrayToBase64String(x509Certificate.getEncoded()))
+					             .append("-----END CERTIFICATE-----\n")
+					;
+				}
+				catch(CertificateEncodingException e)
+				{
+					stringBuilder.append(e.getMessage());
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
+			return stringBuilder.toString();
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -311,68 +412,6 @@ public class SecuritySingleton
 		/*-----------------------------------------------------------------*/
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static PEMTuple loadPEM(InputStream inputStream) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-		/* LOAD FILE                                                       */
-		/*-----------------------------------------------------------------*/
-
-		PEMTupleXZY tuple = parsePEM(inputStream);
-
-		/*-----------------------------------------------------------------*/
-		/* GET NUMBER OF OBJECTS                                           */
-		/*-----------------------------------------------------------------*/
-
-		final int numberOfPrivateKeys = tuple.x.size();
-		final int numberOfPublicKeys = tuple.y.size();
-		final int numberOfCertificates = tuple.z.size();
-
-		/*-----------------------------------------------------------------*/
-		/* BUILD OBJECTS                                                   */
-		/*-----------------------------------------------------------------*/
-
-		PrivateKey[] privateKeys = new PrivateKey[numberOfPrivateKeys];
-
-		for(int i = 0; i < numberOfPrivateKeys; i++)
-		{
-			privateKeys[i] = buildPrivateKey(org.bouncycastle.util.encoders.Base64.decode(
-				tuple.x.get(i).toString()
-			));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		PublicKey[] publicKeys = new PublicKey[numberOfPublicKeys];
-
-		for(int i = 0; i < numberOfPublicKeys; i++)
-		{
-			publicKeys[i] = buildPublicKey(org.bouncycastle.util.encoders.Base64.decode(
-				tuple.y.get(i).toString()
-			));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		X509Certificate[] certificates = new X509Certificate[numberOfCertificates];
-
-		for(int i = 0; i < numberOfCertificates; i++)
-		{
-			certificates[i] = buildCertificate(org.bouncycastle.util.encoders.Base64.decode(
-				tuple.z.get(i).toString()
-			));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return new PEMTuple(
-			privateKeys,
-			publicKeys,
-			certificates
-		);
 	}
 
 	/*---------------------------------------------------------------------*/
