@@ -88,7 +88,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		querier.executeUpdate(sql);
+		querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

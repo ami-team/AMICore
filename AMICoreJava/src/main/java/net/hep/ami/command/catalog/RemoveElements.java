@@ -111,7 +111,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		querier.executeUpdate(sql);
+		querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

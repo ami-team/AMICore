@@ -23,7 +23,7 @@ public class ListRoles extends AbstractCommand
 			throw new Exception("HTTPS connection required"); 
 		}
 
-		return getQuerier("self").executeQuery("SELECT role, validatorClass FROM `router_role`").toStringBuilder();
+		return getQuerier("self").executeSQLQuery("SELECT role, validatorClass FROM `router_role`").toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/

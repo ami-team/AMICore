@@ -32,7 +32,7 @@ public class RoleSingleton
 			parent.replace("'", "''")
 		);
 
-		List<Row> rowList = querier.executeQuery(sql).getAll();
+		List<Row> rowList = querier.executeSQLQuery(sql).getAll();
 
 		if(rowList.size() != 1)
 		{
@@ -53,15 +53,15 @@ public class RoleSingleton
 
 		if(insertAfter || "0".equals(isLeaf))
 		{
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
 				parentLft
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s",
 				parentLft
 			));
 
-			querier.executeUpdate(String.format("INSERT INTO `router_role` (`lft`, `rgt`, `role`, `validatorClass`) VALUES (%s + 1, %s + 2, '%s', '%s')",
+			querier.executeSQLUpdate(String.format("INSERT INTO `router_role` (`lft`, `rgt`, `role`, `validatorClass`) VALUES (%s + 1, %s + 2, '%s', '%s')",
 				parentLft, parentLft,
 				role.replace("'", "''"),
 				roleValidatorClass.replace("'", "''")
@@ -69,15 +69,15 @@ public class RoleSingleton
 		}
 		else
 		{
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` + 2 WHERE `lft` > %s",
 				parentRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` + 2 WHERE `rgt` > %s",
 				parentRgt
 			));
 
-			querier.executeUpdate(String.format("INSERT INTO `router_role` (`lft`, `rgt`, `role`, `validatorClass`) VALUES (%s + 1, %s + 2, '%s', '%s')",
+			querier.executeSQLUpdate(String.format("INSERT INTO `router_role` (`lft`, `rgt`, `role`, `validatorClass`) VALUES (%s + 1, %s + 2, '%s', '%s')",
 				parentRgt, parentRgt,
 				role.replace("'", "''"),
 				roleValidatorClass.replace("'", "''")
@@ -100,7 +100,7 @@ public class RoleSingleton
 			role.replace("'", "''")
 		);
 
-		List<Row> rowList = querier.executeQuery(sql).getAll();
+		List<Row> rowList = querier.executeSQLQuery(sql).getAll();
 
 		if(rowList.size() != 1)
 		{
@@ -122,39 +122,39 @@ public class RoleSingleton
 
 		if(cascade || "0".equals(isLeaf))
 		{
-			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` BETWEEN %s AND %s",
+			querier.executeSQLUpdate(String.format("DELETE FROM `router_role` WHERE `lft` BETWEEN %s AND %s",
 				roleLft,
 				roleRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` - %s WHERE `lft` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` - %s WHERE `lft` > %s",
 				width,
 				roleRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - %s WHERE `rgt` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - %s WHERE `rgt` > %s",
 				width,
 				roleRgt
 			));
 		}
 		else
 		{
-			querier.executeUpdate(String.format("DELETE FROM `router_role` WHERE `lft` = %s AND `rgt` = %s",
+			querier.executeSQLUpdate(String.format("DELETE FROM `router_role` WHERE `lft` = %s AND `rgt` = %s",
 				roleLft,
 				roleRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - 1, `lft` = `lft` - 1 WHERE `lft` BETWEEN %s AND %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - 1, `lft` = `lft` - 1 WHERE `lft` BETWEEN %s AND %s",
 				roleLft,
 				roleRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` - %s WHERE `lft` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `lft` = `lft` - %s WHERE `lft` > %s",
 				"2",
 				roleRgt
 			));
 
-			querier.executeUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - %s WHERE `rgt` > %s",
+			querier.executeSQLUpdate(String.format("UPDATE `router_role` SET `rgt` = `rgt` - %s WHERE `rgt` > %s",
 				"2",
 				roleRgt
 			));
@@ -228,7 +228,7 @@ public class RoleSingleton
 			amiPass.replace("'", "''")
 		);
 
-		List<Row> rowList = querier.executeQuery(sql).getAll();
+		List<Row> rowList = querier.executeSQLQuery(sql).getAll();
 
 		if(rowList.isEmpty())
 		{

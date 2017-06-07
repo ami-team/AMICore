@@ -143,7 +143,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		querier.executeUpdate(sql);
+		querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

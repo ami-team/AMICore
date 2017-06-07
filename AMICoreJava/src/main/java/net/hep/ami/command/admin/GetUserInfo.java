@@ -36,7 +36,7 @@ public class GetUserInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeQuery("SELECT `AMIUser`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = '" + amiLogin + "'").getAll();
+		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = '" + amiLogin + "'").getAll();
 
 		if(rowList.isEmpty())
 		{
@@ -61,7 +61,7 @@ public class GetUserInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = querier.executeQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' OR `AMIUser` = '" + m_guestUser + "') AND `router_user_role`.`roleFK` = `router_role`.`id`");
+		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' OR `AMIUser` = '" + m_guestUser + "') AND `router_user_role`.`roleFK` = `router_role`.`id`");
 
 		/*-----------------------------------------------------------------*/
 

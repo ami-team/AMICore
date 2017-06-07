@@ -77,17 +77,17 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeQuery(String sql) throws Exception
+	public RowSet executeSQLQuery(String sql) throws Exception
 	{
-		return m_driver.executeQuery(sql);
+		return m_driver.executeSQLQuery(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeUpdate(String sql) throws Exception
+	public int executeSQLUpdate(String sql) throws Exception
 	{
-		return m_driver.executeUpdate(sql);
+		return m_driver.executeSQLUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -254,7 +254,7 @@ public class Router implements Querier
 					{
 						LogSingleton.root.info(query);
 
-						executeUpdate(query);
+						executeSQLUpdate(query);
 
 						query = "";
 					}
@@ -275,7 +275,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeUpdate(
+		executeSQLUpdate(
 			"INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES" +
 			" ('self', '" + getInternalCatalog().replace("'", "''") + "', '" + getJdbcUrl().replace("'", "''") + "', '" + SecuritySingleton.encrypt(getUser()) + "', '" + SecuritySingleton.encrypt(getPass()) + "', 0, NULL)" +
 			";"
@@ -287,7 +287,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup converters...");
 
-		executeUpdate(
+		executeSQLUpdate(
 			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
 			" ('/xslt/AMIXmlToText.xsl', 'text/plain')," +
 			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')," +
@@ -301,7 +301,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup roles...");
 
-		executeUpdate(
+		executeSQLUpdate(
 			"INSERT INTO `router_role` (`lft`, `rgt`, `role`) VALUES" +
 			" (0, 3, 'AMI_guest_role')," +
 			" (1, 2, 'AMI_admin_role')" +
@@ -314,7 +314,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup users...");
 
-		executeUpdate(
+		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES" +
 			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
 			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
@@ -335,7 +335,7 @@ public class Router implements Querier
 
 			if("AbstractCommand".equals(commandName) == false)
 			{
-				executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
+				executeSQLUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
 					commandName.replace("'", "''"),
 					className.replace("'", "''")
 				));

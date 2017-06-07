@@ -78,7 +78,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeQuery("SELECT `externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CATALOGS                                                */

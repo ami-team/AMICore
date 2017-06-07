@@ -155,7 +155,7 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					driver.executeQuery("SELECT 1");
+					driver.executeSQLQuery("SELECT 1");
 				}
 			}
 
@@ -239,7 +239,7 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == Jdbc.Type.SQL)
 				{
-					driver.executeQuery("SELECT 1");
+					driver.executeSQLQuery("SELECT 1");
 				}
 			}
 

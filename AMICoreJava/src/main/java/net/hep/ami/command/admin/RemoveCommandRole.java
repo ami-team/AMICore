@@ -41,7 +41,7 @@ public class RemoveCommandRole extends AbstractCommand
 			command.replace("'", "''")
 		);
 
-		List<Row> rowList1 = querier.executeQuery(sql1).getAll();
+		List<Row> rowList1 = querier.executeSQLQuery(sql1).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -58,7 +58,7 @@ public class RemoveCommandRole extends AbstractCommand
 			role.replace("'", "''")
 		);
 
-		List<Row> rowList2 = querier.executeQuery(sql2).getAll();
+		List<Row> rowList2 = querier.executeSQLQuery(sql2).getAll();
 
 		if(rowList2.size() != 1)
 		{
@@ -76,7 +76,7 @@ public class RemoveCommandRole extends AbstractCommand
 			roleID
 		);
 
-		int nb = querier.executeUpdate(sql3);
+		int nb = querier.executeSQLUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 

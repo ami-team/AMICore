@@ -108,7 +108,7 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> locations = CSV.parseAsMap(new FileInputStream(locationsEn));
 
-			querier.executeUpdate("DELETE FROM `router_locations`");
+			querier.executeSQLUpdate("DELETE FROM `router_locations`");
 
 			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)"))
 			{
@@ -146,7 +146,7 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv4));
 
-			querier.executeUpdate("DELETE FROM `router_ipv4_blocks`");
+			querier.executeSQLUpdate("DELETE FROM `router_ipv4_blocks`");
 
 			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_ipv4_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
 			{
@@ -194,7 +194,7 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv6));
 
-			querier.executeUpdate("DELETE FROM `router_ipv6_blocks`");
+			querier.executeSQLUpdate("DELETE FROM `router_ipv6_blocks`");
 
 			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_ipv6_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
 			{
@@ -264,7 +264,7 @@ public class LocalizationSingleton
 		/* EXECUTE QUERY                                                   */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = querier.executeQuery(String.format(
+		RowSet rowSet = querier.executeSQLQuery(String.format(
 			"SELECT `L`.`continentCode`, `L`.`countryCode` FROM `%s` AS `B`, `router_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
 			_table,
 			_ip

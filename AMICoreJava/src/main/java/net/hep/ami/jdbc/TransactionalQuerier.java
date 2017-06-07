@@ -76,17 +76,17 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeQuery(String sql) throws Exception
+	public RowSet executeSQLQuery(String sql) throws Exception
 	{
-		return m_driver.executeQuery(sql);
+		return m_driver.executeSQLQuery(sql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeUpdate(String sql) throws Exception
+	public int executeSQLUpdate(String sql) throws Exception
 	{
-		return m_driver.executeUpdate(sql);
+		return m_driver.executeSQLUpdate(sql);
 	}
 
 	/*---------------------------------------------------------------------*/

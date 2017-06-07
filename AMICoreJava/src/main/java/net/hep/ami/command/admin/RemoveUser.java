@@ -36,7 +36,7 @@ public class RemoveUser extends AbstractCommand
 			amiLogin.replace("'", "''")
 		);
 
-		int nb = querier.executeUpdate(sql);
+		int nb = querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

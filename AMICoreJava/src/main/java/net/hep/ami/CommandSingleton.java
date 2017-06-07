@@ -88,7 +88,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeQuery("SELECT `command`, `class` FROM `router_command`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */
@@ -200,14 +200,14 @@ public class CommandSingleton
 
 		try
 		{
-			querier.executeUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
+			querier.executeSQLUpdate(String.format("INSERT INTO `router_command` (`command`, `class`) VALUES ('%s', '%s')",
 				commandName.replace("'", "''"),
 				className.replace("'", "''")
 			));
 		}
 		catch(Exception e)
 		{
-			querier.executeUpdate(String.format("UPDATE `router_command` SET `class` = '%s' WHERE `command` = '%s'",
+			querier.executeSQLUpdate(String.format("UPDATE `router_command` SET `class` = '%s' WHERE `command` = '%s'",
 				className.replace("'", "''"),
 				commandName.replace("'", "''")
 			));
@@ -220,7 +220,7 @@ public class CommandSingleton
 
 	public static void unregisterCommand(Querier querier, String commandName) throws Exception
 	{
-		querier.executeUpdate(String.format("DELETE FROM `router_command` WHERE `simpleName` = `%s`",
+		querier.executeSQLUpdate(String.format("DELETE FROM `router_command` WHERE `simpleName` = `%s`",
 			commandName.replace("'", "''")
 		));
 	}

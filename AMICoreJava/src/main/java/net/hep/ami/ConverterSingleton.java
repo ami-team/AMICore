@@ -77,7 +77,7 @@ public class ConverterSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeQuery("SELECT `xslt`, `mime` FROM `router_converter`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `xslt`, `mime` FROM `router_converter`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTERS                                              */

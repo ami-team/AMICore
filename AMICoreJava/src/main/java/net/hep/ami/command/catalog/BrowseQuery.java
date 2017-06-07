@@ -40,7 +40,7 @@ public class BrowseQuery extends AbstractCommand
 
 		if(sql != null)
 		{
-			queryResult = querier.executeQuery(sql);
+			queryResult = querier.executeSQLQuery(sql);
 		}
 		else
 		{
