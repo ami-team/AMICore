@@ -143,13 +143,6 @@ public class CommandSingleton
 		/* ADD COMMAND                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(commandName == null)
-		{
-			commandName = clazz.getSimpleName();
-		}
-
-		/*-----------------------------------------------------------------*/
-
 		s_commands.put(
 			commandName
 			,
@@ -165,64 +158,6 @@ public class CommandSingleton
 		);
 
 		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void registerCommand(Querier querier, @Nullable String commandName, String className) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-		/* GET CLASS OBJECT                                                */
-		/*-----------------------------------------------------------------*/
-
-		Class<?> clazz = Class.forName(className);
-
-		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
-		{
-			return;
-		}
-
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
-		{
-			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* REGISTER COMMAND                                                */
-		/*-----------------------------------------------------------------*/
-
-		if(commandName == null)
-		{
-			commandName = clazz.getSimpleName();
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			querier.executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)",
-				commandName,
-				className
-			);
-		}
-		catch(Exception e)
-		{
-			querier.executeSQLUpdate("UPDATE `router_command` SET `class` = ? WHERE `command` = ?",
-				className,
-				commandName
-			);
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void unregisterCommand(Querier querier, String commandName) throws Exception
-	{
-		querier.executeSQLUpdate("DELETE FROM `router_command` WHERE `simpleName` = ?",
-			commandName
-		);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -304,9 +239,27 @@ public class CommandSingleton
 		/*-----------------------------------------------------------------*/
 		/* CHECK ROLES                                                     */
 		/*-----------------------------------------------------------------*/
+/*
+		if(checkRoles)
+		{
+			AbstractDriver driver = DriverSingleton.getConnection(
+				"self",
+				ConfigSingleton.getProperty("router"),
+				ConfigSingleton.getProperty("router_url"),
+				ConfigSingleton.getProperty("router_user"),
+				ConfigSingleton.getProperty("router_pass")
+			);
 
-		/* TODO */
-
+			try
+			{
+				RoleSingleton.checkRoles(driver, command, arguments);
+			}
+			finally
+			{
+				driver.rollback();
+			}
+		}
+*/
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE COMMAND AND BUILD RESULT                                */
 		/*-----------------------------------------------------------------*/

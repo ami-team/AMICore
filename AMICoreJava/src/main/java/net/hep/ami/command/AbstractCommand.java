@@ -118,27 +118,30 @@ public abstract class AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_transactionBooker)
+		if(e1 == null)
 		{
-			if(e1 == null)
+			if(m_transactionBooker)
 			{
 				TransactionPoolSingleton.commitAndRelease(m_transactionId);
 			}
-			else
+		}
+		else
+		{
+			if(m_transactionBooker)
 			{
 				try
 				{
 					TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
-
-					throw e1;
 				}
 				catch(Exception e2)
 				{
 					e2.initCause(e1);
 
-					throw new Exception(e1.getMessage() + ", " + e2.getMessage(), e2);
+					e1 = new Exception(e1.getMessage() + ", " + e2.getMessage(), e2);
 				}
 			}
+
+			throw e1;
 		}
 
 		/*-----------------------------------------------------------------*/
