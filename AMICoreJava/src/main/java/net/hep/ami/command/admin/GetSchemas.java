@@ -26,7 +26,7 @@ public class GetSchemas extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get database schemes.";
+		return "Get the database schemas.";
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -32,11 +32,9 @@ public class RemoveUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = String.format("DELETE FROM `router_user` WHERE `AMIUser`='%s'",
-			amiLogin.replace("'", "''")
+		int nb = querier.executeSQLUpdate("DELETE FROM `router_user` WHERE `AMIUser` = ?",
+			amiLogin
 		);
-
-		int nb = querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -50,14 +48,14 @@ public class RemoveUser extends AbstractCommand
 
 	public static String help()
 	{
-		return "Remove user.";
+		return "Remove a user.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-amiLogin=\"value\"";
+		return "-amiLogin=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

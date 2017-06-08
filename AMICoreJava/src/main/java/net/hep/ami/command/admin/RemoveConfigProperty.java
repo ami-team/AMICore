@@ -3,6 +3,7 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 public class RemoveConfigProperty extends AbstractCommand
@@ -33,9 +34,13 @@ public class RemoveConfigProperty extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		Querier querier = getQuerier("self");
+
+		/*-----------------------------------------------------------------*/
+
 		ConfigSingleton.removeProperty(name);
 
-		ConfigSingleton.removePropertyInDataBase(getQuerier("self"), name);
+		ConfigSingleton.removePropertyInDataBase(querier, name);
 
 		/*-----------------------------------------------------------------*/
 
@@ -46,7 +51,7 @@ public class RemoveConfigProperty extends AbstractCommand
 
 	public static String help()
 	{
-		return "Remove configuration property.";
+		return "Remove a global configuration property.";
 	}
 
 	/*---------------------------------------------------------------------*/

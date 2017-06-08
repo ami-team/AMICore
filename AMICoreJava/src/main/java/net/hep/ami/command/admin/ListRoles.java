@@ -30,7 +30,7 @@ public class ListRoles extends AbstractCommand
 
 	public static String help()
 	{
-		return "List roles.";
+		return "List the available roles.";
 	}
 
 	/*---------------------------------------------------------------------*/

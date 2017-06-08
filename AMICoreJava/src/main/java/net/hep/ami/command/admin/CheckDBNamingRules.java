@@ -6,15 +6,15 @@ import java.util.regex.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-public class CheckDBRules extends AbstractCommand
+public class CheckDBNamingRules extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern s_regex = Pattern.compile("[a-z][a-z0-9]*");
+	private static final Pattern s_regex = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
 
 	/*---------------------------------------------------------------------*/
 
-	public CheckDBRules(Map<String, String> arguments, long transactionId)
+	public CheckDBNamingRules(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -51,13 +51,9 @@ public class CheckDBRules extends AbstractCommand
 
 				for(SchemaSingleton.Column column: columns)
 				{
-					if("AMIUser".equals(column.name) == false
-					   &&
-					   "AMIPass".equals(column.name) == false
-					   &&
-					   s_regex.matcher(column.name).matches() == false
-					 ) {
-						result.append("Column name `").append(column.table).append("`.`" + column.name).append("` should be in lowerCamelCase.\\n");
+					if(s_regex.matcher(column.name).matches() == false)
+					{
+						result.append("Column name `").append(column.table).append("`.`" + column.name).append("` should match with regular expression " + s_regex.toString() + ".\\n");
 					}
 					else
 					{
@@ -100,7 +96,7 @@ public class CheckDBRules extends AbstractCommand
 				{
 					if(frgnKey.get(0).fkColumn.endsWith("fk") == false)
 					{
-						result.append("Foreign key `").append(frgnKey.get(0).fkTable).append("`.`").append(frgnKey.get(0).fkColumn).append("` should be sufixed with 'FK'.\\n");
+						result.append("Foreign key `").append(frgnKey.get(0).fkTable).append("`.`").append(frgnKey.get(0).fkColumn).append("` should end with `FK`.\\n");
 					}
 					else
 					{
@@ -133,7 +129,7 @@ public class CheckDBRules extends AbstractCommand
 
 	public static String help()
 	{
-		return "Check conventions.";
+		return "Check the DB naming rules.";
 	}
 
 	/*---------------------------------------------------------------------*/

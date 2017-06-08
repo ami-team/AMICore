@@ -3,6 +3,7 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 public class AddUser extends AbstractCommand
@@ -38,6 +39,8 @@ public class AddUser extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		String clientDN;
 		String issuerDN;
 
@@ -52,6 +55,8 @@ public class AddUser extends AbstractCommand
 			issuerDN = "";
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		RoleSingleton.checkNewUser(
 			ConfigSingleton.getProperty("user_validator_class"),
 			amiLogin,
@@ -65,7 +70,11 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = getQuerier("self").executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		Querier querier = getQuerier("self");
+
+		/*-----------------------------------------------------------------*/
+
+		int nb = querier.executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			amiLogin,
 			SecuritySingleton.encrypt(amiPassword),
 			clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,
@@ -87,7 +96,7 @@ public class AddUser extends AbstractCommand
 
 	public static String help()
 	{
-		return "Add user.";
+		return "Add a user.";
 	}
 
 	/*---------------------------------------------------------------------*/

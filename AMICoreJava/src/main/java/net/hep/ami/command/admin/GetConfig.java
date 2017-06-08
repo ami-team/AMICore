@@ -31,7 +31,7 @@ public class GetConfig extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get configuration.";
+		return "Get the global configuration.";
 	}
 
 	/*---------------------------------------------------------------------*/

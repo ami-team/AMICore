@@ -19,6 +19,8 @@ public class LocalizeIP extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		StringBuilder result = new StringBuilder();
+
 		String ip = arguments.get("ip");
 
 		if(ip == null)
@@ -29,10 +31,6 @@ public class LocalizeIP extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		LocalizationSingleton.Localization localization = LocalizationSingleton.localizeIP(getQuerier("self"), ip);
-
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
@@ -59,7 +57,7 @@ public class LocalizeIP extends AbstractCommand
 
 	public static String help()
 	{
-		return "Localize an IP.";
+		return "Localize an IP address.";
 	}
 
 	/*---------------------------------------------------------------------*/

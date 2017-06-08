@@ -26,7 +26,7 @@ public class ListConverters extends AbstractCommand
 
 	public static String help()
 	{
-		return "List converters.";
+		return "List the available converters.";
 	}
 
 	/*---------------------------------------------------------------------*/

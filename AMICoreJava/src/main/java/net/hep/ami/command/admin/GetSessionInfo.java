@@ -20,6 +20,8 @@ public class GetSessionInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		StringBuilder result = new StringBuilder();
+
 		boolean attachCert = arguments.containsKey("attachCert");
 		boolean detachCert = arguments.containsKey("detachCert");
 
@@ -39,13 +41,11 @@ public class GetSessionInfo extends AbstractCommand
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET USER INFO                                                   */
 		/*-----------------------------------------------------------------*/
 
 		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `id` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?)", m_AMIUser, m_guestUser).getAll();
@@ -86,7 +86,7 @@ public class GetSessionInfo extends AbstractCommand
 		);
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* ATTACH CERTIFICATE                                              */
 		/*-----------------------------------------------------------------*/
 
 		if(attachCert)
@@ -114,7 +114,7 @@ public class GetSessionInfo extends AbstractCommand
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* DETACH CERTIFICATE                                              */
 		/*-----------------------------------------------------------------*/
 
 		if(detachCert)
@@ -142,14 +142,10 @@ public class GetSessionInfo extends AbstractCommand
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET USER ROLES                                                  */
 		/*-----------------------------------------------------------------*/
 
 		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?) AND `router_user_role`.`roleFK` = `router_role`.`id`", m_AMIUser, m_guestUser);
-
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
@@ -217,7 +213,7 @@ public class GetSessionInfo extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get session information.";
+		return "Get the session information.";
 	}
 
 	/*---------------------------------------------------------------------*/

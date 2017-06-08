@@ -37,11 +37,7 @@ public class RemoveCommandRole extends AbstractCommand
 		/* GET COMMAND ID                                                  */
 		/*-----------------------------------------------------------------*/
 
-		String sql1 = String.format("SELECT `id` FROM `router_command` WHERE `command`='%s'",
-			command.replace("'", "''")
-		);
-
-		List<Row> rowList1 = querier.executeSQLQuery(sql1).getAll();
+		List<Row> rowList1 = querier.executeSQLQuery("SELECT `id` FROM `router_command` WHERE `command` = ?", command).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -54,11 +50,7 @@ public class RemoveCommandRole extends AbstractCommand
 		/* GET ROLE ID                                                     */
 		/*-----------------------------------------------------------------*/
 
-		String sql2 = String.format("SELECT `id` FROM `router_role` WHERE `role`='%s'",
-			role.replace("'", "''")
-		);
-
-		List<Row> rowList2 = querier.executeSQLQuery(sql2).getAll();
+		List<Row> rowList2 = querier.executeSQLQuery("SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
 
 		if(rowList2.size() != 1)
 		{
@@ -71,12 +63,10 @@ public class RemoveCommandRole extends AbstractCommand
 		/* REMOVE ROLE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		String sql3 = String.format("DELETE FROM `router_command_role` WHERE `commandFK`='%s' AND `roleFK`='%s'",
+		int nb = querier.executeSQLUpdate("DELETE FROM `router_command_role` WHERE `commandFK` = ? AND `roleFK` = ?",
 			commandID,
 			roleID
 		);
-
-		int nb = querier.executeSQLUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 
@@ -90,14 +80,14 @@ public class RemoveCommandRole extends AbstractCommand
 
 	public static String help()
 	{
-		return "Remove command role.";
+		return "Remove a command role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-command=\"value\" -role=\"value\"";
+		return "-command=\"\" -role=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

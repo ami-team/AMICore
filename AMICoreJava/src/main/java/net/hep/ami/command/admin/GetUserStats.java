@@ -27,7 +27,14 @@ public class GetUserStats extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(querier.executeSQLQuery("SELECT (SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 1) AS `valid`, (SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 0) AS `invalid`").toStringBuilder("users"));
+		result.append(querier.executeSQLQuery(
+			"SELECT "
+			+
+			"(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 1) AS `valid`"
+			+ "," +
+			"(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 0) AS `invalid`"
+
+		).toStringBuilder("users"));
 
 		/*-----------------------------------------------------------------*/
 
@@ -42,7 +49,7 @@ public class GetUserStats extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get user stats.";
+		return "Get the user stats.";
 	}
 
 	/*---------------------------------------------------------------------*/

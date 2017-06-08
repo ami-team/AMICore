@@ -49,7 +49,7 @@ public class SetConfigProperty extends AbstractCommand
 
 	public static String help()
 	{
-		return "Set configuration property.";
+		return "Set a global configuration property.";
 	}
 
 	/*---------------------------------------------------------------------*/

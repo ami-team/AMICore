@@ -20,15 +20,13 @@ public class GetServerStatus extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		StringBuilder result = new StringBuilder();
+
 		/*-----------------------------------------------------------------*/
 
-		Runtime runtime = Runtime.getRuntime();
+		Runtime runtime = java.lang.Runtime.getRuntime();
 
 		File file = new File(System.getProperty("catalina.base", "/"));
-
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
@@ -65,7 +63,7 @@ public class GetServerStatus extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get connection pool status.";
+		return "Get the server status.";
 	}
 
 	/*---------------------------------------------------------------------*/

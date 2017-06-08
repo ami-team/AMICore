@@ -19,6 +19,8 @@ public class GetUserInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		StringBuilder result = new StringBuilder();
+
 		String amiLogin = arguments.get("amiLogin");
 
 		if(amiLogin == null)
@@ -27,13 +29,11 @@ public class GetUserInfo extends AbstractCommand
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET USER INFO                                                   */
 		/*-----------------------------------------------------------------*/
 
 		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = '" + amiLogin + "'").getAll();
@@ -58,14 +58,10 @@ public class GetUserInfo extends AbstractCommand
 		boolean VALID = "0".equals(valid) == false;
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GET USER ROLES                                                  */
 		/*-----------------------------------------------------------------*/
 
 		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' OR `AMIUser` = '" + m_guestUser + "') AND `router_user_role`.`roleFK` = `router_role`.`id`");
-
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
@@ -119,7 +115,7 @@ public class GetUserInfo extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get user information.";
+		return "Get the user information.";
 	}
 
 	/*---------------------------------------------------------------------*/

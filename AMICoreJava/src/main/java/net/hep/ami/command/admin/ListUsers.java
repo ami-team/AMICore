@@ -30,7 +30,7 @@ public class ListUsers extends AbstractCommand
 
 	public static String help()
 	{
-		return "List users.";
+		return "List the registered users.";
 	}
 
 	/*---------------------------------------------------------------------*/

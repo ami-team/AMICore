@@ -37,11 +37,7 @@ public class AddUserRole extends AbstractCommand
 		/* GET USER ID                                                     */
 		/*-----------------------------------------------------------------*/
 
-		String sql1 = String.format("SELECT `id` FROM `router_user` WHERE `AMIUser`='%s'",
-			user.replace("'", "''")
-		);
-
-		List<Row> rowList1 = querier.executeSQLQuery(sql1).getAll();
+		List<Row> rowList1 = querier.executeSQLQuery("SELECT `id` FROM `router_user` WHERE `AMIUser` = ?", user).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -54,11 +50,7 @@ public class AddUserRole extends AbstractCommand
 		/* GET ROLE ID                                                     */
 		/*-----------------------------------------------------------------*/
 
-		String sql2 = String.format("SELECT `id` FROM `router_role` WHERE `role`='%s'",
-			role.replace("'", "''")
-		);
-
-		List<Row> rowList2 = querier.executeSQLQuery(sql2).getAll();
+		List<Row> rowList2 = querier.executeSQLQuery("SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
 
 		if(rowList2.size() != 1)
 		{
@@ -71,12 +63,10 @@ public class AddUserRole extends AbstractCommand
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		String sql3 = String.format("INSERT INTO `router_user_role` (`userFK`,`roleFK`) VALUES ('%s','%s')",
+		int nb = querier.executeSQLUpdate("INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES (?, ?)",
 			userID,
 			roleID
 		);
-
-		int nb = querier.executeSQLUpdate(sql3);
 
 		/*-----------------------------------------------------------------*/
 
@@ -90,14 +80,14 @@ public class AddUserRole extends AbstractCommand
 
 	public static String help()
 	{
-		return "Add user role.";
+		return "Add a user role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-user=\"value\" -role=\"value\"";
+		return "-user=\"\" -role=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

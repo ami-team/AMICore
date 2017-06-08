@@ -5,11 +5,11 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class ReloadServerConfig extends AbstractCommand
+public class ReloadServerCaches extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ReloadServerConfig(Map<String, String> arguments, long transactionId)
+	public ReloadServerCaches(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -30,7 +30,7 @@ public class ReloadServerConfig extends AbstractCommand
 
 	public static String help()
 	{
-		return "Reload the configuration.";
+		return "Reload the server caches.";
 	}
 
 	/*---------------------------------------------------------------------*/
