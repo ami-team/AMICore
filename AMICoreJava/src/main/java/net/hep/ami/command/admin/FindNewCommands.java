@@ -1,7 +1,7 @@
 package net.hep.ami.command.admin;
 
-import java.lang.reflect.Modifier;
 import java.util.*;
+import java.lang.reflect.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
