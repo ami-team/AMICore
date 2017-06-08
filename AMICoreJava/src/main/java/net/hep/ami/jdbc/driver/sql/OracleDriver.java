@@ -33,9 +33,35 @@ public class OracleDriver extends AbstractDriver
 
 		StringBuilder result = new StringBuilder();
 
+		int limit = 0;
+		int offset = 0;
+
+		int flag = 0;
+
 		for(String token: tokens)
 		{
-			result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+			/**/ if(token.equalsIgnoreCase("LIMIT"))
+			{
+				flag = 1;
+			}
+			else if(token.equalsIgnoreCase("OFFSET"))
+			{
+				flag = 2;
+			}
+			else if(flag == 1)
+			{
+				limit = Integer.valueOf(token);
+				flag = 0;
+			}
+			else if(flag == 2)
+			{
+				offset = Integer.valueOf(token);
+				flag = 0;
+			}
+			else
+			{
+				result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -43,6 +69,13 @@ public class OracleDriver extends AbstractDriver
 		if(sql.toUpperCase().contains("FROM") == false)
 		{
 			result.append(" FROM \"dual\"");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(limit > 0)
+		{
+			result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM rnum FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limit + offset).append(") WHERE rnum >= ").append(offset + 1);
 		}
 
 		/*-----------------------------------------------------------------*/
