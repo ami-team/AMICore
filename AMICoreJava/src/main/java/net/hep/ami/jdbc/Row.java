@@ -12,35 +12,35 @@ public class Row
 
 	protected Row(RowSet rowSet) throws Exception
 	{
-		m_values = (m_rowSet = rowSet).getCurrentValue();
+		m_values = (m_rowSet = rowSet).getCurrentRow();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldCatalog(int columnIndex) throws Exception
+	public String getFieldCatalog(int fieldIndex) throws Exception
 	{
-		return m_rowSet.getCatalogOfField(columnIndex);
+		return m_rowSet.getCatalogOfField(fieldIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldEntity(int columnIndex) throws Exception
+	public String getFieldEntity(int fieldIndex) throws Exception
 	{
-		return m_rowSet.getEntityOfField(columnIndex);
+		return m_rowSet.getEntityOfField(fieldIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldName(int columnIndex) throws Exception
+	public String getFieldName(int fieldIndex) throws Exception
 	{
-		return m_rowSet.getNameOfField(columnIndex);
+		return m_rowSet.getNameOfField(fieldIndex);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldType(int columnIndex) throws Exception
+	public String getFieldType(int fieldIndex) throws Exception
 	{
-		return m_rowSet.getTypeOfField(columnIndex);
+		return m_rowSet.getTypeOfField(fieldIndex);
 	}
 
 	/*---------------------------------------------------------------------*/

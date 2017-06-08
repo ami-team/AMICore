@@ -256,7 +256,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected String[] getCurrentValue() throws SQLException
+	protected String[] getCurrentRow() throws SQLException
 	{
 		String[] result = new String[m_numberOfFields];
 
