@@ -129,6 +129,8 @@ public abstract class AbstractCommand
 				try
 				{
 					TransactionPoolSingleton.rollbackAndRelease(m_transactionId);
+
+					throw e1;
 				}
 				catch(Exception e2)
 				{

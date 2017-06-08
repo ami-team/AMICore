@@ -42,7 +42,6 @@ public class CommandSingletonTest
 		arguments.put("validity", "10");
 		System.out.println(CommandSingleton.executeCommand("GenerateCertificate", arguments).replace(">", ">\n"));
 */
-
 		try
 		{
 //			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
@@ -51,14 +50,20 @@ public class CommandSingletonTest
 			//router.fill();
 
 //			router.commitAndRelease();
-/*
-			router = new Router();
 
-			System.out.println(router.mqlToSQL("SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme'", "router_user"));
-			System.out.println(router.mqlToAST("SELECT router_user.*", "router_user"));
+			arguments.clear();
+			arguments.put("catalog", "self");
+			arguments.put("entity", "router_user");
+			arguments.put("mql", "SELECT router_user.*");
+			System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments).replace(">", ">\n"));
+
+			Router router = new Router();
+
+			//System.out.println(router.mqlToAST("router_user", "SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme' AND valid=1"));
+			//System.out.println(router.mqlToAST("router_user", "SELECT router_user.*"));
 
 			router.commitAndRelease();
-
+/*
 			AutoJoinSingleton.AMIJoins joins;
 
 			joins = new AutoJoinSingleton.AMIJoins();
@@ -116,8 +121,6 @@ public class CommandSingletonTest
 
 			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", "foo");
 */
-			System.out.println(Tokenizer.tokenize("SELECT `foo`.* WHERE `foo`.`bar`!='kux' OR `foo`.`bar`=-777"));
-
 			//System.out.println("done.");
 		}
 		catch(Exception e)

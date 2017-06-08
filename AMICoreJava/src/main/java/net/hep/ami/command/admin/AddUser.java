@@ -21,15 +21,6 @@ public class AddUser extends AbstractCommand
 	{
 		String amiLogin = arguments.get("amiLogin");
 		String amiPassword = arguments.get("amiPassword");
-
-		String clientDN = arguments.containsKey("clientDN") ? arguments.get("clientDN")
-		                                                    : ""
-		;
-
-		String issuerDN = arguments.containsKey("issuerDN") ? arguments.get("issuerDN")
-		                                                    : ""
-		;
-
 		String firstName = arguments.get("firstName");
 		String lastName = arguments.get("lastName");
 		String email = arguments.get("email");
@@ -47,6 +38,20 @@ public class AddUser extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
+		String clientDN;
+		String issuerDN;
+
+		if(arguments.containsKey("attach"))
+		{
+			clientDN = m_clientDN;
+			issuerDN = m_issuerDN;
+		}
+		else
+		{
+			clientDN = "";
+			issuerDN = "";
+		}
+
 		RoleSingleton.checkNewUser(
 			ConfigSingleton.getProperty("user_validator_class"),
 			amiLogin,
@@ -60,15 +65,11 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		amiPassword = SecuritySingleton.encrypt(amiPassword);
-		clientDN = SecuritySingleton.encrypt(clientDN);
-		issuerDN = SecuritySingleton.encrypt(issuerDN);
-
 		int nb = getQuerier("self").executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			amiLogin,
-			amiPassword,
-			clientDN,
-			issuerDN,
+			SecuritySingleton.encrypt(amiPassword),
+			clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,
+			issuerDN.isEmpty() == false ? SecuritySingleton.encrypt(issuerDN) : null,
 			firstName,
 			lastName,
 			email

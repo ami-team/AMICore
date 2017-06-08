@@ -44,7 +44,7 @@ public class BrowseQuery extends AbstractCommand
 		}
 		else
 		{
-			queryResult = querier.executeMQLQuery(mql, entity);
+			queryResult = querier.executeMQLQuery(entity, mql);
 		}
 
 		/*-----------------------------------------------------------------*/

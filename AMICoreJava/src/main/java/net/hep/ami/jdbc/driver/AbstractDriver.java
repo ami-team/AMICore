@@ -150,7 +150,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			mql = Tokenizer.format(mql, args);
+			//mql = Tokenizer.format(mql, args);
 
 			String SQL = mqlToSQL(entity, mql);
 			String AST = mqlToAST(entity, mql);
