@@ -12,7 +12,7 @@ public class MariaDBDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public MariaDBDriver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public MariaDBDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}

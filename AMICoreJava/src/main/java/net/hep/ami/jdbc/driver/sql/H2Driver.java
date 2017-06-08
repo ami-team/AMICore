@@ -12,7 +12,7 @@ public class H2Driver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public H2Driver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public H2Driver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}

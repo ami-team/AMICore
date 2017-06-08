@@ -15,7 +15,7 @@ public class PostgreSQLDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public PostgreSQLDriver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public PostgreSQLDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}

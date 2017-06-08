@@ -12,7 +12,7 @@ public class Neo4jDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public Neo4jDriver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public Neo4jDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}

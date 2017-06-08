@@ -12,7 +12,7 @@ public class MySQLDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public MySQLDriver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public MySQLDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}

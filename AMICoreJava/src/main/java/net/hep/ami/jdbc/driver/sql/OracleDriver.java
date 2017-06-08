@@ -15,7 +15,7 @@ public class OracleDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public OracleDriver(String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public OracleDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 	}
