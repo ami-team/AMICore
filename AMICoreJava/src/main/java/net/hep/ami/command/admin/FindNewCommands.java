@@ -7,11 +7,11 @@ import net.hep.ami.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.Querier;
 
-public class FindCommands extends AbstractCommand
+public class FindNewCommands extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public FindCommands(Map<String, String> arguments, long transactionId)
+	public FindNewCommands(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -69,14 +69,14 @@ public class FindCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[added with success, " + commands + "]]></info>");
+		return new StringBuilder("<info><![CDATA[added with success: " + commands + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Automatically find commands.";
+		return "Automatically find new commands.";
 	}
 
 	/*---------------------------------------------------------------------*/
