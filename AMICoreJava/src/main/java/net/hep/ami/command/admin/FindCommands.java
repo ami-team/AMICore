@@ -69,7 +69,7 @@ public class FindCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success, " + commands + "]]></info>");
+		return new StringBuilder("<info><![CDATA[added with success, " + commands + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
