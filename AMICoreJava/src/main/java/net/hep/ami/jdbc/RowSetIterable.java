@@ -131,7 +131,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 
-		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
 
 		/*-----------------------------------------------------------------*/
 
@@ -196,7 +196,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 
-		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 1000);
+		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
 
 		/*-----------------------------------------------------------------*/
 
