@@ -50,7 +50,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("INSERT INTO `" + entity + "`");
+		stringBuilder.append("INSERT INTO `").append(catalog).append("`.`").append(entity).append("`");
 
 		/*-----------------------------------------------------------------*/
 

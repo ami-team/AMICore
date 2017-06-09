@@ -19,6 +19,8 @@ public class ListFields extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		StringBuilder result = new StringBuilder();
+
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
@@ -28,8 +30,6 @@ public class ListFields extends AbstractCommand
 		 ) {
 			throw new Exception("invalid usage");
 		}
-
-		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
@@ -61,7 +61,7 @@ public class ListFields extends AbstractCommand
 
 	public static String help()
 	{
-		return "List fields.";
+		return "List the fields of the given catalog and entity.";
 	}
 
 	/*---------------------------------------------------------------------*/

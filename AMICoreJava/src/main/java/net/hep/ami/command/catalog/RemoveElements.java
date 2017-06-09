@@ -54,7 +54,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("DELETE FROM `" + entity + "`");
+		stringBuilder.append("DELETE FROM `").append(catalog).append("`.`").append(entity).append("`");
 
 		/*-----------------------------------------------------------------*/
 
@@ -122,7 +122,7 @@ public class RemoveElements extends AbstractCommand
 
 	public static String help()
 	{
-		return "Remove elements.";
+		return "Remove one or more elements.";
 	}
 
 	/*---------------------------------------------------------------------*/

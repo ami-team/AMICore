@@ -63,7 +63,7 @@ public class CommandSingletonTest
 			//System.out.println(router.mqlToAST("router_user", "SELECT router_user.*"));
 
 			router.commitAndRelease();
-/*
+
 			AutoJoinSingleton.AMIJoins joins;
 
 			joins = new AutoJoinSingleton.AMIJoins();
@@ -84,7 +84,7 @@ public class CommandSingletonTest
 
 			System.out.println("::" + SecuritySingleton.encrypt("") + "::");
 			System.out.println("::" + SecuritySingleton.decrypt("") + "::");
-*/
+
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 

@@ -19,14 +19,14 @@ public class ListEntities extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		StringBuilder result = new StringBuilder();
+
 		String catalog = arguments.get("catalog");
 
 		if(catalog == null)
 		{
 			throw new Exception("invalid usage");
 		}
-
-		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
@@ -58,7 +58,7 @@ public class ListEntities extends AbstractCommand
 
 	public static String help()
 	{
-		return "List entities.";
+		return "List the entities of the given catalog.";
 	}
 
 	/*---------------------------------------------------------------------*/

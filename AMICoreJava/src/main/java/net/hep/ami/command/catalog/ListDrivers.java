@@ -26,7 +26,7 @@ public class ListDrivers extends AbstractCommand
 
 	public static String help()
 	{
-		return "List drivers.";
+		return "List the available drivers.";
 	}
 
 	/*---------------------------------------------------------------------*/

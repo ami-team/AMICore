@@ -26,7 +26,7 @@ public class ListCatalogs extends AbstractCommand
 
 	public static String help()
 	{
-		return "List catalogs.";
+		return "List the available catalogs.";
 	}
 
 	/*---------------------------------------------------------------------*/
