@@ -25,6 +25,8 @@ public class GenerateCertificate extends AbstractCommand
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
+		StringBuilder result = new StringBuilder();
+
 		String country = arguments.containsKey("country") ? arguments.get("country")
 		                                                  : ""
 		;
@@ -73,27 +75,20 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		try
+		SecuritySingleton.PEM tuple = new SecuritySingleton.PEM(new FileInputStream(fileName));
+
+		if(tuple.privateKeys.length == 0)
 		{
-			SecuritySingleton.PEM tuple = new SecuritySingleton.PEM(new FileInputStream(fileName));
-
-			if(tuple.privateKeys.length == 0)
-			{
-				throw new Exception("no private key in  `" + fileName + "`");
-			}
-
-			if(tuple.x509Certificates.length == 0)
-			{
-				throw new Exception("no certificate in  `" + fileName + "`");
-			}
-
-			caKey = tuple.privateKeys[0];
-			caCrt = tuple.x509Certificates[0];
+			throw new Exception("no private key in  `" + fileName + "`");
 		}
-		catch(Exception e)
+
+		if(tuple.x509Certificates.length == 0)
 		{
-			throw new Exception("could not open `" + fileName + "`: " + e.getMessage(), e);
+			throw new Exception("no certificate in  `" + fileName + "`");
 		}
+
+		caKey = tuple.privateKeys[0];
+		caCrt = tuple.x509Certificates[0];
 
 		/*-----------------------------------------------------------------*/
 
@@ -121,11 +116,6 @@ public class GenerateCertificate extends AbstractCommand
 
 		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
-
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
-
 		/*-----------------------------------------------------------------*/
 
 		result.append("<rowset><row>");
@@ -184,7 +174,7 @@ public class GenerateCertificate extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate client or server certificates.";
+		return "Generate a client or server certificates.";
 	}
 
 	/*---------------------------------------------------------------------*/

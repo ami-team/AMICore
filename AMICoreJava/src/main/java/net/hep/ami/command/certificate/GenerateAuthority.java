@@ -21,6 +21,8 @@ public class GenerateAuthority extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		StringBuilder result = new StringBuilder();
+
 		String country = arguments.containsKey("country") ? arguments.get("country")
 		                                                  : ""
 		;
@@ -79,10 +81,6 @@ public class GenerateAuthority extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
 		result.append("<rowset><row>");
 
 		/*-----------------------------------------------------------------*/
@@ -121,7 +119,7 @@ public class GenerateAuthority extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate CA certificates.";
+		return "Generate a CA certificates.";
 	}
 
 	/*---------------------------------------------------------------------*/

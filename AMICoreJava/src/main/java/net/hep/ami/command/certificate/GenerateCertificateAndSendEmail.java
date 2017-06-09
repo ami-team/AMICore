@@ -3,7 +3,6 @@ package net.hep.ami.command.certificate;
 import java.io.*;
 import java.util.*;
 
-import javax.activation.*;
 import javax.mail.*;
 import javax.mail.util.*;
 import javax.mail.internet.*;
@@ -14,11 +13,11 @@ import java.security.cert.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class GenerateAndSendCertificate extends AbstractCommand
+public class GenerateCertificateAndSendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GenerateAndSendCertificate(Map<String, String> arguments, long transactionId)
+	public GenerateCertificateAndSendEmail(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -79,27 +78,20 @@ public class GenerateAndSendCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		try
+		SecuritySingleton.PEM tuple = new SecuritySingleton.PEM(new FileInputStream(fileName));
+
+		if(tuple.privateKeys.length == 0)
 		{
-			SecuritySingleton.PEM tuple = new SecuritySingleton.PEM(new FileInputStream(fileName));
-
-			if(tuple.privateKeys.length == 0)
-			{
-				throw new Exception("no private key in  `" + fileName + "`");
-			}
-
-			if(tuple.x509Certificates.length == 0)
-			{
-				throw new Exception("no certificate in  `" + fileName + "`");
-			}
-
-			caKey = tuple.privateKeys[0];
-			caCrt = tuple.x509Certificates[0];
+			throw new Exception("no private key in  `" + fileName + "`");
 		}
-		catch(Exception e)
+
+		if(tuple.x509Certificates.length == 0)
 		{
-			throw new Exception("could not open `" + fileName + "`: " + e.getMessage(), e);
+			throw new Exception("no certificate in  `" + fileName + "`");
 		}
+
+		caKey = tuple.privateKeys[0];
+		caCrt = tuple.x509Certificates[0];
 
 		/*-----------------------------------------------------------------*/
 
@@ -130,19 +122,31 @@ public class GenerateAndSendCertificate extends AbstractCommand
 
 		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
 		{
+			/*-------------------------------------------------------------*/
+
 			keyStore_PKCS12.store(output, "".toCharArray());
 
-			BodyPart mainBodyPart = new MimeBodyPart();
+			/*-------------------------------------------------------------*/
 
-			mainBodyPart.setDataHandler(
-				new DataHandler(
+			BodyPart mainBodyPart1 = new MimeBodyPart();
+
+			mainBodyPart1.setDataHandler(
+				new javax.activation.DataHandler(
 					new ByteArrayDataSource(output.toByteArray(), "application/octet-stream")
 				)
 			);
 
-			mainBodyPart.setFileName(commonName + ".crt");
+			mainBodyPart1.setFileName(commonName + ".crt");
 
-			MailSingleton.sendMessage("ami@lpsc.in2p3.fr", email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart});
+			/*-------------------------------------------------------------*/
+
+			/* TODO */
+
+			/*-------------------------------------------------------------*/
+
+			MailSingleton.sendMessage("ami@lpsc.in2p3.fr", email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart1});
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -154,7 +158,7 @@ public class GenerateAndSendCertificate extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate client or server certificates.";
+		return "Generate a client or server certificates.";
 	}
 
 	/*---------------------------------------------------------------------*/
