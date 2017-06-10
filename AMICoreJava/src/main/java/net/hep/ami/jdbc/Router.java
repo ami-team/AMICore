@@ -275,10 +275,12 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES" +
-			" ('self', '" + getInternalCatalog().replace("'", "''") + "', '" + getJdbcUrl().replace("'", "''") + "', '" + SecuritySingleton.encrypt(getUser()) + "', '" + SecuritySingleton.encrypt(getPass()) + "', 0, NULL)" +
-			";"
+		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES (?, ?, ?, ?, ?, 0, NULL);",
+			getExternalCatalog(),
+			getInternalCatalog(),
+			getJdbcUrl(),
+			SecuritySingleton.encrypt(getUser()),
+			SecuritySingleton.encrypt(getPass())
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -315,10 +317,10 @@ public class Router implements Querier
 		LogSingleton.root.info("setup users...");
 
 		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES" +
-			" ('" + ConfigSingleton.getProperty("admin_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")) + "', 'admin', 'admin', 'ami@lpsc.in2p3.fr', 'N/A', 1)," +
-			" ('" + ConfigSingleton.getProperty("guest_user") + "', '" + SecuritySingleton.encrypt(ConfigSingleton.getProperty("guest_pass")) + "', 'guest', 'guest', 'ami@lpsc.in2p3.fr', 'N/A', 1)" +
-			";"
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'admin', 'admin', ?, 'N/A', 1);",
+			ConfigSingleton.getProperty("admin_user"),
+			SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")),
+			ConfigSingleton.getProperty("email")
 		);
 
 		/*-----------------------------------------------------------------*/

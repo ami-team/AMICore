@@ -171,9 +171,9 @@ public class Setup extends HttpServlet
 		                      : ConfigSingleton.getProperty("host")
 		;
 
-		String agent = req.getParameter("agent");
-		agent = (agent != null) ? agent.trim()
-		                        : ConfigSingleton.getProperty("agent")
+		String email = req.getParameter("email");
+		email = (email != null) ? email.trim()
+		                        : ConfigSingleton.getProperty("email")
 		;
 
 		String admin_user = req.getParameter("admin_user");
@@ -230,7 +230,7 @@ public class Setup extends HttpServlet
 		                    .replace("{{YEAR}}", year)
 		                    /**/
 		                    .replace("{{HOST}}", host)
-		                    .replace("{{AGENT}}", agent)
+		                    .replace("{{EMAIL}}", email)
 		                    .replace("{{ADMIN_USER}}", admin_user)
 		                    .replace("{{ADMIN_PASS}}", admin_pass)
 		                    .replace("{{ENCRYPTION_KEY}}", encryption_key)
@@ -258,8 +258,8 @@ public class Setup extends HttpServlet
 		String host = req.getParameter("host");
 		host = (host != null) ? host.trim() : "";
 
-		String agent = req.getParameter("agent");
-		agent = (agent != null) ? agent.trim() : "";
+		String email = req.getParameter("email");
+		email = (email != null) ? email.trim() : "";
 
 		String admin_user = req.getParameter("admin_user");
 		admin_user = (admin_user != null) ? admin_user.trim() : "";
@@ -306,7 +306,7 @@ public class Setup extends HttpServlet
 		              .append("\n")
 		              .append("<properties>\n")
 		              .append("  <property name=\"host\"><![CDATA[" + host + "]]></property>\n")
-		              .append("  <property name=\"agent\"><![CDATA[" + agent + "]]></property>\n")
+		              .append("  <property name=\"email\"><![CDATA[" + email + "]]></property>\n")
 		              .append("  <property name=\"admin_user\"><![CDATA[" + admin_user + "]]></property>\n")
 		              .append("  <property name=\"admin_pass\"><![CDATA[" + admin_pass + "]]></property>\n")
 		              .append("  <property name=\"guest_user\"><![CDATA[" + guest_user + "]]></property>\n")
@@ -381,7 +381,7 @@ public class Setup extends HttpServlet
 			                     .replace("{{YEAR}}", year)
 			                     /**/
 			                     .replace("{{HOST}}", host)
-			                     .replace("{{AGENT}}", agent)
+			                     .replace("{{EMAIL}}", email)
 			                     .replace("{{ADMIN_USER}}", admin_user)
 			                     .replace("{{ADMIN_PASS}}", admin_pass)
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
@@ -419,7 +419,7 @@ public class Setup extends HttpServlet
 			                     .replace("{{YEAR}}", year)
 			                     /**/
 			                     .replace("{{HOST}}", host)
-			                     .replace("{{AGENT}}", agent)
+			                     .replace("{{EMAIL}}", email)
 			                     .replace("{{ADMIN_USER}}", admin_user)
 			                     .replace("{{ADMIN_PASS}}", admin_pass)
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)

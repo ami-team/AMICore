@@ -61,7 +61,7 @@ public class ConfigSingleton
 	{
 		return getProperty("host").isEmpty() == false
 		       &&
-		       getProperty("agent").isEmpty() == false
+		       getProperty("email").isEmpty() == false
 		       &&
 		       getProperty("admin_user").isEmpty() == false
 		       &&
@@ -85,7 +85,7 @@ public class ConfigSingleton
 	{
 		return "host".equals(name)
 		       ||
-		       "agent".equals(name)
+		       "email".equals(name)
 		       ||
 		       "admin_user".equals(name)
 		       ||
