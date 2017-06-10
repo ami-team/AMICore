@@ -2,6 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
@@ -61,7 +62,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER ROLES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = '" + m_AMIUser + "' OR `AMIUser` = '" + m_guestUser + "') AND `router_user_role`.`roleFK` = `router_role`.`id`");
+		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?) AND `router_user_role`.`roleFK` = `router_role`.`id`", m_AMIUser, ConfigSingleton.getProperty("guest_user"));
 
 		/*-----------------------------------------------------------------*/
 		/* USER                                                            */

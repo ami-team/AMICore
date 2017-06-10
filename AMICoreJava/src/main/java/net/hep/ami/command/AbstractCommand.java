@@ -10,9 +10,6 @@ public abstract class AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	protected final String m_guestUser;
-	protected final String m_guestPass;
-
 	protected final String m_AMIUser;
 	protected final String m_AMIPass;
 
@@ -38,11 +35,6 @@ public abstract class AbstractCommand
 	{
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */
-		/*-----------------------------------------------------------------*/
-
-		m_guestUser = ConfigSingleton.getProperty("guest_user");
-		m_guestPass = ConfigSingleton.getProperty("guest_pass");
-
 		/*-----------------------------------------------------------------*/
 
 		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : "";

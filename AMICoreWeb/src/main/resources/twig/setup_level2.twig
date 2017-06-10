@@ -40,14 +40,16 @@
 
 				$.each($(':input').serializeArray(), function(index, param) {
 
-					if(param.name !== 'admin_pass' && param.name !== 'guest_pass' && param.name !== 'router_pass' && param.name !== 'router_reset' && param.value === '')
-					{
-						error += ' Field `' + param.name + '` empty.';
-					}
-
 					if(param.name === 'router_reset')
 					{
 						reset = true;
+					}
+					else
+					{
+						if(param.value === '')
+						{
+							error += ' Error, field `' + param.name + '` empty!';
+						}
 					}
 				});
 
@@ -149,8 +151,8 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="admin_pass" class="control-label">admin_pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="text" name="admin_pass" value="{{ADMIN_PASS}}" class="form-control" id="admin_pass" xxxxxxxx="xxxxxxxx" />
+										<label for="admin_pass" class="control-label">admin_pass<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="text" name="admin_pass" value="{{ADMIN_PASS}}" class="form-control" id="admin_pass" required="required" />
 									</div>
 								</div>
 							</div>
@@ -193,8 +195,8 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="router_pass" class="control-label">pass <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-										<input type="text" name="router_pass" value="{{ROUTER_PASS}}" class="form-control" id="router_pass" xxxxxxxx="xxxxxxxx" />
+										<label for="router_pass" class="control-label">pass<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
+										<input type="text" name="router_pass" value="{{ROUTER_PASS}}" class="form-control" id="router_pass" required="required" />
 									</div>
 								</div>
 							</div>

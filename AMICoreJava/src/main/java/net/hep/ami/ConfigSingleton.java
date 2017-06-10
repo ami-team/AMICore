@@ -65,7 +65,7 @@ public class ConfigSingleton
 		       &&
 		       getProperty("admin_user").isEmpty() == false
 		       &&
-		       getProperty("guest_user").isEmpty() == false
+		       getProperty("admin_pass").isEmpty() == false
 		       &&
 		       getProperty("encryption_key").isEmpty() == false
 		       &&
@@ -89,7 +89,11 @@ public class ConfigSingleton
 		       ||
 		       "admin_user".equals(name)
 		       ||
+		       "admin_pass".equals(name)
+		       ||
 		       "guest_user".equals(name)
+		       ||
+		       "guest_pass".equals(name)
 		       ||
 		       "encryption_key".equals(name)
 		       ||
@@ -199,6 +203,13 @@ public class ConfigSingleton
 
 			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
+		/* GUEST USER                                                      */
+		/*-----------------------------------------------------------------*/
+
+		s_properties.put("guest_user", "guest");
+		s_properties.put("guest_pass", "guest");
 
 		/*-----------------------------------------------------------------*/
 		/* CHECK CONFIG                                                    */

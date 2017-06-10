@@ -48,7 +48,7 @@ public class GetSessionInfo extends AbstractCommand
 		/* GET USER INFO                                                   */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `id` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?)", m_AMIUser, m_guestUser).getAll();
+		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `id` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?)", m_AMIUser, ConfigSingleton.getProperty("guest_user")).getAll();
 
 		if(rowList.isEmpty())
 		{
@@ -145,7 +145,7 @@ public class GetSessionInfo extends AbstractCommand
 		/* GET USER ROLES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?) AND `router_user_role`.`roleFK` = `router_role`.`id`", m_AMIUser, m_guestUser);
+		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?) AND `router_user_role`.`roleFK` = `router_role`.`id`", m_AMIUser, ConfigSingleton.getProperty("guest_user"));
 
 		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
@@ -158,7 +158,7 @@ public class GetSessionInfo extends AbstractCommand
 			+
 			"<field name=\"AMIUser\"><![CDATA[" + AMIUser + "]]></field>"
 			+
-			"<field name=\"guestUser\"><![CDATA[" + m_guestUser + "]]></field>"
+			"<field name=\"guestUser\"><![CDATA[" + "guest" + "]]></field>"
 			+
 			"<field name=\"clientDNInAMI\"><![CDATA[" + SecuritySingleton.decrypt(clientDNInAMI) + "]]></field>"
 			+
