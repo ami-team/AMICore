@@ -50,6 +50,10 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		                                                        : ""
 		;
 
+		String password = arguments.containsKey("password") ? arguments.get("password")
+		                                                    : ""
+		;
+
 		String email = arguments.containsKey("email") ? arguments.get("email")
 		                                              : ""
 		;
@@ -78,29 +82,27 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SecuritySingleton.PEM tuple = new SecuritySingleton.PEM(new FileInputStream(fileName));
+		SecuritySingleton.PEM ca = new SecuritySingleton.PEM(new FileInputStream(fileName));
 
-		if(tuple.privateKeys.length == 0)
+		if(ca.privateKeys.length == 0)
 		{
 			throw new Exception("no private key in  `" + fileName + "`");
 		}
 
-		if(tuple.x509Certificates.length == 0)
+		if(ca.x509Certificates.length == 0)
 		{
 			throw new Exception("no certificate in  `" + fileName + "`");
 		}
 
-		caKey = tuple.privateKeys[0];
-		caCrt = tuple.x509Certificates[0];
+		caKey = ca.privateKeys[0];
+		caCrt = ca.x509Certificates[0];
 
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = SecuritySingleton.generateKeyPair(2048);
-
-		X509Certificate certificate = SecuritySingleton.generateCertificate(
+		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generate(
+			2048,
 			caKey,
 			caCrt,
-			keyPair.getPublic(),
 			String.format(
 				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
 				commonName,
@@ -114,39 +116,65 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, email.toCharArray());
+		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
+		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
 
+		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
 
 		/*-----------------------------------------------------------------*/
 
-		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
+		try(ByteArrayOutputStream output1 = new ByteArrayOutputStream())
 		{
-			/*-------------------------------------------------------------*/
+			try(ByteArrayOutputStream output2 = new ByteArrayOutputStream())
+			{
+				/*---------------------------------------------------------*/
 
-			keyStore_PKCS12.store(output, "".toCharArray());
+				keyStore_JKS.store(output1, password.toCharArray());
+				keyStore_PKCS12.store(output2, password.toCharArray());
 
-			/*-------------------------------------------------------------*/
+				/*---------------------------------------------------------*/
 
-			BodyPart mainBodyPart1 = new MimeBodyPart();
+				BodyPart mainBodyPart1 = new MimeBodyPart();
 
-			mainBodyPart1.setDataHandler(
-				new javax.activation.DataHandler(
-					new ByteArrayDataSource(output.toByteArray(), "application/octet-stream")
-				)
-			);
+				mainBodyPart1.setDataHandler(
+					new javax.activation.DataHandler(
+						new ByteArrayDataSource(output2.toByteArray(), "application/octet-stream")
+					)
+				);
 
-			mainBodyPart1.setFileName(commonName + ".crt");
+				mainBodyPart1.setFileName(commonName + ".jks");
 
-			/*-------------------------------------------------------------*/
+				/*---------------------------------------------------------*/
 
-			/* TODO */
+				BodyPart mainBodyPart2 = new MimeBodyPart();
 
-			/*-------------------------------------------------------------*/
+				mainBodyPart2.setDataHandler(
+					new javax.activation.DataHandler(
+						new ByteArrayDataSource(output2.toByteArray(), "application/octet-stream")
+					)
+				);
 
-			MailSingleton.sendMessage(ConfigSingleton.getProperty("email"), email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart1});
+				mainBodyPart2.setFileName(commonName + ".p12");
 
-			/*-------------------------------------------------------------*/
+				/*---------------------------------------------------------*/
+
+				BodyPart mainBodyPart3 = new MimeBodyPart();
+
+				mainBodyPart3.setDataHandler(
+					new javax.activation.DataHandler(
+							new ByteArrayDataSource(pem.toByteArray(), "application/x-pem-file")
+					)
+				);
+
+				mainBodyPart2.setFileName(commonName + ".pem");
+
+				/*---------------------------------------------------------*/
+
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("email"), email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
+
+				/*---------------------------------------------------------*/
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -158,14 +186,14 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate a client or server certificates.";
+		return "Generate a client or server certificates. Default validity: 1 year.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -password=\"\" (-validity=\"\")?";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -password=\"\" (-validity=\"\")? -email=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

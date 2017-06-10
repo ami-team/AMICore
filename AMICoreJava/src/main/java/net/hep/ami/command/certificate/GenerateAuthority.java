@@ -119,7 +119,7 @@ public class GenerateAuthority extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate a CA certificates.";
+		return "Generate a CA certificates. Default validity: 15 years.";
 	}
 
 	/*---------------------------------------------------------------------*/

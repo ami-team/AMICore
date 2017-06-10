@@ -75,29 +75,27 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SecuritySingleton.PEM tuple = new SecuritySingleton.PEM(new FileInputStream(fileName));
+		SecuritySingleton.PEM ca = new SecuritySingleton.PEM(new FileInputStream(fileName));
 
-		if(tuple.privateKeys.length == 0)
+		if(ca.privateKeys.length == 0)
 		{
 			throw new Exception("no private key in  `" + fileName + "`");
 		}
 
-		if(tuple.x509Certificates.length == 0)
+		if(ca.x509Certificates.length == 0)
 		{
 			throw new Exception("no certificate in  `" + fileName + "`");
 		}
 
-		caKey = tuple.privateKeys[0];
-		caCrt = tuple.x509Certificates[0];
+		caKey = ca.privateKeys[0];
+		caCrt = ca.x509Certificates[0];
 
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = SecuritySingleton.generateKeyPair(2048);
-
-		X509Certificate certificate = SecuritySingleton.generateCertificate(
+		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generate(
+			2048,
 			caKey,
 			caCrt,
-			keyPair.getPublic(),
 			String.format(
 				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
 				commonName,
@@ -111,35 +109,36 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
-		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(keyPair.getPrivate(), new X509Certificate[] {certificate}, password.toCharArray());
+		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
+		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
 
 		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
+
 		/*-----------------------------------------------------------------*/
 
 		result.append("<rowset><row>");
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDN(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDN(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()) + "]]></field>");
+		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()) + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(keyPair.getPrivate().getEncoded()));
+		result.append(SecuritySingleton.byteArrayToBase64String(pem.privateKeys[0].getEncoded()));
 		result.append("-----END PRIVATE KEY-----\n");
 		result.append("</field>");
 
 		result.append("<field name=\"PUBLIC_KEY\">");
 		result.append("-----BEGIN PUBLIC KEY-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(keyPair.getPublic().getEncoded()));
+		result.append(SecuritySingleton.byteArrayToBase64String(pem.publicKeys[0].getEncoded()));
 		result.append("-----END PUBLIC KEY-----\n");
 		result.append("</field>");
 
 		result.append("<field name=\"CERTIFICATE\">");
 		result.append("-----BEGIN CERTIFICATE-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(certificate.getEncoded()));
+		result.append(SecuritySingleton.byteArrayToBase64String(pem.x509Certificates[0].getEncoded()));
 		result.append("-----END CERTIFICATE-----\n");
 		result.append("</field>");
 
@@ -174,7 +173,7 @@ public class GenerateCertificate extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate a client or server certificates.";
+		return "Generate a client or server certificates. Default validity: 1 year.";
 	}
 
 	/*---------------------------------------------------------------------*/

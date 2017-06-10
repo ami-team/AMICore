@@ -186,6 +186,36 @@ public class SecuritySingleton
 
 		/*-----------------------------------------------------------------*/
 
+		public PEM(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates)
+		{
+			privateKeys = _privateKeys;
+			publicKeys = _publicKeys;
+			x509Certificates = _x509Certificates;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public static PEM generate(int keysize, PrivateKey caPrivateKey, X509Certificate caCertificate, String subject, int validity) throws Exception
+		{
+			KeyPair keyPair = SecuritySingleton.generateKeyPair(keysize);
+
+			X509Certificate certificate = SecuritySingleton.generateCertificate(
+				caPrivateKey,
+				caCertificate,
+				keyPair.getPublic(),
+				subject,
+				validity
+			);
+
+			return new SecuritySingleton.PEM(
+				new PrivateKey[] {keyPair.getPrivate()},
+				new PublicKey[] {keyPair.getPublic()},
+				new X509Certificate[] {certificate}
+			);
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		public String toString()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
@@ -230,6 +260,13 @@ public class SecuritySingleton
 			/*-------------------------------------------------------------*/
 
 			return stringBuilder.toString();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public byte[] toByteArray()
+		{
+			return toString().getBytes();
 		}
 
 		/*-----------------------------------------------------------------*/
