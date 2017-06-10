@@ -269,6 +269,10 @@ public class Router implements Querier
 
 	public void fill() throws Exception
 	{
+			String admin_user = ConfigSingleton.getProperty("admin_user");
+			String admin_pass = ConfigSingleton.getProperty("admin_pass");
+			String admin_email = ConfigSingleton.getProperty("admin_email");
+
 		/*-----------------------------------------------------------------*/
 		/* CATALOGS                                                        */
 		/*-----------------------------------------------------------------*/
@@ -318,9 +322,15 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'admin', 'admin', ?, 'N/A', 1);",
-			/*---------------------*/(ConfigSingleton.getProperty("admin_user")),
-			SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")),
-			ConfigSingleton.getProperty("email")
+			admin_user,
+			SecuritySingleton.encrypt(admin_pass),
+			admin_email
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+			admin_user,
+			"AMI_admin_role"
 		);
 
 		/*-----------------------------------------------------------------*/

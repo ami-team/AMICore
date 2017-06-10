@@ -171,11 +171,6 @@ public class Setup extends HttpServlet
 		                      : ConfigSingleton.getProperty("host")
 		;
 
-		String email = req.getParameter("email");
-		email = (email != null) ? email.trim()
-		                        : ConfigSingleton.getProperty("email")
-		;
-
 		String admin_user = req.getParameter("admin_user");
 		admin_user = (admin_user != null) ? admin_user.trim()
 		                                  : ConfigSingleton.getProperty("admin_user")
@@ -184,6 +179,11 @@ public class Setup extends HttpServlet
 		String admin_pass = req.getParameter("admin_pass");
 		admin_pass = (admin_pass != null) ? admin_pass.trim()
 		                                  : ConfigSingleton.getProperty("admin_pass")
+		;
+
+		String admin_email = req.getParameter("admin_email");
+		admin_email = (admin_email != null) ? admin_email.trim()
+		                                    : ConfigSingleton.getProperty("admin_email")
 		;
 
 		String encryption_key = req.getParameter("encryption_key");
@@ -230,9 +230,9 @@ public class Setup extends HttpServlet
 		                    .replace("{{YEAR}}", year)
 		                    /**/
 		                    .replace("{{HOST}}", host)
-		                    .replace("{{EMAIL}}", email)
 		                    .replace("{{ADMIN_USER}}", admin_user)
 		                    .replace("{{ADMIN_PASS}}", admin_pass)
+		                    .replace("{{ADMIN_EMAIL}}", admin_email)
 		                    .replace("{{ENCRYPTION_KEY}}", encryption_key)
 		                    /**/
 		                    .replace("{{ROUTER}}", router)
@@ -258,14 +258,14 @@ public class Setup extends HttpServlet
 		String host = req.getParameter("host");
 		host = (host != null) ? host.trim() : "";
 
-		String email = req.getParameter("email");
-		email = (email != null) ? email.trim() : "";
-
 		String admin_user = req.getParameter("admin_user");
 		admin_user = (admin_user != null) ? admin_user.trim() : "";
 
 		String admin_pass = req.getParameter("admin_pass");
 		admin_pass = (admin_pass != null) ? admin_pass.trim() : "";
+
+		String admin_email = req.getParameter("admin_email");
+		admin_email = (admin_email != null) ? admin_email.trim() : "";
 
 		String encryption_key = req.getParameter("encryption_key");
 		encryption_key = (encryption_key != null) ? encryption_key.trim() : "";
@@ -294,11 +294,6 @@ public class Setup extends HttpServlet
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		String guest_user = "guest";
-		String guest_pass =   ""   ;
-
-		/*-----------------------------------------------------------------*/
 		/* BUILD CONFIG FILE                                               */
 		/*-----------------------------------------------------------------*/
 
@@ -306,11 +301,9 @@ public class Setup extends HttpServlet
 		              .append("\n")
 		              .append("<properties>\n")
 		              .append("  <property name=\"host\"><![CDATA[" + host + "]]></property>\n")
-		              .append("  <property name=\"email\"><![CDATA[" + email + "]]></property>\n")
 		              .append("  <property name=\"admin_user\"><![CDATA[" + admin_user + "]]></property>\n")
 		              .append("  <property name=\"admin_pass\"><![CDATA[" + admin_pass + "]]></property>\n")
-		              .append("  <property name=\"guest_user\"><![CDATA[" + guest_user + "]]></property>\n")
-		              .append("  <property name=\"guest_pass\"><![CDATA[" + guest_pass + "]]></property>\n")
+		              .append("  <property name=\"admin_email\"><![CDATA[" + admin_email + "]]></property>\n")
 		              .append("  <property name=\"encryption_key\"><![CDATA[" + encryption_key + "]]></property>\n")
 		              .append("\n")
 		              .append("  <property name=\"router\"><![CDATA[" + router + "]]></property>\n")
@@ -381,17 +374,15 @@ public class Setup extends HttpServlet
 			                     .replace("{{YEAR}}", year)
 			                     /**/
 			                     .replace("{{HOST}}", host)
-			                     .replace("{{EMAIL}}", email)
 			                     .replace("{{ADMIN_USER}}", admin_user)
 			                     .replace("{{ADMIN_PASS}}", admin_pass)
+			                     .replace("{{ADMIN_EMAIL}}", admin_email)
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
 			                     /**/
 			                     .replace("{{ROUTER}}", router)
 			                     .replace("{{ROUTER_URL}}", router_url)
 			                     .replace("{{ROUTER_USER}}", router_user)
 			                     .replace("{{ROUTER_PASS}}", router_pass)
-			                     /**/
-			                     .replace("{{CATALINA_BASE}}", System.getProperty("catalina.base", "?"))
 			;
 
 			/*-------------------------------------------------------------*/
@@ -419,9 +410,9 @@ public class Setup extends HttpServlet
 			                     .replace("{{YEAR}}", year)
 			                     /**/
 			                     .replace("{{HOST}}", host)
-			                     .replace("{{EMAIL}}", email)
 			                     .replace("{{ADMIN_USER}}", admin_user)
 			                     .replace("{{ADMIN_PASS}}", admin_pass)
+			                     .replace("{{ADMIN_EMAIL}}", admin_email)
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
 			                     /**/
 			                     .replace("{{ROUTER}}", router)

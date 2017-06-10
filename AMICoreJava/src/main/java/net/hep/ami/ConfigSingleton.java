@@ -61,11 +61,11 @@ public class ConfigSingleton
 	{
 		return getProperty("host").isEmpty() == false
 		       &&
-		       getProperty("email").isEmpty() == false
-		       &&
 		       getProperty("admin_user").isEmpty() == false
 		       &&
 		       getProperty("admin_pass").isEmpty() == false
+		       &&
+		       getProperty("admin_email").isEmpty() == false
 		       &&
 		       getProperty("encryption_key").isEmpty() == false
 		       &&
@@ -85,11 +85,11 @@ public class ConfigSingleton
 	{
 		return "host".equals(name)
 		       ||
-		       "email".equals(name)
-		       ||
 		       "admin_user".equals(name)
 		       ||
 		       "admin_pass".equals(name)
+		       ||
+		       "admin_email".equals(name)
 		       ||
 		       "guest_user".equals(name)
 		       ||

@@ -44,12 +44,12 @@ public class CommandSingletonTest
 */
 		try
 		{
-//			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
+			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 
-			//router.create();
-			//router.fill();
+			router.create();
+			router.fill();
 
-//			router.commitAndRelease();
+			router.commitAndRelease();
 
 			arguments.clear();
 			arguments.put("catalog", "self");
@@ -57,12 +57,12 @@ public class CommandSingletonTest
 			arguments.put("mql", "SELECT router_user.*");
 			System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments).replace(">", ">\n"));
 
-			Router router = new Router();
+			Router router2 = new Router();
 
-			//System.out.println(router.mqlToAST("router_user", "SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme' AND valid=1"));
-			//System.out.println(router.mqlToAST("router_user", "SELECT router_user.*"));
+			//System.out.println(router2.mqlToAST("router_user", "SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme' AND valid=1"));
+			//System.out.println(router2.mqlToAST("router_user", "SELECT router_user.*"));
 
-			router.commitAndRelease();
+			router2.commitAndRelease();
 
 			AutoJoinSingleton.AMIJoins joins;
 

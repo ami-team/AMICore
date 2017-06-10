@@ -38,7 +38,7 @@ public class LogSingleton
 				try
 				{
 					MailSingleton.sendMessage(
-						ConfigSingleton.getProperty("email"),
+						ConfigSingleton.getProperty("admin_email"),
 						ConfigSingleton.getProperty("log_to"),
 						ConfigSingleton.getProperty("log_cc"),
 						title, title + "\n\n" + message
