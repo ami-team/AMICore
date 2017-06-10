@@ -21,6 +21,8 @@ public class GetUserInfo extends GetSessionInfo
 			throw new Exception("invalid usage");
 		}
 
+		arguments.put("exception", "");
+
 		return super.main(arguments);
 	}
 

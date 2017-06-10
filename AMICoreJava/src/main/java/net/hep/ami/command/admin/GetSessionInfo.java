@@ -26,6 +26,7 @@ public class GetSessionInfo extends AbstractCommand
 	{
 		StringBuilder result = new StringBuilder();
 
+		boolean exception = arguments.containsKey("exception");
 		boolean attachCert = arguments.containsKey("attachCert");
 		boolean detachCert = arguments.containsKey("detachCert");
 
@@ -76,6 +77,11 @@ public class GetSessionInfo extends AbstractCommand
 		}
 		else
 		{
+			if(exception)
+			{
+				throw new Exception("invalid user `" + amiLogin + "`");
+			}
+
 			AMIUser = s_guest;
 			clientDNInAMI = "";
 			issuerDNInAMI = "";
