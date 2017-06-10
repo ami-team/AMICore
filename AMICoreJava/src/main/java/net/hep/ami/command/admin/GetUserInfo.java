@@ -2,11 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
-import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
-import net.hep.ami.command.*;
-
-public class GetUserInfo extends AbstractCommand
+public class GetUserInfo extends GetSessionInfo
 {
 	/*---------------------------------------------------------------------*/
 
@@ -20,96 +16,12 @@ public class GetUserInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
-		String amiLogin = arguments.get("amiLogin");
-
-		if(amiLogin == null)
+		if(arguments.containsKey("amiLogin") == false)
 		{
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		Querier querier = getQuerier("self");
-
-		/*-----------------------------------------------------------------*/
-		/* GET USER INFO                                                   */
-		/*-----------------------------------------------------------------*/
-
-		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = '" + amiLogin + "'").getAll();
-
-		if(rowList.isEmpty())
-		{
-			throw new Exception("invalid user `" + amiLogin + "`");
-		}
-
-		Row row1 = rowList.get(0);
-
-		/*-----------------------------------------------------------------*/
-
-		String AMIUser = row1.getValue("AMIUser");
-		String firstName = row1.getValue("firstName");
-		String lastName = row1.getValue("lastName");
-		String email = row1.getValue("email");
-		String valid = row1.getValue("valid");
-
-		/*-----------------------------------------------------------------*/
-
-		boolean VALID = "0".equals(valid) == false;
-
-		/*-----------------------------------------------------------------*/
-		/* GET USER ROLES                                                  */
-		/*-----------------------------------------------------------------*/
-
-		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?) AND `router_user_role`.`roleFK` = `router_role`.`id`", m_AMIUser, ConfigSingleton.getProperty("guest_user"));
-
-		/*-----------------------------------------------------------------*/
-		/* USER                                                            */
-		/*-----------------------------------------------------------------*/
-
-		result.append(
-			"<rowset type=\"user\">"
-			+
-			"<row>"
-			+
-			"<field name=\"AMIUser\"><![CDATA[" + AMIUser + "]]></field>"
-			+
-			"<field name=\"firstName\"><![CDATA[" + firstName + "]]></field>"
-			+
-			"<field name=\"lastName\"><![CDATA[" + lastName + "]]></field>"
-			+
-			"<field name=\"email\"><![CDATA[" + email + "]]></field>"
-			+
-			"<field name=\"valid\"><![CDATA[" + VALID + "]]></field>"
-			+
-			"</row>"
-			+
-			"</rowset>"
-		);
-
-		/*-----------------------------------------------------------------*/
-		/* ROLE                                                            */
-		/*-----------------------------------------------------------------*/
-
-		result.append("<rowset type=\"role\">");
-
-		for(Row row2: rowSet2.iterate())
-		{
-			result.append(
-				"<row>"
-				+
-				"<field name=\"role\"><![CDATA[" + row2.getValue("role") + "]]></field>"
-				+
-				"</row>"
-			);
-		}
-
-		result.append("</rowset>");
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return super.main(arguments);
 	}
 
 	/*---------------------------------------------------------------------*/

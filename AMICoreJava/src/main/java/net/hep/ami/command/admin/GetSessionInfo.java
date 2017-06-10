@@ -10,6 +10,10 @@ public class GetSessionInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
+	static final String s_guest = ConfigSingleton.getProperty("guest_user");
+
+	/*---------------------------------------------------------------------*/
+
 	public GetSessionInfo(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
@@ -26,11 +30,11 @@ public class GetSessionInfo extends AbstractCommand
 		boolean detachCert = arguments.containsKey("detachCert");
 
 		String amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
-		                                                    : ""
+		                                                    : m_AMIUser
 		;
 
 		String amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
-		                                                          : ""
+		                                                          : m_AMIPass
 		;
 
 		if(attachCert
@@ -48,24 +52,38 @@ public class GetSessionInfo extends AbstractCommand
 		/* GET USER INFO                                                   */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `id` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?)", m_AMIUser, ConfigSingleton.getProperty("guest_user")).getAll();
+		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll();
 
-		if(rowList.isEmpty())
+		String AMIUser;
+		String clientDNInAMI;
+		String issuerDNInAMI;
+		String firstName;
+		String lastName;
+		String email;
+		String valid;
+
+		if(rowList.size() == 1)
 		{
-			throw new Exception("invalid user `" + amiLogin + "`");
+			Row row1 = rowList.get(0);
+
+			AMIUser = row1.getValue("AMIUser");
+			clientDNInAMI = row1.getValue("clientDN");
+			issuerDNInAMI = row1.getValue("issuerDN");
+			firstName = row1.getValue("firstName");
+			lastName = row1.getValue("lastName");
+			email = row1.getValue("email");
+			valid = row1.getValue("valid");
 		}
-
-		Row row1 = rowList.get(0);
-
-		/*-----------------------------------------------------------------*/
-
-		String AMIUser = row1.getValue("AMIUser");
-		String clientDNInAMI = row1.getValue("clientDN");
-		String issuerDNInAMI = row1.getValue("issuerDN");
-		String firstName = row1.getValue("firstName");
-		String lastName = row1.getValue("lastName");
-		String email = row1.getValue("email");
-		String valid = row1.getValue("valid");
+		else
+		{
+			AMIUser = s_guest;
+			clientDNInAMI = "";
+			issuerDNInAMI = "";
+			firstName = s_guest;
+			lastName = s_guest;
+			email = "";
+			valid = "0";
+		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -145,45 +163,29 @@ public class GetSessionInfo extends AbstractCommand
 		/* GET USER ROLES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_role`, `router_user_role` WHERE `router_user_role`.`userFK` = (SELECT MAX(`id`) FROM `router_user` WHERE `AMIUser` = ? OR `AMIUser` = ?) AND `router_user_role`.`roleFK` = `router_role`.`id`", m_AMIUser, ConfigSingleton.getProperty("guest_user"));
+		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
 
 		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
 		/*-----------------------------------------------------------------*/
 
-		result.append(
-			"<rowset type=\"user\">"
-			+
-			"<row>"
-			+
-			"<field name=\"AMIUser\"><![CDATA[" + AMIUser + "]]></field>"
-			+
-			"<field name=\"guestUser\"><![CDATA[" + "guest" + "]]></field>"
-			+
-			"<field name=\"clientDNInAMI\"><![CDATA[" + SecuritySingleton.decrypt(clientDNInAMI) + "]]></field>"
-			+
-			"<field name=\"issuerDNInAMI\"><![CDATA[" + SecuritySingleton.decrypt(issuerDNInAMI) + "]]></field>"
-			+
-			"<field name=\"clientDNInSession\"><![CDATA[" + m_clientDN + "]]></field>"
-			+
-			"<field name=\"issuerDNInSession\"><![CDATA[" + m_issuerDN + "]]></field>"
-			+
-			"<field name=\"firstName\"><![CDATA[" + firstName + "]]></field>"
-			+
-			"<field name=\"lastName\"><![CDATA[" + lastName + "]]></field>"
-			+
-			"<field name=\"email\"><![CDATA[" + email + "]]></field>"
-			+
-			"<field name=\"valid\"><![CDATA[" + VALID + "]]></field>"
-			+
-			"<field name=\"certEnabled\"><![CDATA[" + CERT_ENABLED + "]]></field>"
-			+
-			"<field name=\"vomsEnabled\"><![CDATA[" + VOMS_ENABLED + "]]></field>"
-			+
-			"</row>"
-			+
-			"</rowset>"
-		);
+		result.append("<rowset type=\"user\">")
+		      .append("<row>")
+		      .append("<field name=\"AMIUser\"><![CDATA[").append(AMIUser).append("]]></field>")
+		      .append("<field name=\"guestUser\"><![CDATA[").append(s_guest).append("]]></field>")
+		      .append("<field name=\"clientDNInAMI\"><![CDATA[").append(SecuritySingleton.decrypt(clientDNInAMI)).append("]]></field>")
+		      .append("<field name=\"issuerDNInAMI\"><![CDATA[").append(SecuritySingleton.decrypt(issuerDNInAMI)).append("]]></field>")
+		      .append("<field name=\"clientDNInSession\"><![CDATA[").append(m_clientDN).append("]]></field>")
+		      .append("<field name=\"issuerDNInSession\"><![CDATA[").append(m_issuerDN).append("]]></field>")
+		      .append("<field name=\"firstName\"><![CDATA[").append(firstName).append("]]></field>")
+		      .append("<field name=\"lastName\"><![CDATA[").append(lastName).append("]]></field>")
+		      .append("<field name=\"email\"><![CDATA[").append(email).append("]]></field>")
+		      .append("<field name=\"valid\"><![CDATA[").append(VALID).append("]]></field>")
+		      .append("<field name=\"certEnabled\"><![CDATA[").append(CERT_ENABLED).append("]]></field>")
+		      .append("<field name=\"vomsEnabled\"><![CDATA[").append(VOMS_ENABLED).append("]]></field>")
+		      .append("</row>")
+		      .append("</rowset>")
+		;
 
 		/*-----------------------------------------------------------------*/
 		/* ROLE                                                            */
@@ -191,15 +193,12 @@ public class GetSessionInfo extends AbstractCommand
 
 		result.append("<rowset type=\"role\">");
 
-		for(Row row: rowSet2.iterate())
+		for(Row row2: rowSet2.iterate())
 		{
-			result.append(
-				"<row>"
-				+
-				"<field name=\"name\"><![CDATA[" + row.getValue("role") + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
 		result.append("</rowset>");
