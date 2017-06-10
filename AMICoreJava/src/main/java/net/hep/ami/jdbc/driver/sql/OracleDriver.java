@@ -35,16 +35,15 @@ public class OracleDriver extends AbstractDriver
 
 		int limit = 0;
 		int offset = 0;
-
 		int flag = 0;
 
 		for(String token: tokens)
 		{
-			/**/ if(token.equalsIgnoreCase("LIMIT"))
+			/**/ if("LIMIT".equalsIgnoreCase(token))
 			{
 				flag = 1;
 			}
-			else if(token.equalsIgnoreCase("OFFSET"))
+			else if("OFFSET".equalsIgnoreCase(token))
 			{
 				flag = 2;
 			}
