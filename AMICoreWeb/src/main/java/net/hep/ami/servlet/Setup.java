@@ -348,9 +348,9 @@ public class Setup extends HttpServlet
 			}
 			catch(Exception e)
 			{
-				logger.error(e.getMessage(), e);
-
 				db.rollbackAndRelease();
+
+				throw e;
 			}
 
 			/*-------------------------------------------------------------*/
