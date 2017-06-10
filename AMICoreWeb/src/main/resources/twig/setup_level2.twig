@@ -11,6 +11,7 @@
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/wizard.js"></script>
 
 		<style type="text/css">
 			.navbar-default,
@@ -27,67 +28,6 @@
 				background: rgb(245, 245, 245) url("images/stripe2.png");
 			}
 		</style>
-
-		<script type="text/javascript">
-
-			function validateForm()
-			{
-				/*-----------------------------------------*/
-
-				var error = '';
-
-				var reset = false;
-
-				$.each($(':input').serializeArray(), function(index, param) {
-
-					if(param.name === 'router_reset')
-					{
-						reset = true;
-					}
-					else
-					{
-						if(param.value === '')
-						{
-							error += ' Error, field `' + param.name + '` empty!';
-						}
-					}
-				});
-
-				/*-----------------------------------------*/
-
-				if(error)
-				{
-					error = '<div class="alert alert-danger alert-dismissible">\n'
-						+
-					        '  <button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>\n'
-						+
-					        '  <strong>Error!</strong>' + error + '\n'
-						+
-					        '</div>'
-					;
-
-					$('#message').html(error);
-
-					$(document).scrollTop(0);
-
-					return false;
-				}
-
-				/*-----------------------------------------*/
-
-				if(reset === false || confirm('Reset the AMI database?'))
-				{
-					$('button[type="submit"]').prop('disabled', true);
-
-					return true;
-				}
-
-				/*-----------------------------------------*/
-
-				return false;
-			}
-
-		</script>
 	</head>
 	<body style="background: white url('images/background.jpg') fixed;">
 
@@ -159,7 +99,12 @@
 
 							<div class="form-group">
 								<label for="encryption_key" class="control-label">encryption_key<span class="text-danger">*</span> <span class="amitt" data-toggle="tooltip" data-title="?"><i class="fa fa-question-circle"></i></span></label>
-								<input type="text" name="encryption_key" value="{{ENCRYPTION_KEY}}" class="form-control" id="encryption_key" required="required" />
+								<div class="input-group">
+									<input type="text" name="encryption_key" value="{{ENCRYPTION_KEY}}" class="form-control" id="encryption_key" required="required" />
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" onclick="generateEncryptionKey();">Generate</button>
+									</span>
+								</div>
 							</div>
 
 						</div>
