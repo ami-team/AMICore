@@ -8,7 +8,7 @@ function generateEncryptionKey()
 {
 	var encryptionKey = '';
 
-	for(var i = 0; i < 32; i++)
+	for(var i = 0; i < 16; i++)
 	{
 		encryptionKey += charArray.charAt(
 			Math.floor(charArray.length * Math.random())
