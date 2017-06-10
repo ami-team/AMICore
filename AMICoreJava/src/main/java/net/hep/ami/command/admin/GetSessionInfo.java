@@ -81,7 +81,7 @@ public class GetSessionInfo extends AbstractCommand
 			issuerDNInAMI = "";
 			firstName = s_guest;
 			lastName = s_guest;
-			email = "";
+			email = "N/A";
 			valid = "0";
 		}
 
