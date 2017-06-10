@@ -318,7 +318,7 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'admin', 'admin', ?, 'N/A', 1);",
-			ConfigSingleton.getProperty("admin_user"),
+			/*---------------------*/(ConfigSingleton.getProperty("admin_user")),
 			SecuritySingleton.encrypt(ConfigSingleton.getProperty("admin_pass")),
 			ConfigSingleton.getProperty("email")
 		);
