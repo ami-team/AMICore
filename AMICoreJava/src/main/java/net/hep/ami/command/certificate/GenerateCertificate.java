@@ -123,6 +123,7 @@ public class GenerateCertificate extends AbstractCommand
 
 		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()) + "]]></field>");
 		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"PASSWORD\"><![CDATA[" + password + "]]></field>");
 
 		result.append("<field name=\"PRIVATE_KEY\">");
 		result.append("-----BEGIN PRIVATE KEY-----\n");

@@ -269,9 +269,9 @@ public class Router implements Querier
 
 	public void fill() throws Exception
 	{
-			String admin_user = ConfigSingleton.getProperty("admin_user");
-			String admin_pass = ConfigSingleton.getProperty("admin_pass");
-			String admin_email = ConfigSingleton.getProperty("admin_email");
+		String admin_user = ConfigSingleton.getProperty("admin_user");
+		String admin_pass = ConfigSingleton.getProperty("admin_pass");
+		String admin_email = ConfigSingleton.getProperty("admin_email");
 
 		/*-----------------------------------------------------------------*/
 		/* CATALOGS                                                        */
