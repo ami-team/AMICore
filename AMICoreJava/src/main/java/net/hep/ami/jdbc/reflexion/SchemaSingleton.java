@@ -619,7 +619,7 @@ public class SchemaSingleton
 			/* POST TREATMENT                                              */
 			/*-------------------------------------------------------------*/
 
-			for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: /**/(m_columns).entrySet())
+			for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: this.m_columns.entrySet())
 			{
 				m_backwardFKs.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
 				;
