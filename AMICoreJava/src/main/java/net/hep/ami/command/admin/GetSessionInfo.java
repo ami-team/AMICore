@@ -172,6 +172,12 @@ public class GetSessionInfo extends AbstractCommand
 		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
 
 		/*-----------------------------------------------------------------*/
+		/* GET SSO ENDPOINT URL                                            */
+		/*-----------------------------------------------------------------*/
+
+		String ssoEndpointURL = ConfigSingleton.getProperty("sso_endpoint_url");
+
+		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
 		/*-----------------------------------------------------------------*/
 
@@ -203,6 +209,22 @@ public class GetSessionInfo extends AbstractCommand
 		{
 			result.append("<row>")
 			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
+			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+		/* SSO                                                            */
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"sso\">");
+
+		if(ssoEndpointURL.isEmpty() == false)
+		{
+			result.append("<row>")
+			      .append("<field name=\"name\"><![CDATA[").append(ssoEndpointURL).append("]]></field>")
 			      .append("</row>")
 			;
 		}
