@@ -208,7 +208,7 @@ public class GetSessionInfo extends AbstractCommand
 		for(Row row2: rowSet2.iterate())
 		{
 			result.append("<row>")
-			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
+			      .append("<field name=\"endpoint_url\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
 			      .append("</row>")
 			;
 		}
