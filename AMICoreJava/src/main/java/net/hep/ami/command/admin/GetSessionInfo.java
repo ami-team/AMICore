@@ -172,10 +172,11 @@ public class GetSessionInfo extends AbstractCommand
 		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
 
 		/*-----------------------------------------------------------------*/
-		/* GET SSO ENDPOINT URL                                            */
+		/* GET SSO INFO                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String ssoEndpointURL = ConfigSingleton.getProperty("sso_endpoint_url");
+		String ssoName = ConfigSingleton.getProperty("sso_name", "SSO");
+		String ssoURL = ConfigSingleton.getProperty("sso_url", "N/A");
 
 		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
@@ -208,7 +209,7 @@ public class GetSessionInfo extends AbstractCommand
 		for(Row row2: rowSet2.iterate())
 		{
 			result.append("<row>")
-			      .append("<field name=\"endpoint_url\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
+			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
 			      .append("</row>")
 			;
 		}
@@ -221,10 +222,11 @@ public class GetSessionInfo extends AbstractCommand
 
 		result.append("<rowset type=\"sso\">");
 
-		if(ssoEndpointURL.isEmpty() == false)
+		if("N/A".equals(ssoURL) == false)
 		{
 			result.append("<row>")
-			      .append("<field name=\"name\"><![CDATA[").append(ssoEndpointURL).append("]]></field>")
+			      .append("<field name=\"name\"><![CDATA[").append(ssoName).append("]]></field>")
+			      .append("<field name=\"url\"><![CDATA[").append(ssoURL).append("]]></field>")
 			      .append("</row>")
 			;
 		}
