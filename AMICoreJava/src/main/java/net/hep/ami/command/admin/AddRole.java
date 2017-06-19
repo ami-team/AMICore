@@ -20,7 +20,7 @@ public class AddRole extends AbstractCommand
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		String parent = arguments.containsKey("parent") ? arguments.get("parent")
-		                                                : "AMI_guest_role"
+		                                                : "AMI_GUEST"
 		;
 
 		String role = arguments.get("role");

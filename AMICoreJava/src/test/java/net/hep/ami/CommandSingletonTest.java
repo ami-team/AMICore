@@ -46,16 +46,12 @@ public class CommandSingletonTest
 		{
 			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 
-			router.create();
-			router.fill();
+//			router.create();
+//			router.fill();
 
 			router.commitAndRelease();
 
-			arguments.clear();
-			arguments.put("catalog", "self");
-			arguments.put("entity", "router_user");
-			arguments.put("mql", "SELECT router_user.*");
-			System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments).replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -fields=\"jsonSerialization\" -values=\"{}\" -keyFields=\"externalCatalog\" -keyValues=\"self\"").replace(">", ">\n"));
 
 			Router router2 = new Router();
 

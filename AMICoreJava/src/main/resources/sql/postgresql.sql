@@ -36,8 +36,8 @@ CREATE TABLE `router_catalog` (
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
+  `custom` TEXT,
   `archived` SMALLINT NOT NULL DEFAULT '0',
-  `jsonSerialization` TEXT
 );
 
 ALTER TABLE `router_catalog`

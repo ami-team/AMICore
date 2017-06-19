@@ -283,8 +283,8 @@ CREATE TABLE `router_catalog` (
   `jdbcUrl` VARCHAR2(512),
   `user` VARCHAR2(128),
   `pass` VARCHAR2(128),
-  `archived` NUMBER(1, 0) DEFAULT '0',
-  `jsonSerialization` CLOB
+  `custom` CLOB,
+  `archived` NUMBER(1, 0) DEFAULT '0'
 );
 
 ALTER TABLE `router_catalog`

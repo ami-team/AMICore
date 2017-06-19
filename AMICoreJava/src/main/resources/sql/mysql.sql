@@ -39,8 +39,8 @@ CREATE TABLE `router_catalog` (
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
-  `archived` SMALLINT NOT NULL DEFAULT '0',
-  `jsonSerialization` TEXT
+  `custom` TEXT,
+  `archived` SMALLINT NOT NULL DEFAULT '0'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 

@@ -309,8 +309,8 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_role` (`lft`, `rgt`, `role`) VALUES" +
-			" (0, 3, 'AMI_guest_role')," +
-			" (1, 2, 'AMI_admin_role')" +
+			" (0, 3, 'AMI_GUEST')," +
+			" (1, 2, 'AMI_ADMIN')" +
 			";"
 		);
 
@@ -330,7 +330,7 @@ public class Router implements Querier
 		executeSQLUpdate(
 			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			admin_user,
-			"AMI_admin_role"
+			"AMI_ADMIN"
 		);
 
 		/*-----------------------------------------------------------------*/

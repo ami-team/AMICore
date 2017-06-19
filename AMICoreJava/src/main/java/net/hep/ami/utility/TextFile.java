@@ -10,6 +10,27 @@ public class TextFile
 
 	/*---------------------------------------------------------------------*/
 
+	public static void read(StringBuilder stringBuilder, File file) throws Exception
+	{
+		read(stringBuilder, new FileInputStream(file));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void readLine(StringBuilder stringBuilder, File file) throws Exception
+	{
+		readLine(stringBuilder, new FileInputStream(file));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void write(File file, StringBuilder stringBuilder) throws Exception
+	{
+		write(new FileOutputStream(file), stringBuilder);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void read(StringBuilder stringBuilder, InputStream inputStream) throws Exception
 	{
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
