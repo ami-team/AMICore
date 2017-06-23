@@ -11,7 +11,7 @@
 			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
 		</encoder>
 	</appender>
-
+<!--
 	<appender name="LOGFILE" class="ch.qos.logback.core.FileAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
@@ -19,7 +19,7 @@
 		<file>ami.log</file>
 		<append>true</append>
 	</appender>
-
+-->
 	<root level="WARN">
 		<appender-ref ref="AMIFATAL" />
 		<appender-ref ref="LOGFILE" />
