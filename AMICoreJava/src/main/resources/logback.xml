@@ -22,7 +22,9 @@
 -->
 	<root level="WARN">
 		<appender-ref ref="AMIFATAL" />
+<!--
 		<appender-ref ref="LOGFILE" />
+-->
 		<appender-ref ref="STDOUT" />
 	</root>
 
