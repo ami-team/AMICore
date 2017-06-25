@@ -4,6 +4,68 @@ public class Utility
 {
 	/*---------------------------------------------------------------------*/
 
+	public static String escape(String s)
+	{
+		StringBuilder result = new StringBuilder(s.length());
+
+		/*-----------------------------------------------------------------*/
+
+		/***/ int i = 0x00000000;
+		final int l = s.length();
+
+		char c;
+
+		while(i < l)
+		{
+			c = s.charAt(i++);
+
+			switch(c)
+			{
+				case '\\':
+					result.append("\\\\");
+					break;
+
+				case 'b':
+					result.append("\\b");
+					break;
+
+				case 'f':
+					result.append("\\f");
+					break;
+
+				case 'n':
+					result.append("\\n");
+					break;
+
+				case 'r':
+					result.append("\\r");
+					break;
+
+				case 't':
+					result.append("\\t");
+					break;
+
+				case '\"':
+					result.append("\\\"");
+					break;
+
+				case '\'':
+					result.append("\\\'");
+					break;
+
+				default:
+					result.append(c);
+					break;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result.toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String unescape(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());

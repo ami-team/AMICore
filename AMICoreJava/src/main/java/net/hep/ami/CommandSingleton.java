@@ -294,8 +294,8 @@ public class CommandSingleton
 			   &&
 			   "issuerDN".equals(key) == false
 			 ) {
-				key = key.replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
-				value = value.replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+				key = Utility.escape(key).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
+				value = Utility.escape(key).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
 
 				stringBuilder.append("<argument name=\"").append(key).append("\" value=\"").append(value).append("\" />");
 			}
