@@ -20,11 +20,11 @@ public class SendEmail extends AbstractCommand
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		String from = arguments.containsKey("from") ? arguments.get("from")
-		                                            : ""
+		                                            : ConfigSingleton.getProperty("admin_email")
 		;
 
 		String to = arguments.containsKey("to") ? arguments.get("to")
-		                                        : ""
+		                                        : ConfigSingleton.getProperty("admin_email")
 		;
 
 		String cc = arguments.containsKey("cc") ? arguments.get("cc")
@@ -59,7 +59,7 @@ public class SendEmail extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-from=\"\" -to=\"\" (-cc=\"\")? -subject=\"\" -message=\"\"";
+		return "(-from=\"\")? -to=\"\" (-cc=\"\")? -subject=\"\" -message=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/
