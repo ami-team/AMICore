@@ -163,11 +163,11 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				mainBodyPart3.setDataHandler(
 					new javax.activation.DataHandler(
-							new ByteArrayDataSource(pem.toByteArray(), "application/x-pem-file")
+						new ByteArrayDataSource(pem.toByteArray(), "application/x-pem-file")
 					)
 				);
 
-				mainBodyPart2.setFileName(commonName + ".pem");
+				mainBodyPart3.setFileName(commonName + ".pem");
 
 				/*---------------------------------------------------------*/
 
