@@ -171,7 +171,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				/*---------------------------------------------------------*/
 
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI X509 certificat", "AMI X509 certificat", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI X509 certificate", "AMI X509 certificate", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
 
 				/*---------------------------------------------------------*/
 			}
