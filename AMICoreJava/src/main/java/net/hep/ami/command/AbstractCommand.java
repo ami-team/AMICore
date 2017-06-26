@@ -15,9 +15,10 @@ public abstract class AbstractCommand
 
 	protected final String m_clientDN;
 	protected final String m_issuerDN;
+	protected final String m_notAfter;
 
 	protected final String m_isSecure;
-	protected final String m_AMIAgent;
+	protected final String m_userAgent;
 
 	/*---------------------------------------------------------------------*/
 
@@ -42,9 +43,10 @@ public abstract class AbstractCommand
 
 		m_clientDN = arguments.containsKey("clientDN") ? arguments.remove("clientDN") : "";
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
+		m_notAfter = arguments.containsKey("notAfter") ? arguments.remove("notAfter") : "";
 
 		m_isSecure = arguments.containsKey("isSecure") ? arguments.remove("isSecure") : "";
-		m_AMIAgent = arguments.containsKey("AMIAgent") ? arguments.remove("AMIAgent") : "";
+		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "";
 
 		/*-----------------------------------------------------------------*/
 		/* CONSTRUCTOR PARAMETERS                                          */

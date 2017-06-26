@@ -1,6 +1,7 @@
 package net.hep.ami.servlet;
 
 import java.io.*;
+import java.text.*;
 import java.util.*;
 import java.security.cert.*;
 
@@ -10,7 +11,7 @@ import javax.servlet.annotation.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.Command;
+import net.hep.ami.utility.parser.*;
 
 @WebServlet(
 	name = "FrontEnd",
@@ -235,7 +236,7 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static Tuple2<String, String> getDNs(HttpServletRequest req)
+	private static Tuple3<String, String, String> getDNs(HttpServletRequest req)
 	{
 		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
@@ -245,15 +246,19 @@ public class FrontEnd extends HttpServlet
 			{
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
-					return new Tuple2<>(
+					return new Tuple3<>(
 						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
-						SecuritySingleton.getDN(certificate.getIssuerX500Principal())
+						SecuritySingleton.getDN(certificate.getIssuerX500Principal()),
+						new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(
+							certificate.getNotAfter()
+						)
 					);
 				}
 			}
 		}
 
-		return new Tuple2<>(
+		return new Tuple3<>(
+			"",
 			"",
 			""
 		);
@@ -377,13 +382,13 @@ public class FrontEnd extends HttpServlet
 		/* GET DNs                                                         */
 		/*-----------------------------------------------------------------*/
 
-		Tuple2<String, String> dns = getDNs(request);
+		Tuple3<String, String, String> dns = getDNs(request);
 
 		String clientDN = dns.x;
 		session.setAttribute("clientDN", clientDN);
-
 		String issuerDN = dns.y;
 		session.setAttribute("issuerDN", issuerDN);
+		String notAfter = dns.z;
 
 		/*-----------------------------------------------------------------*/
 		/* GET NOCERT FLAG                                                 */
@@ -504,6 +509,7 @@ public class FrontEnd extends HttpServlet
 
 		arguments.put("clientDN", clientDN);
 		arguments.put("issuerDN", issuerDN);
+		arguments.put("notAfter", notAfter);
 
 		/*-----------------------------------------------------------------*/
 
@@ -515,9 +521,17 @@ public class FrontEnd extends HttpServlet
 
 		String agent = request.getHeader("User-Agent");
 
-		arguments.put("AMIAgent", agent.contains("pyAMI") ? agent
-		                                                  : "web"
-		);
+		if(agent.startsWith("cami")
+		   ||
+		   agent.startsWith("jami")
+		   ||
+		   agent.startsWith("pyAMI")
+		 ) {
+			arguments.put("userAgent", agent);
+		}
+		else {
+			arguments.put("userAgent", "web");
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
