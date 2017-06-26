@@ -279,7 +279,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `archived`, `jsonSerialization`) VALUES (?, ?, ?, ?, ?, 0, NULL);",
+		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`) VALUES (?, ?, ?, ?, ?, NULL, 0);",
 			getExternalCatalog(),
 			getInternalCatalog(),
 			getJdbcUrl(),
