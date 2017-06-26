@@ -4,8 +4,8 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.Querier;
 
 public class FindNewCommands extends AbstractCommand
 {
