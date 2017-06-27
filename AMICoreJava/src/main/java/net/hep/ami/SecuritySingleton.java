@@ -26,6 +26,28 @@ public class SecuritySingleton
 {
 	/*---------------------------------------------------------------------*/
 
+	public static class Revocation
+	{
+		public static final int SUPERSEDED = 0;
+		public static final int COMPROMISED = 1;
+		public static final int AFFILIATION_CHANGED = 3;
+		public static final int PRIVILEGE_WITHDRAWN = 4;
+		public static final int CESSATION_OF_OPERATION = 5;
+
+		public final BigInteger serial;
+		public final Integer reason;
+		public final Date date;
+
+		public Revocation(BigInteger _serial, Integer _reason, Date _date)
+		{
+			serial = _serial;
+			reason = _reason;
+			date = _date;
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static final class PEM
 	{
 		/*-----------------------------------------------------------------*/
@@ -33,18 +55,20 @@ public class SecuritySingleton
 		public static final int PRIVATE_KEY = 1;
 		public static final int PUBLIC_KEY = 2;
 		public static final int X509_CERTIFICATE = 4;
+		public static final int X509_CRL = 8;
 
 		/*-----------------------------------------------------------------*/
 
 		public final PrivateKey[] privateKeys;
 		public final PublicKey[] publicKeys;
 		public final X509Certificate[] x509Certificates;
+		public final X509CRL[] x509CRLs;
 
 		/*-----------------------------------------------------------------*/
 
 		public PEM(InputStream inputStream) throws Exception
 		{
-			this(inputStream, PRIVATE_KEY | PUBLIC_KEY | X509_CERTIFICATE);
+			this(inputStream, PRIVATE_KEY | PUBLIC_KEY | X509_CERTIFICATE | X509_CRL);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -64,6 +88,7 @@ public class SecuritySingleton
 			List<StringBuilder> list1 = new ArrayList<>();
 			List<StringBuilder> list2 = new ArrayList<>();
 			List<StringBuilder> list3 = new ArrayList<>();
+			List<StringBuilder> list4 = new ArrayList<>();
 
 			try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
 			{
@@ -76,6 +101,8 @@ public class SecuritySingleton
 						    line.matches("-----BEGIN( | [^ ]+ )PUBLIC KEY-----")
 						    ||
 						    line.matches("-----BEGIN CERTIFICATE-----")
+						    ||
+						    line.matches("-----BEGIN X509 CRL-----")
 					 ) {
 						stringBuilder = new StringBuilder();
 
@@ -120,6 +147,18 @@ public class SecuritySingleton
 
 					/*-----------------------------------------------------*/
 
+					else if(line.matches("-----END X509 CRL-----"))
+					{
+						if((flag & X509_CRL) != 0)
+						{
+							list4.add(stringBuilder);
+						}
+
+						append = false;
+					}
+
+					/*-----------------------------------------------------*/
+
 					else if(append)
 					{
 						stringBuilder.append(line);
@@ -136,6 +175,7 @@ public class SecuritySingleton
 			final int numberOfPrivateKeys = list1.size();
 			final int numberOfPublicKeys = list2.size();
 			final int numberOfCertificates = list3.size();
+			final int numberOfCRLs = list4.size();
 
 			/*-------------------------------------------------------------*/
 			/* BUILD OBJECTS                                               */
@@ -182,20 +222,56 @@ public class SecuritySingleton
 			}
 
 			/*-------------------------------------------------------------*/
+
+			x509CRLs = new X509CRL[numberOfCRLs];
+
+			for(int i = 0; i < numberOfCRLs; i++)
+			{
+				x509CRLs[i] = (X509CRL) CertificateFactory.getInstance("X509", BC).generateCRL(
+
+					new ByteArrayInputStream(org.bouncycastle.util.encoders.Base64.decode(
+						list4.get(i).toString()
+					))
+				);
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		public PEM(PrivateKey[] _privateKeys, PublicKey[] _publicKeys, X509Certificate[] _x509Certificates)
+		public PEM(@Nullable PrivateKey[] _privateKeys, @Nullable PublicKey[] _publicKeys, @Nullable X509Certificate[] _x509Certificates, @Nullable X509CRL[] _x509CRLs)
 		{
 			privateKeys = _privateKeys;
 			publicKeys = _publicKeys;
 			x509Certificates = _x509Certificates;
+			x509CRLs = _x509CRLs;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		public static PEM generate(int keysize, PrivateKey caPrivateKey, X509Certificate caCertificate, String subject, int validity) throws Exception
+		public static PEM generateCA(int keysize, String subject, int validity) throws Exception
+		{
+			KeyPair keyPair = SecuritySingleton.generateKeyPair(keysize);
+
+			X509Certificate certificate = SecuritySingleton.generateCA(
+				keyPair.getPrivate(),
+				keyPair.getPublic(),
+				subject,
+				validity
+			);
+
+			return new PEM(
+				new PrivateKey[] {keyPair.getPrivate()},
+				new PublicKey[] {keyPair.getPublic()},
+				new X509Certificate[] {certificate},
+				null
+			);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public static PEM generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, int keysize, String subject, int validity) throws Exception
 		{
 			KeyPair keyPair = SecuritySingleton.generateKeyPair(keysize);
 
@@ -207,10 +283,25 @@ public class SecuritySingleton
 				validity
 			);
 
-			return new SecuritySingleton.PEM(
+			return new PEM(
 				new PrivateKey[] {keyPair.getPrivate()},
 				new PublicKey[] {keyPair.getPublic()},
-				new X509Certificate[] {certificate}
+				new X509Certificate[] {certificate},
+				null
+			);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public static PEM generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable Revocation[] revocations) throws Exception
+		{
+			X509CRL crl = SecuritySingleton.generateCRL(caPrivateKey, caCertificate, revocations);
+
+			return new PEM(
+				null,
+				null,
+				null,
+				new X509CRL[] {crl}
 			);
 		}
 
@@ -222,38 +313,67 @@ public class SecuritySingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(PrivateKey privateKey: privateKeys)
+			if(privateKeys != null)
 			{
-				stringBuilder.append("-----BEGIN PRIVATE KEY-----\n")
-				             .append(byteArrayToBase64String(privateKey.getEncoded()))
-				             .append("-----END PRIVATE KEY-----\n")
-				;
-			}
-
-			/*-------------------------------------------------------------*/
-
-			for(PublicKey _publicKey: publicKeys)
-			{
-				stringBuilder.append("-----BEGIN PUBLIC KEY-----\n")
-				             .append(byteArrayToBase64String(_publicKey.getEncoded()))
-				             .append("-----END PUBLIC KEY-----\n")
-				;
-			}
-
-			/*-------------------------------------------------------------*/
-
-			for(X509Certificate x509Certificate: x509Certificates)
-			{
-				try
+				for(PrivateKey privateKey: privateKeys)
 				{
-					stringBuilder.append("-----BEGIN CERTIFICATE-----\n")
-					             .append(byteArrayToBase64String(x509Certificate.getEncoded()))
-					             .append("-----END CERTIFICATE-----\n")
+					stringBuilder.append("-----BEGIN PRIVATE KEY-----\n")
+					             .append(byteArrayToBase64String(privateKey.getEncoded()))
+					             .append("-----END PRIVATE KEY-----\n")
 					;
 				}
-				catch(CertificateEncodingException e)
+			}
+
+			/*-------------------------------------------------------------*/
+
+			if(publicKeys != null)
+			{
+				for(PublicKey _publicKey: publicKeys)
 				{
-					stringBuilder.append(e.getMessage());
+					stringBuilder.append("-----BEGIN PUBLIC KEY-----\n")
+					             .append(byteArrayToBase64String(_publicKey.getEncoded()))
+					             .append("-----END PUBLIC KEY-----\n")
+					;
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
+			if(x509Certificates != null)
+			{
+				for(X509Certificate x509Certificate: x509Certificates)
+				{
+					try
+					{
+						stringBuilder.append("-----BEGIN CERTIFICATE-----\n")
+						             .append(byteArrayToBase64String(x509Certificate.getEncoded()))
+						             .append("-----END CERTIFICATE-----\n")
+						;
+					}
+					catch(Exception e)
+					{
+						stringBuilder.append(e.getMessage());
+					}
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
+			if(x509CRLs != null)
+			{
+				for(X509CRL x509CRL: x509CRLs)
+				{
+					try
+					{
+						stringBuilder.append("-----BEGIN X509 CRL-----\n")
+						             .append(byteArrayToBase64String(x509CRL.getEncoded()))
+						             .append("-----END X509 CRL-----\n")
+						;
+					}
+					catch(Exception e)
+					{
+						stringBuilder.append(e.getMessage());
+					}
 				}
 			}
 
@@ -335,7 +455,7 @@ public class SecuritySingleton
 	public static X509Certificate generateCA(PrivateKey privateKey, PublicKey publicKey, String subject, int validity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* CREATE X509 BUILDER                                             */
+		/* CREATE X509 CERTIFICATE BUILDER                                 */
 		/*-----------------------------------------------------------------*/
 
 		javax.security.auth.x500.X500Principal clientDN = new javax.security.auth.x500.X500Principal(subject);
@@ -385,7 +505,7 @@ public class SecuritySingleton
 	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, int validity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* CREATE X509 BUILDER                                             */
+		/* CREATE X509 CERTIFICATE BUILDER                                 */
 		/*-----------------------------------------------------------------*/
 
 		javax.security.auth.x500.X500Principal clientDN = new javax.security.auth.x500.X500Principal(subject);
@@ -427,6 +547,71 @@ public class SecuritySingleton
 		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(caPrivateKey);
 
 		return new JcaX509CertificateConverter().setProvider(BC).getCertificate(
+			builder.build(contentSigner)
+		);
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static X509CRL generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable Revocation[] revocations) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* CREATE X509 CRL BUILDER                                         */
+		/*-----------------------------------------------------------------*/
+
+		org.bouncycastle.asn1.x500.X500Name issuerDN = org.bouncycastle.asn1.x500.X500Name.getInstance(caCertificate.getSubjectX500Principal().getEncoded());
+
+		X509v2CRLBuilder builder = new X509v2CRLBuilder(issuerDN, new Date());
+
+		if(revocations != null)
+		{
+			for(Revocation revocation: revocations)
+			{
+				switch(revocation.reason)
+				{
+					case Revocation.SUPERSEDED:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.superseded);
+						break;
+
+					case Revocation.COMPROMISED:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.keyCompromise);
+						break;
+
+					case Revocation.AFFILIATION_CHANGED:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.affiliationChanged);
+						break;
+
+					case Revocation.PRIVILEGE_WITHDRAWN:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.privilegeWithdrawn);
+						break;
+
+					case Revocation.CESSATION_OF_OPERATION:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.cessationOfOperation);
+						break;
+
+					default:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.unspecified);
+						break;
+				}
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* ADD X509 EXTENSIONS                                             */
+		/*-----------------------------------------------------------------*/
+
+		// Authority Key Identifier
+		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(caCertificate));
+
+		/*-----------------------------------------------------------------*/
+		/* CREATE X509 CRL                                                 */
+		/*-----------------------------------------------------------------*/
+
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(caPrivateKey);
+
+		return new JcaX509CRLConverter().setProvider(BC).getCRL(
 			builder.build(contentSigner)
 		);
 

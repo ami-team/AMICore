@@ -99,10 +99,10 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generate(
-			2048,
+		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCertificate(
 			caKey,
 			caCrt,
+			2048,
 			String.format(
 				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
 				commonName,
@@ -179,7 +179,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<rowset><row><field name=\"SERIAL\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field></row></rowset><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

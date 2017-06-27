@@ -92,10 +92,10 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generate(
-			2048,
+		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCertificate(
 			caKey,
 			caCrt,
+			2048,
 			String.format(
 				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
 				commonName,
@@ -121,44 +121,35 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()) + "]]></field>");
-		result.append("<field name=\"PASSWORD\"><![CDATA[" + password + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
+		      .append("<field name=\"ISSUER_DN\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal())).append("]]></field>")
+		      .append("<field name=\"SERIAL\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field>")
+		      .append("<field name=\"PASSWORD\"><![CDATA[").append(password).append("]]></field>")
+		;
 
-		result.append("<field name=\"PRIVATE_KEY\">");
-		result.append("-----BEGIN PRIVATE KEY-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(pem.privateKeys[0].getEncoded()));
-		result.append("-----END PRIVATE KEY-----\n");
-		result.append("</field>");
-
-		result.append("<field name=\"PUBLIC_KEY\">");
-		result.append("-----BEGIN PUBLIC KEY-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(pem.publicKeys[0].getEncoded()));
-		result.append("-----END PUBLIC KEY-----\n");
-		result.append("</field>");
-
-		result.append("<field name=\"CERTIFICATE\">");
-		result.append("-----BEGIN CERTIFICATE-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(pem.x509Certificates[0].getEncoded()));
-		result.append("-----END CERTIFICATE-----\n");
-		result.append("</field>");
+		result.append("<field name=\"PEM\">")
+		      .append(pem.toString())
+		      .append("</field>")
+		;
 
 		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
 		{
 			keyStore_JKS.store(output, password.toCharArray());
 
-			result.append("<field name=\"KEYSTORE_JKS\">");
-			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
-			result.append("</field>");
+			result.append("<field name=\"KEYSTORE_JKS\">")
+			      .append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()))
+			      .append("</field>")
+			;
 		}
 
 		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
 		{
 			keyStore_PKCS12.store(output, password.toCharArray());
 
-			result.append("<field name=\"KEYSTORE_P12\">");
-			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
-			result.append("</field>");
+			result.append("<field name=\"KEYSTORE_P12\">")
+			      .append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()))
+			      .append("</field>")
+			;
 		}
 
 		/*-----------------------------------------------------------------*/

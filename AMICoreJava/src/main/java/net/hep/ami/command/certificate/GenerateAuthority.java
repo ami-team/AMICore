@@ -1,8 +1,6 @@
 package net.hep.ami.command.certificate;
 
 import java.util.*;
-import java.security.*;
-import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
@@ -63,11 +61,8 @@ public class GenerateAuthority extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		KeyPair keyPair = SecuritySingleton.generateKeyPair(4096);
-
-		X509Certificate certificate = SecuritySingleton.generateCA(
-			keyPair.getPrivate(),
-			keyPair.getPublic(),
+		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCA(
+			4096,
 			String.format(
 				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
 				commonName,
@@ -85,26 +80,15 @@ public class GenerateAuthority extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<field name=\"CLIENT_DN\"><![CDATA[" + SecuritySingleton.getDN(certificate.getSubjectX500Principal()) + "]]></field>");
-		result.append("<field name=\"ISSUER_DN\"><![CDATA[" + SecuritySingleton.getDN(certificate.getIssuerX500Principal()) + "]]></field>");
+		result.append("<field name=\"CLIENT_DN\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
+		      .append("<field name=\"ISSUER_DN\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal())).append("]]></field>")
+		      .append("<field name=\"SERIAL\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field>")
+		;
 
-		result.append("<field name=\"PRIVATE_KEY\">");
-		result.append("-----BEGIN PRIVATE KEY-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(keyPair.getPrivate().getEncoded()));
-		result.append("-----END PRIVATE KEY-----\n");
-		result.append("</field>");
-
-		result.append("<field name=\"PUBLIC_KEY\">");
-		result.append("-----BEGIN PUBLIC KEY-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(keyPair.getPublic().getEncoded()));
-		result.append("-----END PUBLIC KEY-----\n");
-		result.append("</field>");
-
-		result.append("<field name=\"CERTIFICATE\">");
-		result.append("-----BEGIN CERTIFICATE-----\n");
-		result.append(SecuritySingleton.byteArrayToBase64String(certificate.getEncoded()));
-		result.append("-----END CERTIFICATE-----\n");
-		result.append("</field>");
+		result.append("<field name=\"PEM\">")
+		      .append(pem.toString())
+		      .append("</field>")
+		;
 
 		/*-----------------------------------------------------------------*/
 
