@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `router_ipv4_blocks`;
 DROP TABLE IF EXISTS `router_locations`;
 DROP TABLE IF EXISTS `router_search_criteria`;
 DROP TABLE IF EXISTS `router_search_interface`;
+DROP TABLE IF EXISTS `router_authority`;
 DROP TABLE IF EXISTS `router_user_role`;
 DROP TABLE IF EXISTS `router_user`;
 DROP TABLE IF EXISTS `router_command_role`;
@@ -40,7 +41,7 @@ CREATE TABLE `router_catalog` (
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
   `custom` TEXT,
-  `archived` SMALLINT NOT NULL DEFAULT '0'
+  `archived` TINYINT NOT NULL DEFAULT '0'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -131,7 +132,7 @@ CREATE TABLE `router_user` (
   `lastName` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128),
   `country` VARCHAR(128) DEFAULT 'N/A',
-  `valid` SMALLINT NOT NULL DEFAULT '1'
+  `valid` TINYINT NOT NULL DEFAULT '1'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -162,12 +163,32 @@ ALTER TABLE `router_user_role` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMEN
 
 ------------------------------------------------------------------------------
 
+CREATE TABLE `router_authority` (
+  `id` INT(11) NOT NULL,
+  `clientDN` VARCHAR(512) NOT NULL,
+  `issuerDN` VARCHAR(512) NOT NULL,
+  `notBefore` DATE NOT NULL,
+  `notAfter` DATE NOT NULL,
+  `serial` VARCHAR(32) NOT NULL,
+  `revocation` INT(11) DEFAULT NULL
+
+) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_authority` UNIQUE KEY (`serial`)
+;
+
+ALTER TABLE `router_authority` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
+
+------------------------------------------------------------------------------
+
 CREATE TABLE `router_search_interface` (
   `id` INT(11) NOT NULL,
   `interface` VARCHAR(128) NOT NULL,
   `catalog` VARCHAR(128) NOT NULL,
   `entity` VARCHAR(128) NOT NULL,
-  `archived` SMALLINT NOT NULL DEFAULT '0'
+  `archived` TINYINT NOT NULL DEFAULT '0'
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 

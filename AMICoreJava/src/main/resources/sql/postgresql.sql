@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `router_ipv4_blocks`;
 DROP TABLE IF EXISTS `router_locations`;
 DROP TABLE IF EXISTS `router_search_criteria`;
 DROP TABLE IF EXISTS `router_search_interface`;
+DROP TABLE IF EXISTS `router_authority`;
 DROP TABLE IF EXISTS `router_user_role`;
 DROP TABLE IF EXISTS `router_user`;
 DROP TABLE IF EXISTS `router_command_role`;
@@ -134,6 +135,23 @@ ALTER TABLE `router_user_role`
   ADD CONSTRAINT `uk1_router_user_role` UNIQUE (`userFK`, `roleFK`),
   ADD CONSTRAINT `fk1_router_user_role` FOREIGN KEY (`userFK`) REFERENCES `router_user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk2_router_user_role` FOREIGN KEY (`roleFK`) REFERENCES `router_role` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+;
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_authority` (
+  `id` SERIAL NOT NULL,
+  `clientDN` VARCHAR(512) NOT NULL,
+  `issuerDN` VARCHAR(512) NOT NULL,
+  `notBefore` DATE NOT NULL,
+  `notAfter` DATE NOT NULL,
+  `serial` VARCHAR(32) NOT NULL,
+  `revocation` INT(11) DEFAULT NULL
+);
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_authority` UNIQUE KEY (`serial`)
 ;
 
 ------------------------------------------------------------------------------

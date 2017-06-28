@@ -1,14 +1,14 @@
 package net.hep.ami.command.certificate;
 
 import java.io.*;
+import java.sql.*;
 import java.util.*;
+import java.security.*;
+import java.security.cert.*;
 
 import javax.mail.*;
 import javax.mail.util.*;
 import javax.mail.internet.*;
-
-import java.security.*;
-import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
@@ -123,6 +123,8 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
 
 		/*-----------------------------------------------------------------*/
+		/* SEND CERTIFICATE                                                */
+		/*-----------------------------------------------------------------*/
 
 		try(ByteArrayOutputStream output1 = new ByteArrayOutputStream())
 		{
@@ -176,6 +178,20 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 				/*---------------------------------------------------------*/
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
+		/* SAVE CERTIFICATE                                                */
+		/*-----------------------------------------------------------------*/
+
+		PreparedStatement preparedStatement = getQuerier("self").prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`) VALUES (?, ?, ?, ?, ?)");
+
+		preparedStatement.setString(1, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
+		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
+		preparedStatement.setDate(3, new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()));
+		preparedStatement.setDate(4, new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()));
+		preparedStatement.setString(5, pem.x509Certificates[0].getSerialNumber().toString(10));
+
+		preparedStatement.executeUpdate();
 
 		/*-----------------------------------------------------------------*/
 

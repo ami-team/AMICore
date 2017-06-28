@@ -46,6 +46,15 @@ END;
 /
 
 BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE "router_authority"';
+EXCEPTION
+   WHEN OTHERS THEN IF SQLCODE != -942 THEN
+     RAISE;
+   END IF;
+END;
+/
+
+BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE "router_user_role"';
 EXCEPTION
    WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -157,6 +166,15 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_search_interface"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+/
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_authority"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -599,6 +617,60 @@ BEFORE INSERT ON `router_user_role`
 FOR EACH ROW
 BEGIN
   SELECT `seq_router_user_role`.NEXTVAL INTO :NEW.`id` FROM dual;
+END;
+/
+
+------------------------------------------------------------------------------
+
+CREATE TABLE `router_authority` (
+  `id` NUMBER(*, 0),
+  `clientDN` VARCHAR(512),
+  `issuerDN` VARCHAR(512),
+  `notBefore` DATE,
+  `notAfter` DATE,
+  `serial` VARCHAR(32),
+  `revocation` INT(11) DEFAULT NULL
+);
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`),
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `uk1_router_authority` UNIQUE KEY (`serial`)
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `ck1_router_authority` CHECK(`id` IS NOT NULL)
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `ck2_router_authority` CHECK(`clientDN` IS NOT NULL)
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `ck3_router_authority` CHECK(`issuerDN` IS NOT NULL)
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `ck4_router_authority` CHECK(`notBefore` IS NOT NULL)
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `ck5_router_authority` CHECK(`notAfter` IS NOT NULL)
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `ck6_router_authority` CHECK(`serial` IS NOT NULL)
+;
+
+CREATE SEQUENCE `seq_router_authority` START WITH 1 INCREMENT BY 1 CACHE 10;
+
+CREATE TRIGGER `trig_router_authority`
+BEFORE INSERT ON `router_authority`
+FOR EACH ROW
+BEGIN
+  SELECT `seq_router_authority`.NEXTVAL INTO :NEW.`id` FROM dual;
 END;
 /
 
