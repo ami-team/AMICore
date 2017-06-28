@@ -47,26 +47,22 @@ public class GenerateCertificate extends AbstractCommand
 		                                                        : ""
 		;
 
-		String password = arguments.containsKey("password") ? arguments.get("password")
-		                                                    : ""
-		;
-
-		int m_validity;
+		int validity;
 
 		if(arguments.containsKey("validity"))
 		{
 			try
 			{
-				m_validity = Integer.parseInt(arguments.get("validity"));
+				validity = Integer.parseInt(arguments.get("validity"));
 			}
 			catch(NumberFormatException e)
 			{
-				m_validity = 1;
+				validity = 1;
 			}
 		}
 		else
 		{
-			m_validity = 1;
+			validity = 1;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -104,16 +100,9 @@ public class GenerateCertificate extends AbstractCommand
 				locality,
 				country
 			),
-			m_validity
+			arguments.get("email"),
+			validity
 		);
-
-		/*-----------------------------------------------------------------*/
-
-		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
-		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
-
-		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
-		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
 
 		/*-----------------------------------------------------------------*/
 
@@ -124,33 +113,12 @@ public class GenerateCertificate extends AbstractCommand
 		result.append("<field name=\"CLIENT_DN\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
 		      .append("<field name=\"ISSUER_DN\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal())).append("]]></field>")
 		      .append("<field name=\"SERIAL\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field>")
-		      .append("<field name=\"PASSWORD\"><![CDATA[").append(password).append("]]></field>")
 		;
 
 		result.append("<field name=\"PEM\">")
 		      .append(pem.toString())
 		      .append("</field>")
 		;
-
-		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
-		{
-			keyStore_JKS.store(output, password.toCharArray());
-
-			result.append("<field name=\"KEYSTORE_JKS\">")
-			      .append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()))
-			      .append("</field>")
-			;
-		}
-
-		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
-		{
-			keyStore_PKCS12.store(output, password.toCharArray());
-
-			result.append("<field name=\"KEYSTORE_P12\">")
-			      .append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()))
-			      .append("</field>")
-			;
-		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -165,14 +133,14 @@ public class GenerateCertificate extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate a client or server certificates. Default validity: 1 year.";
+		return "Generate a client or server certificate. Default validity: 1 year.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -password=\"\" (-validity=\"\")?";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

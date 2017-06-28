@@ -41,22 +41,22 @@ public class GenerateAuthority extends AbstractCommand
 		                                                        : ""
 		;
 
-		int m_validity;
+		int validity;
 
 		if(arguments.containsKey("validity"))
 		{
 			try
 			{
-				m_validity = Integer.parseInt(arguments.get("validity"));
+				validity = Integer.parseInt(arguments.get("validity"));
 			}
 			catch(NumberFormatException e)
 			{
-				m_validity = 15;
+				validity = 15;
 			}
 		}
 		else
 		{
-			m_validity = 15;
+			validity = 15;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -71,7 +71,8 @@ public class GenerateAuthority extends AbstractCommand
 				locality,
 				country
 			),
-			m_validity
+			arguments.get("email"),
+			validity
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -103,7 +104,7 @@ public class GenerateAuthority extends AbstractCommand
 
 	public static String help()
 	{
-		return "Generate a CA certificates. Default validity: 15 years.";
+		return "Generate a CA certificate. Default validity: 15 years.";
 	}
 
 	/*---------------------------------------------------------------------*/

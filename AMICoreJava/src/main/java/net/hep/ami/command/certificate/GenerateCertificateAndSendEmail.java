@@ -58,22 +58,22 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		                                              : ""
 		;
 
-		int m_validity;
+		int validity;
 
 		if(arguments.containsKey("validity"))
 		{
 			try
 			{
-				m_validity = Integer.parseInt(arguments.get("validity"));
+				validity = Integer.parseInt(arguments.get("validity"));
 			}
 			catch(NumberFormatException e)
 			{
-				m_validity = 1;
+				validity = 1;
 			}
 		}
 		else
 		{
-			m_validity = 1;
+			validity = 1;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -104,15 +104,15 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 			caCrt,
 			2048,
 			String.format(
-				"CN=%s, OU=%s, O=%s, L=%s, C=%s, emailAddress=%s",
+				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
 				commonName,
 				organizationalUnit,
 				organization,
 				locality,
-				country,
-				email
+				country
 			),
-			m_validity
+			email,
+			validity
 		);
 
 		/*-----------------------------------------------------------------*/
