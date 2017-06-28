@@ -169,7 +169,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 					)
 				);
 
-				mainBodyPart3.setFileName(commonName + ".pem");
+				mainBodyPart3.setFileName(commonName + ".crt");
 
 				/*---------------------------------------------------------*/
 

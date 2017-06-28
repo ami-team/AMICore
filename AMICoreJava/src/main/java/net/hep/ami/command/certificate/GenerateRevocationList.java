@@ -1,7 +1,9 @@
 package net.hep.ami.command.certificate;
 
 import java.io.*;
+import java.math.*;
 import java.util.*;
+
 import java.security.*;
 import java.security.cert.*;
 
@@ -50,7 +52,24 @@ public class GenerateRevocationList extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCRL(caKey, caCrt, null);
+		java.sql.ResultSet resultSet = getQuerier("self").executeSQLQuery("SELECT `serial`, `revocationReason`, `revocationDate` FROM `router_authority` WHERE `revocationReason` IS NOT NULL AND `revocationDate` IS NOT NULL").getResultSet();
+
+		/*-----------------------------------------------------------------*/
+
+		List<SecuritySingleton.Revocation> revocations = new ArrayList<>();
+
+		while(resultSet.next())
+		{
+			revocations.add(new SecuritySingleton.Revocation(
+				new BigInteger(resultSet.getString(1)),
+				resultSet.getInt(2),
+				resultSet.getDate(3)
+			));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCRL(caKey, caCrt, (SecuritySingleton.Revocation[]) revocations.toArray());
 
 		/*-----------------------------------------------------------------*/
 

@@ -629,7 +629,8 @@ CREATE TABLE `router_authority` (
   `notBefore` DATE,
   `notAfter` DATE,
   `serial` VARCHAR(32),
-  `revocation` INT(11) DEFAULT NULL
+  `revocationReason` INT(11) DEFAULT NULL,
+  `revocationDate` DATE DEFAULT NULL
 );
 
 ALTER TABLE `router_authority`

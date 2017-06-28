@@ -120,6 +120,13 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	public ResultSet getResultSet()
+	{
+		return m_resultSet;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getSQL()
 	{
 		return m_sql;
