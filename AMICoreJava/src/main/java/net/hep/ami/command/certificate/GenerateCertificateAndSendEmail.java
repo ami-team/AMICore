@@ -170,11 +170,11 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 					)
 				);
 
-				mainBodyPart3.setFileName(commonName + ".crt");
+				mainBodyPart3.setFileName(commonName + ".pem");
 
 				/*---------------------------------------------------------*/
 
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Hi,\nThis is you new AMI certificate. ", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Hi,\n\nThis is you new AMI certificate. You can install \"" + commonName + ".p12\" in your web browser.\n\nBest regards.", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
 
 				/*---------------------------------------------------------*/
 			}
@@ -211,7 +211,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -password=\"\" (-validity=\"\")? -email=\"\"";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -email=\"\" -password=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
