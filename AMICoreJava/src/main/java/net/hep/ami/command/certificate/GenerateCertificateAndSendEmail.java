@@ -104,12 +104,13 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 			caCrt,
 			2048,
 			String.format(
-				"CN=%s, OU=%s, O=%s, L=%s, C=%s",
+				"CN=%s, OU=%s, O=%s, L=%s, C=%s, emailAddress=%s",
 				commonName,
 				organizationalUnit,
 				organization,
 				locality,
-				country
+				country,
+				email
 			),
 			m_validity
 		);
@@ -173,7 +174,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				/*---------------------------------------------------------*/
 
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI X509 certificate", "AMI X509 certificate", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Hi,\nThis is you new AMI certificate. ", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
 
 				/*---------------------------------------------------------*/
 			}
@@ -183,19 +184,20 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* SAVE CERTIFICATE                                                */
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = getQuerier("self").prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`) VALUES (?, ?, ?, ?, ?)");
+		PreparedStatement preparedStatement = getQuerier("self").prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`) VALUES (?, ?, ?, ?, ?, ?)");
 
 		preparedStatement.setString(1, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
 		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
 		preparedStatement.setDate(3, new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()));
 		preparedStatement.setDate(4, new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()));
 		preparedStatement.setString(5, pem.x509Certificates[0].getSerialNumber().toString(10));
+		preparedStatement.setString(6, email);
 
 		preparedStatement.executeUpdate();
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<rowset><row><field name=\"SERIAL\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field></row></rowset><info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

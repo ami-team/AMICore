@@ -145,7 +145,8 @@ CREATE TABLE `router_authority` (
   `issuerDN` VARCHAR(512) NOT NULL,
   `notBefore` DATE NOT NULL,
   `notAfter` DATE NOT NULL,
-  `serial` VARCHAR(32) NOT NULL,
+  `serial` VARCHAR(128) NOT NULL,
+  `email` VARCHAR(128) NOT NULL,
   `revocationReason` INT(11) DEFAULT NULL,
   `revocationDate` DATE DEFAULT NULL
 );

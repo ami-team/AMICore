@@ -624,11 +624,12 @@ END;
 
 CREATE TABLE `router_authority` (
   `id` NUMBER(*, 0),
-  `clientDN` VARCHAR(512),
-  `issuerDN` VARCHAR(512),
+  `clientDN` VARCHAR2(512),
+  `issuerDN` VARCHAR2(512),
   `notBefore` DATE,
   `notAfter` DATE,
-  `serial` VARCHAR(32),
+  `serial` VARCHAR2(128),
+  `email` VARCHAR2(128),
   `revocationReason` INT(11) DEFAULT NULL,
   `revocationDate` DATE DEFAULT NULL
 );
@@ -663,6 +664,10 @@ ALTER TABLE `router_authority`
 
 ALTER TABLE `router_authority`
   ADD CONSTRAINT `ck6_router_authority` CHECK(`serial` IS NOT NULL)
+;
+
+ALTER TABLE `router_authority`
+  ADD CONSTRAINT `ck7_router_authority` CHECK(`email` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_authority` START WITH 1 INCREMENT BY 1 CACHE 10;
