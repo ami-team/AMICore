@@ -69,7 +69,7 @@ public class GenerateRevocationList extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCRL(caKey, caCrt, (SecuritySingleton.Revocation[]) revocations.toArray());
+		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCRL(caKey, caCrt, revocations);
 
 		/*-----------------------------------------------------------------*/
 

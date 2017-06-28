@@ -293,7 +293,7 @@ public class SecuritySingleton
 
 		/*-----------------------------------------------------------------*/
 
-		public static PEM generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable Revocation[] revocations) throws Exception
+		public static PEM generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable List<Revocation> revocations) throws Exception
 		{
 			X509CRL crl = SecuritySingleton.generateCRL(caPrivateKey, caCertificate, revocations);
 
@@ -555,7 +555,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509CRL generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable Revocation[] revocations) throws Exception
+	public static X509CRL generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable List<Revocation> revocations) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 CRL BUILDER                                         */
