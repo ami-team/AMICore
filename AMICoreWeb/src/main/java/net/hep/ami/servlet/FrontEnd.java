@@ -393,8 +393,8 @@ public class FrontEnd extends HttpServlet
 		String issuerDN = dns.y;
 		session.setAttribute("issuerDN", issuerDN);
 
-		String notBefore = dns.y;
-		String notAfter = dns.z;
+		String notBefore = dns.z;
+		String notAfter = dns.t;
 
 		/*-----------------------------------------------------------------*/
 		/* GET NOCERT FLAG                                                 */
