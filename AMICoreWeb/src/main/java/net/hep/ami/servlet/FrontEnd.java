@@ -236,7 +236,7 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static Tuple3<String, String, String> getDNs(HttpServletRequest req)
+	private static Tuple4<String, String, String, String> getDNs(HttpServletRequest req)
 	{
 		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
@@ -246,9 +246,12 @@ public class FrontEnd extends HttpServlet
 			{
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
-					return new Tuple3<>(
+					return new Tuple4<>(
 						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
 						SecuritySingleton.getDN(certificate.getIssuerX500Principal()),
+						new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(
+							certificate.getNotBefore()
+						),
 						new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(
 							certificate.getNotAfter()
 						)
@@ -257,7 +260,8 @@ public class FrontEnd extends HttpServlet
 			}
 		}
 
-		return new Tuple3<>(
+		return new Tuple4<>(
+			"",
 			"",
 			"",
 			""
@@ -382,12 +386,14 @@ public class FrontEnd extends HttpServlet
 		/* GET DNs                                                         */
 		/*-----------------------------------------------------------------*/
 
-		Tuple3<String, String, String> dns = getDNs(request);
+		Tuple4<String, String, String, String> dns = getDNs(request);
 
 		String clientDN = dns.x;
 		session.setAttribute("clientDN", clientDN);
 		String issuerDN = dns.y;
 		session.setAttribute("issuerDN", issuerDN);
+
+		String notBefore = dns.y;
 		String notAfter = dns.z;
 
 		/*-----------------------------------------------------------------*/
@@ -509,6 +515,8 @@ public class FrontEnd extends HttpServlet
 
 		arguments.put("clientDN", clientDN);
 		arguments.put("issuerDN", issuerDN);
+
+		arguments.put("notBefore", notBefore);
 		arguments.put("notAfter", notAfter);
 
 		/*-----------------------------------------------------------------*/

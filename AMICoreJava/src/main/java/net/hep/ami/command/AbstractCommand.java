@@ -15,6 +15,8 @@ public abstract class AbstractCommand
 
 	protected final String m_clientDN;
 	protected final String m_issuerDN;
+
+	protected final String m_notBefore;
 	protected final String m_notAfter;
 
 	protected final String m_isSecure;
@@ -43,6 +45,8 @@ public abstract class AbstractCommand
 
 		m_clientDN = arguments.containsKey("clientDN") ? arguments.remove("clientDN") : "";
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
+
+		m_notBefore = arguments.containsKey("notBefore") ? arguments.remove("notBefore") : "";
 		m_notAfter = arguments.containsKey("notAfter") ? arguments.remove("notAfter") : "";
 
 		m_isSecure = arguments.containsKey("isSecure") ? arguments.remove("isSecure") : "";

@@ -190,6 +190,7 @@ public class GetSessionInfo extends AbstractCommand
 		      .append("<field name=\"issuerDNInAMI\"><![CDATA[").append(SecuritySingleton.decrypt(issuerDNInAMI)).append("]]></field>")
 		      .append("<field name=\"clientDNInSession\"><![CDATA[").append(m_clientDN).append("]]></field>")
 		      .append("<field name=\"issuerDNInSession\"><![CDATA[").append(m_issuerDN).append("]]></field>")
+		      .append("<field name=\"notBefore\"><![CDATA[").append(m_notBefore).append("]]></field>")
 		      .append("<field name=\"notAfter\"><![CDATA[").append(m_notAfter).append("]]></field>")
 		      .append("<field name=\"firstName\"><![CDATA[").append(firstName).append("]]></field>")
 		      .append("<field name=\"lastName\"><![CDATA[").append(lastName).append("]]></field>")
