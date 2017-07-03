@@ -921,6 +921,27 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String getPrimaryKey(String catalog, String table) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		for(Column column : getColumns(catalog, table).values())
+		{
+			if(column.primary)
+			{
+				return column.name;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("primary key not found for `" + catalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static StringBuilder getDBSchemas()
 	{
 		StringBuilder result = new StringBuilder();
