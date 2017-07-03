@@ -25,9 +25,39 @@ public class SearchQuery extends AbstractCommand
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
+		String orderBy = arguments.get("orderBy");
+		String orderWay = arguments.get("orderWay");
+
+		String limit = arguments.get("limit");
+		String offset = arguments.get("offset");
+
 		if(catalog == null || (sql == null && (mql == null || entity == null)))
 		{
 			throw new Exception("invalid usage");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		String extra = "";
+
+		if(orderBy != null)
+		{
+			extra += " ORDER BY " + orderBy;
+
+			if(orderWay != null)
+			{
+				extra += " " + orderWay;
+			}
+		}
+
+		if(limit != null)
+		{
+			extra += " LIMIT " + limit;
+
+			if(offset != null)
+			{
+				extra += " OFFSET " + offset;
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -40,11 +70,11 @@ public class SearchQuery extends AbstractCommand
 
 		if(sql != null)
 		{
-			queryResult = querier.executeSQLQuery(sql);
+			queryResult = querier.executeSQLQuery(sql + extra);
 		}
 		else
 		{
-			queryResult = querier.executeMQLQuery(entity, mql);
+			queryResult = querier.executeMQLQuery(entity, mql + extra);
 		}
 
 		/*-----------------------------------------------------------------*/
