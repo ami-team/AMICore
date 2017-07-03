@@ -106,6 +106,18 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
+		if(context.orderBy != null)
+		{
+			where.append(" ORDER BY ").append(context.orderBy.getText());
+
+			if(context.orderWay != null)
+			{
+				where.append(context.orderWay.getText());
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		if(context.limit != null)
 		{
 			where.append(" LIMIT ").append(context.limit.getText());

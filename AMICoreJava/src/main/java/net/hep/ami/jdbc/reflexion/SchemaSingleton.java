@@ -23,6 +23,8 @@ public class SchemaSingleton
 		public final int size;
 		public final int digits;
 
+		public boolean primary = false;
+
 		public Column(String _externalCatalog, String _internalCatalog, String _table, String _name, String _type, int _size, int _digits)
 		{
 			externalCatalog = _externalCatalog;
@@ -373,26 +375,25 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                             */
 				/*---------------------------------------------------------*/
 
-				ResultSet resultSet = metaData.getTables(m_internalCatalog, m_internalCatalog, "%", null);
-
-				/*---------------------------------------------------------*/
-
-				String temp;
-
-				while(resultSet.next())
+				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_internalCatalog, "%", null))
 				{
-					temp = resultSet.getString("TABLE_NAME");
+					String temp;
 
-					if(temp != null
-					   &&
-					   temp.toLowerCase().startsWith("db_") == false
-					   &&
-					   temp.toLowerCase().startsWith("x_db_") == false
-					 ) {
-						m_tmp1.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
-						m_tmp2.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+					while(resultSet.next())
+					{
+						temp = resultSet.getString("TABLE_NAME");
 
-						tables.add(temp);
+						if(temp != null
+						   &&
+						   temp.toLowerCase().startsWith("db_") == false
+						   &&
+						   temp.toLowerCase().startsWith("x_db_") == false
+						 ) {
+							m_tmp1.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+							m_tmp2.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+
+							tables.add(temp);
+						}
 					}
 				}
 
@@ -423,38 +424,47 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_internalCatalog, _table, "%");
+			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_internalCatalog, _table, "%"))
+			{
+				while(resultSet.next())
+				{
+					String table = resultSet.getString("TABLE_NAME");
+					String name = resultSet.getString("COLUMN_NAME");
+					String type = resultSet.getString("TYPE_NAME");
+					int size = resultSet.getInt("COLUMN_SIZE");
+					int digits = resultSet.getInt("DECIMAL_DIGITS");
+
+					if(table != null && name != null && type != null)
+					{
+						table = table.toLowerCase();
+						name = name.toLowerCase();
+						type = type.toUpperCase();
+
+						Map<String, Column> column = m_tmp1.get(table);
+
+						if(column != null)
+						{
+							column.put(name, new Column(
+								m_externalCatalog,
+								m_internalCatalog,
+								table,
+								name,
+								type,
+								size,
+								digits
+							));
+						}
+					}
+				}
+			}
 
 			/*-------------------------------------------------------------*/
 
-			while(resultSet.next())
+			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_internalCatalog, _table))
 			{
-				String table = resultSet.getString("TABLE_NAME");
-				String name = resultSet.getString("COLUMN_NAME");
-				String type = resultSet.getString("TYPE_NAME");
-				int size = resultSet.getInt("COLUMN_SIZE");
-				int digits = resultSet.getInt("DECIMAL_DIGITS");
-
-				if(table != null && name != null && type != null)
+				while(resultSet.next())
 				{
-					table = table.toLowerCase();
-					name = name.toLowerCase();
-					type = type.toUpperCase();
-
-					Map<String, Column> column = m_tmp1.get(table);
-
-					if(column != null)
-					{
-						column.put(name, new Column(
-							m_externalCatalog,
-							m_internalCatalog,
-							table,
-							name,
-							type,
-							size,
-							digits
-						));
-					}
+					m_tmp1.get(_table).get(resultSet.getString("COLUMN_NAME")).primary = true;
 				}
 			}
 
@@ -469,70 +479,69 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_internalCatalog, _table);
-
-			/*-------------------------------------------------------------*/
-
-			while(resultSet.next())
+			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_internalCatalog, _table))
 			{
-				String name = resultSet.getString("FK_NAME");
-				String fkInternalCatalog = resultSet.getString("FKTABLE_CAT");
-				String fkTable = resultSet.getString("FKTABLE_NAME");
-				String fkColumn = resultSet.getString("FKCOLUMN_NAME");
-				String pkInternalCatalog = resultSet.getString("PKTABLE_CAT");
-				String pkTable = resultSet.getString("PKTABLE_NAME");
-				String pkColumn = resultSet.getString("PKCOLUMN_NAME");
-
-				String fkExternalCatalog;
-				String pkExternalCatalog;
-
-				if(fkInternalCatalog == null)
+				while(resultSet.next())
 				{
-					fkExternalCatalog = m_externalCatalog;
-					fkInternalCatalog = m_internalCatalog;
-				}
-				else
-				{
-					fkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(fkInternalCatalog)
-					                                                                                      : m_externalCatalog
-					;
-				}
+					String name = resultSet.getString("FK_NAME");
+					String fkInternalCatalog = resultSet.getString("FKTABLE_CAT");
+					String fkTable = resultSet.getString("FKTABLE_NAME");
+					String fkColumn = resultSet.getString("FKCOLUMN_NAME");
+					String pkInternalCatalog = resultSet.getString("PKTABLE_CAT");
+					String pkTable = resultSet.getString("PKTABLE_NAME");
+					String pkColumn = resultSet.getString("PKCOLUMN_NAME");
 
-				if(pkInternalCatalog == null)
-				{
-					pkExternalCatalog = m_externalCatalog;
-					pkInternalCatalog = m_internalCatalog;
-				}
-				else
-				{
-					pkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(pkInternalCatalog)
-					                                                                                      : m_externalCatalog
-					;
-				}
+					String fkExternalCatalog;
+					String pkExternalCatalog;
 
-				if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
-				{
-					name = name.toLowerCase();
-					fkTable = fkTable.toLowerCase();
-					fkColumn = fkColumn.toLowerCase();
-					pkTable = pkTable.toLowerCase();
-					pkColumn = pkColumn.toLowerCase();
-
-					Map<String, FrgnKeys> frgnKey = m_tmp2.get(fkTable);
-
-					if(frgnKey != null)
+					if(fkInternalCatalog == null)
 					{
-						frgnKey.put(fkColumn, new FrgnKeys(new FrgnKey(
-							name,
-							fkExternalCatalog,
-							fkInternalCatalog,
-							fkTable,
-							fkColumn,
-							pkExternalCatalog,
-							pkInternalCatalog,
-							pkTable,
-							pkColumn
-						)));
+						fkExternalCatalog = m_externalCatalog;
+						fkInternalCatalog = m_internalCatalog;
+					}
+					else
+					{
+						fkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(fkInternalCatalog)
+						                                                                                      : m_externalCatalog
+						;
+					}
+
+					if(pkInternalCatalog == null)
+					{
+						pkExternalCatalog = m_externalCatalog;
+						pkInternalCatalog = m_internalCatalog;
+					}
+					else
+					{
+						pkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(pkInternalCatalog)
+						                                                                                      : m_externalCatalog
+						;
+					}
+
+					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
+					{
+						name = name.toLowerCase();
+						fkTable = fkTable.toLowerCase();
+						fkColumn = fkColumn.toLowerCase();
+						pkTable = pkTable.toLowerCase();
+						pkColumn = pkColumn.toLowerCase();
+
+						Map<String, FrgnKeys> frgnKey = m_tmp2.get(fkTable);
+
+						if(frgnKey != null)
+						{
+							frgnKey.put(fkColumn, new FrgnKeys(new FrgnKey(
+								name,
+								fkExternalCatalog,
+								fkInternalCatalog,
+								fkTable,
+								fkColumn,
+								pkExternalCatalog,
+								pkInternalCatalog,
+								pkTable,
+								pkColumn
+							)));
+						}
 					}
 				}
 			}
@@ -912,7 +921,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder getDBSchemes()
+	public static StringBuilder getDBSchemas()
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -944,6 +953,8 @@ public class SchemaSingleton
 				"<field name=\"size\"><![CDATA[" + column.size + "]]></field>"
 				+
 				"<field name=\"digits\"><![CDATA[" + column.digits + "]]></field>"
+				+
+				"<field name=\"primary\"><![CDATA[" + column.primary + "]]></field>"
 				+
 				"</row>"
 			);

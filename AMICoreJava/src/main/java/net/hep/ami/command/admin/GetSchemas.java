@@ -19,7 +19,7 @@ public class GetSchemas extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		return SchemaSingleton.getDBSchemes();
+		return SchemaSingleton.getDBSchemas();
 	}
 
 	/*---------------------------------------------------------------------*/

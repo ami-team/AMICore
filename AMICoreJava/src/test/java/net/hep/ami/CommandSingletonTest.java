@@ -51,7 +51,7 @@ public class CommandSingletonTest
 
 			router.commitAndRelease();
 
-			System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -fields=\"jsonSerialization\" -values=\"{}\" -keyFields=\"externalCatalog\" -keyValues=\"self\"").replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -fields=\"jsonSerialization\" -values=\"{}\" -keyFields=\"externalCatalog\" -keyValues=\"self\"").replace(">", ">\n"));
 
 			Router router2 = new Router();
 
@@ -59,7 +59,7 @@ public class CommandSingletonTest
 			//System.out.println(router2.mqlToAST("router_user", "SELECT router_user.*"));
 
 			router2.commitAndRelease();
-
+/*
 			AutoJoinSingleton.AMIJoins joins;
 
 			joins = new AutoJoinSingleton.AMIJoins();
@@ -80,7 +80,7 @@ public class CommandSingletonTest
 
 			System.out.println("::" + SecuritySingleton.encrypt("") + "::");
 			System.out.println("::" + SecuritySingleton.decrypt("") + "::");
-
+*/
 			//System.out.println(SchemaSingleton.getCatalogNames());
 			//System.out.println(SchemaSingleton.getDBSchemes().toString().replace(">", ">\n"));
 
@@ -117,6 +117,8 @@ public class CommandSingletonTest
 
 			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", "foo");
 */
+			SchemaSingleton.getDBSchemas();//.toString().replace(">", ">\n"));
+
 			//System.out.println("done.");
 		}
 		catch(Exception e)

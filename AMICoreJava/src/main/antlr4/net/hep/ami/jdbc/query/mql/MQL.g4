@@ -13,7 +13,7 @@ options {
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
+	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (ORDER BY orderBy=sqlQId (orderWay=(ASC|DESC))?)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
 	;
 
 /*---------------------------*/
@@ -102,6 +102,22 @@ DISTINCT
 
 WHERE
 	: W H E R E
+	;
+
+ORDER
+	: O R D E R
+	;
+
+BY
+	: B Y
+	;
+
+ASC
+	: A S C
+	;
+
+DESC
+	: D E S C
 	;
 
 LIMIT
