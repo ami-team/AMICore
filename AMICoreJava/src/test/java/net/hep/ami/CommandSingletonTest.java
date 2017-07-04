@@ -117,7 +117,7 @@ public class CommandSingletonTest
 
 			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", "foo");
 */
-			SchemaSingleton.getDBSchemas();//.toString().replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
 
 			//System.out.println("done.");
 		}
