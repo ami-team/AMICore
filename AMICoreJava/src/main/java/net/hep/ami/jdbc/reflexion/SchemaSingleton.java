@@ -22,10 +22,11 @@ public class SchemaSingleton
 		public final String type;
 		public final int size;
 		public final int digits;
+		public final String def;
 
 		public boolean primary = false;
 
-		public Column(String _externalCatalog, String _internalCatalog, String _table, String _name, String _type, int _size, int _digits)
+		public Column(String _externalCatalog, String _internalCatalog, String _table, String _name, String _type, int _size, int _digits, String _def)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
@@ -34,6 +35,7 @@ public class SchemaSingleton
 			type = _type;
 			size = _size;
 			digits = _digits;
+			def = _def;
 		}
 
 		@Override
@@ -433,6 +435,7 @@ public class SchemaSingleton
 					String type = resultSet.getString("TYPE_NAME");
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
+					String def = resultSet.getString("COLUMN_DEF");
 
 					if(table != null && name != null && type != null)
 					{
@@ -451,7 +454,8 @@ public class SchemaSingleton
 								name,
 								type,
 								size,
-								digits
+								digits,
+								def != null ? def : ""
 							));
 						}
 					}
@@ -974,6 +978,8 @@ public class SchemaSingleton
 				"<field name=\"size\"><![CDATA[" + column.size + "]]></field>"
 				+
 				"<field name=\"digits\"><![CDATA[" + column.digits + "]]></field>"
+				+
+				"<field name=\"def\"><![CDATA[" + column.def + "]]></field>"
 				+
 				"<field name=\"primary\"><![CDATA[" + column.primary + "]]></field>"
 				+
