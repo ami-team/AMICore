@@ -38,7 +38,7 @@ CREATE TABLE `router_catalog` (
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
   `custom` TEXT,
-  `archived` SMALLINT NOT NULL DEFAULT '0',
+  `archived` SMALLINT NOT NULL DEFAULT '0'
 );
 
 ALTER TABLE `router_catalog`
@@ -147,13 +147,13 @@ CREATE TABLE `router_authority` (
   `notAfter` DATE NOT NULL,
   `serial` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128) NOT NULL,
-  `revocationReason` INT(11) DEFAULT NULL,
+  `revocationReason` INT DEFAULT NULL,
   `revocationDate` DATE DEFAULT NULL
 );
 
 ALTER TABLE `router_authority`
   ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_authority` UNIQUE KEY (`serial`)
+  ADD CONSTRAINT `uk1_router_authority` UNIQUE (`serial`)
 ;
 
 ------------------------------------------------------------------------------
