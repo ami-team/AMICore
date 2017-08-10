@@ -269,6 +269,13 @@ public class Router implements Querier
 
 	public void fill() throws Exception
 	{
+		fill("");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public void fill(String schema) throws Exception
+	{
 		String admin_user = ConfigSingleton.getProperty("admin_user");
 		String admin_pass = ConfigSingleton.getProperty("admin_pass");
 		String admin_email = ConfigSingleton.getProperty("admin_email");
@@ -279,9 +286,10 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`) VALUES (?, ?, ?, ?, ?, NULL, 0);",
+		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`) VALUES (?, ?, ?, ?, ?, ?, NULL, 0);",
 			getExternalCatalog(),
 			getInternalCatalog(),
+			schema,
 			getJdbcUrl(),
 			SecuritySingleton.encrypt(getUser()),
 			SecuritySingleton.encrypt(getPass())

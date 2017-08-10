@@ -804,6 +804,46 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String internalCatalogToInternalSchema(String catalog) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		String result = s_internalCatalogToInternalSchema.get(catalog);
+
+		if(result != null)
+		{
+			return result;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("internal catalog not found `" + catalog + "`");
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String externalCatalogToInternalSchema(String catalog) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		String result = s_externalCatalogToInternalCatalog.get(catalog);
+
+		if(result != null)
+		{
+			return result;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("external catalog not found `" + catalog + "`");
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static List<String> getCatalogNames()
 	{
 		return new ArrayList<>(

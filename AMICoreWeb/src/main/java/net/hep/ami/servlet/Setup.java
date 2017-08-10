@@ -349,7 +349,8 @@ public class Setup extends HttpServlet
 				if("on".equals(req.getParameter("router_reset")))
 				{
 					db.create();
-					db.fill();
+
+					db.fill(router_schema);
 				}
 
 				/*---------------------------------------------------------*/
