@@ -386,7 +386,7 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                             */
 				/*---------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_internalCatalog, "%", null))
+				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_internalSchema, "%", null))
 				{
 					String temp;
 
@@ -435,7 +435,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_internalCatalog, _table, "%"))
+			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_internalSchema, _table, "%"))
 			{
 				while(resultSet.next())
 				{
@@ -492,7 +492,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_internalCatalog, _table))
+			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_internalSchema, _table))
 			{
 				while(resultSet.next())
 				{
