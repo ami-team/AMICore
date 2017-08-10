@@ -152,7 +152,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addSchema(String externalCatalog, String internalCatalog)
+	public static void addSchema(String externalCatalog, String internalCatalog, String internalSchema)
 	{
 		/*-----------------------------------------------------------------*/
 

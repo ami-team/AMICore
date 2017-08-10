@@ -30,16 +30,19 @@ function validateForm()
 
 	$.each($(':input').serializeArray(), function(index, param) {
 
-		if(param.name !== 'router_reset')
+		if(param.name === 'router_reset')
 		{
+			reset = true;
+		}
+
+		if(param.name !== 'router_schema'
+		   &&
+		   param.name !== 'router_reset'
+		 ) {
 			if(param.value === '')
 			{
 				error += ' Error, field `' + param.name + '` empty!';
 			}
-		}
-		else
-		{
-			reset = true;
 		}
 	});
 

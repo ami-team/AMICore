@@ -195,9 +195,14 @@ public class Setup extends HttpServlet
 		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
 		/*-----------------------------------------------------------------*/
 
-		String router = req.getParameter("router");
-		router = (router != null) ? router.trim()
-		                          : ConfigSingleton.getProperty("router")
+		String router_catalog = req.getParameter("router_catalog");
+		router_catalog = (router_catalog != null) ? router_catalog.trim()
+		                                          : ConfigSingleton.getProperty("router_catalog")
+		;
+
+		String router_schema = req.getParameter("router_schema");
+		router_schema = (router_schema != null) ? router_schema.trim()
+		                                        : ConfigSingleton.getProperty("router_schema")
 		;
 
 		String router_url = req.getParameter("router_url");
@@ -235,7 +240,8 @@ public class Setup extends HttpServlet
 		                    .replace("{{ADMIN_EMAIL}}", admin_email)
 		                    .replace("{{ENCRYPTION_KEY}}", encryption_key)
 		                    /**/
-		                    .replace("{{ROUTER}}", router)
+		                    .replace("{{ROUTER_CATALOG}}", router_catalog)
+		                    .replace("{{ROUTER_SCHEMA}}", router_schema)
 		                    .replace("{{ROUTER_URL}}", router_url)
 		                    .replace("{{ROUTER_USER}}", router_user)
 		                    .replace("{{ROUTER_PASS}}", router_pass)
@@ -274,8 +280,11 @@ public class Setup extends HttpServlet
 		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
 		/*-----------------------------------------------------------------*/
 
-		String router = req.getParameter("router");
-		router = (router != null) ? router.trim() : "";
+		String router_catalog = req.getParameter("router_catalog");
+		router_catalog = (router_catalog != null) ? router_catalog.trim() : "";
+
+		String router_schema = req.getParameter("router_schema");
+		router_schema = (router_schema != null) ? router_schema.trim() : "";
 
 		String router_url = req.getParameter("router_url");
 		router_url = (router_url != null) ? router_url.trim() : "";
@@ -306,7 +315,8 @@ public class Setup extends HttpServlet
 		              .append("  <property name=\"admin_email\"><![CDATA[" + admin_email + "]]></property>\n")
 		              .append("  <property name=\"encryption_key\"><![CDATA[" + encryption_key + "]]></property>\n")
 		              .append("\n")
-		              .append("  <property name=\"router\"><![CDATA[" + router + "]]></property>\n")
+		              .append("  <property name=\"router_catalog\"><![CDATA[" + router_catalog + "]]></property>\n")
+		              .append("  <property name=\"router_schema\"><![CDATA[" + router_schema + "]]></property>\n")
 		              .append("  <property name=\"router_url\"><![CDATA[" + router_url + "]]></property>\n")
 		              .append("  <property name=\"router_user\"><![CDATA[" + router_user + "]]></property>\n")
 		              .append("  <property name=\"router_pass\"><![CDATA[" + router_pass + "]]></property>\n")
@@ -321,7 +331,7 @@ public class Setup extends HttpServlet
 			/* SETUP SERVER CONFIG                                         */
 			/*-------------------------------------------------------------*/
 
-			Router db = new Router("self", router, router_url, router_user, router_pass);
+			Router db = new Router("self", router_catalog, router_url, router_user, router_pass);
 
 			try
 			{
@@ -379,7 +389,8 @@ public class Setup extends HttpServlet
 			                     .replace("{{ADMIN_EMAIL}}", admin_email)
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
 			                     /**/
-			                     .replace("{{ROUTER}}", router)
+			                     .replace("{{ROUTER_CATALOG}}", router_catalog)
+			                     .replace("{{ROUTER_SCHEMA}}", router_schema)
 			                     .replace("{{ROUTER_URL}}", router_url)
 			                     .replace("{{ROUTER_USER}}", router_user)
 			                     .replace("{{ROUTER_PASS}}", router_pass)
@@ -415,7 +426,8 @@ public class Setup extends HttpServlet
 			                     .replace("{{ADMIN_EMAIL}}", admin_email)
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
 			                     /**/
-			                     .replace("{{ROUTER}}", router)
+			                     .replace("{{ROUTER_CATALOG}}", router_catalog)
+			                     .replace("{{ROUTER_SCHEMA}}", router_schema)
 			                     .replace("{{ROUTER_URL}}", router_url)
 			                     .replace("{{ROUTER_USER}}", router_user)
 			                     .replace("{{ROUTER_PASS}}", router_pass)

@@ -34,6 +34,7 @@ CREATE TABLE `router_catalog` (
   `id` SERIAL NOT NULL,
   `externalCatalog` VARCHAR(128) NOT NULL,
   `internalCatalog` VARCHAR(128) NOT NULL,
+  `internalSchema` VARCHAR(128),
   `jdbcUrl` VARCHAR(512) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,

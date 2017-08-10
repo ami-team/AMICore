@@ -74,7 +74,7 @@ public class CommandSingleton
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
-			ConfigSingleton.getProperty("router"),
+			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
 			ConfigSingleton.getProperty("router_user"),
 			ConfigSingleton.getProperty("router_pass")
@@ -244,7 +244,7 @@ public class CommandSingleton
 		{
 			AbstractDriver driver = DriverSingleton.getConnection(
 				"self",
-				ConfigSingleton.getProperty("router"),
+				ConfigSingleton.getProperty("router_catalog"),
 				ConfigSingleton.getProperty("router_url"),
 				ConfigSingleton.getProperty("router_user"),
 				ConfigSingleton.getProperty("router_pass")

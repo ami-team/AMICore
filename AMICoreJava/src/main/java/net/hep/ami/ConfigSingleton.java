@@ -69,7 +69,7 @@ public class ConfigSingleton
 		       &&
 		       getProperty("encryption_key").isEmpty() == false
 		       &&
-		       getProperty("router").isEmpty() == false
+		       getProperty("router_catalog").isEmpty() == false
 		       &&
 		       getProperty("router_url").isEmpty() == false
 		       &&
@@ -97,7 +97,9 @@ public class ConfigSingleton
 		       ||
 		       "encryption_key".equals(name)
 		       ||
-		       "router".equals(name)
+		       "router_catalog".equals(name)
+		       ||
+		       "router_schema".equals(name)
 		       ||
 		       "router_url".equals(name)
 		       ||
@@ -239,7 +241,7 @@ public class ConfigSingleton
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
-			getProperty("router"),
+			getProperty("router_catalog"),
 			getProperty("router_url"),
 			getProperty("router_user"),
 			getProperty("router_pass")
