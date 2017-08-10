@@ -108,6 +108,9 @@ public class SchemaSingleton
 	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>();
 	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>();
 
+	private static final Map<String, String> s_externalCatalogToInternalSchema = new AMIMap<>();
+	private static final Map<String, String> s_internalCatalogToInternalSchema = new AMIMap<>();
+
 	/*---------------------------------------------------------------------*/
 
 	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>();
@@ -159,6 +162,9 @@ public class SchemaSingleton
 		s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 		s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 
+		s_externalCatalogToInternalSchema.put(externalCatalog, internalSchema);
+		s_internalCatalogToInternalSchema.put(externalCatalog, internalSchema);
+
 		/*-----------------------------------------------------------------*/
 
 		s_columns.put(externalCatalog,
@@ -190,6 +196,7 @@ public class SchemaSingleton
 
 		private final String m_externalCatalog;
 		private final String m_internalCatalog;
+		private final String m_internalSchema;
 
 		private final boolean m_fast;
 
@@ -207,6 +214,7 @@ public class SchemaSingleton
 			Map<String, Map<String, Map<String, FrgnKeys>>> frgnKeys,
 			String externalCatalog,
 			String internalCatalog,
+			String internalSchema,
 			boolean fast
 		 ) {
 			/*-------------------------------------------------------------*/
@@ -221,6 +229,7 @@ public class SchemaSingleton
 
 			m_externalCatalog = externalCatalog;
 			m_internalCatalog = internalCatalog;
+			m_internalSchema = internalSchema;
 
 			m_fast = fast;
 
@@ -464,7 +473,7 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_internalCatalog, _table))
+			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_internalSchema, _table))
 			{
 				while(resultSet.next())
 				{
@@ -701,6 +710,7 @@ public class SchemaSingleton
 						s_forwardFKs,
 						entry.getKey(),
 						entry.getValue(),
+						s_externalCatalogToInternalSchema.get(entry.getKey()),
 						true // fast
 					), "Fast metadata extractor for '" + entry.getKey() + "'"
 				));
@@ -726,6 +736,7 @@ public class SchemaSingleton
 						s_forwardFKs,
 						entry.getKey(),
 						entry.getValue(),
+						s_externalCatalogToInternalSchema.get(entry.getKey()),
 						false // slow
 					), "Slow metadata extractor for '" + entry.getKey() + "'"
 				));
