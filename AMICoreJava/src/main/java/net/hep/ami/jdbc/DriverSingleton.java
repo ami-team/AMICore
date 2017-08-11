@@ -12,7 +12,7 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple5<Jdbc.Type, String, String, String, Constructor<?>>
+	public static final class Tuple extends Tuple5<Jdbc.Type, String, String, String, Constructor<?>>
 	{
 		public Tuple(Jdbc.Type _x, String _y, String _z, String _t, Constructor<?> _u)
 		{
@@ -134,7 +134,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static Tuple getDriver(String jdbcUrl) throws Exception
+	public static Tuple getTuple(String jdbcUrl) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -165,7 +165,7 @@ public class DriverSingleton
 	{
 		try
 		{
-			return (AbstractDriver) getDriver(jdbcUrl).u.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass);
+			return (AbstractDriver) getTuple(jdbcUrl).u.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass);
 		}
 		catch(InvocationTargetException e)
 		{
@@ -177,7 +177,7 @@ public class DriverSingleton
 
 	public static boolean isTypeOf(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
 	{
-		return getDriver(jdbcUrl).x == jdbcType;
+		return getTuple(jdbcUrl).x == jdbcType;
 	}
 
 	/*---------------------------------------------------------------------*/

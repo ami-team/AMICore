@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 
 public class SchemaSingleton
@@ -108,9 +109,6 @@ public class SchemaSingleton
 	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>();
 	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>();
 
-	private static final Map<String, String> s_externalCatalogToInternalSchema = new AMIMap<>();
-	private static final Map<String, String> s_internalCatalogToInternalSchema = new AMIMap<>();
-
 	/*---------------------------------------------------------------------*/
 
 	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>();
@@ -155,15 +153,12 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void addSchema(String externalCatalog, String internalCatalog, String internalSchema)
+	public static void addSchema(String externalCatalog, String internalCatalog)
 	{
 		/*-----------------------------------------------------------------*/
 
 		s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 		s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
-
-		s_externalCatalogToInternalSchema.put(externalCatalog, internalSchema);
-		s_internalCatalogToInternalSchema.put(externalCatalog, internalSchema);
 
 		/*-----------------------------------------------------------------*/
 
@@ -196,7 +191,8 @@ public class SchemaSingleton
 
 		private final String m_externalCatalog;
 		private final String m_internalCatalog;
-		private final String m_internalSchema;
+
+		CatalogSingleton.Tuple m_tuple;
 
 		private final boolean m_fast;
 
@@ -214,7 +210,7 @@ public class SchemaSingleton
 			Map<String, Map<String, Map<String, FrgnKeys>>> frgnKeys,
 			String externalCatalog,
 			String internalCatalog,
-			String internalSchema,
+			CatalogSingleton.Tuple tuple,
 			boolean fast
 		 ) {
 			/*-------------------------------------------------------------*/
@@ -229,7 +225,8 @@ public class SchemaSingleton
 
 			m_externalCatalog = externalCatalog;
 			m_internalCatalog = internalCatalog;
-			m_internalSchema = internalSchema;
+
+			m_tuple = tuple;
 
 			m_fast = fast;
 
@@ -367,9 +364,7 @@ public class SchemaSingleton
 			/*-------------------------------------------------------------*/
 
 			Connection connection = DriverManager.getConnection(
-				ConfigSingleton.getProperty("router_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
+				m_tuple.t, m_tuple.u, m_tuple.v
 			);
 
 			/*-------------------------------------------------------------*/
@@ -386,7 +381,7 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                             */
 				/*---------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_internalSchema, "%", null))
+				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z, "%", null))
 				{
 					String temp;
 
@@ -435,7 +430,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_internalSchema, _table, "%"))
+			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_tuple.z, _table, "%"))
 			{
 				while(resultSet.next())
 				{
@@ -473,7 +468,7 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_internalSchema, _table))
+			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_tuple.z, _table))
 			{
 				while(resultSet.next())
 				{
@@ -492,7 +487,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_internalSchema, _table))
+			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _table))
 			{
 				while(resultSet.next())
 				{
@@ -687,7 +682,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void rebuildSchemas()
+	public static void rebuildSchemas() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -710,7 +705,7 @@ public class SchemaSingleton
 						s_forwardFKs,
 						entry.getKey(),
 						entry.getValue(),
-						s_externalCatalogToInternalSchema.get(entry.getKey()),
+						CatalogSingleton.getTuple(entry.getKey()),
 						true // fast
 					), "Fast metadata extractor for '" + entry.getKey() + "'"
 				));
@@ -736,7 +731,7 @@ public class SchemaSingleton
 						s_forwardFKs,
 						entry.getKey(),
 						entry.getValue(),
-						s_externalCatalogToInternalSchema.get(entry.getKey()),
+						CatalogSingleton.getTuple(entry.getKey()),
 						false // slow
 					), "Slow metadata extractor for '" + entry.getKey() + "'"
 				));
@@ -785,46 +780,6 @@ public class SchemaSingleton
 	/*---------------------------------------------------------------------*/
 
 	public static String externalCatalogToInternalCatalog(String catalog) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		String result = s_externalCatalogToInternalCatalog.get(catalog);
-
-		if(result != null)
-		{
-			return result;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("external catalog not found `" + catalog + "`");
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String internalCatalogToInternalSchema(String catalog) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		String result = s_internalCatalogToInternalSchema.get(catalog);
-
-		if(result != null)
-		{
-			return result;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("internal catalog not found `" + catalog + "`");
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String externalCatalogToInternalSchema(String catalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 

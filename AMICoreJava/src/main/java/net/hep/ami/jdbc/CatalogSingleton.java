@@ -11,7 +11,7 @@ public class CatalogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple7<String, String, String, String, String, String, String>
+	public static final class Tuple extends Tuple7<String, String, String, String, String, String, String>
 	{
 		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v, String _w)
 		{
@@ -142,7 +142,7 @@ public class CatalogSingleton
 
 		if(DriverSingleton.isTypeOf(jdbcUrl, Jdbc.Type.SQL))
 		{
-			SchemaSingleton.addSchema(externalCatalog, internalCatalog, internalSchema);
+			SchemaSingleton.addSchema(externalCatalog, internalCatalog);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -150,7 +150,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(String catalog) throws Exception
+	public static Tuple getTuple(String catalog) throws Exception
 	{
 		Tuple tuple = s_catalogs.get(catalog);
 
@@ -158,6 +158,15 @@ public class CatalogSingleton
 		{
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
+
+		return tuple;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static AbstractDriver getConnection(String catalog) throws Exception
+	{
+		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v);
 	}
@@ -166,12 +175,7 @@ public class CatalogSingleton
 
 	public static boolean isTypeOf(String catalog, Jdbc.Type jdbcType) throws Exception
 	{
-		Tuple tuple = s_catalogs.get(catalog);
-
-		if(tuple == null)
-		{
-			throw new Exception("unknown catalog `" + catalog + "`");
-		}
+		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.isTypeOf(tuple.t, jdbcType);
 	}
@@ -180,12 +184,7 @@ public class CatalogSingleton
 
 	public static String getKey(String catalog) throws Exception
 	{
-		Tuple tuple = s_catalogs.get(catalog);
-
-		if(tuple == null)
-		{
-			throw new Exception("unknown catalog `" + catalog + "`");
-		}
+		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getKey(tuple.y, tuple.t, tuple.u, tuple.v);
 	}

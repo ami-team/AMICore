@@ -22,7 +22,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		//System.out.println(CommandSingleton.executeCommand("GetSchemes", arguments).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
 
 		//System.out.println("--------");
 
