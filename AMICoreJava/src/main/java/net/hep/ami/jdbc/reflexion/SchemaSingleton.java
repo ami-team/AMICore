@@ -5,7 +5,6 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.CatalogSingleton;
 import net.hep.ami.utility.*;
 
 public class SchemaSingleton
@@ -357,7 +356,6 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		@SuppressWarnings("deprecation")
 		private void loadSchemaFromDatabase() throws Exception
 		{
 			Set<String> tables = new HashSet<>();
@@ -368,9 +366,11 @@ public class SchemaSingleton
 			/* CREATE CONNECTION                                           */
 			/*-------------------------------------------------------------*/
 
-			Connection connection = CatalogSingleton.getConnection(m_externalCatalog)
-			                                        .getConnection(                 )
-			;
+			Connection connection = DriverManager.getConnection(
+				ConfigSingleton.getProperty("router_url"),
+				ConfigSingleton.getProperty("router_user"),
+				ConfigSingleton.getProperty("router_pass")
+			);
 
 			/*-------------------------------------------------------------*/
 
