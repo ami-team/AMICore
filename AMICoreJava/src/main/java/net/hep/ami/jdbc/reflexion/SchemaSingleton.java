@@ -443,10 +443,6 @@ public class SchemaSingleton
 
 					if(table != null && name != null && type != null)
 					{
-						table = table.toLowerCase();
-						name = name.toLowerCase();
-						type = type.toUpperCase();
-
 						Map<String, Column> column = m_tmp1.get(table);
 
 						if(column != null)
@@ -528,12 +524,6 @@ public class SchemaSingleton
 
 					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
 					{
-						name = name.toLowerCase();
-						fkTable = fkTable.toLowerCase();
-						fkColumn = fkColumn.toLowerCase();
-						pkTable = pkTable.toLowerCase();
-						pkColumn = pkColumn.toLowerCase();
-
 						Map<String, FrgnKeys> frgnKey = m_tmp2.get(fkTable);
 
 						if(frgnKey != null)
