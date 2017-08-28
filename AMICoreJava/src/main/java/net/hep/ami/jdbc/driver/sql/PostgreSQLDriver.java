@@ -2,6 +2,7 @@ package net.hep.ami.jdbc.driver.sql;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.CatalogSingleton;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
@@ -13,6 +14,26 @@ import net.hep.ami.jdbc.query.sql.*;
 
 public class PostgreSQLDriver extends AbstractDriver
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final int IDX_SELECT = 0;
+	private static final int IDX_INSERT = 1;
+	private static final int IDX_UPDATE = 2;
+	private static final int IDX_DELETE = 3;
+	private static final int IDX_SET = 4;
+	private static final int IDX_FROM = 5;
+	private static final int IDX_WHERE = 6;
+	private static final int IDX_DOT = 7;
+	private static final int IDX_ID = 8;
+	private static final int IDX_ELSE = 9;
+
+	/*---------------------------------------------------------------------*/
+
+	private static final int OP_1 = 0;
+	private static final int OP_2 = 1;
+
+	/*---------------------------------------------------------------------*/
+
 	/*---------------------------------------------------------------------*/
 
 	public PostgreSQLDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
@@ -31,6 +52,17 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
+		try
+		{
+			tokens = patch(tokens, CatalogSingleton.getTuple(m_externalCatalog).z);
+		}
+		catch(Exception e)
+		{
+			/* IGNORE */
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		StringBuilder result = new StringBuilder();
 
 		for(String token: tokens)
@@ -40,6 +72,7 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
+		System.out.println(result.toString());
 		return result.toString();
 	}
 
@@ -49,6 +82,147 @@ public class PostgreSQLDriver extends AbstractDriver
 	public void setDB(String db) throws Exception
 	{
 		/* DO NOTHING */
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<String> patch(List<String> tokens, String schema) throws Exception
+	{
+		List<String> result = new ArrayList<>();
+
+		/*-----------------------------------------------------------------*/
+
+		int[][] hhh = new int[][] {
+			/*             SELECT	INSERT	UPDATE	DELETE	SET		FROM	WHERE	DOT		ID		ELSE	*/
+			new int[] {1,		7,		7,		7,		-1,		-1,		-1,		-1,		-1,		-1,		},
+			new int[] {1,		-1,		-1,		-1,		-1,		1,		1,		-1,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		7,		-1,		3,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		4,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		7,		-1,		5,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		6,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		7,		-1,		-1,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		7,		1,		-1,		8,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		-1,		1,		9,		8,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		10,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		-1,		1,		-1,		8,		7,		},
+		};
+
+		int[][] iii = new int[][] {
+			/*         SELECT	INSERT	UPDATE	DELETE	SET		FROM	WHERE	DOT		ID		ELSE	*/
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_2,	-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_1,	-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+		};
+
+		/*-----------------------------------------------------------------*/
+
+		int idx;
+
+		int old_state = 0;
+		int new_state = 0;
+		int operation = 0;
+
+		for(String token: tokens)
+		{
+			/*-------------------------------------------------------------*/
+
+			result.add(token);
+
+			if(token.matches("\\s+"))
+			{
+				continue;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			/**/ if("SELECT".equalsIgnoreCase(token)) {
+				idx = IDX_SELECT;
+			}
+			else if("INSERT".equalsIgnoreCase(token)) {
+				idx = IDX_INSERT;
+			}
+			else if("UPDATE".equalsIgnoreCase(token)) {
+				idx = IDX_UPDATE;
+			}
+			else if("DELETE".equalsIgnoreCase(token)) {
+				idx = IDX_DELETE;
+			}
+			else if("SET".equalsIgnoreCase(token)) {
+				idx = IDX_SET;
+			}
+			else if("FROM".equalsIgnoreCase(token)) {
+				idx = IDX_FROM;
+			}
+			else if("WHERE".equalsIgnoreCase(token)) {
+				idx = IDX_WHERE;
+			}
+			else if(".".equalsIgnoreCase(token)) {
+				idx = IDX_DOT;
+			}
+			else
+			{
+				if(token.matches("^[a-zA-Z_][a-zA-Z0-9_]*$")
+				   ||
+				   token.startsWith("\"")
+				   ||
+				   token.startsWith("`")
+				 ) {
+					idx = IDX_ID;
+				}
+				else {
+					idx = IDX_ELSE;
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
+			new_state = hhh[old_state][idx];
+			operation = iii[old_state][idx];
+
+			/*-------------------------------------------------------------*/
+
+			System.out.println("`" + token + "` (" + idx + ") :: " + old_state + " -> " + new_state);
+
+			if(new_state == -1)
+			{
+				System.out.println("syntax error!");
+
+				return tokens;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			switch(operation)
+			{
+				case OP_1:
+					result.set(result.size() - 1, ".`" + schema + "`" + result.get(result.size() - 1));
+					break;
+
+				case OP_2:
+					result.set(result.size() - 2, "`" + schema + "`." + result.get(result.size() - 2));
+					break;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			old_state = new_state;
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
