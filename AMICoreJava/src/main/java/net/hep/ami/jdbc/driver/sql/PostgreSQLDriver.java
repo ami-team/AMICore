@@ -21,11 +21,12 @@ public class PostgreSQLDriver extends AbstractDriver
 	private static final int IDX_UPDATE = 2;
 	private static final int IDX_DELETE = 3;
 	private static final int IDX_SET = 4;
-	private static final int IDX_FROM = 5;
-	private static final int IDX_WHERE = 6;
-	private static final int IDX_DOT = 7;
-	private static final int IDX_ID = 8;
-	private static final int IDX_ELSE = 9;
+	private static final int IDX_PARENT = 5;
+	private static final int IDX_FROM = 6;
+	private static final int IDX_WHERE = 7;
+	private static final int IDX_DOT = 8;
+	private static final int IDX_ID = 9;
+	private static final int IDX_ELSE = 10;
 
 	/*---------------------------------------------------------------------*/
 
@@ -52,6 +53,13 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
+		for(int i = 0; i < tokens.size(); i++)
+		{
+			tokens.set(i, Tokenizer.backQuotesToDoubleQuotes(tokens.get(i)));
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		try
 		{
 			tokens = patch(tokens, CatalogSingleton.getTuple(m_externalCatalog).z);
@@ -63,17 +71,7 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = new StringBuilder();
-
-		for(String token: tokens)
-		{
-			result.append(Tokenizer.backQuotesToDoubleQuotes(token));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		System.out.println(result.toString());
-		return result.toString();
+		return String.join("", tokens);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -93,33 +91,33 @@ public class PostgreSQLDriver extends AbstractDriver
 		/*-----------------------------------------------------------------*/
 
 		int[][] hhh = new int[][] {
-			/*             SELECT	INSERT	UPDATE	DELETE	SET		FROM	WHERE	DOT		ID		ELSE	*/
-			new int[] {1,		7,		7,		7,		-1,		-1,		-1,		-1,		-1,		-1,		},
-			new int[] {1,		-1,		-1,		-1,		-1,		1,		1,		-1,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		7,		-1,		3,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		4,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		7,		-1,		5,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		6,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		7,		-1,		-1,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		1,		7,		1,		-1,		8,		7,		},
-			new int[] {-1,		-1,		-1,		-1,		1,		-1,		1,		9,		8,		7,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		10,		7,		},
-			new int[] {-1,		-1,		-1,		-1,		1,		-1,		1,		-1,		8,		7,		},
+		/*             SELECT	INSERT	UPDATE	DELETE	SET		PARENT	FROM	WHERE	DOT		ID		ELSE	*/
+			new int[] {1,		7,		7,		7,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		},
+			new int[] {1,		-1,		-1,		-1,		-1,		1,		1,		1,		-1,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		1,		7,		-1,		3,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		4,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		7,		-1,		5,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		6,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		7,		-1,		-1,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		1,		7,		1,		-1,		8,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		9,		8,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		10,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		-1,		8,		7,		},
 		};
 
 		int[][] iii = new int[][] {
-			/*         SELECT	INSERT	UPDATE	DELETE	SET		FROM	WHERE	DOT		ID		ELSE	*/
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_2,	-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_1,	-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			/*         SELECT	INSERT	UPDATE	DELETE	SET		PARENT	FROM	WHERE	DOT		ID		ELSE	*/
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_2,	-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_1,	-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
 		};
 
 		/*-----------------------------------------------------------------*/
@@ -158,6 +156,9 @@ public class PostgreSQLDriver extends AbstractDriver
 			else if("SET".equalsIgnoreCase(token)) {
 				idx = IDX_SET;
 			}
+			else if("(".equalsIgnoreCase(token)) {
+				idx = IDX_PARENT;
+			}
 			else if("FROM".equalsIgnoreCase(token)) {
 				idx = IDX_FROM;
 			}
@@ -189,8 +190,6 @@ public class PostgreSQLDriver extends AbstractDriver
 
 			/*-------------------------------------------------------------*/
 
-			System.out.println("`" + token + "` (" + idx + ") :: " + old_state + " -> " + new_state);
-
 			if(new_state == -1)
 			{
 				System.out.println("syntax error!");
@@ -203,11 +202,11 @@ public class PostgreSQLDriver extends AbstractDriver
 			switch(operation)
 			{
 				case OP_1:
-					result.set(result.size() - 1, ".`" + schema + "`" + result.get(result.size() - 1));
+					result.set(result.size() - 1, ".\"" + schema + "\"" + result.get(result.size() - 1));
 					break;
 
 				case OP_2:
-					result.set(result.size() - 2, "`" + schema + "`." + result.get(result.size() - 2));
+					result.set(result.size() - 2, "\"" + schema + "\"." + result.get(result.size() - 2));
 					break;
 			}
 

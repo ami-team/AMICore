@@ -54,7 +54,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("DELETE FROM `").append(catalog).append("`.`").append(entity).append("`");
+		stringBuilder.append("DELETE FROM `").append(entity).append("`");
 
 		/*-----------------------------------------------------------------*/
 

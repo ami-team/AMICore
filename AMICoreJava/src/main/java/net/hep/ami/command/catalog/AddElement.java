@@ -50,33 +50,19 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("INSERT INTO `").append(catalog).append("`.`").append(entity).append("`");
+		stringBuilder.append("INSERT INTO `").append(entity).append("`");
 
 		/*-----------------------------------------------------------------*/
 
 		if(fields.length > 0)
 		{
-			String[] parts;
-
-			AutoJoinSingleton.AMIJoins joins;
-
 			List<String> list1 = new ArrayList<>();
 			List<String> list2 = new ArrayList<>();
 
 			for(int i = 0; i < fields.length; i++)
 			{
-				AutoJoinSingleton.resolveWithNestedSelect(
-					joins = new AutoJoinSingleton.AMIJoins(),
-					catalog,
-					entity,
-					fields[i],
-					values[i]
-				);
-
-				parts = joins.get(AutoJoinSingleton.AMIJoins.WHERE).get(0).split("=", 2);
-
-				list1.add(parts[0]);
-				list2.add(parts[1]);
+				list1.add("`" + fields[i].replace("`", "``") + "`");
+				list2.add("'" + values[i].replace("'", "''") + "'");
 			}
 
 			stringBuilder.append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")");

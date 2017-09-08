@@ -123,7 +123,7 @@ public class Setup extends HttpServlet
 
 		if(new File(result).exists() == false)
 		{
-			result = System.getProperty("catalina.base", "/fake1357");
+			result = System.getProperty("catalina.base", "/fake1357") + File.separator + "conf";
 
 			if(new File(result).exists() == false)
 			{
