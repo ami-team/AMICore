@@ -22,7 +22,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
+		//System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
 
 		//System.out.println("--------");
 
@@ -117,7 +117,9 @@ public class CommandSingletonTest
 
 			LogSingleton.root.error("class '{}' doesn't extend 'AbstractCommand'", "foo");
 */
-			System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
+
+			System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
 
 			//System.out.println("done.");
 		}
