@@ -19,8 +19,6 @@ public class AddHash extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String hash = generateHash();
-
 		String json = arguments.get("json");
 
 		boolean shared = arguments.containsKey("shared");
@@ -29,6 +27,26 @@ public class AddHash extends AbstractCommand
 		if(json == null)
 		{
 			throw new Exception("invalid usage");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		long uuid;
+
+		String hash;
+
+		for(;;)
+		{
+			uuid = UUID.randomUUID().getMostSignificantBits();
+
+			hash = Base64.getEncoder().encodeToString(Long.toString(uuid < 0 ? -uuid : +uuid).getBytes());
+
+			if(hash.length() >= 8)
+			{
+				hash = hash.substring(0, 8);
+
+				break;
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -67,29 +85,6 @@ public class AddHash extends AbstractCommand
 	public static String help()
 	{
 		return "Add a hash.";
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static String generateHash()
-	{
-		long hash;
-
-		String result;
-
-		for(;;)
-		{
-			hash = UUID.randomUUID().getMostSignificantBits();
-
-			result = Base64.getEncoder().encodeToString(Long.toString(hash < 0 ? -hash : +hash).getBytes());
-
-			if(result.length() >= 8)
-			{
-				break;
-			}
-		}
-
-		return result.substring(0, 8);
 	}
 
 	/*---------------------------------------------------------------------*/
