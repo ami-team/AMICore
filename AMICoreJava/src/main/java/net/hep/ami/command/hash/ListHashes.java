@@ -1,0 +1,59 @@
+package net.hep.ami.command.hash;
+
+import java.util.*;
+
+import net.hep.ami.jdbc.*;
+import net.hep.ami.command.*;
+
+public class ListHashes extends AbstractCommand
+{
+	/*---------------------------------------------------------------------*/
+
+	public ListHashes(Map<String, String> arguments, long transactionId)
+	{
+		super(arguments, transactionId);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public StringBuilder main(Map<String, String> arguments) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Querier querier = getQuerier("self");
+
+		/*-----------------------------------------------------------------*/
+
+		RowSet rowSet = querier.executeSQLQuery("SELECT `hash` FROM `router_short_url` WHERE `owner` = ?", m_AMIUser);
+
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
+
+		result.append("<rowset>");
+
+		for(Row row: rowSet.iterate())
+		{
+			result.append("<row>")
+			      .append("<field name=\"json\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
+			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String help()
+	{
+		return "List the user hashes.";
+	}
+
+	/*---------------------------------------------------------------------*/
+}
