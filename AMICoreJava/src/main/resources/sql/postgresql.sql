@@ -3,9 +3,9 @@
 DROP TABLE IF EXISTS `router_ipv6_blocks`;
 DROP TABLE IF EXISTS `router_ipv4_blocks`;
 DROP TABLE IF EXISTS `router_locations`;
-DROP TABLE IF EXISTS `router_search_criteria`;
 DROP TABLE IF EXISTS `router_search_interface`;
 DROP TABLE IF EXISTS `router_authority`;
+DROP TABLE IF EXISTS `router_short_url`;
 DROP TABLE IF EXISTS `router_user_role`;
 DROP TABLE IF EXISTS `router_user`;
 DROP TABLE IF EXISTS `router_command_role`;
@@ -140,6 +140,24 @@ ALTER TABLE `router_user_role`
 
 ------------------------------------------------------------------------------
 
+CREATE TABLE `router_short_url` (
+  `id` SERIAL NOT NULL,
+  `hash` VARCHAR(16) NOT NULL,
+  `json` TEXT NOT NULL,
+  `owner` VARCHAR(128) NOT NULL,
+  `shared` TINYINT NOT NULL DEFAULT '0',
+  `expire` TINYINT NOT NULL DEFAULT '0',
+  `created` DATE NOT NULL
+
+) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `pk1_router_short_url` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_short_url` UNIQUE KEY (`hash`)
+;
+
+------------------------------------------------------------------------------
+
 CREATE TABLE `router_authority` (
   `id` SERIAL NOT NULL,
   `clientDN` VARCHAR(512) NOT NULL,
@@ -162,33 +180,13 @@ ALTER TABLE `router_authority`
 CREATE TABLE `router_search_interface` (
   `id` SERIAL NOT NULL,
   `interface` VARCHAR(128) NOT NULL,
-  `catalog` VARCHAR(128) NOT NULL,
-  `entity` VARCHAR(128) NOT NULL,
+  `json` TEXT NOT NULL,
   `archived` SMALLINT NOT NULL DEFAULT '0'
 );
 
 ALTER TABLE `router_search_interface`
   ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_search_interface` UNIQUE (`interface`)
-;
-
-------------------------------------------------------------------------------
-
-CREATE TABLE `router_search_criteria` (
-  `id` SERIAL NOT NULL,
-  `interfaceFK` INT NOT NULL,
-  `entity` VARCHAR(128) NOT NULL,
-  `field` VARCHAR(128) NOT NULL,
-  `alias` VARCHAR(128) DEFAULT '',
-  `type` INT NOT NULL DEFAULT '1',
-  `rank` INT NOT NULL DEFAULT '0',
-  `mask` INT NOT NULL DEFAULT '0'
-);
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `pk1_router_search_criteria` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_search_criteria` UNIQUE (`interfaceFK`, `entity`, `field`),
-  ADD CONSTRAINT `fk1_router_search_criteria` FOREIGN KEY (`interfaceFK`) REFERENCES `router_search_interface` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ;
 
 ------------------------------------------------------------------------------

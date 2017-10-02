@@ -28,15 +28,6 @@ END;
 /
 
 BEGIN
-   EXECUTE IMMEDIATE 'DROP TABLE "router_search_criteria"';
-EXCEPTION
-   WHEN OTHERS THEN IF SQLCODE != -942 THEN
-     RAISE;
-   END IF;
-END;
-/
-
-BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE "router_search_interface"';
 EXCEPTION
    WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -47,6 +38,15 @@ END;
 
 BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE "router_authority"';
+EXCEPTION
+   WHEN OTHERS THEN IF SQLCODE != -942 THEN
+     RAISE;
+   END IF;
+END;
+/
+
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE "router_short_url"';
 EXCEPTION
    WHEN OTHERS THEN IF SQLCODE != -942 THEN
      RAISE;
@@ -156,15 +156,6 @@ END;
 /
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_search_criteria"';
-EXCEPTION
-  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
-    RAISE;
-  END IF;
-END;
-/
-
-BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_search_interface"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
@@ -175,6 +166,15 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_authority"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+/
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_short_url"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -623,6 +623,64 @@ END;
 
 ------------------------------------------------------------------------------
 
+CREATE TABLE `router_short_url` (
+  `id` NUMBER(*, 0),
+  `hash` VARCHAR2(16),
+  `json` CLOB,
+  `owner` VARCHAR2(128),
+  `shared` NUMBER(1, 0) DEFAULT '0',
+  `expire` NUMBER(1, 0) DEFAULT '0',
+  `created` DATE NOT NULL
+ );
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `pk1_router_short_url` PRIMARY KEY (`id`)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `uk1_router_short_url` UNIQUE (`hash`)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck1_router_short_url` CHECK(`id` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck2_router_short_url` CHECK(`hash` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck3_router_short_url` CHECK(`json` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck4_router_short_url` CHECK(`owner` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck5_router_short_url` CHECK(`shared` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck6_router_short_url` CHECK(`expire` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck7_router_short_url` CHECK(`created` IS NOT NULL)
+;
+
+CREATE SEQUENCE `seq_router_short_url` START WITH 1 INCREMENT BY 1 CACHE 10;
+
+CREATE TRIGGER `trig_router_short_url`
+BEFORE INSERT ON `router_short_url`
+FOR EACH ROW
+BEGIN
+  SELECT `seq_router_short_url`.NEXTVAL INTO :NEW.`id` FROM dual;
+END;
+/
+
+------------------------------------------------------------------------------
+
 CREATE TABLE `router_authority` (
   `id` NUMBER(*, 0),
   `clientDN` VARCHAR2(512),
@@ -631,16 +689,16 @@ CREATE TABLE `router_authority` (
   `notAfter` DATE,
   `serial` VARCHAR2(128),
   `email` VARCHAR2(128),
-  `revocationReason` INT(11) DEFAULT NULL,
+  `revocationReason` NUMBER(*, 0) DEFAULT NULL,
   `revocationDate` DATE DEFAULT NULL
 );
 
 ALTER TABLE `router_authority`
-  ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`)
 ;
 
 ALTER TABLE `router_authority`
-  ADD CONSTRAINT `uk1_router_authority` UNIQUE KEY (`serial`)
+  ADD CONSTRAINT `uk1_router_authority` UNIQUE (`serial`)
 ;
 
 ALTER TABLE `router_authority`
@@ -686,8 +744,7 @@ END;
 CREATE TABLE `router_search_interface` (
   `id` NUMBER(*, 0),
   `interface` VARCHAR2(128),
-  `catalog` VARCHAR2(128),
-  `entity` VARCHAR2(128),
+  `json` CLOB,
   `archived` NUMBER(1, 0) DEFAULT '0'
 );
 
@@ -708,11 +765,7 @@ ALTER TABLE `router_search_interface`
 ;
 
 ALTER TABLE `router_search_interface`
-  ADD CONSTRAINT `ck3_router_search_interface` CHECK(`catalog` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_interface`
-  ADD CONSTRAINT `ck4_router_search_interface` CHECK(`entity` IS NOT NULL)
+  ADD CONSTRAINT `ck3_router_search_interface` CHECK(`json` IS NOT NULL)
 ;
 
 ALTER TABLE `router_search_interface`
@@ -726,69 +779,6 @@ BEFORE INSERT ON `router_search_interface`
 FOR EACH ROW
 BEGIN
   SELECT `seq_router_search_interface`.NEXTVAL INTO :NEW.`id` FROM dual;
-END;
-/
-
-------------------------------------------------------------------------------
-
-CREATE TABLE `router_search_criteria` (
-  `id` NUMBER(*, 0),
-  `interfaceFK` NUMBER(*, 0),
-  `entity` VARCHAR2(128),
-  `field` VARCHAR2(128),
-  `alias` VARCHAR2(128) DEFAULT '',
-  `type` NUMBER(*, 0) DEFAULT '1',
-  `rank` NUMBER(*, 0) DEFAULT '0',
-  `mask` NUMBER(*, 0) DEFAULT '0'
-);
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `pk1_router_search_criteria` PRIMARY KEY (`id`)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `uk1_router_search_criteria` UNIQUE (`interfaceFK`, `entity`, `field`)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `ck1_router_search_criteria` CHECK(`id` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `ck2_router_search_criteria` CHECK(`interfaceFK` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `ck3_router_search_criteria` CHECK(`entity` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `ck4_router_search_criteria` CHECK(`field` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `ck5_router_search_criteria` CHECK(`type` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `ck6_router_search_criteria` CHECK(`rank` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `ck7_router_search_criteria` CHECK(`mask` IS NOT NULL)
-;
-
-ALTER TABLE `router_search_criteria`
-  ADD CONSTRAINT `fk1_router_search_criteria` FOREIGN KEY (`interfaceFK`) REFERENCES `router_search_interface` (`id`) ON DELETE CASCADE
-;
-
-CREATE SEQUENCE `seq_router_search_criteria` START WITH 1 INCREMENT BY 1 CACHE 10;
-
-CREATE TRIGGER `trig_router_search_criteria`
-BEFORE INSERT ON `router_search_criteria`
-FOR EACH ROW
-BEGIN
-  SELECT `seq_router_search_criteria`.NEXTVAL INTO :NEW.`id` FROM dual;
 END;
 /
 
