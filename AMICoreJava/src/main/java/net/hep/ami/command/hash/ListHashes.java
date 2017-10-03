@@ -37,7 +37,7 @@ public class ListHashes extends AbstractCommand
 		{
 			result.append("<row>")
 			      .append("<field name=\"name\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
-			      .append("<field name=\"json\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
+			      .append("<field name=\"hash\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
 			      .append("</row>")
 			;
 		}
