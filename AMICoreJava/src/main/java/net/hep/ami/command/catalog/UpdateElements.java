@@ -86,7 +86,7 @@ public class UpdateElements extends AbstractCommand
 		{
 			/*-------------------------------------------------------------*/
 
-			AutoJoinSingleton.AMIJoins joins = new AutoJoinSingleton.AMIJoins();
+			Structure.Joins joins = new Structure.Joins();
 
 			for(int i = 0; i < keyFields.length; i++)
 			{
@@ -133,7 +133,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		querier.executeSQLUpdate(sql);
+		//querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

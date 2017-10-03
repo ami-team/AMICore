@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.AutoJoinSingleton.SQLQId;
 import net.hep.ami.command.*;
 
 public class AddElement extends AbstractCommand
@@ -56,16 +57,42 @@ public class AddElement extends AbstractCommand
 
 		if(fields.length > 0)
 		{
-			List<String> list1 = new ArrayList<>();
-			List<String> list2 = new ArrayList<>();
+			/*-------------------------------------------------------------*/
+
+			Structure.Joins joins = new Structure.Joins();
 
 			for(int i = 0; i < fields.length; i++)
 			{
-				list1.add("`" + fields[i].replace("`", "``") + "`");
-				list2.add("'" + values[i].replace("'", "''") + "'");
+				AutoJoinSingleton.resolveWithNestedSelect(
+					joins,
+					catalog,
+					entity,
+					fields[i],
+					values[i]
+				);
+			}
+
+			/*-------------------------------------------------------------*/
+
+			String[] parts;
+
+			List<String> list1 = new ArrayList<>();
+			List<String> list2 = new ArrayList<>();
+
+			for(String assign: joins.get(Structure.DUMMY).toList())
+			{
+				assign = assign.substring(assign.indexOf('.') + 1);
+				assign = assign.substring(assign.indexOf('.') + 1);
+
+				parts = assign.split("=", 2);
+
+				list1.add(parts[0]);
+				list2.add(parts[1]);
 			}
 
 			stringBuilder.append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")");
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -74,7 +101,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		querier.executeSQLUpdate(sql);
+		//querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

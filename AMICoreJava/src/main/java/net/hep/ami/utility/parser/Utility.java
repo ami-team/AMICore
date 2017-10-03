@@ -25,23 +25,23 @@ public class Utility
 					result.append("\\\\");
 					break;
 
-				case 'b':
+				case '\b':
 					result.append("\\b");
 					break;
 
-				case 'f':
+				case '\f':
 					result.append("\\f");
 					break;
 
-				case 'n':
+				case '\n':
 					result.append("\\n");
 					break;
 
-				case 'r':
+				case '\r':
 					result.append("\\r");
 					break;
 
-				case 't':
+				case '\t':
 					result.append("\\t");
 					break;
 

@@ -58,13 +58,13 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		boolean wherePresent = false;
+		List<String> whereList = new ArrayList<>();
 
 		if(keyFields.length > 0)
 		{
 			/*-------------------------------------------------------------*/
 
-			AutoJoinSingleton.AMIJoins joins = new AutoJoinSingleton.AMIJoins();
+			Structure.Joins joins = new Structure.Joins();
 
 			for(int i = 0; i < keyFields.length; i++)
 			{
@@ -79,13 +79,12 @@ public class RemoveElements extends AbstractCommand
 
 			/*-------------------------------------------------------------*/
 
-			String _where = joins.toSQL().where;
-
-			if(_where.isEmpty() == false)
+			for(String assign: joins.get(Structure.DUMMY).toList())
 			{
-				stringBuilder.append(" WHERE " + _where);
+				assign = assign.substring(assign.indexOf('.') + 1);
+				assign = assign.substring(assign.indexOf('.') + 1);
 
-				wherePresent = true;
+				whereList.add(assign);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -95,15 +94,12 @@ public class RemoveElements extends AbstractCommand
 
 		if(where.isEmpty() == false)
 		{
-			if(wherePresent)
-			{
-				stringBuilder.append(" AND (" + where + ")");
-			}
-			else
-			{
-				stringBuilder.append(" WHERE (" + where + ")");
-			}
+			whereList.add(where);
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
 
 		/*-----------------------------------------------------------------*/
 
@@ -111,7 +107,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		querier.executeSQLUpdate(sql);
+		//querier.executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

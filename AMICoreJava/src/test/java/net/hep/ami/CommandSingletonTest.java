@@ -119,7 +119,51 @@ public class CommandSingletonTest
 */
 			//System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
 
-			System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
+			//System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
+
+			Structure.Joins joins = new Structure.Joins();
+
+			AutoJoinSingleton.resolveWithNestedSelect(
+				joins,
+				"self",
+				"router_ipv4_blocks",
+				"continentCode",
+				"EU"
+			);
+
+			AutoJoinSingleton.resolveWithNestedSelect(
+				joins,
+				"self",
+				"router_ipv4_blocks",
+				"router_locations.countryCode",
+				"FR"
+			);
+
+			//System.out.println(joins.toString());
+
+			joins = new Structure.Joins();
+
+			AutoJoinSingleton.resolveWithInnerJoins(
+				joins,
+				"self",
+				"router_ipv4_blocks",
+				"continentCode",
+				"EU"
+			);
+
+			AutoJoinSingleton.resolveWithInnerJoins(
+				joins,
+				"self",
+				"router_ipv4_blocks",
+				"router_locations.countryCode",
+				"FR"
+			);
+
+			//System.out.println(joins.toSQL());
+
+			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_ipv4_blocks\" -fields=\"network,router_locations.continentCode,router_locations.countryCode\" -values=\"foo,EU,FR\"").replace(">", ">\n"));
+
+			System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"self\" -entity=\"router_ipv4_blocks\" -keyFields=\"network,router_locations.continentCode,router_locations.countryCode\" -keyValues=\"foo,EU,FR\"").replace(">", ">\n"));
 
 			//System.out.println("done.");
 		}

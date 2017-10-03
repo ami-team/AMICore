@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.reflexion.Structure.*;
 
 public class AutoJoinSingleton
 {
@@ -37,102 +38,6 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static final class SQLJoins
-	{
-		/*-----------------------------------------------------------------*/
-
-		public final String from;
-		public final String where;
-
-		/*-----------------------------------------------------------------*/
-
-		public SQLJoins(String _from, String _where)
-		{
-			from = _from;
-			where = _where;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public String toString()
-		{
-			StringBuilder stringBuilder = new StringBuilder();
-
-			if(from.isEmpty() == false)
-			{
-				stringBuilder.append(" FROM ").append(from);
-			}
-
-			if(where.isEmpty() == false)
-			{
-				stringBuilder.append(" WHERE ").append(where);
-			}
-
-			return stringBuilder.toString();
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static final class AMIJoins extends HashMap<String, List<String>>
-	{
-		/*-----------------------------------------------------------------*/
-
-		private static final long serialVersionUID = 5606411046465630272L;
-
-		/*-----------------------------------------------------------------*/
-
-		public static final String WHERE = "@";
-
-		/*-----------------------------------------------------------------*/
-
-		public List<String> getOrAdd(String joinKey)
-		{
-			List<String> result = get(joinKey);
-
-			if(result == null)
-			{
-				result = new ArrayList<>();
-
-				put(joinKey, result);
-			}
-
-			return result;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public SQLJoins toSQL()
-		{
-			String joinKey;
-
-			StringBuilder part1 = new StringBuilder();
-			StringBuilder part2 = new StringBuilder();
-
-			for(Map.Entry<String, List<String>> entry: entrySet())
-			{
-				joinKey = entry.getKey();
-
-				if(WHERE.equals(joinKey) == false)
-				{
-					part1.append(joinKey + " ON (" + String.join(" AND ", entry.getValue()) + ")");
-				}
-				else
-				{
-					part2.append("(" + String.join(" AND ", entry.getValue()) + ")");
-				}
-			}
-
-			return new SQLJoins(part1.toString(), part2.toString());
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	private static final int WITH_INNER_JOINS = 0;
 	private static final int WITH_NESTED_SELECT = 1;
 
@@ -142,65 +47,71 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void _mergeInnerJoins(AMIJoins joins, AMIJoins temp, SchemaSingleton.FrgnKey frgnKey)
+	private static void _mergeInnerJoins(Joins joins, Joins temp, SchemaSingleton.FrgnKey frgnKey)
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD SQL JOIN                                                  */
 		/*-----------------------------------------------------------------*/
 
-		String joinKey = "INNER JOIN `" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
+		String join = "INNER JOIN `" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
 
-		String joinValue = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`"
-		                 + " = " +
-		                   "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`"
+		String where = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`"
+		               + " = " +
+		               "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`"
 		;
 
 		/*-----------------------------------------------------------------*/
 		/* MERGE                                                           */
 		/*-----------------------------------------------------------------*/
 
-		for(Map.Entry<String, List<String>> entry2: temp.entrySet())
+		for(Map.Entry<String, Islets> entry1: temp.entrySet())
 		{
-			joins.getOrAdd(entry2.getKey()).addAll(
-				entry2.getValue()
-			);
+			for(Map.Entry<String, Select> entry2: entry1.getValue().entrySet())
+			{
+				joins.getJoin(entry1.getKey())
+				     .getIslet(entry2.getKey(), entry2.getValue().getFromPart())
+				     .addAll(entry2.getValue())
+				;
+			}
 		}
 
-		joins.getOrAdd(joinKey).add(
-			joinValue
-		);
+		joins.getJoin(join).getIslet(Structure.DUMMY, Structure.DUMMY).addWhere(where);
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void _mergeNestedSelect(AMIJoins joins, AMIJoins temp, SchemaSingleton.FrgnKey frgnKey)
+	private static void _mergeNestedSelect(Joins joins, Joins temp, SchemaSingleton.FrgnKey frgnKey)
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD SQL JOIN                                                  */
 		/*-----------------------------------------------------------------*/
 
-		SQLJoins sqlJoins = temp.toSQL();
+		SQL sqlJoins = temp.toSQL();
 
 		/*-----------------------------------------------------------------*/
 
-		String joinKey = AMIJoins.WHERE;
+		String fk = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`";
+		String pk = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`";
 
-		String joinValue = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`"
-		                 + "="
-		                 + "("
-		                 + "SELECT `" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "` FROM `" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`" + sqlJoins.from + " WHERE " + sqlJoins.where
-		                 + ")"
-		;
+		String from = frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
 
 		/*-----------------------------------------------------------------*/
 		/* MERGE                                                           */
 		/*-----------------------------------------------------------------*/
 
-		joins.getOrAdd(joinKey).add(
-			joinValue
-		);
+		Select select = joins.getJoin(Structure.DUMMY).getIslet(fk, pk);
+
+		select.addFrom(from);
+
+		if(sqlJoins.from.isEmpty() == false) {
+			select.addFrom(sqlJoins.from);
+		}
+
+		if(sqlJoins.where.isEmpty() == false) {
+			select.addWhere(sqlJoins.where);
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -208,16 +119,15 @@ public class AutoJoinSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static SQLQId _resolve(
-		AMIJoins joins,
+		Joins joins,
 		Set<String> done,
 		int method,
-		String defaultCatalog,
-		String defaultTable,
-		String givenCatalog,
-		String givenTable,
-		String givenColumn,
-		@Nullable
-		String givenValue
+		/*-----*/ String defaultCatalog,
+		/*-----*/ String defaultTable,
+		@Nullable String givenCatalog,
+		@Nullable String givenTable,
+		/*-----*/ String givenColumn,
+		@Nullable String givenValue
 	 ) throws Exception {
 		/*-----------------------------------------------------------------*/
 		/* BREAK CYCLES                                                    */
@@ -236,9 +146,12 @@ public class AutoJoinSingleton
 		/* RESOLVE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column column = defaultCatalog.equals(givenCatalog) && defaultTable.equals(givenTable) ? SchemaSingleton.getColumns(givenCatalog, givenTable).get(givenColumn)
-		                                                                                                       : null
+		boolean checkNow = (givenCatalog == null || defaultCatalog.equals(givenCatalog))
+		                   &&
+		                   (givenTable == null || defaultTable.equals(givenTable))
 		;
+
+		SchemaSingleton.Column column = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;
 
 		/*-----------------------------------------------------------------*/
 
@@ -246,7 +159,7 @@ public class AutoJoinSingleton
 		{
 			SQLQId qId;
 
-			AMIJoins temp;
+			Joins temp;
 
 			Collection<SchemaSingleton.FrgnKeys> lists;
 
@@ -262,7 +175,7 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					temp = new AMIJoins();
+					temp = new Joins();
 
 					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenCatalog, givenTable, givenColumn, givenValue);
 
@@ -299,7 +212,7 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					temp = new AMIJoins();
+					temp = new Joins();
 
 					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenCatalog, givenTable, givenColumn, givenValue);
 
@@ -336,9 +249,10 @@ public class AutoJoinSingleton
 				/* CONDITION ON VALUE                                      */
 				/*---------------------------------------------------------*/
 
-				joins.getOrAdd(AMIJoins.WHERE).add(
-					qId.toString() + " = '" + givenValue.replace("'", "''") + "'"
-				);
+				joins.getJoin(Structure.DUMMY)
+				     .getIslet(Structure.DUMMY, Structure.DUMMY)
+				     .addWhere(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
+				;
 
 				/*---------------------------------------------------------*/
 			}
@@ -369,11 +283,11 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static SQLQId resolve(AMIJoins joins, int method, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
+	private static SQLQId resolve(Joins joins, int method, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		String[] parts = qId.trim().split("\\.");
+		String[] parts = givenQId.trim().split("\\.");
 
 		final int nb = parts.length;
 
@@ -385,13 +299,13 @@ public class AutoJoinSingleton
 
 		/**/ if(nb == 1)
 		{
-			givenCatalog = defaultCatalog;
-			givenTable = defaultTable;
+			givenCatalog = null;
+			givenTable = null;
 			givenColumn = unquote(parts[0]);
 		}
 		else if(nb == 2)
 		{
-			givenCatalog = defaultCatalog;
+			givenCatalog = null;
 			givenTable = unquote(parts[0]);
 			givenColumn = unquote(parts[1]);
 		}
@@ -403,7 +317,7 @@ public class AutoJoinSingleton
 		}
 		else
 		{
-			throw new Exception("could not parse column name `" + qId + "`");
+			throw new Exception("could not parse column name `" + givenQId + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -412,7 +326,7 @@ public class AutoJoinSingleton
 
 		if(result == null)
 		{
-			throw new Exception("could not resolve column name `" + qId + "`");
+			throw new Exception("could not resolve column name `" + givenQId + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -422,16 +336,16 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static SQLQId resolveWithInnerJoins(AMIJoins joins, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
+	public static SQLQId resolveWithInnerJoins(Joins joins, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(joins, WITH_INNER_JOINS, defaultCatalog, defaultTable, qId, givenValue);
+		return resolve(joins, WITH_INNER_JOINS, defaultCatalog, defaultTable, givenQId, givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static SQLQId resolveWithNestedSelect(AMIJoins joins, String defaultCatalog, String defaultTable, String qId, @Nullable String givenValue) throws Exception
+	public static SQLQId resolveWithNestedSelect(Joins joins, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(joins, WITH_NESTED_SELECT, defaultCatalog, defaultTable, qId, givenValue);
+		return resolve(joins, WITH_NESTED_SELECT, defaultCatalog, defaultTable, givenQId, givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/

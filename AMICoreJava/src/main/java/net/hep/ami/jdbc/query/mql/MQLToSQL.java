@@ -16,7 +16,7 @@ public class MQLToSQL
 
 	private final Set<String> m_tables = new HashSet<>();
 
-	private final AutoJoinSingleton.AMIJoins m_joins = new AutoJoinSingleton.AMIJoins();
+	private final Structure.Joins m_joins = new Structure.Joins();
 
 	/*---------------------------------------------------------------------*/
 
