@@ -95,7 +95,7 @@ public class AutoJoinSingleton
 		String fk = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`";
 		String pk = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`";
 
-		String from = frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
+		String from = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
 
 		/*-----------------------------------------------------------------*/
 		/* MERGE                                                           */
