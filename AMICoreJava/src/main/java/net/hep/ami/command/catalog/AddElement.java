@@ -2,9 +2,7 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.AutoJoinSingleton.SQLQId;
 import net.hep.ami.command.*;
 
 public class AddElement extends AbstractCommand
@@ -36,72 +34,51 @@ public class AddElement extends AbstractCommand
 		                                                  : new String[] {}
 		;
 
-		if(catalog == null || entity == null || fields.length != values.length)
+		if(catalog == null || entity == null || fields.length == 0 || fields.length != values.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog);
+		Structure.Joins joins = new Structure.Joins();
 
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder stringBuilder = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		stringBuilder.append("INSERT INTO `").append(entity).append("`");
-
-		/*-----------------------------------------------------------------*/
-
-		if(fields.length > 0)
+		for(int i = 0; i < fields.length; i++)
 		{
-			/*-------------------------------------------------------------*/
-
-			Structure.Joins joins = new Structure.Joins();
-
-			for(int i = 0; i < fields.length; i++)
-			{
-				AutoJoinSingleton.resolveWithNestedSelect(
-					joins,
-					catalog,
-					entity,
-					fields[i],
-					values[i]
-				);
-			}
-
-			/*-------------------------------------------------------------*/
-
-			String[] parts;
-
-			List<String> list1 = new ArrayList<>();
-			List<String> list2 = new ArrayList<>();
-
-			for(String assign: joins.get(Structure.DUMMY).toList())
-			{
-				assign = assign.substring(assign.indexOf('.') + 1);
-				assign = assign.substring(assign.indexOf('.') + 1);
-
-				parts = assign.split("=", 2);
-
-				list1.add(parts[0]);
-				list2.add(parts[1]);
-			}
-
-			stringBuilder.append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")");
-
-			/*-------------------------------------------------------------*/
+			AutoJoinSingleton.resolveWithNestedSelect(
+				joins,
+				catalog,
+				entity,
+				fields[i],
+				values[i]
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = stringBuilder.toString();
+		String[] parts;
+
+		List<String> list1 = new ArrayList<>();
+		List<String> list2 = new ArrayList<>();
+
+		for(String assign: joins.getJoin(Structure.DUMMY).toList())
+		{
+			assign = assign.substring(assign.indexOf('.') + 1);
+			assign = assign.substring(assign.indexOf('.') + 1);
+
+			parts = assign.split("=", 2);
+
+			list1.add(parts[0]);
+			list2.add(parts[1]);
+		}
 
 		/*-----------------------------------------------------------------*/
 
-		//querier.executeSQLUpdate(sql);
+		String sql = new StringBuilder().append("INSERT INTO `").append(entity).append("`").append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")").toString();
+
+		/*-----------------------------------------------------------------*/
+
+		getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

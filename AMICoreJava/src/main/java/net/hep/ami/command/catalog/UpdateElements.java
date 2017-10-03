@@ -2,7 +2,6 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
 
@@ -47,93 +46,87 @@ public class UpdateElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || fields.length != values.length || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || fields.length == 0 || fields.length != values.length || keyFields.length != keyValues.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog);
+		Structure.Joins joins;
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder stringBuilder = new StringBuilder();
+		joins = new Structure.Joins();
 
-		/*-----------------------------------------------------------------*/
-
-		stringBuilder.append("UPDATE `" + entity + "` SET ");
-
-		/*-----------------------------------------------------------------*/
-
-		if(fields.length > 0)
+		for(int i = 0; i < fields.length; i++)
 		{
-			List<String> list = new ArrayList<>();
-
-			for(int i = 0; i < fields.length; i++)
-			{
-				list.add(fields[i] + " = '" + values[i].replace("'", "''") + "'" );
-			}
-
-			stringBuilder.append(String.join(",", list));
+			AutoJoinSingleton.resolveWithNestedSelect(
+				joins,
+				catalog,
+				entity,
+				fields[i],
+				values[i]
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		boolean wherePresent = false;
+		List<String> setList = new ArrayList<>();
 
-		if(keyFields.length > 0)
+		for(String comp: joins.getJoin(Structure.DUMMY).toList())
 		{
-			/*-------------------------------------------------------------*/
+			comp = comp.substring(comp.indexOf('.') + 1);
+			comp = comp.substring(comp.indexOf('.') + 1);
 
-			Structure.Joins joins = new Structure.Joins();
+			setList.add(comp);
+		}
 
-			for(int i = 0; i < keyFields.length; i++)
-			{
-				AutoJoinSingleton.resolveWithNestedSelect(
-					joins,
-					catalog,
-					entity,
-					keyFields[i],
-					keyValues[i]
-				);
-			}
+		/*-----------------------------------------------------------------*/
 
-			/*-------------------------------------------------------------*/
+		joins = new Structure.Joins();
 
-			String _where = joins.toSQL().where;
+		for(int i = 0; i < keyFields.length; i++)
+		{
+			AutoJoinSingleton.resolveWithNestedSelect(
+				joins,
+				catalog,
+				entity,
+				keyFields[i],
+				keyValues[i]
+			);
+		}
 
-			if(_where.isEmpty() == false)
-			{
-				stringBuilder.append(" WHERE " + _where);
+		/*-----------------------------------------------------------------*/
 
-				wherePresent = true;
-			}
+		List<String> whereList = new ArrayList<>();
 
-			/*-------------------------------------------------------------*/
+		for(String comp: joins.getJoin(Structure.DUMMY).toList())
+		{
+			comp = comp.substring(comp.indexOf('.') + 1);
+			comp = comp.substring(comp.indexOf('.') + 1);
+
+			whereList.add(comp);
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(where.isEmpty() == false)
 		{
-			if(wherePresent)
-			{
-				stringBuilder.append(" AND (" + where + ")");
-			}
-			else
-			{
-				stringBuilder.append(" WHERE (" + where + ")");
-			}
+			whereList.add(where);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = stringBuilder.toString();
+		whereList.add("1=1");
 
 		/*-----------------------------------------------------------------*/
 
-		//querier.executeSQLUpdate(sql);
+		String sql = new StringBuilder().append("UPDATE `" + entity + "` SET ").append(String.join(",", setList)).append(" WHERE ").append(String.join(" AND ", whereList)).toString();
+
+		/*-----------------------------------------------------------------*/
+
+		getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

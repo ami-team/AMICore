@@ -2,7 +2,6 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
 
@@ -39,55 +38,36 @@ public class RemoveElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || keyFields.length == 0 || keyFields.length != keyValues.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog);
+		Structure.Joins joins = new Structure.Joins();
 
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder stringBuilder = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		stringBuilder.append("DELETE FROM `").append(entity).append("`");
+		for(int i = 0; i < keyFields.length; i++)
+		{
+			AutoJoinSingleton.resolveWithNestedSelect(
+				joins,
+				catalog,
+				entity,
+				keyFields[i],
+				keyValues[i]
+			);
+		}
 
 		/*-----------------------------------------------------------------*/
 
 		List<String> whereList = new ArrayList<>();
 
-		if(keyFields.length > 0)
+		for(String comp: joins.getJoin(Structure.DUMMY).toList())
 		{
-			/*-------------------------------------------------------------*/
+			comp = comp.substring(comp.indexOf('.') + 1);
+			comp = comp.substring(comp.indexOf('.') + 1);
 
-			Structure.Joins joins = new Structure.Joins();
-
-			for(int i = 0; i < keyFields.length; i++)
-			{
-				AutoJoinSingleton.resolveWithNestedSelect(
-					joins,
-					catalog,
-					entity,
-					keyFields[i],
-					keyValues[i]
-				);
-			}
-
-			/*-------------------------------------------------------------*/
-
-			for(String assign: joins.get(Structure.DUMMY).toList())
-			{
-				assign = assign.substring(assign.indexOf('.') + 1);
-				assign = assign.substring(assign.indexOf('.') + 1);
-
-				whereList.add(assign);
-			}
-
-			/*-------------------------------------------------------------*/
+			whereList.add(comp);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -99,15 +79,11 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
+		String sql = new StringBuilder().append("DELETE FROM `").append(entity).append("`").append(" WHERE ").append(String.join(" AND ", whereList)).toString();
 
 		/*-----------------------------------------------------------------*/
 
-		String sql = stringBuilder.toString();
-
-		/*-----------------------------------------------------------------*/
-
-		//querier.executeSQLUpdate(sql);
+		getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -125,7 +101,7 @@ public class RemoveElements extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-separator=\"\")? (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
+		return "-catalog=\"\" -entity=\"\" (-separator=\"\")? -keyFields=\"\" -keyValues=\"\" (-where=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
