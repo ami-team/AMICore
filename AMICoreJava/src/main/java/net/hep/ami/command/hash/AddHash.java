@@ -19,6 +19,7 @@ public class AddHash extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		String name = arguments.get("name");
 		String json = arguments.get("json");
 
 		boolean shared = arguments.containsKey("shared");
@@ -55,8 +56,9 @@ public class AddHash extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `json`, `owner`, `shared`, `expire`, `created`) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
+		int nb = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `name`, `json`, `owner`, `shared`, `expire`, `created`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
 			hash,
+			name,
 			json,
 			m_AMIUser,
 			shared ? 1 : 0,

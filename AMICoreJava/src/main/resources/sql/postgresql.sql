@@ -143,13 +143,13 @@ ALTER TABLE `router_user_role`
 CREATE TABLE `router_short_url` (
   `id` SERIAL NOT NULL,
   `hash` VARCHAR(16) NOT NULL,
+  `name` VARCHAR(64) NOT NULL,
   `json` TEXT NOT NULL,
   `owner` VARCHAR(128) NOT NULL,
   `shared` TINYINT NOT NULL DEFAULT '0',
   `expire` TINYINT NOT NULL DEFAULT '0',
   `created` DATE NOT NULL
-
-) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
+);
 
 ALTER TABLE `router_short_url`
   ADD CONSTRAINT `pk1_router_short_url` PRIMARY KEY (`id`),
