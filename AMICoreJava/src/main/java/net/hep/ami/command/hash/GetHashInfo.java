@@ -36,7 +36,7 @@ public class GetHashInfo extends AbstractCommand
 
 		if(rowList.size() != 1)
 		{
-				throw new Exception("invalid hash `" + hash + "`");
+				throw new Exception("undefined hash `" + hash + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
