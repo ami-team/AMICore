@@ -144,6 +144,7 @@ CREATE TABLE `router_short_url` (
   `id` SERIAL NOT NULL,
   `hash` VARCHAR(16) NOT NULL,
   `name` VARCHAR(64) NOT NULL,
+  `rank` INT NOT NULL DEFAULT '0',
   `json` TEXT NOT NULL,
   `owner` VARCHAR(128) NOT NULL,
   `shared` TINYINT NOT NULL DEFAULT '0',

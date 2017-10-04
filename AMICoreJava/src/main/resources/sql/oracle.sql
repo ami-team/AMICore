@@ -627,6 +627,7 @@ CREATE TABLE `router_short_url` (
   `id` NUMBER(*, 0),
   `hash` VARCHAR2(16),
   `name` VARCHAR2(64),
+  `rank` NUMBER(*, 0) DEFAULT '0',
   `json` CLOB,
   `owner` VARCHAR2(128),
   `shared` NUMBER(1, 0) DEFAULT '0',
@@ -655,23 +656,27 @@ ALTER TABLE `router_short_url`
 ;
 
 ALTER TABLE `router_short_url`
-  ADD CONSTRAINT `ck4_router_short_url` CHECK(`json` IS NOT NULL)
+  ADD CONSTRAINT `ck4_router_short_url` CHECK(`rank` IS NOT NULL)
 ;
 
 ALTER TABLE `router_short_url`
-  ADD CONSTRAINT `ck5_router_short_url` CHECK(`owner` IS NOT NULL)
+  ADD CONSTRAINT `ck5_router_short_url` CHECK(`json` IS NOT NULL)
 ;
 
 ALTER TABLE `router_short_url`
-  ADD CONSTRAINT `ck6_router_short_url` CHECK(`shared` IS NOT NULL)
+  ADD CONSTRAINT `ck6_router_short_url` CHECK(`owner` IS NOT NULL)
 ;
 
 ALTER TABLE `router_short_url`
-  ADD CONSTRAINT `ck7_router_short_url` CHECK(`expire` IS NOT NULL)
+  ADD CONSTRAINT `ck7_router_short_url` CHECK(`shared` IS NOT NULL)
 ;
 
 ALTER TABLE `router_short_url`
-  ADD CONSTRAINT `ck8_router_short_url` CHECK(`created` IS NOT NULL)
+  ADD CONSTRAINT `ck8_router_short_url` CHECK(`expire` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck9_router_short_url` CHECK(`created` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_short_url` START WITH 1 INCREMENT BY 1 CACHE 10;

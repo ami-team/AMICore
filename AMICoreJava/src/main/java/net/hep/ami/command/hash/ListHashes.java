@@ -25,7 +25,7 @@ public class ListHashes extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = querier.executeSQLQuery("SELECT `name`, `hash` FROM `router_short_url` WHERE `owner` = ?", m_AMIUser);
+		RowSet rowSet = querier.executeSQLQuery("SELECT `hash`, `name`, `rank` FROM `router_short_url` WHERE `owner` = ?", m_AMIUser);
 
 		/*-----------------------------------------------------------------*/
 
@@ -36,8 +36,9 @@ public class ListHashes extends AbstractCommand
 		for(Row row: rowSet.iterate())
 		{
 			result.append("<row>")
-			      .append("<field name=\"name\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
-			      .append("<field name=\"hash\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
+			      .append("<field name=\"hash\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
+			      .append("<field name=\"name\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
+			      .append("<field name=\"rank\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
 			      .append("</row>")
 			;
 		}
