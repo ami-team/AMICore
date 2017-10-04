@@ -45,7 +45,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Structure.Joins joins = new Structure.Joins();
+		Structure.Joins joins = new Structure.Joins(catalog);
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
@@ -62,7 +62,7 @@ public class RemoveElements extends AbstractCommand
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: joins.getJoin(Structure.DUMMY).toList())
+		for(String comp: joins.getJoin(Structure.DUMMY, Structure.DUMMY).toList())
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);
@@ -83,7 +83,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		//getQuerier(catalog).executeSQLUpdate(sql);
+		getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

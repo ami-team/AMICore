@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.reflexion.Structure.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class AutoJoinSingleton
 {
@@ -38,8 +39,9 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final int WITH_INNER_JOINS = 0;
-	private static final int WITH_NESTED_SELECT = 1;
+	private static final int TRIVIAL = 0;
+	private static final int WITH_INNER_JOINS = 1;
+	private static final int WITH_NESTED_SELECT = 2;
 
 	/*---------------------------------------------------------------------*/
 
@@ -53,7 +55,8 @@ public class AutoJoinSingleton
 		/* BUILD SQL JOIN                                                  */
 		/*-----------------------------------------------------------------*/
 
-		String join = "INNER JOIN `" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
+		String fkTable = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`";
+		String pkTable = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
 
 		String where = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`"
 		               + " = " +
@@ -64,18 +67,24 @@ public class AutoJoinSingleton
 		/* MERGE                                                           */
 		/*-----------------------------------------------------------------*/
 
-		for(Map.Entry<String, Islets> entry1: temp.entrySet())
+		for(Map.Entry<String, Islets> entry1: /*--*/temp/*--*/.entrySet())
 		{
 			for(Map.Entry<String, Select> entry2: entry1.getValue().entrySet())
 			{
-				joins.getJoin(entry1.getKey())
+				joins.getJoin(entry1.getKey(), entry1.getValue().getPKTable())
 				     .getIslet(entry2.getKey(), entry2.getValue().getFromPart())
 				     .addAll(entry2.getValue())
 				;
 			}
 		}
 
-		joins.getJoin(join).getIslet(Structure.DUMMY, Structure.DUMMY).addWhere(where);
+		/*-----------------------------------------------------------------*/
+
+		Select select = joins.getJoin(fkTable, pkTable)
+		     .getIslet(Structure.DUMMY, Structure.DUMMY)
+		;
+
+		select.addWhere(where);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -88,12 +97,8 @@ public class AutoJoinSingleton
 		/* BUILD SQL JOIN                                                  */
 		/*-----------------------------------------------------------------*/
 
-		SQL sqlJoins = temp.toSQL();
-
-		/*-----------------------------------------------------------------*/
-
-		String fk = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`";
-		String pk = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`";
+		String fkColumn = "`" + frgnKey.fkInternalCatalog + "`.`" + frgnKey.fkTable + "`.`" + frgnKey.fkColumn + "`";
+		String pkColumn = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`.`" + frgnKey.pkColumn + "`";
 
 		String from = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
 
@@ -101,9 +106,13 @@ public class AutoJoinSingleton
 		/* MERGE                                                           */
 		/*-----------------------------------------------------------------*/
 
-		Select select = joins.getJoin(Structure.DUMMY).getIslet(fk, pk);
+		Select select = joins.getJoin(Structure.DUMMY, Structure.DUMMY)
+		                     .getIslet(fkColumn, pkColumn)
+		;
 
 		select.addFrom(from);
+
+		SQL sqlJoins = temp.toSQL();
 
 		if(sqlJoins.from.isEmpty() == false) {
 			select.addFrom(sqlJoins.from);
@@ -118,7 +127,7 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static SQLQId _resolve(
+	private static SQLQId _resolveJoins(
 		Joins joins,
 		Set<String> done,
 		int method,
@@ -129,138 +138,180 @@ public class AutoJoinSingleton
 		/*-----*/ String givenColumn,
 		@Nullable String givenValue
 	 ) throws Exception {
-		/*-----------------------------------------------------------------*/
-		/* BREAK CYCLES                                                    */
-		/*-----------------------------------------------------------------*/
 
-		String key = (defaultCatalog + '.' + defaultTable + '.' + givenColumn).toLowerCase();
-
-		if(done.contains(key))
+		if(method != TRIVIAL)
 		{
-			return null;
-		}
-
-		done.add(key);
-
-		/*-----------------------------------------------------------------*/
-		/* RESOLVE JOINS                                                   */
-		/*-----------------------------------------------------------------*/
-
-		boolean checkNow = (givenCatalog == null || defaultCatalog.equals(givenCatalog))
-		                   &&
-		                   (givenTable == null || defaultTable.equals(givenTable))
-		;
-
-		SchemaSingleton.Column column = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;
-
-		/*-----------------------------------------------------------------*/
-
-		if(column == null)
-		{
-			SQLQId qId;
-
-			Joins temp;
-
-			Collection<SchemaSingleton.FrgnKeys> lists;
-
 			/*-------------------------------------------------------------*/
-			/* FORWARD RESOLUTION                                          */
+			/* BREAK CYCLES                                                */
 			/*-------------------------------------------------------------*/
 
-			lists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultTable).values();
+			String key = (defaultCatalog + '.' + defaultTable + '.' + givenColumn).toLowerCase();
 
-			/*-------------------------------------------------------------*/
-
-			for(SchemaSingleton.FrgnKeys list: lists)
+			if(done.contains(key))
 			{
-				for(SchemaSingleton.FrgnKey frgnKey: list)
-				{
-					temp = new Joins();
-
-					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenCatalog, givenTable, givenColumn, givenValue);
-
-					if(qId != null)
-					{
-						switch(method)
-						{
-							case WITH_INNER_JOINS:
-								_mergeInnerJoins(joins, temp, frgnKey);
-								break;
-
-							case WITH_NESTED_SELECT:
-								_mergeNestedSelect(joins, temp, frgnKey);
-								break;
-
-							default:
-								LogSingleton.root.error("internal error");
-						}
-
-						return qId;
-					}
-				}
+				return null;
 			}
 
-			/*-------------------------------------------------------------*/
-			/* BACKWARD RESOLUTION                                         */
-			/*-------------------------------------------------------------*/
-
-			lists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultTable).values();
+			done.add(key);
 
 			/*-------------------------------------------------------------*/
+			/* RESOLVE JOINS                                               */
+			/*-------------------------------------------------------------*/
 
-			for(SchemaSingleton.FrgnKeys list: lists)
+			boolean checkNow = (givenCatalog == null || defaultCatalog.equals(givenCatalog))
+				               &&
+				               (givenTable == null || defaultTable.equals(givenTable))
+			;
+
+			SchemaSingleton.Column column = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;
+
+			/*-------------------------------------------------------------*/
+
+			if(column == null)
 			{
-				for(SchemaSingleton.FrgnKey frgnKey: list)
+				SQLQId qId;
+
+				Joins temp;
+
+				Collection<SchemaSingleton.FrgnKeys> lists;
+
+				/*---------------------------------------------------------*/
+				/* FORWARD RESOLUTION                                      */
+				/*---------------------------------------------------------*/
+
+				lists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultTable).values();
+
+				/*---------------------------------------------------------*/
+
+				for(SchemaSingleton.FrgnKeys list: lists)
 				{
-					temp = new Joins();
-
-					qId = _resolve(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenCatalog, givenTable, givenColumn, givenValue);
-
-					if(qId != null)
+					for(SchemaSingleton.FrgnKey frgnKey: list)
 					{
-						switch(method)
+						temp = new Joins(frgnKey.pkExternalCatalog);
+
+						qId = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenCatalog, givenTable, givenColumn, givenValue);
+
+						if(qId != null)
 						{
-							case WITH_INNER_JOINS:
-								_mergeInnerJoins(joins, temp, frgnKey);
-								break;
+							switch(method)
+							{
+								case WITH_INNER_JOINS:
+									_mergeInnerJoins(joins, temp, frgnKey);
+									break;
 
-							case WITH_NESTED_SELECT:
-								_mergeNestedSelect(joins, temp, frgnKey);
-								break;
+								case WITH_NESTED_SELECT:
+									_mergeNestedSelect(joins, temp, frgnKey);
+									break;
 
-							default:
-								LogSingleton.root.error("internal error");
+								default:
+									LogSingleton.root.error("internal error");
+							}
+
+							return qId;
 						}
-
-						return qId;
 					}
 				}
+
+				/*---------------------------------------------------------*/
+				/* BACKWARD RESOLUTION                                     */
+				/*---------------------------------------------------------*/
+
+				lists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultTable).values();
+
+				/*---------------------------------------------------------*/
+
+				for(SchemaSingleton.FrgnKeys list: lists)
+				{
+					for(SchemaSingleton.FrgnKey frgnKey: list)
+					{
+						temp = new Joins(frgnKey.fkExternalCatalog);
+
+						qId = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenCatalog, givenTable, givenColumn, givenValue);
+
+						if(qId != null)
+						{
+							switch(method)
+							{
+								case WITH_INNER_JOINS:
+									_mergeInnerJoins(joins, temp, frgnKey);
+									break;
+
+								case WITH_NESTED_SELECT:
+									_mergeNestedSelect(joins, temp, frgnKey);
+									break;
+
+								default:
+									LogSingleton.root.error("internal error");
+							}
+
+							return qId;
+						}
+					}
+				}
+
+				/*---------------------------------------------------------*/
+			}
+			else
+			{
+				joins.getJoin("`" + column.internalCatalog + "`.`" + column.table + "`", Structure.DUMMY);
+
+				SQLQId qId = new SQLQId(column.internalCatalog, column.table, column.name);
+
+				if(givenValue != null)
+				{
+					/*-----------------------------------------------------*/
+					/* CONDITION ON VALUE                                  */
+					/*-----------------------------------------------------*/
+
+					joins.getJoin(Structure.DUMMY, Structure.DUMMY)
+					     .getIslet(Structure.DUMMY, Structure.DUMMY)
+					     .addWhere(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
+					;
+
+					/*-----------------------------------------------------*/
+				}
+
+				return qId;
 			}
 
 			/*-------------------------------------------------------------*/
 		}
 		else
 		{
-			SQLQId qId = new SQLQId(column.internalCatalog, column.table, column.name);
+			/*-------------------------------------------------------------*/
 
-			if(givenValue != null)
+			Column column = SchemaSingleton.getColumns(
+				givenCatalog != null ? givenCatalog : defaultCatalog,
+				givenTable != null ? givenTable : defaultTable
+			).get(givenColumn);
+
+			/*-------------------------------------------------------------*/
+
+			if(column != null)
 			{
-				/*---------------------------------------------------------*/
-				/* CONDITION ON VALUE                                      */
-				/*---------------------------------------------------------*/
+				joins.getJoin("`" + column.internalCatalog + "`.`" + column.table + "`", Structure.DUMMY);
 
-				joins.getJoin(Structure.DUMMY)
-				     .getIslet(Structure.DUMMY, Structure.DUMMY)
-				     .addWhere(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
-				;
+				SQLQId qId = new SQLQId(column.internalCatalog, column.table, column.name);
 
-				/*---------------------------------------------------------*/
+				if(givenValue != null)
+				{
+					/*-----------------------------------------------------*/
+					/* CONDITION ON VALUE                                  */
+					/*-----------------------------------------------------*/
+
+					joins.getJoin(Structure.DUMMY, Structure.DUMMY)
+					     .getIslet(Structure.DUMMY, Structure.DUMMY)
+					     .addWhere(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
+					;
+
+					/*-----------------------------------------------------*/
+				}
+
+				return qId;
 			}
 
-			return qId;
+			/*-------------------------------------------------------------*/
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		return null;
 	}
@@ -285,6 +336,8 @@ public class AutoJoinSingleton
 
 	private static SQLQId resolve(Joins joins, int method, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
 	{
+		SQLQId result;
+
 		/*-----------------------------------------------------------------*/
 
 		String[] parts = givenQId.trim().split("\\.");
@@ -294,8 +347,6 @@ public class AutoJoinSingleton
 		String givenCatalog;
 		String givenTable;
 		String givenColumn;
-
-		/*-----------------------------------------------------------------*/
 
 		/**/ if(nb == 1)
 		{
@@ -322,11 +373,16 @@ public class AutoJoinSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		SQLQId result = _resolve(joins, new HashSet<>(), method, defaultCatalog, defaultTable, givenCatalog, givenTable, givenColumn, givenValue);
+		result = _resolveJoins(joins, new HashSet<>(), method, defaultCatalog, defaultTable, givenCatalog, givenTable, givenColumn, givenValue);
 
 		if(result == null)
 		{
-			throw new Exception("could not resolve column name `" + givenQId + "`");
+			result = _resolveJoins(joins, new HashSet<>(), TRIVIAL, defaultCatalog, defaultTable, givenCatalog, givenTable, givenColumn, givenValue);
+
+			if(result == null)
+			{
+				throw new Exception("could not resolve column name `" + givenQId + "`");
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -14,9 +14,7 @@ public class MQLToSQL
 	private final String m_catalog;
 	private final String m_entity;
 
-	private final Set<String> m_tables = new HashSet<>();
-
-	private final Structure.Joins m_joins = new Structure.Joins();
+	private final Structure.Joins m_joins;
 
 	/*---------------------------------------------------------------------*/
 
@@ -28,6 +26,8 @@ public class MQLToSQL
 	{
 		m_catalog = catalog;
 		m_entity = entity;
+
+		m_joins = new Structure.Joins(catalog);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -79,40 +79,33 @@ public class MQLToSQL
 
 	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context) throws Exception
 	{
-		StringBuilder select = new StringBuilder();
-		StringBuilder from = new StringBuilder();
-		StringBuilder where = new StringBuilder();
+		StringBuilder part1 = new StringBuilder();
+		StringBuilder part2 = new StringBuilder();
+		StringBuilder part3 = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.columns != null)
 		{
-			select.append("SELECT ");
+			part1.append("SELECT ");
 
 			if(context.distinct != null)
 			{
-				select.append("DISTINCT ");
+				part1.append("DISTINCT ");
 			}
 
-			select.append(visitColumnList(context.columns));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(context.expression != null)
-		{
-			where.append(" WHERE ").append(visitExpressionOr(context.expression));
+			part1.append(visitColumnList(context.columns));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.orderBy != null)
 		{
-			where.append(" ORDER BY ").append(context.orderBy.getText());
+			part3.append(" ORDER BY ").append(context.orderBy.getText());
 
 			if(context.orderWay != null)
 			{
-				where.append(context.orderWay.getText());
+				part3.append(context.orderWay.getText());
 			}
 		}
 
@@ -120,51 +113,23 @@ public class MQLToSQL
 
 		if(context.limit != null)
 		{
-			where.append(" LIMIT ").append(context.limit.getText());
+			part3.append(" LIMIT ").append(context.limit.getText());
 
 			if(context.offset != null)
 			{
-				where.append(" OFFSET ").append(context.offset.getText());
+				part3.append(" OFFSET ").append(context.offset.getText());
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_tables.isEmpty() == false)
-		{
-			/*-------------------------------------------------------------*/
-			/* FROM PART                                                   */
-			/*-------------------------------------------------------------*/
-
-			int cnt = 0;
-
-			from.append(" FROM ");
-
-			for(String table: m_tables)
-			{
-				if(cnt++ > 0)
-				{
-					from.append(", ");
-				}
-
-				from.append(quoteId(table));
-
-				String joins = m_joins.toSQL().from;
-
-				if(joins.isEmpty() == false)
-				{
-					from.append(joins);
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-		}
+		part2.append(m_joins.toString());
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append(select)
-		                          .append(from)
-		                          .append(where)
+		return new StringBuilder().append(part1)
+		                          .append(part2)
+		                          .append(part3)
 		;
 
 		/*-----------------------------------------------------------------*/
@@ -503,7 +468,7 @@ public class MQLToSQL
 
 		for(String qId: "*".equals(fieldName) ? SchemaSingleton.getColumnNames(catalogName, entityName) : Arrays.asList(context.getText()))
 		{
-			resolvedQId = AutoJoinSingleton.resolveWithInnerJoins(
+			resolvedQId = AutoJoinSingleton.resolveWithNestedSelect(
 				m_joins,
 				m_catalog,
 				m_entity,
@@ -515,8 +480,6 @@ public class MQLToSQL
 			{
 				result.append(", ");
 			}
-
-			m_tables.add(resolvedQId.table);
 
 			result.append(resolvedQId.toString());
 

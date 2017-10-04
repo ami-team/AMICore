@@ -14,66 +14,80 @@ public class Structure
 	{
 		/*-----------------------------------------------------------------*/
 
-		private final String m_select;
+		private final String m_selectPart;
 
-		private final Set<String> m_from = new TreeSet<>();
-		private final Set<String> m_where = new TreeSet<>();
+		private final Set<String> m_fromPart = new TreeSet<>();
+		private final Set<String> m_wherePart = new TreeSet<>();
 
 		/*-----------------------------------------------------------------*/
 
-		public Select(String select)
+		public Select(String selectPart)
 		{
-			m_select = select;
+			m_selectPart = selectPart;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		public void addFrom(String from)
+		public void addFrom(String fromPart)
 		{
-			m_from.add(from);
+			m_fromPart.add(fromPart);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		public void addWhere(String where)
+		public void addWhere(String wherePart)
 		{
-			m_where.add(where);
+			m_wherePart.add(wherePart);
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public void addAll(Select conds)
 		{
-			m_from.addAll(conds.m_from);
-			m_where.addAll(conds.m_where);
+			m_fromPart.addAll(conds.m_fromPart);
+			m_wherePart.addAll(conds.m_wherePart);
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getSelectPart()
 		{
-			return m_select;
+			return m_selectPart;
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getFromPart()
 		{
-			return String.join(",", m_from);
+			return String.join(",", m_fromPart);
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String getWherePart()
 		{
-			return String.join(" AND ", m_where);
+			return String.join(" AND ", m_wherePart);
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		public String toString()
 		{
-			return new StringBuffer().append("SELECT ").append(getSelectPart()).append(" FROM ").append(getFromPart()).append(" WHERE ").append(getWherePart()).toString();
+			StringBuffer result = new StringBuffer();
+
+			if(m_selectPart.isEmpty() == false) {
+				result.append("SELECT ").append(getSelectPart());
+			}
+
+			if(m_fromPart.isEmpty() == false) {
+				result.append(" FROM ").append(getFromPart());
+			}
+
+			if(m_wherePart.isEmpty() == false) {
+				result.append(" WHERE ").append(getWherePart());
+			}
+
+			return result.toString();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -89,22 +103,28 @@ public class Structure
 
 		/*-----------------------------------------------------------------*/
 
-		public Islets()
+		private final String m_pkTable;
+
+		/*-----------------------------------------------------------------*/
+
+		public Islets(String pkTable)
 		{
 			super();
+
+			m_pkTable = pkTable;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		public Select getIslet(String pk, String fk)
+		public Select getIslet(String fkColumn, String pkColumn)
 		{
-			Select result = get(pk);
+			Select result = get(fkColumn);
 
 			if(result == null)
 			{
-				result = new Select(fk);
+				result = new Select(pkColumn);
 
-				put(pk, result);
+				put(fkColumn, result);
 			}
 
 			return result;
@@ -112,25 +132,32 @@ public class Structure
 
 		/*-----------------------------------------------------------------*/
 
+		public String getPKTable()
+		{
+			return m_pkTable;
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		public List<String> toList()
 		{
-			String isletName;
+			String fkField;
 			Select select;
 
 			List<String> result = new ArrayList<>();
 
 			for(Map.Entry<String, Select> entry: entrySet())
 			{
-				isletName = entry.getKey();
+				fkField = entry.getKey();
 				select = entry.getValue();
 
-				if(DUMMY.equals(isletName))
+				if(DUMMY.equals(fkField))
 				{
 					result.add(select.getWherePart());
 				}
 				else
 				{
-					result.add(isletName + "=(" + select.toString() + ")");
+					result.add(fkField + "=(" + select.toString() + ")");
 				}
 			}
 
@@ -157,22 +184,28 @@ public class Structure
 
 		/*-----------------------------------------------------------------*/
 
-		public Joins()
+		private final String m_pkCatalog;
+
+		/*-----------------------------------------------------------------*/
+
+		public Joins(String pkCatalog)
 		{
 			super();
+
+			m_pkCatalog = pkCatalog;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		public Islets getJoin(String joinKey)
+		public Islets getJoin(String fkTable, String pkTable)
 		{
-			Islets result = get(joinKey);
+			Islets result = get(fkTable);
 
 			if(result == null)
 			{
-				result = new Islets();
+				result = new Islets(pkTable);
 
-				put(joinKey, result);
+				put(fkTable, result);
 			}
 
 			return result;
@@ -180,9 +213,16 @@ public class Structure
 
 		/*-----------------------------------------------------------------*/
 
+		public String getPKCatalog()
+		{
+			return m_pkCatalog;
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		public SQL toSQL()
 		{
-			String jointName;
+			String fkTable;
 			Islets islets;
 
 			List<String> result1 = new ArrayList<>();
@@ -190,16 +230,23 @@ public class Structure
 
 			for(Map.Entry<String, Islets> entry: entrySet())
 			{
-				jointName = entry.getKey();
+				fkTable = entry.getKey();
 				islets = entry.getValue();
 
-				if(DUMMY.equals(jointName))
+				if(DUMMY.equals(fkTable))
 				{
 					result2.add(islets.toString());
 				}
 				else
 				{
-					result1.add(jointName + " ON (" + islets.toString() + ")");
+					if(DUMMY.equals(islets.getPKTable()))
+					{
+						result1.add(fkTable.toString());
+					}
+					else
+					{
+						result1.add(fkTable.toString() + " INNER JOIN " + islets.getPKTable() + " ON (" + islets.toString() + ")");
+					}
 				}
 			}
 
@@ -237,7 +284,7 @@ public class Structure
 
 		public SQL(List<String> _from, List<String> _where)
 		{
-			from = String.join(" ", _from);
+			from = String.join(", ", _from);
 			where = String.join(" AND ", _where);
 		}
 
@@ -245,19 +292,17 @@ public class Structure
 
 		public String toString()
 		{
-			StringBuilder stringBuilder = new StringBuilder();
+			StringBuilder result = new StringBuilder();
 
-			if(from.isEmpty() == false)
-			{
-				stringBuilder.append(" FROM ").append(from);
+			if(from.isEmpty() == false) {
+				result.append(" FROM ").append(from);
 			}
 
-			if(where.isEmpty() == false)
-			{
-				stringBuilder.append(" WHERE ").append(where);
+			if(where.isEmpty() == false) {
+				result.append(" WHERE ").append(where);
 			}
 
-			return stringBuilder.toString();
+			return result.toString();
 		}
 
 		/*-----------------------------------------------------------------*/

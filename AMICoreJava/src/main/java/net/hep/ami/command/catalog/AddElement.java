@@ -41,7 +41,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Structure.Joins joins = new Structure.Joins();
+		Structure.Joins joins = new Structure.Joins(catalog);
 
 		for(int i = 0; i < fields.length; i++)
 		{
@@ -61,7 +61,7 @@ public class AddElement extends AbstractCommand
 		List<String> list1 = new ArrayList<>();
 		List<String> list2 = new ArrayList<>();
 
-		for(String assign: joins.getJoin(Structure.DUMMY).toList())
+		for(String assign: joins.getJoin(Structure.DUMMY, Structure.DUMMY).toList())
 		{
 			assign = assign.substring(assign.indexOf('.') + 1);
 			assign = assign.substring(assign.indexOf('.') + 1);
@@ -78,7 +78,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		//getQuerier(catalog).executeSQLUpdate(sql);
+		getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
