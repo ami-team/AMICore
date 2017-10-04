@@ -3,7 +3,6 @@
 DROP TABLE IF EXISTS `router_ipv6_blocks`;
 DROP TABLE IF EXISTS `router_ipv4_blocks`;
 DROP TABLE IF EXISTS `router_locations`;
-DROP TABLE IF EXISTS `router_search_criteria`;
 DROP TABLE IF EXISTS `router_search_interface`;
 DROP TABLE IF EXISTS `router_authority`;
 DROP TABLE IF EXISTS `router_short_url`;

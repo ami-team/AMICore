@@ -147,14 +147,14 @@ CREATE TABLE `router_short_url` (
   `rank` INT NOT NULL DEFAULT '0',
   `json` TEXT NOT NULL,
   `owner` VARCHAR(128) NOT NULL,
-  `shared` TINYINT NOT NULL DEFAULT '0',
-  `expire` TINYINT NOT NULL DEFAULT '0',
+  `shared` INT NOT NULL DEFAULT '0',
+  `expire` INT NOT NULL DEFAULT '0',
   `created` DATE NOT NULL
 );
 
 ALTER TABLE `router_short_url`
   ADD CONSTRAINT `pk1_router_short_url` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_short_url` UNIQUE KEY (`hash`)
+  ADD CONSTRAINT `uk1_router_short_url` UNIQUE (`hash`)
 ;
 
 ------------------------------------------------------------------------------
