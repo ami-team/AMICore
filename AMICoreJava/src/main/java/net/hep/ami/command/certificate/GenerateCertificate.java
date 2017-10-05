@@ -47,6 +47,10 @@ public class GenerateCertificate extends AbstractCommand
 		                                                        : ""
 		;
 
+		String password = arguments.containsKey("password") ? arguments.get("password")
+		                                                    : ""
+		;
+
 		int validity;
 
 		if(arguments.containsKey("validity"))
@@ -106,6 +110,14 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
+		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
+
+		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
+		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
+
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset><row>");
 
 		/*-----------------------------------------------------------------*/
@@ -119,6 +131,24 @@ public class GenerateCertificate extends AbstractCommand
 		      .append(pem.toString())
 		      .append("</field>")
 		;
+
+		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
+		{
+			keyStore_JKS.store(output, password.toCharArray());
+
+			result.append("<field name=\"KEYSTORE_JKS\">");
+			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
+			result.append("</field>");
+		}
+
+		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
+		{
+			keyStore_PKCS12.store(output, password.toCharArray());
+
+			result.append("<field name=\"KEYSTORE_P12\">");
+			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
+			result.append("</field>");
+		}
 
 		/*-----------------------------------------------------------------*/
 
