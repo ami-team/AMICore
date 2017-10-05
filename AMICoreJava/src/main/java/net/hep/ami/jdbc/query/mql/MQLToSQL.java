@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.Structure.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 
 public class MQLToSQL
 {
@@ -84,14 +84,11 @@ public class MQLToSQL
 	{
 		StringBuilder part1 = new StringBuilder();
 		StringBuilder part2 = new StringBuilder();
-		StringBuilder part3 = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.columns != null)
 		{
-			part1.append("SELECT ");
-
 			if(context.distinct != null)
 			{
 				part1.append("DISTINCT ");
@@ -104,11 +101,11 @@ public class MQLToSQL
 
 		if(context.orderBy != null)
 		{
-			part3.append(" ORDER BY ").append(context.orderBy.getText());
+			part2.append(" ORDER BY ").append(context.orderBy.getText());
 
 			if(context.orderWay != null)
 			{
-				part3.append(context.orderWay.getText());
+				part2.append(context.orderWay.getText());
 			}
 		}
 
@@ -116,57 +113,42 @@ public class MQLToSQL
 
 		if(context.limit != null)
 		{
-			part3.append(" LIMIT ").append(context.limit.getText());
+			part2.append(" LIMIT ").append(context.limit.getText());
 
 			if(context.offset != null)
 			{
-				part3.append(" OFFSET ").append(context.offset.getText());
+				part2.append(" OFFSET ").append(context.offset.getText());
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		LinkedHashSet<String> tablesInJoins = new LinkedHashSet<>();
 
 		for(Map.Entry<String, Islets> entry: m_joins.entrySet())
 		{
-			tablesInJoins.add(entry.getKey());
-			tablesInJoins.add(entry.getValue()
-			                       .getPKTable());
+			m_tables.remove(entry.getKey())
+			;
+			m_tables.remove(entry.getValue()
+			                     .getPKTable())
+			;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		for(String table: m_tables)
-		{
-			if(tablesInJoins.contains(table) == false)
-			{
-				m_joins.getJoin(table, Structure.DUMMY);
-			}
-		}
+		Query sqlJoin = m_joins.toQuery();
 
-		/*-----------------------------------------------------------------*/
-
-		part2.append(m_joins.toString());
-
-		/*-----------------------------------------------------------------*/
+		Query query = new Query().addSelectPart(part1.toString())
+		                         .addFromPart(m_tables)
+		                         .addWholeQuery(sqlJoin)
+		;
 
 		if(context.expression != null)
 		{
-			if(m_joins.isEmpty() == false)
-			{
-				part2.append(" WHERE ");
-			}
-
-			part2.append(visitExpressionOr(context.expression).toString());
+			query.addWherePart(visitExpressionOr(context.expression).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append(part1)
-		                          .append(part2)
-		                          .append(part3)
-		;
+		return new StringBuilder(query.toString(part2.toString()));
 
 		/*-----------------------------------------------------------------*/
 	}

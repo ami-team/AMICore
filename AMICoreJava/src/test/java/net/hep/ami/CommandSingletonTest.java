@@ -175,7 +175,7 @@ public class CommandSingletonTest
 
 			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT 1 WHERE router_command.command=10"));
 */
-
+/*
 			System.out.println(router2.mqlToSQL("router_command", "SELECT 1"));
 
 			System.out.println(router2.mqlToSQL("router_command", "SELECT *"));
@@ -191,6 +191,8 @@ public class CommandSingletonTest
 			System.out.println(router2.mqlToSQL("router_command", "SELECT command WHERE class LIKE '%net.hep%'"));
 
 			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT network, continentCode, countryCode, router_command.command WHERE continentCode = countryCode AND countryCode=10"));
+*/
+			System.out.println(router2.executeMQLQuery("router_ipv4_blocks", "SELECT router_ipv4_blocks.id, network, continentCode, countryCode, router_command.command WHERE id=10"));
 
 			//System.out.println("done.");
 		}

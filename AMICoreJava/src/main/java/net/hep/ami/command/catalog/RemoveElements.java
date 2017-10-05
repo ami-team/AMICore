@@ -2,8 +2,9 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 
 public class RemoveElements extends AbstractCommand
 {
@@ -45,7 +46,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Structure.Joins joins = new Structure.Joins(catalog);
+		Joins joins = new Joins(catalog);
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
@@ -62,7 +63,7 @@ public class RemoveElements extends AbstractCommand
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: joins.getJoin(Structure.DUMMY, Structure.DUMMY).toList())
+		for(String comp: joins.getJoin(Joins.DUMMY, Joins.DUMMY).toList())
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);

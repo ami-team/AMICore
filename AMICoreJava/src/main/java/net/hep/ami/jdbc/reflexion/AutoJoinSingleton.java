@@ -3,7 +3,7 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.reflexion.Structure.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class AutoJoinSingleton
@@ -94,22 +94,21 @@ public class AutoJoinSingleton
 
 		for(Map.Entry<String, Islets> entry1: /*--*/temp/*--*/.entrySet())
 		{
-			for(Map.Entry<String, Select> entry2: entry1.getValue().entrySet())
+			for(Map.Entry<String, Query> entry2: entry1.getValue().entrySet())
 			{
 				joins.getJoin(entry1.getKey(), entry1.getValue().getPKTable())
 				     .getIslet(entry2.getKey(), entry2.getValue().getFromPart())
-				     .addAll(entry2.getValue())
+				     .addWholeQuery(entry2.getValue())
 				;
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		Select select = joins.getJoin(fkTable, pkTable)
-		     .getIslet(Structure.DUMMY, Structure.DUMMY)
+		joins.getJoin(fkTable, pkTable)
+		     .getIslet(Islets.DUMMY, Islets.DUMMY)
+		     .addWherePart(where)
 		;
-
-		select.addWhere(where);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -131,21 +130,11 @@ public class AutoJoinSingleton
 		/* MERGE                                                           */
 		/*-----------------------------------------------------------------*/
 
-		Select select = joins.getJoin(Structure.DUMMY, Structure.DUMMY)
-		                     .getIslet(fkColumn, pkColumn)
+		joins.getJoin(Joins.DUMMY, Joins.DUMMY)
+		     .getIslet(fkColumn, pkColumn)
+		     .addFromPart(from)
+		     .addWholeQuery(temp.toQuery())
 		;
-
-		select.addFrom(from);
-
-		SQL sqlJoins = temp.toSQL();
-
-		if(sqlJoins.from.isEmpty() == false) {
-			select.addFrom(sqlJoins.from);
-		}
-
-		if(sqlJoins.where.isEmpty() == false) {
-			select.addWhere(sqlJoins.where);
-		}
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -286,9 +275,9 @@ public class AutoJoinSingleton
 					/* CONDITION ON VALUE                                  */
 					/*-----------------------------------------------------*/
 
-					joins.getJoin(Structure.DUMMY, Structure.DUMMY)
-					     .getIslet(Structure.DUMMY, Structure.DUMMY)
-					     .addWhere(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
+					joins.getJoin(Joins.DUMMY, Joins.DUMMY)
+					     .getIslet(Islets.DUMMY, Islets.DUMMY)
+					     .addWherePart(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
 					;
 
 					/*-----------------------------------------------------*/
@@ -320,9 +309,9 @@ public class AutoJoinSingleton
 					/* CONDITION ON VALUE                                  */
 					/*-----------------------------------------------------*/
 
-					joins.getJoin(Structure.DUMMY, Structure.DUMMY)
-					     .getIslet(Structure.DUMMY, Structure.DUMMY)
-					     .addWhere(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
+					joins.getJoin(Joins.DUMMY, Joins.DUMMY)
+					     .getIslet(Islets.DUMMY, Islets.DUMMY)
+					     .addWherePart(qId.toString() + "='" + givenValue.replace("'", "''") + "'")
 					;
 
 					/*-----------------------------------------------------*/
