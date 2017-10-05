@@ -209,7 +209,6 @@ public class CatalogSingleton
 			      .append("<field name=\"internalSchema\"><![CDATA[").append(tuple.z).append("]]></field>")
 			      .append("<field name=\"jdbcUrl\"><![CDATA[").append(tuple.t).append("]]></field>")
 			      .append("<field name=\"user\"><![CDATA[").append(tuple.u).append("]]></field>")
-			      .append("<field name=\"pass\"><![CDATA[").append(tuple.v).append("]]></field>")
 			      .append("<field name=\"archived\"><![CDATA[").append(tuple.w).append("]]></field>")
 			      .append("</row>")
 			;

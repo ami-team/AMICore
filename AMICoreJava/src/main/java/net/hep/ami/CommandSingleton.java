@@ -383,6 +383,11 @@ public class CommandSingleton
 
 		for(Tuple tuple: s_commands.values())
 		{
+			if("GetConfig".equals(tuple.x))
+			{
+				continue;
+			}
+
 			result.append("<row>")
 			      .append("<field name=\"command\"><![CDATA[").append(tuple.x).append("]]></field>")
 			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
