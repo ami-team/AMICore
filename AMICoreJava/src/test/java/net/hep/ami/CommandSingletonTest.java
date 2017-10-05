@@ -175,7 +175,14 @@ public class CommandSingletonTest
 
 			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT 1 WHERE router_command.command=10"));
 */
+
+			System.out.println(router2.mqlToSQL("router_command", "SELECT 1"));
+
 			System.out.println(router2.mqlToSQL("router_command", "SELECT *"));
+
+			System.out.println(router2.mqlToSQL("router_command", "SELECT count(*)"));
+
+			System.out.println(router2.mqlToSQL("router_command", "SELECT command WHERE id=?"));
 
 			System.out.println(router2.mqlToSQL("router_command", "SELECT command WHERE id=10"));
 
