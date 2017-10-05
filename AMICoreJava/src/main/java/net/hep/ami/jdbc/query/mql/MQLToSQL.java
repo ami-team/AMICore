@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.Structure.*;
 
 public class MQLToSQL
 {
@@ -14,11 +15,11 @@ public class MQLToSQL
 	private final String m_catalog;
 	private final String m_entity;
 
-	private final Structure.Joins m_joins;
-
 	/*---------------------------------------------------------------------*/
 
-	private boolean m_break = false;
+	private final Joins m_joins;
+
+	private final Set<String> m_tables;
 
 	/*---------------------------------------------------------------------*/
 
@@ -27,7 +28,9 @@ public class MQLToSQL
 		m_catalog = catalog;
 		m_entity = entity;
 
-		m_joins = new Structure.Joins(catalog);
+		m_joins = new Joins(catalog);
+
+		m_tables = new LinkedHashSet<>();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -123,7 +126,40 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
+		LinkedHashSet<String> tablesInJoins = new LinkedHashSet<>();
+
+		for(Map.Entry<String, Islets> entry: m_joins.entrySet())
+		{
+			tablesInJoins.add(entry.getKey());
+			tablesInJoins.add(entry.getValue()
+			                       .getPKTable());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		for(String table: m_tables)
+		{
+			if(tablesInJoins.contains(table) == false)
+			{
+				m_joins.getJoin(table, Structure.DUMMY);
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		part2.append(m_joins.toString());
+
+		/*-----------------------------------------------------------------*/
+
+		if(context.expression != null)
+		{
+			if(m_joins.isEmpty() == false)
+			{
+				part2.append(" WHERE ");
+			}
+
+			part2.append(visitExpressionOr(context.expression).toString());
+		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -377,10 +413,6 @@ public class MQLToSQL
 		{
 			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
 		}
-		else if(child instanceof MQLParser.ExpressionLikeContext)
-		{
-			result.append(visitExpressionLike((MQLParser.ExpressionLikeContext) child));
-		}
 		else if(child instanceof MQLParser.ExpressionQIdContext)
 		{
 			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
@@ -407,6 +439,10 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
+	private boolean m_break = false;
+
+	/*---------------------------------------------------------------------*/
+
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
 	{
 		m_break = true;
@@ -420,16 +456,6 @@ public class MQLToSQL
 		m_break = false;
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private StringBuilder visitExpressionLike(MQLParser.ExpressionLikeContext context) throws Exception
-	{
-		return new StringBuilder().append(  visitSqlQId  (  context.qId  ))
-		                          .append(" LIKE ")
-		                          .append(visitSqlLiteral(context.literal))
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -450,7 +476,7 @@ public class MQLToSQL
 
 	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext context) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		List<String> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -462,13 +488,11 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		int cnt = 0;
-
 		AutoJoinSingleton.SQLQId resolvedQId;
 
 		for(String qId: "*".equals(fieldName) ? SchemaSingleton.getColumnNames(catalogName, entityName) : Arrays.asList(context.getText()))
 		{
-			resolvedQId = AutoJoinSingleton.resolveWithNestedSelect(
+			resolvedQId = AutoJoinSingleton.resolveWithInnerJoins(
 				m_joins,
 				m_catalog,
 				m_entity,
@@ -476,12 +500,9 @@ public class MQLToSQL
 				null
 			);
 
-			if(cnt++ > 0)
-			{
-				result.append(", ");
-			}
+			m_tables.add(resolvedQId.toString(AutoJoinSingleton.SQLQId.Deepness.TABLE));
 
-			result.append(resolvedQId.toString());
+			result.add(resolvedQId.toString(AutoJoinSingleton.SQLQId.Deepness.COLUMN));
 
 			if(m_break)
 			{
@@ -491,7 +512,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		return new StringBuilder(String.join(", ", result));
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -41,7 +41,7 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionAddSub (operator=COMP expressionAddSub)*
+	: expressionAddSub (operator=COMP expressionAddSub)?
 	;
 
 expressionAddSub
@@ -61,7 +61,6 @@ expressionX
 	| functionName=FUNCTION '('
 	    (distinct=DISTINCT)? expression=expressionOr
 	  ')'                                                                      # ExpressionFunction
-	| qId=sqlQId LIKE literal=sqlLiteral                                       # ExpressionLike
 	| literal=sqlLiteral                                                       # ExpressionLiteral
 	| qId=sqlQId                                                               # ExpressionQId
 	;
@@ -142,20 +141,12 @@ AND
 	| '&&' { setText("AND"); }
 	;
 
-LIKE
-	: L I K E
-	;
-
-IN
-	: I N
-	;
-
 NULL
 	: N U L L
 	;
 
 COMP
-	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | '<' | '>' | '<=' | '>='
+	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | '<' | '>' | '<=' | '>=' | L I K E
 	;
 
 FUNCTION

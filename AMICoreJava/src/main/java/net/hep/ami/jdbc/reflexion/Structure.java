@@ -59,7 +59,7 @@ public class Structure
 
 		public String getFromPart()
 		{
-			return String.join(",", m_fromPart);
+			return String.join(", ", m_fromPart);
 		}
 
 		/*-----------------------------------------------------------------*/

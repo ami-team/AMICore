@@ -14,6 +14,14 @@ public class AutoJoinSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
+		public static enum Deepness {
+			CATALOG,
+			TABLE,
+			COLUMN
+		};
+
+		/*-----------------------------------------------------------------*/
+
 		public final String catalog;
 		public final String table;
 		public final String column;
@@ -31,7 +39,24 @@ public class AutoJoinSingleton
 
 		public String toString()
 		{
-			return "`" + catalog + "`.`" + table + "`.`" + column + "`";
+			return toString(Deepness.COLUMN);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public String toString(Deepness deepness)
+		{
+			switch(deepness)
+			{
+				case CATALOG:
+					return "`" + catalog + "`";
+
+				case TABLE:
+					return "`" + catalog + "`.`" + table + "`";
+
+				default:
+					return "`" + catalog + "`.`" + table + "`.`" + column + "`";
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -253,8 +278,6 @@ public class AutoJoinSingleton
 			}
 			else
 			{
-				joins.getJoin("`" + column.internalCatalog + "`.`" + column.table + "`", Structure.DUMMY);
-
 				SQLQId qId = new SQLQId(column.internalCatalog, column.table, column.name);
 
 				if(givenValue != null)
@@ -289,8 +312,6 @@ public class AutoJoinSingleton
 
 			if(column != null)
 			{
-				joins.getJoin("`" + column.internalCatalog + "`.`" + column.table + "`", Structure.DUMMY);
-
 				SQLQId qId = new SQLQId(column.internalCatalog, column.table, column.name);
 
 				if(givenValue != null)

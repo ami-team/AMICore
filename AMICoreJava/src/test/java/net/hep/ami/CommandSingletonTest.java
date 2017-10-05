@@ -120,35 +120,39 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
 
 			//System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
-
-			Structure.Joins joins = new Structure.Joins("self");
+/*
+			Structure.Joins joins1 = new Structure.Joins("self");
 
 			AutoJoinSingleton.resolveWithNestedSelect(
-				joins,
+				joins1,
 				"self",
 				"router_ipv4_blocks",
 				"continentCode",
 				"EU"
 			);
 
+			System.out.println(joins1.toString());
+
+			Structure.Joins joins2 = new Structure.Joins("self");
+
 			AutoJoinSingleton.resolveWithNestedSelect(
-				joins,
+				joins2,
 				"self",
 				"router_ipv4_blocks",
 				"router_locations.countryCode",
-				"FR"
+				null
 			);
 
-			System.out.println(joins.toString());
-
-			joins = new Structure.Joins("self");
+			System.out.println(joins2.toString());
+*/
+/*			Structure.Joins joins = new Structure.Joins("self");
 
 			AutoJoinSingleton.resolveWithInnerJoins(
 				joins,
 				"self",
 				"router_ipv4_blocks",
 				"continentCode",
-				"EU"
+				null//"EU"
 			);
 
 			AutoJoinSingleton.resolveWithInnerJoins(
@@ -160,24 +164,26 @@ public class CommandSingletonTest
 			);
 
 			System.out.println(joins.toSQL());
-
+*/
 			//System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_ipv4_blocks\" -fields=\"network,router_locations.continentCode,router_locations.countryCode\" -values=\"foo,EU,FR\"").replace(">", ">\n"));
 
 			//System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"self\" -entity=\"router_ipv4_blocks\" -keyFields=\"network,router_locations.continentCode,router_locations.countryCode\" -keyValues=\"foo,EU,FR\"").replace(">", ">\n"));
 
 			//System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_ipv4_blocks\" -fields=\"network,router_locations.continentCode,router_locations.countryCode\" -values=\"foo,EU,FR\"").replace(">", ">\n"));
+/*
+			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT countryCode, router_command.command WHERE id=10"));
 
-			System.out.println(router2.mqlToSQL("router_command", "SELECT command WHERE id=1"));
-
+			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT 1 WHERE router_command.command=10"));
+*/
 			System.out.println(router2.mqlToSQL("router_command", "SELECT *"));
 
 			System.out.println(router2.mqlToSQL("router_command", "SELECT command WHERE id=10"));
 
-			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT countryCode, router_command.command WHERE id=10"));
+			System.out.println(router2.mqlToSQL("router_command", "SELECT command WHERE 10=id"));
 
-			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT 1 WHERE router_command.command=10"));
+			System.out.println(router2.mqlToSQL("router_command", "SELECT command WHERE class LIKE '%net.hep%'"));
 
-			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT router_ipv4_blocks.id, network, continentCode, countryCode, router_command.command WHERE id=10"));
+			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT network, continentCode, countryCode, router_command.command WHERE continentCode = countryCode AND countryCode=10"));
 
 			//System.out.println("done.");
 		}
