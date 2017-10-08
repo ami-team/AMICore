@@ -17,7 +17,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private final Joins m_joins;
+	private final Islets m_islets;
 
 	private final Set<String> m_tables;
 
@@ -28,7 +28,7 @@ public class MQLToSQL
 		m_catalog = catalog;
 		m_entity = entity;
 
-		m_joins = new Joins(catalog);
+		m_islets = new Islets();
 
 		m_tables = new LinkedHashSet<>();
 	}
@@ -123,18 +123,16 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		for(Map.Entry<String, Islets> entry: m_joins.entrySet())
+		for(Map.Entry<String, Map<String, Query>> entry: m_islets.getJoins(Islets.DUMMY, Islets.DUMMY).entrySet())
 		{
-			m_tables.remove(entry.getKey())
-			;
-			m_tables.remove(entry.getValue()
-			                     .getPKTable())
-			;
+			m_tables.remove(entry.getKey());
+
+			m_tables.removeAll(entry.getValue().keySet());
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		Query sqlJoin = m_joins.toQuery();
+		Query sqlJoin = m_islets.toQuery();
 
 		Query query = new Query().addSelectPart(part1.toString())
 		                         .addFromPart(m_tables)
@@ -470,21 +468,21 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		AutoJoinSingleton.SQLQId resolvedQId;
+		QId resolvedQId;
 
 		for(String qId: "*".equals(fieldName) ? SchemaSingleton.getColumnNames(catalogName, entityName) : Arrays.asList(context.getText()))
 		{
 			resolvedQId = AutoJoinSingleton.resolveWithInnerJoins(
-				m_joins,
+				m_islets,
 				m_catalog,
 				m_entity,
 				qId,
 				null
 			);
 
-			m_tables.add(resolvedQId.toString(AutoJoinSingleton.SQLQId.Deepness.TABLE));
+			m_tables.add(resolvedQId.toString(QId.Deepness.TABLE));
 
-			result.add(resolvedQId.toString(AutoJoinSingleton.SQLQId.Deepness.COLUMN));
+			result.add(resolvedQId.toString(QId.Deepness.COLUMN));
 
 			if(m_break)
 			{

@@ -5,8 +5,9 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
-import net.hep.ami.jdbc.query.sql.Tokenizer;
+import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 import net.hep.ami.utility.*;
 
 @SuppressWarnings("all")
@@ -120,51 +121,61 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
 
 			//System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
-/*
-			Structure.Joins joins1 = new Structure.Joins("self");
 
-			AutoJoinSingleton.resolveWithNestedSelect(
-				joins1,
+			Islets islets0 = new Islets();
+
+			islets0.getJoins(Islets.DUMMY, Islets.DUMMY)
+			       .getQuery(Joins.DUMMY, Joins.DUMMY)
+			       .addFromPart("DUAL")
+			       .addWherePart("1==1")
+			;
+
+			System.out.println(islets0.toString());
+
+			Islets islets1 = new Islets();
+
+			QId qId1 = AutoJoinSingleton.resolveWithNestedSelect(
+				islets1,
 				"self",
 				"router_ipv4_blocks",
 				"continentCode",
 				"EU"
 			);
 
-			System.out.println(joins1.toString());
-
-			Structure.Joins joins2 = new Structure.Joins("self");
-
-			AutoJoinSingleton.resolveWithNestedSelect(
-				joins2,
-				"self",
-				"router_ipv4_blocks",
-				"router_locations.countryCode",
-				null
-			);
-
-			System.out.println(joins2.toString());
-*/
-/*			Structure.Joins joins = new Structure.Joins("self");
-
-			AutoJoinSingleton.resolveWithInnerJoins(
-				joins,
-				"self",
-				"router_ipv4_blocks",
-				"continentCode",
-				null//"EU"
-			);
-
-			AutoJoinSingleton.resolveWithInnerJoins(
-				joins,
+			QId qId2 = AutoJoinSingleton.resolveWithNestedSelect(
+				islets1,
 				"self",
 				"router_ipv4_blocks",
 				"router_locations.countryCode",
 				"FR"
 			);
 
-			System.out.println(joins.toSQL());
-*/
+			System.out.println(qId1);
+			System.out.println(qId2);
+			System.out.println(islets1.toString());
+
+			Islets islets2 = new Islets();
+
+			AutoJoinSingleton.resolveWithInnerJoins(
+				islets2,
+				"self",
+				"router_ipv4_blocks",
+				"continentCode",
+				"EU"
+			);
+
+			AutoJoinSingleton.resolveWithInnerJoins(
+				islets2,
+				"self",
+				"router_ipv4_blocks",
+				"router_locations.countryCode",
+				"FR"
+			);
+
+			System.out.println(qId1);
+			System.out.println(qId2);
+			System.out.println(islets2.toString());
+
 			//System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_ipv4_blocks\" -fields=\"network,router_locations.continentCode,router_locations.countryCode\" -values=\"foo,EU,FR\"").replace(">", ">\n"));
 
 			//System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"self\" -entity=\"router_ipv4_blocks\" -keyFields=\"network,router_locations.continentCode,router_locations.countryCode\" -keyValues=\"foo,EU,FR\"").replace(">", ">\n"));
@@ -192,7 +203,7 @@ public class CommandSingletonTest
 
 			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT network, continentCode, countryCode, router_command.command WHERE continentCode = countryCode AND countryCode=10"));
 */
-			System.out.println(router2.executeMQLQuery("router_ipv4_blocks", "SELECT router_ipv4_blocks.id, network, continentCode, countryCode, router_command.command WHERE id=10"));
+			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT router_ipv4_blocks.id, network, continentCode, countryCode, router_command.command WHERE id=10"));
 
 			//System.out.println("done.");
 		}

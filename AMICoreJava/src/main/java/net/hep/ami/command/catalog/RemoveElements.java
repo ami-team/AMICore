@@ -46,12 +46,12 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Joins joins = new Joins(catalog);
+		Islets islets = new Islets();
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
 			AutoJoinSingleton.resolveWithNestedSelect(
-				joins,
+				islets,
 				catalog,
 				entity,
 				keyFields[i],
@@ -63,7 +63,7 @@ public class RemoveElements extends AbstractCommand
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: joins.getJoin(Joins.DUMMY, Joins.DUMMY).toList())
+		for(String comp: islets.toQuery().getWherePart().split(" AND ", -1))
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);

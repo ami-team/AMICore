@@ -6,40 +6,46 @@ public class Islets
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final String DUMMY = "§";
+	public static final String DUMMY = "@";
 
 	/*---------------------------------------------------------------------*/
 
-	private final Map<String, Query> m_map = new LinkedHashMap<>();
-
-	private final String m_pkTable;
+	private final Map<String, Map<String, Joins>> m_map = new LinkedHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	public Islets(String pkTable)
+	public Joins getJoins(String fkColumn, String pkColumn)
 	{
-		m_pkTable = pkTable;
-	}
+		/*----------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------*/
+		Map<String, Joins> result1 = m_map.get(fkColumn);
 
-	public Query getIslet(String fkColumn, String pkColumn)
-	{
-		Query result = m_map.get(fkColumn);
-
-		if(result == null)
+		if(result1 == null)
 		{
-			result = new Query().addSelectPart(pkColumn);
+			result1 = new LinkedHashMap<>();
 
-			m_map.put(fkColumn, result);
+			m_map.put(fkColumn, result1);
 		}
 
-		return result;
+		/*----------------------------------------------------------------*/
+
+		Joins result2 = result1.get(pkColumn);
+
+		if(result2 == null)
+		{
+			result2 = new Joins();
+
+			result1.put(pkColumn, result2);
+		}
+
+		/*----------------------------------------------------------------*/
+
+		return result2;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<Map.Entry<String, Query>> entrySet()
+	public Set<Map.Entry<String, Map<String, Joins>>> entrySet()
 	{
 		return m_map.entrySet();
 	}
@@ -53,32 +59,29 @@ public class Islets
 
 	/*---------------------------------------------------------------------*/
 
-	public String getPKTable()
-	{
-		return m_pkTable;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public List<String> toList()
+	public Query toQuery()
 	{
 		String fkField;
-		Query select;
+		String pkField;
 
-		List<String> result = new ArrayList<>();
+		Query result = new Query();
 
-		for(Map.Entry<String, Query> entry: m_map.entrySet())
+		for(Map.Entry<String, Map<String, Joins>> entry1: m_map.entrySet())
 		{
-			fkField = entry.getKey();
-			select = entry.getValue();
+			fkField = entry1.getKey();
 
-			if(DUMMY.equals(fkField))
+			for(Map.Entry<String, Joins> entry2: entry1.getValue().entrySet())
 			{
-				result.add(select.getWherePart());
-			}
-			else
-			{
-				result.add(fkField + "=(" + select.toString() + ")");
+				pkField = entry2.getKey();
+
+				if(DUMMY.equals(fkField))
+				{
+					result.addWholeQuery(entry2.getValue().toQuery());
+				}
+				else
+				{
+					result.addFromPart(new QId(fkField).toString(QId.Deepness.TABLE)).addWherePart(fkField + "=(" + entry2.getValue().toQuery().addSelectPart(pkField) + ")");
+				}
 			}
 		}
 
@@ -89,7 +92,7 @@ public class Islets
 
 	public String toString()
 	{
-		return String.join(" AND ", toList());
+		return toQuery().toString();
 	}
 
 	/*---------------------------------------------------------------------*/

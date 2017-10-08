@@ -10,36 +10,42 @@ public class Joins
 
 	/*---------------------------------------------------------------------*/
 
-	private final Map<String, Islets> m_map = new LinkedHashMap<>();
-
-	private final String m_pkCatalog;
+	private final Map<String, Map<String, Query>> m_map = new LinkedHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	public Joins(String pkCatalog)
+	public Query getQuery(String fkTable, String pkTable)
 	{
-		m_pkCatalog = pkCatalog;
-	}
+		/*----------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------*/
+		Map<String, Query> result1 = m_map.get(fkTable);
 
-	public Islets getJoin(String fkTable, String pkTable)
-	{
-		Islets result = m_map.get(fkTable);
-
-		if(result == null)
+		if(result1 == null)
 		{
-			result = new Islets(pkTable);
+			result1 = new LinkedHashMap<>();
 
-			m_map.put(fkTable, result);
+			m_map.put(fkTable, result1);
 		}
 
-		return result;
+		/*----------------------------------------------------------------*/
+
+		Query result2 = result1.get(pkTable);
+
+		if(result2 == null)
+		{
+			result2 = new Query();
+
+			result1.put(pkTable, result2);
+		}
+
+		/*----------------------------------------------------------------*/
+
+		return result2;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<Map.Entry<String, Islets>> entrySet()
+	public Set<Map.Entry<String, Map<String, Query>>> entrySet()
 	{
 		return m_map.entrySet();
 	}
@@ -53,46 +59,33 @@ public class Joins
 
 	/*---------------------------------------------------------------------*/
 
-	public String getPKCatalog()
-	{
-		return m_pkCatalog;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public Query toQuery()
 	{
 		String fkTable;
-		Islets islets;
+		String pkTable;
 
-		List<String> result1 = new ArrayList<>();
-		List<String> result2 = new ArrayList<>();
+		Query result = new Query();
 
-		for(Map.Entry<String, Islets> entry: m_map.entrySet())
+		for(Map.Entry<String, Map<String, Query>> entry1: m_map.entrySet())
 		{
-			fkTable = entry.getKey();
-			islets = entry.getValue();
+			fkTable = entry1.getKey();
 
-			if(DUMMY.equals(fkTable))
+			for(Map.Entry<String, Query> entry2: entry1.getValue().entrySet())
 			{
-				result2.add(islets.toString());
-			}
-			else
-			{
-				if(DUMMY.equals(islets.getPKTable()))
+				pkTable = entry2.getKey();
+
+				if(DUMMY.equals(fkTable))
 				{
-					result1.add(fkTable.toString());
+					result.addWholeQuery(entry2.getValue());
 				}
 				else
 				{
-					result1.add(fkTable.toString() + " INNER JOIN " + islets.getPKTable() + " ON (" + islets.toString() + ")");
+					result.addFromPart(fkTable + " INNER JOIN " + pkTable + " ON (" + entry2.getValue().getWherePart() + ")");
 				}
 			}
 		}
 
-		return new Query().addFromPart(result1)
-		                  .addWherePart(result2)
-		;
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

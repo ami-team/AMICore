@@ -54,16 +54,16 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Joins joins;
+		Islets islets;
 
 		/*-----------------------------------------------------------------*/
 
-		joins = new Joins(catalog);
+		islets = new Islets();
 
 		for(int i = 0; i < fields.length; i++)
 		{
 			AutoJoinSingleton.resolveWithNestedSelect(
-				joins,
+				islets,
 				catalog,
 				entity,
 				fields[i],
@@ -75,7 +75,7 @@ public class UpdateElements extends AbstractCommand
 
 		List<String> setList = new ArrayList<>();
 
-		for(String comp: joins.getJoin(Joins.DUMMY, Joins.DUMMY).toList())
+		for(String comp: islets.toQuery().getWherePart().split(" AND ", -1))
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);
@@ -85,12 +85,12 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		joins = new Joins(catalog);
+		islets = new Islets();
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
 			AutoJoinSingleton.resolveWithNestedSelect(
-				joins,
+				islets,
 				catalog,
 				entity,
 				keyFields[i],
@@ -102,7 +102,7 @@ public class UpdateElements extends AbstractCommand
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: joins.getJoin(Joins.DUMMY, Joins.DUMMY).toList())
+		for(String comp: islets.toQuery().getWherePart().split(" AND ", -1))
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);

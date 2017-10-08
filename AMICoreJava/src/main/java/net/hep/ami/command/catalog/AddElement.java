@@ -42,12 +42,12 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Joins joins = new Joins(catalog);
+		Islets islets = new Islets();
 
 		for(int i = 0; i < fields.length; i++)
 		{
 			AutoJoinSingleton.resolveWithNestedSelect(
-				joins,
+				islets,
 				catalog,
 				entity,
 				fields[i],
@@ -62,7 +62,7 @@ public class AddElement extends AbstractCommand
 		List<String> list1 = new ArrayList<>();
 		List<String> list2 = new ArrayList<>();
 
-		for(String assign: joins.getJoin(Joins.DUMMY, Joins.DUMMY).toList())
+		for(String assign: islets.toQuery().getWherePart().split(" AND ", -1))
 		{
 			assign = assign.substring(assign.indexOf('.') + 1);
 			assign = assign.substring(assign.indexOf('.') + 1);
