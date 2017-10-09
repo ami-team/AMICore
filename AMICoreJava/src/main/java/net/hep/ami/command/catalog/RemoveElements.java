@@ -84,11 +84,11 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		getQuerier(catalog).executeSQLUpdate(sql);
+		int nb = getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[" + nb + " element(s) removed with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
