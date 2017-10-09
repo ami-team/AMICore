@@ -148,18 +148,21 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
 	{
+		String SQL = "";
+		String AST = "";
+
 		try
 		{
 			mql = Tokenizer.format(mql, args);
 
-			String SQL = mqlToSQL(entity, mql);
-			String AST = mqlToAST(entity, mql);
+			SQL = mqlToSQL(entity, mql);
+			AST = mqlToAST(entity, mql);
 
 			return new RowSet(m_statement.executeQuery(SQL), SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql, e);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql + ": " + SQL, e);
 		}
 	}
 
@@ -168,18 +171,21 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
+		String SQL = "";
+		String AST = "";
+
 		try
 		{
 			sql = Tokenizer.format(sql, args);
 
-			String SQL = patchSQL(sql);
-			String AST =     null     ;
+			SQL = patchSQL(sql);
+			AST =     null     ;
 
 			return new RowSet(m_statement.executeQuery(SQL), SQL, null, AST);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql + ": " + SQL, e);
 		}
 	}
 
