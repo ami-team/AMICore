@@ -20,35 +20,86 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId) //throws Exception
+	public QId(String qId, Deepness deepness)
 	{
-		String[] parts = qId.split("\\.");
+		String[] parts = qId.split("\\.", -1);
 
-		switch(parts.length)
+		switch(deepness)
 		{
-			case 1:
-				m_catalog = null;
-				m_table = null;
-				m_column = unquote(parts[0]);
+			case CATALOG:
+				switch(parts.length)
+				{
+					case 1:
+						m_catalog = unquote(parts[0]);
+						m_table = null;
+						m_column = null;
+						break;
+
+					default:
+						m_catalog = null;
+						m_table = null;
+						m_column = null;
+						break;
+				}
 				break;
 
-			case 2:
-				m_catalog = null;
-				m_table = unquote(parts[0]);
-				m_column = unquote(parts[1]);
+			case TABLE:
+				switch(parts.length)
+				{
+					case 1:
+						m_catalog = null;
+						m_table = unquote(parts[0]);
+						m_column = null;
+						break;
+
+					case 2:
+						m_catalog = unquote(parts[0]);
+						m_table = unquote(parts[1]);
+						m_column = null;
+						break;
+
+					default:
+						m_catalog = null;
+						m_table = null;
+						m_column = null;
+						break;
+				}
 				break;
 
-			case 3:
-				m_catalog = unquote(parts[0]);
-				m_table = unquote(parts[1]);
-				m_column = unquote(parts[2]);
+			case COLUMN:
+				switch(parts.length)
+				{
+					case 1:
+						m_catalog = null;
+						m_table = null;
+						m_column = unquote(parts[0]);
+						break;
+
+					case 2:
+						m_catalog = null;
+						m_table = unquote(parts[0]);
+						m_column = unquote(parts[1]);
+						break;
+
+					case 3:
+						m_catalog = unquote(parts[0]);
+						m_table = unquote(parts[1]);
+						m_column = unquote(parts[2]);
+						break;
+
+					default:
+						m_catalog = null;
+						m_table = null;
+						m_column = null;
+						break;
+				}
 				break;
 
 			default:
 				m_catalog = null;
 				m_table = null;
 				m_column = null;
-				//throw new Exception("could not parse qId `" + qId + "`");
+				break;
 		}
 	}
 
@@ -63,7 +114,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private static String unquote(String s)
+	public static String unquote(String s)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -72,11 +123,40 @@ public class QId
 		/*-----------------------------------------------------------------*/
 
 		final int l = s.length() - 1;
+
 		if(s.charAt(0) == '`'
 		   &&
 		   s.charAt(l) == '`'
 		 ) {
 			s = s.substring(1, l).replace("``", "`");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String quote(String s)
+	{
+		/*-----------------------------------------------------------------*/
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		final int l = s.length() - 1;
+
+		if(s.charAt(0) != '`'
+		   ||
+		   s.charAt(l) != '`'
+		 ) {
+			s = '`' + s.replace("`", "``") + '`';
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -135,7 +215,7 @@ public class QId
 
 			case CATALOG:
 				if(m_catalog != null) {
-					result.add(m_catalog);
+					result.add(quote(m_catalog));
 				}
 				break;
 
@@ -143,10 +223,10 @@ public class QId
 
 			case TABLE:
 				if(m_catalog != null) {
-					result.add(m_catalog);
+					result.add(quote(m_catalog));
 				}
 				if(m_table != null) {
-					result.add(m_table);
+					result.add(quote(m_table));
 				}
 				break;
 
@@ -154,13 +234,13 @@ public class QId
 
 			case COLUMN:
 				if(m_catalog != null) {
-					result.add(m_catalog);
+					result.add(quote(m_catalog));
 				}
 				if(m_table != null) {
-					result.add(m_table);
+					result.add(quote(m_table));
 				}
 				if(m_column != null) {
-					result.add(m_column);
+					result.add(quote(m_column));
 				}
 				break;
 

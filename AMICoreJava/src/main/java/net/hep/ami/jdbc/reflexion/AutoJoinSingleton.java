@@ -294,14 +294,14 @@ public class AutoJoinSingleton
 
 	public static QId resolveWithInnerJoins(Islets islets, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(islets, WITH_INNER_JOINS, defaultCatalog, defaultTable, new QId(givenQId), givenValue);
+		return resolve(islets, WITH_INNER_JOINS, defaultCatalog, defaultTable, new QId(givenQId, QId.Deepness.COLUMN), givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static QId resolveWithNestedSelect(Islets islets, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
 	{
-		return resolve(islets, WITH_NESTED_SELECT, defaultCatalog, defaultTable, new QId(givenQId), givenValue);
+		return resolve(islets, WITH_NESTED_SELECT, defaultCatalog, defaultTable, new QId(givenQId, QId.Deepness.COLUMN), givenValue);
 	}
 
 	/*---------------------------------------------------------------------*/
