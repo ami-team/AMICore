@@ -162,7 +162,7 @@ public abstract class AbstractDriver implements Querier
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql + ": " + SQL, e);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql + " -> " + SQL, e);
 		}
 	}
 
@@ -185,7 +185,7 @@ public abstract class AbstractDriver implements Querier
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql + ": " + SQL, e);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql + " -> " + SQL, e);
 		}
 	}
 
