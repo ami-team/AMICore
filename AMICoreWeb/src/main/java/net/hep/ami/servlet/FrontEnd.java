@@ -200,8 +200,13 @@ public class FrontEnd extends HttpServlet
 			}
 			catch(Exception e)
 			{
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+
+				e.printStackTrace(pw);
+
 				data = XMLTemplates.error(
-					e.getMessage()
+					sw.toString()
 				);
 
 				mime = "text/xml";
