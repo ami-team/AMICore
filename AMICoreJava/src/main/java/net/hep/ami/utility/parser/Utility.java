@@ -82,7 +82,7 @@ public class Utility
 		{
 			c = s.charAt(i++);
 
-			if(c == '\\')
+			if(c == '\\' && i < l)
 			{
 				c = s.charAt(i++);
 

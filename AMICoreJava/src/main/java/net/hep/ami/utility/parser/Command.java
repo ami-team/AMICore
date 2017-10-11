@@ -1,7 +1,9 @@
 package net.hep.ami.utility.parser;
 
+import java.io.*;
 import java.util.*;
-import java.util.regex.*;
+
+import org.antlr.v4.runtime.*;
 
 public class Command
 {
@@ -29,101 +31,27 @@ public class Command
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern s_pattern1 = Pattern.compile(
-		"^\\s*([a-zA-Z][a-zA-Z0-9]*)"
-	);
-
-	private static final Pattern s_pattern2 = Pattern.compile(
-		"^[-]*([a-zA-Z][a-zA-Z0-9]*)\\s*=\\s*\"((?:\\\\\"|[^\"])*)\""
-	);
-
-	private static final Pattern s_pattern3 = Pattern.compile(
-		"^[-]*([a-zA-Z][a-zA-Z0-9]*)\\s*=\\s*([^\\s]+)"
-	);
-
-	private static final Pattern s_pattern4 = Pattern.compile(
-		"^[-]*([a-zA-Z][a-zA-Z0-9]*)"
-	);
-
-	/*---------------------------------------------------------------------*/
-
-	private Command() {}
-
-	/*---------------------------------------------------------------------*/
-
 	public static CommandTuple parse(String s) throws Exception
 	{
-		/***/ int i = 0x00000000;
-		final int l = s.length();
+		return parse(CharStreams.fromString("f"));
+	}
 
-		/*-----------------------------------------------------------------*/
-		/* PARSE COMMAND                                                   */
-		/*-----------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
 
-		String command;
+	public static CommandTuple parse(InputStream inputStream) throws Exception
+	{
+		return parse(CharStreams.fromStream(inputStream));
+	}
 
-		Matcher m = s_pattern1.matcher(s);
+	/*---------------------------------------------------------------------*/
 
-		if(m.find())
-		{
-			i += (command = m.group(1)).length();
-		}
-		else
-		{
-			throw new Exception("command syntax error, missing command name");
-		}
+	private static CommandTuple parse(CharStream charStream) throws Exception
+	{
+		CommandParser parser = new CommandParser(new CommonTokenStream(new JSONLexer(charStream)));
 
-		/*-----------------------------------------------------------------*/
-		/* PARSE ARGUMENTS                                                 */
-		/*-----------------------------------------------------------------*/
+		parser.setErrorHandler(new DefaultErrorStrategy());
 
-		Map<String, String> arguments = new LinkedHashMap<>();
-
-		while(i < l && s.charAt(i) != '#')
-		{
-			/*-------------------------------------------------------------*/
-			/* EAT SPACE                                                   */
-			/*-------------------------------------------------------------*/
-
-			/**/ if(Character.isWhitespace(s.charAt(i)))
-			{
-				i++;
-			}
-
-			/*-------------------------------------------------------------*/
-			/* EAT ARGUMENT                                                */
-			/*-------------------------------------------------------------*/
-
-			else if((m = s_pattern2.matcher(s.substring(i))).find()
-			        ||
-			        (m = s_pattern3.matcher(s.substring(i))).find()
-			        ||
-			        (m = s_pattern4.matcher(s.substring(i))).find()
-			 ) {
-				arguments.put(m.group(1), (m.groupCount() == 2) ? Utility.unescape(m.group(2)) : "");
-
-				i += m.group(0).length();
-			}
-
-			/*-------------------------------------------------------------*/
-			/* SYNTAX ERROR                                                */
-			/*-------------------------------------------------------------*/
-
-			else throw new Exception("command syntax error, invalid argument syntax");
-
-			/*-------------------------------------------------------------*/
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* RETURN RESULT                                                   */
-		/*-----------------------------------------------------------------*/
-
-		return new CommandTuple(
-			command,
-			arguments
-		);
-
-		/*-----------------------------------------------------------------*/
+		return parser.command().v;
 	}
 
 	/*---------------------------------------------------------------------*/
