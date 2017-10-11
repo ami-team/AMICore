@@ -10,25 +10,23 @@ options {
 
 @header {
 	import java.util.*;
+
 	import net.hep.ami.utility.*;
 }
 
 @members {
-	/*---------------------------------------------------------------------*/
 
-	private static class ParameterTuple
+	private static class Pair
 	{
 		final String x;
 		final String y;
 
-		public ParameterTuple(String _x, String _y)
+		public Pair(String _x, String _y)
 		{
 			x = _x;
 			y = _y;
 		}
 	}
-
-	/*---------------------------------------------------------------------*/
 }
 
 /*-------------------------------------------------------------------------*/
@@ -36,7 +34,7 @@ options {
 /*-------------------------------------------------------------------------*/
 
 command returns [ Command.CommandTuple v ]
-	: identifier { $v = new Command.CommandTuple($identifier.v, new LinkedHashMap<>()); }
+	: WS* identifier parameterList EOF { $v = new Command.CommandTuple($identifier.v, $parameterList.v); }
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -48,39 +46,32 @@ parameterList returns [ Map<String, String> v ]
 
 /*-------------------------------------------------------------------------*/
 
-parameter returns [ ParameterTuple v ]
-	: '-'* identifier ('=' value)? { $v = new ParameterTuple($identifier.v, $value.v); }
+parameter returns [ Pair v ]
+	: '-'* identifier ('=' value)? { $v = new Pair($identifier.v, $value.v); }
 	;
 
 /*-------------------------------------------------------------------------*/
 
 identifier returns [ String v ]
-	: ID { System.out.println($ID.text); $v = $ID.text; }
+	: IDENTIFIER { $v = $IDENTIFIER.text; }
 	;
 
 /*-------------------------------------------------------------------------*/
 
 value returns [ String v ]
 	: STRING { $v = Utility.parseString($STRING.text); }
-	| VALUE { $v = /*---------------*/($VALUE.text); }
 	;
 
 /*-------------------------------------------------------------------------*/
 /* COMMAND LEXER                                                           */
 /*-------------------------------------------------------------------------*/
 
-ID
-	: [a-zA-Z_][a-zA-Z0-9_#$]*
-	| '`' ('``' | ~'`')+ '`'
-	| '"' ('""' | ~'"')+ '"'
+IDENTIFIER
+	: [a-zA-Z][a-zA-Z0-9]*
 	;
 
 STRING
 	: '"' (ESC | ~["\\])* '"'
-	;
-
-VALUE
-	: ~[,"'# \n\r\t]+
 	;
 
 /*-------------------------------------------------------------------------*/

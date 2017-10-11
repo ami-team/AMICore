@@ -13,6 +13,7 @@ options {
 }
 
 @members {
+
 	private static class Pair
 	{
 		final String x;

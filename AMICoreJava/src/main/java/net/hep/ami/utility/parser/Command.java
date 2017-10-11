@@ -33,7 +33,7 @@ public class Command
 
 	public static CommandTuple parse(String s) throws Exception
 	{
-		return parse(CharStreams.fromString("f"));
+		return parse(CharStreams.fromString(s));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -47,7 +47,7 @@ public class Command
 
 	private static CommandTuple parse(CharStream charStream) throws Exception
 	{
-		CommandParser parser = new CommandParser(new CommonTokenStream(new JSONLexer(charStream)));
+		CommandParser parser = new CommandParser(new CommonTokenStream(new CommandLexer(charStream)));
 
 		parser.setErrorHandler(new DefaultErrorStrategy());
 

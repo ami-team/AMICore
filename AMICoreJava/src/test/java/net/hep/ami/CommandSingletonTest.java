@@ -9,6 +9,8 @@ import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.structure.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.Command;
+import net.hep.ami.utility.parser.JSON;
 
 @SuppressWarnings("all")
 public class CommandSingletonTest
@@ -121,7 +123,7 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
 
 			//System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
-
+/*
 			Islets islets0 = new Islets();
 
 			islets0.getJoins(Islets.DUMMY, Islets.DUMMY)
@@ -175,7 +177,7 @@ public class CommandSingletonTest
 			System.out.println(qId1);
 			System.out.println(qId2);
 			System.out.println(islets2.toString());
-
+*/
 			//System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_ipv4_blocks\" -fields=\"network,router_locations.continentCode,router_locations.countryCode\" -values=\"foo,EU,FR\"").replace(">", ">\n"));
 
 			//System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"self\" -entity=\"router_ipv4_blocks\" -keyFields=\"network,router_locations.continentCode,router_locations.countryCode\" -keyValues=\"foo,EU,FR\"").replace(">", ">\n"));
@@ -203,7 +205,13 @@ public class CommandSingletonTest
 
 			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT network, continentCode, countryCode, router_command.command WHERE continentCode = countryCode AND countryCode=10"));
 */
-			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT router_ipv4_blocks.id, network, continentCode, countryCode, router_command.command WHERE id=10"));
+//			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT router_ipv4_blocks.id, network, continentCode, countryCode, router_command.command WHERE id=10"));
+
+			System.out.println(Command.parse("AddElement").arguments);
+
+			System.out.println(Command.parse("AddElement -catalog=\"self\" -entity=\"router_ipv4_blocks\"").arguments);
+
+//			System.out.println(Command.parse("AddElement -catalog=\\\"self\\\" -entity=\\\"router_ipv4_blocks\\\" -fields=\\\"network,router_locations.continentCode,router_locations.countryCode\\\" -values=\\\"foo,EU,FR\\\"\"").arguments);
 
 			//System.out.println("done.");
 		}
