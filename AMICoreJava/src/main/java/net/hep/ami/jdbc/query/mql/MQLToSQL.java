@@ -45,7 +45,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		parser.setErrorHandler(new DefaultErrorStrategy());
+		parser.setErrorHandler(new BailErrorStrategy());
 
 		/*-----------------------------------------------------------------*/
 

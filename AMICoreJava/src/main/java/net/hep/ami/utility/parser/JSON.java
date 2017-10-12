@@ -26,7 +26,7 @@ public class JSON
 	{
 		JSONParser parser = new JSONParser(new CommonTokenStream(new JSONLexer(charStream)));
 
-		parser.setErrorHandler(new DefaultErrorStrategy());
+		parser.setErrorHandler(new BailErrorStrategy());
 
 		return parser.file().v;
 	}

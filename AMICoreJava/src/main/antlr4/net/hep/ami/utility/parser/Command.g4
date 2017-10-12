@@ -34,31 +34,31 @@ options {
 /*-------------------------------------------------------------------------*/
 
 command returns [ Command.CommandTuple v ]
-	: WS* identifier parameterList EOF { $v = new Command.CommandTuple($identifier.v, $parameterList.v); }
+	: identifier parameterList EOF { $v = new Command.CommandTuple($identifier.v, $parameterList.v); }
 	;
 
 /*-------------------------------------------------------------------------*/
 
 parameterList returns [ Map<String, String> v ]
 	@init { $v = new LinkedHashMap<>(); }
-	: (WS+ parameter { $v.put($parameter.v.x, $parameter.v.y); })*
+	: (parameter { $v.put($parameter.v.x, $parameter.v.y); })*
 	;
 
 /*-------------------------------------------------------------------------*/
 
 parameter returns [ Pair v ]
-	: '-'* identifier ('=' value)? { $v = new Pair($identifier.v, $value.v); }
+	: '-'* identifier ('=' string)? { $v = new Pair($identifier.v, $string.v); }
 	;
 
 /*-------------------------------------------------------------------------*/
 
 identifier returns [ String v ]
-	: IDENTIFIER { $v = $IDENTIFIER.text; }
+	: IDENTIFIER { $v = /*---------------*/($IDENTIFIER.text); }
 	;
 
 /*-------------------------------------------------------------------------*/
 
-value returns [ String v ]
+string returns [ String v ]
 	: STRING { $v = Utility.parseString($STRING.text); }
 	;
 
@@ -71,7 +71,8 @@ IDENTIFIER
 	;
 
 STRING
-	: '"' (ESC | ~["\\])* '"'
+	: '"' (ESC | ~["\\\r\n])* '"'
+	| '\'' (ESC | ~['\\\r\n])* '\''
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -81,13 +82,13 @@ COMMENT
 	;
 
 WS
-	: [ \t]+
+	: [ \t\n\r]+ -> skip
 	;
 
 /*-------------------------------------------------------------------------*/
 
 fragment ESC
-	: '\\' (["'/\\\b\f\n\r\t] | 'u' HEX HEX HEX HEX)
+	: '\\' (["'/\\bfnrt] | 'u' HEX HEX HEX HEX)
 	;
 
 fragment HEX

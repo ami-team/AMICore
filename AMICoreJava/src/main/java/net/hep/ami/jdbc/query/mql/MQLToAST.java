@@ -40,7 +40,7 @@ public class MQLToAST
 
 		/*-----------------------------------------------------------------*/
 
-		parser.setErrorHandler(new DefaultErrorStrategy());
+		parser.setErrorHandler(new BailErrorStrategy());
 
 		/*-----------------------------------------------------------------*/
 

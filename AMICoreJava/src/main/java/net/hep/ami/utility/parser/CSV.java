@@ -93,7 +93,7 @@ public class CSV
 	{
 		CSVParser parser = new CSVParser(new CommonTokenStream(new CSVLexer(charStream)));
 
-		parser.setErrorHandler(new DefaultErrorStrategy());
+		parser.setErrorHandler(new BailErrorStrategy());
 
 		return parser.file().v;
 	}

@@ -49,7 +49,7 @@ public class Command
 	{
 		CommandParser parser = new CommandParser(new CommonTokenStream(new CommandLexer(charStream)));
 
-		parser.setErrorHandler(new DefaultErrorStrategy());
+		parser.setErrorHandler(new BailErrorStrategy());
 
 		return parser.command().v;
 	}
