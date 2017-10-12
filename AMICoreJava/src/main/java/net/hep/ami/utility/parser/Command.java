@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 
 public class Command
 {
@@ -47,11 +48,39 @@ public class Command
 
 	private static CommandTuple parse(CharStream charStream) throws Exception
 	{
-		CommandParser parser = new CommandParser(new CommonTokenStream(new CommandLexer(charStream)));
+		CommandLexer lexer = new CommandLexer(charStream);
+		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+		CommandParser parser = new CommandParser(tokenStream);
+
+		ANTLRErrorListener listener = new BaseErrorListener() {
+
+			private List<String> messages_m = new ArrayList<>();
+
+			@Override
+			public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String message, RecognitionException e)
+			{
+				messages_m.add("line: " + line + ", " + message);
+			}
+
+			public String toString()
+			{
+				return String.join(", ", messages_m);
+			}
+		};
+
+		lexer.addErrorListener(listener);
+		parser.addErrorListener(listener);
 
 		parser.setErrorHandler(new BailErrorStrategy());
 
-		return parser.command().v;
+		try
+		{
+			return parser.command().v;
+		}
+		catch(ParseCancellationException e)
+		{
+			throw new Exception(listener.toString());
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

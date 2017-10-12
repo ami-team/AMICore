@@ -47,7 +47,8 @@ parameterList returns [ Map<String, String> v ]
 /*-------------------------------------------------------------------------*/
 
 parameter returns [ Pair v ]
-	: '-'* identifier ('=' string)? { $v = new Pair($identifier.v, $string.v); }
+	: '-'+ identifier '=' string { $v = new Pair($identifier.v, $string.v); }
+	| '-'+ identifier { $v = new Pair($identifier.v, null); }
 	;
 
 /*-------------------------------------------------------------------------*/
