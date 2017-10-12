@@ -3,7 +3,10 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
+
+import net.hep.ami.utility.parser.*;
 
 public class MQLToAST
 {
@@ -40,11 +43,23 @@ public class MQLToAST
 
 		/*-----------------------------------------------------------------*/
 
+		ANTLRErrorListener listener = new AMIErrorListener();
+
+		lexer.addErrorListener(listener);
+		parser.addErrorListener(listener);
+
 		parser.setErrorHandler(new BailErrorStrategy());
 
 		/*-----------------------------------------------------------------*/
 
-		return new MQLToAST(catalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
+		try
+		{
+			return new MQLToAST(catalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
+		}
+		catch(ParseCancellationException e)
+		{
+			throw new ParseCancellationException(listener.toString(), e);
+		}
 
 		/*-----------------------------------------------------------------*/
 	}

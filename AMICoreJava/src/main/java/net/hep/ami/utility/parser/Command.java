@@ -52,21 +52,7 @@ public class Command
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		CommandParser parser = new CommandParser(tokenStream);
 
-		ANTLRErrorListener listener = new BaseErrorListener() {
-
-			private List<String> messages_m = new ArrayList<>();
-
-			@Override
-			public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String message, RecognitionException e)
-			{
-				messages_m.add("line: " + line + ", " + message);
-			}
-
-			public String toString()
-			{
-				return String.join(", ", messages_m);
-			}
-		};
+		ANTLRErrorListener listener = new AMIErrorListener();
 
 		lexer.addErrorListener(listener);
 		parser.addErrorListener(listener);
@@ -79,7 +65,7 @@ public class Command
 		}
 		catch(ParseCancellationException e)
 		{
-			throw new Exception(listener.toString());
+			throw new ParseCancellationException(listener.toString(), e);
 		}
 	}
 

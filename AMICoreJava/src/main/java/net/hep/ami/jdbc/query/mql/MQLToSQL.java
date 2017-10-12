@@ -3,10 +3,13 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.structure.*;
+
+import net.hep.ami.utility.parser.*;
 
 public class MQLToSQL
 {
@@ -45,11 +48,23 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
+		ANTLRErrorListener listener = new AMIErrorListener();
+
+		lexer.addErrorListener(listener);
+		parser.addErrorListener(listener);
+
 		parser.setErrorHandler(new BailErrorStrategy());
 
 		/*-----------------------------------------------------------------*/
 
-		return new MQLToSQL(catalog, entity).visitSelectStatement(parser.selectStatement()).toString();
+		try
+		{
+			return new MQLToSQL(catalog, entity).visitSelectStatement(parser.selectStatement()).toString();
+		}
+		catch(ParseCancellationException e)
+		{
+			throw new ParseCancellationException(listener.toString(), e);
+		}
 
 		/*-----------------------------------------------------------------*/
 	}

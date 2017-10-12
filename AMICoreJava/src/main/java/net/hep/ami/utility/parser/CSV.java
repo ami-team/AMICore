@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 
 public class CSV
 {
@@ -91,11 +92,25 @@ public class CSV
 
 	private static List<List<String>> parseAsList(CharStream charStream) throws Exception
 	{
-		CSVParser parser = new CSVParser(new CommonTokenStream(new CSVLexer(charStream)));
+		CSVLexer lexer = new CSVLexer(charStream);
+		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+		CSVParser parser = new CSVParser(tokenStream);
+
+		ANTLRErrorListener listener = new AMIErrorListener();
+
+		lexer.addErrorListener(listener);
+		parser.addErrorListener(listener);
 
 		parser.setErrorHandler(new BailErrorStrategy());
 
-		return parser.file().v;
+		try
+		{
+			return parser.file().v;
+		}
+		catch(ParseCancellationException e)
+		{
+			throw new ParseCancellationException(listener.toString(), e);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
