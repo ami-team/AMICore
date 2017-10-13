@@ -3,7 +3,6 @@ package net.hep.ami.utility.parser;
 import java.io.*;
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 
 public class JSON
 {
@@ -25,25 +24,28 @@ public class JSON
 
 	private static Object parse(CharStream charStream) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		JSONLexer lexer = new JSONLexer(charStream);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		JSONParser parser = new JSONParser(tokenStream);
 
-		ANTLRErrorListener listener = new AMIErrorListener();
+		/*-----------------------------------------------------------------*/
 
-		lexer.addErrorListener(listener);
-		parser.addErrorListener(listener);
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
-		parser.setErrorHandler(new BailErrorStrategy());
+		/*-----------------------------------------------------------------*/
 
-		try
+		Object result = parser.file().v;
+
+		if(listener.isSuccess() == false)
 		{
-			return parser.file().v;
+			throw new Exception(listener.toString());
 		}
-		catch(ParseCancellationException e)
-		{
-			throw new ParseCancellationException(listener.toString(), e);
-		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

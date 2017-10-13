@@ -3,7 +3,6 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.utility.parser.*;
@@ -43,25 +42,20 @@ public class MQLToAST
 
 		/*-----------------------------------------------------------------*/
 
-		ANTLRErrorListener listener = new AMIErrorListener();
-
-		lexer.addErrorListener(listener);
-		parser.addErrorListener(listener);
-
-		parser.setErrorHandler(new BailErrorStrategy());
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
 		/*-----------------------------------------------------------------*/
 
-		try
+		String result = new MQLToAST(catalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
+
+		if(listener.isSuccess() == false)
 		{
-			return new MQLToAST(catalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
-		}
-		catch(ParseCancellationException e)
-		{
-			throw new ParseCancellationException(listener.toString(), e);
+			throw new Exception(listener.toString());
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

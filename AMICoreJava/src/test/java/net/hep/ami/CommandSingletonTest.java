@@ -207,9 +207,9 @@ public class CommandSingletonTest
 */
 //			System.out.println(router2.mqlToSQL("router_ipv4_blocks", "SELECT router_ipv4_blocks.id, network, continentCode, countryCode, router_command.command WHERE id=10"));
 
-			System.out.println(Command.parse("AddElement -foo").arguments);
+			System.out.println(Command.parse("AddElement -foo=").arguments);
 
-			System.out.println(Command.parse("AddElement -foo=\"bar-bar").arguments);
+//			System.out.println(Command.parse("AddElement -foo=\"bar-bar").arguments);
 
 //			System.out.println(Command.parse("AddElement-foo=\"bar-bar=\"f\\too\"").arguments);
 

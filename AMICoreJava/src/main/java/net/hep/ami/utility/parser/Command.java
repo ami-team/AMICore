@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 
 public class Command
 {
@@ -48,25 +47,28 @@ public class Command
 
 	private static CommandTuple parse(CharStream charStream) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		CommandLexer lexer = new CommandLexer(charStream);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		CommandParser parser = new CommandParser(tokenStream);
 
-		ANTLRErrorListener listener = new AMIErrorListener();
+		/*-----------------------------------------------------------------*/
 
-		lexer.addErrorListener(listener);
-		parser.addErrorListener(listener);
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
-		parser.setErrorHandler(new BailErrorStrategy());
+		/*-----------------------------------------------------------------*/
 
-		try
+		CommandTuple result = parser.command().v;
+
+		if(listener.isSuccess() == false)
 		{
-			return parser.command().v;
+			throw new Exception(listener.toString());
 		}
-		catch(ParseCancellationException e)
-		{
-			throw new ParseCancellationException(listener.toString(), e);
-		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
