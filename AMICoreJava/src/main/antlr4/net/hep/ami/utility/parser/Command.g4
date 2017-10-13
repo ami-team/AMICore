@@ -33,8 +33,8 @@ options {
 /* COMMAND PARSER                                                          */
 /*-------------------------------------------------------------------------*/
 
-command returns [ Command.CommandTuple v ]
-	: identifier parameterList EOF { $v = new Command.CommandTuple($identifier.v, $parameterList.v); }
+command returns [ Command.CommandTuple commandTuple ]
+	: identifier parameterList EOF { $commandTuple = new Command.CommandTuple($identifier.v, $parameterList.v); }
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -47,20 +47,20 @@ parameterList returns [ Map<String, String> v ]
 /*-------------------------------------------------------------------------*/
 
 parameter returns [ Pair v ]
-	: '-'+ identifier '=' string { $v = new Pair($identifier.v, $string.v); }
+	: '-'+ identifier '=' string { $v = new Pair($identifier.v, Utility.parseString($string.v)); }
 	| '-'+ identifier { $v = new Pair($identifier.v, null); }
 	;
 
 /*-------------------------------------------------------------------------*/
 
 identifier returns [ String v ]
-	: IDENTIFIER { $v = /*---------------*/($IDENTIFIER.text); }
+	: IDENTIFIER { $v = $IDENTIFIER.text; }
 	;
 
 /*-------------------------------------------------------------------------*/
 
 string returns [ String v ]
-	: STRING { $v = Utility.parseString($STRING.text); }
+	: STRING { $v = $STRING.text; }
 	;
 
 /*-------------------------------------------------------------------------*/

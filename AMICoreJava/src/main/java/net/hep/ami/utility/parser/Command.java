@@ -59,7 +59,7 @@ public class Command
 
 		/*-----------------------------------------------------------------*/
 
-		CommandTuple result = parser.command().v;
+		CommandTuple result = parser.command().commandTuple;
 
 		if(listener.isSuccess() == false)
 		{
