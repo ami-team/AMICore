@@ -114,7 +114,7 @@ public class MQLToSQL
 
 			if(context.orderWay != null)
 			{
-				part2.append(context.orderWay.getText());
+				part2.append(" ").append(context.orderWay.getText());
 			}
 		}
 
