@@ -91,7 +91,8 @@ public class AutoJoinSingleton
 		String defaultCatalog,
 		String defaultTable,
 		QId givenQId,
-		@Nullable String givenValue
+		@Nullable String givenValue,
+		boolean goBackward
 	 ) throws Exception {
 
 		QId result;
@@ -132,23 +133,24 @@ public class AutoJoinSingleton
 			{
 				Islets temp;
 
-				Collection<SchemaSingleton.FrgnKeys> lists;
+				Collection<SchemaSingleton.FrgnKeys> fowardLists;
+				Collection<SchemaSingleton.FrgnKeys> backwardLists;
 
 				/*---------------------------------------------------------*/
 				/* FORWARD RESOLUTION                                      */
 				/*---------------------------------------------------------*/
 
-				lists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultTable).values();
+				fowardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultTable).values();
 
 				/*---------------------------------------------------------*/
 
-				for(SchemaSingleton.FrgnKeys list: lists)
+				for(SchemaSingleton.FrgnKeys list: fowardLists)
 				{
 					for(SchemaSingleton.FrgnKey frgnKey: list)
 					{
 						temp = new Islets();
 
-						result = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue);
+						result = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue, false);
 
 						if(result != null)
 						{
@@ -172,32 +174,36 @@ public class AutoJoinSingleton
 				/* BACKWARD RESOLUTION                                     */
 				/*---------------------------------------------------------*/
 
-				lists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultTable).values();
+				backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultTable).values();
 
 				/*---------------------------------------------------------*/
 
-				for(SchemaSingleton.FrgnKeys list: lists)
+				for(SchemaSingleton.FrgnKeys list: backwardLists)
 				{
 					for(SchemaSingleton.FrgnKey frgnKey: list)
 					{
 						temp = new Islets();
 
-						result = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue);
-
-						if(result != null)
+						boolean testIfNextNotGoFoward = SchemaSingleton.getForwardFKs(frgnKey.fkExternalCatalog, frgnKey.fkTable).size() <= 1;
+						if(goBackward || testIfNextNotGoFoward)
 						{
-							switch(method)
+							result = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue, goBackward);
+
+							if(result != null)
 							{
-								case WITH_INNER_JOINS:
-									_mergeInnerJoins(islets, temp, frgnKey);
-									break;
+								switch(method)
+								{
+									case WITH_INNER_JOINS:
+										_mergeInnerJoins(islets, temp, frgnKey);
+										break;
 
-								case WITH_NESTED_SELECT:
-									_mergeNestedSelect(islets, temp, frgnKey);
-									break;
+									case WITH_NESTED_SELECT:
+										_mergeNestedSelect(islets, temp, frgnKey);
+										break;
+								}
+
+								return result;
 							}
-
-							return result;
 						}
 					}
 				}
@@ -273,11 +279,11 @@ public class AutoJoinSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result = _resolveJoins(islets, new HashSet<>(), method, defaultCatalog, defaultTable, givenQId, givenValue);
+		result = _resolveJoins(islets, new HashSet<>(), method, defaultCatalog, defaultTable, givenQId, givenValue,true);
 
 		if(result == null)
 		{
-			result = _resolveJoins(islets, new HashSet<>(), TRIVIAL, defaultCatalog, defaultTable, givenQId, givenValue);
+			result = _resolveJoins(islets, new HashSet<>(), TRIVIAL, defaultCatalog, defaultTable, givenQId, givenValue,true);
 
 			if(result == null)
 			{
