@@ -99,15 +99,7 @@ public class Row
 
 		for(int i = 0; i < m_rowSet.m_numberOfFields; i++)
 		{
-			result.append("<field catalog=\"")
-			      .append(m_rowSet.m_fieldCatalogs[i])
-			      .append("\" entity=\"")
-			      .append(m_rowSet.m_fieldEntities[i])
-			      .append("\" name=\"")
-			      .append(m_rowSet.m_fieldNames[i])
-			      .append("\" type=\"")
-			      .append(m_rowSet.m_fieldTypes[i] + "\"><![CDATA[").append(m_values[i]).append("]]></field>")
-			;
+			result.append("<field name=\"").append(m_rowSet.m_fieldNames[i]).append("\"><![CDATA[").append(m_values[i]).append("]]></field>");
 		}
 
 		/*-----------------------------------------------------------------*/

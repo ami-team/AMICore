@@ -180,6 +180,38 @@ public final class RowSetIterable implements Iterable<Row>
 
 		if(type == null)
 		{
+			result.append("<fieldDescriptions>");
+		}
+		else
+		{
+			result.append("<fieldDescriptions rowset=\"" + type + "\">");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		for(int i = 0; i < rowSet.m_numberOfFields; i++)
+		{
+			result.append("<fieldDescription catalog=\"")
+			      .append(rowSet.m_fieldCatalogs[i])
+			      .append("\" entity=\"")
+			      .append(rowSet.m_fieldEntities[i])
+			      .append("\" field=\"")
+			      .append(rowSet.m_fieldNames[i])
+			      .append("\" type=\"")
+			      .append(rowSet.m_fieldTypes[i])
+			      .append("\">")
+			      .append("</fieldDescription>")
+			;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("</fieldDescriptions>");
+
+		/*-----------------------------------------------------------------*/
+
+		if(type == null)
+		{
 			result.append("<rowset>");
 		}
 		else

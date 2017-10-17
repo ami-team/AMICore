@@ -79,7 +79,7 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return queryResult.toStringBuilder().append("<sql><![CDATA[" + sql + "]]></sql>");
+		return queryResult.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
