@@ -11,12 +11,19 @@
 			<xsl:text>"error":[</xsl:text>
 			<xsl:apply-templates select="error" />
 			<xsl:text>]</xsl:text>
-			<xsl:if test="info|rowset">,</xsl:if>
+			<xsl:if test="info|fieldDescriptions|rowset">,</xsl:if>
 		</xsl:if>
 
 		<xsl:if test="info">
 			<xsl:text>"info":[</xsl:text>
 			<xsl:apply-templates select="info" />
+			<xsl:text>]</xsl:text>
+			<xsl:if test="fieldDescriptions|rowset">,</xsl:if>
+		</xsl:if>
+
+		<xsl:if test="fieldDescriptions">
+			<xsl:text>"fieldDescriptions":[</xsl:text>
+			<xsl:apply-templates select="fieldDescriptions" />
 			<xsl:text>]</xsl:text>
 			<xsl:if test="rowset">,</xsl:if>
 		</xsl:if>
@@ -53,6 +60,46 @@
 		<xsl:copy-of select="$s4" />
 		<xsl:text>"}</xsl:text>
 
+		<xsl:if test="not (position() = last())">,</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="fieldDescriptions">
+		<xsl:text>{</xsl:text>
+
+		<xsl:text>"fieldDescription":[</xsl:text>
+		<xsl:apply-templates select="fieldDescription" />
+		<xsl:text>]</xsl:text>
+
+		<xsl:text>}</xsl:text>
+		<xsl:if test="not (position() = last())">,</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="fieldDescription">
+		<xsl:text>{</xsl:text>
+
+		<xsl:for-each select="@*">
+			<xsl:variable name="s1" select="." />
+			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+			<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
+
+			<xsl:text>"@</xsl:text>
+			<xsl:value-of select="name()" />
+			<xsl:text>":"</xsl:text>
+			<xsl:value-of select="$s4" />
+			<xsl:text>",</xsl:text>
+		</xsl:for-each>
+
+		<xsl:variable name="s5" select="." />
+		<xsl:variable name="s6" select="replace($s5, '&#xa;', '\\n')" />
+		<xsl:variable name="s7" select="replace($s6, '&#x9;', '\\t')" />
+		<xsl:variable name="s8" select="replace($s7, '&quot;', '\\&quot;')" />
+
+		<xsl:text>"$":"</xsl:text>
+		<xsl:value-of select="$s8" />
+		<xsl:text>"</xsl:text>
+
+		<xsl:text>}</xsl:text>
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 

@@ -199,8 +199,9 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(rowSet.m_fieldNames[i])
 			      .append("\" type=\"")
 			      .append(rowSet.m_fieldTypes[i])
-			      .append("\">")
-			      .append("</fieldDescription>")
+			      .append("\"><![CDATA[")
+			      .append("N/A")
+			      .append("]]></fieldDescription>")
 			;
 		}
 
