@@ -104,9 +104,51 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
-			m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
-			m_fieldTypes[i] = resultSetMetaData.getColumnTypeName(i + 1);
+			try
+			{
+				m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
+
+				if(m_fieldEntities[i].isEmpty())
+				{
+					m_fieldEntities[i] = "N/A";
+				}
+			}
+			catch(Exception e)
+			{
+				m_fieldEntities[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
+
+				if(m_fieldNames[i].isEmpty())
+				{
+					m_fieldNames[i] = "N/A";
+				}
+			}
+			catch(Exception e)
+			{
+				m_fieldNames[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				m_fieldTypes[i] = resultSetMetaData.getColumnTypeName(i + 1);
+
+				if(m_fieldTypes[i].isEmpty())
+				{
+					m_fieldTypes[i] = "N/A";
+				}
+			}
+			catch(Exception e)
+			{
+				m_fieldTypes[i] = "N/A";
+			}
 
 			/*-------------------------------------------------------------*/
 

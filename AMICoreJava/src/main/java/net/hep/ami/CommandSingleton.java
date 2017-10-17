@@ -293,6 +293,14 @@ public class CommandSingleton
 			   "clientDN".equals(key) == false
 			   &&
 			   "issuerDN".equals(key) == false
+			   &&
+			   "notBefore".equals(key) == false
+			   &&
+			   "notAfter".equals(key) == false
+			   &&
+			   "isSecure".equals(key) == false
+			   &&
+			   "userAgent".equals(key) == false
 			 ) {
 				key = Utility.escape(key).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
 				value = Utility.escape(value).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
