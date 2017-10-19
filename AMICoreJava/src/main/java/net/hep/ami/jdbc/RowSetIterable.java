@@ -1,11 +1,16 @@
 package net.hep.ami.jdbc;
 
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.*;
 
 public final class RowSetIterable implements Iterable<Row>
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
+
 	/*---------------------------------------------------------------------*/
 
 	private final RowSet m_rowSet;
@@ -189,8 +194,18 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 
+		boolean q;
+		boolean statable;
+		boolean groupable;
+
 		for(int i = 0; i < rowSet.m_numberOfFields; i++)
 		{
+			q = "N/A".equals(rowSet.m_fieldCatalogs[i]) == false;
+
+			statable = q && s_numberPattern.matcher(rowSet.m_fieldTypes[i]).matches();
+
+			groupable = q;
+
 			result.append("<fieldDescription catalog=\"")
 			      .append(rowSet.m_fieldCatalogs[i])
 			      .append("\" entity=\"")
@@ -199,6 +214,10 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(rowSet.m_fieldNames[i])
 			      .append("\" type=\"")
 			      .append(rowSet.m_fieldTypes[i])
+			      .append("\" statable=\"")
+			      .append(statable ? "true" : "false")
+			      .append("\" groupable=\"")
+			      .append(groupable ? "true" : "false")
 			      .append("\"><![CDATA[")
 			      .append("N/A")
 			      .append("]]></fieldDescription>")
