@@ -16,27 +16,22 @@ public class ExtraSingleton
 
 	public static void patchFields(String catalog, String entity, List<String> fields, List<String> values, String AMIUser, Mode mode) throws Exception
 	{
-		if(fields.size() != values.size())
+		if(fields.size() == values.size())
 		{
-			throw new Exception("???");
-		}
+			/*-------------------------------------------------------------*/
 
-		/*-----------------------------------------------------------------*/
+			Set<String> columnNames = SchemaSingleton.getColumnNames(catalog, entity);
 
-		Set<String> columnNames = SchemaSingleton.getColumnNames(catalog, entity);
+			/*-------------------------------------------------------------*/
 
-		/*-----------------------------------------------------------------*/
-
-		if(columnNames != null)
-		{
-			if(columnNames.contains("createdby")) {
-				patchField(fields, values, "createdby", AMIUser);
+			if(columnNames.contains("modifiedby")) {
+				patchField(fields, values, "modifiedby", AMIUser);
 			}
 
 			if(mode == Mode.ADD)
 			{
-				if(columnNames.contains("modifiedby")) {
-					patchField(fields, values, "modifiedby", AMIUser);
+				if(columnNames.contains("createdby")) {
+					patchField(fields, values, "createdby", AMIUser);
 				}
 			}
 		}
