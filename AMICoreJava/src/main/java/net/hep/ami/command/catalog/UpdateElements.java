@@ -27,12 +27,12 @@ public class UpdateElements extends AbstractCommand
 		                                                      : ","
 		;
 
-		String[] fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
-		                                                  : new String[] {}
+		List<String> fields = arguments.containsKey("fields") ? Arrays.asList(arguments.get("fields").split(separator, -1))
+		                                                      : new ArrayList<>()
 		;
 
-		String[] values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
-		                                                  : new String[] {}
+		List<String> values = arguments.containsKey("values") ? Arrays.asList(arguments.get("values").split(separator, -1))
+		                                                      : new ArrayList<>()
 		;
 
 		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
@@ -47,9 +47,31 @@ public class UpdateElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || fields.length == 0 || fields.length != values.length || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || fields.isEmpty() || fields.size() != values.size() || keyFields.length != keyValues.length)
 		{
 			throw new Exception("invalid usage");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		boolean q = false;
+
+		for(int i = 0; i < fields.size(); i++)
+		{
+			if(fields.get(i).toLowerCase().contains("modifiedby"))
+			{
+				values.set(i, m_AMIUser);
+				q = true;
+			}
+		}
+
+		if(q == false)
+		{
+			if(SchemaSingleton.getColumnNames(catalog, entity).contains("modifiedby"))
+			{
+				fields.add("modifiedby");
+				values.add(m_AMIUser);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -60,14 +82,14 @@ public class UpdateElements extends AbstractCommand
 
 		islets = new Islets();
 
-		for(int i = 0; i < fields.length; i++)
+		for(int i = 0; i < fields.size(); i++)
 		{
 			AutoJoinSingleton.resolveWithNestedSelect(
 				islets,
 				catalog,
 				entity,
-				fields[i],
-				values[i]
+				fields.get(i),
+				values.get(i)
 			);
 		}
 

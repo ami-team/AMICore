@@ -894,27 +894,27 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getColumnNames(String catalog, String table) throws Exception
+	public static Set<String> getColumnNames(String catalog, String table) throws Exception
 	{
-		return new ArrayList<>(
+		return new LinkedHashSet<>(
 			getColumns(catalog, table).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getForwardFKNames(String catalog, String table) throws Exception
+	public static Set<String> getForwardFKNames(String catalog, String table) throws Exception
 	{
-		return new ArrayList<>(
+		return new LinkedHashSet<>(
 			getForwardFKs(catalog, table).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getBackwardFKNames(String catalog, String table) throws Exception
+	public static Set<String> getBackwardFKNames(String catalog, String table) throws Exception
 	{
-		return new ArrayList<>(
+		return new LinkedHashSet<>(
 			getBackwardFKs(catalog, table).keySet()
 		);
 	}
