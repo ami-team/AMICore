@@ -8,9 +8,9 @@ public class Query
 
 	private final List<String> m_selectPart = new ArrayList<>();
 
-	private final Set<String> m_fromPart = new TreeSet<>();
+	private final Set<String> m_fromPart = new LinkedHashSet<>();
 
-	private final Set<String> m_wherePart = new TreeSet<>();
+	private final Set<String> m_wherePart = new LinkedHashSet<>();
 
 	/*---------------------------------------------------------------------*/
 
