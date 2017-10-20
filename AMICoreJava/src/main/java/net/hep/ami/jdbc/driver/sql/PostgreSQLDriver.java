@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.driver.sql;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.CatalogSingleton.Tuple;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
@@ -61,13 +62,21 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		// EXCEPTION POUR getTuple A VOIR //
-		// EXCEPTION POUR getTuple A VOIR //
+		Tuple tuple;
 
-		tokens = patch(tokens, CatalogSingleton.getTuple(m_externalCatalog).z);
+		try
+		{
+			tuple = CatalogSingleton.getTuple(m_externalCatalog);
+		}
+		catch(Exception e)
+		{
+			tuple = /*---------------*/ null /*---------------*/;
+		}
 
-		// EXCEPTION POUR getTuple A VOIR //
-		// EXCEPTION POUR getTuple A VOIR //
+		if(tuple != null)
+		{
+			tokens = patch(tokens, CatalogSingleton.getTuple(m_externalCatalog).z);
+		}
 
 		/*-----------------------------------------------------------------*/
 
