@@ -42,40 +42,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		boolean q1 = false;
-		boolean q2 = false;
-
-		for(int i = 0; i < fields.size(); i++)
-		{
-			/**/ if(fields.get(i).toLowerCase().contains("createdby"))
-			{
-				values.set(i, m_AMIUser);
-				q1 = true;
-			}
-			else if(fields.get(i).toLowerCase().contains("modifiedby"))
-			{
-				values.set(i, m_AMIUser);
-				q2 = true;
-			}
-		}
-
-		if(q1 == false)
-		{
-			if(SchemaSingleton.getColumnNames(catalog, entity).contains("createdby"))
-			{
-				fields.add("createdby");
-				values.add(m_AMIUser);
-			}
-		}
-
-		if(q2 == false)
-		{
-			if(SchemaSingleton.getColumnNames(catalog, entity).contains("modifiedby"))
-			{
-				fields.add("modifiedby");
-				values.add(m_AMIUser);
-			}
-		}
+		ExtraSingleton.patchFields(catalog, entity, fields, values, m_AMIUser, ExtraSingleton.Mode.ADD);
 
 		/*-----------------------------------------------------------------*/
 
@@ -109,7 +76,6 @@ public class AddElement extends AbstractCommand
 			list1.add(parts[0]);
 			list2.add(parts[1]);
 		}
-
 
 		/*-----------------------------------------------------------------*/
 

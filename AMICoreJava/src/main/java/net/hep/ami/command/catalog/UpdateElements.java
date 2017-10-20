@@ -54,25 +54,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		boolean q = false;
-
-		for(int i = 0; i < fields.size(); i++)
-		{
-			if(fields.get(i).toLowerCase().contains("modifiedby"))
-			{
-				values.set(i, m_AMIUser);
-				q = true;
-			}
-		}
-
-		if(q == false)
-		{
-			if(SchemaSingleton.getColumnNames(catalog, entity).contains("modifiedby"))
-			{
-				fields.add("modifiedby");
-				values.add(m_AMIUser);
-			}
-		}
+		ExtraSingleton.patchFields(catalog, entity, fields, values, m_AMIUser, ExtraSingleton.Mode.UPDATE);
 
 		/*-----------------------------------------------------------------*/
 

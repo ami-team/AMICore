@@ -6,7 +6,8 @@ public class QId
 {
 	/*-----------------------------------------------------------------*/
 
-	public enum Deepness {
+	public enum Deepness
+	{
 		CATALOG,
 		TABLE,
 		COLUMN
