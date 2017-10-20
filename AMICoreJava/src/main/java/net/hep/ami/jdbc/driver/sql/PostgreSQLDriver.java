@@ -2,7 +2,7 @@ package net.hep.ami.jdbc.driver.sql;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.CatalogSingleton;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
@@ -24,16 +24,17 @@ public class PostgreSQLDriver extends AbstractDriver
 	private static final int IDX_PARENT = 5;
 	private static final int IDX_FROM = 6;
 	private static final int IDX_WHERE = 7;
-	private static final int IDX_DOT = 8;
-	private static final int IDX_ID = 9;
-	private static final int IDX_ELSE = 10;
+	private static final int IDX_GROUP = 8;
+	private static final int IDX_ORDER = 9;
+	private static final int IDX_BY = 10;
+	private static final int IDX_DOT = 11;
+	private static final int IDX_ID = 12;
+	private static final int IDX_ELSE = 13;
 
 	/*---------------------------------------------------------------------*/
 
 	private static final int OP_1 = 0;
 	private static final int OP_2 = 1;
-
-	/*---------------------------------------------------------------------*/
 
 	/*---------------------------------------------------------------------*/
 
@@ -91,33 +92,35 @@ public class PostgreSQLDriver extends AbstractDriver
 		/*-----------------------------------------------------------------*/
 
 		int[][] hhh = new int[][] {
-		/*             SELECT	INSERT	UPDATE	DELETE	SET		PARENT	FROM	WHERE	DOT		ID		ELSE	*/
-			new int[] {1,		7,		7,		7,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		},
-			new int[] {1,		-1,		-1,		-1,		-1,		1,		1,		1,		-1,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		1,		7,		-1,		3,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		4,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		7,		-1,		5,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		6,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		7,		-1,		-1,		2,		1,		},
-			new int[] {-1,		-1,		-1,		-1,		1,		1,		7,		1,		-1,		8,		7,		},
-			new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		9,		8,		7,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		10,		7,		},
-			new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		-1,		8,		7,		},
+			/*         SELECT	INSERT	UPDATE	DELETE	SET		PARENT	FROM		WHERE	GROUP	ORDER	BY		DOT		ID		ELSE		*/
+			new int[] {1,		7,		7,		7,		-1,		-1,		-1,		-1,		11,		11,		-1,		-1,		-1,		-1,		},
+			new int[] {1,		-1,		-1,		-1,		-1,		1,		1,		1,		-1,		-1,		-1,		-1,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		1,		7,		-1,		-1,		-1,		-1,		3,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		4,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		7,		-1,		-1,		-1,		-1,		5,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		6,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		7,		-1,		-1,		-1,		-1,		-1,		2,		1,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		1,		7,		1,		-1,		-1,		-1,		-1,		8,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		-1,		-1,		-1,		9,		8,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		10,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		-1,		-1,		-1,		-1,		8,		7,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		1,		-1,		-1, 		-1,		},
 		};
 
 		int[][] iii = new int[][] {
-			/*         SELECT	INSERT	UPDATE	DELETE	SET		PARENT	FROM	WHERE	DOT		ID		ELSE	*/
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_2,	-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_1,	-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
-			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 	-1,		},
+			/*         SELECT	INSERT	UPDATE	DELETE	SET		PARENT	FROM		WHERE	GROUP	ORDER	BY		DOT		ID		ELSE		*/
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_2,	-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		OP_1,	-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
+			new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1, 		-1,		},
 		};
 
 		/*-----------------------------------------------------------------*/
@@ -164,6 +167,15 @@ public class PostgreSQLDriver extends AbstractDriver
 			}
 			else if("WHERE".equalsIgnoreCase(token)) {
 				idx = IDX_WHERE;
+			}
+			else if("GROUP".equalsIgnoreCase(token)) {
+				idx = IDX_GROUP;
+			}
+			else if("ORDER".equalsIgnoreCase(token)) {
+				idx = IDX_ORDER;
+			}
+			else if("BY".equalsIgnoreCase(token)) {
+				idx = IDX_BY;
 			}
 			else if(".".equalsIgnoreCase(token)) {
 				idx = IDX_DOT;
