@@ -110,7 +110,7 @@ public class MQLToSQL
 
 		if(context.orderBy != null)
 		{
-			part2.append(" ORDER BY ").append(context.orderBy.getText());
+			part2.append(" ORDER BY ").append(AutoJoinSingleton.resolveWithInnerJoins(m_islets, m_catalog, m_entity, context.orderBy.getText(), null).toString());
 
 			if(context.orderWay != null)
 			{
