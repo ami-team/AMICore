@@ -27,20 +27,29 @@ public class AddElement extends AbstractCommand
 		                                                      : ","
 		;
 
-		List<String> fields = arguments.containsKey("fields") ? Arrays.asList(arguments.get("fields").split(separator, -1))
-		                                                      : new ArrayList<>()
+		String[] _fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
+		                                                   : new String[] {}
 		;
 
-		List<String> values = arguments.containsKey("values") ? Arrays.asList(arguments.get("values").split(separator, -1))
-		                                                      : new ArrayList<>()
+		String[] _values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
+		                                                   : new String[] {}
 		;
 
-		if(catalog == null || entity == null || fields.isEmpty() || fields.size() != values.size())
+		if(catalog == null || entity == null || _fields.length == 0 || _fields.length != _values.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		List<String> fields = new ArrayList<>();
+		List<String> values = new ArrayList<>();
+
+		for(int i = 0; i < _fields.length; i++)
+		{
+			fields.add(_fields[i]);
+			values.add(_values[i]);
+		}
 
 		ExtraSingleton.patchFields(catalog, entity, fields, values, m_AMIUser, ExtraSingleton.Mode.ADD);
 

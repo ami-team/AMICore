@@ -57,8 +57,8 @@ public class ExtraSingleton
 
 		/*-----------------------------------------------------------------*/
 
-	//	fields.add(fieldName);
-	//	values.add(fieldValue);
+		fields.add(fieldName);
+		values.add(fieldValue);
 
 		/*-----------------------------------------------------------------*/
 	}

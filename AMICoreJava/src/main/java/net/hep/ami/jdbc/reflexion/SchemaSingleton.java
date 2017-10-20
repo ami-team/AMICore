@@ -925,7 +925,7 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		for(Column column : getColumns(catalog, table).values())
+		for(Column column: getColumns(catalog, table).values())
 		{
 			if(column.primary)
 			{
