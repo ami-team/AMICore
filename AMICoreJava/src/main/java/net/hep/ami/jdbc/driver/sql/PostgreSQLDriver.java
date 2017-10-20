@@ -212,9 +212,7 @@ public class PostgreSQLDriver extends AbstractDriver
 
 			if(new_state == -1)
 			{
-				System.out.println("syntax error!");
-
-				return tokens;
+				throw new Exception("syntax error near token `" + token + "`");
 			}
 
 			/*-------------------------------------------------------------*/
