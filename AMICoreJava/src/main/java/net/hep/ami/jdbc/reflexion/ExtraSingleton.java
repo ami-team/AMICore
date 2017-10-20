@@ -18,7 +18,7 @@ public class ExtraSingleton
 	{
 		if(fields.size() != values.size())
 		{
-			throw new Exception();
+			throw new Exception("???");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -27,14 +27,17 @@ public class ExtraSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		if(columnNames.contains("createdby")) {
-			patchField(fields, values, "createdby", AMIUser);
-		}
-
-		if(mode == Mode.ADD)
+		if(columnNames != null)
 		{
-			if(columnNames.contains("modifiedby")) {
-				patchField(fields, values, "modifiedby", AMIUser);
+			if(columnNames.contains("createdby")) {
+				patchField(fields, values, "createdby", AMIUser);
+			}
+
+			if(mode == Mode.ADD)
+			{
+				if(columnNames.contains("modifiedby")) {
+					patchField(fields, values, "modifiedby", AMIUser);
+				}
 			}
 		}
 
