@@ -92,7 +92,7 @@ public class RowSet
 			}
 			catch(Exception e1)
 			{
-				m_fieldCatalogs[i] = resultSetMetaData.getClass().getSimpleName();
+				m_fieldCatalogs[i] = "PgResultSetMetaData".equals(resultSetMetaData.getClass().getSimpleName()) ? "KLUDGE" : "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
