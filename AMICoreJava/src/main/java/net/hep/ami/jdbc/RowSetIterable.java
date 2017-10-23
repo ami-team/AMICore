@@ -9,7 +9,7 @@ public final class RowSetIterable implements Iterable<Row>
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
+	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
 
 	/*---------------------------------------------------------------------*/
 
