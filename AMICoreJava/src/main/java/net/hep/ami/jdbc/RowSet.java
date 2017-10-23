@@ -4,6 +4,8 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
+import org.postgresql.jdbc.PgDatabaseMetaData;
+
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
 
@@ -90,32 +92,7 @@ public class RowSet
 			}
 			catch(Exception e1)
 			{
-				try
-				{
-					m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(
-						resultSetMetaData.getSchemaName(i + 1)
-					);
-				}
-				catch(Exception e2)
-				{
-					m_fieldCatalogs[i] = "N/A";
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-
-			try
-			{
-				m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
-
-				if(m_fieldEntities[i].isEmpty())
-				{
-					m_fieldEntities[i] = "N/A";
-				}
-			}
-			catch(Exception e)
-			{
-				m_fieldEntities[i] = "N/A";
+				m_fieldCatalogs[i] = resultSetMetaData.getClass().getSimpleName();
 			}
 
 			/*-------------------------------------------------------------*/
@@ -132,6 +109,22 @@ public class RowSet
 			catch(Exception e)
 			{
 				m_fieldNames[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
+
+				if(m_fieldEntities[i].isEmpty())
+				{
+					m_fieldEntities[i] = "N/A";
+				}
+			}
+			catch(Exception e)
+			{
+				m_fieldEntities[i] = "N/A";
 			}
 
 			/*-------------------------------------------------------------*/

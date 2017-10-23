@@ -204,7 +204,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 			statable = q && s_numberPattern.matcher(rowSet.m_fieldTypes[i]).matches();
 
-			groupable = q;
+			groupable = q /* TODO */;
 
 			result.append("<fieldDescription catalog=\"")
 			      .append(rowSet.m_fieldCatalogs[i])
