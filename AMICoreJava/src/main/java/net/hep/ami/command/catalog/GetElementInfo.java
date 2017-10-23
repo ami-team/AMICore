@@ -35,12 +35,26 @@ public class GetElementInfo extends AbstractCommand
 		Querier querier = getQuerier(catalog);
 
 		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
 
-		RowSet queryResult = querier.executeMQLQuery(entity, "SELECT * WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'");
+		List<Row> rows = querier.executeMQLQuery(entity, "SELECT * WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'").getAll(10, 0);
+
+		if(rows.size() != 1)
+		{
+				throw new Exception("invalid unique key `" + primaryFieldName + "` = `" + primaryFieldValue + "`");
+		}
+
+		Row row1 = rows.get(0);
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
 
 		/*-----------------------------------------------------------------*/
 
-		return queryResult.toStringBuilder();
+		return row1.toStringBuilder("element");
 	}
 
 	/*---------------------------------------------------------------------*/

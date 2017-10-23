@@ -53,7 +53,7 @@ public class GetSessionInfo extends AbstractCommand
 		/* GET USER INFO                                                   */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll();
+		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
 
 		String AMIUser;
 		String clientDNInAMI;
