@@ -38,14 +38,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rows = querier.executeMQLQuery(entity, "SELECT * WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'").getAll(10, 0);
-
-		if(rows.size() != 1)
-		{
-				throw new Exception("invalid unique key `" + primaryFieldName + "` = `" + primaryFieldValue + "`");
-		}
-
-		Row row1 = rows.get(0);
+		RowSet rowset = querier.executeMQLQuery(entity, "SELECT * WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -54,9 +47,7 @@ public class GetElementInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append("<rowset type=\"element\">")
-		                          .append(row1.toStringBuilder())
-		                          .append("</rowset>")
+		return new StringBuilder().append(rowset.toStringBuilder("element"))
 		;
 	}
 
