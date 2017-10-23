@@ -54,7 +54,10 @@ public class GetElementInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return row1.toStringBuilder("element");
+		return new StringBuilder().append("<rowset type=\"element\">")
+		                          .append(row1.toStringBuilder())
+		                          .append("</rowset>")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/

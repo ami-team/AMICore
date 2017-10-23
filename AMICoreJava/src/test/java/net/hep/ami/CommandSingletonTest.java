@@ -220,6 +220,8 @@ public class CommandSingletonTest
 */
 //			System.out.println(Pattern.compile(".*(?:INT|FLOAT|DOUBLE|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE).matcher("INTEGER").matches());
 
+			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_user\" -primaryFieldName=\"id\" -primaryFieldValue=\"2\""));
+
 			//System.out.println("done.");
 		}
 		catch(Exception e)

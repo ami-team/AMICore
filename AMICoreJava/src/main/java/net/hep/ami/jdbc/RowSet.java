@@ -4,8 +4,6 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
-import org.postgresql.jdbc.PgDatabaseMetaData;
-
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
 
