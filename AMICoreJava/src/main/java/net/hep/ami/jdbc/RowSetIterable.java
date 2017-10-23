@@ -200,7 +200,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 		for(int i = 0; i < rowSet.m_numberOfFields; i++)
 		{
-			q = "N/A".equals(rowSet.m_fieldCatalogs[i]) == false;
+			q = "N/A".equals(rowSet.m_fieldEntities[i]) == false;
 
 			statable = q && s_numberPattern.matcher(rowSet.m_fieldTypes[i]).matches();
 

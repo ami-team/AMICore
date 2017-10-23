@@ -92,23 +92,7 @@ public class RowSet
 			}
 			catch(Exception e1)
 			{
-				m_fieldCatalogs[i] = "PgResultSetMetaData".equals(resultSetMetaData.getClass().getSimpleName()) ? "KLUDGE" : "N/A";
-			}
-
-			/*-------------------------------------------------------------*/
-
-			try
-			{
-				m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
-
-				if(m_fieldNames[i].isEmpty())
-				{
-					m_fieldNames[i] = "N/A";
-				}
-			}
-			catch(Exception e)
-			{
-				m_fieldNames[i] = "N/A";
+				m_fieldCatalogs[i] = "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
@@ -125,6 +109,22 @@ public class RowSet
 			catch(Exception e)
 			{
 				m_fieldEntities[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
+
+				if(m_fieldNames[i].isEmpty())
+				{
+					m_fieldNames[i] = "N/A";
+				}
+			}
+			catch(Exception e)
+			{
+				m_fieldNames[i] = "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
