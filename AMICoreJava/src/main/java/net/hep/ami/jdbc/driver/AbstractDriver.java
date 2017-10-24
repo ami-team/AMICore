@@ -120,7 +120,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return patchSQL(net.hep.ami.jdbc.query.mql.MQLToSQL.parse(this.m_externalCatalog, entity, mql));
+			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(this.m_externalCatalog, entity, mql);
 		}
 		else
 		{
@@ -135,7 +135,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == Jdbc.Type.SQL)
 		{
-			return /*----*/(net.hep.ami.jdbc.query.mql.MQLToAST.parse(this.m_externalCatalog, entity, mql));
+			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(this.m_externalCatalog, entity, mql);
 		}
 		else
 		{
@@ -158,7 +158,7 @@ public abstract class AbstractDriver implements Querier
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
 
-			return new RowSet(m_statement.executeQuery(SQL), SQL, mql, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -178,10 +178,10 @@ public abstract class AbstractDriver implements Querier
 		{
 			sql = Tokenizer.format(sql, args);
 
-			SQL = patchSQL(sql);
-			AST =     null     ;
+			SQL = sql;
+			AST = null;
 
-			return new RowSet(m_statement.executeQuery(SQL), SQL, null, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), SQL, null, AST);
 		}
 		catch(Exception e)
 		{
