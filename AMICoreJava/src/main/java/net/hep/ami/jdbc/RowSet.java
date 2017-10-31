@@ -341,6 +341,7 @@ public class RowSet
 				/*---------------------------------------------------------*/
 
 				Timestamp tmsp = m_resultSet.getTimestamp(i + 1);
+
 				if(tmsp != null)
 				{
 					result[i] = m_dateFormat.format(tmsp);
