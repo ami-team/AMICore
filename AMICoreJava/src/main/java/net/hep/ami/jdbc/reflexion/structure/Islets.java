@@ -86,7 +86,7 @@ public class Islets
 					fQId = new QId(fkField, QId.Deepness.COLUMN);
 					pQId = new QId(pkField, QId.Deepness.COLUMN);
 
-					result.addFromPart(fQId.toString(QId.Deepness.TABLE)).addWherePart(fQId.toString() + "=(" + entry2.getValue().toQuery().addSelectPart(pQId.toString()) + ")");
+					result.addFromPart(fQId.toString(QId.Deepness.TABLE)).addWherePart(fQId.toString() + "=<" + entry2.getValue().toQuery().addSelectPart(pQId.toString()) + ">");
 				}
 			}
 		}

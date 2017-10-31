@@ -220,7 +220,13 @@ public class CommandSingletonTest
 */
 //			System.out.println(Pattern.compile(".*(?:INT|FLOAT|DOUBLE|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE).matcher("INTEGER").matches());
 
-			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_user\" -primaryFieldName=\"id\" -primaryFieldValue=\"2\""));
+//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_user\" -primaryFieldName=\"id\" -primaryFieldValue=\"2\""));
+
+//			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument;ROSETTA\""));
+
+//			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;ROSETTA\""));
+
+			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument\""));
 
 			//System.out.println("done.");
 		}

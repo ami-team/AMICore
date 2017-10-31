@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.reflexion.structure;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class Query
 {
@@ -9,6 +10,8 @@ public class Query
 	private final List<String> m_selectPart = new ArrayList<>();
 
 	private final Set<String> m_fromPart = new LinkedHashSet<>();
+
+	private final Set<String> m_fromExcl = new LinkedHashSet<>();
 
 	private final Set<String> m_wherePart = new LinkedHashSet<>();
 
@@ -44,6 +47,22 @@ public class Query
 		return this;
 	}
 
+	/*---------------------------------------------------------------------*/
+
+	public Query addFromExclusion(String fromExclusion)
+	{
+		m_fromExcl.add(fromExclusion);
+
+		return this;
+	}
+
+	public Query addFromExclusion(Collection<String> fromExclusion)
+	{
+		m_fromExcl.addAll(fromExclusion);
+
+		return this;
+	}
+
 	/*-----------------------------------------------------------------*/
 
 	public Query addWherePart(String wherePart)
@@ -68,9 +87,30 @@ public class Query
 
 		this.m_fromPart.addAll(select.m_fromPart);
 
+		this.m_fromExcl.addAll(select.m_fromExcl);
+
 		this.m_wherePart.addAll(select.m_wherePart);
 
 		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Set<String> difference(final Set<String> set1, final Set<String> set2)
+	{
+		final Set<String> larger;
+		final Set<String> smaller;
+
+		if(set1.size() > set2.size()) {
+			larger = set1;
+			smaller = set2;
+		}
+		else {
+			larger = set2;
+			smaller = set1;
+		}
+
+		return larger.stream().filter(n -> smaller.contains(n) == false).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -84,7 +124,7 @@ public class Query
 
 	public String getFromPart()
 	{
-		return String.join(", ", m_fromPart);
+		return String.join(", ", difference(m_fromPart, m_fromExcl));
 	}
 
 	/*---------------------------------------------------------------------*/

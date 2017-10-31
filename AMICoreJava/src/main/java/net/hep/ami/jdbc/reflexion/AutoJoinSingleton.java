@@ -150,7 +150,7 @@ public class AutoJoinSingleton
 					{
 						temp = new Islets();
 
-						result = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue, false);
+						result = _resolveJoins(temp, done, WITH_INNER_JOINS, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue, false);
 
 						if(result != null)
 						{
@@ -187,7 +187,7 @@ public class AutoJoinSingleton
 						boolean testIfNextNotGoFoward = SchemaSingleton.getForwardFKs(frgnKey.fkExternalCatalog, frgnKey.fkTable).size() <= 1;
 						if(goBackward || testIfNextNotGoFoward)
 						{
-							result = _resolveJoins(temp, done, WITH_NESTED_SELECT, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue, goBackward);
+							result = _resolveJoins(temp, done, WITH_INNER_JOINS, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue, goBackward);
 
 							if(result != null)
 							{
