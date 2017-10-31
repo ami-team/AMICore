@@ -340,13 +340,20 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_dateFormat.format(m_resultSet.getTimestamp(i + 1));
+				Timestamp tmsp = m_resultSet.getTimestamp(i + 1);
+				if(tmsp != null)
+				{
+					result[i] = m_dateFormat.format(tmsp);
 
-				if(result[i] == null)
+					if(result[i] == null)
+					{
+						result[i] = m_resultSet.getString(i + 1);
+					}
+				}
+				else
 				{
 					result[i] = m_resultSet.getString(i + 1);
 				}
-
 				/*---------------------------------------------------------*/
 			}
 			else
