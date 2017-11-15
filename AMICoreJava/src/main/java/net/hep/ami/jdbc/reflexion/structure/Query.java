@@ -96,13 +96,6 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> difference(final Set<String> set1, final Set<String> set2)
-	{
-		return set1.stream().filter(n -> set2.contains(n) == false).collect(Collectors.toCollection(LinkedHashSet::new));
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public String getSelectPart()
 	{
 		return String.join(", ", m_selectPart);
@@ -112,7 +105,7 @@ public class Query
 
 	public String getFromPart()
 	{
-		return String.join(", ", difference(m_fromPart, m_fromExcl));
+		return String.join(", ",  m_fromPart.stream().filter(n -> m_fromExcl.contains(n) == false).collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
 
 	/*---------------------------------------------------------------------*/
