@@ -98,19 +98,7 @@ public class Query
 
 	public Set<String> difference(final Set<String> set1, final Set<String> set2)
 	{
-		final Set<String> larger;
-		final Set<String> smaller;
-
-		if(set1.size() > set2.size()) {
-			larger = set1;
-			smaller = set2;
-		}
-		else {
-			larger = set2;
-			smaller = set1;
-		}
-
-		return larger.stream().filter(n -> smaller.contains(n) == false).collect(Collectors.toCollection(LinkedHashSet::new));
+		return set1.stream().filter(n -> set2.contains(n) == false).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/*---------------------------------------------------------------------*/

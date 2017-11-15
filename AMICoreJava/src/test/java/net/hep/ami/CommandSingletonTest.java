@@ -48,7 +48,9 @@ public class CommandSingletonTest
 */
 		try
 		{
-			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
+//			Router router = new Router("test", "ami_router", "jdbc:postgresql://localhost:2432/ami_router", "radardb-ami-lpsc", "Pci62Emxt65zcZY84UO7");
+//			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
+			Router router = new Router("test");
 
 //			router.create();
 //			router.fill();
@@ -124,6 +126,33 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
 
 			//System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
+
+			Islets islets0 = new Islets();
+
+			QId qId0 = AutoJoinSingleton.resolveWithInnerJoins(
+				islets0,
+				"test",
+				"t1",
+				"name",
+				"foobar"
+			);
+
+			System.out.println(qId0);
+			System.out.println(islets0.toString());
+
+			Islets islets1 = new Islets();
+
+			QId qId1 = AutoJoinSingleton.resolveWithNestedSelect(
+				islets1,
+				"test",
+				"t1",
+				"name",
+				"foobar"
+			);
+
+			System.out.println(qId1);
+			System.out.println(islets1.toString());
+
 /*
 			Islets islets0 = new Islets();
 
@@ -226,7 +255,7 @@ public class CommandSingletonTest
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;ROSETTA\""));
 
-			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument\""));
+//			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument\""));
 
 			//System.out.println("done.");
 		}
