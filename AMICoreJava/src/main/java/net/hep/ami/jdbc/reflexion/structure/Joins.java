@@ -86,10 +86,7 @@ public class Joins
 					fQId = new QId(fkTable, QId.Deepness.TABLE);
 					pQId = new QId(pkTable, QId.Deepness.TABLE);
 
-					result.addFromPart(fQId.toString() + " INNER JOIN " + pQId.toString() + " ON (" + entry2.getValue().getWherePart() + ")")
-					      .addFromExclusion(fQId.toString())
-					      .addFromExclusion(pQId.toString())
-					;
+					result.addFromPart(fQId.toString()).addFromPart(pQId.toString()).addWherePart(entry2.getValue().getWherePart());
 				}
 			}
 		}

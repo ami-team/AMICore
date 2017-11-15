@@ -11,8 +11,6 @@ public class Query
 
 	private final Set<String> m_fromPart = new LinkedHashSet<>();
 
-	private final Set<String> m_fromExcl = new LinkedHashSet<>();
-
 	private final Set<String> m_wherePart = new LinkedHashSet<>();
 
 	/*---------------------------------------------------------------------*/
@@ -47,22 +45,6 @@ public class Query
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
-
-	public Query addFromExclusion(String fromExclusion)
-	{
-		m_fromExcl.add(fromExclusion);
-
-		return this;
-	}
-
-	public Query addFromExclusion(Collection<String> fromExclusion)
-	{
-		m_fromExcl.addAll(fromExclusion);
-
-		return this;
-	}
-
 	/*-----------------------------------------------------------------*/
 
 	public Query addWherePart(String wherePart)
@@ -87,8 +69,6 @@ public class Query
 
 		this.m_fromPart.addAll(select.m_fromPart);
 
-		this.m_fromExcl.addAll(select.m_fromExcl);
-
 		this.m_wherePart.addAll(select.m_wherePart);
 
 		return this;
@@ -105,7 +85,7 @@ public class Query
 
 	public String getFromPart()
 	{
-		return String.join(", ",  m_fromPart.stream().filter(n -> m_fromExcl.contains(n) == false).collect(Collectors.toCollection(LinkedHashSet::new)));
+		return String.join(", ",  m_fromPart);
 	}
 
 	/*---------------------------------------------------------------------*/

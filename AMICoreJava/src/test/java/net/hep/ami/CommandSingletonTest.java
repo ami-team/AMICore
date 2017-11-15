@@ -136,10 +136,10 @@ public class CommandSingletonTest
 				"name",
 				"foobar"
 			);
-
+/*
 			System.out.println(qId0);
 			System.out.println(islets0.toString());
-
+*/
 			Islets islets1 = new Islets();
 
 			QId qId1 = AutoJoinSingleton.resolveWithNestedSelect(
@@ -149,9 +149,11 @@ public class CommandSingletonTest
 				"name",
 				"foobar"
 			);
-
+/*
 			System.out.println(qId1);
 			System.out.println(islets1.toString());
+*/
+			System.out.println(router.mqlToSQL("t3", "SELECT foo"));
 
 /*
 			Islets islets0 = new Islets();
