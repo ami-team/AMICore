@@ -2,8 +2,6 @@ package net.hep.ami.jdbc.reflexion.structure;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.reflexion.structure.QId.Deepness;
-
 public class Joins
 {
 	/*---------------------------------------------------------------------*/
@@ -85,10 +83,13 @@ public class Joins
 				}
 				else
 				{
-					fQId = new QId(fkTable, Deepness.TABLE);
-					pQId = new QId(pkTable, Deepness.TABLE);
+					fQId = new QId(fkTable, QId.Deepness.TABLE);
+					pQId = new QId(pkTable, QId.Deepness.TABLE);
 
-					result.addFromPart(fQId.toString() + " INNER JOIN " + pQId.toString() + " ON (" + entry2.getValue().getWherePart() + ")").addFromExclusion(fQId.toString()).addFromExclusion(pQId.toString());
+					result.addFromPart(fQId.toString() + " INNER JOIN " + pQId.toString() + " ON (" + entry2.getValue().getWherePart() + ")")
+					      .addFromExclusion(fQId.toString())
+					      .addFromExclusion(pQId.toString())
+					;
 				}
 			}
 		}
