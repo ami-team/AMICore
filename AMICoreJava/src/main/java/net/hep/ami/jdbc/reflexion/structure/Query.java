@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc.reflexion.structure;
 
 import java.util.*;
-import java.util.stream.*;
 
 public class Query
 {
@@ -12,6 +11,10 @@ public class Query
 	private final Set<String> m_fromPart = new LinkedHashSet<>();
 
 	private final Set<String> m_wherePart = new LinkedHashSet<>();
+
+	/*---------------------------------------------------------------------*/
+
+	private boolean m_isDistinct = false;
 
 	/*---------------------------------------------------------------------*/
 
@@ -76,6 +79,13 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
+	public void setDistinct(boolean isDistinct)
+	{
+		m_isDistinct = isDistinct;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getSelectPart()
 	{
 		return String.join(", ", m_selectPart);
@@ -110,8 +120,12 @@ public class Query
 
 		/*-----------------------------------------------------------------*/
 
+		final String SELECT = m_isDistinct ? "SELECT DISTINCT " : "SELECT ";
+
+		/*-----------------------------------------------------------------*/
+
 		if(m_selectPart.isEmpty() == false) {
-			result.append("SELECT ").append(getSelectPart());
+			result.append(SELECT).append(getSelectPart());
 		}
 
 		if(m_fromPart.isEmpty() == false) {

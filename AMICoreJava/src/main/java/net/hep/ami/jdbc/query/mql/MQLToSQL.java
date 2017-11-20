@@ -91,30 +91,35 @@ public class MQLToSQL
 
 	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context) throws Exception
 	{
-		StringBuilder part1 = new StringBuilder();
-		StringBuilder part2 = new StringBuilder();
+		Query query = new Query();
+
+		StringBuilder extra = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.columns != null)
 		{
-			if(context.distinct != null)
-			{
-				part1.append("DISTINCT ");
-			}
+			query.setDistinct(context.distinct != null);
 
-			part1.append(visitColumnList(context.columns));
+			query.addSelectPart(visitColumnList(context.columns).toString());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(context.expression != null)
+		{
+			query.addWherePart(visitExpressionOr(context.expression).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.orderBy != null)
 		{
-			part2.append(" ORDER BY ").append(AutoJoinSingleton.resolveWithInnerJoins(m_islets, m_catalog, m_entity, context.orderBy.getText(), null).toString());
+			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolveWithInnerJoins(m_islets, m_catalog, m_entity, context.orderBy.getText(), null).toString());
 
 			if(context.orderWay != null)
 			{
-				part2.append(" ").append(context.orderWay.getText());
+				extra.append(" ").append(context.orderWay.getText());
 			}
 		}
 
@@ -122,11 +127,11 @@ public class MQLToSQL
 
 		if(context.limit != null)
 		{
-			part2.append(" LIMIT ").append(context.limit.getText());
+			extra.append(" LIMIT ").append(context.limit.getText());
 
 			if(context.offset != null)
 			{
-				part2.append(" OFFSET ").append(context.offset.getText());
+				extra.append(" OFFSET ").append(context.offset.getText());
 			}
 		}
 
@@ -139,23 +144,11 @@ public class MQLToSQL
 			m_tables.removeAll(entry.getValue().keySet());
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		Query sqlJoin = m_islets.toQuery();
-
-		Query query = new Query().addSelectPart(part1.toString())
-		                         .addFromPart(m_tables)
-		                         .addWholeQuery(sqlJoin)
-		;
-
-		if(context.expression != null)
-		{
-			query.addWherePart(visitExpressionOr(context.expression).toString());
-		}
+		query.addFromPart(m_tables).addWholeQuery(m_islets.toQuery());
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder(query.toString(part2.toString()));
+		return new StringBuilder().append(query.toString(extra.toString()));
 
 		/*-----------------------------------------------------------------*/
 	}

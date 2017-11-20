@@ -126,7 +126,7 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("GetFieldInfo -catalog=\"self\" -entity=\"router_user\"").replace(">", ">\n"));
 
 			//System.out.println(Tokenizer.tokenize("SELECT `A`.`B`.`C` FROM `A`.`B`"));
-
+/*
 			Islets islets0 = new Islets();
 
 			QId qId0 = AutoJoinSingleton.resolveWithInnerJoins(
@@ -136,10 +136,11 @@ public class CommandSingletonTest
 				"name",
 				"foobar"
 			);
-/*
+
+			System.out.println();
 			System.out.println(qId0);
 			System.out.println(islets0.toString());
-*/
+
 			Islets islets1 = new Islets();
 
 			QId qId1 = AutoJoinSingleton.resolveWithNestedSelect(
@@ -149,11 +150,13 @@ public class CommandSingletonTest
 				"name",
 				"foobar"
 			);
-/*
+
+			System.out.println();
 			System.out.println(qId1);
 			System.out.println(islets1.toString());
 */
-			System.out.println(router.mqlToSQL("t3", "SELECT foo"));
+			System.out.println();
+			System.out.println("\n-> " + router.mqlToSQL("t3", "SELECT DISTINCT qux WHERE bar='a' AND fred='b'"));
 
 /*
 			Islets islets0 = new Islets();
