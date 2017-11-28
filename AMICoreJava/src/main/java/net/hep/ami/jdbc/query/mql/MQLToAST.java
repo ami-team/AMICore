@@ -5,6 +5,8 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import net.hep.ami.jdbc.reflexion.*;
+
 import net.hep.ami.utility.parser.*;
 
 public class MQLToAST
@@ -34,6 +36,13 @@ public class MQLToAST
 
 	public static String parse(String catalog, String entity, String query) throws Exception
 	{
+		return parse(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String parse(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	{
 		/*-----------------------------------------------------------------*/
 
 		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
@@ -46,7 +55,7 @@ public class MQLToAST
 
 		/*-----------------------------------------------------------------*/
 
-		String result = new MQLToAST(catalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
+		String result = new MQLToAST(externalCatalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
 
 		if(listener.isSuccess() == false)
 		{

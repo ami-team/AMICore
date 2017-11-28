@@ -109,12 +109,26 @@ public class Query
 
 	public String toString()
 	{
-		return toString(null);
+		return toStringBuilder(null).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String toString(@Nullable String extra)
+	{
+		return toStringBuilder(extra).toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public StringBuffer toStringBuilder()
+	{
+		return toStringBuilder(null);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public StringBuffer toStringBuilder(@Nullable String extra)
 	{
 		StringBuffer result = new StringBuffer();
 
@@ -145,7 +159,7 @@ public class Query
 
 		/*-----------------------------------------------------------------*/
 
-		return result.toString();
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
