@@ -169,7 +169,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		query.addWholeQuery(m_islets.toQuery());
+		query.addFromPart(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE)).addWholeQuery(m_islets.toQuery());
 
 		/*-----------------------------------------------------------------*/
 
