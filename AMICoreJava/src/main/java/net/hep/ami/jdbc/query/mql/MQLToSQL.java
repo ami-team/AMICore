@@ -14,25 +14,20 @@ public class MQLToSQL
 {
 	/*---------------------------------------------------------------------*/
 
-	private final String m_catalog;
+	private final Islets m_islets = new Islets();
+
+	private final String m_externalCatalog;
+	private final String m_internalCatalog;
 	private final String m_entity;
+	private final String m_pk;
 
 	/*---------------------------------------------------------------------*/
 
-	private final Islets m_islets;
-
-	private final Set<String> m_tables;
-
-	/*---------------------------------------------------------------------*/
-
-	public MQLToSQL(String catalog, String entity)
+	public MQLToSQL(String catalog, String entity) throws Exception
 	{
-		m_catalog = catalog;
-		m_entity = entity;
+		m_pk = SchemaSingleton.getPrimaryKey(m_externalCatalog = catalog, m_entity = entity);
 
-		m_islets = new Islets();
-
-		m_tables = new LinkedHashSet<>();
+		m_internalCatalog = SchemaSingleton.externalCatalogToInternalCatalog(catalog);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -101,21 +96,21 @@ public class MQLToSQL
 		{
 			query.setDistinct(context.distinct != null);
 
-			query.addSelectPart(visitColumnList(context.columns).toString());
+			query.addSelectPart(visitColumnList(context.columns, true).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.expression != null)
 		{
-			query.addWherePart(visitExpressionOr(context.expression).toString());
+			query.addWherePart(visitExpressionOr(context.expression, false).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolveWithInnerJoins(m_islets, m_catalog, m_entity, context.orderBy.getText(), null).toString());
+			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolveWithInnerJoins(m_islets, m_externalCatalog, m_entity, context.orderBy.getText(), null).toString());
 
 			if(context.orderWay != null)
 			{
@@ -137,14 +132,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		for(Map.Entry<String, Map<String, Query>> entry: m_islets.getJoins(Islets.DUMMY, Islets.DUMMY).entrySet())
-		{
-			m_tables.remove(entry.getKey());
-
-			m_tables.removeAll(entry.getValue().keySet());
-		}
-
-		query.addFromPart(m_tables).addWholeQuery(m_islets.toQuery());
+		query.addWholeQuery(m_islets.toQuery());
 
 		/*-----------------------------------------------------------------*/
 
@@ -155,7 +143,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnList(MQLParser.ColumnListContext context) throws Exception
+	private StringBuilder visitColumnList(MQLParser.ColumnListContext context, boolean inSelect) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -171,7 +159,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ColumnContext)
 			{
-				result.append(visitColumnExpression((MQLParser.ColumnContext) child));
+				result.append(visitColumnExpression((MQLParser.ColumnContext) child, inSelect));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -186,13 +174,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnExpression(MQLParser.ColumnContext context) throws Exception
+	private StringBuilder visitColumnExpression(MQLParser.ColumnContext context, boolean inSelect) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(visitExpressionOr(context.expression));
+		result.append(visitExpressionOr(context.expression, inSelect));
 
 		/*-----------------------------------------------------------------*/
 
@@ -208,7 +196,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context) throws Exception
+	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, boolean inSelect) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -224,7 +212,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAndContext)
 			{
-				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child));
+				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child, inSelect));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -239,7 +227,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context) throws Exception
+	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context, boolean inSelect) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -255,7 +243,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionCompContext)
 			{
-				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child));
+				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child, inSelect));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -270,8 +258,10 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context) throws Exception
+	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context, boolean inSelect) throws Exception
 	{
+		Islets islets = (inSelect == false) ? new Islets() : m_islets;
+
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -286,7 +276,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, inSelect, islets));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -299,12 +289,27 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		if(inSelect)
+		{
+			return result;
+		}
+		else
+		{
+			QId qid = new QId(m_internalCatalog, m_entity, m_pk);
+
+			return new StringBuilder().append(qid.toString()).append(" IN ")
+			                          .append("(")
+			                          .append(new Query().addSelectPart(qid.toString()).addFromPart(qid.toString(QId.Deepness.TABLE)).addWherePart(result.toString()).addWholeQuery(islets.toQuery()).toString())
+			                          .append(")")
+			;
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context) throws Exception
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, boolean inSelect, Islets islets) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -320,7 +325,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionMulDivContext)
 			{
-				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child));
+				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child, inSelect, islets));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -338,7 +343,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context) throws Exception
+	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, boolean inSelect, Islets islets) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -354,7 +359,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext)
 			{
-				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child));
+				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, inSelect, islets));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -372,7 +377,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context) throws Exception
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, boolean inSelect, Islets islets) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -389,19 +394,19 @@ public class MQLToSQL
 
 		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
 		{
-			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child));
+			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, inSelect, islets));
 		}
 		else if(child instanceof MQLParser.ExpressionFunctionContext)
 		{
-			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
+			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, inSelect, islets));
 		}
 		else if(child instanceof MQLParser.ExpressionQIdContext)
 		{
-			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
+			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, inSelect, islets));
 		}
 		else if(child instanceof MQLParser.ExpressionLiteralContext)
 		{
-			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child));
+			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, inSelect, islets));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -411,10 +416,10 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context) throws Exception
+	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, boolean inSelect, Islets islets) throws Exception
 	{
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.expression))
+		                          .append(visitExpressionOr(context.expression, inSelect))
 		                          .append(")")
 		;
 	}
@@ -425,13 +430,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
+	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, boolean inSelect, Islets islets) throws Exception
 	{
 		m_break = true;
 
 		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
 		/**/	                                          .append("(")
-		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
+		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression, inSelect))
 		/**/	                                          .append(")")
 		/**/	;
 
@@ -442,27 +447,27 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context) throws Exception
+	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, boolean inSelect, Islets islets) throws Exception
 	{
-		return visitSqlQId(context.qId);
+		return visitSqlQId(context.qId, inSelect, islets);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context) throws Exception
+	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, boolean inSelect, Islets islets) throws Exception
 	{
-		return visitSqlLiteral(context.literal);
+		return visitSqlLiteral(context.literal, inSelect, islets);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext context) throws Exception
+	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext context, boolean inSelect, Islets islets) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
-		String catalogName = (context.catalogName != null) ? unquoteId(context.catalogName.getText()) : m_catalog;
+		String catalogName = (context.catalogName != null) ? unquoteId(context.catalogName.getText()) : m_externalCatalog;
 
 		String entityName = (context.entityName != null) ? unquoteId(context.entityName.getText()) : m_entity;
 
@@ -475,14 +480,12 @@ public class MQLToSQL
 		for(String qId: "*".equals(fieldName) ? SchemaSingleton.getColumnNames(catalogName, entityName) : Arrays.asList(context.getText()))
 		{
 			resolvedQId = AutoJoinSingleton.resolveWithInnerJoins(
-				m_islets,
-				m_catalog,
+				islets,
+				m_externalCatalog,
 				m_entity,
 				qId,
 				null
 			);
-
-			m_tables.add(resolvedQId.toString(QId.Deepness.TABLE));
 
 			result.add(resolvedQId.toString(QId.Deepness.COLUMN));
 
@@ -499,7 +502,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlLiteral(MQLParser.SqlLiteralContext context)
+	private StringBuilder visitSqlLiteral(MQLParser.SqlLiteralContext context, boolean inSelect, Islets islets)
 	{
 		return new StringBuilder(context.getText());
 	}
