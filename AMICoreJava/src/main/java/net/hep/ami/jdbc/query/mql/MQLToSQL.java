@@ -93,30 +93,6 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private String unquoteId(String id)
-	{
-		if(id.charAt(0) == '`')
-		{
-			return id.substring(1, id.length() - 1).trim();
-		}
-
-		return id;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private String quoteId(String id)
-	{
-		if(id.charAt(0) != '`')
-		{
-			return '`' + id + '`';
-		}
-
-		return id;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context) throws Exception
 	{
 		Query query = new Query();
@@ -223,7 +199,7 @@ public class MQLToSQL
 
 		if(context.alias != null)
 		{
-			result.append(" AS " + quoteId(context.alias.getText()));
+			result.append(" AS " + QId.quote(context.alias.getText()));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -503,11 +479,11 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		String catalogName = (context.catalogName != null) ? unquoteId(context.catalogName.getText()) : m_externalCatalog;
+		String catalogName = (context.catalogName != null) ? QId.unquote(context.catalogName.getText()) : m_externalCatalog;
 
-		String entityName = (context.entityName != null) ? unquoteId(context.entityName.getText()) : /*-*/m_entity/*-*/;
+		String entityName = (context.entityName != null) ? QId.unquote(context.entityName.getText()) : /*-*/m_entity/*-*/;
 
-		String fieldName = unquoteId(context.fieldName.getText());
+		String fieldName = QId.unquote(context.fieldName.getText());
 
 		/*-----------------------------------------------------------------*/
 
