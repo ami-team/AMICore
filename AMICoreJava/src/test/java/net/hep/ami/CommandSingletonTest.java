@@ -156,7 +156,7 @@ public class CommandSingletonTest
 			System.out.println(islets1.toString());
 */
 			System.out.println();
-			System.out.println("\n-> " + router.mqlToSQL("t3", "SELECT DISTINCT qux WHERE bar='a' AND fred='b'"));
+			System.out.println("\n-> " + router.mqlToSQL("t2", "SELECT qux, fred WHERE bar='a' AND fred='b'"));
 
 /*
 			Islets islets0 = new Islets();
