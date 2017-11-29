@@ -96,7 +96,7 @@ public class PostgreSQLDriver extends AbstractDriver
 	static final int[][] s_hhh = new int[][] {
 		/*         SELECT	INSERT	UPDATE	DELETE	SET		PARENT	FROM		WHERE	GROUP	ORDER	BY		DOT		ID		ELSE		*/
 		new int[] {1,		7,		7,		7,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		},
-		new int[] {1,		-1,		-1,		-1,		-1,		1,		1,		1,		-1,		-1,		-1,		-1,		2,		1,		},
+		new int[] {1,		-1,		-1,		-1,		-1,		1,		1,		1,		11,		11,		-1,		-1,		2,		1,		},
 		new int[] {-1,		-1,		-1,		-1,		-1,		1,		7,		-1,		-1,		-1,		-1,		3,		2,		1,		},
 		new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		4,		1,		},
 		new int[] {-1,		-1,		-1,		-1,		-1,		-1,		7,		-1,		-1,		-1,		-1,		5,		2,		1,		},
@@ -209,7 +209,6 @@ public class PostgreSQLDriver extends AbstractDriver
 			operation = s_iii[old_state][idx];
 
 			/*-------------------------------------------------------------*/
-
 			if(new_state == -1)
 			{
 				throw new Exception("syntax error near token `" + token + "`");
