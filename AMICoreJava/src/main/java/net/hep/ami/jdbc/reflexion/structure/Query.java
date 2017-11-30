@@ -106,7 +106,14 @@ public class Query
 	}
 
 	/*---------------------------------------------------------------------*/
+	
+	public Set<String> getWherePartSet()
+	{
+		return m_wherePart;
+	}
 
+	/*---------------------------------------------------------------------*/
+	
 	public String toString()
 	{
 		return toStringBuilder(null).toString();

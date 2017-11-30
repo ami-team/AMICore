@@ -75,7 +75,7 @@ public class AddElement extends AbstractCommand
 		List<String> list1 = new ArrayList<>();
 		List<String> list2 = new ArrayList<>();
 
-		for(String assign: islets.toQuery().getWherePart().split(" AND ", -1))
+		for(String assign: islets.toQuery().getWherePartSet())
 		{
 			assign = assign.substring(assign.indexOf('.') + 1);
 			assign = assign.substring(assign.indexOf('.') + 1);
@@ -86,10 +86,11 @@ public class AddElement extends AbstractCommand
 			list2.add(parts[1]);
 		}
 
+
 		/*-----------------------------------------------------------------*/
 
 		String sql = new StringBuilder().append("INSERT INTO `").append(entity).append("`").append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")").toString();
-
+		//System.out.println(sql);
 		/*-----------------------------------------------------------------*/
 
 		getQuerier(catalog).executeSQLUpdate(sql);
