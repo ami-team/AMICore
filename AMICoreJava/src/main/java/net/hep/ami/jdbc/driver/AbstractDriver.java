@@ -197,8 +197,14 @@ public abstract class AbstractDriver implements Querier
 		try
 		{
 			sql = Tokenizer.format(sql, args);
-
-			return m_statement.executeUpdate(patchSQL(sql));
+			int key = -1; 
+			m_statement.executeUpdate(patchSQL(sql),Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = m_statement.getGeneratedKeys();
+			if (rs != null && rs.next()) 
+			{
+			   key = rs.getInt(1);
+			}
+			return key ;
 		}
 		catch(Exception e)
 		{
