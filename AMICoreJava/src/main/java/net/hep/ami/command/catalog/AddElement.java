@@ -1,5 +1,8 @@
 package net.hep.ami.command.catalog;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 import net.hep.ami.command.*;
@@ -93,11 +96,17 @@ public class AddElement extends AbstractCommand
 		//System.out.println(sql);
 		/*-----------------------------------------------------------------*/
 
-		int id = getQuerier(catalog).executeSQLUpdate(sql);
+		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
+		statement.execute();
+		long key = 0;
+		ResultSet rs = statement.getGeneratedKeys();
+		if (rs != null && rs.next()) {
+		    key = rs.getLong(1);
+		}
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><rowset><row><field>" + id + "</field></row></rowset><info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><rowset type=\"keyset\"><row><field name=\"key\">" + key + "</field></row></rowset><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
