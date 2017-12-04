@@ -93,11 +93,11 @@ public class AddElement extends AbstractCommand
 		//System.out.println(sql);
 		/*-----------------------------------------------------------------*/
 
-		getQuerier(catalog).executeSQLUpdate(sql);
+		int id = getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><id>" + id + "</id><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
