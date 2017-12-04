@@ -97,7 +97,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><id>" + id + "</id><info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><rowset><row><field>" + id + "</field><row><rowset><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
