@@ -1,5 +1,8 @@
 package net.hep.ami.command.catalog;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 import net.hep.ami.command.*;
@@ -75,7 +78,7 @@ public class AddElement extends AbstractCommand
 		List<String> list1 = new ArrayList<>();
 		List<String> list2 = new ArrayList<>();
 
-		for(String assign: islets.toQuery().getWherePart().split(" AND ", -1))
+		for(String assign: islets.toQuery().getWherePartSet())
 		{
 			assign = assign.substring(assign.indexOf('.') + 1);
 			assign = assign.substring(assign.indexOf('.') + 1);
@@ -86,17 +89,24 @@ public class AddElement extends AbstractCommand
 			list2.add(parts[1]);
 		}
 
+
 		/*-----------------------------------------------------------------*/
 
 		String sql = new StringBuilder().append("INSERT INTO `").append(entity).append("`").append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")").toString();
+		//System.out.println(sql);
+		/*-----------------------------------------------------------------*/
+
+		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
+		statement.execute();
+		long key = 0;
+		ResultSet rs = statement.getGeneratedKeys();
+		if (rs != null && rs.next()) {
+		    key = rs.getLong(1);
+		}
 
 		/*-----------------------------------------------------------------*/
 
-		getQuerier(catalog).executeSQLUpdate(sql);
-
-		/*-----------------------------------------------------------------*/
-
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><rowset type=\"keyset\"><row><field name=\"key\">" + key + "</field></row></rowset><info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

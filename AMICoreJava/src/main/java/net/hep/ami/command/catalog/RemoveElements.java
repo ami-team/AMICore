@@ -63,7 +63,7 @@ public class RemoveElements extends AbstractCommand
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: islets.toQuery().getWherePart().split(" AND ", -1))
+		for(String comp: islets.toQuery().getWherePartSet())
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);

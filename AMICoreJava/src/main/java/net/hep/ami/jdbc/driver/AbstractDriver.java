@@ -198,7 +198,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			sql = Tokenizer.format(sql, args);
 
-			return m_statement.executeUpdate(patchSQL(sql));
+			return m_statement.executeUpdate(patchSQL(sql)) ;
 		}
 		catch(Exception e)
 		{
@@ -233,7 +233,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql, String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, @Nullable String[] columnNames) throws Exception
 	{
 		try
 		{
@@ -243,7 +243,9 @@ public abstract class AbstractDriver implements Querier
 
 			if(result == null)
 			{
-				m_statementMap.put(SQL, result = m_connection.prepareStatement(SQL, columnNames));
+				m_statementMap.put(SQL, result = (columnNames != null ? m_connection.prepareStatement(SQL, /*-----*/ columnNames /*-----*/)
+				                                                      : m_connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)
+				));
 			}
 
 			return result;
