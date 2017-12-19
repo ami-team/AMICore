@@ -155,9 +155,10 @@ public class CommandSingletonTest
 			System.out.println(qId1);
 			System.out.println(islets1.toString());
 */
+/*
 			System.out.println();
 			System.out.println("\n-> " + router.mqlToSQL("t2", "SELECT qux, fred WHERE bar='a' AND fred='b'"));
-
+*/
 /*
 			Islets islets0 = new Islets();
 
@@ -261,6 +262,8 @@ public class CommandSingletonTest
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;ROSETTA\""));
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument\""));
+
+			System.out.println(Tokenizer.tokenize("SELECT * FROM DATASETS"));
 
 			//System.out.println("done.");
 		}

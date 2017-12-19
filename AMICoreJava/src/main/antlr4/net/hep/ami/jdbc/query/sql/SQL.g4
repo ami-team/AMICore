@@ -12,27 +12,34 @@ options {
 /* SQL PARSER                                                              */
 /*-------------------------------------------------------------------------*/
 
-query returns [ List<String> v ]
-	@init { $v = new ArrayList<>(); }
-	:   WS		{ $v.add(  $WS  .getText()); }
-	| STRING		{ $v.add($STRING.getText()); }
-	|  ch=.		{ $v.add(  $ch  .getText()); }
+query returns [ List<String> tokens ]
+	@init { $tokens = new ArrayList<>(); }
+	: (token	 { $tokens.add($token.v); })*
+	;
+
+token returns [ String v ]
+	: SPACES		{ $v = $SPACES.getText(); }
+	| STRING		{ $v = $STRING.getText(); }
+	| OTHERS		{ $v = $OTHERS.getText(); }
 	;
 
 /*-------------------------------------------------------------------------*/
 /* SQL LEXER                                                               */
 /*-------------------------------------------------------------------------*/
 
+SPACES
+	: [ \t\n\r]+
+	;
+
 STRING
-	: '\'' ('\'\'' | ~'\'')* '\''
+	: [a-zA-Z0-9_]+
+	| '\'' ('\'\'' | ~'\'')* '\''
 	| '`' ('``' | ~'`')+ '`'
 	| '"' ('""' | ~'"')+ '"'
 	;
 
-/*-------------------------------------------------------------------------*/
-
-WS
-	: [ \t\n\r]+
+OTHERS
+	: .
 	;
 
 /*-------------------------------------------------------------------------*/
