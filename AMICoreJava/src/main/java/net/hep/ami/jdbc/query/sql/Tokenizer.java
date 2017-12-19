@@ -2,77 +2,37 @@ package net.hep.ami.jdbc.query.sql;
 
 import java.math.*;
 import java.util.*;
-import java.util.regex.*;
+
+import org.antlr.v4.runtime.*;
 
 public class Tokenizer
 {
-	/*---------------------------------------------------------------------*/
-
-	private static final Pattern s_pattern1 = Pattern.compile(
-		"^\\s+"
-	);
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Pattern s_pattern2 = Pattern.compile(
-		"^[a-zA-Z0-9_]+"
-		+ "|" +
-		"^\"(\"\"|[^\"])*\""
-		+ "|" +
-		"^'(''|[^'])*'"
-		+ "|" +
-		"^`(``|[^`])*`"
-	);
-
 	/*---------------------------------------------------------------------*/
 
 	private Tokenizer() {}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> tokenize(String sql)
+	public static List<String> tokenize(String s)
 	{
-		List<String> result = new ArrayList<>();
+		return tokenize(CharStreams.fromString(s));
+	}
 
-		/***/ int i = 0x0000000000;
-		final int l = sql.length();
+	/*---------------------------------------------------------------------*/
 
-		Matcher m;
+	public static List<String> tokenize(CharStream charStream)
+	{
+		/*-----------------------------------------------------------------*/
 
-		while(i < l)
-		{
-			/*-------------------------------------------------------------*/
-			/* EAT SPACES                                                  */
-			/*-------------------------------------------------------------*/
+		SQLLexer lexer = new SQLLexer(charStream);
+		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+		SQLParser parser = new SQLParser(tokenStream);
 
-			/**/ if((m = s_pattern1.matcher(sql.substring(i))).find())
-			{
-				result.add((((" "))));
+		/*-----------------------------------------------------------------*/
 
-				i += m.group(0).length();
-			}
+		return parser.query().v;
 
-			/*-------------------------------------------------------------*/
-			/* STRING                                                      */
-			/*-------------------------------------------------------------*/
-
-			else if((m = s_pattern2.matcher(sql.substring(i))).find())
-			{
-				result.add(m.group(0));
-
-				i += m.group(0).length();
-			}
-
-			/*-------------------------------------------------------------*/
-			/* OTHER                                                       */
-			/*-------------------------------------------------------------*/
-
-			else result.add(String.valueOf(sql.charAt(i++)));
-
-			/*-------------------------------------------------------------*/
-		}
-
-		return result;
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
