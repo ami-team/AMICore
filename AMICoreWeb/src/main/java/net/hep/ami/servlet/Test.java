@@ -72,7 +72,7 @@ public class Test extends HttpServlet
 		{
 			res.setStatus(HttpServletResponse.SC_OK);
 
-			writer.print("Ok."/*req.toString()*/);
+			writer.print(req.toString());
 		}
 		catch(Exception e)
 		{
