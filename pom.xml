@@ -30,7 +30,7 @@
 
 		<hikari.version>2.6.1</hikari.version>
 
-		<servlet.version>3.1.0</servlet.version>
+		<servlet.version>9.0.2</servlet.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

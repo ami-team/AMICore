@@ -28,8 +28,8 @@
 		<!--***************************************************************-->
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-servlet-api</artifactId>
 			<version>${servlet.version}</version>
 		</dependency>
 
