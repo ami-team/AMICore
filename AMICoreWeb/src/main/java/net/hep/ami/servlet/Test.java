@@ -65,6 +65,13 @@ public class Test extends HttpServlet
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* GET/POST VARIABLES                                              */
+		/*-----------------------------------------------------------------*/
+
+		String command = req.getParameter("Command");
+		command = (command != null) ? command.trim() : "";
+
+		/*-----------------------------------------------------------------*/
 		/* WRITE RESULT                                                    */
 		/*-----------------------------------------------------------------*/
 
@@ -72,7 +79,7 @@ public class Test extends HttpServlet
 		{
 			res.setStatus(HttpServletResponse.SC_OK);
 
-			writer.print(req.getAttribute("Command"));
+			writer.print(command);
 		}
 		catch(Exception e)
 		{
