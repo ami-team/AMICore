@@ -99,14 +99,9 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		long generatedKey = 0;
-
 		ResultSet resultSet = statement.getGeneratedKeys();
 
-		if(resultSet.next())
-		{
-			generatedKey = resultSet.getLong(1);
-		}
+		long generatedKey = resultSet.next() ? resultSet.getLong(1) : 0;
 
 		/*-----------------------------------------------------------------*/
 
