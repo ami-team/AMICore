@@ -3,6 +3,8 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
+
 import net.hep.ami.command.*;
 
 public class SearchQuery extends AbstractCommand
@@ -42,7 +44,7 @@ public class SearchQuery extends AbstractCommand
 
 		if(orderBy != null)
 		{
-			extra += " ORDER BY " + orderBy;
+			extra += " ORDER BY " + new QId(orderBy, QId.Deepness.COLUMN).toString();
 
 			if(orderWay != null)
 			{
