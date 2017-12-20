@@ -95,16 +95,17 @@ public class AddElement extends AbstractCommand
 
 		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
 
+		statement.execute();
+
+		/*-----------------------------------------------------------------*/
+
 		long generatedKey = 0;
 
-		if(statement.execute())
-		{
-			ResultSet resultSet = statement.getGeneratedKeys();
+		ResultSet resultSet = statement.getGeneratedKeys();
 
-			if(resultSet.next())
-			{
-				generatedKey = resultSet.getLong(1);
-			}
+		if(resultSet.next())
+		{
+			generatedKey = resultSet.getLong(1);
 		}
 
 		/*-----------------------------------------------------------------*/
