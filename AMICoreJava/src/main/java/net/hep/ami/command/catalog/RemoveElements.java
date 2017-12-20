@@ -63,7 +63,7 @@ public class RemoveElements extends AbstractCommand
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: islets.toQuery().getWherePartSet())
+		for(String comp: islets.toQuery().getWhereCollection())
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);
@@ -88,7 +88,9 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[" + nb + " element(s) removed with success]]></info>");
+		return new StringBuilder().append("<sql><![CDATA[" + sql + "]]></sql>")
+		                          .append("<info><![CDATA[" + nb + " element(s) removed with success]]></info>")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -1,6 +1,5 @@
 package net.hep.ami.jdbc.reflexion;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -92,7 +91,8 @@ public class AutoJoinSingleton
 		String defaultCatalog,
 		String defaultTable,
 		QId givenQId,
-		@Nullable String givenValue
+		@Nullable String givenValue,
+		boolean goBackward
 	 ) throws Exception {
 
 		QId result;
@@ -100,9 +100,6 @@ public class AutoJoinSingleton
 		String givenCatalog = givenQId.getCatalog();
 		String givenTable = givenQId.getTable();
 		String givenColumn = givenQId.getColumn();
-
-		ArrayList<QId> resultSet = new ArrayList<>();
-		Set<String> doneFinal = new HashSet<>();
 
 		if(method != TRIVIAL)
 		{
@@ -153,10 +150,7 @@ public class AutoJoinSingleton
 					{
 						temp = new Islets();
 
-						Set<String> doneTmp;
-						doneTmp = new HashSet<>(done);
-						result = _resolveJoins(temp, doneTmp, method, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue);
-						doneFinal.addAll(doneTmp);
+						result = _resolveJoins(temp, done, WITH_INNER_JOINS, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue, false);
 
 						if(result != null)
 						{
@@ -170,9 +164,8 @@ public class AutoJoinSingleton
 									_mergeNestedSelect(islets, temp, frgnKey);
 									break;
 							}
-							resultSet.add(result);
-							result=null;
-							//return result;
+
+							return result;
 						}
 					}
 				}
@@ -191,26 +184,27 @@ public class AutoJoinSingleton
 					{
 						temp = new Islets();
 
-						Set<String> doneTmp;
-						doneTmp = new HashSet<>(done);
-						result = _resolveJoins(temp, doneTmp, method, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue);
-						doneFinal.addAll(doneTmp);
-						if(result != null)
+						boolean testIfNextNotGoFoward = SchemaSingleton.getForwardFKs(frgnKey.fkExternalCatalog, frgnKey.fkTable).size() <= 1;
+						testIfNextNotGoFoward = true;
+						if(goBackward || testIfNextNotGoFoward)
 						{
-							switch(method)
-							{
-								case WITH_INNER_JOINS:
-									_mergeInnerJoins(islets, temp, frgnKey);
-									break;
+							result = _resolveJoins(temp, done, WITH_INNER_JOINS, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue, goBackward);
 
-								case WITH_NESTED_SELECT:
-									_mergeNestedSelect(islets, temp, frgnKey);
-									break;
+							if(result != null)
+							{
+								switch(method)
+								{
+									case WITH_INNER_JOINS:
+										_mergeInnerJoins(islets, temp, frgnKey);
+										break;
+
+									case WITH_NESTED_SELECT:
+										_mergeNestedSelect(islets, temp, frgnKey);
+										break;
+								}
+
+								return result;
 							}
-							resultSet.add(result);
-							result=null;
-							System.out.println("test: "+temp.toQuery());
-							//return result;
 						}
 					}
 				}
@@ -231,14 +225,11 @@ public class AutoJoinSingleton
 					      .getQuery(Joins.DUMMY, Joins.DUMMY)
 					      .addWherePart(result + "='" + givenValue.replace("'", "''") + "'")
 					;
-					//System.out.println("ici: "+islets.toQuery());
+
 					/*-----------------------------------------------------*/
 				}
 
-				resultSet.add(result);
-				result=null;
-				//System.out.println("test: "+islets.toQuery());
-				//return result;
+				return result;
 			}
 
 			/*-------------------------------------------------------------*/
@@ -257,7 +248,7 @@ public class AutoJoinSingleton
 			if(column != null)
 			{
 				result = new QId(column.internalCatalog, column.table, column.name);
-				//System.out.println("test: "+column.internalCatalog+" "+ column.table+ " "+ column.name);
+
 				if(givenValue != null)
 				{
 					/*-----------------------------------------------------*/
@@ -269,36 +260,18 @@ public class AutoJoinSingleton
 					      .addWherePart(result + "='" + givenValue.replace("'", "''") + "'")
 					;
 
-					//System.out.println("ici: "+islets.toQuery());
 					/*-----------------------------------------------------*/
 				}
 
-				resultSet.add(result);
-				result=null;
-				//System.out.println("test: "+column.internalCatalog+" "+ column.table+ " "+ column.name);
-				//return result;
+				return result;
 			}
 
 			/*-------------------------------------------------------------*/
 		}
-		done.addAll(doneFinal);
-		return mergeResult(resultSet);
-		//return null;
+
+		return null;
 	}
 
-	private static QId mergeResult(ArrayList<QId> resultSet) throws Exception
-	{
-
-		QId result = null;
-		if(resultSet.size()>0)
-		System.out.println("size: "+resultSet.size());
-		for (Iterator iterator = resultSet.iterator(); iterator.hasNext();) {
-			QId qId = (QId) iterator.next();
-			result = qId;
-			System.out.println("qid: "+result.toString());
-		}
-		return result;
-	}
 	/*---------------------------------------------------------------------*/
 
 	private static QId resolve(Islets islets, int method, String defaultCatalog, String defaultTable, QId givenQId, @Nullable String givenValue) throws Exception
@@ -307,11 +280,11 @@ public class AutoJoinSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result = _resolveJoins(islets, new HashSet<>(), method, defaultCatalog, defaultTable, givenQId, givenValue);
+		result = _resolveJoins(islets, new HashSet<>(), method, defaultCatalog, defaultTable, givenQId, givenValue,true);
 
 		if(result == null)
 		{
-			result = _resolveJoins(islets, new HashSet<>(), TRIVIAL, defaultCatalog, defaultTable, givenQId, givenValue);
+			result = _resolveJoins(islets, new HashSet<>(), TRIVIAL, defaultCatalog, defaultTable, givenQId, givenValue,true);
 
 			if(result == null)
 			{

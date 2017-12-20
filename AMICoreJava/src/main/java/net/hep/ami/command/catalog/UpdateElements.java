@@ -115,7 +115,7 @@ public class UpdateElements extends AbstractCommand
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: islets.toQuery().getWherePartSet())
+		for(String comp: islets.toQuery().getWhereCollection())
 		{
 			comp = comp.substring(comp.indexOf('.') + 1);
 			comp = comp.substring(comp.indexOf('.') + 1);
@@ -144,7 +144,9 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><info><![CDATA[" + nb + " element(s) updated with success]]></info>");
+		return new StringBuilder().append("<sql><![CDATA[").append(sql).append("]]></sql>")
+		                          .append("<info><![CDATA[").append(nb).append(" element(s) updated with success]]></info>")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/

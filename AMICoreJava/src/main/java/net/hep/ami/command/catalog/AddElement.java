@@ -1,8 +1,6 @@
 package net.hep.ami.command.catalog;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.command.*;
@@ -78,7 +76,7 @@ public class AddElement extends AbstractCommand
 		List<String> list1 = new ArrayList<>();
 		List<String> list2 = new ArrayList<>();
 
-		for(String assign: islets.toQuery().getWherePartSet())
+		for(String assign: islets.toQuery().getWhereCollection())
 		{
 			assign = assign.substring(assign.indexOf('.') + 1);
 			assign = assign.substring(assign.indexOf('.') + 1);
@@ -89,24 +87,32 @@ public class AddElement extends AbstractCommand
 			list2.add(parts[1]);
 		}
 
-
 		/*-----------------------------------------------------------------*/
 
 		String sql = new StringBuilder().append("INSERT INTO `").append(entity).append("`").append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")").toString();
-		//System.out.println(sql);
+
 		/*-----------------------------------------------------------------*/
 
 		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
-		statement.execute();
-		long key = 0;
-		ResultSet rs = statement.getGeneratedKeys();
-		if (rs != null && rs.next()) {
-		    key = rs.getLong(1);
+
+		long generatedKey = 0;
+
+		if(statement.execute())
+		{
+			ResultSet resultSet = statement.getGeneratedKeys();
+
+			if(resultSet.next())
+			{
+				generatedKey = resultSet.getLong(1);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<sql><![CDATA[" + sql + "]]></sql><rowset type=\"keyset\"><row><field name=\"key\">" + key + "</field></row></rowset><info><![CDATA[done with success]]></info>");
+		return new StringBuilder().append("<sql><![CDATA[").append(sql).append("]]></sql>")
+		                          .append("<rowset><row><field name=\"generatedKey\"><![CDATA[").append(generatedKey).append("]]></field></row></rowset>")
+		                          .append("<info><![CDATA[1 element inserted with success]]></info>")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
