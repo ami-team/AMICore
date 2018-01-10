@@ -60,7 +60,7 @@ public class AddElement extends AbstractCommand
 
 		for(int i = 0; i < fields.size(); i++)
 		{
-			AutoJoinSingleton.resolveWithNestedSelect(
+			AutoJoinSingleton.resolve(
 				islets,
 				catalog,
 				entity,
@@ -81,7 +81,7 @@ public class AddElement extends AbstractCommand
 			assign = assign.substring(assign.indexOf('.') + 1);
 			assign = assign.substring(assign.indexOf('.') + 1);
 
-			parts = assign.split("=", 2);
+			parts = assign.split(" IN ", 2);
 
 			list1.add(parts[0]);
 			list2.add(parts[1]);

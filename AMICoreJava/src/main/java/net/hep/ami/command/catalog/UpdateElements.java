@@ -75,7 +75,7 @@ public class UpdateElements extends AbstractCommand
 
 		for(int i = 0; i < fields.size(); i++)
 		{
-			AutoJoinSingleton.resolveWithNestedSelect(
+			AutoJoinSingleton.resolve(
 				islets,
 				catalog,
 				entity,
@@ -102,7 +102,7 @@ public class UpdateElements extends AbstractCommand
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			AutoJoinSingleton.resolveWithNestedSelect(
+			AutoJoinSingleton.resolve(
 				islets,
 				catalog,
 				entity,

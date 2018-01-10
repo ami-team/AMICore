@@ -69,19 +69,19 @@ public class CommandSingletonTest
 			AutoJoinSingleton.AMIJoins joins;
 
 			joins = new AutoJoinSingleton.AMIJoins();
-			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_criteria", "router_search_interface.interface", "foo");
+			AutoJoinSingleton.resolve(joins, "self", "router_search_criteria", "router_search_interface.interface", "foo");
 			System.out.println(joins.toSQL());
 
 			joins = new AutoJoinSingleton.AMIJoins();
-			AutoJoinSingleton.resolveWithInnerJoins(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
+			AutoJoinSingleton.resolve(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
 			System.out.println(joins.toSQL());
 
 			joins = new AutoJoinSingleton.AMIJoins();
-			AutoJoinSingleton.resolveWithNestedSelect(joins, "self", "router_search_criteria", "router_search_interface.interface", "foo");
+			AutoJoinSingleton.resolve(joins, "self", "router_search_criteria", "router_search_interface.interface", "foo");
 			System.out.println(joins.toSQL());
 
 			joins = new AutoJoinSingleton.AMIJoins();
-			AutoJoinSingleton.resolveWithNestedSelect(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
+			AutoJoinSingleton.resolve(joins, "self", "router_search_interface", "router_search_criteria.alias", "foo");
 			System.out.println(joins.toSQL());
 
 			System.out.println("::" + SecuritySingleton.encrypt("") + "::");
@@ -129,7 +129,7 @@ public class CommandSingletonTest
 /*
 			Islets islets0 = new Islets();
 
-			QId qId0 = AutoJoinSingleton.resolveWithInnerJoins(
+			QId qId0 = AutoJoinSingleton.resolve(
 				islets0,
 				"test",
 				"t1",
@@ -143,7 +143,7 @@ public class CommandSingletonTest
 
 			Islets islets1 = new Islets();
 
-			QId qId1 = AutoJoinSingleton.resolveWithNestedSelect(
+			QId qId1 = AutoJoinSingleton.resolve(
 				islets1,
 				"test",
 				"t1",
@@ -172,7 +172,7 @@ public class CommandSingletonTest
 
 			Islets islets1 = new Islets();
 
-			QId qId1 = AutoJoinSingleton.resolveWithNestedSelect(
+			QId qId1 = AutoJoinSingleton.resolve(
 				islets1,
 				"self",
 				"router_ipv4_blocks",
@@ -180,7 +180,7 @@ public class CommandSingletonTest
 				"EU"
 			);
 
-			QId qId2 = AutoJoinSingleton.resolveWithNestedSelect(
+			QId qId2 = AutoJoinSingleton.resolve(
 				islets1,
 				"self",
 				"router_ipv4_blocks",
@@ -194,7 +194,7 @@ public class CommandSingletonTest
 
 			Islets islets2 = new Islets();
 
-			AutoJoinSingleton.resolveWithInnerJoins(
+			AutoJoinSingleton.resolve(
 				islets2,
 				"self",
 				"router_ipv4_blocks",
@@ -202,7 +202,7 @@ public class CommandSingletonTest
 				"EU"
 			);
 
-			AutoJoinSingleton.resolveWithInnerJoins(
+			AutoJoinSingleton.resolve(
 				islets2,
 				"self",
 				"router_ipv4_blocks",
@@ -263,7 +263,47 @@ public class CommandSingletonTest
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument\""));
 
-			System.out.println(Tokenizer.tokenize("SELECT * FROM DATASETS"));
+			Islets islets1 = new Islets();
+
+			QId qId1 = AutoJoinSingleton.resolve(
+				islets1,
+				"test",
+				"t1",
+				"foo7",
+				"foobar"
+			);
+
+			System.out.println(qId1);
+			System.out.println(islets1.toString());
+			System.out.println();
+
+			Islets islets2 = new Islets();
+
+			QId qId2 = AutoJoinSingleton.resolve(
+				islets2,
+				"test",
+				"t8",
+				"foo9",
+				"foobar"
+			);
+
+			System.out.println(qId2);
+			System.out.println(islets2.toString());
+			System.out.println();
+
+			Islets islets3 = new Islets();
+
+			QId qId3 = AutoJoinSingleton.resolve(
+				islets3,
+				"test",
+				"t1",
+				"foo1",
+				"foobar"
+			);
+
+			System.out.println(qId3);
+			System.out.println(islets3.toString());
+			System.out.println();
 
 			//System.out.println("done.");
 		}

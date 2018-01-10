@@ -30,7 +30,7 @@ public class SetJSONSchema extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = getQuerier("self").executeSQLUpdate("UPDATE `router_catalog` SET `custom` = ?", json);
+		int nb = getQuerier("self").executeSQLUpdate("UPDATE `router_catalog` SET `custom` = ? WHERE `externalCatalog` = ?", json, catalog);
 
 		/*-----------------------------------------------------------------*/
 

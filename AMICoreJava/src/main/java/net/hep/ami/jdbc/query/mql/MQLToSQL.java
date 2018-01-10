@@ -123,7 +123,7 @@ public class MQLToSQL
 
 		if(context.orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolveWithInnerJoins(m_islets, m_externalCatalog, m_entity, context.orderBy.getText(), null).toString());
+			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_islets, m_externalCatalog, m_entity, context.orderBy.getText(), null).toString());
 
 			if(context.orderWay != null)
 			{
@@ -511,7 +511,7 @@ public class MQLToSQL
 
 		for(String qId: list)
 		{
-			resolvedQId = AutoJoinSingleton.resolveWithInnerJoins(
+			resolvedQId = AutoJoinSingleton.resolve(
 				islets,
 				m_externalCatalog,
 				m_entity,

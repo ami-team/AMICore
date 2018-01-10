@@ -50,7 +50,7 @@ public class RemoveElements extends AbstractCommand
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			AutoJoinSingleton.resolveWithNestedSelect(
+			AutoJoinSingleton.resolve(
 				islets,
 				catalog,
 				entity,

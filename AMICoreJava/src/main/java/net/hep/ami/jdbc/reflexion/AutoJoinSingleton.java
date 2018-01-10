@@ -1,235 +1,165 @@
 package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 import net.hep.ami.jdbc.reflexion.structure.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class AutoJoinSingleton
 {
-	/*---------------------------------------------------------------------*/
-
-	private static final int TRIVIAL = 0;
-	private static final int WITH_INNER_JOINS = 1;
-	private static final int WITH_NESTED_SELECT = 2;
-
 	/*---------------------------------------------------------------------*/
 
 	private AutoJoinSingleton() {}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void _mergeInnerJoins(Islets islets, Islets temp, SchemaSingleton.FrgnKey frgnKey)
+	private static void pathToIslet(Islets result_islets, Stack<SchemaSingleton.FrgnKey> path, QId qId, @Nullable String givenValue)
 	{
-		/*-----------------------------------------------------------------*/
-		/* BUILD SQL JOIN                                                  */
-		/*-----------------------------------------------------------------*/
+		Query query = new Query();
 
-		QId fk = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
-		QId pk = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
-
-		String where = fk + " = " + pk;
-
-		/*-----------------------------------------------------------------*/
-		/* MERGE                                                           */
-		/*-----------------------------------------------------------------*/
-
-		for(Entry<String, Map<String, Joins>> entry1: ((((((temp)))))).entrySet()) for(Entry<String, Joins> entry2: entry1.getValue().entrySet())
+		if(path.isEmpty() == false)
 		{
-			for(Entry<String, Map<String, Query>> entry3: entry2.getValue().entrySet()) for(Entry<String, Query> entry4: entry3.getValue().entrySet())
+			/*-------------------------------------------------------------*/
+			/* WITH JOIN                                                   */
+			/*-------------------------------------------------------------*/
+
+
+			SchemaSingleton.FrgnKey firstFrgnKey = path.firstElement();
+			SchemaSingleton.FrgnKey lastFrgnKey = path.lastElement();
+
+			result_islets.getQuery(
+				new QId(firstFrgnKey.fkInternalCatalog, firstFrgnKey.fkTable, firstFrgnKey.fkColumn).toString()
+				,
+				new QId(lastFrgnKey.pkInternalCatalog, lastFrgnKey.pkTable, lastFrgnKey.pkColumn).toString()
+			).add(query);
+
+			/*-------------------------------------------------------------*/
+
+			QId firstPk = new QId(firstFrgnKey.pkInternalCatalog, firstFrgnKey.pkTable, firstFrgnKey.pkColumn);
+
+			query.addSelectPart(firstPk.toString(QId.Deepness.COLUMN))
+			     .addFromPart(firstPk.toString(QId.Deepness.TABLE))
+			;
+
+			/*-------------------------------------------------------------*/
+
+			QId fk;
+			QId pk;
+
+			for(SchemaSingleton.FrgnKey frgnKey: path.subList(1, path.size()))
 			{
-				islets.getJoins(entry1.getKey(), entry2.getKey())
-				      .getQuery(entry3.getKey(), entry4.getKey())
-				      .addWholeQuery(entry4.getValue())
+				fk = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
+				pk = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
+
+				query.addFromPart(fk.toString(QId.Deepness.TABLE))
+				     .addFromPart(pk.toString(QId.Deepness.TABLE))
+				     .addWherePart(fk.toString() + " = " + pk.toString())
 				;
 			}
+
+			/*-------------------------------------------------------------*/
+		}
+		else
+		{
+			/*-------------------------------------------------------------*/
+			/* WITHOUT JOIN                                                */
+			/*-------------------------------------------------------------*/
+
+			result_islets.getQuery(
+				Islets.DUMMY
+				,
+				Islets.DUMMY
+			).add(query);
+
+			/*-------------------------------------------------------------*/
+
+			query.addFromPart(qId.toString(QId.Deepness.TABLE));
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		islets.getJoins(Islets.DUMMY, Islets.DUMMY)
-		      .getQuery(fk.toString(QId.Deepness.TABLE), pk.toString(QId.Deepness.TABLE))
-		      .addWherePart(where)
-		;
+		if(givenValue != null)
+		{
+			query.addWherePart(qId.toString() + " = '" + givenValue.replace("'", "''") + "'");
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void _mergeNestedSelect(Islets islets, Islets temp, SchemaSingleton.FrgnKey frgnKey)
-	{
-		/*-----------------------------------------------------------------*/
-		/* BUILD SQL JOIN                                                  */
-		/*-----------------------------------------------------------------*/
-
-		QId fk = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
-		QId pk = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
-
-		String from = "`" + frgnKey.pkInternalCatalog + "`.`" + frgnKey.pkTable + "`";
-
-		/*-----------------------------------------------------------------*/
-		/* MERGE                                                           */
-		/*-----------------------------------------------------------------*/
-
-		islets.getJoins(fk.toString(), pk.toString())
-		      .getQuery(Joins.DUMMY, Joins.DUMMY)
-		      .addFromPart(from)
-		      .addWholeQuery(temp.toQuery())
-		;
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static QId _resolveJoins(
-		Islets islets,
-		Set<String> done,
-		int method,
+	private static void _findPaths(
+		QId[] result_qid,
+		Islets result_islets,
+		Stack<SchemaSingleton.FrgnKey> path,
+		Set<SchemaSingleton.FrgnKey> done,
 		String defaultCatalog,
 		String defaultTable,
 		QId givenQId,
-		@Nullable String givenValue,
-		boolean goBackward
+		@Nullable String givenValue
 	 ) throws Exception {
-
-		QId result;
 
 		String givenCatalog = givenQId.getCatalog();
 		String givenTable = givenQId.getTable();
 		String givenColumn = givenQId.getColumn();
 
-		if(method != TRIVIAL)
+		boolean checkNow = (givenCatalog == null || defaultCatalog.equals(givenCatalog))
+		                   &&
+		                   (givenTable == null || defaultTable.equals(givenTable))
+		;
+
+		SchemaSingleton.Column column = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;
+
+		if(column == null)
 		{
+			Collection<SchemaSingleton.FrgnKeys> forwardLists;
+			Collection<SchemaSingleton.FrgnKeys> backwardLists;
+
 			/*-------------------------------------------------------------*/
-			/* BREAK CYCLES                                                */
+			/* FORWARD RESOLUTION                                          */
 			/*-------------------------------------------------------------*/
 
-			String key = (defaultCatalog + '.' + defaultTable + '.' + givenColumn).toLowerCase();
+			forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultTable).values();
 
-			if(done.contains(key))
+			/*-------------------------------------------------------------*/
+
+			for(SchemaSingleton.FrgnKeys list: forwardLists)
 			{
-				return null;
-			}
-
-			done.add(key);
-
-			/*-------------------------------------------------------------*/
-			/* RESOLVE JOINS                                               */
-			/*-------------------------------------------------------------*/
-
-			boolean checkNow = (givenCatalog == null || defaultCatalog.equals(givenCatalog))
-				               &&
-				               (givenTable == null || defaultTable.equals(givenTable))
-			;
-
-			SchemaSingleton.Column column = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;
-
-			/*-------------------------------------------------------------*/
-
-			if(column == null)
-			{
-				Islets temp;
-
-				Collection<SchemaSingleton.FrgnKeys> fowardLists;
-				Collection<SchemaSingleton.FrgnKeys> backwardLists;
-
-				/*---------------------------------------------------------*/
-				/* FORWARD RESOLUTION                                      */
-				/*---------------------------------------------------------*/
-
-				fowardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultTable).values();
-
-				/*---------------------------------------------------------*/
-
-				for(SchemaSingleton.FrgnKeys list: fowardLists)
+				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					for(SchemaSingleton.FrgnKey frgnKey: list)
+					if(done.contains(frgnKey) == false)
 					{
-						temp = new Islets();
-
-						result = _resolveJoins(temp, done, WITH_INNER_JOINS, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue, false);
-
-						if(result != null)
-						{
-							switch(method)
-							{
-								case WITH_INNER_JOINS:
-									_mergeInnerJoins(islets, temp, frgnKey);
-									break;
-
-								case WITH_NESTED_SELECT:
-									_mergeNestedSelect(islets, temp, frgnKey);
-									break;
-							}
-
-							return result;
-						}
+						done.add(frgnKey);
+						path.add(frgnKey);
+						_findPaths(result_qid, result_islets, path, done, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue);
+						path.pop();
+						done.remove(frgnKey);
 					}
 				}
+			}
 
-				/*---------------------------------------------------------*/
-				/* BACKWARD RESOLUTION                                     */
-				/*---------------------------------------------------------*/
+			/*-------------------------------------------------------------*/
+			/* BACKWARD RESOLUTION                                         */
+			/*-------------------------------------------------------------*/
 
-				backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultTable).values();
+			backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultTable).values();
 
-				/*---------------------------------------------------------*/
+			/*-------------------------------------------------------------*/
 
-				for(SchemaSingleton.FrgnKeys list: backwardLists)
+			for(SchemaSingleton.FrgnKeys list: backwardLists)
+			{
+				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					for(SchemaSingleton.FrgnKey frgnKey: list)
+					if(done.contains(frgnKey) == false)
 					{
-						temp = new Islets();
-
-						boolean testIfNextNotGoFoward = SchemaSingleton.getForwardFKs(frgnKey.fkExternalCatalog, frgnKey.fkTable).size() <= 1;
-						testIfNextNotGoFoward = true;
-						if(goBackward || testIfNextNotGoFoward)
-						{
-							result = _resolveJoins(temp, done, WITH_INNER_JOINS, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue, goBackward);
-
-							if(result != null)
-							{
-								switch(method)
-								{
-									case WITH_INNER_JOINS:
-										_mergeInnerJoins(islets, temp, frgnKey);
-										break;
-
-									case WITH_NESTED_SELECT:
-										_mergeNestedSelect(islets, temp, frgnKey);
-										break;
-								}
-
-								return result;
-							}
-						}
+						done.add(frgnKey);
+						path.add(frgnKey);
+						_findPaths(result_qid, result_islets, path, done, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue);
+						path.pop();
+						done.remove(frgnKey);
 					}
 				}
-
-				/*---------------------------------------------------------*/
-			}
-			else
-			{
-				result = new QId(column.internalCatalog, column.table, column.name);
-
-				if(givenValue != null)
-				{
-					/*-----------------------------------------------------*/
-					/* CONDITION ON VALUE                                  */
-					/*-----------------------------------------------------*/
-
-					islets.getJoins(Islets.DUMMY, Islets.DUMMY)
-					      .getQuery(Joins.DUMMY, Joins.DUMMY)
-					      .addWherePart(result + "='" + givenValue.replace("'", "''") + "'")
-					;
-
-					/*-----------------------------------------------------*/
-				}
-
-				return result;
 			}
 
 			/*-------------------------------------------------------------*/
@@ -238,77 +168,50 @@ public class AutoJoinSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			Column column = SchemaSingleton.getColumns(
-				givenCatalog != null ? givenCatalog : defaultCatalog,
-				givenTable != null ? givenTable : defaultTable
-			).get(givenColumn);
+			QId qId = new QId(column.internalCatalog, column.table, column.name);
 
 			/*-------------------------------------------------------------*/
 
-			if(column != null)
+			if(result_qid[0] == null)
 			{
-				result = new QId(column.internalCatalog, column.table, column.name);
-
-				if(givenValue != null)
+				result_qid[0] = qId;
+			}
+			else
+			{
+				if(result_qid[0].equals(qId) == false)
 				{
-					/*-----------------------------------------------------*/
-					/* CONDITION ON VALUE                                  */
-					/*-----------------------------------------------------*/
-
-					islets.getJoins(Islets.DUMMY, Islets.DUMMY)
-					      .getQuery(Joins.DUMMY, Joins.DUMMY)
-					      .addWherePart(result + "='" + givenValue.replace("'", "''") + "'")
-					;
-
-					/*-----------------------------------------------------*/
+					throw new Exception("could not resolve column name `" + givenQId + "`: ambiguous resolution");
 				}
-
-				return result;
 			}
 
 			/*-------------------------------------------------------------*/
-		}
 
-		return null;
+			pathToIslet(result_islets, path, qId, givenValue);
+
+			/*-------------------------------------------------------------*/
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static QId resolve(Islets islets, int method, String defaultCatalog, String defaultTable, QId givenQId, @Nullable String givenValue) throws Exception
+	public static QId resolve(Islets islets, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
 	{
-		QId result;
+		QId[] result = new QId[] {null};
 
 		/*-----------------------------------------------------------------*/
 
-		result = _resolveJoins(islets, new HashSet<>(), method, defaultCatalog, defaultTable, givenQId, givenValue,true);
+		_findPaths(result, islets, new Stack<>(), new HashSet<>(), defaultCatalog, defaultTable, new QId(givenQId, QId.Deepness.COLUMN), givenValue);
 
-		if(result == null)
+		/*-----------------------------------------------------------------*/
+
+		if(result[0] == null)
 		{
-			result = _resolveJoins(islets, new HashSet<>(), TRIVIAL, defaultCatalog, defaultTable, givenQId, givenValue,true);
-
-			if(result == null)
-			{
-				throw new Exception("could not resolve column name `" + givenQId + "`");
-			}
+			throw new Exception("could not resolve column name `" + givenQId + "`: not found");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static QId resolveWithInnerJoins(Islets islets, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
-	{
-		return resolve(islets, WITH_INNER_JOINS, defaultCatalog, defaultTable, new QId(givenQId, QId.Deepness.COLUMN), givenValue);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static QId resolveWithNestedSelect(Islets islets, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
-	{
-		return resolve(islets, WITH_NESTED_SELECT, defaultCatalog, defaultTable, new QId(givenQId, QId.Deepness.COLUMN), givenValue);
+		return result[0];
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.reflexion.structure;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class Islets
 {
@@ -10,15 +11,15 @@ public class Islets
 
 	/*---------------------------------------------------------------------*/
 
-	private final Map<String, Map<String, Joins>> m_map = new LinkedHashMap<>();
+	private final Map<String, Map<String, List<Query>>> m_map = new LinkedHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
-	public Joins getJoins(String fkColumn, String pkColumn)
+	public List<Query> getQuery(String fkColumn, String pkColumn)
 	{
-		/*----------------------------------------------------------------*/
+		/*-----------------------------------------------------------------*/
 
-		Map<String, Joins> result1 = m_map.get(fkColumn);
+		Map<String, List<Query>> result1 = m_map.get(fkColumn);
 
 		if(result1 == null)
 		{
@@ -27,25 +28,25 @@ public class Islets
 			m_map.put(fkColumn, result1);
 		}
 
-		/*----------------------------------------------------------------*/
+		/*-----------------------------------------------------------------*/
 
-		Joins result2 = result1.get(pkColumn);
+		List<Query> result2 = result1.get(pkColumn);
 
 		if(result2 == null)
 		{
-			result2 = new Joins();
+			result2 = new ArrayList<>();
 
 			result1.put(pkColumn, result2);
 		}
 
-		/*----------------------------------------------------------------*/
+		/*-----------------------------------------------------------------*/
 
 		return result2;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<Map.Entry<String, Map<String, Joins>>> entrySet()
+	public Set<Map.Entry<String, Map<String, List<Query>>>> entrySet()
 	{
 		return m_map.entrySet();
 	}
@@ -62,31 +63,31 @@ public class Islets
 	public Query toQuery()
 	{
 		QId fQId;
-		QId pQId;
 
 		String fkField;
-		String pkField;
 
 		Query result = new Query();
 
-		for(Map.Entry<String, Map<String, Joins>> entry1: m_map.entrySet())
+		for(Map.Entry<String, Map<String, List<Query>>> entry1: m_map.entrySet())
 		{
 			fkField = entry1.getKey();
 
-			for(Map.Entry<String, Joins> entry2: entry1.getValue().entrySet())
+			for(Map.Entry<String, List<Query>> entry2: entry1.getValue().entrySet())
 			{
-				pkField = entry2.getKey();
-
 				if(DUMMY.equals(fkField))
 				{
-					result.addWholeQuery(entry2.getValue().toQuery());
+					for(Query query: entry2.getValue())
+					{
+						result.addWholeQuery(query);
+					}
 				}
 				else
 				{
 					fQId = new QId(fkField, QId.Deepness.COLUMN);
-					pQId = new QId(pkField, QId.Deepness.COLUMN);
 
-					result.addFromPart(fQId.toString(QId.Deepness.TABLE)).addWherePart(fQId.toString() + "=(" + entry2.getValue().toQuery().addSelectPart(pQId.toString()) + ")");
+					result.addFromPart(fQId.toString(QId.Deepness.TABLE))
+					      .addWherePart(fQId.toString(QId.Deepness.COLUMN) + " IN (" + entry2.getValue().stream().map(x -> x.toString()).collect(Collectors.joining(" UNION ")) + ")")
+					;
 				}
 			}
 		}

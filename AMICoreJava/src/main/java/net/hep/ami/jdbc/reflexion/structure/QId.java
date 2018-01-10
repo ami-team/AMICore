@@ -115,6 +115,15 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public QId()
+	{
+		m_catalog = null;
+		m_table = null;
+		m_column = null;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String unquote(String s)
 	{
 		/*-----------------------------------------------------------------*/
@@ -173,7 +182,7 @@ public class QId
 
 	public boolean equals(QId qId)
 	{
-		return this.m_catalog == qId.m_catalog && this.m_table == qId.m_table && this.m_column == qId.m_column;
+		return this == qId || (this.m_catalog == qId.m_catalog && this.m_table == qId.m_table && this.m_column == qId.m_column);
 	}
 
 	/*---------------------------------------------------------------------*/

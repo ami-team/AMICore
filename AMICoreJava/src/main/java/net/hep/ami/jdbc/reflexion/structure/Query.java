@@ -48,7 +48,7 @@ public class Query
 		return this;
 	}
 
-	/*-----------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
 
 	public Query addWherePart(String wherePart)
 	{
@@ -66,13 +66,13 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public Query addWholeQuery(Query select)
+	public Query addWholeQuery(Query query)
 	{
-		this.m_selectCollection.addAll(select.m_selectCollection);
+		this.m_selectCollection.addAll(query.m_selectCollection);
 
-		this.m_fromCollection.addAll(select.m_fromCollection);
+		this.m_fromCollection.addAll(query.m_fromCollection);
 
-		this.m_whereCollection.addAll(select.m_whereCollection);
+		this.m_whereCollection.addAll(query.m_whereCollection);
 
 		return this;
 	}
