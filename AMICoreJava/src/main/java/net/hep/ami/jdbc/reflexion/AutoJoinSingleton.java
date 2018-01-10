@@ -12,7 +12,7 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void pathToIslet(Islets result_islets, Stack<SchemaSingleton.FrgnKey> path, QId qId, @Nullable String givenValue)
+	private static void pathToIslet(Islets islets, Stack<SchemaSingleton.FrgnKey> path, QId qId, @Nullable String givenValue)
 	{
 		Query query = new Query();
 
@@ -22,11 +22,10 @@ public class AutoJoinSingleton
 			/* WITH JOIN                                                   */
 			/*-------------------------------------------------------------*/
 
-
 			SchemaSingleton.FrgnKey firstFrgnKey = path.firstElement();
 			SchemaSingleton.FrgnKey lastFrgnKey = path.lastElement();
 
-			result_islets.getQuery(
+			islets.getQuery(
 				new QId(firstFrgnKey.fkInternalCatalog, firstFrgnKey.fkTable, firstFrgnKey.fkColumn).toString()
 				,
 				new QId(lastFrgnKey.pkInternalCatalog, lastFrgnKey.pkTable, lastFrgnKey.pkColumn).toString()
@@ -64,7 +63,7 @@ public class AutoJoinSingleton
 			/* WITHOUT JOIN                                                */
 			/*-------------------------------------------------------------*/
 
-			result_islets.getQuery(
+			islets.getQuery(
 				Islets.DUMMY
 				,
 				Islets.DUMMY
