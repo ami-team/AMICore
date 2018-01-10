@@ -92,7 +92,7 @@ public class AutoJoinSingleton
 		QId[] result_qid,
 		Islets result_islets,
 		Stack<SchemaSingleton.FrgnKey> path,
-		Set<SchemaSingleton.FrgnKey> done,
+		Set<String> done,
 		String defaultCatalog,
 		String defaultTable,
 		QId givenQId,
@@ -112,6 +112,8 @@ public class AutoJoinSingleton
 
 		if(column == null)
 		{
+			String key;
+
 			Collection<SchemaSingleton.FrgnKeys> forwardLists;
 			Collection<SchemaSingleton.FrgnKeys> backwardLists;
 
@@ -127,13 +129,15 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					if(done.contains(frgnKey) == false)
+					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkTable;
+
+					if(done.contains(key) == false)
 					{
-						done.add(frgnKey);
+						done.add(key);
 						path.add(frgnKey);
 						_findPaths(result_qid, result_islets, path, done, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue);
 						path.pop();
-						done.remove(frgnKey);
+						done.remove(key);
 					}
 				}
 			}
@@ -150,13 +154,15 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					if(done.contains(frgnKey) == false)
+					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkTable;
+
+					if(done.contains(key) == false)
 					{
-						done.add(frgnKey);
+						done.add(key);
 						path.add(frgnKey);
 						_findPaths(result_qid, result_islets, path, done, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue);
 						path.pop();
-						done.remove(frgnKey);
+						done.remove(key);
 					}
 				}
 			}
