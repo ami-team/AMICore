@@ -3,6 +3,8 @@ package net.hep.ami.jdbc.reflexion.structure;
 import java.util.*;
 import java.util.stream.*;
 
+import net.hep.ami.jdbc.reflexion.SchemaSingleton;
+
 public class Islets
 {
 	/*---------------------------------------------------------------------*/
@@ -15,28 +17,28 @@ public class Islets
 
 	/*---------------------------------------------------------------------*/
 
-	public List<Query> getQuery(String fkColumn, String pkColumn)
+	public List<Query> getQuery(String from, String to)
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, List<Query>> result1 = m_map.get(fkColumn);
+		Map<String, List<Query>> result1 = m_map.get(from);
 
 		if(result1 == null)
 		{
 			result1 = new LinkedHashMap<>();
 
-			m_map.put(fkColumn, result1);
+			m_map.put(from, result1);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		List<Query> result2 = result1.get(pkColumn);
+		List<Query> result2 = result1.get(to);
 
 		if(result2 == null)
 		{
 			result2 = new ArrayList<>();
 
-			result1.put(pkColumn, result2);
+			result1.put(to, result2);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -62,19 +64,25 @@ public class Islets
 
 	public Query toQuery()
 	{
-		QId fQId;
-
-		String fkField;
+		QId  fromQId ;
+/*		QId   toQId  ;
+ */
+		String from;
+		String  to ;
 
 		Query result = new Query();
 
 		for(Map.Entry<String, Map<String, List<Query>>> entry1: m_map.entrySet())
 		{
-			fkField = entry1.getKey();
+			from = entry1.getKey();
+
+			fromQId = new QId(from, QId.Deepness.COLUMN);
 
 			for(Map.Entry<String, List<Query>> entry2: entry1.getValue().entrySet())
 			{
-				if(DUMMY.equals(fkField))
+				to = entry2.getKey();
+
+				if(DUMMY.equals(from))
 				{
 					for(Query query: entry2.getValue())
 					{
@@ -83,10 +91,11 @@ public class Islets
 				}
 				else
 				{
-					fQId = new QId(fkField, QId.Deepness.COLUMN);
-
-					result.addFromPart(fQId.toString(QId.Deepness.TABLE))
-					      .addWherePart(fQId.toString(QId.Deepness.COLUMN) + " IN (" + entry2.getValue().stream().map(x -> x.toString()).collect(Collectors.joining(" UNION ")) + ")")
+					fromQId = new QId(from, QId.Deepness.COLUMN);
+/*					 toQId  = new QId( to , QId.Deepness.COLUMN);
+ */
+					result.addFromPart(fromQId.toString(QId.Deepness.TABLE))
+					      .addWherePart(fromQId.toString(QId.Deepness.COLUMN) + " IN (" + entry2.getValue().stream().map(x -> x.toString()).collect(Collectors.joining(" UNION ")) + ")")
 					;
 				}
 			}
@@ -99,7 +108,7 @@ public class Islets
 
 	public String toString()
 	{
-		return toQuery().toString();
+			return toQuery().toString();
 	}
 
 	/*---------------------------------------------------------------------*/

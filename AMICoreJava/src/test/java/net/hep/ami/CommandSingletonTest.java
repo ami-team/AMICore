@@ -262,7 +262,7 @@ public class CommandSingletonTest
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;ROSETTA\""));
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument\""));
-
+/*
 			Islets islets1 = new Islets();
 
 			QId qId1 = AutoJoinSingleton.resolve(
@@ -276,22 +276,37 @@ public class CommandSingletonTest
 			System.out.println(qId1);
 			System.out.println(islets1.toString());
 			System.out.println();
-
+*/
 			Islets islets2 = new Islets();
-
-			QId qId2 = AutoJoinSingleton.resolve(
+/*
+			AutoJoinSingleton.resolve(
 				islets2,
+				AutoJoinSingleton.Method.METHOD2,
 				"test",
 				"t8",
 				"foo9",
-				"foobar"
+				null
+			);
+*/
+			PathList pathList2 = AutoJoinSingleton.resolve(
+				"test",
+				"t1",
+				"foo6"
 			);
 
-			System.out.println(qId2);
-			System.out.println(islets2.toString());
+			System.out.println(pathList2.getQId());
+			System.out.println(pathList2.getPaths());
 			System.out.println();
-
+/*
 			Islets islets3 = new Islets();
+
+			AutoJoinSingleton.resolve(
+				islets3,
+				"test",
+				"t1",
+				"foo1",
+				null
+			);
 
 			QId qId3 = AutoJoinSingleton.resolve(
 				islets3,
@@ -304,7 +319,17 @@ public class CommandSingletonTest
 			System.out.println(qId3);
 			System.out.println(islets3.toString());
 			System.out.println();
+*/
+//			System.out.println(new SimpleQuerier("test").mqlToSQL("t8", "SELECT foo8 + 1 WHERE foo10 = 'bar'"));
+//			System.out.println(new SimpleQuerier("test").mqlToSQL("t8", "SELECT foo8 + 1 WHERE foo9 + foo10 = 'bar'"));
+//			System.out.println();
 
+/*			System.out.println(new SimpleQuerier("test").mqlToSQL("t8", "SELECT foo8 + 1 WHERE foo9 + 1 = 'foo' AND foo9 * 2 = 'bar'")); // AND foo9 IN ('bar', 'foo')
+			System.out.println();
+
+			System.out.println(new SimpleQuerier("test").mqlToSQL("t1", "SELECT foo7 WHERE foo1 = 'foo'"));
+			System.out.println();
+*/
 			//System.out.println("done.");
 		}
 		catch(Exception e)

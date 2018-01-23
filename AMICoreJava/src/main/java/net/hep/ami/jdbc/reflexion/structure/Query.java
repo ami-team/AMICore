@@ -6,11 +6,11 @@ public class Query
 {
 	/*---------------------------------------------------------------------*/
 
-	private final Collection<String> m_selectCollection = new ArrayList<>();
+	private final List<String> m_selectList = new ArrayList<>();
 
-	private final Collection<String> m_fromCollection = new LinkedHashSet<>();
+	private final Set<String> m_fromSet = new LinkedHashSet<>();
 
-	private final Collection<String> m_whereCollection = new LinkedHashSet<>();
+	private final Set<String> m_whereSet = new LinkedHashSet<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -20,14 +20,14 @@ public class Query
 
 	public Query addSelectPart(String selecPart)
 	{
-		m_selectCollection.add(selecPart);
+		m_selectList.add(selecPart);
 
 		return this;
 	}
 
 	public Query addSelectPart(Collection<String> selecPart)
 	{
-		m_selectCollection.addAll(selecPart);
+		m_selectList.addAll(selecPart);
 
 		return this;
 	}
@@ -36,14 +36,14 @@ public class Query
 
 	public Query addFromPart(String fromPart)
 	{
-		m_fromCollection.add(fromPart);
+		m_fromSet.add(fromPart);
 
 		return this;
 	}
 
 	public Query addFromPart(Collection<String> fromPart)
 	{
-		m_fromCollection.addAll(fromPart);
+		m_fromSet.addAll(fromPart);
 
 		return this;
 	}
@@ -52,14 +52,14 @@ public class Query
 
 	public Query addWherePart(String wherePart)
 	{
-		m_whereCollection.add(wherePart);
+		m_whereSet.add(wherePart);
 
 		return this;
 	}
 
 	public Query addWherePart(Collection<String> wherePart)
 	{
-		m_whereCollection.addAll(wherePart);
+		m_whereSet.addAll(wherePart);
 
 		return this;
 	}
@@ -68,11 +68,11 @@ public class Query
 
 	public Query addWholeQuery(Query query)
 	{
-		this.m_selectCollection.addAll(query.m_selectCollection);
+		this.m_selectList.addAll(query.m_selectList);
 
-		this.m_fromCollection.addAll(query.m_fromCollection);
+		this.m_fromSet.addAll(query.m_fromSet);
 
-		this.m_whereCollection.addAll(query.m_whereCollection);
+		this.m_whereSet.addAll(query.m_whereSet);
 
 		return this;
 	}
@@ -86,44 +86,44 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public Collection<String> getSelectCollection()
+	public List<String> getSelectCollection()
 	{
-		return m_selectCollection;
+		return m_selectList;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Collection<String> getFromCollection()
+	public Set<String> getFromCollection()
 	{
-		return m_fromCollection;
+		return m_fromSet;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Collection<String> getWhereCollection()
+	public Set<String> getWhereCollection()
 	{
-		return m_whereCollection;
+		return m_whereSet;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String getSelectPart()
 	{
-		return String.join(", ", m_selectCollection);
+		return String.join(", ", m_selectList);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String getFromPart()
 	{
-		return String.join(", ",  m_fromCollection);
+		return String.join(", ",  m_fromSet);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String getWherePart()
 	{
-		return String.join(" AND ", m_whereCollection);
+		return String.join(" AND ", m_whereSet);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -159,15 +159,15 @@ public class Query
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_selectCollection.isEmpty() == false) {
+		if(m_selectList.isEmpty() == false) {
 			result.append(SELECT).append(getSelectPart());
 		}
 
-		if(m_fromCollection.isEmpty() == false) {
+		if(m_fromSet.isEmpty() == false) {
 			result.append(" FROM ").append(getFromPart());
 		}
 
-		if(m_whereCollection.isEmpty() == false) {
+		if(m_whereSet.isEmpty() == false) {
 			result.append(" WHERE ").append(getWherePart());
 		}
 

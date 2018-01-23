@@ -21,12 +21,21 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public QId(String qId)
+	{
+		this(qId, Deepness.COLUMN);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public QId(String qId, Deepness deepness)
 	{
 		String[] parts = qId.split("\\.", -1);
 
 		switch(deepness)
 		{
+			/*-------------------------------------------------------------*/
+
 			case CATALOG:
 				switch(parts.length)
 				{
@@ -43,6 +52,8 @@ public class QId
 						break;
 				}
 				break;
+
+			/*-------------------------------------------------------------*/
 
 			case TABLE:
 				switch(parts.length)
@@ -66,6 +77,8 @@ public class QId
 						break;
 				}
 				break;
+
+			/*-------------------------------------------------------------*/
 
 			case COLUMN:
 				switch(parts.length)
@@ -96,11 +109,15 @@ public class QId
 				}
 				break;
 
+			/*-------------------------------------------------------------*/
+
 			default:
 				m_catalog = null;
 				m_table = null;
 				m_column = null;
 				break;
+
+			/*-------------------------------------------------------------*/
 		}
 	}
 
@@ -111,15 +128,6 @@ public class QId
 		m_catalog = catalog != null ? unquote(catalog) : null;
 		m_table = table != null ? unquote(table) : null;
 		m_column = column != null ? unquote(column) : null;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public QId()
-	{
-		m_catalog = null;
-		m_table = null;
-		m_column = null;
 	}
 
 	/*---------------------------------------------------------------------*/

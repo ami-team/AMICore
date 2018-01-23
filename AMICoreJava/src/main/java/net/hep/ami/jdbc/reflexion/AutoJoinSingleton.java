@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 
 import net.hep.ami.jdbc.reflexion.structure.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class AutoJoinSingleton
 {
@@ -12,91 +13,13 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void pathToIslet(Islets islets, Stack<SchemaSingleton.FrgnKey> path, QId qId, @Nullable String givenValue)
-	{
-		Query query = new Query();
-
-		if(path.isEmpty() == false)
-		{
-			/*-------------------------------------------------------------*/
-			/* WITH JOIN                                                   */
-			/*-------------------------------------------------------------*/
-
-			SchemaSingleton.FrgnKey firstFrgnKey = path.firstElement();
-			SchemaSingleton.FrgnKey lastFrgnKey = path.lastElement();
-
-			islets.getQuery(
-				new QId(firstFrgnKey.fkInternalCatalog, firstFrgnKey.fkTable, firstFrgnKey.fkColumn).toString()
-				,
-				new QId(lastFrgnKey.pkInternalCatalog, lastFrgnKey.pkTable, lastFrgnKey.pkColumn).toString()
-			).add(query);
-
-			/*-------------------------------------------------------------*/
-
-			QId firstPk = new QId(firstFrgnKey.pkInternalCatalog, firstFrgnKey.pkTable, firstFrgnKey.pkColumn);
-
-			query.addSelectPart(firstPk.toString(QId.Deepness.COLUMN))
-			     .addFromPart(firstPk.toString(QId.Deepness.TABLE))
-			;
-
-			/*-------------------------------------------------------------*/
-
-			QId fk;
-			QId pk;
-
-			for(SchemaSingleton.FrgnKey frgnKey: path.subList(1, path.size()))
-			{
-				fk = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
-				pk = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
-
-				query.addFromPart(fk.toString(QId.Deepness.TABLE))
-				     .addFromPart(pk.toString(QId.Deepness.TABLE))
-				     .addWherePart(fk.toString() + " = " + pk.toString())
-				;
-			}
-
-			/*-------------------------------------------------------------*/
-		}
-		else
-		{
-			/*-------------------------------------------------------------*/
-			/* WITHOUT JOIN                                                */
-			/*-------------------------------------------------------------*/
-
-			islets.getQuery(
-				Islets.DUMMY
-				,
-				Islets.DUMMY
-			).add(query);
-
-			/*-------------------------------------------------------------*/
-
-			query.addFromPart(qId.toString(QId.Deepness.TABLE));
-
-			/*-------------------------------------------------------------*/
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(givenValue != null)
-		{
-			query.addWherePart(qId.toString() + " = '" + givenValue.replace("'", "''") + "'");
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void _findPaths(
-		QId[] result_qid,
-		Islets result_islets,
-		Stack<SchemaSingleton.FrgnKey> path,
+	private static void resolve(
+		PathList pathList,
+		Stack<FrgnKey> path,
 		Set<String> done,
 		String defaultCatalog,
 		String defaultTable,
-		QId givenQId,
-		@Nullable String givenValue
+		QId givenQId
 	 ) throws Exception {
 
 		String givenCatalog = givenQId.getCatalog();
@@ -114,8 +37,8 @@ public class AutoJoinSingleton
 		{
 			String key;
 
-			Collection<SchemaSingleton.FrgnKeys> forwardLists;
-			Collection<SchemaSingleton.FrgnKeys> backwardLists;
+			Collection<FrgnKeys> forwardLists;
+			Collection<FrgnKeys> backwardLists;
 
 			/*-------------------------------------------------------------*/
 			/* FORWARD RESOLUTION                                          */
@@ -125,9 +48,9 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(SchemaSingleton.FrgnKeys list: forwardLists)
+			for(FrgnKeys list: forwardLists)
 			{
-				for(SchemaSingleton.FrgnKey frgnKey: list)
+				for(FrgnKey frgnKey: list)
 				{
 					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkTable;
 
@@ -135,7 +58,7 @@ public class AutoJoinSingleton
 					{
 						done.add(key);
 						path.add(frgnKey);
-						_findPaths(result_qid, result_islets, path, done, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId, givenValue);
+						resolve(pathList, path, done, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
 						path.pop();
 						done.remove(key);
 					}
@@ -150,9 +73,9 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(SchemaSingleton.FrgnKeys list: backwardLists)
+			for(FrgnKeys list: backwardLists)
 			{
-				for(SchemaSingleton.FrgnKey frgnKey: list)
+				for(FrgnKey frgnKey: list)
 				{
 					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkTable;
 
@@ -160,7 +83,7 @@ public class AutoJoinSingleton
 					{
 						done.add(key);
 						path.add(frgnKey);
-						_findPaths(result_qid, result_islets, path, done, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId, givenValue);
+						resolve(pathList, path, done, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
 						path.pop();
 						done.remove(key);
 					}
@@ -173,25 +96,11 @@ public class AutoJoinSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			QId qId = new QId(column.internalCatalog, column.table, column.name);
+			QId resolvedQId = new QId(column.internalCatalog, column.table, column.name);
 
 			/*-------------------------------------------------------------*/
 
-			if(result_qid[0] == null)
-			{
-				result_qid[0] = qId;
-			}
-			else
-			{
-				if(result_qid[0].equals(qId) == false)
-				{
-					throw new Exception("could not resolve column name `" + givenQId + "`: ambiguous resolution");
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-
-			pathToIslet(result_islets, path, qId, givenValue);
+			pathList.addPath(givenQId, resolvedQId, path);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -199,24 +108,20 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static QId resolve(Islets islets, String defaultCatalog, String defaultTable, String givenQId, @Nullable String givenValue) throws Exception
+	public static PathList resolve(String defaultCatalog, String defaultTable, QId givenQId) throws Exception
 	{
-		QId[] result = new QId[] {null};
+		PathList result = new PathList();
 
-		/*-----------------------------------------------------------------*/
+		resolve(result, new Stack<>(), new HashSet<>(), defaultCatalog, defaultTable, givenQId);
 
-		_findPaths(result, islets, new Stack<>(), new HashSet<>(), defaultCatalog, defaultTable, new QId(givenQId, QId.Deepness.COLUMN), givenValue);
+		return result.check(givenQId);
+	}
 
-		/*-----------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
 
-		if(result[0] == null)
-		{
-			throw new Exception("could not resolve column name `" + givenQId + "`: not found");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return result[0];
+	public static PathList resolve(String defaultCatalog, String defaultTable, String givenQId) throws Exception
+	{
+		return resolve(defaultCatalog, defaultTable, new QId(givenQId));
 	}
 
 	/*---------------------------------------------------------------------*/

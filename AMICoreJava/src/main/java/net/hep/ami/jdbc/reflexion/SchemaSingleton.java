@@ -78,7 +78,7 @@ public class SchemaSingleton
 		@Override
 		public String toString()
 		{
-			return "`" + fkInternalCatalog + "`.`" + fkTable + "`.`" + fkColumn + "` -> `" + pkInternalCatalog + "`.`" + pkTable + "`.`" + pkColumn + "`";
+			return "`" + fkInternalCatalog + "`.`" + fkTable + "`.`" + fkColumn + "` = `" + pkInternalCatalog + "`.`" + pkTable + "`.`" + pkColumn + "`";
 		}
 	}
 
