@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
 import net.hep.ami.utility.parser.*;
@@ -14,7 +15,6 @@ public class MQLToSQL
 {
 	/*---------------------------------------------------------------------*/
 
-	private final Islets m_islets = new Islets();
 
 	/*---------------------------------------------------------------------*/
 
@@ -24,7 +24,12 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
+	private boolean m_inSelect = false;
 	private boolean m_inFunction = false;
+	
+	private String m_joins = "";
+	private List<String> m_from = new ArrayList<String>();
+	private int m_maxPathLength = 5;
 
 	/*---------------------------------------------------------------------*/
 
@@ -46,7 +51,7 @@ public class MQLToSQL
 
 	public static String parse(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
 	{
-System.out.println(query);
+//System.out.println(query);
 		/*-----------------------------------------------------------------*/
 
 		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
@@ -80,23 +85,35 @@ System.out.println(query);
 		StringBuilder extra = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
+		m_inSelect = true;
+		/*-----------------------------------------------------------------*/
 
 		if(context.columns != null)
 		{
 			query.setDistinct(context.distinct != null);
 
 			query.addSelectPart(visitColumnList(context.columns).toString());
+			//query.addSelectPart(visitColumnList(context.columns).toString());
 		}
 
+		/*-----------------------------------------------------------------*/
+		m_inSelect = false;
 		/*-----------------------------------------------------------------*/
 
 		if(context.expression != null)
 		{
-			query.addWherePart("(" + visitExpressionOr(context.expression).toString() + ")");
+
+			query.addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
+			
+			if(!m_joins.equals(""))
+			{
+				query.addWherePart(m_joins.toString());
+				//System.out.println(m_joins);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
-
+/*
 		if(context.orderBy != null)
 		{
 			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_islets, m_externalCatalog, m_entity, context.orderBy.getText(), null).toString());
@@ -106,7 +123,7 @@ System.out.println(query);
 				extra.append(" ").append(context.orderWay.getText());
 			}
 		}
-
+*/
 		/*-----------------------------------------------------------------*/
 
 		if(context.limit != null)
@@ -121,10 +138,19 @@ System.out.println(query);
 
 		/*-----------------------------------------------------------------*/
 
-		query.addFromPart(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE)).addWholeQuery(m_islets.toQuery());
-
+		query.addFromPart(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE));
+		for (int i = 0; i < m_from.size(); i++) 
+		{
+			if(!m_from.get(i).equals(m_entity))
+			{
+				query.addFromPart(new QId(m_internalCatalog, m_from.get(i), null).toString(QId.Deepness.TABLE));
+			}
+					
+		}
+		
 		/*-----------------------------------------------------------------*/
 
+		System.out.println(query.toString(extra.toString()));
 		return new StringBuilder(query.toString(extra.toString()));
 
 		/*-----------------------------------------------------------------*/
@@ -148,7 +174,7 @@ System.out.println(query);
 
 			/**/ if(child instanceof MQLParser.ColumnContext)
 			{
-				result.append(visitColumnExpression((MQLParser.ColumnContext) child));
+				result.append((visitColumnExpression((MQLParser.ColumnContext) child).toString()));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -169,7 +195,7 @@ System.out.println(query);
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(visitExpressionOr(context.expression));
+		result.append(visitExpressionOr(context.expression, null));
 
 		/*-----------------------------------------------------------------*/
 
@@ -185,7 +211,7 @@ System.out.println(query);
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context) throws Exception
+	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, @Nullable List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -249,6 +275,8 @@ System.out.println(query);
 
 	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context) throws Exception
 	{
+		List<PathList> pathListList = new ArrayList<>();
+
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -263,7 +291,7 @@ System.out.println(query);
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, pathListList));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -275,13 +303,115 @@ System.out.println(query);
 		}
 
 		/*-----------------------------------------------------------------*/
+		//todo: modify in update and remove element key fields and key values arguments for a unique MQL statement  argument (it will allow much more possibilities, like other comparator than equality)
+		StringBuilder testResult = new StringBuilder();
+		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
+		testResult.append("`" + m_entity + "`.`" +primaryKeyEntity+ "` IN (SELECT `" + m_entity + "`.`" +primaryKeyEntity+ "` FROM `" + m_entity + "` ");
+		StringBuilder testJoins = new StringBuilder();
+		int cpt1 = 0;
+		for (PathList pathList : pathListList) 
+		{
+				String tmpTable = "`" +pathList.getQId().getTable()+"`" ;
+				String tmpPkTable = pathList.getQId().getTable();
+				if(!tmpPkTable.equals(m_entity))
+				{
+					testResult.append(", `" +pathList.getQId().getTable() + "` ");
+					if(m_inSelect && !m_from.contains(pathList.getQId().getTable()))
+					{
+						m_from.add(pathList.getQId().getTable());
+					}
+				}
+				// here put good externalCatalog for tmpTable ?
+				String primaryKeyTable = SchemaSingleton.getPrimaryKey(m_externalCatalog, tmpPkTable);
+				if(cpt1 > 0)
+				{
+					testJoins.append("  AND ");
+				}
+				int cpt2 = 0;
+				List<String> fromList = new ArrayList<String>();
+				List<List<FrgnKey>> paths= pathList.getPaths();
+				for (List<FrgnKey> list : paths) 
+				{
+					if(list.size() <= m_maxPathLength)
+					{
+						String tmpFrom = "";
+						String tmpWhere = "";
+						int cpt3 = 0;
+						for (FrgnKey frgnKey : list) {
+							if(cpt3 > 0)
+							{
+								tmpWhere += " AND ";
+							}
+							//for order, change algorithm here?
+							if(!fromList.contains(frgnKey.fkTable))
+							{
+								fromList.add(frgnKey.fkTable);
+							}
+							if(!fromList.contains(frgnKey.pkTable))
+							{
+								fromList.add(frgnKey.pkTable);
+							}
+							//here too ?
+							tmpWhere += frgnKey.toString();
+							cpt3++;
+						}
+						if(!tmpWhere.isEmpty())
+						{
+							if(cpt2 > 0)
+							{
+								testJoins.append(" OR ");
+							}
+							testJoins.append("(");
+							testJoins.append("(" + tmpTable + ".`" +primaryKeyTable+ "`, `" + m_entity + "`.`" +primaryKeyEntity+ "`) IN ");
+							for (int cpt4 = 0; cpt4 < fromList.size(); cpt4++) 
+							{
+								if(cpt4 > 0)
+								{
+									tmpFrom += ",";
+								}
+								tmpFrom += "`" + fromList.get(cpt4) + "`";
+							}
+							testJoins.append("(SELECT `" + tmpPkTable + "`.`" +primaryKeyTable+ "`, " + "`" + m_entity + "`" + ".`" +primaryKeyEntity+ "` FROM "+ tmpFrom + " WHERE "+tmpWhere+ ")");
+							testJoins.append(")");
+						}
+						//print
+						System.out.println(testJoins.toString());
+						cpt2++;
+					}
+					}
+			cpt1++;
+		}
+		testResult.append(" WHERE ");
+		testResult.append(result.toString());
+		if(!testJoins.toString().isEmpty())
+		{
+			if(m_inSelect)
+			{
+				if(!m_joins.isEmpty())
+				{
+					m_joins += " AND ";
+				}
+				m_joins += "("+testJoins.toString()+")";
+				//print
+				System.out.println(m_joins);
+			}
+			testResult.append(" AND ");
+			testResult.append("(" + testJoins + ")");
+		}
+		testResult.append(")");
+		if(!m_inSelect)
+		{
+			result = testResult;
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context) throws Exception
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -297,7 +427,7 @@ System.out.println(query);
 
 			/**/ if(child instanceof MQLParser.ExpressionMulDivContext)
 			{
-				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child));
+				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child, pathListList));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -315,7 +445,7 @@ System.out.println(query);
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context) throws Exception
+	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -331,7 +461,7 @@ System.out.println(query);
 
 			/**/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext)
 			{
-				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child));
+				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, pathListList));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -349,7 +479,7 @@ System.out.println(query);
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context) throws Exception
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -366,15 +496,15 @@ System.out.println(query);
 
 		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
 		{
-			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child));
+			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, pathListList));
 		}
 		else if(child instanceof MQLParser.ExpressionFunctionContext)
 		{
-			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
+			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, pathListList));
 		}
 		else if(child instanceof MQLParser.ExpressionQIdContext)
 		{
-			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
+			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, pathListList));
 		}
 		else if(child instanceof MQLParser.ExpressionLiteralContext)
 		{
@@ -388,23 +518,23 @@ System.out.println(query);
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context) throws Exception
+	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, List<PathList> pathListList) throws Exception
 	{
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.expression))
+		                          .append(visitExpressionOr(context.expression, pathListList))
 		                          .append(")")
 		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
+	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, List<PathList> pathListList) throws Exception
 	{
 		m_inFunction = true;
 
 		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
 		/**/	                                          .append("(")
-		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression))
+		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression, pathListList))
 		/**/	                                          .append(")")
 		/**/	;
 
@@ -415,9 +545,9 @@ System.out.println(query);
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context) throws Exception
+	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<PathList> pathListList) throws Exception
 	{
-		return visitSqlQId(context.qId);
+		return visitSqlQId(context.qId, pathListList);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -429,7 +559,7 @@ System.out.println(query);
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext context) throws Exception
+	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext context, List<PathList> pathListList) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
@@ -463,19 +593,13 @@ System.out.println(query);
 
 		/*-----------------------------------------------------------------*/
 
-		QId resolvedQId;
+		PathList pathList;
 
 		for(String qId: list)
 		{
-			resolvedQId = AutoJoinSingleton.resolve(
-				m_islets,
-				m_externalCatalog,
-				m_entity,
-				qId,
-				null
-			);
-
-			result.add(resolvedQId.toString());
+			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId);
+			result.add(pathList.getQId().toString());
+			pathListList.add(pathList);
 		}
 
 		/*-----------------------------------------------------------------*/
