@@ -313,6 +313,7 @@ public class MQLToSQL
 		{
 				String tmpTable = "`" +pathList.getQId().getTable()+"`" ;
 				String tmpPkTable = pathList.getQId().getTable();
+				String tmpPkCatalog = pathList.getQId().getCatalog();
 				if(!tmpPkTable.equals(m_entity))
 				{
 					testResult.append(", `" +pathList.getQId().getTable() + "` ");
@@ -321,8 +322,7 @@ public class MQLToSQL
 						m_from.add(pathList.getQId().getTable());
 					}
 				}
-				// here put good externalCatalog for tmpTable ?
-				String primaryKeyTable = SchemaSingleton.getPrimaryKey(m_externalCatalog, tmpPkTable);
+				String primaryKeyTable = SchemaSingleton.getPrimaryKey(tmpPkCatalog, tmpPkTable);
 				if(cpt1 > 0)
 				{
 					testJoins.append("  AND ");
