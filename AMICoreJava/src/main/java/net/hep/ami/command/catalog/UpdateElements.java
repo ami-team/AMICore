@@ -98,7 +98,9 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = getQuerier(catalog).executeSQLUpdate(sql);
+		System.out.println(sql);
+		int nb = 0;
+//		int nb = getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 

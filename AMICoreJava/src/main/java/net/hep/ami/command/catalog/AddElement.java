@@ -75,21 +75,23 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
+		System.out.println(sql);
+
+/*		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
 
 		statement.execute();
-
+*/
 		/*-----------------------------------------------------------------*/
-
+/*
 		ResultSet resultSet = statement.getGeneratedKeys();
 
 		long generatedKey = resultSet.next() ? resultSet.getLong(1) : 0;
-
+*/
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder().append("<mql><![CDATA[").append(mql).append("]]></mql>")
 		                          .append("<sql><![CDATA[").append(sql).append("]]></sql>")
-		                          .append("<rowset><row><field name=\"generatedKey\"><![CDATA[").append(generatedKey).append("]]></field></row></rowset>")
+//		                          .append("<rowset><row><field name=\"generatedKey\"><![CDATA[").append(generatedKey).append("]]></field></row></rowset>")
 		                          .append("<info><![CDATA[1 element inserted with success]]></info>")
 		;
 	}
