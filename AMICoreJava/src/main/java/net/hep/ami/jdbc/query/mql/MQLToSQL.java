@@ -202,6 +202,7 @@ public class MQLToSQL
 
 		if(context.expression != null)
 		{
+			//todo
 			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
 
 			if(m_joins.isEmpty() == false)

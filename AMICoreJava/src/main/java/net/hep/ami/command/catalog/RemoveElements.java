@@ -38,7 +38,7 @@ public class RemoveElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || keyFields.length == 0 || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || (keyFields.length == 0 && where.isEmpty()) || keyFields.length != keyValues.length)
 		{
 			throw new Exception("invalid usage");
 		}
@@ -63,6 +63,8 @@ public class RemoveElements extends AbstractCommand
 			whereList.add(where);
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		if(whereList.isEmpty() == false)
 		{
 			stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
@@ -76,7 +78,9 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = getQuerier(catalog).executeSQLUpdate(sql);
+		System.out.println(sql);
+		int nb = 0;
+		//int nb = getQuerier(catalog).executeSQLUpdate(sql);
 
 		/*-----------------------------------------------------------------*/
 
