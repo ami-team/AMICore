@@ -29,7 +29,7 @@ public class MQLToSQL
 	
 	private String m_joins = "";
 	private List<String> m_from = new ArrayList<String>();
-	private int m_maxPathLength = 6;
+	private int m_maxPathLength = 4;
 
 	/*---------------------------------------------------------------------*/
 
@@ -333,54 +333,51 @@ public class MQLToSQL
 				System.out.println("tmpJoins: " + tmpPkTable);
 				for (List<FrgnKey> list : paths) 
 				{
-					if(list.size() <= m_maxPathLength)
-					{
-						//print
-						String tmpFrom = "";
-						String tmpWhere = "";
-						int cpt3 = 0;
-						for (FrgnKey frgnKey : list) {
-							if(cpt3 > 0)
-							{
-								tmpWhere += " AND ";
-							}
-							//for order, change algorithm here?
-							if(!fromList.contains(frgnKey.fkTable))
-							{
-								fromList.add(frgnKey.fkTable);
-							}
-							if(!fromList.contains(frgnKey.pkTable))
-							{
-								fromList.add(frgnKey.pkTable);
-							}
-							//here too ?
-							tmpWhere += frgnKey.toString();
-							cpt3++;
-						}
-						if(!tmpWhere.isEmpty())
+					//print
+					String tmpFrom = "";
+					String tmpWhere = "";
+					int cpt3 = 0;
+					for (FrgnKey frgnKey : list) {
+						if(cpt3 > 0)
 						{
-							if(cpt2 > 0)
-							{
-								tmpJoins.append(" OR ");
-							}
-							tmpJoins.append("(");
-							tmpJoins.append("(`" + tmpPkTable + "`.`" + primaryKeyTable + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
-							for (int cpt4 = 0; cpt4 < fromList.size(); cpt4++) 
-							{
-								if(cpt4 > 0)
-								{
-									tmpFrom += ",";
-								}
-								tmpFrom += "`" + fromList.get(cpt4) + "`";
-							}
-							tmpJoins.append("(SELECT `" + tmpPkTable + "`.`" + primaryKeyTable + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ tmpFrom + " WHERE "+ tmpWhere + ")");
-							tmpJoins.append(")");
-							System.out.println("tmpWhere: " + tmpWhere);
+							tmpWhere += " AND ";
 						}
-						//print
-						System.out.println(tmpJoins.toString());
-						cpt2++;
+						//for order, change algorithm here?
+						if(!fromList.contains(frgnKey.fkTable))
+						{
+							fromList.add(frgnKey.fkTable);
+						}
+						if(!fromList.contains(frgnKey.pkTable))
+						{
+							fromList.add(frgnKey.pkTable);
+						}
+						//here too ?
+						tmpWhere += frgnKey.toString();
+						cpt3++;
 					}
+					if(!tmpWhere.isEmpty())
+					{
+						if(cpt2 > 0)
+						{
+							tmpJoins.append(" OR ");
+						}
+						tmpJoins.append("(");
+						tmpJoins.append("(`" + tmpPkTable + "`.`" + primaryKeyTable + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
+						for (int cpt4 = 0; cpt4 < fromList.size(); cpt4++) 
+						{
+							if(cpt4 > 0)
+							{
+								tmpFrom += ",";
+							}
+							tmpFrom += "`" + fromList.get(cpt4) + "`";
+						}
+						tmpJoins.append("(SELECT `" + tmpPkTable + "`.`" + primaryKeyTable + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ tmpFrom + " WHERE "+ tmpWhere + ")");
+						tmpJoins.append(")");
+						System.out.println("tmpWhere: " + tmpWhere);
+					}
+					//print
+					System.out.println(tmpJoins.toString());
+					cpt2++;
 					}
 			cpt1++;
 		}
@@ -600,7 +597,8 @@ public class MQLToSQL
 
 		for(String qId: list)
 		{
-			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId);
+			//pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId);
+			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
 			result.add(pathList.getQId().toString());
 			pathListList.add(pathList);
 		}
