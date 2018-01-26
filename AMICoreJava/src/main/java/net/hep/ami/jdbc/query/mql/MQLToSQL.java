@@ -311,7 +311,6 @@ public class MQLToSQL
 		int cpt1 = 0;
 		for (PathList pathList : pathListList) 
 		{
-				String tmpTable = "`" + pathList.getQId().getTable() + "`" ;
 				String tmpPkTable = pathList.getQId().getTable();
 				String tmpPkCatalog = pathList.getQId().getCatalog();
 				if(!tmpPkTable.equals(m_entity))
@@ -362,7 +361,7 @@ public class MQLToSQL
 								testJoins.append(" OR ");
 							}
 							testJoins.append("(");
-							testJoins.append("(" + tmpTable + ".`" + primaryKeyTable + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
+							testJoins.append("(`" + tmpPkTable + "`.`" + primaryKeyTable + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
 							for (int cpt4 = 0; cpt4 < fromList.size(); cpt4++) 
 							{
 								if(cpt4 > 0)
