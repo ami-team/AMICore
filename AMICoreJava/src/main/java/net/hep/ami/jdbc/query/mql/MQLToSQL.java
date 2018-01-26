@@ -304,10 +304,10 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 		//todo: modify in update and remove element key fields and key values arguments for a unique MQL statement  argument (it will allow much more possibilities, like other comparator than equality)
-		StringBuilder testResult = new StringBuilder();
 		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
-		testResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
-		StringBuilder testJoins = new StringBuilder();
+		StringBuilder tmpResult = new StringBuilder();
+		StringBuilder tmpJoins = new StringBuilder();
+		tmpResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
 		int cpt1 = 0;
 		for (PathList pathList : pathListList) 
 		{
@@ -315,20 +315,20 @@ public class MQLToSQL
 				String tmpPkCatalog = pathList.getQId().getCatalog();
 				if(!tmpPkTable.equals(m_entity))
 				{
-					testResult.append(", `" + pathList.getQId().getTable() + "` ");
-					if(m_inSelect && !m_from.contains(pathList.getQId().getTable()))
+					tmpResult.append(", `" + tmpPkTable + "` ");
+					if(m_inSelect && !m_from.contains(tmpPkTable))
 					{
-						m_from.add(pathList.getQId().getTable());
+						m_from.add(tmpPkTable);
 					}
 				}
 				String primaryKeyTable = SchemaSingleton.getPrimaryKey(tmpPkCatalog, tmpPkTable);
 				if(cpt1 > 0)
 				{
-					testJoins.append("  AND ");
+					tmpJoins.append("  AND ");
 				}
-				int cpt2 = 0;
 				List<String> fromList = new ArrayList<String>();
 				List<List<FrgnKey>> paths = pathList.getPaths();
+				int cpt2 = 0;
 				for (List<FrgnKey> list : paths) 
 				{
 					if(list.size() <= m_maxPathLength)
@@ -358,10 +358,10 @@ public class MQLToSQL
 						{
 							if(cpt2 > 0)
 							{
-								testJoins.append(" OR ");
+								tmpJoins.append(" OR ");
 							}
-							testJoins.append("(");
-							testJoins.append("(`" + tmpPkTable + "`.`" + primaryKeyTable + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
+							tmpJoins.append("(");
+							tmpJoins.append("(`" + tmpPkTable + "`.`" + primaryKeyTable + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
 							for (int cpt4 = 0; cpt4 < fromList.size(); cpt4++) 
 							{
 								if(cpt4 > 0)
@@ -370,19 +370,19 @@ public class MQLToSQL
 								}
 								tmpFrom += "`" + fromList.get(cpt4) + "`";
 							}
-							testJoins.append("(SELECT `" + tmpPkTable + "`.`" + primaryKeyTable + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ tmpFrom + " WHERE "+ tmpWhere + ")");
-							testJoins.append(")");
+							tmpJoins.append("(SELECT `" + tmpPkTable + "`.`" + primaryKeyTable + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ tmpFrom + " WHERE "+ tmpWhere + ")");
+							tmpJoins.append(")");
 						}
 						//print
-						System.out.println(testJoins.toString());
+						System.out.println(tmpJoins.toString());
 						cpt2++;
 					}
 					}
 			cpt1++;
 		}
-		testResult.append(" WHERE ");
-		testResult.append(result.toString());
-		if(!testJoins.toString().isEmpty())
+		tmpResult.append(" WHERE ");
+		tmpResult.append(result.toString());
+		if(!tmpJoins.toString().isEmpty())
 		{
 			if(m_inSelect)
 			{
@@ -390,17 +390,17 @@ public class MQLToSQL
 				{
 					m_joins += " AND ";
 				}
-				m_joins += "(" + testJoins.toString() + ")";
+				m_joins += "(" + tmpJoins.toString() + ")";
 				//print
 				System.out.println(m_joins);
 			}
-			testResult.append(" AND ");
-			testResult.append("(" + testJoins + ")");
+			tmpResult.append(" AND ");
+			tmpResult.append("(" + tmpJoins + ")");
 		}
-		testResult.append(")");
+		tmpResult.append(")");
 		if(!m_inSelect)
 		{
-			result = testResult;
+			result = tmpResult;
 		}
 
 		/*-----------------------------------------------------------------*/
