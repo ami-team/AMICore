@@ -16,6 +16,13 @@ selectStatement
 	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (ORDER BY orderBy=sqlQId (orderWay=(ASC|DESC))?)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
 	;
 
+insertStatement
+	: INSERT '(' qIds=qIdList ')' VALUES '(' expressions=expressionList ')'
+	;
+
+updateStatement
+	: UPDATE SET assigns=assignList (WHERE expression=expressionOr)?
+	;
 
 deleteStatement
 	: DELETE (WHERE expression=expressionOr)?
@@ -26,11 +33,47 @@ deleteStatement
 /*---------------------------*/
 
 columnList
-	: column (',' column)*
+	: aColumn (',' aColumn)*
 	;
 
-column
-	: expression=expressionOr (AS alias=ID)?
+aColumn
+	: expression=expressionAddSub (AS alias=ID)?
+	;
+
+/*---------------------------*/
+/* COLUMN_LIST               */
+/*---------------------------*/
+
+qIdList
+	: aQId (',' aQId)*
+	;
+
+aQId
+	: qId=sqlQId
+	;
+
+/*---------------------------*/
+/* EXPRESSION_LIST           */
+/*---------------------------*/
+
+expressionList
+	: anExpression (',' anExpression)*
+	;
+
+anExpression
+	: expression=expressionAddSub
+	;
+
+/*---------------------------*/
+/* ASSIGN_LIST               */
+/*---------------------------*/
+
+assignList
+	: anAssign (',' anAssign)*
+	;
+
+anAssign
+	: qId=sqlQId '=' expression=expressionAddSub
 	;
 
 /*---------------------------*/
@@ -62,12 +105,10 @@ expressionNotPlusMinus
 	;
 
 expressionX
-	: '(' expression=expressionOr ')'                                          # ExpressionGroup
-	| functionName=FUNCTION '('
-	    (distinct=DISTINCT)? expression=expressionOr
-	  ')'                                                                      # ExpressionFunction
-	| literal=sqlLiteral                                                       # ExpressionLiteral
-	| qId=sqlQId                                                               # ExpressionQId
+	: '(' expression=expressionOr ')'                                                 # ExpressionGroup
+	| functionName=FUNCTION '(' (distinct=DISTINCT)? expressions=expressionList ')'   # ExpressionFunction
+	| literal=sqlLiteral                                                              # ExpressionLiteral
+	| qId=sqlQId                                                                      # ExpressionQId
 	;
 
 /*---------------------------*/
@@ -100,12 +141,28 @@ SELECT
 	: S E L E C T
 	;
 
-DELETE
-	: D E L E T E
-	;
-
 DISTINCT
 	: D I S T I N C T
+	;
+
+INSERT
+	: I N S E R T
+	;
+
+VALUES
+	: V A L U E S
+	;
+
+UPDATE
+	: U P D A T E
+	;
+
+SET
+	: S E T
+	;
+
+DELETE
+	: D E L E T E
 	;
 
 WHERE
