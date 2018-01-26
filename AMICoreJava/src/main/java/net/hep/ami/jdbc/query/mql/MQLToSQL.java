@@ -93,7 +93,6 @@ public class MQLToSQL
 			query.setDistinct(context.distinct != null);
 
 			query.addSelectPart(visitColumnList(context.columns).toString());
-			//query.addSelectPart(visitColumnList(context.columns).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -108,7 +107,6 @@ public class MQLToSQL
 			if(!m_joins.equals(""))
 			{
 				query.addWherePart(m_joins.toString());
-				//System.out.println(m_joins);
 			}
 		}
 
@@ -597,7 +595,6 @@ public class MQLToSQL
 
 		for(String qId: list)
 		{
-			//pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId);
 			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
 			result.add(pathList.getQId().toString());
 			pathListList.add(pathList);
