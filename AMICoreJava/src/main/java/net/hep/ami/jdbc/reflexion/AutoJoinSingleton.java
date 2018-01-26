@@ -17,10 +17,17 @@ public class AutoJoinSingleton
 		PathList pathList,
 		Stack<FrgnKey> path,
 		Set<String> done,
+		int cnt,
+		int max,
 		String defaultCatalog,
 		String defaultTable,
 		QId givenQId
 	 ) throws Exception {
+
+		if(cnt >= max)
+		{
+			return;
+		}
 
 		String givenCatalog = givenQId.getCatalog();
 		String givenTable = givenQId.getTable();
@@ -58,7 +65,7 @@ public class AutoJoinSingleton
 					{
 						done.add(key);
 						path.add(frgnKey);
-						resolve(pathList, path, done, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
+						resolve(pathList, path, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
 						path.pop();
 						done.remove(key);
 					}
@@ -83,7 +90,7 @@ public class AutoJoinSingleton
 					{
 						done.add(key);
 						path.add(frgnKey);
-						resolve(pathList, path, done, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
+						resolve(pathList, path, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
 						path.pop();
 						done.remove(key);
 					}
@@ -108,20 +115,27 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static PathList resolve(String defaultCatalog, String defaultTable, QId givenQId) throws Exception
+	public static PathList resolve(String defaultCatalog, String defaultTable, QId givenQId, int max) throws Exception
 	{
 		PathList result = new PathList();
 
-		resolve(result, new Stack<>(), new HashSet<>(), defaultCatalog, defaultTable, givenQId);
+		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultCatalog, defaultTable, givenQId);
 
 		return result.check(givenQId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
+	public static PathList resolve(String defaultCatalog, String defaultTable, String givenQId, int max) throws Exception
+	{
+		return resolve(defaultCatalog, defaultTable, new QId(givenQId), max);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static PathList resolve(String defaultCatalog, String defaultTable, String givenQId) throws Exception
 	{
-		return resolve(defaultCatalog, defaultTable, new QId(givenQId));
+		return resolve(defaultCatalog, defaultTable, new QId(givenQId), 999);
 	}
 
 	/*---------------------------------------------------------------------*/
