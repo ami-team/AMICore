@@ -3,8 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
+import net.hep.ami.jdbc.query.mql.*;
 
 public class RemoveElements extends AbstractCommand
 {
@@ -46,29 +45,15 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Islets islets = new Islets();
-
-		for(int i = 0; i < keyFields.length; i++)
-		{
-			AutoJoinSingleton.resolve(
-				islets,
-				catalog,
-				entity,
-				keyFields[i],
-				keyValues[i]
-			);
-		}
+		StringBuilder stringBuilder = new StringBuilder("DELETE");
 
 		/*-----------------------------------------------------------------*/
 
 		List<String> whereList = new ArrayList<>();
 
-		for(String comp: islets.toQuery().getWhereCollection())
+		for(int i = 0; i < keyFields.length; i++)
 		{
-			comp = comp.substring(comp.indexOf('.') + 1);
-			comp = comp.substring(comp.indexOf('.') + 1);
-
-			whereList.add(comp);
+			whereList.add(keyFields[i] + "=`" + keyValues[i].replace("'", "''") + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -78,9 +63,16 @@ public class RemoveElements extends AbstractCommand
 			whereList.add(where);
 		}
 
+		if(whereList.isEmpty() == false)
+		{
+			stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
+		}
+
 		/*-----------------------------------------------------------------*/
 
-		String sql = new StringBuilder().append("DELETE FROM `").append(entity).append("`").append(" WHERE ").append(String.join(" AND ", whereList)).toString();
+		String mql = stringBuilder.toString();
+
+		String sql = MQLToSQL.parseDelete(catalog, entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -88,7 +80,8 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append("<sql><![CDATA[" + sql + "]]></sql>")
+		return new StringBuilder().append("<mql><![CDATA[" + mql + "]]></mql>")
+		                          .append("<sql><![CDATA[" + sql + "]]></sql>")
 		                          .append("<info><![CDATA[" + nb + " element(s) removed with success]]></info>")
 		;
 	}

@@ -16,6 +16,11 @@ selectStatement
 	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (ORDER BY orderBy=sqlQId (orderWay=(ASC|DESC))?)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
 	;
 
+
+deleteStatement
+	: DELETE (WHERE expression=expressionOr)?
+	;
+
 /*---------------------------*/
 /* COLUMN_LIST               */
 /*---------------------------*/
@@ -93,6 +98,10 @@ sqlLiteral
 
 SELECT
 	: S E L E C T
+	;
+
+DELETE
+	: D E L E T E
 	;
 
 DISTINCT

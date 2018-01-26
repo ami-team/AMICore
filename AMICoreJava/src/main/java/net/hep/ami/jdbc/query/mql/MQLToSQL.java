@@ -42,16 +42,15 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String catalog, String entity, String query) throws Exception
+	public static String parseSelect(String catalog, String entity, String query) throws Exception
 	{
-		return parse(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+		return parseSelect(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	public static String parseSelect(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
 	{
-//System.out.println(query);
 		/*-----------------------------------------------------------------*/
 
 		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
@@ -65,6 +64,41 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitSelectStatement(parser.selectStatement()).toString();
+
+		if(listener.isSuccess() == false)
+		{
+			throw new Exception(listener.toString());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String parseDelete(String catalog, String entity, String query) throws Exception
+	{
+		return parseDelete(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String parseDelete(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
+
+		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
+
+		/*-----------------------------------------------------------------*/
+
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
+
+		/*-----------------------------------------------------------------*/
+
+		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitDeleteStatement(parser.deleteStatement()).toString();
 
 		if(listener.isSuccess() == false)
 		{
@@ -150,6 +184,37 @@ public class MQLToSQL
 		System.out.println("");
 		System.out.println("query: " + query.toString(extra.toString()));
 		return new StringBuilder(query.toString(extra.toString()));
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitDeleteStatement(MQLParser.DeleteStatementContext context) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("DELETE FROM ").append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE));
+
+		/*-----------------------------------------------------------------*/
+
+		if(context.expression != null)
+		{
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
+
+			if(m_joins.isEmpty() == false)
+			{
+				query.addWherePart(m_joins.toString());
+			}
+
+			result.append(" WHERE ").append(query.getWherePart());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 
 		/*-----------------------------------------------------------------*/
 	}
