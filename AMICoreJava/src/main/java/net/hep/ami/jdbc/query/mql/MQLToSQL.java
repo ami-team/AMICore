@@ -334,7 +334,7 @@ public class MQLToSQL
 					if(list.size() <= m_maxPathLength)
 					{
 						//print
-						System.out.println("tmpJoins");
+						System.out.println("tmpJoins:" + tmpPkTable);
 						String tmpFrom = "";
 						String tmpWhere = "";
 						int cpt3 = 0;
