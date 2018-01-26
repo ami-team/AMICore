@@ -29,7 +29,7 @@ public class MQLToSQL
 	
 	private String m_joins = "";
 	private List<String> m_from = new ArrayList<String>();
-	private int m_maxPathLength = 5;
+	private int m_maxPathLength = 3;
 
 	/*---------------------------------------------------------------------*/
 
@@ -333,6 +333,8 @@ public class MQLToSQL
 				{
 					if(list.size() <= m_maxPathLength)
 					{
+						//print
+						System.out.println("tmpJoins");
 						String tmpFrom = "";
 						String tmpWhere = "";
 						int cpt3 = 0;
