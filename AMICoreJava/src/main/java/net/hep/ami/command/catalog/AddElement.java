@@ -56,12 +56,13 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		List<PathList> pathsList = 
+
 		Islets islets = new Islets();
 
 		for(int i = 0; i < fields.size(); i++)
 		{
 			AutoJoinSingleton.resolve(
-				islets,
 				catalog,
 				entity,
 				fields.get(i),
