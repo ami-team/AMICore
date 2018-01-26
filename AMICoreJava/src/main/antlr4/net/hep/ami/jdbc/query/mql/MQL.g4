@@ -37,7 +37,7 @@ columnList
 	;
 
 aColumn
-	: expression=expressionAddSub (AS alias=ID)?
+	: expression=expressionOr (AS alias=ID)?
 	;
 
 /*---------------------------*/
@@ -61,7 +61,7 @@ expressionList
 	;
 
 anExpression
-	: expression=expressionAddSub
+	: expression=expressionOr
 	;
 
 /*---------------------------*/
@@ -73,7 +73,7 @@ assignList
 	;
 
 anAssign
-	: qId=sqlQId '=' expression=expressionAddSub
+	: qId=sqlQId '=' expression=expressionOr
 	;
 
 /*---------------------------*/

@@ -346,7 +346,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(visitExpressionAddSub(context.expression, null));
+		result.append(visitExpressionOr(context.expression, null));
 
 		/*-----------------------------------------------------------------*/
 
@@ -408,7 +408,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionList(MQLParser.ExpressionListContext context) throws Exception
+	private StringBuilder visitExpressionList(MQLParser.ExpressionListContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -424,7 +424,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.AnExpressionContext)
 			{
-				result.append((visitAExpression((MQLParser.AnExpressionContext) child).toString()));
+				result.append((visitAExpression((MQLParser.AnExpressionContext) child, pathListList).toString()));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -439,13 +439,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitAExpression(MQLParser.AnExpressionContext context) throws Exception
+	private StringBuilder visitAExpression(MQLParser.AnExpressionContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(visitExpressionAddSub(context.expression, null));
+		result.append(visitExpressionOr(context.expression, pathListList));
 
 		/*-----------------------------------------------------------------*/
 
@@ -777,7 +777,7 @@ public class MQLToSQL
 
 		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
 		/**/	                                          .append("(")
-		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionList(context.expressions))
+		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionList(context.expressions, pathListList))
 		/**/	                                          .append(")")
 		/**/	;
 
