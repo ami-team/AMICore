@@ -77,6 +77,76 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
+	public static String parseInsert(String catalog, String entity, String query) throws Exception
+	{
+		return parseInsert(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String parseInsert(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
+
+		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
+
+		/*-----------------------------------------------------------------*/
+
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
+
+		/*-----------------------------------------------------------------*/
+
+		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitInsertStatement(parser.insertStatement()).toString();
+
+		if(listener.isSuccess() == false)
+		{
+			throw new Exception(listener.toString());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String parseUpdate(String catalog, String entity, String query) throws Exception
+	{
+		return parseUpdate(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String parseUpdate(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
+
+		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
+
+		/*-----------------------------------------------------------------*/
+
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
+
+		/*-----------------------------------------------------------------*/
+
+		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitUpdateStatement(parser.updateStatement()).toString();
+
+		if(listener.isSuccess() == false)
+		{
+			throw new Exception(listener.toString());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String parseDelete(String catalog, String entity, String query) throws Exception
 	{
 		return parseDelete(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
@@ -135,9 +205,8 @@ public class MQLToSQL
 
 		if(context.expression != null)
 		{
-
 			query.addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
-			
+
 			if(!m_joins.equals(""))
 			{
 				query.addWherePart(m_joins.toString());
@@ -190,6 +259,24 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
+	private StringBuilder visitInsertStatement(MQLParser.InsertStatementContext context) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitUpdateStatement(MQLParser.UpdateStatementContext context) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	private StringBuilder visitDeleteStatement(MQLParser.DeleteStatementContext context) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
@@ -236,9 +323,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.ColumnContext)
+			/**/ if(child instanceof MQLParser.AColumnContext)
 			{
-				result.append((visitColumnExpression((MQLParser.ColumnContext) child).toString()));
+				result.append((visitAColumnExpression((MQLParser.AColumnContext) child).toString()));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -253,13 +340,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnExpression(MQLParser.ColumnContext context) throws Exception
+	private StringBuilder visitAColumnExpression(MQLParser.AColumnContext context) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(visitExpressionOr(context.expression, null));
+		result.append(visitExpressionAddSub(context.expression, null));
 
 		/*-----------------------------------------------------------------*/
 
@@ -267,6 +354,98 @@ public class MQLToSQL
 		{
 			result.append(" AS " + QId.quote(context.alias.getText()));
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitQIdList(MQLParser.QIdListContext context) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		ParseTree child;
+
+		final int nb = context.getChildCount();
+
+		for(int i = 0; i < nb; i++)
+		{
+			child = context.getChild(i);
+
+			/**/ if(child instanceof MQLParser.AQIdContext)
+			{
+				result.append((visitAQId((MQLParser.AQIdContext) child).toString()));
+			}
+			else if(child instanceof TerminalNode)
+			{
+				result.append(", ");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitAQId(MQLParser.AQIdContext context) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		result.append(visitSqlQId(context.qId, null));
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitExpressionList(MQLParser.ExpressionListContext context) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		ParseTree child;
+
+		final int nb = context.getChildCount();
+
+		for(int i = 0; i < nb; i++)
+		{
+			child = context.getChild(i);
+
+			/**/ if(child instanceof MQLParser.AnExpressionContext)
+			{
+				result.append((visitAExpression((MQLParser.AnExpressionContext) child).toString()));
+			}
+			else if(child instanceof TerminalNode)
+			{
+				result.append(", ");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitAExpression(MQLParser.AnExpressionContext context) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		result.append(visitExpressionAddSub(context.expression, null));
 
 		/*-----------------------------------------------------------------*/
 
@@ -598,7 +777,7 @@ public class MQLToSQL
 
 		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
 		/**/	                                          .append("(")
-		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionOr(context.expression, pathListList))
+		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionList(context.expressions))
 		/**/	                                          .append(")")
 		/**/	;
 
