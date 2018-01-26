@@ -3,8 +3,8 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.query.mql.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
 
 public class UpdateElements extends AbstractCommand
 {
@@ -54,6 +54,10 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		StringBuilder stringBuilder = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
 		List<String> fields = new ArrayList<>();
 		List<String> values = new ArrayList<>();
 
@@ -67,76 +71,30 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Islets islets;
-
-		/*-----------------------------------------------------------------*/
-
-		islets = new Islets();
-
 		for(int i = 0; i < fields.size(); i++)
 		{
-			AutoJoinSingleton.resolve(
-				islets,
-				catalog,
-				entity,
-				fields.get(i),
-				values.get(i)
-			);
+
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		List<String> setList = new ArrayList<>();
-
-		for(String comp: islets.toQuery().getWherePart().split(" AND ", -1))
-		{
-			comp = comp.substring(comp.indexOf('.') + 1);
-			comp = comp.substring(comp.indexOf('.') + 1);
-
-			setList.add(comp);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		islets = new Islets();
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			AutoJoinSingleton.resolve(
-				islets,
-				catalog,
-				entity,
-				keyFields[i],
-				keyValues[i]
-			);
-		}
 
-		/*-----------------------------------------------------------------*/
-
-		List<String> whereList = new ArrayList<>();
-
-		for(String comp: islets.toQuery().getWhereCollection())
-		{
-			comp = comp.substring(comp.indexOf('.') + 1);
-			comp = comp.substring(comp.indexOf('.') + 1);
-
-			whereList.add(comp);
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(where.isEmpty() == false)
 		{
-			whereList.add(where);
+
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		whereList.add("1=1");
+		String mql = stringBuilder.toString();
 
-		/*-----------------------------------------------------------------*/
-
-		String sql = new StringBuilder().append("UPDATE `" + entity + "` SET ").append(String.join(",", setList)).append(" WHERE ").append(String.join(" AND ", whereList)).toString();
+		String sql = MQLToSQL.parseUpdate(catalog, entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -144,7 +102,8 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append("<sql><![CDATA[").append(sql).append("]]></sql>")
+		return new StringBuilder().append("<mql><![CDATA[").append(mql).append("]]></mql>")
+		                          .append("<sql><![CDATA[").append(sql).append("]]></sql>")
 		                          .append("<info><![CDATA[").append(nb).append(" element(s) updated with success]]></info>")
 		;
 	}

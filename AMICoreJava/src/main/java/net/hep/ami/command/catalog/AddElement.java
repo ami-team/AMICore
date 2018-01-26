@@ -4,8 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.query.mql.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
 
 public class AddElement extends AbstractCommand
 {
@@ -43,6 +43,10 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		StringBuilder stringBuilder = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
 		List<String> fields = new ArrayList<>();
 		List<String> values = new ArrayList<>();
 
@@ -56,41 +60,18 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		List<PathList> pathsList = 
-
-		Islets islets = new Islets();
 
 		for(int i = 0; i < fields.size(); i++)
 		{
-			AutoJoinSingleton.resolve(
-				catalog,
-				entity,
-				fields.get(i),
-				values.get(i)
-			);
+
 		}
+
 
 		/*-----------------------------------------------------------------*/
 
-		String[] parts;
+		String mql = stringBuilder.toString();
 
-		List<String> list1 = new ArrayList<>();
-		List<String> list2 = new ArrayList<>();
-
-		for(String assign: islets.toQuery().getWhereCollection())
-		{
-			assign = assign.substring(assign.indexOf('.') + 1);
-			assign = assign.substring(assign.indexOf('.') + 1);
-
-			parts = assign.split(" IN ", 2);
-
-			list1.add(parts[0]);
-			list2.add(parts[1]);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		String sql = new StringBuilder().append("INSERT INTO `").append(entity).append("`").append(" (" + String.join(",", list1) + ") VALUES (" + String.join(",", list2) + ")").toString();
+		String sql = MQLToSQL.parseInsert(catalog, entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -106,7 +87,8 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append("<sql><![CDATA[").append(sql).append("]]></sql>")
+		return new StringBuilder().append("<mql><![CDATA[").append(mql).append("]]></mql>")
+		                          .append("<sql><![CDATA[").append(sql).append("]]></sql>")
 		                          .append("<rowset><row><field name=\"generatedKey\"><![CDATA[").append(generatedKey).append("]]></field></row></rowset>")
 		                          .append("<info><![CDATA[1 element inserted with success]]></info>")
 		;

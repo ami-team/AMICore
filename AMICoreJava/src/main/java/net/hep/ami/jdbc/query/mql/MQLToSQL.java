@@ -29,7 +29,7 @@ public class MQLToSQL
 	
 	private String m_joins = "";
 	private List<String> m_from = new ArrayList<String>();
-	private int m_maxPathLength = 5;
+	private int m_maxPathLength = 6;
 
 	/*---------------------------------------------------------------------*/
 
@@ -262,6 +262,10 @@ public class MQLToSQL
 	private StringBuilder visitInsertStatement(MQLParser.InsertStatementContext context) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
+
+		
+		
+		
 
 		return result;
 	}
