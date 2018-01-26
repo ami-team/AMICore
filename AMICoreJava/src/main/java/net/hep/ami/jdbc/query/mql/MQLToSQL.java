@@ -29,7 +29,7 @@ public class MQLToSQL
 	
 	private String m_joins = "";
 	private List<String> m_from = new ArrayList<String>();
-	private int m_maxPathLength = 3;
+	private int m_maxPathLength = 6;
 
 	/*---------------------------------------------------------------------*/
 
@@ -149,8 +149,8 @@ public class MQLToSQL
 		}
 		
 		/*-----------------------------------------------------------------*/
-
-		System.out.println(query.toString(extra.toString()));
+		System.out.println("");
+		System.out.println("query: " + query.toString(extra.toString()));
 		return new StringBuilder(query.toString(extra.toString()));
 
 		/*-----------------------------------------------------------------*/
@@ -329,12 +329,13 @@ public class MQLToSQL
 				List<String> fromList = new ArrayList<String>();
 				List<List<FrgnKey>> paths = pathList.getPaths();
 				int cpt2 = 0;
+				System.out.println("");
+				System.out.println("tmpJoins: " + tmpPkTable);
 				for (List<FrgnKey> list : paths) 
 				{
 					if(list.size() <= m_maxPathLength)
 					{
 						//print
-						System.out.println("tmpJoins:" + tmpPkTable);
 						String tmpFrom = "";
 						String tmpWhere = "";
 						int cpt3 = 0;
@@ -374,6 +375,7 @@ public class MQLToSQL
 							}
 							tmpJoins.append("(SELECT `" + tmpPkTable + "`.`" + primaryKeyTable + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ tmpFrom + " WHERE "+ tmpWhere + ")");
 							tmpJoins.append(")");
+							System.out.println("tmpWhere: " + tmpWhere);
 						}
 						//print
 						System.out.println(tmpJoins.toString());
