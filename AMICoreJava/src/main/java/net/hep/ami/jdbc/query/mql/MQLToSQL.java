@@ -394,7 +394,7 @@ public class MQLToSQL
 				}
 				m_joins += "(" + tmpJoins.toString() + ")";
 				//print
-				System.out.println(m_joins);
+				System.out.println("m_joins:" + m_joins);
 			}
 			tmpResult.append(" AND ");
 			tmpResult.append("(" + tmpJoins + ")");
