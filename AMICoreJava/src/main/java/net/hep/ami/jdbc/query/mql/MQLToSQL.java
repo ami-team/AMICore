@@ -550,7 +550,6 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
-		//todo: modify in update and remove element key fields and key values arguments for a unique MQL statement  argument (it will allow much more possibilities, like other comparator than equality)
 		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
 		StringBuilder tmpResult = new StringBuilder();
 		StringBuilder tmpJoins = new StringBuilder();
