@@ -17,15 +17,15 @@ selectStatement
 	;
 
 insertStatement
-	: INSERT '(' qIds=qIdList ')' VALUES '(' expressions=expressionList ')'
+	: INSERT '(' qIds=qIdList ')' VALUES '(' expressions=expressionList ')' ';'?
 	;
 
 updateStatement
-	: UPDATE SET assigns=assignList (WHERE expression=expressionOr)?
+	: UPDATE assigns=assignList (WHERE expression=expressionOr)? ';'?
 	;
 
 deleteStatement
-	: DELETE (WHERE expression=expressionOr)?
+	: DELETE (WHERE expression=expressionOr)? ';'?
 	;
 
 /*---------------------------*/
@@ -73,7 +73,7 @@ assignList
 	;
 
 anAssign
-	: qId=sqlQId '=' expression=expressionOr
+	: assign=expressionComp
 	;
 
 /*---------------------------*/
@@ -145,24 +145,8 @@ DISTINCT
 	: D I S T I N C T
 	;
 
-INSERT
-	: I N S E R T
-	;
-
-VALUES
-	: V A L U E S
-	;
-
-UPDATE
-	: U P D A T E
-	;
-
-SET
-	: S E T
-	;
-
-DELETE
-	: D E L E T E
+AS
+	: A S
 	;
 
 WHERE
@@ -193,9 +177,29 @@ OFFSET
 	: O F F S E T
 	;
 
-AS
-	: A S
+/*---------------------------*/
+
+INSERT
+	: I N S E R T
 	;
+
+VALUES
+	: V A L U E S
+	;
+
+/*---------------------------*/
+
+UPDATE
+	: U P D A T E
+	;
+
+/*---------------------------*/
+
+DELETE
+	: D E L E T E
+	;
+
+/*---------------------------*/
 
 OR
 	: O R

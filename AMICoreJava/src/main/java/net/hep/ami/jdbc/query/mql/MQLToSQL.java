@@ -346,11 +346,9 @@ public class MQLToSQL
 
 	private StringBuilder visitAColumnExpression(MQLParser.AColumnContext context) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
 		/*-----------------------------------------------------------------*/
 
-		result.append(visitExpressionOr(context.expression, null));
+		StringBuilder result = visitExpressionOr(context.expression, null);
 
 		/*-----------------------------------------------------------------*/
 
@@ -399,15 +397,7 @@ public class MQLToSQL
 
 	private StringBuilder visitAQId(MQLParser.AQIdContext context) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(visitSqlQId(context.qId, null));
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return visitSqlQId(context.qId, null);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -445,15 +435,7 @@ public class MQLToSQL
 
 	private StringBuilder visitAExpression(MQLParser.AnExpressionContext context, List<PathList> pathListList) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(visitExpressionOr(context.expression, pathListList));
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return visitExpressionOr(context.expression, pathListList);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -536,6 +518,8 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
+			System.out.println(">> " + child.getText());
+
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
 				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, pathListList));
@@ -548,6 +532,8 @@ public class MQLToSQL
 				;
 			}
 		}
+
+		System.out.println("---------");
 
 		/*-----------------------------------------------------------------*/
 		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
@@ -575,8 +561,8 @@ public class MQLToSQL
 				List<String> localFromList = new ArrayList<String>();
 				List<List<FrgnKey>> paths = pathList.getPaths();
 				boolean needOR = false;
-				System.out.println("");
-				System.out.println("local joins: " + localTableName);
+				//System.out.println("");
+				//System.out.println("local joins: " + localTableName);
 				for (List<FrgnKey> list : paths) 
 				{
 					List<String> localWhereList = new ArrayList<String>();
@@ -605,14 +591,15 @@ public class MQLToSQL
 											+ "FROM `"+ String.join("`,`", localFromList) + "` "
 											+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
 						localJoins.append(")");
-						System.out.println("localWhereList: " + localWhereList);
+						//System.out.println("localWhereList: " + localWhereList);
 					}
-					System.out.println(localJoins.toString());
+					//System.out.println(localJoins.toString());
 					needOR = true;
 					}
 				needAND = true;
 		}
 		localResult.append(" WHERE ");
+		//System.out.println("result " + result.toString());
 		localResult.append(result.toString());
 		if(!localJoins.toString().isEmpty())
 		{
@@ -828,7 +815,9 @@ public class MQLToSQL
 		for(String qId: list)
 		{
 			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
+
 			result.add(pathList.getQId().toString());
+
 			pathListList.add(pathList);
 		}
 
