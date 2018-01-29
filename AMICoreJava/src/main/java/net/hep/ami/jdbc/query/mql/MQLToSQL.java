@@ -606,6 +606,7 @@ public class MQLToSQL
 						}
 						localJoins.append("(");
 						localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
+						// change iteration here
 						for (int cpt = 0; cpt < fromList.size(); cpt++) 
 						{
 							if(cpt > 0)
@@ -614,7 +615,9 @@ public class MQLToSQL
 							}
 							localFromList.add("`" + fromList.get(cpt) + "`");
 						}
-						localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ String.join("", localFromList) + " WHERE "+ String.join("", localWhereList) + ")");
+						localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` "
+											+ "FROM "+ String.join("", localFromList) + " "
+											+ "WHERE "+ String.join("", localWhereList) + ")");
 						localJoins.append(")");
 						System.out.println("localWhereList: " + localWhereList);
 					}
