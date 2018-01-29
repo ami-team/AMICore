@@ -582,10 +582,6 @@ public class MQLToSQL
 					List<String> localFromList = new ArrayList<String>();
 					List<String> localWhereList = new ArrayList<String>();
 					for (FrgnKey frgnKey : list) {
-						if(!localWhereList.isEmpty())
-						{
-							localWhereList.add(" AND ");
-						}
 						//for order (performances), change algorithm here?
 						if(!fromList.contains(frgnKey.fkTable))
 						{
@@ -606,7 +602,7 @@ public class MQLToSQL
 						}
 						localJoins.append("(");
 						localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
-						// change iteration here
+						// change iteration here (for joins ?)
 						for (int cpt = 0; cpt < fromList.size(); cpt++) 
 						{
 							if(cpt > 0)
@@ -617,7 +613,7 @@ public class MQLToSQL
 						}
 						localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` "
 											+ "FROM "+ String.join("", localFromList) + " "
-											+ "WHERE "+ String.join("", localWhereList) + ")");
+											+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
 						localJoins.append(")");
 						System.out.println("localWhereList: " + localWhereList);
 					}
