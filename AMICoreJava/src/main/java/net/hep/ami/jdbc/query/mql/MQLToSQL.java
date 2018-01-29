@@ -183,9 +183,10 @@ public class MQLToSQL
 
 		StringBuilder tmpFields = new StringBuilder();
 		StringBuilder tmpValues = new StringBuilder();
+
 		//visitQIdList(context.qIdList(), pathListList)
 		//visitExpressionList(context.expressionList(), pathListList)
-		
+
 		result.append("INSERT INTO ")
 		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE))
 		      .append(" (")
