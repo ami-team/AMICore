@@ -22,7 +22,7 @@ public class PathList
 
 		if(m_resolvedQId == null)
 		{
-			throw new Exception("could not resolve column name `" + givenQId + "`: not found");
+			throw new Exception("could not resolve column name " + givenQId + ": not found");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -55,7 +55,7 @@ public class PathList
 		{
 			if(m_resolvedQId.equals(resolvedQId) == false)
 			{
-				throw new Exception("could not resolve column name `" + givenQId + "`: ambiguous resolution");
+				throw new Exception("could not resolve column name " + givenQId + ": ambiguous resolution");
 			}
 		}
 

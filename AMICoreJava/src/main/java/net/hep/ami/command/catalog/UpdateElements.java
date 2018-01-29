@@ -3,6 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.reflexion.structure.QId;
 import net.hep.ami.command.*;
 
 public class UpdateElements extends AbstractCommand
@@ -34,11 +35,11 @@ public class UpdateElements extends AbstractCommand
 		                                                   : new String[] {}
 		;
 
-		String[] _keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
+		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
 		                                                        : new String[] {}
 		;
 
-		String[] _keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
+		String[] keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
 		                                                        : new String[] {}
 		;
 
@@ -46,7 +47,7 @@ public class UpdateElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || _fields.length == 0 || _fields.length != _values.length || _keyFields.length != _keyValues.length)
+		if(catalog == null || entity == null || _fields.length == 0 || _fields.length != _values.length || keyFields.length != keyValues.length)
 		{
 			throw new Exception("invalid usage");
 		}
@@ -61,16 +62,16 @@ public class UpdateElements extends AbstractCommand
 
 		for(int i = 0; i < _fields.length; i++)
 		{
-			aaa.add("`" + _fields[i].replace("`", "``") + "` = '" + _values[i].replace("'", "''") + "'");
+			aaa.add(new QId(_fields[i]).toString() + " = '" + _values[i].trim().replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		List<String> whereList = new ArrayList<>();
 
-		for(int i = 0; i < _keyFields.length; i++)
+		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add("`" + _keyFields[i].replace("`", "``") + "` = '" + _keyValues[i].replace("'", "''") + "'");
+			whereList.add(new QId(keyFields[i]).toString() + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/

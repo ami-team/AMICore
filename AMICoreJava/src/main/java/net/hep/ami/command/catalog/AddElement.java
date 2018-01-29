@@ -5,6 +5,7 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.mql.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 
 public class AddElement extends AbstractCommand
 {
@@ -51,8 +52,8 @@ public class AddElement extends AbstractCommand
 
 		for(int i = 0; i < _fields.length; i++)
 		{
-			fields.add("`" + _fields[i].replace("`", "``") + "`");
-			values.add("'" + _values[i].replace("'", "''") + "'");
+			fields.add(new QId(_fields[i]).toString());
+			values.add("'" + _values[i].trim().replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -63,10 +64,11 @@ public class AddElement extends AbstractCommand
 
 		String mql = stringBuilder.toString();
 
+		System.out.println("mql: " + mql);
+
 		String sql = MQLToSQL.parse(catalog, entity, mql);
 		String ast = MQLToAST.parse(catalog, entity, mql);
 
-		System.out.println("mql: " + mql);
 		System.out.println("sql: " + sql);
 
 		/*-----------------------------------------------------------------*/

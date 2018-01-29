@@ -25,6 +25,7 @@ public class MQLToSQL
 	/*---------------------------------------------------------------------*/
 
 	private boolean m_inSelect = false;
+	private boolean m_inInsert = false;
 	private boolean m_inFunction = false;
 
 	/*---------------------------------------------------------------------*/
@@ -181,21 +182,34 @@ public class MQLToSQL
 
 		List<PathList> pathListList = new ArrayList<>();
 
-		StringBuilder tmpFields = new StringBuilder();
-		StringBuilder tmpValues = new StringBuilder();
+		m_inInsert = true;
 
-		//visitQIdList(context.qIdList(), pathListList)
-		//visitExpressionList(context.expressionList(), pathListList)
+		List<String> tmpFields = Arrays.asList(visitQIdList(context.qIdList(), pathListList).toString().split("\\s+,\\s+"));
+		List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split("\\s+,\\s+"));
 
+		m_inInsert = false;
+
+		System.out.println("tmpFields: " + tmpFields);
+		System.out.println("tmpExpressions: " + tmpExpressions);
+
+		for(PathList pathList: pathListList)
+		{
+			System.out.println(pathList.getQId());
+			System.out.println(pathList.getPaths());
+		}
+
+		System.out.println("-------------");
+
+/*
 		result.append("INSERT INTO ")
 		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE))
 		      .append(" (")
-		      .append(tmpFields)
+		      .append(fields)
 		      .append(") VALUES (")
-		      .append(tmpValues)
+		      .append(values)
 		      .append(")")
 		;
-
+*/
 		return result;
 	}
 
@@ -446,7 +460,6 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
 				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, pathListList));
@@ -461,6 +474,9 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		if(m_inInsert == false)
+		{
 		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
 		StringBuilder localResult = new StringBuilder();
 		StringBuilder localJoins = new StringBuilder();
@@ -540,6 +556,7 @@ public class MQLToSQL
 		if(!m_inSelect)
 		{
 			result = localResult;
+		}
 		}
 
 		/*-----------------------------------------------------------------*/

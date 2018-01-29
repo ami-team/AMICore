@@ -3,6 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.reflexion.structure.QId;
 import net.hep.ami.command.*;
 
 public class RemoveElements extends AbstractCommand
@@ -49,7 +50,7 @@ public class RemoveElements extends AbstractCommand
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add("`" + keyFields[i].replace("`", "``") + "` = '" + keyValues[i].replace("'", "''") + "'");
+			whereList.add(new QId(keyFields[i]).toString() + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/
