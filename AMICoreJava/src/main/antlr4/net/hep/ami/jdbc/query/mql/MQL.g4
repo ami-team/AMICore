@@ -12,20 +12,26 @@ options {
 /* MQL PARSER                                                              */
 /*-------------------------------------------------------------------------*/
 
+mqlQuery
+	: (select=selectStatement | insert=insertStatement | update=updateStatement | delete=deleteStatement) ';'?
+	;
+
+/*-------------------------------------------------------------------------*/
+
 selectStatement
-	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (ORDER BY orderBy=sqlQId (orderWay=(ASC|DESC))?)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)? ';'?
+	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (ORDER BY orderBy=sqlQId (orderWay=(ASC|DESC))?)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)?
 	;
 
 insertStatement
-	: INSERT '(' qIds=qIdList ')' VALUES '(' expressions=expressionList ')' ';'?
+	: INSERT '(' qIds=qIdList ')' VALUES '(' expressions=expressionList ')'
 	;
 
 updateStatement
-	: UPDATE assigns=assignList (WHERE expression=expressionOr)? ';'?
+	: UPDATE assigns=assignList (WHERE expression=expressionOr)?
 	;
 
 deleteStatement
-	: DELETE (WHERE expression=expressionOr)? ';'?
+	: DELETE (WHERE expression=expressionOr)?
 	;
 
 /*---------------------------*/

@@ -6,7 +6,6 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
 import net.hep.ami.utility.parser.*;
@@ -15,21 +14,23 @@ public class MQLToSQL
 {
 	/*---------------------------------------------------------------------*/
 
-
-	/*---------------------------------------------------------------------*/
-
 	private final String m_externalCatalog;
 	private final String m_internalCatalog;
 	private final String m_entity;
 
 	/*---------------------------------------------------------------------*/
 
+	private int m_maxPathLength = 4;
+
+	/*---------------------------------------------------------------------*/
+
 	private boolean m_inSelect = false;
 	private boolean m_inFunction = false;
-	
-	private List<String> m_joins = new ArrayList<String>();;
+
+	/*---------------------------------------------------------------------*/
+
 	private List<String> m_from = new ArrayList<String>();
-	private int m_maxPathLength = 4;
+	private List<String> m_joins = new ArrayList<String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -42,14 +43,14 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parseSelect(String catalog, String entity, String query) throws Exception
+	public static String parse(String catalog, String entity, String query) throws Exception
 	{
-		return parseSelect(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+		return parse(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parseSelect(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	public static String parse(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -63,112 +64,27 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitSelectStatement(parser.selectStatement()).toString();
+		String result;
 
-		if(listener.isSuccess() == false)
-		{
+		MQLParser.MqlQueryContext mqlQueryContext = parser.mqlQuery();
+
+		/**/ if(mqlQueryContext.select != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitSelectStatement(mqlQueryContext.select).toString();
+		}
+		else if(mqlQueryContext.insert != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitInsertStatement(mqlQueryContext.insert).toString();
+		}
+		else if(mqlQueryContext.update != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitUpdateStatement(mqlQueryContext.update).toString();
+		}
+		else if(mqlQueryContext.delete != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitDeleteStatement(mqlQueryContext.delete).toString();
+		}
+		else {
 			throw new Exception(listener.toString());
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String parseInsert(String catalog, String entity, String query) throws Exception
-	{
-		return parseInsert(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String parseInsert(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
-
-		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
-
-		/*-----------------------------------------------------------------*/
-
-		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
-
-		/*-----------------------------------------------------------------*/
-
-		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitInsertStatement(parser.insertStatement()).toString();
-
-		if(listener.isSuccess() == false)
-		{
-			throw new Exception(listener.toString());
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String parseUpdate(String catalog, String entity, String query) throws Exception
-	{
-		return parseUpdate(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String parseUpdate(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
-
-		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
-
-		/*-----------------------------------------------------------------*/
-
-		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
-
-		/*-----------------------------------------------------------------*/
-
-		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitUpdateStatement(parser.updateStatement()).toString();
-
-		if(listener.isSuccess() == false)
-		{
-			throw new Exception(listener.toString());
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String parseDelete(String catalog, String entity, String query) throws Exception
-	{
-		return parseDelete(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String parseDelete(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
-
-		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
-
-		/*-----------------------------------------------------------------*/
-
-		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
-
-		/*-----------------------------------------------------------------*/
-
-		String result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitDeleteStatement(parser.deleteStatement()).toString();
 
 		if(listener.isSuccess() == false)
 		{
@@ -556,14 +472,14 @@ public class MQLToSQL
 					localJoins.append("  AND ");
 				}
 				List<String> localFromList = new ArrayList<String>();
-				List<List<FrgnKey>> paths = pathList.getPaths();
+				List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
 				boolean needOR = false;
 				System.out.println("");
 				System.out.println("local joins: " + localTableName);
-				for (List<FrgnKey> list : paths) 
+				for (List<SchemaSingleton.FrgnKey> list : paths) 
 				{
 					List<String> localWhereList = new ArrayList<String>();
-					for (FrgnKey frgnKey : list) {
+					for (SchemaSingleton.FrgnKey frgnKey : list) {
 						//for order (performances), change algorithm here?
 						if(!localFromList.contains(frgnKey.fkTable))
 						{
