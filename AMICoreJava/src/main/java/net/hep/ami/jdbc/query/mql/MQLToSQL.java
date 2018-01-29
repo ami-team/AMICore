@@ -551,44 +551,42 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
-		StringBuilder tmpResult = new StringBuilder();
-		StringBuilder tmpJoins = new StringBuilder();
-		tmpResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
-		int cpt1 = 0;
+		StringBuilder localResult = new StringBuilder();
+		StringBuilder localJoins = new StringBuilder();
+		localResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
+		boolean needAND = false;
 		for (PathList pathList : pathListList) 
 		{
-				String tmpPkTable = pathList.getQId().getTable();
-				String tmpPkCatalog = pathList.getQId().getCatalog();
-				if(!tmpPkTable.equals(m_entity))
+				String localTableName = pathList.getQId().getTable();
+				String localCatalogName = pathList.getQId().getCatalog();
+				if(!localTableName.equals(m_entity))
 				{
-					tmpResult.append(", `" + tmpPkTable + "` ");
-					if(m_inSelect && !m_from.contains(tmpPkTable))
+					localResult.append(", `" + localTableName + "` ");
+					if(m_inSelect && !m_from.contains(localTableName))
 					{
-						m_from.add(tmpPkTable);
+						m_from.add(localTableName);
 					}
 				}
-				String primaryKeyTable = SchemaSingleton.getPrimaryKey(tmpPkCatalog, tmpPkTable);
-				if(cpt1 > 0)
+				String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(localCatalogName, localTableName);
+				if(needAND)
 				{
-					tmpJoins.append("  AND ");
+					localJoins.append("  AND ");
 				}
 				List<String> fromList = new ArrayList<String>();
 				List<List<FrgnKey>> paths = pathList.getPaths();
-				int cpt2 = 0;
+				boolean needOR = false;
 				System.out.println("");
-				System.out.println("tmpJoins: " + tmpPkTable);
+				System.out.println("local joins: " + localTableName);
 				for (List<FrgnKey> list : paths) 
 				{
-					//print
-					String tmpFrom = "";
-					String tmpWhere = "";
-					int cpt3 = 0;
+					List<String> localFromList = new ArrayList<String>();
+					List<String> localWhereList = new ArrayList<String>();
 					for (FrgnKey frgnKey : list) {
-						if(cpt3 > 0)
+						if(!localWhereList.isEmpty())
 						{
-							tmpWhere += " AND ";
+							localWhereList.add(" AND ");
 						}
-						//for order, change algorithm here?
+						//for order (performances), change algorithm here?
 						if(!fromList.contains(frgnKey.fkTable))
 						{
 							fromList.add(frgnKey.fkTable);
@@ -597,39 +595,38 @@ public class MQLToSQL
 						{
 							fromList.add(frgnKey.pkTable);
 						}
-						//here too ?
-						tmpWhere += frgnKey.toString();
-						cpt3++;
+						//here as well ?
+						localWhereList.add(frgnKey.toString());
 					}
-					if(!tmpWhere.isEmpty())
+					if(!localWhereList.isEmpty())
 					{
-						if(cpt2 > 0)
+						if(needOR)
 						{
-							tmpJoins.append(" OR ");
+							localJoins.append(" OR ");
 						}
-						tmpJoins.append("(");
-						tmpJoins.append("(`" + tmpPkTable + "`.`" + primaryKeyTable + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
-						for (int cpt4 = 0; cpt4 < fromList.size(); cpt4++) 
+						localJoins.append("(");
+						localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
+						for (int cpt = 0; cpt < fromList.size(); cpt++) 
 						{
-							if(cpt4 > 0)
+							if(cpt > 0)
 							{
-								tmpFrom += ",";
+								localFromList.add(",");
 							}
-							tmpFrom += "`" + fromList.get(cpt4) + "`";
+							localFromList.add("`" + fromList.get(cpt) + "`");
 						}
-						tmpJoins.append("(SELECT `" + tmpPkTable + "`.`" + primaryKeyTable + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ tmpFrom + " WHERE "+ tmpWhere + ")");
-						tmpJoins.append(")");
-						System.out.println("tmpWhere: " + tmpWhere);
+						localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` FROM "+ String.join("", localFromList) + " WHERE "+ String.join("", localWhereList) + ")");
+						localJoins.append(")");
+						System.out.println("localWhereList: " + localWhereList);
 					}
 					//print
-					System.out.println(tmpJoins.toString());
-					cpt2++;
+					System.out.println(localJoins.toString());
+					needOR = true;
 					}
-			cpt1++;
+				needAND = true;
 		}
-		tmpResult.append(" WHERE ");
-		tmpResult.append(result.toString());
-		if(!tmpJoins.toString().isEmpty())
+		localResult.append(" WHERE ");
+		localResult.append(result.toString());
+		if(!localJoins.toString().isEmpty())
 		{
 			if(m_inSelect)
 			{
@@ -637,17 +634,17 @@ public class MQLToSQL
 				{
 					m_joins += " AND ";
 				}
-				m_joins += "(" + tmpJoins.toString() + ")";
+				m_joins += "(" + localJoins.toString() + ")";
 				//print
 				System.out.println("m_joins:" + m_joins);
 			}
-			tmpResult.append(" AND ");
-			tmpResult.append("(" + tmpJoins + ")");
+			localResult.append(" AND ");
+			localResult.append("(" + localJoins + ")");
 		}
-		tmpResult.append(")");
+		localResult.append(")");
 		if(!m_inSelect)
 		{
-			result = tmpResult;
+			result = localResult;
 		}
 
 		/*-----------------------------------------------------------------*/
