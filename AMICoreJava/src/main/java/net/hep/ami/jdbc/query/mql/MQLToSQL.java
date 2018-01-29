@@ -29,7 +29,7 @@ public class MQLToSQL
 	
 	private String m_joins = "";
 	private List<String> m_from = new ArrayList<String>();
-	private int m_maxPathLength = 6;
+	private int m_maxPathLength = 5;
 
 	/*---------------------------------------------------------------------*/
 
