@@ -596,7 +596,7 @@ public class MQLToSQL
 				needAND = true;
 		}
 		localResult.append(" WHERE ");
-		System.out.println("result " + result.toString());
+		System.out.println("result: " + result.toString());
 		localResult.append(result.toString());
 		if(!localJoins.toString().isEmpty())
 		{
