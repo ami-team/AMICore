@@ -605,10 +605,8 @@ public class MQLToSQL
 											+ "FROM `"+ String.join("`,`", localFromList) + "` "
 											+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
 						localJoins.append(")");
-						//print
 						System.out.println("localWhereList: " + localWhereList);
 					}
-					//print
 					System.out.println(localJoins.toString());
 					needOR = true;
 					}
@@ -625,7 +623,6 @@ public class MQLToSQL
 					m_joins += " AND ";
 				}
 				m_joins += "(" + localJoins.toString() + ")";
-				//print
 				System.out.println("m_joins:" + m_joins);
 			}
 			localResult.append(" AND ");
