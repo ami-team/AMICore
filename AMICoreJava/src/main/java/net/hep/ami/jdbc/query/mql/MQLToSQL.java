@@ -27,9 +27,9 @@ public class MQLToSQL
 	private boolean m_inSelect = false;
 	private boolean m_inFunction = false;
 	
-	private String m_joins = "";
+	private List<String> m_joins = new ArrayList<String>();;
 	private List<String> m_from = new ArrayList<String>();
-	private int m_maxPathLength = 5;
+	private int m_maxPathLength = 4;
 
 	/*---------------------------------------------------------------------*/
 
@@ -209,7 +209,7 @@ public class MQLToSQL
 
 			if(!m_joins.equals(""))
 			{
-				query.addWherePart(m_joins.toString());
+				query.addWherePart(String.join(" AND ", m_joins));
 			}
 		}
 
@@ -298,7 +298,7 @@ public class MQLToSQL
 
 			if(m_joins.isEmpty() == false)
 			{
-				query.addWherePart(m_joins.toString());
+				query.addWherePart(String.join(" AND ", m_joins));
 			}
 
 			result.append(" WHERE ").append(query.getWherePart());
@@ -602,12 +602,8 @@ public class MQLToSQL
 		{
 			if(m_inSelect)
 			{
-				if(!m_joins.isEmpty())
-				{
-					m_joins += " AND ";
-				}
-				m_joins += "(" + localJoins.toString() + ")";
-				System.out.println("m_joins:" + m_joins);
+				m_joins.add("(" + localJoins.toString() + ")");
+				System.out.println("m_joins:" + m_joins.toString());
 			}
 			localResult.append(" AND ");
 			localResult.append("(" + localJoins + ")");
