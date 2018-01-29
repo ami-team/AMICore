@@ -55,7 +55,7 @@ public class MQLToAST
 
 		/*-----------------------------------------------------------------*/
 
-		String result = new MQLToAST(externalCatalog, entity, Arrays.asList(parser.getRuleNames())).visitSelectStatement(parser.selectStatement()).toString();
+		String result = new MQLToAST(externalCatalog, entity, Arrays.asList(parser.getRuleNames())).visitMQLQuery(parser.mqlQuery()).toString();
 
 		if(listener.isSuccess() == false)
 		{
@@ -69,7 +69,7 @@ public class MQLToAST
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context)
+	private StringBuilder visitMQLQuery(MQLParser.MqlQueryContext context)
 	{
 		StringBuilder nodes = new StringBuilder();
 		StringBuilder edges = new StringBuilder();
