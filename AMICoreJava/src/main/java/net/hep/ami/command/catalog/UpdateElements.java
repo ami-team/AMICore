@@ -1,6 +1,7 @@
 package net.hep.ami.command.catalog;
 
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
@@ -22,7 +23,7 @@ public class UpdateElements extends AbstractCommand
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
-		String separator = arguments.containsKey("separator") ? arguments.get("separator")
+		String separator = arguments.containsKey("separator") ? Pattern.quote(arguments.get("separator"))
 		                                                      : ","
 		;
 
@@ -35,11 +36,11 @@ public class UpdateElements extends AbstractCommand
 		;
 
 		String[] _keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
-		                                                        : new String[] {}
+		                                                         : new String[] {}
 		;
 
 		String[] _keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
-		                                                        : new String[] {}
+		                                                         : new String[] {}
 		;
 
 		String where = arguments.containsKey("where") ? arguments.get("where").trim()

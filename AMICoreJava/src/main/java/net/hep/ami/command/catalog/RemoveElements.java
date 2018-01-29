@@ -1,6 +1,7 @@
 package net.hep.ami.command.catalog;
 
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
@@ -22,7 +23,7 @@ public class RemoveElements extends AbstractCommand
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
-		String separator = arguments.containsKey("separator") ? arguments.get("separator")
+		String separator = arguments.containsKey("separator") ? Pattern.quote(arguments.get("separator"))
 		                                                      : ","
 		;
 

@@ -2,6 +2,7 @@ package net.hep.ami.command.catalog;
 
 import java.sql.*;
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.mql.*;
@@ -23,7 +24,7 @@ public class AddElement extends AbstractCommand
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
-		String separator = arguments.containsKey("separator") ? arguments.get("separator")
+		String separator = arguments.containsKey("separator") ? Pattern.quote(arguments.get("separator"))
 		                                                      : ","
 		;
 
