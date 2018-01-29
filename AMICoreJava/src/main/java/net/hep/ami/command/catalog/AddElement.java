@@ -66,9 +66,10 @@ public class AddElement extends AbstractCommand
 		String sql = MQLToSQL.parse(catalog, entity, mql);
 		String ast = MQLToAST.parse(catalog, entity, mql);
 
-		/*-----------------------------------------------------------------*/
+		System.out.println("mql: " + mql);
+		System.out.println("sql: " + sql);
 
-		System.out.println(sql);
+		/*-----------------------------------------------------------------*/
 
 /*		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, ast);
 
@@ -84,7 +85,7 @@ public class AddElement extends AbstractCommand
 
 		return new StringBuilder().append("<sql><![CDATA[").append(sql).append("]]></sql>")
 		                          .append("<mql><![CDATA[").append(mql).append("]]></mql>")
-		                          .append("<ast><![CDATA[").append(ast).append("]]></ast>")
+//		                          .append("<ast><![CDATA[").append(ast).append("]]></ast>")
 //		                          .append("<rowset><row><field name=\"generatedKey\"><![CDATA[").append(generatedKey).append("]]></field></row></rowset>")
 		                          .append("<info><![CDATA[1 element inserted with success]]></info>")
 		;

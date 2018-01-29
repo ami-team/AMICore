@@ -179,9 +179,22 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		
-		
-		
+		List<PathList> pathListList = new ArrayList<>();
+
+		StringBuilder tmpFields = new StringBuilder();
+		StringBuilder tmpValues = new StringBuilder();
+
+		//visitQIdList(context.qIdList(), pathListList)
+		//visitExpressionList(context.expressionList(), pathListList)
+
+		result.append("INSERT INTO ")
+		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE))
+		      .append(" (")
+		      .append(tmpFields)
+		      .append(") VALUES (")
+		      .append(tmpValues)
+		      .append(")")
+		;
 
 		return result;
 	}
@@ -209,7 +222,6 @@ public class MQLToSQL
 
 		if(context.expression != null)
 		{
-			//todo
 			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
 
 			if(m_joins.isEmpty() == false)
@@ -280,7 +292,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitQIdList(MQLParser.QIdListContext context) throws Exception
+	private StringBuilder visitQIdList(MQLParser.QIdListContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -296,7 +308,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.AQIdContext)
 			{
-				result.append((visitAQId((MQLParser.AQIdContext) child).toString()));
+				result.append((visitAQId((MQLParser.AQIdContext) child, pathListList).toString()));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -311,9 +323,9 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitAQId(MQLParser.AQIdContext context) throws Exception
+	private StringBuilder visitAQId(MQLParser.AQIdContext context, List<PathList> pathListList) throws Exception
 	{
-		return visitSqlQId(context.qId, null);
+		return visitSqlQId(context.qId, pathListList);
 	}
 
 	/*---------------------------------------------------------------------*/
