@@ -68,34 +68,34 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		RowSet queryResult;
+		RowSet result;
 
 		if(sql != null)
 		{
-			queryResult = querier.executeSQLQuery(sql + extra);
+			result = querier.executeSQLQuery(sql + extra);
 		}
 		else
 		{
-			queryResult = querier.executeMQLQuery(entity, mql + extra);
+			result = querier.executeMQLQuery(entity, mql + extra);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return queryResult.toStringBuilder();
+		return result.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Execute a simple SQL or MQL query.";
+		return "Execute a simple SQL or MQL query (select mode).";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -mql=\"\"))";
+		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -mql=\"\")) (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
 	}
 
 	/*---------------------------------------------------------------------*/

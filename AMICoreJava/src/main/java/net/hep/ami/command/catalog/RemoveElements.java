@@ -2,8 +2,8 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.query.mql.*;
 
 public class RemoveElements extends AbstractCommand
 {
@@ -45,15 +45,11 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder stringBuilder = new StringBuilder("DELETE");
-
-		/*-----------------------------------------------------------------*/
-
 		List<String> whereList = new ArrayList<>();
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add(keyFields[i] + "=`" + keyValues[i].replace("'", "''") + "`");
+			whereList.add("`" + keyFields[i].replace("`", "``") + "` = '" + keyValues[i].replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -65,6 +61,8 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		StringBuilder stringBuilder = new StringBuilder("DELETE");
+
 		if(whereList.isEmpty() == false)
 		{
 			stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
@@ -74,20 +72,13 @@ public class RemoveElements extends AbstractCommand
 
 		String mql = stringBuilder.toString();
 
-		String sql = MQLToSQL.parseDelete(catalog, entity, mql);
+		/*-----------------------------------------------------------------*/
+
+		Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println(sql);
-		int nb = 0;
-		//int nb = getQuerier(catalog).executeSQLUpdate(sql);
-
-		/*-----------------------------------------------------------------*/
-
-		return new StringBuilder().append("<mql><![CDATA[" + mql + "]]></mql>")
-		                          .append("<sql><![CDATA[" + sql + "]]></sql>")
-		                          .append("<info><![CDATA[" + nb + " element(s) removed with success]]></info>")
-		;
+		return result.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/

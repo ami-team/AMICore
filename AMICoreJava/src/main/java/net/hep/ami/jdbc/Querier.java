@@ -24,7 +24,11 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public int executeSQLUpdate(String sql, Object... args) throws Exception;
+	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public Update executeSQLUpdate(String sql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

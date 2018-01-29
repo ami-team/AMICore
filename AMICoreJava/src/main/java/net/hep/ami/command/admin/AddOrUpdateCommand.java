@@ -53,18 +53,18 @@ public class AddOrUpdateCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb;
+		Update update;
 
 		try
 		{
-			nb = querier.executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)",
+			update = querier.executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)",
 				commandName,
 				className
 			);
 		}
 		catch(Exception e)
 		{
-			nb = querier.executeSQLUpdate("UPDATE `router_command` SET `class` = ? WHERE `command` = ?",
+			update = querier.executeSQLUpdate("UPDATE `router_command` SET `class` = ? WHERE `command` = ?",
 				className,
 				commandName
 			);
@@ -73,8 +73,8 @@ public class AddOrUpdateCommand extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
-			nb > 0 ? "<info><![CDATA[done with success]]></info>"
-			       : "<error><![CDATA[nothing done]]></error>"
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

@@ -56,7 +56,7 @@ public class AddHash extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `name`, `json`, `owner`, `shared`, `expire`, `created`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
+		Update update = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `name`, `json`, `owner`, `shared`, `expire`, `created`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
 			hash,
 			name,
 			json,
@@ -67,7 +67,7 @@ public class AddHash extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		if(nb == 1)
+		if(update.getNbOfUpdatedRows() == 1)
 		{
 			return new StringBuilder().append("<rowset>")
 			                          .append("<row>")

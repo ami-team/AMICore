@@ -2,9 +2,8 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.query.mql.*;
-import net.hep.ami.jdbc.reflexion.*;
 
 public class UpdateElements extends AbstractCommand
 {
@@ -35,11 +34,11 @@ public class UpdateElements extends AbstractCommand
 		                                                   : new String[] {}
 		;
 
-		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
+		String[] _keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
 		                                                        : new String[] {}
 		;
 
-		String[] keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
+		String[] _keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
 		                                                        : new String[] {}
 		;
 
@@ -47,7 +46,7 @@ public class UpdateElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || _fields.length == 0 || _fields.length != _values.length || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || _fields.length == 0 || _fields.length != _values.length || _keyFields.length != _keyValues.length)
 		{
 			throw new Exception("invalid usage");
 		}
@@ -58,63 +57,56 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		List<String> fields = new ArrayList<>();
-		List<String> values = new ArrayList<>();
+		List<String> aaa = new ArrayList<>();
 
 		for(int i = 0; i < _fields.length; i++)
 		{
-			fields.add(_fields[i]);
-			values.add(_values[i]);
-		}
-
-		ExtraSingleton.patchFields(catalog, entity, fields, values, m_AMIUser, ExtraSingleton.Mode.UPDATE);
-
-		/*-----------------------------------------------------------------*/
-
-		for(int i = 0; i < fields.size(); i++)
-		{
-
+			aaa.add("`" + _fields[i].replace("`", "``") + "` = '" + _values[i].replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < keyFields.length; i++)
-		{
+		List<String> whereList = new ArrayList<>();
 
+		for(int i = 0; i < _keyFields.length; i++)
+		{
+			whereList.add("`" + _keyFields[i].replace("`", "``") + "` = '" + _keyValues[i].replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(where.isEmpty() == false)
 		{
+			whereList.add(where);
+		}
 
+		/*-----------------------------------------------------------------*/
+
+		stringBuilder.append("UPDATE ").append(String.join(", ", aaa));
+
+		if(whereList.isEmpty() == false)
+		{
+			stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		String mql = stringBuilder.toString();
 
-		String sql = MQLToSQL.parseUpdate(catalog, entity, mql);
+		/*-----------------------------------------------------------------*/
+
+		Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println(sql);
-		int nb = 0;
-//		int nb = getQuerier(catalog).executeSQLUpdate(sql);
-
-		/*-----------------------------------------------------------------*/
-
-		return new StringBuilder().append("<mql><![CDATA[").append(mql).append("]]></mql>")
-		                          .append("<sql><![CDATA[").append(sql).append("]]></sql>")
-		                          .append("<info><![CDATA[").append(nb).append(" element(s) updated with success]]></info>")
-		;
+		return result.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Update elements.";
+		return "Update one or more elements.";
 	}
 
 	/*---------------------------------------------------------------------*/

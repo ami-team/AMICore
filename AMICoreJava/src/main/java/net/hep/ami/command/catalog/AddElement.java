@@ -5,7 +5,6 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.mql.*;
-import net.hep.ami.jdbc.reflexion.*;
 
 public class AddElement extends AbstractCommand
 {
@@ -52,32 +51,26 @@ public class AddElement extends AbstractCommand
 
 		for(int i = 0; i < _fields.length; i++)
 		{
-			fields.add(_fields[i]);
-			values.add(_values[i]);
+			fields.add("`" + _fields[i].replace("`", "``") + "`");
+			values.add("'" + _values[i].replace("'", "''") + "'");
 		}
-
-		ExtraSingleton.patchFields(catalog, entity, fields, values, m_AMIUser, ExtraSingleton.Mode.ADD);
 
 		/*-----------------------------------------------------------------*/
 
-
-		for(int i = 0; i < fields.size(); i++)
-		{
-
-		}
-
+		stringBuilder.append("INSERT (").append(String.join(", ", fields)).append(") VALUES (").append(String.join(", ", values)).append(")");
 
 		/*-----------------------------------------------------------------*/
 
 		String mql = stringBuilder.toString();
 
 		String sql = MQLToSQL.parseInsert(catalog, entity, mql);
+		String ast = MQLToAST.parse(catalog, entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
 		System.out.println(sql);
 
-/*		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
+/*		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, ast);
 
 		statement.execute();
 */
@@ -89,8 +82,9 @@ public class AddElement extends AbstractCommand
 */
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append("<mql><![CDATA[").append(mql).append("]]></mql>")
-		                          .append("<sql><![CDATA[").append(sql).append("]]></sql>")
+		return new StringBuilder().append("<sql><![CDATA[").append(sql).append("]]></sql>")
+		                          .append("<mql><![CDATA[").append(mql).append("]]></mql>")
+		                          .append("<ast><![CDATA[").append(ast).append("]]></ast>")
 //		                          .append("<rowset><row><field name=\"generatedKey\"><![CDATA[").append(generatedKey).append("]]></field></row></rowset>")
 		                          .append("<info><![CDATA[1 element inserted with success]]></info>")
 		;

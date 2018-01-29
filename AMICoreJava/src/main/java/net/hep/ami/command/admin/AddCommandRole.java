@@ -63,7 +63,7 @@ public class AddCommandRole extends AbstractCommand
 		/* ADD ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		int nb = querier.executeSQLUpdate("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES (?, ?)",
+		Update update = querier.executeSQLUpdate("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES (?, ?)",
 			commandID,
 			roleID
 		);
@@ -71,8 +71,8 @@ public class AddCommandRole extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
-			nb > 0 ? "<info><![CDATA[done with success]]></info>"
-			       : "<error><![CDATA[nothing done]]></error>"
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

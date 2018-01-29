@@ -2,6 +2,7 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 public class SetJSONSchema extends AbstractCommand
@@ -30,13 +31,13 @@ public class SetJSONSchema extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = getQuerier("self").executeSQLUpdate("UPDATE `router_catalog` SET `custom` = ? WHERE `externalCatalog` = ?", json, catalog);
+		Update update = getQuerier("self").executeSQLUpdate("UPDATE `router_catalog` SET `custom` = ? WHERE `externalCatalog` = ?", json, catalog);
 
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
-			nb == 1 ? "<info><![CDATA[done with success]]></info>"
-			        : "<error><![CDATA[nothing done]]></error>"
+			update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
+			                                 : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

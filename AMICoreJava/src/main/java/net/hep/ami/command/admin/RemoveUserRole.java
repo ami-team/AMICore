@@ -63,7 +63,7 @@ public class RemoveUserRole extends AbstractCommand
 		/* REMOVE ROLE                                                     */
 		/*-----------------------------------------------------------------*/
 
-		int nb = querier.executeSQLUpdate("DELETE FROM `router_user_role` WHERE `commandFK` = ? AND `roleFK` = ?",
+		Update update = querier.executeSQLUpdate("DELETE FROM `router_user_role` WHERE `commandFK` = ? AND `roleFK` = ?",
 			userID,
 			roleID
 		);
@@ -71,8 +71,8 @@ public class RemoveUserRole extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
-			nb > 0 ? "<info><![CDATA[done with success]]></info>"
-			       : "<error><![CDATA[nothing done]]></error>"
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

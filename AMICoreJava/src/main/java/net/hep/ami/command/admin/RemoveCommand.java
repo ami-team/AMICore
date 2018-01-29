@@ -32,15 +32,15 @@ public class RemoveCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = querier.executeSQLUpdate("DELETE FROM `router_command` WHERE `command` = ?",
+		Update update = querier.executeSQLUpdate("DELETE FROM `router_command` WHERE `command` = ?",
 			command
 		);
 
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
-			nb > 0 ? "<info><![CDATA[done with success]]></info>"
-			       : "<error><![CDATA[nothing done]]></error>"
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

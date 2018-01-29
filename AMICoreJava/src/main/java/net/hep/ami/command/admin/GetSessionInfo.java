@@ -131,7 +131,7 @@ public class GetSessionInfo extends AbstractCommand
 				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ?, `valid` = '1' WHERE `AMIUser` = ? AND `AMIPass` = ?";
 			}
 
-			if(querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword) != 1)
+			if(querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword).getNbOfUpdatedRows() != 1)
 			{
 				throw new Exception("wrong authentication");
 			}
@@ -159,7 +159,7 @@ public class GetSessionInfo extends AbstractCommand
 				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ?, `valid` = '0' WHERE `AMIUser` = ? AND `AMIPass` = ?";
 			}
 
-			if(querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword) != 1)
+			if(querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword).getNbOfUpdatedRows() != 1)
 			{
 				throw new Exception("wrong authentication");
 			}

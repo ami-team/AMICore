@@ -74,7 +74,7 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int nb = querier.executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		Update update = querier.executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			amiLogin,
 			SecuritySingleton.encrypt(amiPassword),
 			clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,
@@ -87,8 +87,8 @@ public class AddUser extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
-			nb > 0 ? "<info><![CDATA[done with success]]></info>"
-			       : "<error><![CDATA[nothing done]]></error>"
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

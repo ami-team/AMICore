@@ -74,7 +74,15 @@ public class SimpleQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public int executeSQLUpdate(String sql, Object... args) throws Exception
+	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
+	{
+		return m_driver.executeMQLUpdate(entity, mql, args);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public Update executeSQLUpdate(String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLUpdate(sql, args);
 	}
