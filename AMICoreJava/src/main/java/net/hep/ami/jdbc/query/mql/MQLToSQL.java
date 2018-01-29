@@ -572,24 +572,23 @@ public class MQLToSQL
 				{
 					localJoins.append("  AND ");
 				}
-				List<String> fromList = new ArrayList<String>();
+				List<String> localFromList = new ArrayList<String>();
 				List<List<FrgnKey>> paths = pathList.getPaths();
 				boolean needOR = false;
 				System.out.println("");
 				System.out.println("local joins: " + localTableName);
 				for (List<FrgnKey> list : paths) 
 				{
-					List<String> localFromList = new ArrayList<String>();
 					List<String> localWhereList = new ArrayList<String>();
 					for (FrgnKey frgnKey : list) {
 						//for order (performances), change algorithm here?
-						if(!fromList.contains(frgnKey.fkTable))
+						if(!localFromList.contains(frgnKey.fkTable))
 						{
-							fromList.add(frgnKey.fkTable);
+							localFromList.add(frgnKey.fkTable);
 						}
-						if(!fromList.contains(frgnKey.pkTable))
+						if(!localFromList.contains(frgnKey.pkTable))
 						{
-							fromList.add(frgnKey.pkTable);
+							localFromList.add(frgnKey.pkTable);
 						}
 						//here as well ?
 						localWhereList.add(frgnKey.toString());
@@ -602,19 +601,11 @@ public class MQLToSQL
 						}
 						localJoins.append("(");
 						localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
-						// change iteration here (for joins ?)
-						for (int cpt = 0; cpt < fromList.size(); cpt++) 
-						{
-							if(cpt > 0)
-							{
-								localFromList.add(",");
-							}
-							localFromList.add("`" + fromList.get(cpt) + "`");
-						}
 						localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` "
-											+ "FROM "+ String.join("", localFromList) + " "
+											+ "FROM `"+ String.join("`,`", localFromList) + "` "
 											+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
 						localJoins.append(")");
+						//print
 						System.out.println("localWhereList: " + localWhereList);
 					}
 					//print
