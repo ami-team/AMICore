@@ -180,17 +180,47 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
+		List<String> tableFields = new ArrayList<String>();
+		List<String> tableValues = new ArrayList<String>();
+
+		List<String> externalFields = new ArrayList<String>();
+		List<String> externalValues = new ArrayList<String>();
+
+
 		List<PathList> pathListList = new ArrayList<>();
 
 		m_inInsert = true;
 
-		List<String> tmpFields = Arrays.asList(visitQIdList(context.qIdList(), pathListList).toString().split("\\s+,\\s+"));
-		List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split("\\s+,\\s+"));
+		//List<String> tmpFields = Arrays.asList(visitQIdList(context.qIdList(), pathListList).toString().split("\\s+,\\s+"));
+		List<String> tmpFields = Arrays.asList(visitQIdList(context.qIdList(), pathListList).toString().split(","));
+		//List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split("\\s+,\\s+"));
+		List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split(","));
 
-		m_inInsert = false;
+		Set<String> tableForeignKeyFields = SchemaSingleton.getForwardFKNames(m_internalCatalog, m_entity);
 
 		System.out.println("tmpFields: " + tmpFields);
 		System.out.println("tmpExpressions: " + tmpExpressions);
+		System.out.println("number of fields: " + tmpFields.size());
+
+		for (int i = 0; i < tmpFields.size(); i++) {
+
+			QId tmpQId = new QId(tmpFields.get(i));
+
+			if(tmpQId.getCatalog().equals(m_internalCatalog) && tmpQId.getTable().equals(m_entity) && SchemaSingleton.getColumns(m_internalCatalog, m_entity).get(tmpQId.getColumn()) != null)
+			{
+				tableFields.add(tmpFields.get(i));
+				tableValues.add(tmpExpressions.get(i));
+				tableForeignKeyFields.remove(tmpQId.getColumn().toLowerCase());
+			}
+			else
+			{
+				externalFields.add(tmpFields.get(i));
+				externalValues.add(tmpExpressions.get(i));
+			}
+		}
+
+
+		m_inInsert = false;
 
 		for(PathList pathList: pathListList)
 		{
@@ -198,18 +228,21 @@ public class MQLToSQL
 			System.out.println(pathList.getPaths());
 		}
 
+		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
+		System.out.println("fields/values to deal with: " + externalFields.toString());
+
 		System.out.println("-------------");
 
-/*
+
 		result.append("INSERT INTO ")
 		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE))
 		      .append(" (")
-		      .append(fields)
+		      .append(String.join(", ", tableFields))
 		      .append(") VALUES (")
-		      .append(values)
+		      .append(String.join(", ", tableValues))
 		      .append(")")
 		;
-*/
+
 		return result;
 	}
 
