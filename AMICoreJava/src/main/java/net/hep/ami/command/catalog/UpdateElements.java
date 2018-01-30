@@ -36,21 +36,12 @@ public class UpdateElements extends AbstractCommand
 		                                                   : new String[] {}
 		;
 
-<<<<<<< HEAD
 		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
 		                                                        : new String[] {}
 		;
 
 		String[] keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
 		                                                        : new String[] {}
-=======
-		String[] _keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
-		                                                         : new String[] {}
-		;
-
-		String[] _keyValues = arguments.containsKey("keyValues") ? arguments.get("keyValues").split(separator, -1)
-		                                                         : new String[] {}
->>>>>>> 4cf65f020a4cd28d91774b8d11f3aeec4c87b627
 		;
 
 		String where = arguments.containsKey("where") ? arguments.get("where").trim()
