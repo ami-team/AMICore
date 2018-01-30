@@ -171,21 +171,15 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
-		String SQL = "";
-		String AST = "";
-
 		try
 		{
 			sql = Tokenizer.format(sql, args);
 
-			SQL = sql;
-			AST = null;
-
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), SQL, null, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), sql, null, null);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + SQL, e);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
 		}
 	}
 
@@ -194,21 +188,21 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
 	{
-		String SQL = "";
-		String AST = "";
+		String sql = "";
+		String ast = "";
 
 		try
 		{
 			mql = Tokenizer.format(mql, args);
 
-			SQL = mqlToSQL(entity, mql);
-			AST = mqlToAST(entity, mql);
+			sql = mqlToSQL(entity, mql);
+			ast = mqlToAST(entity, mql);
 
-			return new Update(m_statement.executeUpdate(patchSQL(SQL)), SQL, mql, AST);
+			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, mql, ast);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql + " -> " + SQL, e);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql + " -> " + sql, e);
 		}
 	}
 
@@ -217,21 +211,15 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public Update executeSQLUpdate(String sql, Object... args) throws Exception
 	{
-		String SQL = "";
-		String AST = "";
-
 		try
 		{
 			sql = Tokenizer.format(sql, args);
 
-			SQL = sql;
-			AST = null;
-
-			return new Update(m_statement.executeUpdate(patchSQL(SQL)), SQL, null, AST);
+			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, null, null);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + SQL, e);
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
 		}
 	}
 
