@@ -28,6 +28,7 @@ public class MQLToSQL
 
 	private boolean m_inSelect = false;
 	private boolean m_inInsert = false;
+	private boolean m_inUpdate = false;
 	private boolean m_inFunction = false;
 
 	/*---------------------------------------------------------------------*/
@@ -159,15 +160,15 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		query.addFromPart(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE));
-		for (int i = 0; i < m_from.size(); i++) 
+
+		for(int i = 0; i < m_from.size(); i++) 
 		{
 			if(!m_from.get(i).equals(m_entity))
 			{
 				query.addFromPart(new QId(m_internalCatalog, m_from.get(i), null).toString(QId.Deepness.TABLE));
 			}
-					
 		}
-		
+
 		/*-----------------------------------------------------------------*/
 		System.out.println("");
 		System.out.println("query: " + query.toString(extra.toString()));
@@ -192,10 +193,10 @@ public class MQLToSQL
 
 		m_inInsert = true;
 
-		//List<String> tmpFields = Arrays.asList(visitQIdList(context.qIdList(), pathListList).toString().split("\\s+,\\s+"));
-		List<String> tmpFields = Arrays.asList(visitQIdList(context.qIdList(), pathListList).toString().split(","));
-		//List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split("\\s+,\\s+"));
-		List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split(","));
+		//List<String> tmpFields = Arrays.asList(visitQIdTuple(context.qIdTuple(), pathListList).toString().split("\\s+,\\s+"));
+		List<String> tmpFields = Arrays.asList(visitQIdTuple(context.qIdTuple(), pathListList).toString().split(","));
+		//List<String> tmpExpressions = Arrays.asList(visitExpressionTuple(context.expressionTuple(), pathListList).toString().split("\\s+,\\s+"));
+		List<String> tmpExpressions = Arrays.asList(visitExpressionTuple(context.expressionTuple(), pathListList).toString().split(","));
 
 		Map<String,FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
 
@@ -347,7 +348,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitQIdList(MQLParser.QIdListContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitQIdTuple(MQLParser.QIdTupleContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -361,9 +362,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.AQIdContext)
+			/**/ if(child instanceof MQLParser.SqlQIdContext)
 			{
-				result.append((visitAQId((MQLParser.AQIdContext) child, pathListList).toString()));
+				result.append((visitSqlQId((MQLParser.SqlQIdContext) child, pathListList).toString()));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -378,14 +379,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitAQId(MQLParser.AQIdContext context, List<PathList> pathListList) throws Exception
-	{
-		return visitSqlQId(context.qId, pathListList);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private StringBuilder visitExpressionList(MQLParser.ExpressionListContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<PathList> pathListList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -399,9 +393,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.AnExpressionContext)
+			/**/ if(child instanceof MQLParser.ExpressionOrContext)
 			{
-				result.append((visitAExpression((MQLParser.AnExpressionContext) child, pathListList).toString()));
+				result.append((visitExpressionOr((MQLParser.ExpressionOrContext) child, pathListList).toString()));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -412,13 +406,6 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private StringBuilder visitAExpression(MQLParser.AnExpressionContext context, List<PathList> pathListList) throws Exception
-	{
-		return visitExpressionOr(context.expression, pathListList);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -518,86 +505,86 @@ public class MQLToSQL
 
 		if(m_inInsert == false)
 		{
-		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
-		StringBuilder localResult = new StringBuilder();
-		StringBuilder localJoins = new StringBuilder();
-		localResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
-		boolean needAND = false;
-		for (PathList pathList : pathListList) 
-		{
-				String localTableName = pathList.getQId().getTable();
-				String localCatalogName = pathList.getQId().getCatalog();
-				if(!localTableName.equals(m_entity))
-				{
-					localResult.append(", `" + localTableName + "` ");
-					if(m_inSelect && !m_from.contains(localTableName))
-					{
-						m_from.add(localTableName);
-					}
-				}
-				String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(localCatalogName, localTableName);
-				if(needAND)
-				{
-					localJoins.append("  AND ");
-				}
-				List<String> localFromList = new ArrayList<String>();
-				List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
-				boolean needOR = false;
-				System.out.println("");
-				System.out.println("local joins: " + localTableName);
-				for (List<SchemaSingleton.FrgnKey> list : paths) 
-				{
-					List<String> localWhereList = new ArrayList<String>();
-					for (SchemaSingleton.FrgnKey frgnKey : list) {
-						//for order (performances), change algorithm here?
-						if(!localFromList.contains(frgnKey.fkTable))
-						{
-							localFromList.add(frgnKey.fkTable);
-						}
-						if(!localFromList.contains(frgnKey.pkTable))
-						{
-							localFromList.add(frgnKey.pkTable);
-						}
-						//here as well ?
-						localWhereList.add(frgnKey.toString());
-					}
-					if(!localWhereList.isEmpty())
-					{
-						if(needOR)
-						{
-							localJoins.append(" OR ");
-						}
-						localJoins.append("(");
-						localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
-						localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` "
-											+ "FROM `"+ String.join("`,`", localFromList) + "` "
-											+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
-						localJoins.append(")");
-						System.out.println("localWhereList: " + localWhereList);
-					}
-					System.out.println(localJoins.toString());
-					needOR = true;
-					}
-				needAND = true;
-		}
-		localResult.append(" WHERE ");
-		System.out.println("result: " + result.toString());
-		localResult.append(result.toString());
-		if(!localJoins.toString().isEmpty())
-		{
-			if(m_inSelect)
+			String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
+			StringBuilder localResult = new StringBuilder();
+			StringBuilder localJoins = new StringBuilder();
+			localResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
+			boolean needAND = false;
+			for (PathList pathList : pathListList) 
 			{
-				m_joins.add("(" + localJoins.toString() + ")");
-				System.out.println("m_joins:" + m_joins.toString());
+					String localTableName = pathList.getQId().getTable();
+					String localCatalogName = pathList.getQId().getCatalog();
+					if(!localTableName.equals(m_entity))
+					{
+						localResult.append(", `" + localTableName + "` ");
+						if(m_inSelect && !m_from.contains(localTableName))
+						{
+							m_from.add(localTableName);
+						}
+					}
+					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(localCatalogName, localTableName);
+					if(needAND)
+					{
+						localJoins.append("  AND ");
+					}
+					List<String> localFromList = new ArrayList<String>();
+					List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
+					boolean needOR = false;
+					System.out.println("");
+					System.out.println("local joins: " + localTableName);
+					for (List<SchemaSingleton.FrgnKey> list : paths) 
+					{
+						List<String> localWhereList = new ArrayList<String>();
+						for (SchemaSingleton.FrgnKey frgnKey : list) {
+							//for order (performances), change algorithm here?
+							if(!localFromList.contains(frgnKey.fkTable))
+							{
+								localFromList.add(frgnKey.fkTable);
+							}
+							if(!localFromList.contains(frgnKey.pkTable))
+							{
+								localFromList.add(frgnKey.pkTable);
+							}
+							//here as well ?
+							localWhereList.add(frgnKey.toString());
+						}
+						if(!localWhereList.isEmpty())
+						{
+							if(needOR)
+							{
+								localJoins.append(" OR ");
+							}
+							localJoins.append("(");
+							localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
+							localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` "
+												+ "FROM `"+ String.join("`,`", localFromList) + "` "
+												+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
+							localJoins.append(")");
+							System.out.println("localWhereList: " + localWhereList);
+						}
+						System.out.println(localJoins.toString());
+						needOR = true;
+						}
+					needAND = true;
 			}
-			localResult.append(" AND ");
-			localResult.append("(" + localJoins + ")");
-		}
-		localResult.append(")");
-		if(!m_inSelect)
-		{
-			result = localResult;
-		}
+			localResult.append(" WHERE ");
+			System.out.println("result: " + result.toString());
+			localResult.append(result.toString());
+			if(!localJoins.toString().isEmpty())
+			{
+				if(m_inSelect)
+				{
+					m_joins.add("(" + localJoins.toString() + ")");
+					System.out.println("m_joins:" + m_joins.toString());
+				}
+				localResult.append(" AND ");
+				localResult.append("(" + localJoins + ")");
+			}
+			localResult.append(")");
+			if(!m_inSelect)
+			{
+				result = localResult;
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -728,11 +715,21 @@ public class MQLToSQL
 	{
 		m_inFunction = true;
 
-		/**/	StringBuilder result = new StringBuilder().append(context.functionName.getText())
-		/**/	                                          .append("(")
-		/**/	                                          .append(context.distinct != null ? "DISTINCT " : "").append(visitExpressionList(context.expressions, pathListList))
-		/**/	                                          .append(")")
-		/**/	;
+		/**/		StringBuilder result = new StringBuilder(context.functionName.getText());
+		/**/
+		/**/		result.append("(");
+		/**/
+		/**/		if(context.param1 != null)
+		/**/		{
+		/**/			result.append( "" ).append(visitExpressionOr(context.param1, pathListList));
+		/**/
+		/**/			if(context.param2 != null)
+		/**/			{
+		/**/				result.append(", ").append(visitExpressionOr(context.param2, pathListList));
+		/**/			}
+		/**/		}
+		/**/
+		/**/		result.append(")");
 
 		m_inFunction = false;
 

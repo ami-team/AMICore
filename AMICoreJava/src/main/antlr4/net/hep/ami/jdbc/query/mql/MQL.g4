@@ -23,11 +23,11 @@ selectStatement
 	;
 
 insertStatement
-	: INSERT '(' qIds=qIdList ')' VALUES '(' expressions=expressionList ')'
+	: INSERT qIds=qIdTuple VALUES expressions=expressionTuple /*----------------------------*/
 	;
 
 updateStatement
-	: UPDATE assigns=assignList (WHERE expression=expressionOr)?
+	: UPDATE qIds=qIdTuple VALUES expressions=expressionTuple (WHERE expression=expressionOr)?
 	;
 
 deleteStatement
@@ -47,39 +47,19 @@ aColumn
 	;
 
 /*---------------------------*/
-/* COLUMN_LIST               */
+/* QID_TUPLE                 */
 /*---------------------------*/
 
-qIdList
-	: aQId (',' aQId)*
-	;
-
-aQId
-	: qId=sqlQId
+qIdTuple
+	:  '(' sqlQId (',' sqlQId)* ')'
 	;
 
 /*---------------------------*/
-/* EXPRESSION_LIST           */
+/* EXPRESSION_TUPLE          */
 /*---------------------------*/
 
-expressionList
-	: anExpression (',' anExpression)*
-	;
-
-anExpression
-	: expression=expressionOr
-	;
-
-/*---------------------------*/
-/* ASSIGN_LIST               */
-/*---------------------------*/
-
-assignList
-	: anAssign (',' anAssign)*
-	;
-
-anAssign
-	: assign=expressionComp
+expressionTuple
+	: '(' expressionOr (',' expressionOr)* ')'
 	;
 
 /*---------------------------*/
@@ -112,7 +92,7 @@ expressionNotPlusMinus
 
 expressionX
 	: '(' expression=expressionOr ')'                                                 # ExpressionGroup
-	| functionName=FUNCTION '(' (distinct=DISTINCT)? expressions=expressionList ')'   # ExpressionFunction
+	| functionName=FUNCTION '(' (param1=expressionOr (',' param2=expressionOr)?)? ')' # ExpressionFunction
 	| literal=sqlLiteral                                                              # ExpressionLiteral
 	| qId=sqlQId                                                                      # ExpressionQId
 	;
