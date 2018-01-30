@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
 import net.hep.ami.utility.parser.*;
@@ -186,7 +188,6 @@ public class MQLToSQL
 		List<String> externalFields = new ArrayList<String>();
 		List<String> externalValues = new ArrayList<String>();
 
-
 		List<PathList> pathListList = new ArrayList<>();
 
 		m_inInsert = true;
@@ -196,7 +197,7 @@ public class MQLToSQL
 		//List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split("\\s+,\\s+"));
 		List<String> tmpExpressions = Arrays.asList(visitExpressionList(context.expressionList(), pathListList).toString().split(","));
 
-		Set<String> tableForeignKeyFields = SchemaSingleton.getForwardFKNames(m_internalCatalog, m_entity);
+		Map<String,FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
 
 		System.out.println("tmpFields: " + tmpFields);
 		System.out.println("tmpExpressions: " + tmpExpressions);
@@ -219,7 +220,6 @@ public class MQLToSQL
 			}
 		}
 
-
 		m_inInsert = false;
 
 		for(PathList pathList: pathListList)
@@ -230,6 +230,14 @@ public class MQLToSQL
 
 		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
 		System.out.println("fields/values to deal with: " + externalFields.toString());
+		for (String key: tableForeignKeyFields.keySet()) 
+		{
+			System.out.println("doing: " + key);
+			FrgnKey tmpFrgnKey = tableForeignKeyFields.get(key).get(0);
+			System.out.println("looking for table " + tmpFrgnKey.pkTable);
+			System.out.println("identification field " + tmpFrgnKey.pkColumn);
+
+		}
 
 		System.out.println("-------------");
 
