@@ -228,14 +228,14 @@ public class MQLToSQL
 			System.out.println(pathList.getPaths());
 		}
 
-		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
-		System.out.println("fields/values to deal with: " + externalFields.toString());
+		System.out.println("keys to be resolved and put in tableFields and tableValues variables OR missing fields/valeus: " + tableForeignKeyFields.toString());
+		System.out.println("fields/values to deal with OR bad fields: " + externalFields.toString());
 		for (String key: tableForeignKeyFields.keySet()) 
 		{
 			System.out.println("doing: " + key);
 			FrgnKey tmpFrgnKey = tableForeignKeyFields.get(key).get(0);
-			System.out.println("looking for table " + tmpFrgnKey.pkTable);
-			System.out.println("identification field " + tmpFrgnKey.pkColumn);
+			System.out.println("table " + tmpFrgnKey.pkTable);
+			System.out.println("field " + tmpFrgnKey.pkColumn);
 
 		}
 
