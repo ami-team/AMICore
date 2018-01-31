@@ -37,8 +37,8 @@ public class QId
 	{
 		/*-----------------------------------------------------------------*/
 
-		int idx1 = qId.indexOf('{');
-		int idx2 = qId.indexOf('}');
+		int idx1 = qId.  indexOf  ('{');
+		int idx2 = qId.lastIndexOf('}');
 
 		if(idx1 > 0 && idx1 < idx2)
 		{
