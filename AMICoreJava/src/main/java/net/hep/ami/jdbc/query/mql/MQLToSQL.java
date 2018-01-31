@@ -127,7 +127,7 @@ public class MQLToSQL
 		{
 			query.addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
 
-			if(!m_joins.equals(""))
+			if(!m_joins.equals("")) // C'EST QUOI CETTE HORREUR ???
 			{
 				query.addWherePart(String.join(" AND ", m_joins));
 			}

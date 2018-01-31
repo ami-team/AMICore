@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.reflexion.structure;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class QId
 {
@@ -257,14 +258,30 @@ public class QId
 
 	public String toString()
 	{
-		return toString(Deepness.COLUMN);
+		return toStringBuilder(Deepness.COLUMN).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String toString(Deepness deepness)
 	{
-		List<String> result = new ArrayList<>();
+		return toStringBuilder(deepness).toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public StringBuilder toStringBuilder()
+	{
+		return toStringBuilder(Deepness.COLUMN);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public StringBuilder toStringBuilder(Deepness deepness)
+	{
+		List<String> list = new ArrayList<>();
+
+		/*-----------------------------------------------------------------*/
 
 		switch(deepness)
 		{
@@ -272,7 +289,7 @@ public class QId
 
 			case CATALOG:
 				if(m_catalog != null) {
-					result.add(quote(m_catalog));
+					list.add(quote(m_catalog));
 				}
 				break;
 
@@ -280,10 +297,10 @@ public class QId
 
 			case TABLE:
 				if(m_catalog != null) {
-					result.add(quote(m_catalog));
+					list.add(quote(m_catalog));
 				}
 				if(m_table != null) {
-					result.add(quote(m_table));
+					list.add(quote(m_table));
 				}
 				break;
 
@@ -291,20 +308,36 @@ public class QId
 
 			case COLUMN:
 				if(m_catalog != null) {
-					result.add(quote(m_catalog));
+					list.add(quote(m_catalog));
 				}
 				if(m_table != null) {
-					result.add(quote(m_table));
+					list.add(quote(m_table));
 				}
 				if(m_column != null) {
-					result.add(quote(m_column));
+					list.add(quote(m_column));
 				}
 				break;
 
 			/*-------------------------------------------------------------*/
 		}
 
-		return String.join(".", result);
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder(String.join(".", list));
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_qIds.isEmpty() == false)
+		{
+			result.append("{")
+			      .append(m_qIds.stream().map(qId -> qId.toString()).collect(Collectors.joining(",")))
+			      .append("}")
+			;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
