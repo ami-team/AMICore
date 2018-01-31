@@ -194,9 +194,9 @@ public class MQLToSQL
 		m_inInsert = true;
 
 		//List<String> tmpFields = Arrays.asList(visitQIdTuple(context.qIdTuple(), pathListList).toString().split("\\s+,\\s+"));
-		List<String> tmpFields = Arrays.asList(visitQIdTuple(context.qIdTuple(), pathListList).toString().split(","));
+		List<String> tmpFields = visitQIdTuple(context.qIdTuple(), pathListList);
 		//List<String> tmpExpressions = Arrays.asList(visitExpressionTuple(context.expressionTuple(), pathListList).toString().split("\\s+,\\s+"));
-		List<String> tmpExpressions = Arrays.asList(visitExpressionTuple(context.expressionTuple(), pathListList).toString().split(","));
+		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
 
 		Map<String,FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
 
@@ -348,9 +348,9 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitQIdTuple(MQLParser.QIdTupleContext context, List<PathList> pathListList) throws Exception
+	private List<String> visitQIdTuple(MQLParser.QIdTupleContext context, List<PathList> pathListList) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		List<String> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -362,13 +362,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.SqlQIdContext)
+			if(child instanceof MQLParser.SqlQIdContext)
 			{
-				result.append((visitSqlQId((MQLParser.SqlQIdContext) child, pathListList).toString()));
-			}
-			else if(child instanceof TerminalNode)
-			{
-				result.append(", ");
+				result.add((visitSqlQId((MQLParser.SqlQIdContext) child, pathListList).toString()));
 			}
 		}
 
@@ -379,9 +375,9 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<PathList> pathListList) throws Exception
+	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<PathList> pathListList) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		List<String> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -393,13 +389,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.ExpressionOrContext)
+			if(child instanceof MQLParser.ExpressionOrContext)
 			{
-				result.append((visitExpressionOr((MQLParser.ExpressionOrContext) child, pathListList).toString()));
-			}
-			else if(child instanceof TerminalNode)
-			{
-				result.append(", ");
+				result.add((visitExpressionOr((MQLParser.ExpressionOrContext) child, pathListList).toString()));
 			}
 		}
 
@@ -758,11 +750,11 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		String catalogName = (context.catalogName != null) ? QId.unquote(context.catalogName.getText()) : m_externalCatalog;
+		String catalogName = (context.qId.catalogName != null) ? QId.unquote(context.qId.catalogName.getText()) : m_externalCatalog;
 
-		String entityName = (context.entityName != null) ? QId.unquote(context.entityName.getText()) : /*-*/m_entity/*-*/;
+		String entityName = (context.qId.entityName != null) ? QId.unquote(context.qId.entityName.getText()) : /*-*/m_entity/*-*/;
 
-		String fieldName = QId.unquote(context.fieldName.getText());
+		String fieldName = QId.unquote(context.qId.fieldName.getText());
 
 		/*-----------------------------------------------------------------*/
 

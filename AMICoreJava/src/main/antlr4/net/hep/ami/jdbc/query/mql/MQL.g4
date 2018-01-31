@@ -51,7 +51,7 @@ aColumn
 /*---------------------------*/
 
 qIdTuple
-	:  '(' sqlQId (',' sqlQId)* ')'
+	: '(' sqlQId (',' sqlQId)* ')'
 	;
 
 /*---------------------------*/
@@ -102,6 +102,14 @@ expressionX
 /*---------------------------*/
 
 sqlQId
+	: qId=sqlBasicQId ('{' sqlBasicQId (',' sqlBasicQId)* '}')?
+	;
+
+/*---------------------------*/
+/* SQL_BASIC_QID             */
+/*---------------------------*/
+
+sqlBasicQId
 	: catalogName=ID '.' entityName=ID '.' fieldName=(ID | '*')
 	| entityName=ID '.' fieldName=(ID | '*')
 	| fieldName=(ID | '*')
