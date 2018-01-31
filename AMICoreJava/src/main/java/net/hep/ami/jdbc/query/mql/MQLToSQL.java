@@ -193,10 +193,11 @@ public class MQLToSQL
 
 		m_inInsert = true;
 
-		//List<String> tmpFields = Arrays.asList(visitQIdTuple(context.qIdTuple(), pathListList).toString().split("\\s+,\\s+"));
 		List<String> tmpFields = visitQIdTuple(context.qIdTuple(), pathListList);
-		//List<String> tmpExpressions = Arrays.asList(visitExpressionTuple(context.expressionTuple(), pathListList).toString().split("\\s+,\\s+"));
+
 		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
+
+		m_inInsert = false;
 
 		Map<String,FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
 
@@ -220,8 +221,6 @@ public class MQLToSQL
 				externalValues.add(tmpExpressions.get(i));
 			}
 		}
-
-		m_inInsert = false;
 
 		for(PathList pathList: pathListList)
 		{
@@ -766,6 +765,8 @@ public class MQLToSQL
 		}
 		else
 		{
+			/*-------------------------------------------------------------*/
+
 			if(m_inFunction == false)
 			{
 				list = SchemaSingleton.getColumnNames(catalogName, entityName);
@@ -774,6 +775,24 @@ public class MQLToSQL
 			{
 				list = Arrays.asList(SchemaSingleton.getPrimaryKey(catalogName, entityName));
 			}
+
+			/*-------------------------------------------------------------*/
+
+			ParseTree child;
+
+			final int nb = context.getChildCount();
+
+			for(int i = 1; i < nb; i++)
+			{
+				child = context.getChild(i);
+
+				if(child instanceof MQLParser.SqlBasicQIdContext)
+				{
+					System.out.println("{}" + visitSqlBasicQId((MQLParser.SqlBasicQIdContext) child).toString());
+				}
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -792,6 +811,17 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(String.join(", ", result));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private QId visitSqlBasicQId(MQLParser.SqlBasicQIdContext context) throws Exception
+	{
+		return new QId(
+			context.catalogName.getText(),
+			context.entityName.getText(),
+			context.fieldName.getText()
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
