@@ -241,7 +241,7 @@ public class MQLToSQL
 			{
 				if(true)
 				{
-				tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
+					tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
 				}
 			}
 
