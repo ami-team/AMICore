@@ -238,19 +238,12 @@ public class MQLToSQL
 			List<String> tmpWhere = new ArrayList<String>();
 
 			for (int i = 0; i < externalFields.size(); i++)
-
 			{
-
-			if(true)
-
-			{
-
-			tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
-
-			System.out.println("COND tmp:" + tmpWhere.toString());
-
-			}
-
+				if(true)
+				{
+				tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
+				System.out.println("COND tmp:" + tmpWhere.toString());
+				}
 			}
 
 			String tmpMQL = "SELECT " + tmpFrgnKey.pkTable + "." + tmpFrgnKey.pkColumn + " WHERE " + String.join(" AND ", tmpWhere);
