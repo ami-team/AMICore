@@ -200,21 +200,27 @@ public class QId
 
 	public String getCatalog()
 	{
-		return (m_sids.size() > 0) ? m_sids.get(0) : null;
+		final int nb = m_sids.size();
+
+		return (nb > 2) ? m_sids.get(nb - 3) : null;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String getTable()
 	{
-		return (m_sids.size() > 1) ? m_sids.get(1) : null;
+		final int nb = m_sids.size();
+
+		return (nb > 1) ? m_sids.get(nb - 2) : null;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String getColumn()
 	{
-		return (m_sids.size() > 2) ? m_sids.get(2) : null;
+		final int nb = m_sids.size();
+
+		return (nb > 0) ? m_sids.get(nb - 1) : null;
 	}
 
 	/*---------------------------------------------------------------------*/
