@@ -219,12 +219,6 @@ public class MQLToSQL
 			}
 		}
 
-		for(PathList pathList: pathListList)
-		{
-			System.out.println(pathList.getQId());
-			System.out.println(pathList.getPaths());
-		}
-
 		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
 		System.out.println("fields/values to deal with: " + externalFields.toString());
 		for (String key: tableForeignKeyFields.keySet()) 
@@ -235,8 +229,27 @@ public class MQLToSQL
 			System.out.println("field " + tmpFrgnKey.pkColumn);
 			List<String> tmpWhere = new ArrayList<String>();
 
+
+
 			for (int i = 0; i < externalFields.size(); i++)
 			{
+				boolean todo = false;
+				for(PathList pathList: pathListList)
+				{
+					for(List<FrgnKey> path: pathList.getPaths())
+					{
+						if(path.isEmpty() == false)
+						{
+							System.out.println(path.get(0).fkColumn + " <> " + tmpFrgnKey.fkColumn + "  ::  " + path.get(0));
+							
+							if(path.get(0).fkInternalCatalog == tmpFrgnKey.fkInternalCatalog && path.get(0).fkTable == tmpFrgnKey.fkTable && path.get(0).fkColumn == tmpFrgnKey.fkColumn)
+							{
+								todo = true;
+							}
+								
+						}
+					}
+				}
 				if(true)
 				{
 					tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
@@ -790,7 +803,7 @@ public class MQLToSQL
 
 				if(child instanceof MQLParser.SqlBasicQIdContext)
 				{
-					System.out.println("{}" + visitSqlBasicQId((MQLParser.SqlBasicQIdContext) child));
+					System.out.println(fieldName + " {}" + visitSqlBasicQId((MQLParser.SqlBasicQIdContext) child));
 				}
 			}
 
