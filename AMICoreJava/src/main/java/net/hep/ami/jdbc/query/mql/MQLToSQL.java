@@ -242,9 +242,10 @@ public class MQLToSQL
 						{
 							System.out.println(path.get(0).fkColumn + " <> " + tmpFrgnKey.fkColumn + "  ::  " + path.get(0));
 							
-							if(path.get(0).fkInternalCatalog == tmpFrgnKey.fkInternalCatalog && path.get(0).fkTable == tmpFrgnKey.fkTable && path.get(0).fkColumn == tmpFrgnKey.fkColumn)
+							if(path.get(0).fkInternalCatalog.equals(tmpFrgnKey.fkInternalCatalog) && path.get(0).fkTable.equals(tmpFrgnKey.fkTable) && path.get(0).fkColumn.equals(tmpFrgnKey.fkColumn))
 							{
 								todo = true;
+								System.out.println("todo true");
 							}
 								
 						}
