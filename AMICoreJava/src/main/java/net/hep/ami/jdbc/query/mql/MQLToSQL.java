@@ -208,7 +208,7 @@ public class MQLToSQL
 
 			if(tmpQId.getCatalog().equals(m_internalCatalog) && tmpQId.getTable().equals(m_entity) && SchemaSingleton.getColumns(m_internalCatalog, m_entity).get(tmpQId.getColumn()) != null)
 			{
-				tableFields.add(tmpFields.get(i));
+				tableFields.add(new QId(tmpFields.get(i)).getColumn());
 				tableValues.add(tmpExpressions.get(i));
 				tableForeignKeyFields.remove(tmpQId.getColumn().toLowerCase());
 			}
