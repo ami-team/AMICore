@@ -192,11 +192,10 @@ public class MQLToSQL
 		List<PathList> pathListList = new ArrayList<>();
 
 		m_inInsert = true;
-
+		System.out.println("test");
 		List<String> tmpFields = visitQIdTuple(context.qIdTuple(), pathListList);
-
+		System.out.println("test");
 		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
-
 		m_inInsert = false;
 
 		Map<String,FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
@@ -228,15 +227,41 @@ public class MQLToSQL
 			System.out.println(pathList.getPaths());
 		}
 
-		System.out.println("keys to be resolved and put in tableFields and tableValues variables OR missing fields/valeus: " + tableForeignKeyFields.toString());
-		System.out.println("fields/values to deal with OR bad fields: " + externalFields.toString());
+		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
+		System.out.println("fields/values to deal with: " + externalFields.toString());
 		for (String key: tableForeignKeyFields.keySet()) 
 		{
 			System.out.println("doing: " + key);
 			FrgnKey tmpFrgnKey = tableForeignKeyFields.get(key).get(0);
 			System.out.println("table " + tmpFrgnKey.pkTable);
 			System.out.println("field " + tmpFrgnKey.pkColumn);
+			List<String> tmpWhere = new ArrayList<String>();
 
+			for (int i = 0; i < externalFields.size(); i++)
+
+			{
+
+			if(true)
+
+			{
+
+			tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
+
+			System.out.println("COND tmp:" + tmpWhere.toString());
+
+			}
+
+			}
+
+			String tmpMQL = "SELECT " + tmpFrgnKey.pkTable + "." + tmpFrgnKey.pkColumn + " WHERE " + String.join(" AND ", tmpWhere);
+
+			System.out.println("MQL tmp: " + tmpMQL);
+
+			String tmpSQL = MQLToSQL.parse(tmpFrgnKey.pkInternalCatalog, tmpFrgnKey.pkTable, tmpMQL);
+
+			tableFields.add(tmpFrgnKey.fkColumn);
+
+			tableValues.add(tmpSQL);
 		}
 
 		System.out.println("-------------");
@@ -801,7 +826,10 @@ public class MQLToSQL
 
 		for(String qId: list)
 		{
+			System.out.println(">>>>>>");
+			System.out.println(m_externalCatalog + " | " + m_entity + " | " + qId);
 			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
+			System.out.println("<<<<<<");
 
 			result.add(pathList.getQId().toString());
 

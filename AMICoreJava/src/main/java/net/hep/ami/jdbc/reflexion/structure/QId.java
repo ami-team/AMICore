@@ -116,15 +116,15 @@ public class QId
 			m_sids.add(unquote(catalog));
 		}
 
-		if(catalog != null) {
+		if(table != null) {
 			m_sids.add(unquote(table));
 		}
 
-		if(catalog != null) {
+		if(column != null) {
 			m_sids.add(unquote(column));
 		}
 
-		if(m_path != null) {
+		if(path != null) {
 			m_path.addAll(path);
 		}
 	}
