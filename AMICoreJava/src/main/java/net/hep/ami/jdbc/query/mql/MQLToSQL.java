@@ -776,12 +776,32 @@ public class MQLToSQL
 
 		if("*".equals(fieldName) == false)
 		{
+			/*-------------------------------------------------------------*/
+
+			ParseTree child;
+
+			final int nb = context.getChildCount();
+
+			System.out.println(">> " + nb);
+
+			for(int i = 1; i < nb; i++)
+			{
+				child = context.getChild(i);
+
+				if(child instanceof MQLParser.SqlBasicQIdContext)
+				{
+					System.out.println("{}" + visitSqlBasicQId((MQLParser.SqlBasicQIdContext) child));
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
 			list = Arrays.asList(context.getText());
+
+			/*-------------------------------------------------------------*/
 		}
 		else
 		{
-			/*-------------------------------------------------------------*/
-
 			if(m_inFunction == false)
 			{
 				list = SchemaSingleton.getColumnNames(catalogName, entityName);
@@ -790,24 +810,6 @@ public class MQLToSQL
 			{
 				list = Arrays.asList(SchemaSingleton.getPrimaryKey(catalogName, entityName));
 			}
-
-			/*-------------------------------------------------------------*/
-
-			ParseTree child;
-
-			final int nb = context.getChildCount();
-
-			for(int i = 1; i < nb; i++)
-			{
-				child = context.getChild(i);
-
-				if(child instanceof MQLParser.SqlBasicQIdContext)
-				{
-					System.out.println("{}" + visitSqlBasicQId((MQLParser.SqlBasicQIdContext) child).toString());
-				}
-			}
-
-			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -830,12 +832,12 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitSqlBasicQId(MQLParser.SqlBasicQIdContext context) throws Exception
+	private QId visitSqlBasicQId(MQLParser.SqlBasicQIdContext context)
 	{
 		return new QId(
-			context.catalogName.getText(),
-			context.entityName.getText(),
-			context.fieldName.getText()
+			context.catalogName != null ? context.catalogName.getText() : null,
+			context.entityName != null ? context.entityName.getText() : null,
+			context.fieldName != null ? context.fieldName.getText() : null
 		);
 	}
 
