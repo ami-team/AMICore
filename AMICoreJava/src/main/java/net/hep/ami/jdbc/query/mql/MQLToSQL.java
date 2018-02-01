@@ -826,10 +826,7 @@ public class MQLToSQL
 
 		for(String qId: list)
 		{
-			System.out.println(">>>>>>");
-			System.out.println(m_externalCatalog + " | " + m_entity + " | " + qId);
 			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
-			System.out.println("<<<<<<");
 
 			result.add(pathList.getQId().toString());
 
