@@ -256,15 +256,19 @@ public class MQLToSQL
 				}
 			}
 
-			String tmpMQL = "SELECT " + tmpFrgnKey.pkTable + "." + tmpFrgnKey.pkColumn + " WHERE " + String.join(" AND ", tmpWhere);
+			if(!tmpWhere.isEmpty())
+			{
+				String tmpMQL = "SELECT " + tmpFrgnKey.pkTable + "." + tmpFrgnKey.pkColumn + " WHERE " + String.join(" AND ", tmpWhere);
 
-			System.out.println("MQL tmp: " + tmpMQL);
+				System.out.println("MQL tmp: " + tmpMQL);
 
-			String tmpSQL = MQLToSQL.parse(tmpFrgnKey.pkInternalCatalog, tmpFrgnKey.pkTable, tmpMQL);
+				String tmpSQL = MQLToSQL.parse(tmpFrgnKey.pkInternalCatalog, tmpFrgnKey.pkTable, tmpMQL);
 
-			tableFields.add(tmpFrgnKey.fkColumn);
+				tableFields.add(tmpFrgnKey.fkColumn);
 
-			tableValues.add(tmpSQL);
+				tableValues.add(tmpSQL);
+			}
+			
 		}
 
 		System.out.println("-------------");
