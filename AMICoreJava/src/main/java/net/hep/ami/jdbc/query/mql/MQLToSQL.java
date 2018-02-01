@@ -242,7 +242,6 @@ public class MQLToSQL
 				if(true)
 				{
 				tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
-				System.out.println("COND tmp:" + tmpWhere.toString());
 				}
 			}
 
