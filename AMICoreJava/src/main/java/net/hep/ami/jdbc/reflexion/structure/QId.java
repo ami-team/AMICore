@@ -25,7 +25,7 @@ public class QId
 
 	private final List<String> m_sids = new ArrayList<>();
 
-	private final List<QId> m_path = new ArrayList<>();
+	private final Set<QId> m_path = new LinkedHashSet<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -219,7 +219,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public List<QId> getPath()
+	public Set<QId> getPath()
 	{
 		return m_path;
 	}
