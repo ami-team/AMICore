@@ -192,9 +192,7 @@ public class MQLToSQL
 		List<PathList> pathListList = new ArrayList<>();
 
 		m_inInsert = true;
-		System.out.println("test");
 		List<String> tmpFields = visitQIdTuple(context.qIdTuple(), pathListList);
-		System.out.println("test");
 		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
 		m_inInsert = false;
 
