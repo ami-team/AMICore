@@ -250,7 +250,7 @@ public class MQLToSQL
 						}
 					}
 				}
-				if(true)
+				if(todo)
 				{
 					tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
 				}
