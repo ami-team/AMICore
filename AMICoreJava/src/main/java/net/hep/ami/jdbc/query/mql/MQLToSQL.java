@@ -266,7 +266,6 @@ public class MQLToSQL
 
 				tableValues.add(tmpSQL);
 			}
-			
 		}
 
 		System.out.println("-------------");
@@ -289,7 +288,35 @@ public class MQLToSQL
 	private StringBuilder visitUpdateStatement(MQLParser.UpdateStatementContext context) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
+		StringBuilder tmpSet = new StringBuilder();
 
+		List<PathList> pathListList = new ArrayList<>();
+
+		m_inUpdate = true;
+		List<String> tmpFields = visitQIdTuple(context.qIdTuple(), pathListList);
+		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
+		m_inUpdate = false;
+
+		for (int i = 0; i < tmpFields.size(); i++)
+		{
+			tmpSet.append(tmpFields.get(i) + " = " + tmpExpressions.get(i));
+		}
+
+		result.append("UPDATE ")
+		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE))
+		      .append(" SET ").append(String.join(", ", tmpSet));
+
+		if(context.expression != null)
+		{
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
+
+			if(m_joins.isEmpty() == false)
+			{
+				query.addWherePart(String.join(" AND ", m_joins));
+			}
+
+			result.append(" WHERE ").append(query.getWherePart());
+		}
 		return result;
 	}
 
