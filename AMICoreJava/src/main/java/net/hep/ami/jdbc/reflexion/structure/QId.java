@@ -168,6 +168,18 @@ public class QId
 			/*-------------------------------------------------------------*/
 		}
 
+		if("#".equals(result.m_catalog)) {
+			result.m_catalog = null;
+		}
+
+		if("#".equals(result.m_entity)) {
+			result.m_entity = null;
+		}
+
+		if("#".equals(result.m_field)) {
+			result.m_field = null;
+		}
+
 		return result;
 	}
 
