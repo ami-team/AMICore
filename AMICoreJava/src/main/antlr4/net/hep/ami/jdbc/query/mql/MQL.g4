@@ -75,15 +75,15 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionAddSub (m_operator=COMP expressionAddSub)?
+	: expressionAddSub (COMP expressionAddSub)?
 	;
 
 expressionAddSub
-	: expressionMulDiv (m_operator=('+' | '-') expressionMulDiv)*
+	: expressionMulDiv (('+' | '-') expressionMulDiv)*
 	;
 
 expressionMulDiv
-	: expressionNotPlusMinus (m_operator=('*' | '/' | '%') expressionNotPlusMinus)*
+	: expressionNotPlusMinus (('*' | '/' | '%') expressionNotPlusMinus)*
 	;
 
 expressionNotPlusMinus

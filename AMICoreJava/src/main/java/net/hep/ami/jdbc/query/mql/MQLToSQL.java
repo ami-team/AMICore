@@ -5,6 +5,7 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import net.hep.ami.jdbc.query.mql.MQLParser.AColumnContext;
 import net.hep.ami.jdbc.query.mql.MQLParser.ExpressionOrContext;
 import net.hep.ami.jdbc.query.mql.MQLParser.QIdContext;
 import net.hep.ami.jdbc.reflexion.*;
@@ -204,7 +205,7 @@ public class MQLToSQL
 		System.out.println("tmpExpressions: " + tmpExpressions);
 		System.out.println("number of fields: " + tmpFields.size());
 
-		for (int i = 0; i < tmpFields.size(); i++) {
+		for(int i = 0; i < tmpFields.size(); i++) {
 
 			QId tmpQId = new QId(tmpFields.get(i));
 
@@ -223,7 +224,7 @@ public class MQLToSQL
 
 		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
 		System.out.println("fields/values to deal with: " + externalFields.toString());
-		for (String key: tableForeignKeyFields.keySet()) 
+		for(String key: tableForeignKeyFields.keySet()) 
 		{
 			System.out.println("doing: " + key);
 			FrgnKey tmpFrgnKey = tableForeignKeyFields.get(key).get(0);
@@ -231,7 +232,7 @@ public class MQLToSQL
 			System.out.println("field " + tmpFrgnKey.pkColumn);
 			List<String> tmpWhere = new ArrayList<String>();
 
-			for (int i = 0; i < externalFields.size(); i++)
+			for(int i = 0; i < externalFields.size(); i++)
 			{
 				boolean todo = false;
 				for(PathList pathList: pathListList)
@@ -299,7 +300,7 @@ public class MQLToSQL
 		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
 		m_inUpdate = false;
 
-		for (int i = 0; i < tmpFields.size(); i++)
+		for(int i = 0; i < tmpFields.size(); i++)
 		{
 			tmpSet.append(tmpFields.get(i) + " = " + tmpExpressions.get(i));
 		}
@@ -357,31 +358,14 @@ public class MQLToSQL
 
 	private StringBuilder visitColumnList(MQLParser.ColumnListContext context) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		List<String> result = new ArrayList<>();
 
-		/*-----------------------------------------------------------------*/
-
-		ParseTree child;
-
-		final int nb = context.getChildCount();
-
-		for(int i = 0; i < nb; i++)
+		for(AColumnContext child: context.m_columns)
 		{
-			child = context.getChild(i);
-
-			/**/ if(child instanceof MQLParser.AColumnContext)
-			{
-				result.append((visitAColumnExpression((MQLParser.AColumnContext) child).toString()));
-			}
-			else if(child instanceof TerminalNode)
-			{
-				result.append(", ");
-			}
+			result.add(visitAColumnExpression(child).toString());
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return new StringBuilder(String.join(",", result));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -396,7 +380,7 @@ public class MQLToSQL
 
 		if(context.m_alias != null)
 		{
-			result.append(" AS " + QId.quote(context.m_alias.getText()));
+			result.append(" AS " + new QId(context.m_alias.getText()).toString(QId.FLAG_FIELD));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -534,7 +518,7 @@ public class MQLToSQL
 			StringBuilder localJoins = new StringBuilder();
 			localResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
 			boolean needAND = false;
-			for (PathList pathList : pathListList) 
+			for(PathList pathList: pathListList) 
 			{
 					String localTableName = pathList.getQId().getEntity();
 					String localCatalogName = pathList.getQId().getCatalog();
@@ -556,10 +540,10 @@ public class MQLToSQL
 					boolean needOR = false;
 					System.out.println("");
 					System.out.println("local joins: " + localTableName);
-					for (List<SchemaSingleton.FrgnKey> list : paths) 
+					for(List<SchemaSingleton.FrgnKey> list: paths) 
 					{
 						List<String> localWhereList = new ArrayList<String>();
-						for (SchemaSingleton.FrgnKey frgnKey : list) {
+						for(SchemaSingleton.FrgnKey frgnKey: list) {
 							//for order (performances), change algorithm here?
 							if(!localFromList.contains(frgnKey.fkTable))
 							{
