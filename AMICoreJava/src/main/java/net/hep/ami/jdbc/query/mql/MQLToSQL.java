@@ -5,6 +5,8 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import net.hep.ami.jdbc.query.mql.MQLParser.ExpressionOrContext;
+import net.hep.ami.jdbc.query.mql.MQLParser.QIdContext;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
@@ -408,23 +410,10 @@ public class MQLToSQL
 	{
 		List<String> result = new ArrayList<>();
 
-		/*-----------------------------------------------------------------*/
-
-		ParseTree child;
-
-		final int nb = context.getChildCount();
-
-		for(int i = 0; i < nb; i++)
+		for(QIdContext child: context.m_qIds)
 		{
-			child = context.getChild(i);
-
-			if(child instanceof MQLParser.QIdContext)
-			{
-				result.add((visitQId((MQLParser.QIdContext) child, pathListList).toString()));
-			}
+			result.add(visitQId(child, pathListList).toString());
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
@@ -435,23 +424,10 @@ public class MQLToSQL
 	{
 		List<String> result = new ArrayList<>();
 
-		/*-----------------------------------------------------------------*/
-
-		ParseTree child;
-
-		final int nb = context.getChildCount();
-
-		for(int i = 0; i < nb; i++)
+		for(ExpressionOrContext child: context.m_expressions)
 		{
-			child = context.getChild(i);
-
-			if(child instanceof MQLParser.ExpressionOrContext)
-			{
-				result.add((visitExpressionOr((MQLParser.ExpressionOrContext) child, pathListList).toString()));
-			}
+			result.add(visitExpressionOr(child, pathListList).toString());
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
