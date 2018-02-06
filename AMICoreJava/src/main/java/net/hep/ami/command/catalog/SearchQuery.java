@@ -44,7 +44,7 @@ public class SearchQuery extends AbstractCommand
 
 		if(orderBy != null)
 		{
-			extra += " ORDER BY " + new QId(orderBy, QId.Deepness.COLUMN).toString();
+			extra += " ORDER BY " + new QId(orderBy).toString();
 
 			if(orderWay != null)
 			{

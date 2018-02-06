@@ -3,99 +3,81 @@ package net.hep.ami.jdbc.reflexion.structure;
 import java.util.*;
 import java.util.stream.*;
 
+import org.antlr.v4.runtime.*;
+
+import net.hep.ami.utility.parser.*;
+
 public class QId
 {
 	/*---------------------------------------------------------------------*/
 
-	public enum Deepness
-	{
-		CATALOG(1),
-		TABLE(2),
-		COLUMN(3);
+	public static final int FLAG_CATALOG = 0b100;
+	public static final int FLAG_ENTITY = 0b010;
+	public static final int FLAG_FIELD = 0b001;
 
-		protected final int length;
+	public static final int MASK_CATALOG_ENTITY = 0b110;
+	public static final int MASK_ENTITY_FIELD = 0b011;
 
-		private Deepness(int _length)
-		{
-			length = _length;
-		}
-	}
+	public static final int MASK_CATALOG_ENTITY_FIELD = 0b111;
 
 	/*---------------------------------------------------------------------*/
 
-	private final List<String> m_sids = new ArrayList<>();
+	private boolean m_exclude = false;
 
-	private final Set<QId> m_path = new LinkedHashSet<>();
+	/*---------------------------------------------------------------------*/
+
+	private String m_catalog = null;
+	private String m_entity = null;
+	private String m_field = null;
+
+	/*---------------------------------------------------------------------*/
+
+	private final List<QId> m_path = new ArrayList<>();
+
+	/*---------------------------------------------------------------------*/
+
+	public QId()
+	{
+		/* DO NOTHING */
+	}
 
 	/*---------------------------------------------------------------------*/
 
 	public QId(String qId) throws Exception
 	{
-		this(qId, Deepness.COLUMN);
+		this(qId, FLAG_FIELD, FLAG_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId, Deepness deepness) throws Exception
+	public QId(String qId, int type) throws Exception
+	{
+		this(qId, type, FLAG_FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public QId(String qId, int type, int typeForPath) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		String tmp;
+		QIdLexer lexer = new QIdLexer(CharStreams.fromString(qId));
 
-		int idx1 = qId.  indexOf  ('{');
-		int idx2 = qId.lastIndexOf('}');
-
-		if(idx1 > 0x00
-		   &&
-		   idx2 > idx1
-		 ) {
-			tmp = qId.substring(idx1 + 1, idx2 + 0);
-			qId = qId.substring(0x00 + 0, idx1 + 0);
-
-			for(String part: tmp.split(",", -1))
-			{
-				m_path.add(new QId(part));
-			}
-
-			int idx3 = tmp.  indexOf  ('{');
-			int idx4 = tmp.lastIndexOf('}');
-
-			if(idx3 >= 0
-			   &&
-			   idx4 >= 0
-			 ) {
-				throw new Exception("invalid QId syntax");
-			}
-		}
-		else
-		{
-			if(idx1 >= 0
-			   ||
-			   idx2 >= 0
-			 ) {
-				throw new Exception("invalid QId syntax");
-			}
-		}
+		QIdParser parser = new QIdParser(new CommonTokenStream(lexer));
 
 		/*-----------------------------------------------------------------*/
 
-		String[] parts = qId.split("\\.", -1);
-
-		final int length = Math.min(
-			parts.length,
-			deepness.length
-		);
-
-		if(length > 3)
-		{
-			throw new Exception("invalid QId syntax");
-		}
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
 		/*-----------------------------------------------------------------*/
 
-		for(	int i = 0; i < length; i++)
+		visitQId(this, parser.qId(), type, typeForPath);
+
+		/*-----------------------------------------------------------------*/
+
+		if(listener.isSuccess() == false)
 		{
-			m_sids.add(unquote(parts[i]));
+			throw new Exception(listener.toString());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -103,30 +85,120 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(@Nullable String catalog, @Nullable String table, @Nullable String column)
+	private QId visitQId(QId result, QIdParser.QIdContext context, int type, int typeForPath) throws Exception
 	{
-		this(catalog, table, column, null);
+		visitBasicQId(result, context.m_basicQId, type);
+
+		for(QIdParser.PathQIdContext pathQIdContext: context.m_pathQIds)
+		{
+			result.m_path.add(visitQId(new QId().setPathExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForPath, typeForPath));
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(@Nullable String catalog, @Nullable String table, @Nullable String column, @Nullable List<QId> path)
+	private QId visitBasicQId(QId result, QIdParser.BasicQIdContext context, int type) throws Exception
 	{
-		if(catalog != null) {
-			m_sids.add(unquote(catalog));
+		final int size = context.m_ids.size();
+
+		switch(type)
+		{
+			/*-------------------------------------------------------------*/
+
+			case FLAG_CATALOG:
+				/**/ if(size == 1)
+				{
+					result.m_catalog = unquote(context.m_ids.get(0).getText());
+				}
+				else
+				{
+					throw new Exception("syntax error for catalog");
+				}
+				break;
+
+			/*-------------------------------------------------------------*/
+
+			case FLAG_ENTITY:
+				/**/ if(size == 2)
+				{
+					result.m_catalog = unquote(context.m_ids.get(0).getText());
+					result.m_entity = unquote(context.m_ids.get(1).getText());
+				}
+				else if(size == 1)
+				{
+					result.m_entity = unquote(context.m_ids.get(0).getText());
+				}
+				else
+				{
+					throw new Exception("syntax error for catalog");
+				}
+				break;
+
+			/*-------------------------------------------------------------*/
+
+			case FLAG_FIELD:
+				/**/ if(size == 3)
+				{
+					result.m_catalog = unquote(context.m_ids.get(0).getText());
+					result.m_entity = unquote(context.m_ids.get(1).getText());
+					result.m_field = unquote(context.m_ids.get(2).getText());
+				}
+				else if(size == 2)
+				{
+					result.m_entity = unquote(context.m_ids.get(0).getText());
+					result.m_field = unquote(context.m_ids.get(1).getText());
+				}
+				else if(size == 1)
+				{
+					result.m_field = unquote(context.m_ids.get(0).getText());
+				}
+				else
+				{
+					throw new Exception("syntax error for catalog");
+				}
+				break;
+
+			/*-------------------------------------------------------------*/
+
+			default:
+				throw new Exception("invalid QId type");
+
+			/*-------------------------------------------------------------*/
 		}
 
-		if(table != null) {
-			m_sids.add(unquote(table));
-		}
+		return result;
+	}
 
-		if(column != null) {
-			m_sids.add(unquote(column));
-		}
+	/*---------------------------------------------------------------------*/
 
-		if(path != null) {
+	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field)
+	{
+		this(catalog, entity, field, null);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field, @Nullable List<QId> path)
+	{
+		setCatalog(catalog);
+		setEntity(entity);
+		setField(field);
+
+		if(path != null)
+		{
 			m_path.addAll(path);
 		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public QId setPathExclusion(boolean exclude)
+	{
+		m_exclude = exclude;
+
+		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -189,43 +261,97 @@ public class QId
 
 	public boolean equals(QId qId)
 	{
-		return this == qId || (
-			this.m_sids.equals(qId.m_sids)
-			&&
-			this.m_path.equals(qId.m_path)
-		);
+		String s1 = this.toString(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+		String s2 = qId.toString(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+
+		return this == qId || s1.equals(s2);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean equals(QId qId, int mask)
+	{
+		String s1 = this.toString(mask, MASK_CATALOG_ENTITY_FIELD);
+		String s2 = qId.toString(mask, MASK_CATALOG_ENTITY_FIELD);
+
+		return this == qId || s1.equals(s2);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean equals(QId qId, int mask, int maskForPath)
+	{
+		String s1 = this.toString(mask, maskForPath);
+		String s2 = qId.toString(mask, maskForPath);
+
+		return this == qId || s1.equals(s2);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean matchesWithBasicQId(QId qId)
+	{
+		boolean q = (this.m_catalog == null || qId.m_catalog == null || this.m_catalog.equals(qId.m_catalog))
+		            &&
+		            (this.m_entity == null || qId.m_entity == null || this.m_entity.equals(qId.m_entity))
+		            &&
+		            (this.m_field == null || qId.m_field == null || this.m_field.equals(qId.m_field))
+		;
+
+		return q != this.m_exclude;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public QId setCatalog(@Nullable String catalog)
+	{
+		m_catalog = catalog != null ? unquote(catalog) : null;
+
+		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public String getCatalog()
 	{
-		final int nb = m_sids.size();
-
-		return (nb > 2) ? m_sids.get(nb - 3) : null;
+		return m_catalog;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getTable()
+	public QId setEntity(@Nullable String entity)
 	{
-		final int nb = m_sids.size();
+		m_entity = entity != null ? unquote(entity) : null;
 
-		return (nb > 1) ? m_sids.get(nb - 2) : null;
+		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getColumn()
+	public String getEntity()
 	{
-		final int nb = m_sids.size();
-
-		return (nb > 0) ? m_sids.get(nb - 1) : null;
+		return m_entity;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<QId> getPath()
+	public QId setField(@Nullable String field)
+	{
+		m_field = field != null ? unquote(field) : null;
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getField()
+	{
+		return m_field;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public List<QId> getPath()
 	{
 		return m_path;
 	}
@@ -234,40 +360,74 @@ public class QId
 
 	public String toString()
 	{
-		return toStringBuilder(Deepness.COLUMN).toString();
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String toString(Deepness deepness)
+	public String toString(int mask)
 	{
-		return toStringBuilder(deepness).toString();
+		return toStringBuilder(mask, MASK_CATALOG_ENTITY_FIELD).toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String toString(int mask, int maskForPath)
+	{
+		return toStringBuilder(mask, maskForPath).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder()
 	{
-		return toStringBuilder(Deepness.COLUMN);
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuilder toStringBuilder(Deepness deepness)
+	public StringBuilder toStringBuilder(int mask)
+	{
+		return toStringBuilder(mask, MASK_CATALOG_ENTITY_FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public StringBuilder toStringBuilder(int mask, int maskForPath)
 	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(m_sids.stream().map(str -> quote(str)).collect(Collectors.joining(".")))
-		;
+		List<String> parts = new ArrayList<>();
+
+		if((mask & FLAG_CATALOG) != 0 && m_catalog != null) {
+			parts.add("cat:"+quote(m_catalog));
+		}
+
+		if((mask & FLAG_ENTITY) != 0 && m_entity != null) {
+			parts.add("ent:"+quote(m_entity));
+		}
+
+		if((mask & FLAG_FIELD) != 0 && m_field != null) {
+			parts.add("fld:"+quote(m_field));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_exclude)
+		{
+			result.append("!");
+		}
+
+		result.append(String.join(".", parts));
 
 		/*-----------------------------------------------------------------*/
 
 		if(m_path.isEmpty() == false)
 		{
 			result.append("{")
-			      .append(m_path.stream().map(qId -> qId.toString()).collect(Collectors.joining(",")))
+			      .append(m_path.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(",")))
 			      .append("}")
 			;
 		}

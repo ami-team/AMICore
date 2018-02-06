@@ -161,7 +161,7 @@ public class CommandSingletonTest
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;ROSETTA\""));
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument\""));
-
+/*
 			PathList pathList2 = AutoJoinSingleton.resolve(
 				"test",
 				"t1",
@@ -171,7 +171,7 @@ public class CommandSingletonTest
 			System.out.println(pathList2.getQId());
 			System.out.println(pathList2.getPaths());
 			System.out.println();
-
+*/
 //			System.out.println(new SimpleQuerier("test").mqlToSQL("t8", "SELECT foo8 + 1 WHERE foo10 = 'bar'"));
 //			System.out.println(new SimpleQuerier("test").mqlToSQL("t8", "SELECT foo8 + 1 WHERE foo9 + foo10 = 'bar'"));
 //			System.out.println();
@@ -182,6 +182,19 @@ public class CommandSingletonTest
 			System.out.println(new SimpleQuerier("test").mqlToSQL("t1", "SELECT foo7 WHERE foo1 = 'foo'"));
 			System.out.println();
 */
+
+			QId pathQId = new QId("A.B{!toto.yy}", QId.FLAG_FIELD, QId.FLAG_ENTITY);
+			System.out.println("------------");
+
+			QId qId = new QId("yy", QId.FLAG_ENTITY);
+			System.out.println("------------");
+
+			System.out.println(pathQId);
+
+			System.out.println(qId);
+
+			System.out.println(pathQId.getPath().get(0).matchesWithBasicQId(qId));
+
 			//System.out.println("done.");
 		}
 		catch(Exception e)

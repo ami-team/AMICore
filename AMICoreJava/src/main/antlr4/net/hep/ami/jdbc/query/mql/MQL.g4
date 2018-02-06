@@ -13,25 +13,25 @@ options {
 /*-------------------------------------------------------------------------*/
 
 mqlQuery
-	: (select=selectStatement | insert=insertStatement | update=updateStatement | delete=deleteStatement) ';'?
+	: (m_select=selectStatement | m_insert=insertStatement | m_update=updateStatement | m_delete=deleteStatement) ';'?
 	;
 
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT (distinct=DISTINCT)? columns=columnList (WHERE expression=expressionOr)? (ORDER BY orderBy=sqlQId (orderWay=(ASC|DESC))?)? (LIMIT limit=NUMBER (OFFSET offset=NUMBER)?)?
+	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE expression=expressionOr)? (ORDER BY m_orderBy=qId (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
 	;
 
 insertStatement
-	: INSERT qIds=qIdTuple VALUES expressions=expressionTuple /*----------------------------*/
+	: INSERT m_qIds=qIdTuple VALUES expressions=expressionTuple /*----------------------------*/
 	;
 
 updateStatement
-	: UPDATE qIds=qIdTuple VALUES expressions=expressionTuple (WHERE expression=expressionOr)?
+	: UPDATE m_qIds=qIdTuple VALUES expressions=expressionTuple (WHERE expression=expressionOr)?
 	;
 
 deleteStatement
-	: DELETE (WHERE expression=expressionOr)?
+	: DELETE (WHERE m_expression=expressionOr)?
 	;
 
 /*---------------------------*/
@@ -39,11 +39,11 @@ deleteStatement
 /*---------------------------*/
 
 columnList
-	: aColumn (',' aColumn)*
+	: m_columns+=aColumn (',' m_columns+=aColumn)*
 	;
 
 aColumn
-	: expression=expressionOr (AS alias=ID)?
+	: m_expression=expressionOr (AS m_alias=ID)?
 	;
 
 /*---------------------------*/
@@ -51,7 +51,7 @@ aColumn
 /*---------------------------*/
 
 qIdTuple
-	: '(' sqlQId (',' sqlQId)* ')'
+	: '(' m_qIds+=qId (',' m_qIds+=qId)* ')'
 	;
 
 /*---------------------------*/
@@ -59,7 +59,7 @@ qIdTuple
 /*---------------------------*/
 
 expressionTuple
-	: '(' expressionOr (',' expressionOr)* ')'
+	: '(' m_expressions+=expressionOr (',' m_expressions+=expressionOr)* ')'
 	;
 
 /*---------------------------*/
@@ -75,52 +75,58 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionAddSub (operator=COMP expressionAddSub)?
+	: expressionAddSub (m_operator=COMP expressionAddSub)?
 	;
 
 expressionAddSub
-	: expressionMulDiv (operator=('+' | '-') expressionMulDiv)*
+	: expressionMulDiv (m_operator=('+' | '-') expressionMulDiv)*
 	;
 
 expressionMulDiv
-	: expressionNotPlusMinus (operator=('*' | '/' | '%') expressionNotPlusMinus)*
+	: expressionNotPlusMinus (m_operator=('*' | '/' | '%') expressionNotPlusMinus)*
 	;
 
 expressionNotPlusMinus
-	: operator=('!' | '-' | '+')? expressionX
+	: m_operator=('!' | '-' | '+')? expressionX
 	;
 
 expressionX
-	: '(' expression=expressionOr ')'                                                 # ExpressionGroup
-	| functionName=FUNCTION '(' (param1=expressionOr (',' param2=expressionOr)?)? ')' # ExpressionFunction
-	| literal=sqlLiteral                                                              # ExpressionLiteral
-	| qId=sqlQId                                                                      # ExpressionQId
+	: '(' m_expression=expressionOr ')'                                                     # ExpressionGroup
+	| m_functionName=FUNCTION '(' (m_param1=expressionOr (',' m_param2=expressionOr)?)? ')' # ExpressionFunction
+	| m_literal=literal                                                                     # ExpressionLiteral
+	| m_qId=qId                                                                             # ExpressionQId
 	;
 
 /*---------------------------*/
-/* SQL_QID                   */
+/* QID                       */
 /*---------------------------*/
 
-sqlQId
-	: qId=sqlBasicQId ('{' sqlBasicQId (',' sqlBasicQId)* '}')?
+qId
+	: m_basicQId=basicQId ('{' m_pathQIds+=pathQId (',' m_pathQIds+=pathQId)* '}')?
 	;
 
 /*---------------------------*/
-/* SQL_BASIC_QID             */
+/* PATH_QID                  */
 /*---------------------------*/
 
-sqlBasicQId
-	: catalogName=ID '.' entityName=ID '.' fieldName=(ID | '*')
-	| entityName=ID '.' fieldName=(ID | '*')
-	| fieldName=(ID | '*')
+pathQId
+	: m_op='!'? m_qId=qId
 	;
 
 /*---------------------------*/
-/* SQL_LITERAL               */
+/* BASIC_QID                 */
 /*---------------------------*/
 
-sqlLiteral
-	: '?' | STRING | NUMBER | NULL
+basicQId
+	: m_ids+=ID ('.' m_ids+=ID)*
+	;
+
+/*---------------------------*/
+/* LITERAL                   */
+/*---------------------------*/
+
+literal
+	: STRING | NUMBER | NULL | '?'
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -231,6 +237,7 @@ ID
 	: [a-zA-Z_][a-zA-Z0-9_#$]*
 	| '`' ('``' | ~'`')+ '`'
 	| '"' ('""' | ~'"')+ '"'
+	| '*'
 	;
 
 NUMBER
@@ -240,6 +247,10 @@ NUMBER
 	;
 
 /*-------------------------------------------------------------------------*/
+
+COMMENT
+	: '#' ~[\n\r]* -> skip
+	;
 
 WS
 	: [ \t\n\r]+ -> skip

@@ -72,17 +72,17 @@ public class MQLToSQL
 
 		MQLParser.MqlQueryContext mqlQueryContext = parser.mqlQuery();
 
-		/**/ if(mqlQueryContext.select != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitSelectStatement(mqlQueryContext.select).toString();
+		/**/ if(mqlQueryContext.m_select != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitSelectStatement(mqlQueryContext.m_select).toString();
 		}
-		else if(mqlQueryContext.insert != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitInsertStatement(mqlQueryContext.insert).toString();
+		else if(mqlQueryContext.m_insert != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitInsertStatement(mqlQueryContext.m_insert).toString();
 		}
-		else if(mqlQueryContext.update != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitUpdateStatement(mqlQueryContext.update).toString();
+		else if(mqlQueryContext.m_update != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitUpdateStatement(mqlQueryContext.m_update).toString();
 		}
-		else if(mqlQueryContext.delete != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitDeleteStatement(mqlQueryContext.delete).toString();
+		else if(mqlQueryContext.m_delete != null) {
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitDeleteStatement(mqlQueryContext.m_delete).toString();
 		}
 		else {
 			throw new Exception(listener.toString());
@@ -112,11 +112,11 @@ public class MQLToSQL
 		m_inSelect = true;
 		/*-----------------------------------------------------------------*/
 
-		if(context.columns != null)
+		if(context.m_columns != null)
 		{
-			query.setDistinct(context.distinct != null);
+			query.setDistinct(context.m_distinct != null);
 
-			query.addSelectPart(visitColumnList(context.columns).toString());
+			query.addSelectPart(visitColumnList(context.m_columns).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -147,25 +147,25 @@ public class MQLToSQL
 */
 		/*-----------------------------------------------------------------*/
 
-		if(context.limit != null)
+		if(context.m_limit != null)
 		{
-			extra.append(" LIMIT ").append(context.limit.getText());
+			extra.append(" LIMIT ").append(context.m_limit.getText());
 
-			if(context.offset != null)
+			if(context.m_offset != null)
 			{
-				extra.append(" OFFSET ").append(context.offset.getText());
+				extra.append(" OFFSET ").append(context.m_offset.getText());
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		query.addFromPart(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE));
+		query.addFromPart(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY));
 
 		for(int i = 0; i < m_from.size(); i++) 
 		{
 			if(!m_from.get(i).equals(m_entity))
 			{
-				query.addFromPart(new QId(m_internalCatalog, m_from.get(i), null).toString(QId.Deepness.TABLE));
+				query.addFromPart(new QId(m_internalCatalog, m_from.get(i), null).toString(QId.FLAG_ENTITY));
 			}
 		}
 
@@ -206,11 +206,11 @@ public class MQLToSQL
 
 			QId tmpQId = new QId(tmpFields.get(i));
 
-			if(tmpQId.getCatalog().equals(m_internalCatalog) && tmpQId.getTable().equals(m_entity) && SchemaSingleton.getColumns(m_internalCatalog, m_entity).get(tmpQId.getColumn()) != null)
+			if(tmpQId.getCatalog().equals(m_internalCatalog) && tmpQId.getEntity().equals(m_entity) && SchemaSingleton.getColumns(m_internalCatalog, m_entity).get(tmpQId.getField()) != null)
 			{
-				tableFields.add(new QId(tmpFields.get(i)).getColumn());
+				tableFields.add(new QId(tmpFields.get(i)).getField());
 				tableValues.add(tmpExpressions.get(i));
-				tableForeignKeyFields.remove(tmpQId.getColumn().toLowerCase());
+				tableForeignKeyFields.remove(tmpQId.getField().toLowerCase());
 			}
 			else
 			{
@@ -272,7 +272,7 @@ public class MQLToSQL
 
 
 		result.append("INSERT INTO ")
-		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE))
+		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY))
 		      .append(" (")
 		      .append(String.join(", ", tableFields))
 		      .append(") VALUES (")
@@ -303,7 +303,7 @@ public class MQLToSQL
 		}
 
 		result.append("UPDATE ")
-		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE))
+		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY))
 		      .append(" SET ").append(String.join(", ", tmpSet));
 
 		if(context.expression != null)
@@ -328,13 +328,13 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("DELETE FROM ").append(new QId(m_internalCatalog, m_entity, null).toString(QId.Deepness.TABLE));
+		result.append("DELETE FROM ").append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY));
 
 		/*-----------------------------------------------------------------*/
 
-		if(context.expression != null)
+		if(context.m_expression != null)
 		{
-			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.m_expression, null).toString() + ")");
 
 			if(m_joins.isEmpty() == false)
 			{
@@ -388,13 +388,13 @@ public class MQLToSQL
 	{
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = visitExpressionOr(context.expression, null);
+		StringBuilder result = visitExpressionOr(context.m_expression, null);
 
 		/*-----------------------------------------------------------------*/
 
-		if(context.alias != null)
+		if(context.m_alias != null)
 		{
-			result.append(" AS " + QId.quote(context.alias.getText()));
+			result.append(" AS " + QId.quote(context.m_alias.getText()));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -418,9 +418,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			if(child instanceof MQLParser.SqlQIdContext)
+			if(child instanceof MQLParser.QIdContext)
 			{
-				result.add((visitSqlQId((MQLParser.SqlQIdContext) child, pathListList).toString()));
+				result.add((visitQId((MQLParser.QIdContext) child, pathListList).toString()));
 			}
 		}
 
@@ -522,9 +522,9 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context) throws Exception
 	{
-		List<PathList> pathListList = new ArrayList<>();
-
 		StringBuilder result = new StringBuilder();
+
+		List<PathList> pathListList = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -560,7 +560,7 @@ public class MQLToSQL
 			boolean needAND = false;
 			for (PathList pathList : pathListList) 
 			{
-					String localTableName = pathList.getQId().getTable();
+					String localTableName = pathList.getQId().getEntity();
 					String localCatalogName = pathList.getQId().getCatalog();
 					if(!localTableName.equals(m_entity))
 					{
@@ -716,9 +716,9 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(context.operator != null)
+		if(context.m_operator != null)
 		{
-			result.append(context.operator.getText());
+			result.append(context.m_operator.getText());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -739,7 +739,7 @@ public class MQLToSQL
 		}
 		else if(child instanceof MQLParser.ExpressionLiteralContext)
 		{
-			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child));
+			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, pathListList));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -752,7 +752,7 @@ public class MQLToSQL
 	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, List<PathList> pathListList) throws Exception
 	{
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.expression, pathListList))
+		                          .append(visitExpressionOr(context.m_expression, pathListList))
 		                          .append(")")
 		;
 	}
@@ -763,17 +763,17 @@ public class MQLToSQL
 	{
 		m_inFunction = true;
 
-		/**/		StringBuilder result = new StringBuilder(context.functionName.getText());
+		/**/		StringBuilder result = new StringBuilder(context.m_functionName.getText());
 		/**/
 		/**/		result.append("(");
 		/**/
-		/**/		if(context.param1 != null)
+		/**/		if(context.m_param1 != null)
 		/**/		{
-		/**/			result.append( "" ).append(visitExpressionOr(context.param1, pathListList));
+		/**/			result.append( "" ).append(visitExpressionOr(context.m_param1, pathListList));
 		/**/
-		/**/			if(context.param2 != null)
+		/**/			if(context.m_param2 != null)
 		/**/			{
-		/**/				result.append(", ").append(visitExpressionOr(context.param2, pathListList));
+		/**/				result.append(", ").append(visitExpressionOr(context.m_param2, pathListList));
 		/**/			}
 		/**/		}
 		/**/
@@ -788,77 +788,64 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<PathList> pathListList) throws Exception
 	{
-		return visitSqlQId(context.qId, pathListList);
+		return visitQId(context.m_qId, pathListList);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context) throws Exception
+	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, List<PathList> pathListList) throws Exception
 	{
-		return visitSqlLiteral(context.literal);
+		return visitLiteral(context.m_literal, pathListList);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitSqlQId(MQLParser.SqlQIdContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitQId(MQLParser.QIdContext context, List<PathList> pathListList) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
-		String catalogName = (context.qId.catalogName != null) ? QId.unquote(context.qId.catalogName.getText()) : m_externalCatalog;
-
-		String entityName = (context.qId.entityName != null) ? QId.unquote(context.qId.entityName.getText()) : /*-*/m_entity/*-*/;
-
-		String fieldName = QId.unquote(context.qId.fieldName.getText());
+		QId qid = new QId(context.getText(), QId.FLAG_FIELD);
 
 		/*-----------------------------------------------------------------*/
 
-		Collection<String> list;
+		String catalogName = (qid.getCatalog() != null) ? qid.getCatalog() : m_externalCatalog;
 
-		if("*".equals(fieldName) == false)
+		String entityName = (qid.getEntity() != null) ? qid.getEntity() : /*-*/m_entity/*-*/;
+
+		String fieldName = qid.getField();
+
+		/*-----------------------------------------------------------------*/
+
+		List<QId> list;
+
+		if("*".equals(fieldName))
 		{
-			/*-------------------------------------------------------------*/
-
-			ParseTree child;
-
-			final int nb = context.getChildCount();
-
-			System.out.println(">> " + nb);
-
-			for(int i = 1; i < nb; i++)
+			if(m_inFunction)
 			{
-				child = context.getChild(i);
-
-				if(child instanceof MQLParser.SqlBasicQIdContext)
-				{
-					System.out.println(fieldName + " {}" + visitSqlBasicQId((MQLParser.SqlBasicQIdContext) child));
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-
-			list = Arrays.asList(context.getText());
-
-			/*-------------------------------------------------------------*/
-		}
-		else
-		{
-			if(m_inFunction == false)
-			{
-				list = SchemaSingleton.getColumnNames(catalogName, entityName);
+				list = Arrays.asList(qid.setField(SchemaSingleton.getPrimaryKey(catalogName, entityName)));
 			}
 			else
 			{
-				list = Arrays.asList(SchemaSingleton.getPrimaryKey(catalogName, entityName));
+				list = new ArrayList<>();
+
+				for(String fieldNAME: SchemaSingleton.getColumnNames(catalogName, entityName))
+				{
+					list.add(new QId(catalogName, entityName, fieldNAME, qid.getPath()));
+				}
 			}
+		}
+		else
+		{
+			list = Arrays.asList(qid);
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		PathList pathList;
 
-		for(String qId: list)
+		for(QId qId: list)
 		{
 			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
 
@@ -874,18 +861,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitSqlBasicQId(MQLParser.SqlBasicQIdContext context)
-	{
-		return new QId(
-			context.catalogName != null ? context.catalogName.getText() : null,
-			context.entityName != null ? context.entityName.getText() : null,
-			context.fieldName != null ? context.fieldName.getText() : null
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private StringBuilder visitSqlLiteral(MQLParser.SqlLiteralContext context)
+	private StringBuilder visitLiteral(MQLParser.LiteralContext context, List<PathList> pathListList) throws Exception
 	{
 		return new StringBuilder(context.getText());
 	}

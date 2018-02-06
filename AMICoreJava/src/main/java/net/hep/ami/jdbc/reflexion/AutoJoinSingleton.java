@@ -30,8 +30,8 @@ public class AutoJoinSingleton
 		}
 
 		String givenCatalog = givenQId.getCatalog();
-		String givenTable = givenQId.getTable();
-		String givenColumn = givenQId.getColumn();
+		String givenTable = givenQId.getEntity();
+		String givenColumn = givenQId.getField();
 
 		boolean checkNow = (givenCatalog == null || defaultCatalog.equals(givenCatalog))
 		                   &&
