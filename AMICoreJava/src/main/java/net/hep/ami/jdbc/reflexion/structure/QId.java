@@ -301,13 +301,13 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean matchesWithBasicQId(QId qId)
+	public boolean pathContains(QId qId)
 	{
-		boolean q = (this.m_catalog == null || qId.m_catalog == null || this.m_catalog.equals(qId.m_catalog))
+		boolean q = (this.m_catalog == null || qId.m_catalog == null || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
 		            &&
-		            (this.m_entity == null || qId.m_entity == null || this.m_entity.equals(qId.m_entity))
+		            (this.m_entity == null || qId.m_entity == null || this.m_entity.equalsIgnoreCase(qId.m_entity))
 		            &&
-		            (this.m_field == null || qId.m_field == null || this.m_field.equals(qId.m_field))
+		            (this.m_field == null || qId.m_field == null || this.m_field.equalsIgnoreCase(qId.m_field))
 		;
 
 		return q != this.m_exclude;
