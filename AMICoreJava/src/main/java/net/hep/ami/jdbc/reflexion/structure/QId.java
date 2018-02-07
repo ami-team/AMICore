@@ -414,15 +414,15 @@ public class QId
 		List<String> parts = new ArrayList<>();
 
 		if((mask & FLAG_CATALOG) != 0 && m_catalog != null) {
-			parts.add("cat:"+quote(m_catalog));
+			parts.add(quote(m_catalog));
 		}
 
 		if((mask & FLAG_ENTITY) != 0 && m_entity != null) {
-			parts.add("ent:"+quote(m_entity));
+			parts.add(quote(m_entity));
 		}
 
 		if((mask & FLAG_FIELD) != 0 && m_field != null) {
-			parts.add("fld:"+quote(m_field));
+			parts.add(quote(m_field));
 		}
 
 		/*-----------------------------------------------------------------*/
