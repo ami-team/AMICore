@@ -356,7 +356,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean pathContains(QId qId)
+	public boolean check(QId qId)
 	{
 		boolean q = (this.m_catalog == null || qId.m_catalog == null || "#".equals(this.m_catalog) || "#".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
 		            &&

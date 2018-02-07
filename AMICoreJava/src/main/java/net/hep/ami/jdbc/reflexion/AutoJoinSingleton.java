@@ -107,6 +107,19 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
+			for(QId pathQId: givenQId.getPath())
+			{
+				for(FrgnKey frgnKey: path)
+				{
+					if(pathQId.check(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn)) == false)
+					{
+						return;
+					}
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
 			pathList.addPath(givenQId, resolvedQId, path);
 
 			/*-------------------------------------------------------------*/
@@ -120,6 +133,17 @@ public class AutoJoinSingleton
 		PathList result = new PathList();
 
 		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultCatalog, defaultTable, givenQId);
+
+		return result.check(givenQId);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static PathList resolve(String defaultCatalog, String defaultTable, QId givenQId) throws Exception
+	{
+		PathList result = new PathList();
+
+		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultCatalog, defaultTable, givenQId);
 
 		return result.check(givenQId);
 	}

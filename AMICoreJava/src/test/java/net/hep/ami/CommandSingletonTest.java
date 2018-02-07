@@ -193,7 +193,7 @@ public class CommandSingletonTest
 
 			System.out.println(qId);
 
-			System.out.println(pathQId.getPath().get(0).pathContains(qId));
+			System.out.println(pathQId.getPath().get(0).check(qId));
 
 			System.out.println(new QId("A.#.B{!toto.yy}", QId.FLAG_FIELD, QId.FLAG_ENTITY));
 
