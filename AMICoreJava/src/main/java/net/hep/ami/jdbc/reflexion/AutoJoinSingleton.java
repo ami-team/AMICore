@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import net.hep.ami.jdbc.reflexion.structure.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
@@ -107,14 +108,30 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(QId pathQId: givenQId.getPath())
+			Map<QId, Boolean> map = givenQId.getPath().stream().collect(Collectors.toMap(qId -> qId, qId -> qId.getExclusion()));
+
+			/**/
+
+			for(QId qId: map.keySet())
 			{
 				for(FrgnKey frgnKey: path)
 				{
-					if(pathQId.check(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn)) == false)
-					{
-						return;
+					if(qId.check(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn))
+					   ||
+					   qId.check(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))
+					 ) {
+						map.put(qId, !qId.getExclusion());
 					}
+				}
+			}
+
+			/**/
+
+			for(boolean found: map.values())
+			{
+				if(found == false)
+				{
+					return;
 				}
 			}
 

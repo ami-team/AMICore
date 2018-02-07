@@ -22,7 +22,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean m_exclude = false;
+	private boolean m_exclusion = false;
 
 	/*---------------------------------------------------------------------*/
 
@@ -153,7 +153,7 @@ public class QId
 
 		for(QIdParser.PathQIdContext pathQIdContext: context.m_pathQIds)
 		{
-			result.m_path.add(visitQId(new QId().setPathExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForPath, typeForPath));
+			result.m_path.add(visitQId(new QId().setExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForPath, typeForPath));
 		}
 
 		return result;
@@ -264,11 +264,18 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public QId setPathExclusion(boolean exclude)
+	public QId setExclusion(boolean exclusion)
 	{
-		m_exclude = exclude;
+		m_exclusion = exclusion;
 
 		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean getExclusion()
+	{
+		return m_exclusion;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -358,14 +365,12 @@ public class QId
 
 	public boolean check(QId qId)
 	{
-		boolean q = (this.m_catalog == null || qId.m_catalog == null || "#".equals(this.m_catalog) || "#".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
-		            &&
-		            (this.m_entity == null || qId.m_entity == null || "#".equals(this.m_entity) || "#".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
-		            &&
-		            (this.m_field == null || qId.m_field == null || "#".equals(this.m_field) || "#".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
+		return (this.m_catalog == null || qId.m_catalog == null || "#".equals(this.m_catalog) || "#".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
+		       &&
+		       (this.m_entity == null || qId.m_entity == null || "#".equals(this.m_entity) || "#".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
+		       &&
+		       (this.m_field == null || qId.m_field == null || "#".equals(this.m_field) || "#".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
 		;
-
-		return q != this.m_exclude;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -427,7 +432,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_exclude)
+		if(m_exclusion)
 		{
 			result.append("!");
 		}
