@@ -9,6 +9,7 @@ import net.hep.ami.jdbc.query.mql.MQLParser.AColumnContext;
 import net.hep.ami.jdbc.query.mql.MQLParser.ExpressionOrContext;
 import net.hep.ami.jdbc.query.mql.MQLParser.QIdContext;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.Column;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.jdbc.reflexion.structure.*;
@@ -186,11 +187,11 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		List<String> tableFields = new ArrayList<String>();
-		List<String> tableValues = new ArrayList<String>();
+		List<String> fieldsInDefaultEntity = new ArrayList<String>();
+		List<String> valuesInDefaultEntity = new ArrayList<String>();
 
-		List<String> externalFields = new ArrayList<String>();
-		List<String> externalValues = new ArrayList<String>();
+		List<String> fieldsNotInDefaultEntity = new ArrayList<String>();
+		List<String> valuesNotInDefaultEntity = new ArrayList<String>();
 
 		List<PathList> pathListList = new ArrayList<>();
 
@@ -201,59 +202,65 @@ public class MQLToSQL
 		List<String> expressions = visitExpressionTuple(context.expressionTuple(), pathListList);
 		m_inInsert = false;
 
-/*		System.out.println("fields: " + fields);
-		System.out.println("expressions: " + expressions);
-*/
 		/*-----------------------------------------------------------------*/
 
-		Map<String, FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
+		Map<String, Column> columnsInDefaultEntity = SchemaSingleton.getColumns(m_internalCatalog, m_entity);
 
-		System.out.println("HHH: " + tableForeignKeyFields);
+		Map<String, FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
 
 		/*-----------------------------------------------------------------*/
 
-		for(int i = 0; i < fields.size(); i++)
-		{
-			QId tmpQId = new QId(fields.get(i));
-
-		}
+		List<String> frgnKeysAlreadyTreated = new ArrayList<>();
 
 		for(int i = 0; i < fields.size(); i++)
 		{
-
 			QId tmpQId = new QId(fields.get(i));
 
 			if(m_internalCatalog.equalsIgnoreCase(tmpQId.getCatalog())
 			   &&
 			   m_entity.equalsIgnoreCase(tmpQId.getEntity())
 			   &&
-			   SchemaSingleton.getColumns(m_internalCatalog, m_entity).get(tmpQId.getField()) != null)
-			{
-				tableForeignKeyFields.remove(tmpQId.getField().toLowerCase());
+			   columnsInDefaultEntity.get(tmpQId.getField()) != null
+			 ) {
+				if(frgnKeysInDefaultEntity.containsKey(tmpQId.getField()))
+				{
+					frgnKeysAlreadyTreated.add(tmpQId.getField());
+				}
 
-				tableFields.add(new QId(fields.get(i)).getField());
-				tableValues.add(expressions.get(i));
+				fieldsInDefaultEntity.add(fields.get(i));
+				valuesInDefaultEntity.add(expressions.get(i));
 			}
 			else
 			{
-				externalFields.add(fields.get(i));
-				externalValues.add(expressions.get(i));
+				fieldsNotInDefaultEntity.add(fields.get(i));
+				valuesNotInDefaultEntity.add(expressions.get(i));
 			}
 		}
 
+		System.out.println("columnsInDefaultEntity: " + columnsInDefaultEntity);
+		System.out.println("frgnKeysInDefaultEntity: " + frgnKeysInDefaultEntity);
+
+		System.out.println("frgnKeysAlreadyTreated: " + frgnKeysAlreadyTreated);
+		System.out.println("tableFields: " + fieldsInDefaultEntity);
+		System.out.println("tableValues: " + valuesInDefaultEntity);
+		System.out.println("externalFields: " + fieldsNotInDefaultEntity);
+		System.out.println("externalValues: " + valuesNotInDefaultEntity);
+
+		System.out.println("***************************");
+
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
-		System.out.println("fields/values to deal with: " + externalFields.toString());
-		for(String key: tableForeignKeyFields.keySet()) 
+		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + frgnKeysInDefaultEntity.toString());
+		System.out.println("fields/values to deal with: " + fieldsNotInDefaultEntity.toString());
+		for(String key: frgnKeysInDefaultEntity.keySet()) 
 		{
 			System.out.println("doing: " + key);
-			FrgnKey tmpFrgnKey = tableForeignKeyFields.get(key).get(0);
+			FrgnKey tmpFrgnKey = frgnKeysInDefaultEntity.get(key).get(0);
 			System.out.println("table " + tmpFrgnKey.pkTable);
 			System.out.println("field " + tmpFrgnKey.pkColumn);
 			List<String> tmpWhere = new ArrayList<String>();
 
-			for(int i = 0; i < externalFields.size(); i++)
+			for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
 			{
 				boolean todo = false;
 				for(PathList pathList: pathListList)
@@ -279,7 +286,7 @@ public class MQLToSQL
 				}
 				if(todo)
 				{
-					tmpWhere.add(externalFields.get(i) + " = " + externalValues.get(i));
+					tmpWhere.add(fieldsNotInDefaultEntity.get(i) + " = " + valuesNotInDefaultEntity.get(i));
 				}
 			}
 
@@ -291,9 +298,9 @@ public class MQLToSQL
 
 				String tmpSQL = MQLToSQL.parse(tmpFrgnKey.pkInternalCatalog, tmpFrgnKey.pkTable, tmpMQL);
 
-				tableFields.add(tmpFrgnKey.fkColumn);
+				fieldsInDefaultEntity.add(tmpFrgnKey.fkColumn);
 
-				tableValues.add(tmpSQL);
+				valuesInDefaultEntity.add(tmpSQL);
 			}
 		}
 
@@ -303,9 +310,9 @@ public class MQLToSQL
 		result.append("INSERT INTO ")
 		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY))
 		      .append(" (")
-		      .append(String.join(", ", tableFields))
+		      .append(String.join(", ", fieldsInDefaultEntity))
 		      .append(") VALUES (")
-		      .append(String.join(", ", tableValues))
+		      .append(String.join(", ", valuesInDefaultEntity))
 		      .append(")")
 		;
 
