@@ -224,7 +224,7 @@ public class MQLToSQL
 			 ) {
 				if(frgnKeysInDefaultEntity.containsKey(tmpQId.getField()))
 				{
-					frgnKeysAlreadyTreated.add(tmpQId.getField());
+					frgnKeysAlreadyTreated.add(tmpQId.getField().toUpperCase());
 				}
 
 				fieldsInDefaultEntity.add(fields.get(i));
@@ -254,53 +254,56 @@ public class MQLToSQL
 		System.out.println("fields/values to deal with: " + fieldsNotInDefaultEntity.toString());
 		for(String key: frgnKeysInDefaultEntity.keySet()) 
 		{
-			System.out.println("doing: " + key);
-			FrgnKey tmpFrgnKey = frgnKeysInDefaultEntity.get(key).get(0);
-			System.out.println("table " + tmpFrgnKey.pkTable);
-			System.out.println("field " + tmpFrgnKey.pkColumn);
-			List<String> tmpWhere = new ArrayList<String>();
-
-			for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
+			if(!frgnKeysAlreadyTreated.contains(key.toUpperCase()))
 			{
-				boolean todo = false;
-				for(PathList pathList: pathListList)
-				{
-					for(List<FrgnKey> path: pathList.getPaths())
-					{
-						if(path.isEmpty() == false)
-						{
-							
-							System.out.println(path.get(0).fkColumn + " <> " + tmpFrgnKey.fkColumn + "  ::  " + path.get(0));
+				System.out.println("doing: " + key);
+				FrgnKey tmpFrgnKey = frgnKeysInDefaultEntity.get(key).get(0);
+				System.out.println("table " + tmpFrgnKey.pkTable);
+				System.out.println("field " + tmpFrgnKey.pkColumn);
+				List<String> tmpWhere = new ArrayList<String>();
 
-							if(path.get(0).fkInternalCatalog.equals(tmpFrgnKey.fkInternalCatalog)
-							   &&
-							   path.get(0).fkTable.equals(tmpFrgnKey.fkTable)
-							   &&
-							   path.get(0).fkColumn.equals(tmpFrgnKey.fkColumn)
-							 ) {
-								todo = true;
-								System.out.println("todo true ");
+				for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
+				{
+					boolean todo = false;
+					for(PathList pathList: pathListList)
+					{
+						for(List<FrgnKey> path: pathList.getPaths())
+						{
+							if(path.isEmpty() == false)
+							{
+
+								System.out.println(path.get(0).fkColumn + " <> " + tmpFrgnKey.fkColumn + "  ::  " + path.get(0));
+
+								if(path.get(0).fkInternalCatalog.equals(tmpFrgnKey.fkInternalCatalog)
+								   &&
+								   path.get(0).fkTable.equals(tmpFrgnKey.fkTable)
+								   &&
+								   path.get(0).fkColumn.equals(tmpFrgnKey.fkColumn)
+								 ) {
+									todo = true;
+									System.out.println("todo true ");
+								}
 							}
 						}
 					}
+					if(todo)
+					{
+						tmpWhere.add(fieldsNotInDefaultEntity.get(i) + " = " + valuesNotInDefaultEntity.get(i));
+					}
 				}
-				if(todo)
+
+				if(!tmpWhere.isEmpty())
 				{
-					tmpWhere.add(fieldsNotInDefaultEntity.get(i) + " = " + valuesNotInDefaultEntity.get(i));
+					String tmpMQL = "SELECT " + tmpFrgnKey.pkTable + "." + tmpFrgnKey.pkColumn + " WHERE " + String.join(" AND ", tmpWhere);
+
+					System.out.println("MQL tmp: " + tmpMQL);
+
+					String tmpSQL = MQLToSQL.parse(tmpFrgnKey.pkInternalCatalog, tmpFrgnKey.pkTable, tmpMQL);
+
+					fieldsInDefaultEntity.add(tmpFrgnKey.fkColumn);
+
+					valuesInDefaultEntity.add(tmpSQL);
 				}
-			}
-
-			if(!tmpWhere.isEmpty())
-			{
-				String tmpMQL = "SELECT " + tmpFrgnKey.pkTable + "." + tmpFrgnKey.pkColumn + " WHERE " + String.join(" AND ", tmpWhere);
-
-				System.out.println("MQL tmp: " + tmpMQL);
-
-				String tmpSQL = MQLToSQL.parse(tmpFrgnKey.pkInternalCatalog, tmpFrgnKey.pkTable, tmpMQL);
-
-				fieldsInDefaultEntity.add(tmpFrgnKey.fkColumn);
-
-				valuesInDefaultEntity.add(tmpSQL);
 			}
 		}
 
