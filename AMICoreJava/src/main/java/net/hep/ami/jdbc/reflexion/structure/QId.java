@@ -36,6 +36,68 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public static String unquote(String s)
+	{
+		/*-----------------------------------------------------------------*/
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		if(s.isEmpty() == false)
+		{
+			final int l = s.length() - 1;
+
+			if(s.charAt(0) == '`'
+			   &&
+			   s.charAt(l) == '`'
+			 ) {
+				s = s.substring(1, l).replace("``", "`");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String quote(String s)
+	{
+		/*-----------------------------------------------------------------*/
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		if(s.isEmpty() == false)
+		{
+			final int l = s.length() - 1;
+
+			if(s.charAt(0) != '`'
+			   ||
+			   s.charAt(l) != '`'
+			 ) {
+				s = '`' + s.replace("`", "``") + '`';
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public QId()
 	{
 		/* DO NOTHING */
@@ -132,7 +194,7 @@ public class QId
 				}
 				else
 				{
-					throw new Exception("syntax error for catalog");
+					throw new Exception("syntax error for entity");
 				}
 				break;
 
@@ -156,7 +218,7 @@ public class QId
 				}
 				else
 				{
-					throw new Exception("syntax error for catalog");
+					throw new Exception("syntax error for field");
 				}
 				break;
 
@@ -168,16 +230,12 @@ public class QId
 			/*-------------------------------------------------------------*/
 		}
 
-		if("#".equals(result.m_catalog)) {
-			result.m_catalog = null;
+		if("*".equals(result.m_catalog)) {
+			throw new Exception("`*` not allowed in `catalog` part");
 		}
 
-		if("#".equals(result.m_entity)) {
-			result.m_entity = null;
-		}
-
-		if("#".equals(result.m_field)) {
-			result.m_field = null;
+		if("*".equals(result.m_entity)) {
+			throw new Exception("`*` not allowed in `entity` part");
 		}
 
 		return result;
@@ -211,106 +269,6 @@ public class QId
 		m_exclude = exclude;
 
 		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String unquote(String s)
-	{
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		final int l = s.length() - 1;
-
-		if(s.charAt(0) == '`'
-		   &&
-		   s.charAt(l) == '`'
-		 ) {
-			s = s.substring(1, l).replace("``", "`");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		return s;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String quote(String s)
-	{
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		final int l = s.length() - 1;
-
-		if(s.charAt(0) != '`'
-		   ||
-		   s.charAt(l) != '`'
-		 ) {
-			s = '`' + s.replace("`", "``") + '`';
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		return s;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public boolean equals(QId qId)
-	{
-		String s1 = this.toString(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
-		String s2 = qId.toString(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
-
-		return this == qId || s1.equals(s2);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public boolean equals(QId qId, int mask)
-	{
-		String s1 = this.toString(mask, MASK_CATALOG_ENTITY_FIELD);
-		String s2 = qId.toString(mask, MASK_CATALOG_ENTITY_FIELD);
-
-		return this == qId || s1.equals(s2);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public boolean equals(QId qId, int mask, int maskForPath)
-	{
-		String s1 = this.toString(mask, maskForPath);
-		String s2 = qId.toString(mask, maskForPath);
-
-		return this == qId || s1.equals(s2);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public boolean pathContains(QId qId)
-	{
-		boolean q = (this.m_catalog == null || qId.m_catalog == null || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
-		            &&
-		            (this.m_entity == null || qId.m_entity == null || this.m_entity.equalsIgnoreCase(qId.m_entity))
-		            &&
-		            (this.m_field == null || qId.m_field == null || this.m_field.equalsIgnoreCase(qId.m_field))
-		;
-
-		return q != this.m_exclude;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -366,6 +324,48 @@ public class QId
 	public List<QId> getPath()
 	{
 		return m_path;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean equals(Object anObject)
+	{
+		return equals(anObject, MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean equals(Object anObject, int mask)
+	{
+		return equals(anObject, mask, MASK_CATALOG_ENTITY_FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean equals(Object anObject, int mask, int maskForPath)
+	{
+		if(anObject instanceof QId)
+		{
+			QId that = (QId) anObject;
+
+			return this == that || this.toString(mask, maskForPath).equals(that.toString(mask, maskForPath));
+		}
+
+		return false;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean pathContains(QId qId)
+	{
+		boolean q = (this.m_catalog == null || qId.m_catalog == null || "#".equals(this.m_catalog) || "#".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
+		            &&
+		            (this.m_entity == null || qId.m_entity == null || "#".equals(this.m_entity) || "#".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
+		            &&
+		            (this.m_field == null || qId.m_field == null || "#".equals(this.m_field) || "#".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
+		;
+
+		return q != this.m_exclude;
 	}
 
 	/*---------------------------------------------------------------------*/

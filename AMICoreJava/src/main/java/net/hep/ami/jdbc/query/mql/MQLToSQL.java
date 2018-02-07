@@ -762,7 +762,7 @@ public class MQLToSQL
 
 	private StringBuilder visitQId(MQLParser.QIdContext context, List<PathList> pathListList) throws Exception
 	{
-		List<String> result = new ArrayList<>();
+		List<StringBuilder> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -809,7 +809,7 @@ public class MQLToSQL
 		{
 			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
 
-			result.add(pathList.getQId().toString());
+			result.add(pathList.getQId().toStringBuilder());
 
 			pathListList.add(pathList);
 		}
