@@ -194,33 +194,54 @@ public class MQLToSQL
 
 		List<PathList> pathListList = new ArrayList<>();
 
+		/*-----------------------------------------------------------------*/
+
 		m_inInsert = true;
-		List<String> tmpFields = visitQIdTuple(context.qIdTuple(), pathListList);
-		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
+		List<String> fields = visitQIdTuple(context.qIdTuple(), pathListList);
+		List<String> expressions = visitExpressionTuple(context.expressionTuple(), pathListList);
 		m_inInsert = false;
 
-		Map<String,FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
+/*		System.out.println("fields: " + fields);
+		System.out.println("expressions: " + expressions);
+*/
+		/*-----------------------------------------------------------------*/
 
-		System.out.println("tmpFields: " + tmpFields);
-		System.out.println("tmpExpressions: " + tmpExpressions);
-		System.out.println("number of fields: " + tmpFields.size());
+		Map<String, FrgnKeys> tableForeignKeyFields = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
 
-		for(int i = 0; i < tmpFields.size(); i++) {
+		System.out.println("HHH: " + tableForeignKeyFields);
 
-			QId tmpQId = new QId(tmpFields.get(i));
+		/*-----------------------------------------------------------------*/
 
-			if(tmpQId.getCatalog().equals(m_internalCatalog) && tmpQId.getEntity().equals(m_entity) && SchemaSingleton.getColumns(m_internalCatalog, m_entity).get(tmpQId.getField()) != null)
+		for(int i = 0; i < fields.size(); i++)
+		{
+			QId tmpQId = new QId(fields.get(i));
+
+		}
+
+		for(int i = 0; i < fields.size(); i++)
+		{
+
+			QId tmpQId = new QId(fields.get(i));
+
+			if(m_internalCatalog.equalsIgnoreCase(tmpQId.getCatalog())
+			   &&
+			   m_entity.equalsIgnoreCase(tmpQId.getEntity())
+			   &&
+			   SchemaSingleton.getColumns(m_internalCatalog, m_entity).get(tmpQId.getField()) != null)
 			{
-				tableFields.add(new QId(tmpFields.get(i)).getField());
-				tableValues.add(tmpExpressions.get(i));
 				tableForeignKeyFields.remove(tmpQId.getField().toLowerCase());
+
+				tableFields.add(new QId(fields.get(i)).getField());
+				tableValues.add(expressions.get(i));
 			}
 			else
 			{
-				externalFields.add(tmpFields.get(i));
-				externalValues.add(tmpExpressions.get(i));
+				externalFields.add(fields.get(i));
+				externalValues.add(expressions.get(i));
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + tableForeignKeyFields.toString());
 		System.out.println("fields/values to deal with: " + externalFields.toString());
@@ -241,12 +262,17 @@ public class MQLToSQL
 					{
 						if(path.isEmpty() == false)
 						{
+							
 							System.out.println(path.get(0).fkColumn + " <> " + tmpFrgnKey.fkColumn + "  ::  " + path.get(0));
 
-							if(path.get(0).fkInternalCatalog.equals(tmpFrgnKey.fkInternalCatalog) && path.get(0).fkTable.equals(tmpFrgnKey.fkTable) && path.get(0).fkColumn.equals(tmpFrgnKey.fkColumn))
-							{
+							if(path.get(0).fkInternalCatalog.equals(tmpFrgnKey.fkInternalCatalog)
+							   &&
+							   path.get(0).fkTable.equals(tmpFrgnKey.fkTable)
+							   &&
+							   path.get(0).fkColumn.equals(tmpFrgnKey.fkColumn)
+							 ) {
 								todo = true;
-								System.out.println("todo true");
+								System.out.println("todo true ");
 							}
 						}
 					}
