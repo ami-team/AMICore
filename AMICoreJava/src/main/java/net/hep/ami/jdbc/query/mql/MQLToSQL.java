@@ -281,7 +281,7 @@ public class MQLToSQL
 								   path.get(0).fkColumn.equals(tmpFrgnKey.fkColumn)
 								 ) {
 									todo = true;
-									System.out.println("todo true ");
+									System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
 								}
 							}
 						}
