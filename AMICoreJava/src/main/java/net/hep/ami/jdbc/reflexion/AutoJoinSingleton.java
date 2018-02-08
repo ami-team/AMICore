@@ -1,7 +1,7 @@
 package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 import net.hep.ami.jdbc.reflexion.structure.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
@@ -116,9 +116,9 @@ public class AutoJoinSingleton
 			{
 				for(FrgnKey frgnKey: path)
 				{
-					if(qId.check(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn))
+					if(qId.matches(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn))
 					   ||
-					   qId.check(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))
+					   qId.matches(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))
 					 ) {
 						map.put(qId, !qId.getExclusion());
 					}

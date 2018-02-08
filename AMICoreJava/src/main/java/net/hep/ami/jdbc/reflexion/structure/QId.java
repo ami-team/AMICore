@@ -363,7 +363,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean check(QId qId)
+	public boolean matches(QId qId)
 	{
 		return (this.m_catalog == null || qId.m_catalog == null || "#".equals(this.m_catalog) || "#".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
 		       &&

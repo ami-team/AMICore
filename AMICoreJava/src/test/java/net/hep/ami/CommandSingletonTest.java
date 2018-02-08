@@ -186,16 +186,16 @@ public class CommandSingletonTest
 			QId pathQId = new QId("A.B{!toto.yy}", QId.FLAG_FIELD, QId.FLAG_ENTITY);
 			System.out.println("------------");
 
-			QId qId = new QId("yyok", QId.FLAG_ENTITY);
+			QId qId = new QId("yy.#", QId.FLAG_FIELD);
 			System.out.println("------------");
 
 			System.out.println(pathQId);
 
 			System.out.println(qId);
 
-			System.out.println(pathQId.getPath().get(0).check(qId));
+			System.out.println(pathQId.getPath().get(0).matches(qId) != pathQId.getPath().get(0).getExclusion());
 
-			System.out.println(new QId("A.#.B{!toto.yy}", QId.FLAG_FIELD, QId.FLAG_ENTITY));
+			//System.out.println(new QId("B{!U.#}", QId.FLAG_FIELD, QId.FLAG_ENTITY));
 
 			//System.out.println("done.");
 		}
