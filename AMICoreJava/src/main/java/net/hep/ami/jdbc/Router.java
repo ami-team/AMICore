@@ -53,6 +53,14 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public void setReadOnly(boolean readOnly) throws Exception
+	{
+		m_driver.setReadOnly(readOnly);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String mqlToSQL(String entity, String mql) throws Exception
 	{
 		return m_driver.mqlToSQL(entity, mql);

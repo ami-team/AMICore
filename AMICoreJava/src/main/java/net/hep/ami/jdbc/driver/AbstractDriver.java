@@ -91,6 +91,17 @@ public abstract class AbstractDriver implements Querier
 		);
 
 		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			m_connection.setReadOnly(false);
+		}
+		catch(SQLException e)
+		{
+			LogSingleton.root.error(e.getMessage(), e);
+		}
+
+		/*-----------------------------------------------------------------*/
 		/* CREATE STATEMENT                                                */
 		/*-----------------------------------------------------------------*/
 
@@ -107,11 +118,18 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract String patchSQL(String sql) throws Exception;
+	public void setReadOnly(boolean readOnly) throws Exception
+	{
+		m_connection.setReadOnly(readOnly);
+	}
 
 	/*---------------------------------------------------------------------*/
 
 	public abstract void setDB(String db) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	public abstract String patchSQL(String sql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

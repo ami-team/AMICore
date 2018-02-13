@@ -20,17 +20,17 @@ public class Neo4jDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	public void setDB(String db) throws Exception
 	{
-		return sql;
+		/* TODO */
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void setDB(String db) throws Exception
+	public String patchSQL(String sql) throws Exception
 	{
-		/* TODO */
+		return sql;
 	}
 
 	/*---------------------------------------------------------------------*/

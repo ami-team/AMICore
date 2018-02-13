@@ -8,6 +8,10 @@ public interface Querier
 {
 	/*---------------------------------------------------------------------*/
 
+	public void setReadOnly(boolean readOnly) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
 	public String mqlToSQL(String entity, String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/

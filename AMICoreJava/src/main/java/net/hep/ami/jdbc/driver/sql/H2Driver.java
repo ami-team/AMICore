@@ -20,17 +20,17 @@ public class H2Driver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	public void setDB(String db) throws Exception
 	{
-		return sql;
+		/* DO NOTHING */
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void setDB(String db) throws Exception
+	public String patchSQL(String sql) throws Exception
 	{
-		/* DO NOTHING */
+		return sql;
 	}
 
 	/*---------------------------------------------------------------------*/

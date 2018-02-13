@@ -8,7 +8,7 @@ public class CacheSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static MemcachedClient s_memcachedClient;
+	private static final MemcachedClient s_memcachedClient = newMemcachedClient();
 
 	/*---------------------------------------------------------------------*/
 
@@ -16,67 +16,78 @@ public class CacheSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	static
-	{
-		reconnect();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void reconnect()
+	static private MemcachedClient newMemcachedClient()
 	{
 		try
 		{
-			s_memcachedClient = new MemcachedClient(new InetSocketAddress(
+			return new MemcachedClient(new InetSocketAddress(
 				ConfigSingleton.getProperty("memcached_host", "localhost"),
-				ConfigSingleton.getProperty("memcached_port", 11211)
-			));
+				ConfigSingleton.getProperty("memcached_port", 11211))
+			);
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.info(e.getMessage(), e);
-
-			s_memcachedClient = null;
+			LogSingleton.root.error(e.getMessage(), e);
 		}
-	}
 
-	/*---------------------------------------------------------------------*/
-
-	public static boolean isPresent()
-	{
-		return s_memcachedClient != null;
+		return null;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String put(String key, Object value)
 	{
-		try
+		if(s_memcachedClient != null)
 		{
-			return s_memcachedClient != null ? s_memcachedClient.add(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value).getKey() : null;
+			try
+			{
+				return s_memcachedClient.add(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value).getKey();
+			}
+			catch(Exception e)
+			{
+				LogSingleton.root.error(e.getMessage(), e);
+			}
 		}
-		catch(Exception e)
-		{
-			LogSingleton.root.error(e.getMessage(), e);
 
-			return null;
-		}
+		return null;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Object get(String key)
 	{
-		try
+		if(s_memcachedClient != null)
 		{
-			return s_memcachedClient != null ? s_memcachedClient.get(key) : null;
+			try
+			{
+				return s_memcachedClient.get(key);
+			}
+			catch(Exception e)
+			{
+				LogSingleton.root.error(e.getMessage(), e);
+			}
 		}
-		catch(Exception e)
-		{
-			LogSingleton.root.error(e.getMessage(), e);
 
-			return null;
+		return null;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String remove(String key)
+	{
+		if(s_memcachedClient != null)
+		{
+			try
+			{
+				s_memcachedClient.delete(key).getKey();
+			}
+			catch(Exception e)
+			{
+				LogSingleton.root.error(e.getMessage(), e);
+			}
 		}
+
+		return null;
 	}
 
 	/*---------------------------------------------------------------------*/

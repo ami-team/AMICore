@@ -19,7 +19,7 @@ public class GetConfig extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		if("false".equals(m_isSecure))
+		if(m_isSecure == false)
 		{
 			throw new Exception("HTTPS connection required"); 
 		}

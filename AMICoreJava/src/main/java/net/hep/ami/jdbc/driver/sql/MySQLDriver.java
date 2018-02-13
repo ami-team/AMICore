@@ -20,18 +20,18 @@ public class MySQLDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	@SuppressWarnings("deprecation")
+	public void setDB(String db) throws Exception
 	{
-		return sql; /* MySQL/MariaDB is the default */
+		getStatement().executeQuery("USE `" + db + "`;");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public void setDB(String db) throws Exception
+	public String patchSQL(String sql) throws Exception
 	{
-		getStatement().executeQuery("USE `" + db + "`;");
+		return sql; /* MySQL/MariaDB is the default */
 	}
 
 	/*---------------------------------------------------------------------*/

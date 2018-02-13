@@ -50,23 +50,23 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = s_pools.get(transactionId);
+		/**/		transaction = s_pools.get(transactionId);
 		/**/
-		/**/	if(transaction == null)
-		/**/	{
-		/**/		s_pools.put(transactionId, transaction = new HashMap<>());
-		/**/
-		/**/		transaction.put(key, result = CatalogSingleton.getConnection(catalog));
-		/**/	}
-		/**/	else
-		/**/	{
-		/**/		result = transaction.get(key);
-		/**/
-		/**/		if(result == null)
+		/**/		if(transaction == null)
 		/**/		{
+		/**/			s_pools.put(transactionId, transaction = new HashMap<>());
+		/**/
 		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog));
 		/**/		}
-		/**/	}
+		/**/		else
+		/**/		{
+		/**/			result = transaction.get(key);
+		/**/
+		/**/			if(result == null)
+		/**/			{
+		/**/				transaction.put(key, result = CatalogSingleton.getConnection(catalog));
+		/**/			}
+		/**/		}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -97,23 +97,23 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = s_pools.get(transactionId);
+		/**/		transaction = s_pools.get(transactionId);
 		/**/
-		/**/	if(transaction == null)
-		/**/	{
-		/**/		s_pools.put(transactionId, transaction = new HashMap<>());
-		/**/
-		/**/		transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass));
-		/**/	}
-		/**/	else
-		/**/	{
-		/**/		result = transaction.get(key);
-		/**/
-		/**/		if(result == null)
+		/**/		if(transaction == null)
 		/**/		{
+		/**/			s_pools.put(transactionId, transaction = new HashMap<>());
+		/**/
 		/**/			transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass));
 		/**/		}
-		/**/	}
+		/**/		else
+		/**/		{
+		/**/			result = transaction.get(key);
+		/**/
+		/**/			if(result == null)
+		/**/			{
+		/**/				transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass));
+		/**/			}
+		/**/		}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -133,7 +133,7 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = s_pools.remove(transactionId);
+		/**/		transaction = s_pools.remove(transactionId);
 		}
 
 		if(transaction == null)
@@ -217,7 +217,7 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	transaction = s_pools.remove(transactionId);
+		/**/		transaction = s_pools.remove(transactionId);
 		}
 
 		if(transaction == null)
@@ -299,32 +299,32 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
-		/**/	/*---------------------------------------------------------*/
-		/**/	/* ROLLBACK AND RELEASE CONNECTIONS                        */
-		/**/	/*---------------------------------------------------------*/
+		/**/		/*---------------------------------------------------------*/
+		/**/		/* ROLLBACK AND RELEASE CONNECTIONS                        */
+		/**/		/*---------------------------------------------------------*/
 		/**/
-		/**/	for(Map<String, AbstractDriver> transaction: s_pools.values())
-		/**/	{
-		/**/		for(AbstractDriver connection: transaction.values())
+		/**/		for(Map<String, AbstractDriver> transaction: s_pools.values())
 		/**/		{
-		/**/			try
+		/**/			for(AbstractDriver connection: transaction.values())
 		/**/			{
-		/**/				connection.rollbackAndRelease();
-		/**/			}
-		/**/			catch(Exception e)
-		/**/			{
-		/**/				cnt++;
+		/**/				try
+		/**/				{
+		/**/					connection.rollbackAndRelease();
+		/**/				}
+		/**/				catch(Exception e)
+		/**/				{
+		/**/					cnt++;
+		/**/				}
 		/**/			}
 		/**/		}
-		/**/	}
 		/**/
-		/**/	/*---------------------------------------------------------*/
-		/**/	/* CLEAR TRANSACTION POOL                                  */
-		/**/	/*---------------------------------------------------------*/
+		/**/		/*---------------------------------------------------------*/
+		/**/		/* CLEAR TRANSACTION POOL                                  */
+		/**/		/*---------------------------------------------------------*/
 		/**/
-		/**/	s_pools.clear();
+		/**/		s_pools.clear();
 		/**/
-		/**/	/*---------------------------------------------------------*/
+		/**/		/*---------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/

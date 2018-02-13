@@ -26,6 +26,16 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
+		arguments.put("amiLogin", "jodier");
+		arguments.put("cached", "");
+		CommandSingleton.executeCommand("GetUserInfo", arguments);
+		arguments.put("cached", "");
+		CommandSingleton.executeCommand("GetUserInfo", arguments);
+		arguments.put("cached", "");
+		CommandSingleton.executeCommand("GetUserInfo", arguments);
+		arguments.put("cached", "");
+		CommandSingleton.executeCommand("GetUserInfo", arguments);
+
 		//System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
 
 		//System.out.println("--------");

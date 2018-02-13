@@ -27,7 +27,7 @@ public class RemoveConfigProperty extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		if("false".equals(m_isSecure))
+		if(m_isSecure == false)
 		{
 			throw new Exception("HTTPS connection required"); 
 		}

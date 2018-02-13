@@ -99,8 +99,6 @@ public class GetSessionInfo extends AbstractCommand
 
 		boolean VALID = "0".equals(valid) == false;
 
-		boolean CERT_ENABLED = "0".equals(m_isSecure) == false;
-
 		boolean VOMS_ENABLED = !(
 			"0".equals(useVOMS) == false
 			&&
@@ -196,7 +194,7 @@ public class GetSessionInfo extends AbstractCommand
 		      .append("<field name=\"lastName\"><![CDATA[").append(lastName).append("]]></field>")
 		      .append("<field name=\"email\"><![CDATA[").append(email).append("]]></field>")
 		      .append("<field name=\"valid\"><![CDATA[").append(VALID).append("]]></field>")
-		      .append("<field name=\"certEnabled\"><![CDATA[").append(CERT_ENABLED).append("]]></field>")
+		      .append("<field name=\"certEnabled\"><![CDATA[").append(m_isSecure).append("]]></field>")
 		      .append("<field name=\"vomsEnabled\"><![CDATA[").append(VOMS_ENABLED).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")

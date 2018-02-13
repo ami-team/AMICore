@@ -19,7 +19,9 @@ public abstract class AbstractCommand
 	protected final String m_notBefore;
 	protected final String m_notAfter;
 
-	protected final String m_isSecure;
+	protected final Boolean m_isSecure;
+	protected final Boolean m_isCached;
+
 	protected final String m_userAgent;
 
 	/*---------------------------------------------------------------------*/
@@ -49,8 +51,10 @@ public abstract class AbstractCommand
 		m_notBefore = arguments.containsKey("notBefore") ? arguments.remove("notBefore") : "";
 		m_notAfter = arguments.containsKey("notAfter") ? arguments.remove("notAfter") : "";
 
-		m_isSecure = arguments.containsKey("isSecure") ? arguments.remove("isSecure") : "";
-		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "";
+		m_isSecure = arguments.containsKey("isSecure") ? "false".equalsIgnoreCase(arguments.remove("isSecure")) == false : false;
+		m_isCached = arguments.containsKey( "cached" ) ? "false".equalsIgnoreCase(arguments.remove( "cached" )) == false : false;
+
+		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "N/A";
 
 		/*-----------------------------------------------------------------*/
 		/* CONSTRUCTOR PARAMETERS                                          */
@@ -78,14 +82,28 @@ public abstract class AbstractCommand
 
 	protected Querier getQuerier(String catalog) throws Exception
 	{
-		return new TransactionalQuerier(catalog, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_transactionId);
+
+		if(m_isCached)
+		{
+			result.setReadOnly(true);
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	protected Querier getQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_transactionId);
+
+		if(m_isCached)
+		{
+			result.setReadOnly(true);
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -98,6 +116,44 @@ public abstract class AbstractCommand
 	/*---------------------------------------------------------------------*/
 
 	public final StringBuilder execute() throws Exception
+	{
+		StringBuilder result;
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_isCached)
+		{
+			String key = new StringBuilder().append(getClass().getSimpleName())
+			                                .append(m_arguments.hashCode())
+			                                .toString()
+			;
+
+			Object value = (StringBuilder) CacheSingleton.get(key);
+
+			if(value != null && value instanceof StringBuilder)
+			{
+				result = (StringBuilder) value;
+			}
+			else
+			{
+				CacheSingleton.put(key,
+					result = _execute()
+				);
+			}
+		}
+		else
+		{
+			result = _execute();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder _execute() throws Exception
 	{
 		StringBuilder result = null;
 

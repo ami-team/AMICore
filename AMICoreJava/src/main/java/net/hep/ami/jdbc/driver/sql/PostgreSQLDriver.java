@@ -3,7 +3,6 @@ package net.hep.ami.jdbc.driver.sql;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.CatalogSingleton.Tuple;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
@@ -47,6 +46,14 @@ public class PostgreSQLDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public void setDB(String db) throws Exception
+	{
+		/* DO NOTHING */
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String patchSQL(String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -62,7 +69,7 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple tuple;
+		CatalogSingleton.Tuple tuple;
 
 		try
 		{
@@ -81,14 +88,6 @@ public class PostgreSQLDriver extends AbstractDriver
 		/*-----------------------------------------------------------------*/
 
 		return String.join("", tokens);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public void setDB(String db) throws Exception
-	{
-		/* DO NOTHING */
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -209,6 +208,7 @@ public class PostgreSQLDriver extends AbstractDriver
 			operation = s_iii[old_state][idx];
 
 			/*-------------------------------------------------------------*/
+
 			if(new_state == -1)
 			{
 				throw new Exception("syntax error near token `" + token + "`");

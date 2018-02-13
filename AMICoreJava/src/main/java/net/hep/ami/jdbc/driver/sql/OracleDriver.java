@@ -23,6 +23,14 @@ public class OracleDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public void setDB(String db) throws Exception
+	{
+		/* DO NOTHING */
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String patchSQL(String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -80,14 +88,6 @@ public class OracleDriver extends AbstractDriver
 		/*-----------------------------------------------------------------*/
 
 		return result.toString();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public void setDB(String db) throws Exception
-	{
-		/* DO NOTHING */
 	}
 
 	/*---------------------------------------------------------------------*/
