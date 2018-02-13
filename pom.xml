@@ -29,6 +29,7 @@
 		<neo4j.version>3.0.1</neo4j.version>
 
 		<hikari.version>2.6.1</hikari.version>
+		<spymemcached.version>2.12.3</spymemcached.version>
 
 		<servlet.version>9.0.2</servlet.version>
 
@@ -170,6 +171,15 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>${hikari.version}</version>
+		</dependency>
+
+
+		<!--***************************************************************-->
+
+		<dependency>
+			<groupId>net.spy</groupId>
+			<artifactId>spymemcached</artifactId>
+			<version>${spymemcached.version}</version>
 		</dependency>
 
 		<!--***************************************************************-->

@@ -57,6 +57,8 @@ public class CommandSingleton
 		try
 		{
 			addCommands();
+
+			CacheSingleton.flush();
 		}
 		catch(Exception e)
 		{
