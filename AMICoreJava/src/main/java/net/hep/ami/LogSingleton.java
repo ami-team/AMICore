@@ -66,13 +66,23 @@ public class LogSingleton
 
 		LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
+		String name;
+
 		for(Logger logger: context.getLoggerList())
 		{
-			logger.setLevel(
-				logger.getName().startsWith("com.zaxxer.hikari") ? Level
-				                                                     .WARN
-				                                                 : level
-			);
+			name = logger.getName()
+			             .toLowerCase()
+			;
+
+			/**/ if(name.contains("hikari")) {
+				logger.setLevel(Level.WARN);
+			}
+			else if(name.contains("memcached")) {
+				logger.setLevel(Level.OFF);
+			}
+			else {
+				logger.setLevel(level);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -123,14 +123,14 @@ public abstract class AbstractCommand
 
 		if(m_isCached)
 		{
-			String key = new StringBuilder().append(getClass().getSimpleName())
-			                                .append(m_arguments.hashCode())
+			String key = new StringBuilder().append(getClass().getSimpleName().toString())
+			                                .append(m_arguments.toString())
 			                                .toString()
 			;
 
-			Object value = (StringBuilder) CacheSingleton.get(key);
+			Object value = CacheSingleton.get(key);
 
-			if(value != null && value instanceof StringBuilder)
+			if(value instanceof StringBuilder)
 			{
 				result = (StringBuilder) value;
 			}

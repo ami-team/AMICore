@@ -12,14 +12,12 @@ public class CacheSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private CacheSingleton() {}
-
-	/*---------------------------------------------------------------------*/
-
 	static private MemcachedClient newMemcachedClient()
 	{
 		try
 		{
+			System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
+
 			return new MemcachedClient(new InetSocketAddress(
 				ConfigSingleton.getProperty("memcached_host", "localhost"),
 				ConfigSingleton.getProperty("memcached_port", 11211))
@@ -32,6 +30,10 @@ public class CacheSingleton
 
 		return null;
 	}
+
+	/*---------------------------------------------------------------------*/
+
+	private CacheSingleton() {}
 
 	/*---------------------------------------------------------------------*/
 
