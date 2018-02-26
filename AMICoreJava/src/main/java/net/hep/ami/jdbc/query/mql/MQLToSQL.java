@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
@@ -187,19 +188,19 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		List<String> fieldsInDefaultEntity = new ArrayList<String>();
-		List<String> valuesInDefaultEntity = new ArrayList<String>();
+		List<QId> fieldsInDefaultEntity = new ArrayList<>();
+		List<String> valuesInDefaultEntity = new ArrayList<>();
 
-		List<String> fieldsNotInDefaultEntity = new ArrayList<String>();
-		List<String> valuesNotInDefaultEntity = new ArrayList<String>();
+		List<QId> fieldsNotInDefaultEntity = new ArrayList<>();
+		List<String> valuesNotInDefaultEntity = new ArrayList<>();
 
-		List<PathList> pathListList = new ArrayList<>();
+		List<Resolution> resolutionList = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
 		m_inInsert = true;
-		List<String> fields = visitQIdTuple(context.qIdTuple(), pathListList);
-		List<String> expressions = visitExpressionTuple(context.expressionTuple(), pathListList);
+		List<Resolution> resolutions = visitQIdTuple(context.qIdTuple(), resolutionList);
+		List<String> expressions = visitExpressionTuple(context.expressionTuple(), resolutionList);
 		m_inInsert = false;
 
 		/*-----------------------------------------------------------------*/
@@ -210,11 +211,11 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		List<String> frgnKeysAlreadyTreated = new ArrayList<>();
+		List<QId> frgnKeysAlreadyTreated = new ArrayList<>();
 
-		for(int i = 0; i < fields.size(); i++)
+		for(int i = 0; i < resolutions.size(); i++)
 		{
-			QId tmpQId = new QId(fields.get(i));
+			QId tmpQId = resolutions.get(i).getQId();
 
 			if(m_internalCatalog.equalsIgnoreCase(tmpQId.getCatalog())
 			   &&
@@ -222,23 +223,31 @@ public class MQLToSQL
 			   &&
 			   columnsInDefaultEntity.get(tmpQId.getField()) != null
 			 ) {
-				if(frgnKeysInDefaultEntity.containsKey(tmpQId.getField()))
+				if(frgnKeysInDefaultEntity.containsKey(tmpQId.getField())) // A OPTIMISER
 				{
-					frgnKeysAlreadyTreated.add(tmpQId.getField().toUpperCase());
+					frgnKeysAlreadyTreated.add(tmpQId);
 				}
 
-				fieldsInDefaultEntity.add(fields.get(i));
+				fieldsInDefaultEntity.add(resolutions.get(i).getQId());
 				valuesInDefaultEntity.add(expressions.get(i));
 			}
 			else
 			{
-				fieldsNotInDefaultEntity.add(fields.get(i));
+				fieldsNotInDefaultEntity.add(resolutions.get(i).getQId());
 				valuesNotInDefaultEntity.add(expressions.get(i));
 			}
 		}
 
-		System.out.println("columnsInDefaultEntity: " + columnsInDefaultEntity);
-		System.out.println("frgnKeysInDefaultEntity: " + frgnKeysInDefaultEntity);
+		/*-----------------------------------------------------------------*/
+
+		System.out.println("1|||||||||||||||||||||||");
+		System.out.println("resolutions: " + resolutions);
+		System.out.println("expressions: " + expressions);
+		System.out.println("fieldsInDefaultEntity: " + fieldsInDefaultEntity);
+		System.out.println("fieldsNotInDefaultEntity: " + fieldsNotInDefaultEntity);
+		System.out.println("frgnKeysAlreadyTreated: " + frgnKeysAlreadyTreated);
+		System.out.println("|||||||||||||||||||||||");
+
 
 		System.out.println("frgnKeysAlreadyTreated: " + frgnKeysAlreadyTreated);
 		System.out.println("tableFields: " + fieldsInDefaultEntity);
@@ -252,6 +261,70 @@ public class MQLToSQL
 
 		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + frgnKeysInDefaultEntity.toString());
 		System.out.println("fields/values to deal with: " + fieldsNotInDefaultEntity.toString());
+
+		for(FrgnKeys frgnKeys: frgnKeysInDefaultEntity.values()) 
+		{
+			QId fk = new QId(frgnKeys.get(0).fkInternalCatalog, frgnKeys.get(0).fkTable, frgnKeys.get(0).fkColumn);
+			QId pk = new QId(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, frgnKeys.get(0).pkColumn);
+
+			if(!frgnKeysAlreadyTreated.contains(fk))
+			{
+				System.out.println("doing: " + fk);
+
+				List<String> tmpWhere = new ArrayList<String>();
+
+				for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
+				{
+					boolean pass = false;
+
+					System.out.println("===========================");
+
+					System.out.println(">> " + fieldsNotInDefaultEntity.get(i));
+
+					List<QId> tmpQIds = fieldsNotInDefaultEntity.get(i).getConstraints();
+					if(tmpQIds.size() == 0)
+					{
+						pass = true;
+					}
+					else 
+					{
+						for(int cpt = 0; cpt < tmpQIds.size(); cpt++)
+						{
+							if(tmpQIds.get(cpt).matches(fk))
+							{
+								pass = true;
+								break;
+							}
+						}
+					}
+
+					System.out.println("===========================");
+
+					if (pass)
+					{
+						System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
+						System.out.println(fieldsNotInDefaultEntity.get(i).toString() + " = " + valuesNotInDefaultEntity.get(i));
+						tmpWhere.add(fieldsNotInDefaultEntity.get(i).toString() + " = " + valuesNotInDefaultEntity.get(i));
+					}
+				}
+
+				if(!tmpWhere.isEmpty())
+				{
+					String tmpMQL = "SELECT " + pk.toString() + " WHERE " + String.join(" AND ", tmpWhere);
+
+					System.out.println("MQL tmp: " + tmpMQL);
+
+					String tmpSQL = MQLToSQL.parse(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, tmpMQL);
+/*!!!!!!!!!!!!
+					fieldsInDefaultEntity.add(frgnKeys.get(0).fkColumn);
+*/
+					fieldsInDefaultEntity.add(fk);
+					valuesInDefaultEntity.add(tmpSQL);
+				}
+				System.out.println();
+			}
+		}
+/*
 		for(String key: frgnKeysInDefaultEntity.keySet()) 
 		{
 			if(!frgnKeysAlreadyTreated.contains(key.toUpperCase()))
@@ -264,30 +337,21 @@ public class MQLToSQL
 
 				for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
 				{
-					boolean todo = false;
-					for(PathList pathList: pathListList)
+					boolean pass = true;
+
+					for(QId pathQId: fieldsNotInDefaultEntity.get(i).getPath())
 					{
-						for(List<FrgnKey> path: pathList.getPaths())
+						if(pathQId.matches(null * TO BE TESTES *) != pathQId.getExclusion())
 						{
-							if(path.isEmpty() == false)
-							{
+							pass = false;
 
-								System.out.println(path.get(0).fkColumn + " <> " + tmpFrgnKey.fkColumn + "  ::  " + path.get(0));
-
-								if(path.get(0).fkInternalCatalog.equals(tmpFrgnKey.fkInternalCatalog)
-								   &&
-								   path.get(0).fkTable.equals(tmpFrgnKey.fkTable)
-								   &&
-								   path.get(0).fkColumn.equals(tmpFrgnKey.fkColumn)
-								 ) {
-									todo = true;
-									System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
-								}
-							}
+							break;
 						}
 					}
-					if(todo)
+
+					if (pass)
 					{
+						System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
 						tmpWhere.add(fieldsNotInDefaultEntity.get(i) + " = " + valuesNotInDefaultEntity.get(i));
 					}
 				}
@@ -306,14 +370,23 @@ public class MQLToSQL
 				}
 			}
 		}
-
+*/
 		System.out.println("-------------");
 
 
+
+		StringBuilder tmpFieldsOfDefaultEntity = new StringBuilder();
+		for(int i = 0; i < fieldsInDefaultEntity.size(); i++)
+		{
+			if(i > 0)
+				tmpFieldsOfDefaultEntity.append(",");
+			tmpFieldsOfDefaultEntity.append(fieldsInDefaultEntity.get(i).getField());
+		}
+		
 		result.append("INSERT INTO ")
 		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY))
 		      .append(" (")
-		      .append(String.join(", ", fieldsInDefaultEntity))
+		      .append(tmpFieldsOfDefaultEntity)
 		      .append(") VALUES (")
 		      .append(String.join(", ", valuesInDefaultEntity))
 		      .append(")")
@@ -329,11 +402,11 @@ public class MQLToSQL
 		StringBuilder result = new StringBuilder();
 		StringBuilder tmpSet = new StringBuilder();
 
-		List<PathList> pathListList = new ArrayList<>();
+		List<Resolution> resolutionList = new ArrayList<>();
 
 		m_inUpdate = true;
-		List<String> tmpFields = visitQIdTuple(context.qIdTuple(), pathListList);
-		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), pathListList);
+		List<Resolution> tmpFields = visitQIdTuple(context.qIdTuple(), resolutionList);
+		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), resolutionList);
 		m_inUpdate = false;
 
 		for(int i = 0; i < tmpFields.size(); i++)
@@ -426,13 +499,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<String> visitQIdTuple(MQLParser.QIdTupleContext context, List<PathList> pathListList) throws Exception
+	private List<Resolution> visitQIdTuple(MQLParser.QIdTupleContext context, List<Resolution> resolutionList) throws Exception
 	{
-		List<String> result = new ArrayList<>();
+		List<Resolution> result = new ArrayList<>();
 
 		for(QIdContext child: context.m_qIds)
 		{
-			result.add(visitQId(child, pathListList).toString());
+			result.addAll(visitQId(child, resolutionList));
 		}
 
 		return result;
@@ -440,13 +513,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<PathList> pathListList) throws Exception
+	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
 		for(ExpressionOrContext child: context.m_expressions)
 		{
-			result.add(visitExpressionOr(child, pathListList).toString());
+			result.add(visitExpressionOr(child, resolutionList).toString());
 		}
 
 		return result;
@@ -454,7 +527,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, @Nullable List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, @Nullable List<Resolution> resolutionList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -520,7 +593,7 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		List<PathList> pathListList = new ArrayList<>();
+		List<Resolution> resolutionList = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -534,7 +607,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, pathListList));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, resolutionList));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -554,7 +627,7 @@ public class MQLToSQL
 			StringBuilder localJoins = new StringBuilder();
 			localResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
 			boolean needAND = false;
-			for(PathList pathList: pathListList) 
+			for(Resolution pathList: resolutionList) 
 			{
 					String localTableName = pathList.getQId().getEntity();
 					String localCatalogName = pathList.getQId().getCatalog();
@@ -638,7 +711,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, List<Resolution> resolutionList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -654,7 +727,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionMulDivContext)
 			{
-				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child, pathListList));
+				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child, resolutionList));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -672,7 +745,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, List<Resolution> resolutionList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -688,7 +761,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext)
 			{
-				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, pathListList));
+				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, resolutionList));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -706,7 +779,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, List<Resolution> resolutionList) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -723,19 +796,19 @@ public class MQLToSQL
 
 		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
 		{
-			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, pathListList));
+			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, resolutionList));
 		}
 		else if(child instanceof MQLParser.ExpressionFunctionContext)
 		{
-			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, pathListList));
+			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, resolutionList));
 		}
 		else if(child instanceof MQLParser.ExpressionQIdContext)
 		{
-			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, pathListList));
+			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, resolutionList));
 		}
 		else if(child instanceof MQLParser.ExpressionLiteralContext)
 		{
-			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, pathListList));
+			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, resolutionList));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -745,17 +818,17 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, List<Resolution> resolutionList) throws Exception
 	{
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.m_expression, pathListList))
+		                          .append(visitExpressionOr(context.m_expression, resolutionList))
 		                          .append(")")
 		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, List<Resolution> resolutionList) throws Exception
 	{
 		m_inFunction = true;
 
@@ -765,11 +838,11 @@ public class MQLToSQL
 		/**/
 		/**/		if(context.m_param1 != null)
 		/**/		{
-		/**/			result.append( "" ).append(visitExpressionOr(context.m_param1, pathListList));
+		/**/			result.append( "" ).append(visitExpressionOr(context.m_param1, resolutionList));
 		/**/
 		/**/			if(context.m_param2 != null)
 		/**/			{
-		/**/				result.append(", ").append(visitExpressionOr(context.m_param2, pathListList));
+		/**/				result.append(", ").append(visitExpressionOr(context.m_param2, resolutionList));
 		/**/			}
 		/**/		}
 		/**/
@@ -782,23 +855,23 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<Resolution> resolutionList) throws Exception
 	{
-		return visitQId(context.m_qId, pathListList);
+		return new StringBuilder(visitQId(context.m_qId, resolutionList).stream().map(x -> x.toString()).collect(Collectors.joining(", ")));
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, List<Resolution> resolutionList) throws Exception
 	{
-		return visitLiteral(context.m_literal, pathListList);
+		return visitLiteral(context.m_literal, resolutionList);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitQId(MQLParser.QIdContext context, List<PathList> pathListList) throws Exception
+	private List<Resolution> visitQId(MQLParser.QIdContext context, List<Resolution> resolutionList) throws Exception
 	{
-		List<StringBuilder> result = new ArrayList<>();
+		List<Resolution> result = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -828,7 +901,7 @@ public class MQLToSQL
 
 				for(String fieldNAME: SchemaSingleton.getColumnNames(catalogName, entityName))
 				{
-					list.add(new QId(catalogName, entityName, fieldNAME, qid.getPath()));
+					list.add(new QId(catalogName, entityName, fieldNAME, qid.getConstraints()));
 				}
 			}
 		}
@@ -839,25 +912,25 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		PathList pathList;
+		Resolution pathList;
 
 		for(QId qId: list)
 		{
 			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
 
-			result.add(pathList.getQId().toStringBuilder());
+			resolutionList.add(pathList);
 
-			pathListList.add(pathList);
+			result.add(pathList);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder(String.join(", ", result));
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitLiteral(MQLParser.LiteralContext context, List<PathList> pathListList) throws Exception
+	private StringBuilder visitLiteral(MQLParser.LiteralContext context, List<Resolution> resolutionList) throws Exception
 	{
 		return new StringBuilder(context.getText());
 	}

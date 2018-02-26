@@ -4,7 +4,7 @@ import java.util.*;
 
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
-public class PathList
+public class Resolution
 {
 	/*---------------------------------------------------------------------*/
 
@@ -16,7 +16,7 @@ public class PathList
 
 	/*---------------------------------------------------------------------*/
 
-	public PathList check(QId givenQId) throws Exception
+	public Resolution check(QId givenQId) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -43,7 +43,7 @@ public class PathList
 
 	/*---------------------------------------------------------------------*/
 
-	public PathList addPath(QId givenQId, QId resolvedQId, Vector<FrgnKey> path) throws Exception
+	public Resolution addPath(QId givenQId, QId resolvedQId, Vector<FrgnKey> path) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -80,6 +80,13 @@ public class PathList
 	public List<List<FrgnKey>> getPaths()
 	{
 		return m_paths;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String toString()
+	{
+		return m_resolvedQId.toString() + "@" + m_paths.toString();
 	}
 
 	/*---------------------------------------------------------------------*/

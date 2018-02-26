@@ -203,7 +203,7 @@ public class CommandSingletonTest
 
 			System.out.println(qId);
 
-			System.out.println(pathQId.getPath().get(0).matches(qId) != pathQId.getPath().get(0).getExclusion());
+			System.out.println(pathQId.getConstraints().get(0).matches(qId) != pathQId.getConstraints().get(0).getExclusion());
 
 			//System.out.println(new QId("B{!U.#}", QId.FLAG_FIELD, QId.FLAG_ENTITY));
 

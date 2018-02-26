@@ -32,7 +32,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private final List<QId> m_path = new ArrayList<>();
+	private final List<QId> m_constraints = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -112,14 +112,14 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId, int type) throws Exception
+	public QId(String qId, int typeForQId) throws Exception
 	{
-		this(qId, type, FLAG_FIELD);
+		this(qId, typeForQId, FLAG_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId, int type, int typeForPath) throws Exception
+	public QId(String qId, int typeForQId, int typeForConstraints) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -133,7 +133,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		visitQId(this, parser.qId(), type, typeForPath);
+		visitQId(this, parser.qId(), typeForQId, typeForConstraints);
 
 		/*-----------------------------------------------------------------*/
 
@@ -147,13 +147,13 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitQId(QId result, QIdParser.QIdContext context, int type, int typeForPath) throws Exception
+	private QId visitQId(QId result, QIdParser.QIdContext context, int typeForQId, int typeForConstraints) throws Exception
 	{
-		visitBasicQId(result, context.m_basicQId, type);
+		visitBasicQId(result, context.m_basicQId, typeForQId);
 
 		for(QIdParser.PathQIdContext pathQIdContext: context.m_pathQIds)
 		{
-			result.m_path.add(visitQId(new QId().setExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForPath, typeForPath));
+			result.m_constraints.add(visitQId(new QId().setExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForConstraints, typeForConstraints));
 		}
 
 		return result;
@@ -161,11 +161,11 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitBasicQId(QId result, QIdParser.BasicQIdContext context, int type) throws Exception
+	private QId visitBasicQId(QId result, QIdParser.BasicQIdContext context, int typeForQId) throws Exception
 	{
 		final int size = context.m_ids.size();
 
-		switch(type)
+		switch(typeForQId)
 		{
 			/*-------------------------------------------------------------*/
 
@@ -225,7 +225,7 @@ public class QId
 			/*-------------------------------------------------------------*/
 
 			default:
-				throw new Exception("invalid QId type");
+				throw new Exception("invalid type");
 
 			/*-------------------------------------------------------------*/
 		}
@@ -250,15 +250,15 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field, @Nullable List<QId> path)
+	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field, @Nullable List<QId> constraints)
 	{
 		setCatalog(catalog);
 		setEntity(entity);
 		setField(field);
 
-		if(path != null)
+		if(constraints != null)
 		{
-			m_path.addAll(path);
+			m_constraints.addAll(constraints);
 		}
 	}
 
@@ -328,9 +328,9 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public List<QId> getPath()
+	public List<QId> getConstraints()
 	{
-		return m_path;
+		return m_constraints;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -441,10 +441,10 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_path.isEmpty() == false)
+		if(m_constraints.isEmpty() == false)
 		{
 			result.append("{")
-			      .append(m_path.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(",")))
+			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(",")))
 			      .append("}")
 			;
 		}

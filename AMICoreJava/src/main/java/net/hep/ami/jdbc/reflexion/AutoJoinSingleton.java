@@ -15,7 +15,7 @@ public class AutoJoinSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static void resolve(
-		PathList pathList,
+		Resolution pathList,
 		Stack<FrgnKey> path,
 		Set<String> done,
 		int cnt,
@@ -104,11 +104,11 @@ public class AutoJoinSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			QId resolvedQId = new QId(column.internalCatalog, column.table, column.name);
+			QId resolvedQId = new QId(column.internalCatalog, column.table, column.name, givenQId.getConstraints());
 
 			/*-------------------------------------------------------------*/
 
-			Map<QId, Boolean> map = givenQId.getPath().stream().collect(Collectors.toMap(qId -> qId, qId -> qId.getExclusion()));
+			Map<QId, Boolean> map = givenQId.getConstraints().stream().collect(Collectors.toMap(qId -> qId, qId -> qId.getExclusion()));
 
 			/**/
 
@@ -145,9 +145,9 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static PathList resolve(String defaultCatalog, String defaultTable, QId givenQId, int max) throws Exception
+	public static Resolution resolve(String defaultCatalog, String defaultTable, QId givenQId, int max) throws Exception
 	{
-		PathList result = new PathList();
+		Resolution result = new Resolution();
 
 		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultCatalog, defaultTable, givenQId);
 
@@ -156,9 +156,9 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static PathList resolve(String defaultCatalog, String defaultTable, QId givenQId) throws Exception
+	public static Resolution resolve(String defaultCatalog, String defaultTable, QId givenQId) throws Exception
 	{
-		PathList result = new PathList();
+		Resolution result = new Resolution();
 
 		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultCatalog, defaultTable, givenQId);
 
@@ -167,14 +167,14 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static PathList resolve(String defaultCatalog, String defaultTable, String givenQId, int max) throws Exception
+	public static Resolution resolve(String defaultCatalog, String defaultTable, String givenQId, int max) throws Exception
 	{
 		return resolve(defaultCatalog, defaultTable, new QId(givenQId), max);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static PathList resolve(String defaultCatalog, String defaultTable, String givenQId) throws Exception
+	public static Resolution resolve(String defaultCatalog, String defaultTable, String givenQId) throws Exception
 	{
 		return resolve(defaultCatalog, defaultTable, new QId(givenQId), 999);
 	}
