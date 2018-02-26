@@ -121,25 +121,18 @@ public abstract class AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		String key = new StringBuilder().append(getClass().getSimpleName().toString())
+		                                .append(m_arguments.toString())
+		                                .toString()
+		;
+
+		/*-----------------------------------------------------------------*/
+
 		if(m_isCached)
 		{
-			String key = new StringBuilder().append(getClass().getSimpleName().toString())
-			                                .append(m_arguments.toString())
-			                                .toString()
-			;
-
 			Object value = CacheSingleton.get(key);
 
-			if(value instanceof StringBuilder)
-			{
-				result = (StringBuilder) value;
-			}
-			else
-			{
-				CacheSingleton.put(key,
-					result = _execute()
-				);
-			}
+			result = (StringBuilder) ((value instanceof StringBuilder == false) ? CacheSingleton.put(key, _execute()) : value);
 		}
 		else
 		{

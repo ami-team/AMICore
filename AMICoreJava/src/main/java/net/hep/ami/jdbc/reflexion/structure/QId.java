@@ -11,14 +11,16 @@ public class QId
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final int FLAG_CATALOG = 0b100;
-	public static final int FLAG_ENTITY = 0b010;
-	public static final int FLAG_FIELD = 0b001;
+	public static final int FLAG_CONSTRAINTS = 0b1000;
 
-	public static final int MASK_CATALOG_ENTITY = 0b110;
-	public static final int MASK_ENTITY_FIELD = 0b011;
+	public static final int FLAG_CATALOG = 0b0100;
+	public static final int FLAG_ENTITY = 0b0010;
+	public static final int FLAG_FIELD = 0b0001;
 
-	public static final int MASK_CATALOG_ENTITY_FIELD = 0b111;
+	public static final int MASK_CATALOG_ENTITY = 0b0110;
+	public static final int MASK_ENTITY_FIELD = 0b0011;
+
+	public static final int MASK_CATALOG_ENTITY_FIELD = 0b0111;
 
 	/*---------------------------------------------------------------------*/
 
@@ -107,7 +109,7 @@ public class QId
 
 	public QId(String qId) throws Exception
 	{
-		this(qId, FLAG_FIELD, FLAG_FIELD);
+		this(qId, FLAG_FIELD | FLAG_CONSTRAINTS, FLAG_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -149,12 +151,21 @@ public class QId
 
 	private QId visitQId(QId result, QIdParser.QIdContext context, int typeForQId, int typeForConstraints) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		visitBasicQId(result, context.m_basicQId, typeForQId);
 
-		for(QIdParser.PathQIdContext pathQIdContext: context.m_pathQIds)
+		/*-----------------------------------------------------------------*/
+
+		if((typeForQId & FLAG_CONSTRAINTS) != 0)
 		{
-			result.m_constraints.add(visitQId(new QId().setExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForConstraints, typeForConstraints));
+			for(QIdParser.PathQIdContext pathQIdContext: context.m_pathQIds)
+			{
+				result.m_constraints.add(visitQId(new QId().setExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForConstraints, typeForConstraints));
+			}
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
@@ -377,7 +388,7 @@ public class QId
 
 	public String toString()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD).toString();
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | FLAG_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -398,7 +409,7 @@ public class QId
 
 	public StringBuilder toStringBuilder()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | FLAG_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -441,7 +452,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_constraints.isEmpty() == false)
+		if((mask & FLAG_CONSTRAINTS) != 0 && m_constraints.isEmpty() == false)
 		{
 			result.append("{")
 			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(",")))

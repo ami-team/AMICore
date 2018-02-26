@@ -37,13 +37,13 @@ public class CacheSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String put(String key, Object value)
+	public static Object put(String key, Object value)
 	{
 		if(s_memcachedClient != null)
 		{
 			try
 			{
-				return s_memcachedClient.add(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value).getKey();
+				s_memcachedClient.add(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value); return value;
 			}
 			catch(Exception e)
 			{
