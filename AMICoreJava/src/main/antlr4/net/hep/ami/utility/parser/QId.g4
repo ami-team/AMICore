@@ -13,12 +13,12 @@ options {
 /*-------------------------------------------------------------------------*/
 
 qId
-	: m_basicQId=basicQId ('{' m_pathQIds+=pathQId (',' m_pathQIds+=pathQId)* '}')?
+	: m_basicQId=basicQId ('{' m_constraintQIds+=constraintQId (',' m_constraintQIds+=constraintQId)* '}')?
 	;
 
 /*---------------------------*/
 
-pathQId
+constraintQId
 	: m_op='!'? m_qId=qId
 	;
 

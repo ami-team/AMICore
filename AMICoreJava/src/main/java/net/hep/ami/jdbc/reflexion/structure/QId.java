@@ -159,9 +159,9 @@ public class QId
 
 		if((typeForQId & FLAG_CONSTRAINTS) != 0)
 		{
-			for(QIdParser.PathQIdContext pathQIdContext: context.m_pathQIds)
+			for(QIdParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
 			{
-				result.m_constraints.add(visitQId(new QId().setExclusion(pathQIdContext.m_op != null), pathQIdContext.m_qId, typeForConstraints, typeForConstraints));
+				result.m_constraints.add(visitQId(new QId().setExclusion(constraintQIdContext.m_op != null), constraintQIdContext.m_qId, typeForConstraints, typeForConstraints));
 			}
 		}
 
@@ -176,24 +176,35 @@ public class QId
 	{
 		final int size = context.m_ids.size();
 
-		switch(typeForQId)
+		/*-----------------------------------------------------------------*/
+
+		/**/ if((typeForQId & FLAG_FIELD) != 0)
 		{
-			/*-------------------------------------------------------------*/
+			/**/ if(size == 3)
+			{
+				result.m_catalog = unquote(context.m_ids.get(0).getText());
+				result.m_entity = unquote(context.m_ids.get(1).getText());
+				result.m_field = unquote(context.m_ids.get(2).getText());
+			}
+			else if(size == 2)
+			{
+				result.m_entity = unquote(context.m_ids.get(0).getText());
+				result.m_field = unquote(context.m_ids.get(1).getText());
+			}
+			else if(size == 1)
+			{
+				result.m_field = unquote(context.m_ids.get(0).getText());
+			}
+			else
+			{
+				throw new Exception("syntax error for field");
+			}
+		}
 
-			case FLAG_CATALOG:
-				/**/ if(size == 1)
-				{
-					result.m_catalog = unquote(context.m_ids.get(0).getText());
-				}
-				else
-				{
-					throw new Exception("syntax error for catalog");
-				}
-				break;
+		/*-----------------------------------------------------------------*/
 
-			/*-------------------------------------------------------------*/
-
-			case FLAG_ENTITY:
+		else if((typeForQId & FLAG_ENTITY) != 0)
+		{
 				/**/ if(size == 2)
 				{
 					result.m_catalog = unquote(context.m_ids.get(0).getText());
@@ -207,39 +218,27 @@ public class QId
 				{
 					throw new Exception("syntax error for entity");
 				}
-				break;
-
-			/*-------------------------------------------------------------*/
-
-			case FLAG_FIELD:
-				/**/ if(size == 3)
-				{
-					result.m_catalog = unquote(context.m_ids.get(0).getText());
-					result.m_entity = unquote(context.m_ids.get(1).getText());
-					result.m_field = unquote(context.m_ids.get(2).getText());
-				}
-				else if(size == 2)
-				{
-					result.m_entity = unquote(context.m_ids.get(0).getText());
-					result.m_field = unquote(context.m_ids.get(1).getText());
-				}
-				else if(size == 1)
-				{
-					result.m_field = unquote(context.m_ids.get(0).getText());
-				}
-				else
-				{
-					throw new Exception("syntax error for field");
-				}
-				break;
-
-			/*-------------------------------------------------------------*/
-
-			default:
-				throw new Exception("invalid type");
-
-			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		else if((typeForQId & FLAG_CATALOG) != 0)
+		{
+			/**/ if(size == 1)
+			{
+				result.m_catalog = unquote(context.m_ids.get(0).getText());
+			}
+			else
+			{
+				throw new Exception("syntax error for catalog");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		else throw new Exception("invalid type");
+
+		/*-----------------------------------------------------------------*/
 
 		if("*".equals(result.m_catalog)) {
 			throw new Exception("`*` not allowed in `catalog` part");
