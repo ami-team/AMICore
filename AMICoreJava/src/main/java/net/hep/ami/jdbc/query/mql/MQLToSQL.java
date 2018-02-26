@@ -175,7 +175,7 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
-		System.out.println("");
+		//System.out.println("");
 		System.out.println("query: " + query.toString(extra.toString()));
 		return new StringBuilder(query.toString(extra.toString()));
 
@@ -239,7 +239,7 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
-
+/*
 		System.out.println("1|||||||||||||||||||||||");
 		System.out.println("resolutions: " + resolutions);
 		System.out.println("expressions: " + expressions);
@@ -256,11 +256,11 @@ public class MQLToSQL
 		System.out.println("externalValues: " + valuesNotInDefaultEntity);
 
 		System.out.println("***************************");
-
+*/
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + frgnKeysInDefaultEntity.toString());
-		System.out.println("fields/values to deal with: " + fieldsNotInDefaultEntity.toString());
+//		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + frgnKeysInDefaultEntity.toString());
+// 		System.out.println("fields/values to deal with: " + fieldsNotInDefaultEntity.toString());
 
 		for(FrgnKeys frgnKeys: frgnKeysInDefaultEntity.values()) 
 		{
@@ -269,7 +269,7 @@ public class MQLToSQL
 
 			if(!frgnKeysAlreadyTreated.contains(fk))
 			{
-				System.out.println("doing: " + fk);
+				//System.out.println("doing: " + fk);
 
 				List<String> tmpWhere = new ArrayList<String>();
 
@@ -277,9 +277,9 @@ public class MQLToSQL
 				{
 					boolean pass = false;
 
-					System.out.println("===========================");
+					//System.out.println("===========================");
 
-					System.out.println(">> " + fieldsNotInDefaultEntity.get(i));
+					//System.out.println(">> " + fieldsNotInDefaultEntity.get(i));
 
 					List<QId> tmpQIds = fieldsNotInDefaultEntity.get(i).getConstraints();
 					if(tmpQIds.size() == 0)
@@ -298,13 +298,13 @@ public class MQLToSQL
 						}
 					}
 
-					System.out.println("===========================");
+					//System.out.println("===========================");
 
 					if (pass)
 					{
-						System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
-						System.out.println(fieldsNotInDefaultEntity.get(i).toString() + " = " + valuesNotInDefaultEntity.get(i));
-						tmpWhere.add(fieldsNotInDefaultEntity.get(i).toString() + " = " + valuesNotInDefaultEntity.get(i));
+						//System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
+						//System.out.println(fieldsNotInDefaultEntity.get(i).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = " + valuesNotInDefaultEntity.get(i));
+						tmpWhere.add(fieldsNotInDefaultEntity.get(i).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = " + valuesNotInDefaultEntity.get(i));
 					}
 				}
 
@@ -312,16 +312,17 @@ public class MQLToSQL
 				{
 					String tmpMQL = "SELECT " + pk.toString() + " WHERE " + String.join(" AND ", tmpWhere);
 
-					System.out.println("MQL tmp: " + tmpMQL);
+					//System.out.println("MQL tmp: " + tmpMQL);
 
 					String tmpSQL = MQLToSQL.parse(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, tmpMQL);
+
 /*!!!!!!!!!!!!
 					fieldsInDefaultEntity.add(frgnKeys.get(0).fkColumn);
 */
 					fieldsInDefaultEntity.add(fk);
 					valuesInDefaultEntity.add(tmpSQL);
 				}
-				System.out.println();
+				//System.out.println();
 			}
 		}
 /*
@@ -371,7 +372,7 @@ public class MQLToSQL
 			}
 		}
 */
-		System.out.println("-------------");
+		//System.out.println("-------------");
 
 
 
@@ -380,9 +381,8 @@ public class MQLToSQL
 		{
 			if(i > 0)
 				tmpFieldsOfDefaultEntity.append(",");
-			tmpFieldsOfDefaultEntity.append(fieldsInDefaultEntity.get(i).getField());
+			tmpFieldsOfDefaultEntity.append("`"+fieldsInDefaultEntity.get(i).getField()+"`");
 		}
-		
 		result.append("INSERT INTO ")
 		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY))
 		      .append(" (")
@@ -612,7 +612,7 @@ public class MQLToSQL
 			else if(child instanceof TerminalNode)
 			{
 				result.append(" ")
-				      .append(child.getText())
+				      .append(child.getText(  ))
 				      .append(" ")
 				;
 			}
@@ -647,8 +647,8 @@ public class MQLToSQL
 					List<String> localFromList = new ArrayList<String>();
 					List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
 					boolean needOR = false;
-					System.out.println("");
-					System.out.println("local joins: " + localTableName);
+					//System.out.println("");
+					//System.out.println("local joins: " + localTableName);
 					for(List<SchemaSingleton.FrgnKey> list: paths) 
 					{
 						List<String> localWhereList = new ArrayList<String>();
@@ -677,22 +677,22 @@ public class MQLToSQL
 												+ "FROM `"+ String.join("`,`", localFromList) + "` "
 												+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
 							localJoins.append(")");
-							System.out.println("localWhereList: " + localWhereList);
+							//System.out.println("localWhereList: " + localWhereList);
 						}
-						System.out.println(localJoins.toString());
+						//System.out.println(localJoins.toString());
 						needOR = true;
 						}
 					needAND = true;
 			}
 			localResult.append(" WHERE ");
-			System.out.println("result: " + result.toString());
+			//System.out.println("result: " + result.toString());
 			localResult.append(result.toString());
 			if(!localJoins.toString().isEmpty())
 			{
 				if(m_inSelect)
 				{
 					m_joins.add("(" + localJoins.toString() + ")");
-					System.out.println("m_joins:" + m_joins.toString());
+					//System.out.println("m_joins:" + m_joins.toString());
 				}
 				localResult.append(" AND ");
 				localResult.append("(" + localJoins + ")");
@@ -857,7 +857,7 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<Resolution> resolutionList) throws Exception
 	{
-		return new StringBuilder(visitQId(context.m_qId, resolutionList).stream().map(x -> x.toString()).collect(Collectors.joining(", ")));
+		return new StringBuilder(visitQId(context.m_qId, resolutionList).stream().map(x -> x.getQId().toString()).collect(Collectors.joining(", ")));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -875,7 +875,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		QId qid = new QId(context.getText(), QId.FLAG_FIELD);
+		QId qid = new QId(context.getText(), QId.FLAG_FIELD | QId.FLAG_CONSTRAINTS);
 
 		/*-----------------------------------------------------------------*/
 
@@ -924,7 +924,6 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
-
 		return result;
 	}
 
