@@ -176,7 +176,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 		//System.out.println("");
-		System.out.println("query: " + query.toString(extra.toString()));
+		//System.out.println("query: " + query.toString(extra.toString()));
 		return new StringBuilder(query.toString(extra.toString()));
 
 		/*-----------------------------------------------------------------*/
