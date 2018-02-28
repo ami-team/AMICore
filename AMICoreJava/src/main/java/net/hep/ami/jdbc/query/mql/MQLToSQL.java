@@ -11,7 +11,6 @@ import net.hep.ami.jdbc.query.mql.MQLParser.ExpressionOrContext;
 import net.hep.ami.jdbc.query.mql.MQLParser.QIdContext;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.Column;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
@@ -199,8 +198,8 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		m_inInsert = true;
-		List<Resolution> resolutions = visitQIdTuple(context.qIdTuple(), resolutionList);
-		List<String> expressions = visitExpressionTuple(context.expressionTuple(), resolutionList);
+		List<Resolution> resolutions = visitQIdTuple(context.m_qIds);
+		List<String> expressions = visitExpressionTuple(context.expressions, resolutionList);
 		m_inInsert = false;
 
 		/*-----------------------------------------------------------------*/
@@ -314,7 +313,7 @@ public class MQLToSQL
 
 					//System.out.println("MQL tmp: " + tmpMQL);
 
-					String tmpSQL = MQLToSQL.parse(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, tmpMQL);
+					String tmpSQL = "(" + MQLToSQL.parse(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, tmpMQL).replaceAll("`" + frgnKeys.get(0).pkInternalCatalog + "`.", "") + ")";
 
 /*!!!!!!!!!!!!
 					fieldsInDefaultEntity.add(frgnKeys.get(0).fkColumn);
@@ -403,15 +402,16 @@ public class MQLToSQL
 		StringBuilder tmpSet = new StringBuilder();
 
 		List<Resolution> resolutionList = new ArrayList<>();
-
 		m_inUpdate = true;
-		List<Resolution> tmpFields = visitQIdTuple(context.qIdTuple(), resolutionList);
-		List<String> tmpExpressions = visitExpressionTuple(context.expressionTuple(), resolutionList);
+		List<Resolution> tmpFields = visitQIdTuple(context.m_qIds);
+		List<String> tmpExpressions = visitExpressionTuple(context.expressions, resolutionList);
 		m_inUpdate = false;
-
+	//ici
 		for(int i = 0; i < tmpFields.size(); i++)
 		{
-			tmpSet.append(tmpFields.get(i) + " = " + tmpExpressions.get(i));
+			System.out.println("tmpExpressions#" + i + ": " + tmpExpressions.get(i));
+			tmpSet.append(tmpFields.get(i).getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = " + tmpExpressions.get(i));
+			//tmpSet.append(tmpFields.get(i).getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = 'XXX'");
 		}
 
 		result.append("UPDATE ")
@@ -499,13 +499,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<Resolution> visitQIdTuple(MQLParser.QIdTupleContext context, List<Resolution> resolutionList) throws Exception
+	private List<Resolution> visitQIdTuple(MQLParser.QIdTupleContext context) throws Exception
 	{
 		List<Resolution> result = new ArrayList<>();
 
 		for(QIdContext child: context.m_qIds)
 		{
-			result.addAll(visitQId(child, resolutionList));
+			result.addAll(visitQId(child));
 		}
 
 		return result;
@@ -516,7 +516,6 @@ public class MQLToSQL
 	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList) throws Exception
 	{
 		List<String> result = new ArrayList<>();
-
 		for(ExpressionOrContext child: context.m_expressions)
 		{
 			result.add(visitExpressionOr(child, resolutionList).toString());
@@ -532,7 +531,6 @@ public class MQLToSQL
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
 		ParseTree child;
 
 		final int nb = context.getChildCount();
@@ -857,7 +855,11 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<Resolution> resolutionList) throws Exception
 	{
-		return new StringBuilder(visitQId(context.m_qId, resolutionList).stream().map(x -> x.getQId().toString()).collect(Collectors.joining(", ")));
+		List<Resolution> hh = visitQId(context.m_qId);
+
+		resolutionList.addAll(hh);
+
+		return new StringBuilder(hh.stream().map(x -> x.getQId().toString()).collect(Collectors.joining(", ")));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -869,7 +871,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<Resolution> visitQId(MQLParser.QIdContext context, List<Resolution> resolutionList) throws Exception
+	private List<Resolution> visitQId(MQLParser.QIdContext context) throws Exception
 	{
 		List<Resolution> result = new ArrayList<>();
 
@@ -912,18 +914,13 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		Resolution pathList;
-
 		for(QId qId: list)
 		{
-			pathList = AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength);
-
-			resolutionList.add(pathList);
-
-			result.add(pathList);
+			result.add(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength));
 		}
 
 		/*-----------------------------------------------------------------*/
+
 		return result;
 	}
 

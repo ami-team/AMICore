@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.query.mql.MQLToSQL;
 import net.hep.ami.jdbc.reflexion.structure.QId;
 import net.hep.ami.command.*;
 
@@ -59,11 +60,13 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		List<String> aaa = new ArrayList<>();
+		List<String> fields = new ArrayList<>();
+		List<String> values = new ArrayList<>();
 
 		for(int i = 0; i < _fields.length; i++)
 		{
-			aaa.add(new QId(_fields[i]).toString() + " = '" + _values[i].trim().replace("'", "''") + "'");
+			fields.add(new QId(_fields[i]).toString());
+			values.add("'" + _values[i].trim().replace("'", "''") + "'");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -84,7 +87,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		stringBuilder.append("UPDATE ").append(String.join(", ", aaa));
+		stringBuilder.append("UPDATE (").append(String.join(", ", fields)).append(") VALUES (").append(String.join(", ", values)).append(")");
 
 		if(whereList.isEmpty() == false)
 		{
@@ -95,13 +98,18 @@ public class UpdateElements extends AbstractCommand
 
 		String mql = stringBuilder.toString();
 
+		String sql = MQLToSQL.parse(catalog, entity, mql);
+
+		System.out.println(">>>>> " + mql);
+		System.out.println("<<<<< " + sql);
+
 		/*-----------------------------------------------------------------*/
 
-		Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
+		//Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
-		return result.toStringBuilder();
+		return new StringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
