@@ -26,7 +26,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private int m_maxPathLength = 3;
+	private int m_maxPathLength = 4;
 
 	/*---------------------------------------------------------------------*/
 
@@ -130,6 +130,7 @@ public class MQLToSQL
 		{
 			query.addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
 		}
+		
 		if(m_joins.isEmpty() == false)
 		{
 			query.addWherePart(String.join(" AND ", m_joins));
@@ -631,7 +632,7 @@ public class MQLToSQL
 						{
 							m_from.add(localTableName);
 						}
-					}
+					
 					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(localCatalogName, localTableName);
 					if(needAND)
 					{
@@ -676,6 +677,7 @@ public class MQLToSQL
 						needOR = true;
 						}
 					needAND = true;
+					}
 			}
 			localResult.append(" WHERE ");
 			//System.out.println("result: " + result.toString());
