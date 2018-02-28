@@ -406,12 +406,9 @@ public class MQLToSQL
 		List<Resolution> tmpFields = visitQIdTuple(context.m_qIds);
 		List<String> tmpExpressions = visitExpressionTuple(context.expressions, resolutionList);
 		m_inUpdate = false;
-	//ici
 		for(int i = 0; i < tmpFields.size(); i++)
 		{
-			System.out.println("tmpExpressions#" + i + ": " + tmpExpressions.get(i));
-			tmpSet.append(tmpFields.get(i).getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = " + tmpExpressions.get(i));
-			//tmpSet.append(tmpFields.get(i).getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = 'XXX'");
+			tmpSet.append("`" + tmpFields.get(i).getQId().getField() + "`= " + tmpExpressions.get(i));
 		}
 
 		result.append("UPDATE ")
@@ -618,7 +615,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_inInsert == false)
+		if(m_inInsert == false && m_inUpdate == false)
 		{
 			String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
 			StringBuilder localResult = new StringBuilder();

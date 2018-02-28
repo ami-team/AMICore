@@ -100,16 +100,13 @@ public class UpdateElements extends AbstractCommand
 
 		String sql = MQLToSQL.parse(catalog, entity, mql);
 
-		System.out.println(">>>>> " + mql);
-		System.out.println("<<<<< " + sql);
+		/*-----------------------------------------------------------------*/
+
+		Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
-		//Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
-
-		/*-----------------------------------------------------------------*/
-
-		return new StringBuilder();
+		return result.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
