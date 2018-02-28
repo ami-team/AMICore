@@ -65,16 +65,16 @@ public class AddElement extends AbstractCommand
 
 		String mql = stringBuilder.toString();
 
-		System.out.println("mql: " + mql);
+		//System.out.println("mql: " + mql);
 
 		String sql = MQLToSQL.parse(catalog, entity, mql);
 		String ast = MQLToAST.parse(catalog, entity, mql);
 
-		System.out.println("sql: " + sql);
+		//System.out.println("sql: " + sql);
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql);
+		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
 
 		statement.execute();
 
