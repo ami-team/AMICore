@@ -126,17 +126,15 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 		m_inSelect = false;
 		/*-----------------------------------------------------------------*/
-
 		if(context.expression != null)
 		{
 			query.addWherePart("(" + visitExpressionOr(context.expression, null).toString() + ")");
-
-			if(m_joins.isEmpty() == false)
-			{
-				query.addWherePart(String.join(" AND ", m_joins));
-			}
 		}
-
+		if(m_joins.isEmpty() == false)
+		{
+			query.addWherePart(String.join(" AND ", m_joins));
+		}
+		
 		/*-----------------------------------------------------------------*/
 /*
 		if(context.orderBy != null)
