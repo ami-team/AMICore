@@ -76,6 +76,7 @@ public class SearchQuery extends AbstractCommand
 		}
 		else
 		{
+			mql = mql.replaceAll("SELECT \\*", "SELECT `*`");
 			result = querier.executeMQLQuery(entity, mql + extra);
 		}
 
