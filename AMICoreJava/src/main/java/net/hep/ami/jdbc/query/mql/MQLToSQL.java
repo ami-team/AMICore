@@ -137,17 +137,17 @@ public class MQLToSQL
 		}
 		
 		/*-----------------------------------------------------------------*/
-/*
-		if(context.orderBy != null)
-		{
-			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_islets, m_externalCatalog, m_entity, context.orderBy.getText(), null).toString());
 
-			if(context.orderWay != null)
+		if(context.m_orderBy != null)
+		{
+			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, context.m_orderBy.getText()).toString());
+
+			if(context.m_orderWay != null)
 			{
-				extra.append(" ").append(context.orderWay.getText());
+				extra.append(" ").append(context.m_orderWay.getText());
 			}
 		}
-*/
+
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_limit != null)
