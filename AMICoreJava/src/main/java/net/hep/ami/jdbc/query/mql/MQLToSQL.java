@@ -807,7 +807,6 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
-
 		return result;
 	}
 
@@ -856,7 +855,7 @@ public class MQLToSQL
 
 		resolutionList.addAll(hh);
 
-		return new StringBuilder(hh.stream().map(x -> x.getQId().toString()).collect(Collectors.joining(", ")));
+		return new StringBuilder(hh.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
 	}
 
 	/*---------------------------------------------------------------------*/
