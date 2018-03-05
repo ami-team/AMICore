@@ -140,7 +140,8 @@ public class MQLToSQL
 
 		if(context.m_orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, new QId(context.m_orderBy.getText()).toString(QId.MASK_ENTITY_FIELD)).toString());
+			System.out.println("xxx "+context.m_orderBy.getText());
+			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, context.m_orderBy.getText()).getQId().toString(QId.MASK_ENTITY_FIELD));
 
 			if(context.m_orderWay != null)
 			{
