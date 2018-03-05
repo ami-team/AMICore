@@ -38,7 +38,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowset = querier.executeMQLQuery(entity, "SELECT * WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'");
+		RowSet rowset = querier.executeMQLQuery(entity, "SELECT `*` WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
