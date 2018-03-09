@@ -60,18 +60,11 @@ public class AutoJoinSingleton
 			{
 				for(FrgnKey frgnKey: list)
 				{
-					
-					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkTable;// + "$" + frgnKey.fkColumn;
-
-					//if(frgnKey.fkTable.equals("DATASET_GRAPH"))
-					//System.out.println(" " + key + " " + frgnKey.fkColumn);
+					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkTable;
 
 					if(done.contains(key) == false)
 					{
 						done.add(key);
-
-						//if(frgnKey.fkTable.equals("DATASET_GRAPH"))
-						//System.out.println("frgnKey " + frgnKey );
 						path.add(frgnKey);
 						resolve(pathList, path, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
 						path.pop();
