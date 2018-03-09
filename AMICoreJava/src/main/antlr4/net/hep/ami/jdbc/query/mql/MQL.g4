@@ -92,6 +92,7 @@ expressionNotPlusMinus
 
 expressionX
 	: '(' m_expression=expressionOr ')'                                                     # ExpressionGroup
+	| '[' m_isoExpression=expressionOr ']'                                                  # ExpressionIsoGroup
 	| m_functionName=FUNCTION '(' (m_param1=expressionOr (',' m_param2=expressionOr)?)? ')' # ExpressionFunction
 	| m_literal=literal                                                                     # ExpressionLiteral
 	| m_qId=qId                                                                             # ExpressionQId

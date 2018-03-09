@@ -793,6 +793,10 @@ public class MQLToSQL
 		{
 			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, resolutionList));
 		}
+		else if(child instanceof MQLParser.ExpressionIsoGroupContext)
+		{
+			result.append(visitExpressionIsoGroup((MQLParser.ExpressionIsoGroupContext) child, resolutionList));
+		}
 		else if(child instanceof MQLParser.ExpressionFunctionContext)
 		{
 			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, resolutionList));
@@ -817,6 +821,17 @@ public class MQLToSQL
 		return new StringBuilder().append("(")
 		                          .append(visitExpressionOr(context.m_expression, resolutionList))
 		                          .append(")")
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context, List<Resolution> resolutionList) throws Exception
+	{
+		return new StringBuilder()
+			/* TODO */
+			/* TODO */
+			/* TODO */
 		;
 	}
 
