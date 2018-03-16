@@ -75,7 +75,7 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionAddSub (COMP expressionAddSub | IN expressionTuple)?
+	: expressionAddSub (COMP expressionAddSub | IN literalTuple)?
 	;
 
 expressionAddSub
