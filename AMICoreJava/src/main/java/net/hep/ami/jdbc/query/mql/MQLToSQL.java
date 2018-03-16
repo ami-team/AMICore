@@ -6,12 +6,7 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.jdbc.query.mql.MQLParser.AColumnContext;
-import net.hep.ami.jdbc.query.mql.MQLParser.ExpressionOrContext;
-import net.hep.ami.jdbc.query.mql.MQLParser.QIdContext;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.Column;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
 import net.hep.ami.utility.parser.*;
@@ -23,6 +18,7 @@ public class MQLToSQL
 	private final String m_externalCatalog;
 	private final String m_internalCatalog;
 	private final String m_entity;
+	private final String m_primaryKey;
 
 	/*---------------------------------------------------------------------*/
 
@@ -48,11 +44,20 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private MQLToSQL(String externalCatalog, String internalCatalog, String entity)
+	private MQLToSQL(String externalCatalog, String internalCatalog, String entity) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		m_externalCatalog = externalCatalog;
 		m_internalCatalog = internalCatalog;
+
 		m_entity = entity;
+
+		/*-----------------------------------------------------------------*/
+
+		m_primaryKey = SchemaSingleton.getPrimaryKey(externalCatalog, entity);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -207,9 +212,9 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Column> columnsInDefaultEntity = SchemaSingleton.getColumns(m_internalCatalog, m_entity);
+		Map<String, SchemaSingleton.Column> columnsInDefaultEntity = SchemaSingleton.getColumns(m_internalCatalog, m_entity);
 
-		Map<String, FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
+		Map<String, SchemaSingleton.FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
 
 		/*-----------------------------------------------------------------*/
 
@@ -241,47 +246,19 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
-/*
-		System.out.println("1|||||||||||||||||||||||");
-		System.out.println("resolutions: " + resolutions);
-		System.out.println("expressions: " + expressions);
-		System.out.println("fieldsInDefaultEntity: " + fieldsInDefaultEntity);
-		System.out.println("fieldsNotInDefaultEntity: " + fieldsNotInDefaultEntity);
-		System.out.println("frgnKeysAlreadyTreated: " + frgnKeysAlreadyTreated);
-		System.out.println("|||||||||||||||||||||||");
 
-
-		System.out.println("frgnKeysAlreadyTreated: " + frgnKeysAlreadyTreated);
-		System.out.println("tableFields: " + fieldsInDefaultEntity);
-		System.out.println("tableValues: " + valuesInDefaultEntity);
-		System.out.println("externalFields: " + fieldsNotInDefaultEntity);
-		System.out.println("externalValues: " + valuesNotInDefaultEntity);
-
-		System.out.println("***************************");
-*/
-		/*-----------------------------------------------------------------*/
-
-//		System.out.println("keys to be resolved and put in tableFields and tableValues variables: " + frgnKeysInDefaultEntity.toString());
-// 		System.out.println("fields/values to deal with: " + fieldsNotInDefaultEntity.toString());
-
-		for(FrgnKeys frgnKeys: frgnKeysInDefaultEntity.values()) 
+		for(SchemaSingleton.FrgnKeys frgnKeys: frgnKeysInDefaultEntity.values()) 
 		{
 			QId fk = new QId(frgnKeys.get(0).fkInternalCatalog, frgnKeys.get(0).fkTable, frgnKeys.get(0).fkColumn);
 			QId pk = new QId(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, frgnKeys.get(0).pkColumn);
 
 			if(!frgnKeysAlreadyTreated.contains(fk))
 			{
-				//System.out.println("doing: " + fk);
-
 				List<String> tmpWhere = new ArrayList<String>();
 
 				for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
 				{
 					boolean pass = false;
-
-					//System.out.println("===========================");
-
-					//System.out.println(">> " + fieldsNotInDefaultEntity.get(i));
 
 					List<QId> tmpQIds = fieldsNotInDefaultEntity.get(i).getConstraints();
 					if(tmpQIds.size() == 0)
@@ -300,12 +277,8 @@ public class MQLToSQL
 						}
 					}
 
-					//System.out.println("===========================");
-
-					if (pass)
+					if(pass)
 					{
-						//System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
-						//System.out.println(fieldsNotInDefaultEntity.get(i).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = " + valuesNotInDefaultEntity.get(i));
 						tmpWhere.add(fieldsNotInDefaultEntity.get(i).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = " + valuesNotInDefaultEntity.get(i));
 					}
 				}
@@ -314,69 +287,13 @@ public class MQLToSQL
 				{
 					String tmpMQL = "SELECT " + pk.toString() + " WHERE " + String.join(" AND ", tmpWhere);
 
-					//System.out.println("MQL tmp: " + tmpMQL);
-
 					String tmpSQL = "(" + MQLToSQL.parse(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, tmpMQL).replaceAll("`" + frgnKeys.get(0).pkInternalCatalog + "`.", "") + ")";
 
-/*!!!!!!!!!!!!
-					fieldsInDefaultEntity.add(frgnKeys.get(0).fkColumn);
-*/
 					fieldsInDefaultEntity.add(fk);
 					valuesInDefaultEntity.add(tmpSQL);
 				}
-				//System.out.println();
 			}
 		}
-/*
-		for(String key: frgnKeysInDefaultEntity.keySet()) 
-		{
-			if(!frgnKeysAlreadyTreated.contains(key.toUpperCase()))
-			{
-				System.out.println("doing: " + key);
-				FrgnKey tmpFrgnKey = frgnKeysInDefaultEntity.get(key).get(0);
-				System.out.println("table " + tmpFrgnKey.pkTable);
-				System.out.println("field " + tmpFrgnKey.pkColumn);
-				List<String> tmpWhere = new ArrayList<String>();
-
-				for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
-				{
-					boolean pass = true;
-
-					for(QId pathQId: fieldsNotInDefaultEntity.get(i).getPath())
-					{
-						if(pathQId.matches(null * TO BE TESTES *) != pathQId.getExclusion())
-						{
-							pass = false;
-
-							break;
-						}
-					}
-
-					if (pass)
-					{
-						System.out.println(" TODO true " + fieldsNotInDefaultEntity.get(i));
-						tmpWhere.add(fieldsNotInDefaultEntity.get(i) + " = " + valuesNotInDefaultEntity.get(i));
-					}
-				}
-
-				if(!tmpWhere.isEmpty())
-				{
-					String tmpMQL = "SELECT " + tmpFrgnKey.pkTable + "." + tmpFrgnKey.pkColumn + " WHERE " + String.join(" AND ", tmpWhere);
-
-					System.out.println("MQL tmp: " + tmpMQL);
-
-					String tmpSQL = MQLToSQL.parse(tmpFrgnKey.pkInternalCatalog, tmpFrgnKey.pkTable, tmpMQL);
-
-					fieldsInDefaultEntity.add(tmpFrgnKey.fkColumn);
-
-					valuesInDefaultEntity.add(tmpSQL);
-				}
-			}
-		}
-*/
-		//System.out.println("-------------");
-
-
 
 		StringBuilder tmpFieldsOfDefaultEntity = new StringBuilder();
 		for(int i = 0; i < fieldsInDefaultEntity.size(); i++)
@@ -472,7 +389,7 @@ public class MQLToSQL
 	{
 		List<String> result = new ArrayList<>();
 
-		for(AColumnContext child: context.m_columns)
+		for(MQLParser.AColumnContext child: context.m_columns)
 		{
 			result.add(visitAColumnExpression(child).toString());
 		}
@@ -506,7 +423,7 @@ public class MQLToSQL
 	{
 		List<Resolution> result = new ArrayList<>();
 
-		for(QIdContext child: context.m_qIds)
+		for(MQLParser.QIdContext child: context.m_qIds)
 		{
 			result.addAll(visitQId(child));
 		}
@@ -520,7 +437,7 @@ public class MQLToSQL
 	{
 		List<String> result = new ArrayList<>();
 
-		for(ExpressionOrContext child: context.m_expressions)
+		for(MQLParser.ExpressionOrContext child: context.m_expressions)
 		{
 			result.add(visitExpressionOr(child).toString());
 		}
@@ -535,6 +452,7 @@ public class MQLToSQL
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
+
 		ParseTree child;
 
 		final int nb = context.getChildCount();
@@ -576,7 +494,6 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionCompContext)
 			{
-				m_resolutionList.clear();
 				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child));
 			}
 			else if(child instanceof TerminalNode)
@@ -598,6 +515,10 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
+		m_resolutionList.clear();
+
+		/*-----------------------------------------------------------------*/
+
 		ParseTree child;
 
 		final int nb = context.getChildCount();
@@ -609,6 +530,10 @@ public class MQLToSQL
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
 				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child));
+			}
+			else if(child instanceof MQLParser.LiteralTupleContext)
+			{
+				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -623,38 +548,46 @@ public class MQLToSQL
 
 		if(m_inInsert == false && m_inUpdate == false && m_inIsoGroup == false)
 		{
-			String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
-			localResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
+			localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
 			boolean needAND = false;
+
 			for(Resolution pathList: m_resolutionList) 
 			{
-					String localTableName = pathList.getQId().getEntity();
-					String localCatalogName = pathList.getQId().getCatalog();
-					if(!localTableName.equalsIgnoreCase(m_entity))
-					{
-						localResult.append(", `" + localTableName + "` ");
-						if(m_inSelect && !m_from.contains(localTableName))
-						{
-							m_from.add(localTableName);
-						}
+				String localTableName = pathList.getQId().getEntity();
+				String localCatalogName = pathList.getQId().getCatalog();
 
-					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(localCatalogName, localTableName);
+				if(!localTableName.equalsIgnoreCase(m_entity))
+				{
+					localResult.append(", `" + localTableName + "` ");
+
+					if(m_inSelect && !m_from.contains(localTableName))
+					{
+						m_from.add(localTableName);
+					}
+
+					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
+						SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
+					);
+
 					if(needAND)
 					{
 						localJoins.append("  AND ");
 					}
+
 					List<String> localFromList = new ArrayList<String>();
+
 					List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
+
 					boolean needOR = false;
-					//System.out.println("");
-					//System.out.println("local joins: " + localTableName);
+
 					for(List<SchemaSingleton.FrgnKey> list: paths) 
 					{
 						List<String> localWhereList = new ArrayList<String>();
-						for(SchemaSingleton.FrgnKey frgnKey: list) {
-							//for order (performances), change algorithm here?
+
+						for(SchemaSingleton.FrgnKey frgnKey: list)
+						{
 							if(!localFromList.contains(frgnKey.fkTable))
 							{
 								localFromList.add(frgnKey.fkTable);
@@ -663,7 +596,6 @@ public class MQLToSQL
 							{
 								localFromList.add(frgnKey.pkTable);
 							}
-							//here as well ?
 							localWhereList.add(frgnKey.toString());
 						}
 						if(!localWhereList.isEmpty())
@@ -673,30 +605,28 @@ public class MQLToSQL
 								localJoins.append(" OR ");
 							}
 							localJoins.append("(");
-							localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
-							localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` "
-												+ "FROM `"+ String.join("`,`", localFromList) + "` "
-												+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
+							localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + m_primaryKey + "`) IN ");
+							localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + m_primaryKey + "` "
+									+ "FROM `"+ String.join("`,`", localFromList) + "` "
+									+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
 							localJoins.append(")");
-							//System.out.println("localWhereList: " + localWhereList);
-							//System.out.println("localFrom: " + localWhereList);
 						}
-						//System.out.println(localJoins.toString());
+
 						needOR = true;
-						}
-					needAND = true;
 					}
+					needAND = true;
+				}
 			}
 			localResult.append(" WHERE ");
-			//System.out.println("result: " + result.toString());
 			localResult.append(result.toString());
+
 			if(!localJoins.toString().isEmpty())
 			{
 				if(m_inSelect)
 				{
 					m_joins.add("(" + localJoins.toString() + ")");
-					//System.out.println("m_joins:" + m_joins.toString());
 				}
+
 				localResult.append(" AND ");
 				localResult.append("(" + localJoins + ")");
 			}
@@ -819,6 +749,7 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
+
 		return result;
 	}
 
@@ -840,26 +771,24 @@ public class MQLToSQL
 
 		m_isoResolutionList.clear();
 		StringBuilder result = new StringBuilder();
-		
+
 		StringBuilder isoResult = new StringBuilder().append("(")
                 .append(visitExpressionOr(context.m_isoExpression))
                 .append(")")
                 ;
-		//System.out.println(">>>>>>> " + m_isoResolutionList);
 
-		String primaryKeyEntity = SchemaSingleton.getPrimaryKey(m_externalCatalog, m_entity);
 		StringBuilder localResult = new StringBuilder();
 		StringBuilder localJoins = new StringBuilder();
-		localResult.append("`" + m_entity + "`.`" + primaryKeyEntity + "` IN (SELECT `" + m_entity + "`.`" + primaryKeyEntity + "` FROM `" + m_entity + "` ");
+		localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
 		boolean needAND = false;
 		ArrayList<String> testCatalogTable = new ArrayList<String>();
 		for(Resolution pathList: m_isoResolutionList) 
 		{
-			
-				String localTableName = pathList.getQId().getEntity();
-				String localCatalogName = pathList.getQId().getCatalog();
-				if (!testCatalogTable.contains(localCatalogName + ":" + localTableName))
-				{
+
+			String localTableName = pathList.getQId().getEntity();
+			String localCatalogName = pathList.getQId().getCatalog();
+			if (!testCatalogTable.contains(localCatalogName + ":" + localTableName))
+			{
 				testCatalogTable.add(localCatalogName + ":" + localTableName);
 				if(!localTableName.equalsIgnoreCase(m_entity))
 				{
@@ -869,57 +798,58 @@ public class MQLToSQL
 						m_from.add(localTableName);
 					}
 
-				String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(localCatalogName, localTableName);
-				if(needAND)
-				{
-					localJoins.append("  AND ");
-				}
-				List<String> localFromList = new ArrayList<String>();
-				List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
-				boolean needOR = false;
-				//System.out.println("");
-				//System.out.println("local joins: " + localTableName);
-				for(List<SchemaSingleton.FrgnKey> list: paths) 
-				{
-					List<String> localWhereList = new ArrayList<String>();
-					for(SchemaSingleton.FrgnKey frgnKey: list) {
-						//for order (performances), change algorithm here?
-						if(!localFromList.contains(frgnKey.fkTable))
-						{
-							localFromList.add(frgnKey.fkTable);
-						}
-						if(!localFromList.contains(frgnKey.pkTable))
-						{
-							localFromList.add(frgnKey.pkTable);
-						}
-						//here as well ?
-						localWhereList.add(frgnKey.toString());
-					}
-					if(!localWhereList.isEmpty())
+					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
+							SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
+							);
+
+					if(needAND)
 					{
-						if(needOR)
+						localJoins.append("  AND ");
+					}
+					List<String> localFromList = new ArrayList<String>();
+					List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
+					boolean needOR = false;
+
+					for(List<SchemaSingleton.FrgnKey> list: paths) 
+					{
+						List<String> localWhereList = new ArrayList<String>();
+						for(SchemaSingleton.FrgnKey frgnKey: list)
 						{
-							localJoins.append(" OR ");
+							if(!localFromList.contains(frgnKey.fkTable))
+							{
+								localFromList.add(frgnKey.fkTable);
+							}
+							if(!localFromList.contains(frgnKey.pkTable))
+							{
+								localFromList.add(frgnKey.pkTable);
+							}
+
+							localWhereList.add(frgnKey.toString());
 						}
-						//System.out.println("localFrom: " + localWhereList);
-						localJoins.append("(");
-						localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + primaryKeyEntity + "`) IN ");
-						localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + primaryKeyEntity + "` "
-											+ "FROM `"+ String.join("`,`", localFromList) + "` "
-											+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
-						localJoins.append(")");
-						//System.out.println("localWhereList: " + localWhereList);
+						if(!localWhereList.isEmpty())
+						{
+							if(needOR)
+							{
+								localJoins.append(" OR ");
+							}
+
+							localJoins.append("(");
+							localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + m_primaryKey + "`) IN ");
+							localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + m_primaryKey + "` "
+									+ "FROM `"+ String.join("`,`", localFromList) + "` "
+									+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
+							localJoins.append(")");
+						}
+
+						needOR = true;
 					}
-					//System.out.println(localJoins.toString());
-					needOR = true;
-					}
-				needAND = true;
+					needAND = true;
 				}
+			}
 		}
-		}
-		
+
 		localResult.append(" WHERE ");
-		//System.out.println("result: " + result.toString());
+
 		localResult.append(isoResult.toString());
 
 		if(!localJoins.toString().isEmpty())
@@ -927,8 +857,8 @@ public class MQLToSQL
 			if(m_inSelect)
 			{
 				m_joins.add("(" + localJoins.toString() + ")");
-				//System.out.println("m_joins:" + m_joins.toString());
 			}
+
 			localResult.append(" AND ");
 			localResult.append("(" + localJoins + ")");
 		}
@@ -939,7 +869,7 @@ public class MQLToSQL
 		}
 		m_inIsoGroup = false ;
 
-		return  result;
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -979,12 +909,7 @@ public class MQLToSQL
 
 		/*----------------------------------------------------------------*/
 
-		if(m_inIsoGroup == false) {
-			m_resolutionList.addAll(list);
-		}
-		else {
-			m_isoResolutionList.addAll(list);
-		}
+		(m_inIsoGroup ? m_isoResolutionList : m_resolutionList).addAll(list);
 
 		/*----------------------------------------------------------------*/
 
@@ -1026,7 +951,7 @@ public class MQLToSQL
 		{
 			if(m_inFunction)
 			{
-				list = Arrays.asList(qid.setField(SchemaSingleton.getPrimaryKey(catalogName, entityName)));
+				list = Arrays.asList(qid.setCatalog(catalogName).setEntity(entityName).setField(SchemaSingleton.getPrimaryKey(catalogName, entityName)));
 			}
 			else
 			{
@@ -1053,6 +978,16 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context) throws Exception
+	{
+		return new StringBuilder().append("(")
+		                          .append(context.m_literals.stream().map(x -> x.getText()).collect(Collectors.joining(", ")))
+		                          .append(")")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/

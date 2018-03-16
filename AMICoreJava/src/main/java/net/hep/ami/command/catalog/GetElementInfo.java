@@ -71,19 +71,40 @@ public class GetElementInfo extends AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
-	private void _getLinkedEntities(StringBuilder result, String catalog, String entity, String primaryFieldName, String primaryFieldValue, Collection<SchemaSingleton.FrgnKeys> list, int direction)
+	private void _getLinkedEntities(StringBuilder result, String catalog, String entity, String primaryFieldName, String primaryFieldValue, Collection<SchemaSingleton.FrgnKeys> list, int mode)
 	{
+		String linkedCatalog;
+		String linkedEntity;
 		String sql;
 		String mql;
 		String count;
+		String direction;
 
 		for(SchemaSingleton.FrgnKeys frgnKeys: list)
 		{
 			for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 			{
+				switch(mode)
+				{
+					case FORWARD:
+						linkedCatalog = frgnKey.pkExternalCatalog;
+						linkedEntity = frgnKey.pkTable;
+						direction = "forward";
+						break;
+
+					case BACKWARD:
+						linkedCatalog = frgnKey.fkExternalCatalog;
+						linkedEntity = frgnKey.fkTable;
+						direction = "backward";
+						break;
+
+					default:
+						return;
+				}
+
 				try
 				{
-					RowSet rowSet = getQuerier(frgnKey.pkExternalCatalog).executeMQLQuery(entity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "` = '" + primaryFieldValue.replace("'", "''") + "'");
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "` = '" + primaryFieldValue.replace("'", "''") + "'");
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
@@ -99,8 +120,8 @@ public class GetElementInfo extends AbstractCommand
 				}
 
 				result.append("<row>")
-				      .append("<field name=\"catalog\"><![CDATA[").append(direction == FORWARD ? frgnKey.pkExternalCatalog : frgnKey.fkExternalCatalog).append("]]></field>")
-				      .append("<field name=\"entity\"><![CDATA[").append(direction == FORWARD ? frgnKey.pkTable : frgnKey.fkTable).append("]]></field>")
+				      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
+				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")

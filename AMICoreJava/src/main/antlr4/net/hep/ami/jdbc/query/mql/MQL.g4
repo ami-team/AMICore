@@ -75,7 +75,7 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionAddSub (COMP expressionAddSub)?
+	: expressionAddSub (COMP expressionAddSub | IN expressionTuple)?
 	;
 
 expressionAddSub
@@ -116,6 +116,14 @@ constraintQId
 
 basicQId
 	: m_ids+=(ID|MUL|'#') ('.' m_ids+=(ID|MUL|'#'))*
+	;
+
+/*---------------------------*/
+/* LITERAL_TUPLE             */
+/*---------------------------*/
+
+literalTuple
+	: '(' m_literals+=literal (',' m_literals+=literal)* ')'
 	;
 
 /*---------------------------*/
@@ -210,6 +218,10 @@ AND
 
 COMP
 	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | '<' | '>' | '<=' | '>=' | L I K E
+	;
+
+IN
+	: I N
 	;
 
 PLUS
