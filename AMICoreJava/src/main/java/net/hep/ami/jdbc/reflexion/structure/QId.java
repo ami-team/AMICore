@@ -5,6 +5,7 @@ import java.util.stream.*;
 
 import org.antlr.v4.runtime.*;
 
+import net.hep.ami.jdbc.query.mql.*;
 import net.hep.ami.utility.parser.*;
 
 public class QId
@@ -125,9 +126,9 @@ public class QId
 	{
 		/*-----------------------------------------------------------------*/
 
-		QIdLexer lexer = new QIdLexer(CharStreams.fromString(qId));
+		MQLLexer lexer = new MQLLexer(CharStreams.fromString(qId));
 
-		QIdParser parser = new QIdParser(new CommonTokenStream(lexer));
+		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
 
 		/*-----------------------------------------------------------------*/
 
@@ -149,7 +150,17 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitQId(QId result, QIdParser.QIdContext context, int typeForQId, int typeForConstraints) throws Exception
+	public QId(MQLParser.QIdContext context, int typeForQId, int typeForConstraints) throws Exception
+	{
+		/* This constructor is used by MQLToSQL.java
+		 */
+
+		visitQId(this, context, typeForQId, typeForConstraints);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private QId visitQId(QId result, MQLParser.QIdContext context, int typeForQId, int typeForConstraints) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -159,7 +170,7 @@ public class QId
 
 		if((typeForQId & FLAG_CONSTRAINTS) != 0)
 		{
-			for(QIdParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
+			for(MQLParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
 			{
 				result.m_constraints.add(visitQId(new QId().setExclusion(constraintQIdContext.m_op != null), constraintQIdContext.m_qId, typeForConstraints, typeForConstraints));
 			}
@@ -172,7 +183,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitBasicQId(QId result, QIdParser.BasicQIdContext context, int typeForQId) throws Exception
+	private QId visitBasicQId(QId result, MQLParser.BasicQIdContext context, int typeForQId) throws Exception
 	{
 		final int size = context.m_ids.size();
 
@@ -375,11 +386,11 @@ public class QId
 
 	public boolean matches(QId qId)
 	{
-		return (this.m_catalog == null || qId.m_catalog == null || "#".equals(this.m_catalog) || "#".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
+		return (this.m_catalog == null || qId.m_catalog == null || "$".equals(this.m_catalog) || "$".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
 		       &&
-		       (this.m_entity == null || qId.m_entity == null || "#".equals(this.m_entity) || "#".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
+		       (this.m_entity == null || qId.m_entity == null || "$".equals(this.m_entity) || "$".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
 		       &&
-		       (this.m_field == null || qId.m_field == null || "#".equals(this.m_field) || "#".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
+		       (this.m_field == null || qId.m_field == null || "$".equals(this.m_field) || "$".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
 		;
 	}
 
@@ -454,7 +465,7 @@ public class QId
 		if((mask & FLAG_CONSTRAINTS) != 0 && m_constraints.isEmpty() == false)
 		{
 			result.append("{")
-			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(",")))
+			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(", ")))
 			      .append("}")
 			;
 		}

@@ -19,15 +19,15 @@ mqlQuery
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE expression=expressionOr)? (ORDER BY m_orderBy=qId (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
+	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE m_expression=expressionOr)? (ORDER BY m_orderBy=qId (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
 	;
 
 insertStatement
-	: INSERT m_qIds=qIdTuple VALUES expressions=expressionTuple /*----------------------------*/
+	: INSERT m_qIds=qIdTuple VALUES m_expressions=expressionTuple /*----------------------------*/
 	;
 
 updateStatement
-	: UPDATE m_qIds=qIdTuple VALUES expressions=expressionTuple (WHERE expression=expressionOr)?
+	: UPDATE m_qIds=qIdTuple VALUES m_expressions=expressionTuple (WHERE expression=expressionOr)?
 	;
 
 deleteStatement
@@ -79,15 +79,15 @@ expressionComp
 	;
 
 expressionAddSub
-	: expressionMulDiv (('+' | '-') expressionMulDiv)*
+	: expressionMulDiv ((PLUS | MINUS) expressionMulDiv)*
 	;
 
 expressionMulDiv
-	: expressionNotPlusMinus (('*' | '/' | '%') expressionNotPlusMinus)*
+	: expressionNotPlusMinus ((MUL | DIV | MOD) expressionNotPlusMinus)*
 	;
 
 expressionNotPlusMinus
-	: m_operator=('!' | '-' | '+')? expressionX
+	: m_operator=(NOT | PLUS | MINUS)? expressionX
 	;
 
 expressionX
@@ -103,23 +103,19 @@ expressionX
 /*---------------------------*/
 
 qId
-	: basicQId ('{' pathQId (',' pathQId)* '}')?
+	: m_basicQId=basicQId ('{' m_constraintQIds+=constraintQId (',' m_constraintQIds+=constraintQId)* '}')?
 	;
 
 /*---------------------------*/
-/* PATH_QID                  */
-/*---------------------------*/
 
-pathQId
-	: '!'? qId
+constraintQId
+	: m_op='!'? m_qId=qId
 	;
 
-/*---------------------------*/
-/* BASIC_QID                 */
 /*---------------------------*/
 
 basicQId
-	: ID ('.' ID)*
+	: m_ids+=(ID|MUL|'#') ('.' m_ids+=(ID|MUL|'#'))*
 	;
 
 /*---------------------------*/
@@ -212,12 +208,32 @@ AND
 	| '&&' { setText("AND"); }
 	;
 
-NULL
-	: N U L L
-	;
-
 COMP
 	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | '<' | '>' | '<=' | '>=' | L I K E
+	;
+
+PLUS
+	: '+'
+	;
+
+MINUS
+	: '-'
+	;
+
+MUL
+	: '*'
+	;
+
+DIV
+	: '/'
+	;
+
+MOD
+	: '%'
+	;
+
+NOT
+	: '!'
 	;
 
 FUNCTION
@@ -230,16 +246,12 @@ FUNCTION
 /* LITERALS                  */
 /*---------------------------*/
 
-STRING
-	: '\'' ('\'\'' | ~'\'')* '\''
+NULL
+	: N U L L
 	;
 
-ID
-	: [a-zA-Z_][a-zA-Z0-9_#$]*
-	| '`' ('``' | ~'`')+ '`'
-	| '"' ('""' | ~'"')+ '"'
-	| '*'
-	| '#'
+STRING
+	: '\'' ('\'\'' | ~'\'')* '\''
 	;
 
 NUMBER
@@ -248,10 +260,16 @@ NUMBER
 	| '-'? INT
 	;
 
+ID
+	: [a-zA-Z_][a-zA-Z0-9_#$]*
+	| '`' ('``' | ~'`')+ '`'
+	| '"' ('""' | ~'"')+ '"'
+	;
+
 /*-------------------------------------------------------------------------*/
 
 COMMENT
-	: '#' ~[\n\r]* -> skip
+	: '-' '-' ~[\n\r]* -> skip
 	;
 
 WS

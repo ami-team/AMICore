@@ -132,16 +132,17 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 		m_inSelect = false;
 		/*-----------------------------------------------------------------*/
-		if(context.expression != null)
+
+		if(context.m_expression != null)
 		{
-			query.addWherePart("(" + visitExpressionOr(context.expression).toString() + ")");
+			query.addWherePart("(" + visitExpressionOr(context.m_expression).toString() + ")");
 		}
-		
+
 		if(m_joins.isEmpty() == false)
 		{
 			query.addWherePart(String.join(" AND ", m_joins));
 		}
-		
+
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_orderBy != null)
@@ -172,15 +173,14 @@ public class MQLToSQL
 
 		for(int i = 0; i < m_from.size(); i++) 
 		{
-			if(!m_from.get(i).equals(m_entity))
+			if(m_from.get(i).equalsIgnoreCase(m_entity) == false)
 			{
 				query.addFromPart(new QId(m_internalCatalog, m_from.get(i), null).toString(QId.FLAG_ENTITY));
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
-		//System.out.println("");
-		//System.out.println("query: " + query.toString(extra.toString()));
+
 		return new StringBuilder(query.toString(extra.toString()));
 
 		/*-----------------------------------------------------------------*/
@@ -202,7 +202,7 @@ public class MQLToSQL
 
 		m_inInsert = true;
 		List<Resolution> resolutions = visitQIdTuple(context.m_qIds);
-		List<String> expressions = visitExpressionTuple(context.expressions);
+		List<String> expressions = visitExpressionTuple(context.m_expressions);
 		m_inInsert = false;
 
 		/*-----------------------------------------------------------------*/
@@ -406,16 +406,19 @@ public class MQLToSQL
 
 		m_inUpdate = true;
 		List<Resolution> tmpFields = visitQIdTuple(context.m_qIds);
-		List<String> tmpExpressions = visitExpressionTuple(context.expressions);
+		List<String> tmpExpressions = visitExpressionTuple(context.m_expressions);
 		m_inUpdate = false;
+
 		for(int i = 0; i < tmpFields.size(); i++)
 		{
 			tmpSet.append("`" + tmpFields.get(i).getQId().getField() + "`= " + tmpExpressions.get(i));
 		}
 
 		result.append("UPDATE ")
-		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY))
-		      .append(" SET ").append(String.join(", ", tmpSet));
+		      .append(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.FLAG_ENTITY))
+		      .append(" SET ")
+		      .append(String.join(", ", tmpSet))
+		;
 
 		if(context.expression != null)
 		{
@@ -428,6 +431,7 @@ public class MQLToSQL
 
 			result.append(" WHERE ").append(query.getWherePart());
 		}
+
 		return result;
 	}
 
@@ -628,7 +632,7 @@ public class MQLToSQL
 			{
 					String localTableName = pathList.getQId().getEntity();
 					String localCatalogName = pathList.getQId().getCatalog();
-					if(!localTableName.equals(m_entity))
+					if(!localTableName.equalsIgnoreCase(m_entity))
 					{
 						localResult.append(", `" + localTableName + "` ");
 						if(m_inSelect && !m_from.contains(localTableName))
@@ -857,7 +861,7 @@ public class MQLToSQL
 				if (!testCatalogTable.contains(localCatalogName + ":" + localTableName))
 				{
 				testCatalogTable.add(localCatalogName + ":" + localTableName);
-				if(!localTableName.equals(m_entity))
+				if(!localTableName.equalsIgnoreCase(m_entity))
 				{
 					localResult.append(", `" + localTableName + "` ");
 					if(m_inSelect && !m_from.contains(localTableName))
@@ -917,7 +921,7 @@ public class MQLToSQL
 		localResult.append(" WHERE ");
 		//System.out.println("result: " + result.toString());
 		localResult.append(isoResult.toString());
-		
+
 		if(!localJoins.toString().isEmpty())
 		{
 			if(m_inSelect)
@@ -934,7 +938,7 @@ public class MQLToSQL
 			result = localResult;
 		}
 		m_inIsoGroup = false ;
-		
+
 		return  result;
 	}
 
@@ -969,16 +973,24 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context) throws Exception
 	{
-		List<Resolution> hh = visitQId(context.m_qId);
+		/*----------------------------------------------------------------*/
+
+		List<Resolution> list = visitQId(context.m_qId);
+
+		/*----------------------------------------------------------------*/
 
 		if(m_inIsoGroup == false) {
-			m_resolutionList.addAll(hh);
+			m_resolutionList.addAll(list);
 		}
 		else {
-			m_isoResolutionList.addAll(hh);
+			m_isoResolutionList.addAll(list);
 		}
 
-		return new StringBuilder(hh.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+		/*----------------------------------------------------------------*/
+
+		return new StringBuilder(list.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+
+		/*----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -996,7 +1008,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		QId qid = new QId(context.getText(), QId.FLAG_FIELD | QId.FLAG_CONSTRAINTS);
+		QId qid = new QId(context, QId.FLAG_FIELD | QId.FLAG_CONSTRAINTS, QId.FLAG_FIELD);
 
 		/*-----------------------------------------------------------------*/
 

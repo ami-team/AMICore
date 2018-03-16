@@ -25,7 +25,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
-
+/*
 		arguments.put("amiLogin", "jodier");
 		arguments.put("cached", "");
 		CommandSingleton.executeCommand("GetUserInfo", arguments);
@@ -35,7 +35,7 @@ public class CommandSingletonTest
 		CommandSingleton.executeCommand("GetUserInfo", arguments);
 		arguments.put("cached", "");
 		CommandSingleton.executeCommand("GetUserInfo", arguments);
-
+*/
 		//System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
 
 		//System.out.println("--------");
@@ -192,7 +192,7 @@ public class CommandSingletonTest
 			System.out.println(new SimpleQuerier("test").mqlToSQL("t1", "SELECT foo7 WHERE foo1 = 'foo'"));
 			System.out.println();
 */
-
+/*
 			QId pathQId = new QId("A.B{!toto.yy}", QId.FLAG_FIELD, QId.FLAG_ENTITY);
 			System.out.println("------------");
 
@@ -204,8 +204,11 @@ public class CommandSingletonTest
 			System.out.println(qId);
 
 			System.out.println(pathQId.getConstraints().get(0).matches(qId) != pathQId.getConstraints().get(0).getExclusion());
+*/
+//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_user\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\"").replace(">", ">\n"));
 
-			//System.out.println(new QId("B{!U.#}", QId.FLAG_FIELD, QId.FLAG_ENTITY));
+//			System.out.println(new QId("A.B.C{D.E.#}"));
+			System.out.println(new QId("A.B.#{D.E.F,!G.H.*}"));
 
 			//System.out.println("done.");
 		}
