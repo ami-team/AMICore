@@ -127,7 +127,7 @@ public class GetElementInfo extends AbstractCommand
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
-				      .append("<field name=\"count\"><![CDATA[").append("{" + fk + "}").append(count).append("]]></field>")
+				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
 				      .append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
 				      .append("</row>")
 				;
