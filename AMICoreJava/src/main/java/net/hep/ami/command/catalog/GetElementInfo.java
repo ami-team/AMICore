@@ -107,7 +107,7 @@ public class GetElementInfo extends AbstractCommand
 
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`{" + entity + "." + fk + "} = '" + primaryFieldValue.replace("'", "''") + "'");
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`{`" + entity + "`.`" + fk + "`} = '" + primaryFieldValue.replace("'", "''") + "'");
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
