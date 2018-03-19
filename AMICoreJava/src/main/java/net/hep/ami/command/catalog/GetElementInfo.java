@@ -91,20 +91,18 @@ public class GetElementInfo extends AbstractCommand
 						linkedCatalog = frgnKey.pkExternalCatalog;
 						linkedEntity = frgnKey.pkTable;
 						direction = "forward";
-						fk = "{`" + frgnKey.fkTable +  "`.`" + frgnKey.fkColumn + "`}";
 						break;
 
 					case BACKWARD:
 						linkedCatalog = frgnKey.fkExternalCatalog;
 						linkedEntity = frgnKey.fkTable;
 						direction = "backward";
-						fk = "{`" + frgnKey.pkTable +  "`.`" + frgnKey.pkColumn + "`}";
 						break;
 
 					default:
 						return;
 				}
-
+				fk = "{`" + frgnKey.fkTable +  "`.`" + frgnKey.fkColumn + "`}";
 				try
 				{
 					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + fk + " = '" + primaryFieldValue.replace("'", "''") + "'");
