@@ -79,6 +79,7 @@ public class GetElementInfo extends AbstractCommand
 		String mql;
 		String count;
 		String direction;
+		String fk;
 
 		for(SchemaSingleton.FrgnKeys frgnKeys: list)
 		{
@@ -90,12 +91,14 @@ public class GetElementInfo extends AbstractCommand
 						linkedCatalog = frgnKey.pkExternalCatalog;
 						linkedEntity = frgnKey.pkTable;
 						direction = "forward";
+						fk = frgnKey.pkColumn;
 						break;
 
 					case BACKWARD:
 						linkedCatalog = frgnKey.fkExternalCatalog;
 						linkedEntity = frgnKey.fkTable;
 						direction = "backward";
+						fk = frgnKey.fkColumn;
 						break;
 
 					default:
@@ -104,7 +107,7 @@ public class GetElementInfo extends AbstractCommand
 
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "` = '" + primaryFieldValue.replace("'", "''") + "'");
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`{" + entity + "." + fk + "} = '" + primaryFieldValue.replace("'", "''") + "'");
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
@@ -124,7 +127,7 @@ public class GetElementInfo extends AbstractCommand
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
-				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
+				      .append("<field name=\"count\"><![CDATA[").append("{" + fk + "}").append(count).append("]]></field>")
 				      .append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
 				      .append("</row>")
 				;
