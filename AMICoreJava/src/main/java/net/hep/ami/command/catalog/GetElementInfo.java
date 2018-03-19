@@ -98,7 +98,7 @@ public class GetElementInfo extends AbstractCommand
 						linkedCatalog = frgnKey.fkExternalCatalog;
 						linkedEntity = frgnKey.fkTable;
 						direction = "backward";
-						//fk = "{`" + frgnKey.pkTable +  "`.`" + frgnKey.pkColumn + "`}";
+						fk = "{`" + frgnKey.pkTable +  "`.`" + frgnKey.pkColumn + "`}";
 						break;
 
 					default:
