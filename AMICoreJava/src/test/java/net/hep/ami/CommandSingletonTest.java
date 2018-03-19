@@ -207,7 +207,9 @@ public class CommandSingletonTest
 */
 //			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_user\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\"").replace(">", ">\n"));
 
-			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user_role\" -mql=\"SELECT COUNT(*) WHERE `self`.`router_role`.`id` = '1'\"").replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user_role\" -mql=\"SELECT COUNT(*) WHERE `self`.`router_role`.`id` = '1'\"").replace(">", ">\n"));
+
+			System.out.println(CommandSingleton.executeCommand("AddUser -amiLogin=\"jodier\" -amiPassword=\"Xk3mgg256\" -firstName=\"Jérôme\" -lastName=\"Odier\" -email=\"odier.jerome@gmail.com\" -attach").replace(">", ">\n"));
 
 //			System.out.println(new QId("A.B.C{D.E.#}"));
 //			System.out.println(new QId("A.B.#{D.E.F,!G.H.*}"));

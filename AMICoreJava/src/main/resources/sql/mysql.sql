@@ -134,7 +134,7 @@ CREATE TABLE `router_user` (
   `email` VARCHAR(128),
   `country` VARCHAR(128) DEFAULT 'N/A',
   `valid` TINYINT NOT NULL DEFAULT '1',
-  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -142,6 +142,8 @@ ALTER TABLE `router_user`
   ADD CONSTRAINT `pk1_router_user` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_user` UNIQUE KEY (`AMIUser`)
 ;
+
+ALTER TABLE `router_user` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ------------------------------------------------------------------------------
 

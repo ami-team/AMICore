@@ -125,10 +125,10 @@ public class GetElementInfo extends AbstractCommand
 				result.append("<row>")
 				      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
-				      .append("<field name=\"constraint\"><![CDATA[").append(constraint).append("]]></field>")
+				      .append("<field name=\"constraint\"><![CDATA[").append(frgnKey.fkColumn).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
-				      .append("<field name=\"count\"><![CDATA[").append(constraint + " ").append(count).append("]]></field>")
+				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
 				      .append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
 				      .append("</row>")
 				;
