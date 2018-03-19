@@ -75,16 +75,18 @@ public class GetElementInfo extends AbstractCommand
 	{
 		String linkedCatalog;
 		String linkedEntity;
+		String constraint;
 		String sql;
 		String mql;
 		String count;
 		String direction;
-		String fk = "";
 
 		for(SchemaSingleton.FrgnKeys frgnKeys: list)
 		{
 			for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 			{
+				constraint = "{`" + frgnKey.fkExternalCatalog + "`.`" + frgnKey.fkTable +  "`.`" + frgnKey.fkColumn + "`}";
+
 				switch(mode)
 				{
 					case FORWARD:
@@ -102,10 +104,10 @@ public class GetElementInfo extends AbstractCommand
 					default:
 						return;
 				}
-				fk = "{`" + frgnKey.fkTable +  "`.`" + frgnKey.fkColumn + "`}";
+
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + fk + " = '" + primaryFieldValue.replace("'", "''") + "'");
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + constraint + " = '" + primaryFieldValue.replace("'", "''") + "'");
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
@@ -118,15 +120,15 @@ public class GetElementInfo extends AbstractCommand
 					sql = "N/A";
 
 					count = "N/A";
-					//System.out.println(e.getMessage());
 				}
 
 				result.append("<row>")
 				      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
+				      .append("<field name=\"constraint\"><![CDATA[").append(constraint).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
-				      .append("<field name=\"count\"><![CDATA[").append(fk + " ").append(count).append("]]></field>")
+				      .append("<field name=\"count\"><![CDATA[").append(constraint + " ").append(count).append("]]></field>")
 				      .append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
 				      .append("</row>")
 				;
