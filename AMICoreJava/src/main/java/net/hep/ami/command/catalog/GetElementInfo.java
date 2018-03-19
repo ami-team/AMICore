@@ -79,7 +79,7 @@ public class GetElementInfo extends AbstractCommand
 		String mql;
 		String count;
 		String direction;
-		String fk;
+		String fk = "";
 
 		for(SchemaSingleton.FrgnKeys frgnKeys: list)
 		{
@@ -91,14 +91,14 @@ public class GetElementInfo extends AbstractCommand
 						linkedCatalog = frgnKey.pkExternalCatalog;
 						linkedEntity = frgnKey.pkTable;
 						direction = "forward";
-						fk = "`" + frgnKey.pkTable +  "`" + frgnKey.pkColumn + "`";
+						fk = "{`" + frgnKey.fkTable +  "`.`" + frgnKey.fkColumn + "`}";
 						break;
 
 					case BACKWARD:
 						linkedCatalog = frgnKey.fkExternalCatalog;
 						linkedEntity = frgnKey.fkTable;
 						direction = "backward";
-						fk = "`" + frgnKey.fkTable +  "`" + frgnKey.fkColumn + "`";
+						//fk = "{`" + frgnKey.pkTable +  "`.`" + frgnKey.pkColumn + "`}";
 						break;
 
 					default:
@@ -107,7 +107,7 @@ public class GetElementInfo extends AbstractCommand
 
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`{" + fk + "} = '" + primaryFieldValue.replace("'", "''") + "'");
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + fk + " = '" + primaryFieldValue.replace("'", "''") + "'");
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
@@ -120,6 +120,7 @@ public class GetElementInfo extends AbstractCommand
 					sql = "N/A";
 
 					count = "N/A";
+					//System.out.println(e.getMessage());
 				}
 
 				result.append("<row>")
@@ -127,7 +128,7 @@ public class GetElementInfo extends AbstractCommand
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
-				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
+				      .append("<field name=\"count\"><![CDATA[").append(fk + " ").append(count).append("]]></field>")
 				      .append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
 				      .append("</row>")
 				;
