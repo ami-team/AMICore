@@ -2,7 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
-import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 public class AddRole extends AbstractCommand
@@ -19,17 +19,11 @@ public class AddRole extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String parent = arguments.containsKey("parent") ? arguments.get("parent")
-		                                                : "AMI_GUEST"
-		;
-
 		String role = arguments.get("role");
 
-		String roleValidatorClass = arguments.containsKey("roleValidatorClass") ? arguments.get("roleValidatorClass")
-		                                                                        : ""
-		;
+		String description = arguments.get("description");
 
-		boolean insertAfter = arguments.containsKey("insertAfter");
+		String roleValidatorClass = arguments.get("roleValidatorClass");
 
 		if(role == null)
 		{
@@ -38,25 +32,32 @@ public class AddRole extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		RoleSingleton.addRole(getQuerier("self"), parent, role, roleValidatorClass, insertAfter);
+		Update update = getQuerier("self").executeSQLUpdate("INSERT INTO `router_role` (`role`, `description`, `validatorClass`) VALUES (?, ?, ?)",
+			role,
+			description,
+			roleValidatorClass
+		);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder(
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Add role.";
+		return "Add a role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "(-parent=\"value\")? -role=\"value\" (-roleValidatorClass=\"value\" -insertAfter)?";
+		return "-role=\"value\" (-description=\"\")? (-roleValidatorClass=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

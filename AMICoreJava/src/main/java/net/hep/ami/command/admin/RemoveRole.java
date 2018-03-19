@@ -2,7 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.util.*;
 
-import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 public class RemoveRole extends AbstractCommand
@@ -28,25 +28,30 @@ public class RemoveRole extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		RoleSingleton.removeRole(getQuerier("self"), role, arguments.containsKey("recursive"));
+		Update update = getQuerier("self").executeSQLUpdate("DELETE FROM `router_role` WHERE `role` = ?",
+			role
+		);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder(
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Remove role.";
+		return "Remove a role.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-role=\"value\" (-recursive)?";
+		return "-role=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

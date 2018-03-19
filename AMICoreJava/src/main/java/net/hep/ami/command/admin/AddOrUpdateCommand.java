@@ -89,7 +89,7 @@ public class AddOrUpdateCommand extends AbstractCommand
 
 	public static String usage()
 	{
-		return "(-command=\"\")? -class=\"\"";
+		return "-class=\"\" (-command=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -20,7 +20,11 @@ DROP TABLE IF EXISTS `router_config`;
 CREATE TABLE `router_config` (
   `id` INT(11) NOT NULL,
   `paramName` VARCHAR(128) NOT NULL,
-  `paramValue` VARCHAR(512) NOT NULL
+  `paramValue` VARCHAR(512) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -42,7 +46,11 @@ CREATE TABLE `router_catalog` (
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
   `custom` TEXT,
-  `archived` TINYINT NOT NULL DEFAULT '0'
+  `archived` TINYINT NOT NULL DEFAULT '0',
+  `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -73,9 +81,8 @@ ALTER TABLE `router_converter` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMEN
 
 CREATE TABLE `router_role` (
   `id` INT(11) NOT NULL,
-  `lft` INT(11) NOT NULL,
-  `rgt` INT(11) NOT NULL,
   `role` VARCHAR(128) NOT NULL,
+  `description` VARCHAR(512),
   `roleValidatorClass` VARCHAR(256)
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
@@ -136,6 +143,7 @@ CREATE TABLE `router_user` (
   `valid` TINYINT NOT NULL DEFAULT '1',
   `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
 ALTER TABLE `router_user`
@@ -174,7 +182,8 @@ CREATE TABLE `router_short_url` (
   `owner` VARCHAR(128) NOT NULL,
   `shared` TINYINT NOT NULL DEFAULT '0',
   `expire` TINYINT NOT NULL DEFAULT '0',
-  `created` DATE NOT NULL
+  `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -213,7 +222,11 @@ CREATE TABLE `router_search_interface` (
   `id` INT(11) NOT NULL,
   `interface` VARCHAR(128) NOT NULL,
   `json` TEXT NOT NULL,
-  `archived` TINYINT NOT NULL DEFAULT '0'
+  `archived` TINYINT NOT NULL DEFAULT '0',
+  `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 

@@ -302,7 +302,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`) VALUES (?, ?, ?, ?, ?, ?, NULL, 0);",
+		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, NULL, 0, 'admin', 'admin');",
 			getExternalCatalog(),
 			getInternalCatalog(),
 			schema,
@@ -332,10 +332,11 @@ public class Router implements Querier
 		LogSingleton.root.info("setup roles...");
 
 		executeSQLUpdate(
-			"INSERT INTO `router_role` (`lft`, `rgt`, `role`) VALUES" +
-			" (0, 5, 'AMI_GUEST')," +
-			" (1, 4, 'AMI_CERT')," +
-			" (2, 3, 'AMI_ADMIN')" +
+			"INSERT INTO `router_role` (`role`) VALUES" +
+			" ('AMI_GUEST')," +
+			" ('AMI_USER')," +
+			" ('AMI_ADMIN')" +
+			" ('AMI_CERT')," +
 			";"
 		);
 

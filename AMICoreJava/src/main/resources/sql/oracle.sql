@@ -259,7 +259,11 @@ END;
 CREATE TABLE `router_config` (
   `id` NUMBER(*, 0),
   `paramName` VARCHAR2(128),
-  `paramValue` VARCHAR2(512)
+  `paramValue` VARCHAR2(512),
+  `created` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
 ALTER TABLE `router_config`
@@ -280,6 +284,22 @@ ALTER TABLE `router_config`
 
 ALTER TABLE `router_config`
   ADD CONSTRAINT `ck3_router_config` CHECK(`paramValue` IS NOT NULL)
+;
+
+ALTER TABLE `router_config`
+  ADD CONSTRAINT `ck4_router_config` CHECK(`created` IS NOT NULL)
+;
+
+ALTER TABLE `router_config`
+  ADD CONSTRAINT `ck5_router_config` CHECK(`createdBy` IS NOT NULL)
+;
+
+ALTER TABLE `router_config`
+  ADD CONSTRAINT `ck6_router_config` CHECK(`modified` IS NOT NULL)
+;
+
+ALTER TABLE `router_config`
+  ADD CONSTRAINT `ck7_router_config` CHECK(`modifiedBy` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_config` START WITH 1 INCREMENT BY 1 CACHE 10;
@@ -303,7 +323,11 @@ CREATE TABLE `router_catalog` (
   `user` VARCHAR2(128),
   `pass` VARCHAR2(128),
   `custom` CLOB,
-  `archived` NUMBER(1, 0) DEFAULT '0'
+  `archived` NUMBER(1, 0) DEFAULT '0',
+  `created` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
 ALTER TABLE `router_catalog`
@@ -340,6 +364,22 @@ ALTER TABLE `router_catalog`
 
 ALTER TABLE `router_catalog`
   ADD CONSTRAINT `ck7_router_catalog` CHECK(`archived` IS NOT NULL)
+;
+
+ALTER TABLE `router_catalog`
+  ADD CONSTRAINT `ck8_router_catalog` CHECK(`created` IS NOT NULL)
+;
+
+ALTER TABLE `router_catalog`
+  ADD CONSTRAINT `ck9_router_catalog` CHECK(`createdBy` IS NOT NULL)
+;
+
+ALTER TABLE `router_catalog`
+  ADD CONSTRAINT `ck10_router_catalog` CHECK(`modified` IS NOT NULL)
+;
+
+ALTER TABLE `router_catalog`
+  ADD CONSTRAINT `ck11_router_catalog` CHECK(`modifiedBy` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_catalog` START WITH 1 INCREMENT BY 1 CACHE 10;
@@ -394,9 +434,8 @@ END;
 
 CREATE TABLE `router_role` (
   `id` NUMBER(*, 0),
-  `lft` NUMBER(*, 0),
-  `rgt` NUMBER(*, 0),
   `role` VARCHAR2(128),
+  `description` VARCHAR2(512),
   `roleValidatorClass` VARCHAR2(256)
 );
 
@@ -413,15 +452,7 @@ ALTER TABLE `router_role`
 ;
 
 ALTER TABLE `router_role`
-  ADD CONSTRAINT `ck2_router_role` CHECK(`lft` IS NOT NULL)
-;
-
-ALTER TABLE `router_role`
-  ADD CONSTRAINT `ck3_router_role` CHECK(`rgt` IS NOT NULL)
-;
-
-ALTER TABLE `router_role`
-  ADD CONSTRAINT `ck4_router_role` CHECK(`role` IS NOT NULL)
+  ADD CONSTRAINT `ck2_router_role` CHECK(`role` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_role` START WITH 1 INCREMENT BY 1 CACHE 10;
@@ -530,7 +561,9 @@ CREATE TABLE `router_user` (
   `lastName` VARCHAR2(128),
   `email` VARCHAR2(128),
   `country` VARCHAR2(128) DEFAULT 'N/A',
-  `valid` NUMBER(1, 0) DEFAULT '1'
+  `valid` NUMBER(1, 0) DEFAULT '1',
+  `created` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `router_user`
@@ -563,6 +596,14 @@ ALTER TABLE `router_user`
 
 ALTER TABLE `router_user`
   ADD CONSTRAINT `ck6_router_user` CHECK(`valid` IS NOT NULL)
+;
+
+ALTER TABLE `router_user`
+  ADD CONSTRAINT `ck7_router_user` CHECK(`created` IS NOT NULL)
+;
+
+ALTER TABLE `router_user`
+  ADD CONSTRAINT `ck8_router_user` CHECK(`modified` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_user` START WITH 1 INCREMENT BY 1 CACHE 10;
@@ -632,7 +673,8 @@ CREATE TABLE `router_short_url` (
   `owner` VARCHAR2(128),
   `shared` NUMBER(1, 0) DEFAULT '0',
   `expire` NUMBER(1, 0) DEFAULT '0',
-  `created` DATE NOT NULL
+  `created` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
  );
 
 ALTER TABLE `router_short_url`
@@ -677,6 +719,10 @@ ALTER TABLE `router_short_url`
 
 ALTER TABLE `router_short_url`
   ADD CONSTRAINT `ck9_router_short_url` CHECK(`created` IS NOT NULL)
+;
+
+ALTER TABLE `router_short_url`
+  ADD CONSTRAINT `ck10_router_short_url` CHECK(`modified` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_short_url` START WITH 1 INCREMENT BY 1 CACHE 10;
@@ -755,7 +801,11 @@ CREATE TABLE `router_search_interface` (
   `id` NUMBER(*, 0),
   `interface` VARCHAR2(128),
   `json` CLOB,
-  `archived` NUMBER(1, 0) DEFAULT '0'
+  `archived` NUMBER(1, 0) DEFAULT '0',
+  `created` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
 ALTER TABLE `router_search_interface`
@@ -779,7 +829,23 @@ ALTER TABLE `router_search_interface`
 ;
 
 ALTER TABLE `router_search_interface`
-  ADD CONSTRAINT `ck5_router_search_interface` CHECK(`archived` IS NOT NULL)
+  ADD CONSTRAINT `ck4_router_search_interface` CHECK(`archived` IS NOT NULL)
+;
+
+ALTER TABLE `router_search_interface`
+  ADD CONSTRAINT `ck5_router_search_interface` CHECK(`created` IS NOT NULL)
+;
+
+ALTER TABLE `router_search_interface`
+  ADD CONSTRAINT `ck6_router_search_interface` CHECK(`createdBy` IS NOT NULL)
+;
+
+ALTER TABLE `router_search_interface`
+  ADD CONSTRAINT `ck7_router_search_interface` CHECK(`modified` IS NOT NULL)
+;
+
+ALTER TABLE `router_search_interface`
+  ADD CONSTRAINT `ck8_router_search_interface` CHECK(`modifiedBy` IS NOT NULL)
 ;
 
 CREATE SEQUENCE `seq_router_search_interface` START WITH 1 INCREMENT BY 1 CACHE 10;

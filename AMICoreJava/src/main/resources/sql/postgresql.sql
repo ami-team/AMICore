@@ -20,10 +20,14 @@ DROP TABLE IF EXISTS `router_config`;
 CREATE TABLE `router_config` (
   `id` SERIAL NOT NULL,
   `paramName` VARCHAR(128) NOT NULL,
-  `paramValue` VARCHAR(512) NOT NULL
+  `paramValue` VARCHAR(512) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
-ALTER TABLE `router_config` 
+ALTER TABLE `router_config`
   ADD CONSTRAINT `pk1_router_config` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_config` UNIQUE (`paramName`)
 ;
@@ -39,7 +43,11 @@ CREATE TABLE `router_catalog` (
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
   `custom` TEXT,
-  `archived` SMALLINT NOT NULL DEFAULT '0'
+  `archived` SMALLINT NOT NULL DEFAULT '0',
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
 ALTER TABLE `router_catalog`
@@ -64,9 +72,8 @@ ALTER TABLE `router_converter`
 
 CREATE TABLE `router_role` (
   `id` SERIAL NOT NULL,
-  `lft` INT NOT NULL,
-  `rgt` INT NOT NULL,
   `role` VARCHAR(128) NOT NULL,
+  `description` VARCHAR(512),
   `roleValidatorClass` VARCHAR(256)
 );
 
@@ -115,7 +122,9 @@ CREATE TABLE `router_user` (
   `lastName` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128),
   `country` VARCHAR(128) DEFAULT 'N/A',
-  `valid` SMALLINT NOT NULL DEFAULT '1'
+  `valid` SMALLINT NOT NULL DEFAULT '1',
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `router_user`
@@ -149,7 +158,8 @@ CREATE TABLE `router_short_url` (
   `owner` VARCHAR(128) NOT NULL,
   `shared` INT NOT NULL DEFAULT '0',
   `expire` INT NOT NULL DEFAULT '0',
-  `created` DATE NOT NULL
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `router_short_url`
@@ -182,7 +192,11 @@ CREATE TABLE `router_search_interface` (
   `id` SERIAL NOT NULL,
   `interface` VARCHAR(128) NOT NULL,
   `json` TEXT NOT NULL,
-  `archived` SMALLINT NOT NULL DEFAULT '0'
+  `archived` SMALLINT NOT NULL DEFAULT '0',
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
 ALTER TABLE `router_search_interface`
