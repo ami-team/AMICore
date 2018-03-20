@@ -31,30 +31,25 @@
 	</head>
 	<body style="background: white url('images/background.jpg') fixed;">
 
-		<nav class="navbar navbar-default navbar-static-top" role="navigation">
-			<div class="container">
-				<div class="navbar-header" style="line-height: 46px;">
-					<button class="navbar-toggle" data-toggle="collapse" data-target="#ami_navbar">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<img src="images/logo.png" alt="Logo" style="max-height: 44px;" />
-				</div>
-				<div class="collapse navbar-collapse" id="ami_navbar">
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="mailto:ami@lpsc.in2p3.fr"><i class="fa fa-envelope-o"></i> Contact</a></li>
-						<li><a href="http://www.cern.ch/ami/" target="_blank">About</a></li>
-					</ul>
-				</div>
+		<nav class="navbar navbar-expand-md border-bottom navbar-light bg-light">
+			<span class="navbar-brand py-0">
+				<img src="images/logo.png" alt="Logo" style="height: 40px;" />
+			</span>
+			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#ami_navbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="ami_navbar">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link" href="mailto:ami@lpsc.in2p3.fr"></i> Contact</a></li>
+					<li class="nav-item"><a class="nav-link" href="http://www.cern.ch/ami/" target="_blank">About</a></li>
+				</ul>
 			</div>
 		</nav>
 
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-lg mb-2">
 			<form method="post" action="" class="modal-content" onsubmit="return validateForm();">
 
-				<div class="modal-header">
+				<div class="modal-header px-3 py-2">
 					<h3 class="modal-title"><i class="fa fa-magic"></i> AMI wizard</h3>
 				</div>
 
@@ -64,46 +59,46 @@
 
 					<div class="row">
 
-						<div class="col-md-2 text-center text-muted" style="padding-top: 20px;">
+						<div class="col-md-2 text-center text-primary" style="padding-top: 20px;">
 							<i class="fa fa-server fa-5x"></i>
 						</div>
 
 						<div class="col-md-10">
 
-							<div class="text-right"><kbd>Server</kbd></div>
+							<h5 class="text-right"><span class="badge badge-dark">Server</span></h5>
 
 							<div class="form-group">
 								<label for="host" class="control-label">host<sup class="text-danger">*</sup></label>
-								<input type="text" name="host" value="{{HOST}}" class="form-control" id="host" required="required" />
+								<input type="text" class="form-control" name="host" value="{{HOST}}" id="host" required="required" />
 							</div>
 
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="admin_user" class="control-label">admin_user<sup class="text-danger">*</sup></label>
-										<input type="text" name="admin_user" value="{{ADMIN_USER}}" class="form-control" id="admin_user" required="required" />
+										<input type="text" class="form-control" name="admin_user" value="{{ADMIN_USER}}" id="admin_user" required="required" />
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="admin_pass" class="control-label">admin_pass<sup class="text-danger">*</sup></label>
-										<input type="text" name="admin_pass" value="{{ADMIN_PASS}}" class="form-control" id="admin_pass" required="required" />
+										<input type="text" class="form-control" name="admin_pass" value="{{ADMIN_PASS}}" id="admin_pass" required="required" />
 									</div>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label for="admin_email" class="control-label">admin_email<sup class="text-danger">*</sup></label>
-								<input type="email" name="admin_email" value="{{ADMIN_EMAIL}}" class="form-control" id="admin_email" required="required" />
+								<input type="email" class="form-control" name="admin_email" value="{{ADMIN_EMAIL}}" id="admin_email" required="required" />
 							</div>
 
 							<div class="form-group">
 								<label for="encryption_key" class="control-label">encryption_key<sup class="text-danger">*</sup></label>
 								<div class="input-group">
-									<input type="text" name="encryption_key" value="{{ENCRYPTION_KEY}}" class="form-control" id="encryption_key" required="required" />
-									<span class="input-group-btn">
-										<button type="button" class="btn btn-default" onclick="generateEncryptionKey();"><i class="fa fa-cog"></i> Generate</button>
-									</span>
+									<input type="text" class="form-control" name="encryption_key" value="{{ENCRYPTION_KEY}}" id="encryption_key" required="required" />
+									<div class="input-group-append">
+										<button type="button" class="btn btn-outline-secondary" onclick="generateEncryptionKey();"><i class="fa fa-cog"></i> Generate</button>
+									</div>
 								</div>
 							</div>
 
@@ -113,53 +108,52 @@
 
 					<div class="row">
 
-						<div class="col-md-2 text-center text-muted" style="padding-top: 20px;">
+						<div class="col-md-2 text-center text-primary" style="padding-top: 20px;">
 							<i class="fa fa-database fa-5x"></i>
 						</div>
 
 						<div class="col-md-10">
 
-							<div class="text-right"><kbd>AMI database</kbd></div>
+							<h5 class="text-right"><span class="badge badge-dark">AMI database</span></h5>
 
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="router_catalog" class="control-label">catalog<sup class="text-danger">*</sup></label>
-										<input type="text" name="router_catalog" value="{{ROUTER_CATALOG}}" class="form-control" id="router_catalog" required="required" />
+										<input type="text" class="form-control" name="router_catalog" value="{{ROUTER_CATALOG}}" id="router_catalog" required="required" />
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="route_schema" class="control-label">schema<sup class="text-info">opt</sup></label>
-										<input type="text" name="router_schema" value="{{ROUTER_SCHEMA}}" class="form-control" id="route_schema" xxxxxxxx="xxxxxxxx" />
+										<input type="text" class="form-control" name="router_schema" value="{{ROUTER_SCHEMA}}" id="route_schema" xxxxxxxx="xxxxxxxx" />
 									</div>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label for="router_url" class="control-label">url<sup class="text-danger">*</sup></label>
-								<input type="text" name="router_url" value="{{ROUTER_URL}}" class="form-control" id="router_url" required="required" />
+								<input type="text" class="form-control" name="router_url" value="{{ROUTER_URL}}" id="router_url" required="required" />
 							</div>
 
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="router_user" class="control-label">user<sup class="text-danger">*</sup></label>
-										<input type="text" name="router_user" value="{{ROUTER_USER}}" class="form-control" id="router_user" required="required" />
+										<input type="text" class="form-control" name="router_user" value="{{ROUTER_USER}}" id="router_user" required="required" />
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="router_pass" class="control-label">pass<sup class="text-danger">*</sup></label>
-										<input type="text" name="router_pass" value="{{ROUTER_PASS}}" class="form-control" id="router_pass" required="required" />
+										<input type="text" class="form-control" name="router_pass" value="{{ROUTER_PASS}}" id="router_pass" required="required" />
 									</div>
 								</div>
 							</div>
 
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="router_reset" /> Reset the AMI database
-								</label>
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" name="router_reset" id="router_reset">
+								<label class="custom-control-label" for="router_reset">Reset the AMI database</label>
 							</div>
 
 							<input type="hidden" name="Level" value="3" />
@@ -170,8 +164,8 @@
 
 				</div>
 
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary" id="next"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
+				<div class="modal-footer px-3 py-2">
+					<button type="submit" class="btn btn-outline-primary" id="next"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
 				</div>
 
 			</form>
