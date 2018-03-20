@@ -339,8 +339,8 @@ public class Router implements Querier
 			"INSERT INTO `router_role` (`role`) VALUES" +
 			" ('AMI_GUEST')," +
 			" ('AMI_USER')," +
-			" ('AMI_CERT')" +
-			" ('AMI_ADMIN')," +
+			" ('AMI_CERT')," +
+			" ('AMI_ADMIN')" +
 			";"
 		);
 
