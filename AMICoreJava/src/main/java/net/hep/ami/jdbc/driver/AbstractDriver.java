@@ -252,7 +252,7 @@ public abstract class AbstractDriver implements Querier
 
 			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 
-			if(result == null)
+			if(result == null || result.isClosed())
 			{
 				m_statementMap.put(SQL, result = m_connection.prepareStatement(SQL));
 			}
@@ -276,7 +276,7 @@ public abstract class AbstractDriver implements Querier
 
 			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 
-			if(result == null)
+			if(result == null || result.isClosed())
 			{
 				m_statementMap.put(SQL, result = (columnNames != null ? m_connection.prepareStatement(SQL, /*-----*/ columnNames /*-----*/)
 				                                                      : m_connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)

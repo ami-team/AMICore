@@ -7,11 +7,11 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class AddOrUpdateCommand extends AbstractCommand
+public class AddCommand extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public AddOrUpdateCommand(Map<String, String> arguments, long transactionId)
+	public AddCommand(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}

@@ -59,22 +59,22 @@ public class CommandSingletonTest
 		try
 		{
 //			Router router = new Router("test", "ami_router", "jdbc:postgresql://localhost:2432/ami_router", "radardb-ami-lpsc", "Pci62Emxt65zcZY84UO7");
-//			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
-			Router router = new Router("test");
+			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
+//			Router router = new Router("test");
 
-//			router.create();
-//			router.fill();
+			router.create();
+			router.fill();
 
 			router.commitAndRelease();
 
 //			System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -fields=\"jsonSerialization\" -values=\"{}\" -keyFields=\"externalCatalog\" -keyValues=\"self\"").replace(">", ">\n"));
 
-			Router router2 = new Router();
+//			Router router2 = new Router();
 
 			//System.out.println(router2.mqlToAST("router_user", "SELECT COUNT(router_user.`*`) WHERE router_user.`firstname`='Jérôme' AND valid=1"));
 			//System.out.println(router2.mqlToAST("router_user", "SELECT router_user.*"));
 
-			router2.commitAndRelease();
+//			router2.commitAndRelease();
 /*
 
 			System.out.println("::" + SecuritySingleton.encrypt("") + "::");
@@ -209,7 +209,7 @@ public class CommandSingletonTest
 
 //			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user_role\" -mql=\"SELECT COUNT(*) WHERE `self`.`router_role`.`id` = '1'\"").replace(">", ">\n"));
 
-			System.out.println(CommandSingleton.executeCommand("AddUser -amiLogin=\"jodier\" -amiPassword=\"Xk3mgg256\" -firstName=\"Jérôme\" -lastName=\"Odier\" -email=\"odier.jerome@gmail.com\" -attach").replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("FindNewCommands").replace(">", ">\n"));
 
 //			System.out.println(new QId("A.B.C{D.E.#}"));
 //			System.out.println(new QId("A.B.#{D.E.F,!G.H.*}"));

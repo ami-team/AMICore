@@ -2,8 +2,11 @@ package net.hep.ami.jdbc;
 
 import java.io.*;
 import java.sql.*;
+import java.util.*;
+import java.lang.reflect.*;
 
 import net.hep.ami.*;
+import net.hep.ami.command.*;
 import net.hep.ami.jdbc.driver.*;
 
 public class Router implements Querier
@@ -335,8 +338,8 @@ public class Router implements Querier
 			"INSERT INTO `router_role` (`role`) VALUES" +
 			" ('AMI_GUEST')," +
 			" ('AMI_USER')," +
-			" ('AMI_ADMIN')" +
-			" ('AMI_CERT')," +
+			" ('AMI_ADMIN')," +
+			" ('AMI_CERT')" +
 			";"
 		);
 
@@ -363,21 +366,85 @@ public class Router implements Querier
 		/* COMMANDS                                                        */
 		/*-----------------------------------------------------------------*/
 
-		String commandName;
-
 		LogSingleton.root.info("setup commands...");
 
-		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
-		{
-			commandName = className.substring(className.lastIndexOf('.') + 1);
+		/*-----------------------------------------------------------------*/
 
-			if("AbstractCommand".equals(commandName) == false)
+		Map<String, String> commandRoles = new HashMap<>();
+
+		commandRoles.put("SetConfigProperty", "AMI_ADMIN");
+		commandRoles.put("GetConfigProperty", "AMI_ADMIN");
+		commandRoles.put("GetConfig", "AMI_ADMIN");
+
+		commandRoles.put("AddRole", "AMI_ADMIN");
+		commandRoles.put("RemoveRole", "AMI_ADMIN");
+
+		commandRoles.put("AddCommandRole", "AMI_ADMIN");
+		commandRoles.put("RemoveCommandRole", "AMI_ADMIN");
+
+		commandRoles.put("AddUserRole", "AMI_ADMIN");
+		commandRoles.put("RemoveUserRole", "AMI_ADMIN");
+
+		commandRoles.put("AddCommand", "AMI_ADMIN");
+		commandRoles.put("RemoveCommand", "AMI_ADMIN");
+		commandRoles.put("FindNewCommands", "AMI_ADMIN");
+
+		commandRoles.put("Encrypt", "AMI_ADMIN");
+		commandRoles.put("Decrypt", "AMI_ADMIN");
+
+		commandRoles.put("SendEmail", "AMI_ADMIN");
+
+		commandRoles.put("ReloadServerCaches", "AMI_ADMIN");
+
+		commandRoles.put("GenerateAuthority", "AMI_CERT");
+
+		/*-----------------------------------------------------------------*/
+
+		PreparedStatement statement1 = prepareStatement("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)");
+
+		PreparedStatement statement2 = prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))");
+
+		try
+		{
+			Class<?> clazz;
+
+			String commandName;
+			String commandRole;
+
+			for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
 			{
-				executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)",
-					commandName,
-					className
-				);
+				clazz = Class.forName(className);
+
+				if((clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+				   &&
+				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
+				 ) {
+					/*-----------------------------------------------------*/
+
+					commandName = clazz.getSimpleName();
+
+					commandRole = commandRoles.containsKey(commandName) ? commandRoles.get(commandName)
+					                                                    : "AMI_USER"
+					;
+
+					/*-----------------------------------------------------*/
+
+					statement1.setString(1, commandName);
+					statement1.setString(2, className);
+					statement2.setString(1, commandName);
+					statement2.setString(2, commandRole);
+
+					statement1.executeUpdate();
+					statement2.executeUpdate();
+
+					/*-----------------------------------------------------*/
+				}
 			}
+		}
+		finally
+		{
+			statement2.close();
+			statement1.close();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -386,7 +453,7 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup localization...");
 
-		LocalizationSingleton.importCSVToAMI(this);
+		//LocalizationSingleton.importCSVToAMI(this);
 
 		/*-----------------------------------------------------------------*/
 		/* DONE                                                            */
