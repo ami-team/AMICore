@@ -1,4 +1,4 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.user;
 
 import java.util.*;
 
@@ -6,6 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+@Role(role = "AMI_GUEST", secured = false)
 public class AddUser extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

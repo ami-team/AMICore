@@ -1,16 +1,15 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.misc;
 
 import java.util.*;
 
-import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-@Role(role = "AMI_ADMIN", secured = true)
-public class Encrypt extends AbstractCommand
+@Role(role = "AMI_GUEST", secured = false)
+public class Echo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public Encrypt(Map<String, String> arguments, long transactionId)
+	public Echo(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -20,28 +19,32 @@ public class Encrypt extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String string = arguments.get("string");
+		StringBuilder result = new StringBuilder();
 
-		if(string == null)
+		result.append("<rowset><row>");
+
+		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
-			throw new Exception("invalid usage");
+			result.append("<field name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"><![CDATA[" + entry.getValue() + "]]></field>");
 		}
 
-		return new StringBuilder("<info><![CDATA[" + SecuritySingleton.encrypt(string) + "]]></info>");
+		result.append("</row></rowset>");
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Encrypt a string.";
+		return "Dump arguments.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-string=\"\"";
+		return "(.)*";
 	}
 
 	/*---------------------------------------------------------------------*/

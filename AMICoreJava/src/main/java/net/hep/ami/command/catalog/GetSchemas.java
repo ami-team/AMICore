@@ -1,15 +1,15 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.catalog;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.reflexion.*;
 
-public class ReloadServerCaches extends AbstractCommand
+public class GetSchemas extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ReloadServerCaches(Map<String, String> arguments, long transactionId)
+	public GetSchemas(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -19,18 +19,14 @@ public class ReloadServerCaches extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		long t1 = System.currentTimeMillis();
-		Router.reload();
-		long t2 = System.currentTimeMillis();
-
-		return new StringBuilder("<info><![CDATA[done with success in " + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "s]]></info>");
+		return SchemaSingleton.getDBSchemas();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Reload the server caches.";
+		return "Get the database schemas.";
 	}
 
 	/*---------------------------------------------------------------------*/

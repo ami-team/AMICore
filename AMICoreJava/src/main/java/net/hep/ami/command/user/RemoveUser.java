@@ -1,15 +1,16 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.user;
 
 import java.util.*;
 
-import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-public class LocalizeIP extends AbstractCommand
+@Role(role = "AMI_ADMIN", secured = false)
+public class RemoveUser extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public LocalizeIP(Map<String, String> arguments, long transactionId)
+	public RemoveUser(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -19,52 +20,43 @@ public class LocalizeIP extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		String amiLogin = arguments.get("amiLogin");
 
-		String ip = arguments.get("ip");
-
-		if(ip == null)
+		if(amiLogin == null)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		LocalizationSingleton.Localization localization = LocalizationSingleton.localizeIP(getQuerier("self"), ip);
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(
-			"<rowset type=\"localization\">"
-			+
-			"<row>"
-			+
-			"<field name=\"ContinentCode\"><![CDATA[" + localization.continentCode + "]]></field>"
-			+
-			"<field name=\"CountryCode\"><![CDATA[" + localization.countryCode + "]]></field>"
-			+
-			"</row>"
-			+
-			"</rowset>"
+		Update update = querier.executeSQLUpdate("DELETE FROM `router_user` WHERE `AMIUser` = ?",
+			amiLogin
 		);
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		return new StringBuilder(
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Localize an IP address.";
+		return "Remove a user.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-ip=\"\"";
+		return "-amiLogin=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

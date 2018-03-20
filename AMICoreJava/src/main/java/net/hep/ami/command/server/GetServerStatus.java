@@ -1,4 +1,4 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.server;
 
 import java.io.*;
 import java.util.*;
@@ -6,6 +6,7 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
 
+@Role(role = "AMI_GUEST", secured = false)
 public class GetServerStatus extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

@@ -1,4 +1,4 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.catalog;
 
 import java.util.*;
 import java.util.regex.*;
@@ -6,6 +6,7 @@ import java.util.regex.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
+@Role(role = "AMI_ADMIN", secured = false)
 public class CheckDBNamingRules extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

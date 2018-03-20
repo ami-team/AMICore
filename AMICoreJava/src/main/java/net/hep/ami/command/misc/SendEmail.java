@@ -1,10 +1,11 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.misc;
 
 import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
+@Role(role = "AMI_ADMIN", secured = false)
 public class SendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

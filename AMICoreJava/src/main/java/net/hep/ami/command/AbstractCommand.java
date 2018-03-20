@@ -71,7 +71,7 @@ public abstract class AbstractCommand
 		}
 		else
 		{
-			m_transactionId = (((((((((((((((((transactionId)))))))))))))))));
+			m_transactionId = /*------------*/ transactionId /*------------*/;
 			m_transactionBooker = false;
 		}
 

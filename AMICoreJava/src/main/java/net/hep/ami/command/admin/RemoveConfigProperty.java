@@ -6,6 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+@Role(role = "AMI_ADMIN", secured = true)
 public class RemoveConfigProperty extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -25,11 +26,6 @@ public class RemoveConfigProperty extends AbstractCommand
 		if(name == null)
 		{
 			throw new Exception("invalid usage");
-		}
-
-		if(m_isSecure == false)
-		{
-			throw new Exception("HTTPS connection required"); 
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
+@Role(role = "AMI_ADMIN", secured = true)
 public class GetConfig extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -19,11 +20,6 @@ public class GetConfig extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		if(m_isSecure == false)
-		{
-			throw new Exception("HTTPS connection required"); 
-		}
-
 		return ConfigSingleton.showConfig();
 	}
 

@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+@Role(role = "AMI_ADMIN", secured = false)
 public class RemoveCommandRole extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

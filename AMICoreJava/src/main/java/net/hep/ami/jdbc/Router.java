@@ -2,7 +2,6 @@ package net.hep.ami.jdbc;
 
 import java.io.*;
 import java.sql.*;
-import java.util.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
@@ -265,12 +264,10 @@ public class Router implements Querier
 				if(line.isEmpty() == false
 				   &&
 				   line.startsWith("-") == false
-				   &&
-				   line.startsWith("#") == false
 				 ) {
 					query += line + " ";
 
-					if(line.endsWith(";"))
+					if(line.endsWith(";;"))
 					{
 						LogSingleton.root.info(query);
 
@@ -371,48 +368,6 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, String> commandRoles = new HashMap<>();
-
-		/**/
-
-		commandRoles.put("SetConfigProperty", "AMI_ADMIN");
-		commandRoles.put("GetConfigProperty", "AMI_ADMIN");
-		commandRoles.put("GetConfig", "AMI_ADMIN");
-
-		commandRoles.put("AddRole", "AMI_ADMIN");
-		commandRoles.put("RemoveRole", "AMI_ADMIN");
-
-		commandRoles.put("AddCommandRole", "AMI_ADMIN");
-		commandRoles.put("RemoveCommandRole", "AMI_ADMIN");
-
-		commandRoles.put("AddUserRole", "AMI_ADMIN");
-		commandRoles.put("RemoveUserRole", "AMI_ADMIN");
-
-		commandRoles.put("AddCommand", "AMI_ADMIN");
-		commandRoles.put("RemoveCommand", "AMI_ADMIN");
-		commandRoles.put("FindNewCommands", "AMI_ADMIN");
-
-		commandRoles.put("Encrypt", "AMI_ADMIN");
-		commandRoles.put("Decrypt", "AMI_ADMIN");
-
-		commandRoles.put("SendEmail", "AMI_ADMIN");
-
-		commandRoles.put("ReloadServerCaches", "AMI_ADMIN");
-
-		/**/
-
-		commandRoles.put("GenerateAuthority", "AMI_CERT");
-
-		/**/
-
-		commandRoles.put("GetSessionInfo", "AMI_GUEST");
-
-		commandRoles.put("ResetPassword", "AMI_GUEST");
-
-		commandRoles.put("AddUser", "AMI_GUEST");
-
-		/*-----------------------------------------------------------------*/
-
 		PreparedStatement statement1 = prepareStatement("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)");
 
 		PreparedStatement statement2 = prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))");
@@ -420,6 +375,8 @@ public class Router implements Querier
 		try
 		{
 			Class<?> clazz;
+
+			Role annotation;
 
 			String commandName;
 			String commandRole;
@@ -434,10 +391,14 @@ public class Router implements Querier
 				 ) {
 					/*-----------------------------------------------------*/
 
+					annotation = clazz.getAnnotation(Role.class);
+
+					/*-----------------------------------------------------*/
+
 					commandName = clazz.getSimpleName();
 
-					commandRole = commandRoles.containsKey(commandName) ? commandRoles.get(commandName)
-					                                                    : "AMI_USER"
+					commandRole = annotation != null ? annotation.role()
+					                                 : "AMI_USER"
 					;
 
 					/*-----------------------------------------------------*/

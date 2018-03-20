@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
+@Role(role = "AMI_ADMIN", secured = true)
 public class Decrypt extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -24,11 +25,6 @@ public class Decrypt extends AbstractCommand
 		if(string == null)
 		{
 			throw new Exception("invalid usage");
-		}
-
-		if(m_isSecure == false)
-		{
-			throw new Exception("HTTPS connection required"); 
 		}
 
 		return new StringBuilder("<info><![CDATA[" + SecuritySingleton.decrypt(string) + "]]></info>");

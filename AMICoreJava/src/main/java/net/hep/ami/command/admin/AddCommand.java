@@ -7,6 +7,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+@Role(role = "AMI_ADMIN", secured = false)
 public class AddCommand extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

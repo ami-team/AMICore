@@ -1,15 +1,14 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.user;
 
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.reflexion.*;
 
-public class GetSchemas extends AbstractCommand
+public class ListUsers extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetSchemas(Map<String, String> arguments, long transactionId)
+	public ListUsers(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -19,14 +18,19 @@ public class GetSchemas extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		return SchemaSingleton.getDBSchemas();
+		if(m_isSecure == false)
+		{
+			throw new Exception("HTTPS connection required"); 
+		}
+
+		return getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user`").toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Get the database schemas.";
+		return "List the registered users.";
 	}
 
 	/*---------------------------------------------------------------------*/

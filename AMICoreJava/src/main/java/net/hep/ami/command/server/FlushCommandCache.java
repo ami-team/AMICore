@@ -1,14 +1,16 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.server;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-public class Echo extends AbstractCommand
+@Role(role = "AMI_ADMIN", secured = false)
+public class FlushCommandCache extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public Echo(Map<String, String> arguments, long transactionId)
+	public FlushCommandCache(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -18,32 +20,32 @@ public class Echo extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		String delay = arguments.get("delay");
 
-		result.append("<rowset><row>");
-
-		for(Map.Entry<String, String> entry: arguments.entrySet())
+		if(delay == null)
 		{
-			result.append("<field name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"><![CDATA[" + entry.getValue() + "]]></field>");
+			CacheSingleton.flush();
+		}
+		else
+		{
+			CacheSingleton.flush(Integer.parseInt(delay));
 		}
 
-		result.append("</row></rowset>");
-
-		return result;
+		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Dump arguments.";
+		return "Flush the command cache.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "(.)*";
+		return "(-delay=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

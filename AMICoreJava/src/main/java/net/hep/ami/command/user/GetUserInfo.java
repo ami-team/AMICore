@@ -1,15 +1,12 @@
-package net.hep.ami.command.admin;
+package net.hep.ami.command.user;
 
 import java.util.*;
 
-import net.hep.ami.*;
-import net.hep.ami.command.*;
-
-public class FlushCommandCache extends AbstractCommand
+public class GetUserInfo extends GetSessionInfo
 {
 	/*---------------------------------------------------------------------*/
 
-	public FlushCommandCache(Map<String, String> arguments, long transactionId)
+	public GetUserInfo(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}
@@ -19,32 +16,28 @@ public class FlushCommandCache extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String delay = arguments.get("delay");
-
-		if(delay == null)
+		if(arguments.containsKey("amiLogin") == false)
 		{
-			CacheSingleton.flush();
-		}
-		else
-		{
-			CacheSingleton.flush(Integer.parseInt(delay));
+			throw new Exception("invalid usage");
 		}
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		arguments.put("exception", "");
+
+		return super.main(arguments);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String help()
 	{
-		return "Flush the command cache.";
+		return "Get the user information.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "(-delay=\"\")?";
+		return "-amiLogin=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/
