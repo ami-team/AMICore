@@ -741,12 +741,15 @@ CREATE TABLE `router_authority` (
   `id` NUMBER(*, 0),
   `clientDN` VARCHAR2(512),
   `issuerDN` VARCHAR2(512),
-  `notBefore` DATE,
-  `notAfter` DATE,
+  `notBefore` TIMESTAMP WITH TIME ZONE,
+  `notAfter` TIMESTAMP WITH TIME ZONE,
   `serial` VARCHAR2(128),
   `email` VARCHAR2(128),
-  `revocationReason` NUMBER(*, 0) DEFAULT NULL,
-  `revocationDate` DATE DEFAULT NULL
+  `reason` NUMBER(*, 0) DEFAULT NULL,
+  `created` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
 ALTER TABLE `router_authority`

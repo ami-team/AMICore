@@ -219,6 +219,7 @@ public class Router implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	@SuppressWarnings("deprecation")
 	public void create() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -273,7 +274,7 @@ public class Router implements Querier
 					{
 						LogSingleton.root.info(query);
 
-						executeSQLUpdate(query);
+						m_driver.getStatement().executeQuery(query.replace("`", "\""));
 
 						query = "";
 					}

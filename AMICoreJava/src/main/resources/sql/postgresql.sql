@@ -17,6 +17,16 @@ DROP TABLE IF EXISTS `router_config`;
 
 ------------------------------------------------------------------------------
 
+CREATE OR REPLACE FUNCTION UPDATE_MODIFIED_FIELD() RETURNS TRIGGER AS $FUNCTION$
+BEGIN
+  NEW.`modified` = now();
+  RETURN NEW;
+END;
+
+$FUNCTION$ LANGUAGE 'plpgsql';
+
+------------------------------------------------------------------------------
+
 CREATE TABLE `router_config` (
   `id` SERIAL NOT NULL,
   `paramName` VARCHAR(128) NOT NULL,
@@ -30,6 +40,10 @@ CREATE TABLE `router_config` (
 ALTER TABLE `router_config`
   ADD CONSTRAINT `pk1_router_config` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_config` UNIQUE (`paramName`)
+;
+
+CREATE TRIGGER `t1_router_config` BEFORE UPDATE ON `router_config`
+  FOR EACH ROW EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;
 
 ------------------------------------------------------------------------------
@@ -53,6 +67,10 @@ CREATE TABLE `router_catalog` (
 ALTER TABLE `router_catalog`
   ADD CONSTRAINT `pk1_router_catalog` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_catalog` UNIQUE (`externalCatalog`)
+;
+
+CREATE TRIGGER `t1_router_catalog` BEFORE UPDATE ON `router_catalog`
+  FOR EACH ROW EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;
 
 ------------------------------------------------------------------------------
@@ -132,6 +150,10 @@ ALTER TABLE `router_user`
   ADD CONSTRAINT `uk1_router_user` UNIQUE (`AMIUser`)
 ;
 
+CREATE TRIGGER `t1_router_user` BEFORE UPDATE ON `router_user`
+  FOR EACH ROW EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;
+
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_user_role` (
@@ -167,23 +189,34 @@ ALTER TABLE `router_short_url`
   ADD CONSTRAINT `uk1_router_short_url` UNIQUE (`hash`)
 ;
 
+CREATE TRIGGER `t1_router_short_url` BEFORE UPDATE ON `router_short_url`
+  FOR EACH ROW EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;
+
 ------------------------------------------------------------------------------
 
 CREATE TABLE `router_authority` (
   `id` SERIAL NOT NULL,
   `clientDN` VARCHAR(512) NOT NULL,
   `issuerDN` VARCHAR(512) NOT NULL,
-  `notBefore` DATE NOT NULL,
-  `notAfter` DATE NOT NULL,
+  `notBefore` TIMESTAMP NOT NULL,
+  `notAfter` TIMESTAMP NOT NULL,
   `serial` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128) NOT NULL,
-  `revocationReason` INT DEFAULT NULL,
-  `revocationDate` DATE DEFAULT NULL
+  `reason` INT DEFAULT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 );
 
 ALTER TABLE `router_authority`
   ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_authority` UNIQUE (`serial`)
+;
+
+CREATE TRIGGER `t1_router_short_url` BEFORE UPDATE ON `router_short_url`
+  FOR EACH ROW EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;
 
 ------------------------------------------------------------------------------
@@ -202,6 +235,10 @@ CREATE TABLE `router_search_interface` (
 ALTER TABLE `router_search_interface`
   ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
   ADD CONSTRAINT `uk1_router_search_interface` UNIQUE (`interface`)
+;
+
+CREATE TRIGGER `t1_router_search_interface` BEFORE UPDATE ON `router_search_interface`
+  FOR EACH ROW EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;
 
 ------------------------------------------------------------------------------

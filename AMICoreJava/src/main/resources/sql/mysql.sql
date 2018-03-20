@@ -200,12 +200,15 @@ CREATE TABLE `router_authority` (
   `id` INT(11) NOT NULL,
   `clientDN` VARCHAR(512) NOT NULL,
   `issuerDN` VARCHAR(512) NOT NULL,
-  `notBefore` DATE NOT NULL,
-  `notAfter` DATE NOT NULL,
+  `notBefore` TIMESTAMP NOT NULL,
+  `notAfter` TIMESTAMP NOT NULL,
   `serial` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128) NOT NULL,
-  `revocationReason` INT(11) DEFAULT NULL,
-  `revocationDate` DATE DEFAULT NULL
+  `reason` INT(11) DEFAULT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
