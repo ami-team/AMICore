@@ -339,8 +339,8 @@ public class Router implements Querier
 			"INSERT INTO `router_role` (`role`) VALUES" +
 			" ('AMI_GUEST')," +
 			" ('AMI_USER')," +
-			" ('AMI_ADMIN')," +
 			" ('AMI_CERT')" +
+			" ('AMI_ADMIN')," +
 			";"
 		);
 
@@ -373,6 +373,8 @@ public class Router implements Querier
 
 		Map<String, String> commandRoles = new HashMap<>();
 
+		/**/
+
 		commandRoles.put("SetConfigProperty", "AMI_ADMIN");
 		commandRoles.put("GetConfigProperty", "AMI_ADMIN");
 		commandRoles.put("GetConfig", "AMI_ADMIN");
@@ -397,7 +399,17 @@ public class Router implements Querier
 
 		commandRoles.put("ReloadServerCaches", "AMI_ADMIN");
 
+		/**/
+
 		commandRoles.put("GenerateAuthority", "AMI_CERT");
+
+		/**/
+
+		commandRoles.put("GetSessionInfo", "AMI_GUEST");
+
+		commandRoles.put("ResetPassword", "AMI_GUEST");
+
+		commandRoles.put("AddUser", "AMI_GUEST");
 
 		/*-----------------------------------------------------------------*/
 
