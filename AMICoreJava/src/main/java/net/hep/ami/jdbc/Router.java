@@ -274,7 +274,7 @@ public class Router implements Querier
 					{
 						LogSingleton.root.info(query);
 
-						m_driver.getStatement().executeQuery(query.replace("`", "\""));
+						m_driver.getStatement().executeUpdate(query);
 
 						query = "";
 					}

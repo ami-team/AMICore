@@ -56,13 +56,14 @@ public class AddHash extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `name`, `json`, `owner`, `shared`, `expire`, `created`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
+		Update update = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `name`, `json`, `shared`, `expire`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)",
 			hash,
 			name,
 			json,
-			m_AMIUser,
 			shared ? 1 : 0,
-			expire ? 1 : 0
+			expire ? 1 : 0,
+			m_AMIUser,
+			m_AMIUser
 		);
 
 		/*-----------------------------------------------------------------*/

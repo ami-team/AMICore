@@ -1,4 +1,4 @@
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS `router_ipv6_blocks`;
 DROP TABLE IF EXISTS `router_ipv4_blocks`;
@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS `router_converter`;
 DROP TABLE IF EXISTS `router_catalog`;
 DROP TABLE IF EXISTS `router_config`;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_config` (
   `id` INT(11) NOT NULL,
@@ -35,7 +35,7 @@ ALTER TABLE `router_config`
 
 ALTER TABLE `router_config` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_catalog` (
   `id` INT(11) NOT NULL,
@@ -61,7 +61,7 @@ ALTER TABLE `router_catalog`
 
 ALTER TABLE `router_catalog` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_converter` (
   `id` INT(11) NOT NULL,
@@ -77,7 +77,7 @@ ALTER TABLE `router_converter`
 
 ALTER TABLE `router_converter` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_role` (
   `id` INT(11) NOT NULL,
@@ -94,7 +94,7 @@ ALTER TABLE `router_role`
 
 ALTER TABLE `router_role` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_command` (
   `id` INT(11) NOT NULL,
@@ -110,7 +110,7 @@ ALTER TABLE `router_command`
 
 ALTER TABLE `router_command` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_command_role` (
   `id` INT(11) NOT NULL,
@@ -128,7 +128,7 @@ ALTER TABLE `router_command_role`
 
 ALTER TABLE `router_command_role` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_user` (
   `id` INT(11) NOT NULL,
@@ -153,7 +153,7 @@ ALTER TABLE `router_user`
 
 ALTER TABLE `router_user` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_user_role` (
   `id` INT(11) NOT NULL,
@@ -171,7 +171,7 @@ ALTER TABLE `router_user_role`
 
 ALTER TABLE `router_user_role` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_short_url` (
   `id` INT(11) NOT NULL,
@@ -179,11 +179,12 @@ CREATE TABLE `router_short_url` (
   `name` VARCHAR(64) NOT NULL,
   `rank` INT(11) NOT NULL DEFAULT '0',
   `json` TEXT NOT NULL,
-  `owner` VARCHAR(128) NOT NULL,
   `shared` TINYINT NOT NULL DEFAULT '0',
   `expire` TINYINT NOT NULL DEFAULT '0',
   `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
-  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;
 
@@ -194,14 +195,14 @@ ALTER TABLE `router_short_url`
 
 ALTER TABLE `router_short_url` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_authority` (
   `id` INT(11) NOT NULL,
   `clientDN` VARCHAR(512) NOT NULL,
   `issuerDN` VARCHAR(512) NOT NULL,
-  `notBefore` TIMESTAMP NOT NULL,
-  `notAfter` TIMESTAMP NOT NULL,
+  `notBefore` DATE NOT NULL,
+  `notAfter` DATE NOT NULL,
   `serial` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128) NOT NULL,
   `reason` INT(11) DEFAULT NULL,
@@ -219,7 +220,7 @@ ALTER TABLE `router_authority`
 
 ALTER TABLE `router_authority` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_search_interface` (
   `id` INT(11) NOT NULL,
@@ -240,7 +241,7 @@ ALTER TABLE `router_search_interface`
 
 ALTER TABLE `router_search_interface` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_locations` (
   `id` INT(11) NOT NULL,
@@ -256,7 +257,7 @@ ALTER TABLE `router_locations`
 
 ALTER TABLE `router_locations` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_ipv4_blocks` (
   `id` INT(11) NOT NULL,
@@ -275,7 +276,7 @@ ALTER TABLE `router_ipv4_blocks`
 
 ALTER TABLE `router_ipv4_blocks` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE TABLE `router_ipv6_blocks` (
   `id` INT(11) NOT NULL,
@@ -294,4 +295,4 @@ ALTER TABLE `router_ipv6_blocks`
 
 ALTER TABLE `router_ipv6_blocks` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
