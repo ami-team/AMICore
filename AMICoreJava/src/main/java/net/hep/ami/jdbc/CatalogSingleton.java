@@ -11,9 +11,9 @@ public class CatalogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final class Tuple extends Tuple7<String, String, String, String, String, String, String>
+	public static final class Tuple extends Tuple7<String, String, String, String, String, String, Boolean>
 	{
-		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v, String _w)
+		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v, boolean _w)
 		{
 			super(_x, _y, _z, _t, _u, _v, _w);
 		}
@@ -132,7 +132,7 @@ public class CatalogSingleton
 				jdbcUrl,
 				user,
 				pass,
-				archived
+				archived.equals("0") == false
 			)
 		);
 
