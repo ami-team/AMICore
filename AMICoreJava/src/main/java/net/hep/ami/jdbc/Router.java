@@ -355,14 +355,14 @@ public class Router implements Querier
 		/**/
 
 		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'admin', 'admin', ?, 'N/A', 1);",
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'admin', 'admin', ?, 'N/A', '1');",
 			admin_user,
 			SecuritySingleton.encrypt(admin_pass),
 			admin_email
 		);
 
 		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'guest', 'guest', ?, 'N/A', 1);",
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'guest', 'guest', ?, 'N/A', '1');",
 			GUEST_USER,
 			SecuritySingleton.encrypt(GUEST_USER),
 			admin_email
