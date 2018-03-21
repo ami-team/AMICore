@@ -4,7 +4,7 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class ListUsers extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -19,11 +19,6 @@ public class ListUsers extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		if(m_isSecure == false)
-		{
-			throw new Exception("HTTPS connection required"); 
-		}
-
 		return getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user`").toStringBuilder();
 	}
 

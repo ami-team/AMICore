@@ -8,7 +8,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_ADMIN", secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class FindNewCommands extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -23,10 +23,6 @@ public class FindNewCommands extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String commandRole = arguments.containsKey("role") ? arguments.get("role")
-		                                                   : "AMI_USER"
-		;
-
 		/*-----------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
@@ -34,20 +30,28 @@ public class FindNewCommands extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		String commandName;
+		String commandRole;
+
+		boolean commandVisible;
+		boolean commandSecured;
 
 		Set<String> commands = new HashSet<>();
 
-		PreparedStatement statement1 = querier.prepareStatement("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)");
+		PreparedStatement statement1 = querier.prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)");
 
 		PreparedStatement statement2 = querier.prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))");
 
-		for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
+		for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
 			try
 			{
-				Class<?> clazz = Class.forName(className);
+				Class<?> clazz = Class.forName(commandClass);
 
-				if((clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
+
+				if(commandMetadata != null
+				   &&
+				   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
 				   &&
 				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
 				 ) {
@@ -55,10 +59,18 @@ public class FindNewCommands extends AbstractCommand
 
 					commandName = clazz.getSimpleName();
 
+					commandRole = commandMetadata.role();
+
+					commandVisible = commandMetadata.visible();
+					commandSecured = commandMetadata.secured();
+
 					/*-----------------------------------------------------*/
 
 					statement1.setString(1, commandName);
-					statement1.setString(2, className);
+					statement1.setString(2, commandClass);
+					statement1.setBoolean(3, commandVisible);
+					statement1.setBoolean(4, commandSecured);
+
 					statement2.setString(1, commandName);
 					statement2.setString(2, commandRole);
 
@@ -87,8 +99,6 @@ public class FindNewCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println(commands);
-
 		return new StringBuilder("<info><![CDATA[added with success: " + commands + "]]></info>");
 	}
 
@@ -97,13 +107,6 @@ public class FindNewCommands extends AbstractCommand
 	public static String help()
 	{
 		return "Automatically find new commands.";
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String usage()
-	{
-		return "(-role=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

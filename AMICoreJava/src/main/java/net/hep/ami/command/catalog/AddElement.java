@@ -8,7 +8,7 @@ import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.mql.*;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class AddElement extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -102,7 +102,7 @@ public class AddElement extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-separator=\"\")? -fields=\"\" -values=\"\"";
+		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -fields=\"\" -values=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

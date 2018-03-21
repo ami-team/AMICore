@@ -6,7 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_GUEST", secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class AddUser extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -71,11 +71,7 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*-----------------------------------------------------------------*/
-
-		Update update = querier.executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		Update update = getQuerier("self").executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			amiLogin,
 			SecuritySingleton.encrypt(amiPassword),
 			clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,

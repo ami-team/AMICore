@@ -6,8 +6,8 @@ import java.util.regex.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-@CommandMetadata(role = "AMI_ADMIN", secured = false)
-public class CheckDBNamingRules extends AbstractCommand
+@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
+public class CheckDBNomenclature extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
@@ -15,7 +15,7 @@ public class CheckDBNamingRules extends AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
-	public CheckDBNamingRules(Map<String, String> arguments, long transactionId)
+	public CheckDBNomenclature(Map<String, String> arguments, long transactionId)
 	{
 		super(arguments, transactionId);
 	}

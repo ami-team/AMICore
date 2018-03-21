@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class ListDrivers extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

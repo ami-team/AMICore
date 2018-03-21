@@ -12,6 +12,10 @@ public class Router implements Querier
 {
 	/*---------------------------------------------------------------------*/
 
+	private final String GUEST_USER = "guest";
+
+	/*---------------------------------------------------------------------*/
+
 	private final AbstractDriver m_driver;
 
 	/*---------------------------------------------------------------------*/
@@ -24,7 +28,8 @@ public class Router implements Querier
 			ConfigSingleton.getProperty("router_url"),
 			ConfigSingleton.getProperty("router_user"),
 			ConfigSingleton.getProperty("router_pass")
-		);	}
+		);
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -347,6 +352,8 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup users...");
 
+		/**/
+
 		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'admin', 'admin', ?, 'N/A', 1);",
 			admin_user,
@@ -355,9 +362,24 @@ public class Router implements Querier
 		);
 
 		executeSQLUpdate(
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'guest', 'guest', ?, 'N/A', 1);",
+			GUEST_USER,
+			SecuritySingleton.encrypt(GUEST_USER),
+			admin_email
+		);
+
+		/**/
+
+		executeSQLUpdate(
 			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			admin_user,
 			"AMI_ADMIN"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+			GUEST_USER,
+			"AMI_GUEST"
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -368,43 +390,46 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement1 = prepareStatement("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)");
+		PreparedStatement statement1 = prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)");
 
 		PreparedStatement statement2 = prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))");
 
 		try
 		{
-			Class<?> clazz;
-
-			CommandMetadata annotation;
-
 			String commandName;
 			String commandRole;
 
-			for(String className: ClassSingleton.findClassNames("net.hep.ami.command"))
-			{
-				clazz = Class.forName(className);
+			boolean commandVisible;
+			boolean commandSecured;
 
-				if((clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+			for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
+			{
+				Class<?> clazz = Class.forName(commandClass);
+
+				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
+
+				if(commandMetadata != null
+				   &&
+				   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
 				   &&
 				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
 				 ) {
 					/*-----------------------------------------------------*/
 
-					annotation = clazz.getAnnotation(CommandMetadata.class);
-
-					/*-----------------------------------------------------*/
-
 					commandName = clazz.getSimpleName();
 
-					commandRole = annotation != null ? annotation.role()
-					                                 : "AMI_USER"
-					;
+					commandRole = commandMetadata.role();
+
+					commandVisible = commandMetadata.visible();
+					commandSecured = commandMetadata.secured();
 
 					/*-----------------------------------------------------*/
 
 					statement1.setString(1, commandName);
-					statement1.setString(2, className);
+					statement1.setString(2, commandClass);
+					statement1.setBoolean(3, commandVisible);
+					statement1.setBoolean(4, commandSecured);
+
 					statement2.setString(1, commandName);
 					statement2.setString(2, commandRole);
 

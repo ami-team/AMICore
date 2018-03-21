@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class GetUserStats extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -20,30 +20,29 @@ public class GetUserStats extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
 		/*-----------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(querier.executeSQLQuery(
-			"SELECT "
-			+
-			"(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 1) AS `valid`"
-			+ "," +
-			"(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 0) AS `invalid`"
-
-		).toStringBuilder("users"));
+		String sql1 = "SELECT"
+		              + "(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 1) AS `valid`"
+		              + ","
+		              + "(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 0) AS `invalid`"
+		;
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(querier.executeSQLQuery("SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid` = 1 GROUP BY `country`").toStringBuilder("countries"));
+		String sql2 = "SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid` = 1 GROUP BY `country`";
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		return new StringBuilder().append(querier.executeSQLQuery(sql1).toStringBuilder(  "users"  ))
+		                          .append(querier.executeSQLQuery(sql2).toStringBuilder("countries"))
+		;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

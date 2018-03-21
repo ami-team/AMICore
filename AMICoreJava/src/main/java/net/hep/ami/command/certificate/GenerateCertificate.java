@@ -8,7 +8,7 @@ import java.security.cert.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class GenerateCertificate extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

@@ -14,11 +14,11 @@ public class CommandSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple4<String, String, String, Constructor<?>>
+	private static final class Tuple extends Tuple6<String, String, String, Constructor<?>, Boolean, Boolean>
 	{
-		public Tuple(String _x, String _y, String _z, Constructor<?> _t)
+		public Tuple(String _x, String _y, String _z, Constructor<?> _t, boolean _u, boolean _v)
 		{
-			super(_x, _y, _z, _t);
+			super(_x, _y, _z, _t, _u, _v);
 		}
 	}
 
@@ -90,7 +90,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class` FROM `router_command`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class`, `visible`, `secured` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */
@@ -102,7 +102,9 @@ public class CommandSingleton
 				{
 					addCommand(
 						row.getValue(0),
-						row.getValue(1)
+						row.getValue(1),
+						row.getValue(2),
+						row.getValue(3)
 					);
 				}
 				catch(Exception e)
@@ -123,13 +125,13 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommand(String commandName, String className) throws Exception
+	private static void addCommand(String commandName, String commandClass, String commandVisible, String commandSecured) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = Class.forName(className);
+		Class<?> clazz = Class.forName(commandClass);
 
 		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
 		{
@@ -138,7 +140,7 @@ public class CommandSingleton
 
 		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
 		{
-			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
+			throw new Exception("class '" + commandClass + "' doesn't extend 'AbstractCommand'");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -155,7 +157,9 @@ public class CommandSingleton
 				clazz.getConstructor(
 					Map.class,
 					long.class
-				)
+				),
+				commandVisible.equals("0") == false,
+				commandSecured.equals("0") == false
 			)
 		);
 
@@ -403,6 +407,8 @@ public class CommandSingleton
 			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
 			      .append("<field name=\"usage\"><![CDATA[").append(tuple.z).append("]]></field>")
 			      .append("<field name=\"class\"><![CDATA[").append(tuple.t).append("]]></field>")
+			      .append("<field name=\"visible\"><![CDATA[").append(tuple.u).append("]]></field>")
+			      .append("<field name=\"secured\"><![CDATA[").append(tuple.v).append("]]></field>")
 			      .append("</row>")
 			;
 		}

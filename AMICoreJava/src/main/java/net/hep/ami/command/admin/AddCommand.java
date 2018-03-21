@@ -7,7 +7,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_ADMIN", secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class AddCommand extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -23,22 +23,31 @@ public class AddCommand extends AbstractCommand
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		String commandName = arguments.get("command");
-		String className = arguments.get("class");
+		String commandClass = arguments.get("class");
 
-		if(className == null)
+		String commandVisible = arguments.containsKey("visible") ? arguments.get("visible")
+		                                                         : "1"
+		;
+
+		String commandSecured = arguments.containsKey("secured") ? arguments.get("secured")
+		                                                         : "0"
+		;
+
+
+		if(commandClass == null)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = Class.forName(className);
+		Class<?> clazz = Class.forName(commandClass);
 
 		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00
 		   ||
 		   ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false
 		 ) {
-			throw new Exception("class '" + className + "' doesn't extend 'AbstractCommand'");
+			throw new Exception("class '" + commandClass + "' doesn't extend 'AbstractCommand'");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -58,16 +67,20 @@ public class AddCommand extends AbstractCommand
 
 		try
 		{
-			update = querier.executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`) VALUES (?, ?)",
+			update = querier.executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)",
 				commandName,
-				className
+				commandClass,
+				commandVisible,
+				commandSecured
 			);
 		}
 		catch(Exception e)
 		{
-			update = querier.executeSQLUpdate("UPDATE `router_command` SET `class` = ? WHERE `command` = ?",
-				className,
-				commandName
+			update = querier.executeSQLUpdate("UPDATE `router_command` SET `class` = ?, `visible` = ?, `secured` = ? WHERE `command` = ?",
+				commandClass,
+				commandName,
+				commandVisible,
+				commandSecured
 			);
 		}
 
@@ -90,7 +103,7 @@ public class AddCommand extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-class=\"\" (-command=\"\")?";
+		return "-class=\"\" (-command=\"\")? (-visible=\"1\")? (-secured=\"0\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

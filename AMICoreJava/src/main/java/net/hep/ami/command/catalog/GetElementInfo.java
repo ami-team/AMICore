@@ -6,7 +6,7 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class GetElementInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

@@ -112,7 +112,9 @@ ALTER TABLE "router_role"
 CREATE TABLE "router_command" (
   "id" SERIAL,
   "command" VARCHAR(128) NOT NULL,
-  "class" VARCHAR(256) NOT NULL
+  "class" VARCHAR(256) NOT NULL,
+  "visible" BOOLEAN NOT NULL DEFAULT '1',
+  "secured" BOOLEAN NOT NULL DEFAULT '0'
 );;
 
 ALTER TABLE "router_command"

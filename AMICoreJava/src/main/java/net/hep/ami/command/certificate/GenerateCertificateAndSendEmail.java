@@ -13,7 +13,7 @@ import javax.mail.internet.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class GenerateCertificateAndSendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

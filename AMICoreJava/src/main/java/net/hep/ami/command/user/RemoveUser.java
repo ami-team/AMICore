@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_ADMIN", secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class RemoveUser extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -29,11 +29,7 @@ public class RemoveUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*-----------------------------------------------------------------*/
-
-		Update update = querier.executeSQLUpdate("DELETE FROM `router_user` WHERE `AMIUser` = ?",
+		Update update = getQuerier("self").executeSQLUpdate("DELETE FROM `router_user` WHERE `AMIUser` = ?",
 			amiLogin
 		);
 

@@ -6,7 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_GUEST", secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
 public class GetSessionInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

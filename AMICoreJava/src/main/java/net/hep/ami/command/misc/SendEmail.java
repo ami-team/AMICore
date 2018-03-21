@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_ADMIN", secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class SendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

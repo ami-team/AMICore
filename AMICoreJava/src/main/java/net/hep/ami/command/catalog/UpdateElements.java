@@ -6,7 +6,7 @@ import java.util.regex.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
-@CommandMetadata(role = "AMI_USER", secured = false)
+@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -111,7 +111,7 @@ public class UpdateElements extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-separator=\"\")? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
+		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
