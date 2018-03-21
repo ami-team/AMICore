@@ -25,14 +25,8 @@ public class AddCommand extends AbstractCommand
 		String commandName = arguments.get("command");
 		String commandClass = arguments.get("class");
 
-		String commandVisible = arguments.containsKey("visible") ? arguments.get("visible")
-		                                                         : "1"
-		;
-
-		String commandSecured = arguments.containsKey("secured") ? arguments.get("secured")
-		                                                         : "0"
-		;
-
+		String commandVisible = arguments.get("visible");
+		String commandSecured = arguments.get("secured");
 
 		if(commandClass == null)
 		{
@@ -50,11 +44,34 @@ public class AddCommand extends AbstractCommand
 			throw new Exception("class '" + commandClass + "' doesn't extend 'AbstractCommand'");
 		}
 
-		/*-----------------------------------------------------------------*/
-
 		if(commandName == null)
 		{
 			commandName = clazz.getSimpleName();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
+
+		if(commandMetadata != null)
+		{
+			if(commandVisible == null) {
+				commandVisible = commandMetadata.visible() ? "1" : "0";
+			}
+
+			if(commandSecured == null) {
+				commandSecured = commandMetadata.secured() ? "1" : "0";
+			}
+		}
+		else
+		{
+			if(commandVisible == null) {
+				commandVisible = "1";
+			}
+
+			if(commandSecured == null) {
+				commandSecured = "0";
+			}
 		}
 
 		/*-----------------------------------------------------------------*/

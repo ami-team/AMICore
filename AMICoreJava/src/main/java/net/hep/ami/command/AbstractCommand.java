@@ -19,8 +19,8 @@ public abstract class AbstractCommand
 	protected final String m_notBefore;
 	protected final String m_notAfter;
 
-	protected final Boolean m_isSecure;
-	protected final Boolean m_isCached;
+	protected final boolean m_isSecure;
+	protected final boolean m_isCached;
 
 	protected final String m_userAgent;
 
