@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class ListFields extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

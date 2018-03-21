@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
 
-public @interface Role
+public @interface CommandMetadata
 {
 	/*---------------------------------------------------------------------*/
 

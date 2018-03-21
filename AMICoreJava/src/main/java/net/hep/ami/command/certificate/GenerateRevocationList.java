@@ -10,6 +10,7 @@ import java.security.cert.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
+@CommandMetadata(role = "AMI_CERT", secured = false)
 public class GenerateRevocationList extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -96,13 +97,6 @@ public class GenerateRevocationList extends AbstractCommand
 	public static String help()
 	{
 		return "Generate a certificate revocation list.";
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String usage()
-	{
-		return "";
 	}
 
 	/*---------------------------------------------------------------------*/

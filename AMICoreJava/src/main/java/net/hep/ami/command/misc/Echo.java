@@ -4,7 +4,7 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 
-@Role(role = "AMI_GUEST", secured = false)
+@CommandMetadata(role = "AMI_GUEST", secured = false)
 public class Echo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

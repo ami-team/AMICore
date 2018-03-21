@@ -6,7 +6,7 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
 
-@Role(role = "AMI_GUEST", secured = false)
+@CommandMetadata(role = "AMI_GUEST", secured = false)
 public class GetServerStatus extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

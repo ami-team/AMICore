@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class AddHash extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

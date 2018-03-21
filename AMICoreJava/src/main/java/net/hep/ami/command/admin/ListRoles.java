@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class ListRoles extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

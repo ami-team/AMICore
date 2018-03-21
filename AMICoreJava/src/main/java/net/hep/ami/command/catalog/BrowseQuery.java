@@ -2,6 +2,9 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
+import net.hep.ami.command.*;
+
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class BrowseQuery extends SearchQuery
 {
 	/*---------------------------------------------------------------------*/

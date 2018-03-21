@@ -2,8 +2,8 @@ package net.hep.ami.jdbc.driver.nosql;
 
 import net.hep.ami.jdbc.driver.*;
 
-@Jdbc(
-	type = Jdbc.Type.NoSQL,
+@DriverMetadata(
+	type = DriverMetadata.Type.NoSQL,
 	proto = "jdbc:neo4j",
 	clazz = "org.neo4j.jdbc.Driver"
 )

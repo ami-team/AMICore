@@ -12,9 +12,9 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final class Tuple extends Tuple5<Jdbc.Type, String, String, String, Constructor<?>>
+	public static final class Tuple extends Tuple5<DriverMetadata.Type, String, String, String, Constructor<?>>
 	{
-		public Tuple(Jdbc.Type _x, String _y, String _z, String _t, Constructor<?> _u)
+		public Tuple(DriverMetadata.Type _x, String _y, String _z, String _t, Constructor<?> _u)
 		{
 			super(_x, _y, _z, _t, _u);
 		}
@@ -102,7 +102,7 @@ public class DriverSingleton
 		/* ADD DRIVER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		Jdbc jdbc = clazz.getAnnotation(Jdbc.class);
+		DriverMetadata jdbc = clazz.getAnnotation(DriverMetadata.class);
 
 		if(jdbc == null)
 		{
@@ -175,7 +175,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isTypeOf(String jdbcUrl, Jdbc.Type jdbcType) throws Exception
+	public static boolean isTypeOf(String jdbcUrl, DriverMetadata.Type jdbcType) throws Exception
 	{
 		return getTuple(jdbcUrl).x == jdbcType;
 	}

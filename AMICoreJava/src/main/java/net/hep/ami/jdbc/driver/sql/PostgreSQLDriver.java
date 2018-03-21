@@ -6,8 +6,8 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
-@Jdbc(
-	type = Jdbc.Type.SQL,
+@DriverMetadata(
+	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:postgresql",
 	clazz = "org.postgresql.Driver"
 )

@@ -3,11 +3,10 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 import java.util.regex.*;
 
-import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.query.mql.MQLToSQL;
-import net.hep.ami.jdbc.reflexion.structure.QId;
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class UpdateElements extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -96,17 +95,9 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String mql = stringBuilder.toString();
-
-		String sql = MQLToSQL.parse(catalog, entity, mql);
+		return getQuerier(catalog).executeMQLUpdate(entity, stringBuilder.toString()).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
-		Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
-
-		/*-----------------------------------------------------------------*/
-
-		return result.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/

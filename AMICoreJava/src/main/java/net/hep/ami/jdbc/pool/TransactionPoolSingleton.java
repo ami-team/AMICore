@@ -153,7 +153,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				if(driver.getJdbcType() == Jdbc.Type.SQL)
+				if(driver.getJdbcType() == DriverMetadata.Type.SQL)
 				{
 					driver.executeSQLQuery("SELECT 1");
 				}
@@ -237,7 +237,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				if(driver.getJdbcType() == Jdbc.Type.SQL)
+				if(driver.getJdbcType() == DriverMetadata.Type.SQL)
 				{
 					driver.executeSQLQuery("SELECT 1");
 				}

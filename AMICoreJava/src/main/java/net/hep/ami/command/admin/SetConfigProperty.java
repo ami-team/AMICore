@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-@Role(role = "AMI_ADMIN", secured = true)
+@CommandMetadata(role = "AMI_ADMIN", secured = true)
 public class SetConfigProperty extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

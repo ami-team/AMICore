@@ -6,7 +6,7 @@ import java.util.regex.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-@Role(role = "AMI_ADMIN", secured = false)
+@CommandMetadata(role = "AMI_ADMIN", secured = false)
 public class CheckDBNamingRules extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

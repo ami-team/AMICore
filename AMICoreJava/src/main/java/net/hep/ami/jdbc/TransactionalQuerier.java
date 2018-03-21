@@ -140,7 +140,7 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Jdbc.Type getJdbcType()
+	public DriverMetadata.Type getJdbcType()
 	{
 		return m_driver.getJdbcType();
 	}

@@ -3,10 +3,10 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 import java.util.regex.*;
 
-import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.reflexion.structure.QId;
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class RemoveElements extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -72,15 +72,9 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String mql = stringBuilder.toString();
+		return getQuerier(catalog).executeMQLUpdate(entity, stringBuilder.toString()).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
-		Update result = getQuerier(catalog).executeMQLUpdate(entity, mql);
-
-		/*-----------------------------------------------------------------*/
-
-		return result.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/

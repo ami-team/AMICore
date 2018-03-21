@@ -171,7 +171,7 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Jdbc.Type getJdbcType()
+	public DriverMetadata.Type getJdbcType()
 	{
 		return m_driver.getJdbcType();
 	}
@@ -376,7 +376,7 @@ public class Router implements Querier
 		{
 			Class<?> clazz;
 
-			Role annotation;
+			CommandMetadata annotation;
 
 			String commandName;
 			String commandRole;
@@ -391,7 +391,7 @@ public class Router implements Querier
 				 ) {
 					/*-----------------------------------------------------*/
 
-					annotation = clazz.getAnnotation(Role.class);
+					annotation = clazz.getAnnotation(CommandMetadata.class);
 
 					/*-----------------------------------------------------*/
 

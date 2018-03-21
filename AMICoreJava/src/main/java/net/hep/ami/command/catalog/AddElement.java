@@ -8,6 +8,7 @@ import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.mql.*;
 import net.hep.ami.jdbc.reflexion.structure.*;
 
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class AddElement extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -65,12 +66,8 @@ public class AddElement extends AbstractCommand
 
 		String mql = stringBuilder.toString();
 
-		//System.out.println("mql: " + mql);
-
 		String sql = MQLToSQL.parse(catalog, entity, mql);
 		String ast = MQLToAST.parse(catalog, entity, mql);
-
-		System.out.println("sql: " + sql);
 
 		/*-----------------------------------------------------------------*/
 

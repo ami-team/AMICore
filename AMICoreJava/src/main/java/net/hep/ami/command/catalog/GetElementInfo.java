@@ -3,9 +3,10 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.reflexion.*;
 
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class GetElementInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

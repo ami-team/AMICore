@@ -140,7 +140,7 @@ public class CatalogSingleton
 		/* ADD SCHEMA                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(DriverSingleton.isTypeOf(jdbcUrl, Jdbc.Type.SQL))
+		if(DriverSingleton.isTypeOf(jdbcUrl, DriverMetadata.Type.SQL))
 		{
 			SchemaSingleton.addSchema(externalCatalog, internalCatalog);
 		}
@@ -173,7 +173,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isTypeOf(String catalog, Jdbc.Type jdbcType) throws Exception
+	public static boolean isTypeOf(String catalog, DriverMetadata.Type jdbcType) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 

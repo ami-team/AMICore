@@ -5,8 +5,8 @@ import java.util.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
-@Jdbc(
-	type = Jdbc.Type.SQL,
+@DriverMetadata(
+	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:oracle",
 	clazz = "oracle.jdbc.driver.OracleDriver"
 )

@@ -18,7 +18,7 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Jdbc.Type m_jdbcType;
+	protected final DriverMetadata.Type m_jdbcType;
 	protected final String m_jdbcProto;
 	protected final String m_jdbcClass;
 	protected final String m_jdbcUrl;
@@ -43,7 +43,7 @@ public abstract class AbstractDriver implements Querier
 		/* GET JDBC ANNOTATION                                             */
 		/*-----------------------------------------------------------------*/
 
-		Jdbc annotation = getClass().getAnnotation(Jdbc.class);
+		DriverMetadata annotation = getClass().getAnnotation(DriverMetadata.class);
 
 		if(annotation == null)
 		{
@@ -136,7 +136,7 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public String mqlToSQL(String entity, String mql) throws Exception
 	{
-		if(m_jdbcType == Jdbc.Type.SQL)
+		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
 			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(this.m_externalCatalog, this.m_internalCatalog, entity, mql);
 		}
@@ -151,7 +151,7 @@ public abstract class AbstractDriver implements Querier
 	@Override
 	public String mqlToAST(String entity, String mql) throws Exception
 	{
-		if(m_jdbcType == Jdbc.Type.SQL)
+		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
 			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(this.m_externalCatalog, this.m_internalCatalog, entity, mql);
 		}
@@ -422,7 +422,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Jdbc.Type getJdbcType()
+	public DriverMetadata.Type getJdbcType()
 	{
 		return m_jdbcType;
 	}

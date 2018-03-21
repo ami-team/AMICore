@@ -52,7 +52,7 @@ public interface Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public Jdbc.Type getJdbcType();
+	public DriverMetadata.Type getJdbcType();
 
 	/*---------------------------------------------------------------------*/
 

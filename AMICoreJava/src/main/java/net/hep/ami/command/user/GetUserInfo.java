@@ -2,6 +2,9 @@ package net.hep.ami.command.user;
 
 import java.util.*;
 
+import net.hep.ami.command.*;
+
+@CommandMetadata(role = "AMI_USER", secured = false)
 public class GetUserInfo extends GetSessionInfo
 {
 	/*---------------------------------------------------------------------*/

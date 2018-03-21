@@ -2,8 +2,8 @@ package net.hep.ami.jdbc.driver.sql;
 
 import net.hep.ami.jdbc.driver.*;
 
-@Jdbc(
-	type = Jdbc.Type.SQL,
+@DriverMetadata(
+	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mysql",
 	clazz = "com.mysql.jdbc.Driver"
 )
