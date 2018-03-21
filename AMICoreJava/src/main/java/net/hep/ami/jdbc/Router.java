@@ -399,8 +399,8 @@ public class Router implements Querier
 			String commandName;
 			String commandRole;
 
-			boolean commandVisible;
-			boolean commandSecured;
+			int commandVisible;
+			int commandSecured;
 
 			for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 			{
@@ -420,15 +420,15 @@ public class Router implements Querier
 
 					commandRole = commandMetadata.role();
 
-					commandVisible = commandMetadata.visible();
-					commandSecured = commandMetadata.secured();
+					commandVisible = commandMetadata.visible() ? 1 : 0;
+					commandSecured = commandMetadata.secured() ? 1 : 0;
 
 					/*-----------------------------------------------------*/
 
 					statement1.setString(1, commandName);
 					statement1.setString(2, commandClass);
-					statement1.setBoolean(3, commandVisible);
-					statement1.setBoolean(4, commandSecured);
+					statement1.setInt(3, commandVisible);
+					statement1.setInt(4, commandSecured);
 
 					statement2.setString(1, commandName);
 					statement2.setString(2, commandRole);
