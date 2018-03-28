@@ -49,7 +49,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet, @Nullable String sql, @Nullable String mql, @Nullable String ast, @Nullable String defaultCatalog) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
 

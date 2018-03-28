@@ -176,7 +176,7 @@ public abstract class AbstractDriver implements Querier
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), SQL, mql, AST, m_externalCatalog);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -193,7 +193,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			sql = Tokenizer.format(sql, args);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), sql, null, null, m_externalCatalog);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, sql, null, null);
 		}
 		catch(Exception e)
 		{
