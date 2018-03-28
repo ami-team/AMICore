@@ -311,6 +311,18 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	public String getLabelOfField(int fieldIndex) throws Exception
+	{
+		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
+		{
+			throw new Exception("index out of range");
+		}
+
+		return m_fieldLabels[fieldIndex];
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getTypeOfField(int fieldIndex) throws Exception
 	{
 		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)

@@ -38,6 +38,13 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
+	public String getFieldLabel(int fieldIndex) throws Exception
+	{
+		return m_rowSet.getLabelOfField(fieldIndex);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getFieldType(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getTypeOfField(fieldIndex);
