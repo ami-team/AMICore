@@ -94,7 +94,7 @@ public class RowSet
 			{
 				Matcher m = Pattern.compile("[fF][rR][oO][mM]\\s+([a-zA-Z0-0_]+)").matcher(m_sql);
 
-				m_fieldCatalogs[i] = (m != null) ? m.group(1) : "N/A";
+				m_fieldCatalogs[i] = (m != null) ? m.group(1).replace("`", "") : "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
