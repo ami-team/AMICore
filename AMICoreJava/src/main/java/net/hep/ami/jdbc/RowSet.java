@@ -3,6 +3,8 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -90,7 +92,9 @@ public class RowSet
 			}
 			catch(Exception e1)
 			{
-				m_fieldCatalogs[i] = "N/A";
+				Matcher m = Pattern.compile("[fF][rR][oO][mM]\\s+([a-zA-Z0-0_]+)").matcher(m_sql);
+
+				m_fieldCatalogs[i] = (m != null) ? m.group(1) : "N/A";
 			}
 
 			/*-------------------------------------------------------------*/

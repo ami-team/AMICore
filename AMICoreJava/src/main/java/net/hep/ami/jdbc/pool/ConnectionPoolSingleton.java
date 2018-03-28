@@ -82,10 +82,6 @@ public class ConnectionPoolSingleton
 		/**/		config.setAutoCommit(false);
 		/**/
 		/**/		/*---------------------------*/
-		/**/
-		/**/		config.addDataSourceProperty("ResultSetMetaDataOptions", "1");
-		/**/
-		/**/		/*---------------------------*/
 		/**/		/* POOL - PROPERTIES         */
 		/**/		/*---------------------------*/
 		/**/
