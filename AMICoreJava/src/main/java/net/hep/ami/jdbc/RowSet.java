@@ -3,8 +3,6 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -46,12 +44,12 @@ public class RowSet
 
 	public RowSet(ResultSet resultSet) throws Exception
 	{
-		this(resultSet, null, null, null);
+		this(resultSet, null, null, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String sql, @Nullable String mql, @Nullable String ast, @Nullable String defaultCatalog) throws Exception
 	{
 		m_resultSet = resultSet;
 
@@ -92,9 +90,16 @@ public class RowSet
 			}
 			catch(Exception e1)
 			{
-				Matcher m = Pattern.compile("[fF][rR][oO][mM]\\s+([a-zA-Z0-0_]+)").matcher(m_sql);
-
-				m_fieldCatalogs[i] = (m != null) ? m.group(1).replace("`", "") : "N/A";
+				try
+				{
+					m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(
+						defaultCatalog
+					);
+				}
+				catch(Exception e2)
+				{
+					m_fieldCatalogs[i] =  "N/A";
+				}
 			}
 
 			/*-------------------------------------------------------------*/
