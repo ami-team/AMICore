@@ -212,6 +212,8 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(rowSet.m_fieldEntities[i])
 			      .append("\" field=\"")
 			      .append(rowSet.m_fieldNames[i])
+			      .append("\" label=\"")
+			      .append(rowSet.m_fieldLabels[i])
 			      .append("\" type=\"")
 			      .append(rowSet.m_fieldTypes[i])
 			      .append("\" statable=\"")

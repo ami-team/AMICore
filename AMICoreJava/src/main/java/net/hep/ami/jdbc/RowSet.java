@@ -26,6 +26,7 @@ public class RowSet
 	protected final String[] m_fieldCatalogs;
 	protected final String[] m_fieldEntities;
 	protected final String[] m_fieldNames;
+	protected final String[] m_fieldLabels;
 	protected final String[] m_fieldTypes;
 
 	/*---------------------------------------------------------------------*/
@@ -72,6 +73,7 @@ public class RowSet
 		m_fieldCatalogs = new String[m_numberOfFields];
 		m_fieldEntities = new String[m_numberOfFields];
 		m_fieldNames = new String[m_numberOfFields];
+		m_fieldLabels = new String[m_numberOfFields];
 		m_fieldTypes = new String[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
@@ -122,7 +124,7 @@ public class RowSet
 
 			try
 			{
-				m_fieldNames[i] = resultSetMetaData.getColumnLabel(i + 1);
+				m_fieldNames[i] = resultSetMetaData.getColumnName(i + 1);
 
 				if(m_fieldNames[i].isEmpty())
 				{
@@ -132,6 +134,22 @@ public class RowSet
 			catch(Exception e)
 			{
 				m_fieldNames[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				m_fieldLabels[i] = resultSetMetaData.getColumnLabel(i + 1);
+
+				if(m_fieldLabels[i].isEmpty())
+				{
+					m_fieldLabels[i] = "N/A";
+				}
+			}
+			catch(Exception e)
+			{
+				m_fieldLabels[i] = "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
