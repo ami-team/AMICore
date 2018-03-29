@@ -433,12 +433,15 @@ public class Router implements Querier
 					statement2.setString(1, commandName);
 					statement2.setString(2, commandRole);
 
-					statement1.executeUpdate();
-					statement2.executeUpdate();
+					statement1.addBatch();
+					statement2.addBatch();
 
 					/*-----------------------------------------------------*/
 				}
 			}
+
+			statement1.executeBatch();
+			statement2.executeBatch();
 		}
 		finally
 		{

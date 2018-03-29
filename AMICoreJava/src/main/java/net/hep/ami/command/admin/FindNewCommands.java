@@ -74,8 +74,8 @@ public class FindNewCommands extends AbstractCommand
 					statement2.setString(1, commandName);
 					statement2.setString(2, commandRole);
 
-					statement1.executeUpdate();
-					statement2.executeUpdate();
+					statement1.addBatch();
+					statement2.addBatch();
 
 					/*-----------------------------------------------------*/
 
@@ -90,8 +90,18 @@ public class FindNewCommands extends AbstractCommand
 			}
 		}
 
-		statement2.close();
-		statement1.close();
+		/**/
+
+		try
+		{
+			statement1.executeBatch();
+			statement2.executeBatch();
+		}
+		finally
+		{
+			statement2.close();
+			statement1.close();
+		}
 
 		/*-----------------------------------------------------------------*/
 
