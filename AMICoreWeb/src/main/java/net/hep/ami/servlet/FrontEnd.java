@@ -533,6 +533,8 @@ public class FrontEnd extends HttpServlet
 		   ||
 		   agent.startsWith("jami")
 		   ||
+		   agent.startsWith("pami")
+		   ||
 		   agent.startsWith("pyAMI")
 		 ) {
 			arguments.put("userAgent", agent);
