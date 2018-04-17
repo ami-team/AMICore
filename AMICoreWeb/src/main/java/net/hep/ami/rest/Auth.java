@@ -1,7 +1,6 @@
 package net.hep.ami.rest;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -29,7 +28,7 @@ public class Auth
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType./*----*/WILDCARD/*----*/)
-	public Response password_auth_get(@QueryParam("username") @DefaultValue("") String username, @QueryParam("password") @DefaultValue("") String password)
+	public Response passwordAuthGet(@QueryParam("username") @DefaultValue("") String username, @QueryParam("password") @DefaultValue("") String password)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -44,7 +43,7 @@ public class Auth
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response password_auth_post(@FormParam("username") @DefaultValue("") String username, @FormParam("password")  @DefaultValue("") String password)
+	public Response passwordAuthPost(@FormParam("username") @DefaultValue("") String username, @FormParam("password")  @DefaultValue("") String password)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -58,7 +57,7 @@ public class Auth
 	@POST
 	@Path("certificate")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response certificate_auth(@Context HttpServletRequest request)
+	public Response certificateAuth(@Context HttpServletRequest request)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -180,7 +179,7 @@ public class Auth
 
 		long currentTime = System.currentTimeMillis();
 
-		for(Entry<String, Tuple3<String, String, Long>> entry: s_tokens.entrySet())
+		for(Map.Entry<String, Tuple3<String, String, Long>> entry: s_tokens.entrySet())
 		{
 			if((currentTime - entry.getValue().z) > (2 * 60 * 60 * 1000))
 			{

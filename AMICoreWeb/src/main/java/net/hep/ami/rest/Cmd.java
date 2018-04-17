@@ -24,11 +24,79 @@ public class Cmd
 	@GET
 	@Path("{command}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response execute_json(@QueryParam("token") @DefaultValue("") String token, @QueryParam("converter") @DefaultValue("") String converter, @PathParam("command") String command, String arguments)
+	public Response executeInputJson(@QueryParam("token") @DefaultValue("") String token, @QueryParam("converter") @DefaultValue("") String converter, @PathParam("command") String command, String arguments)
 	{
 		try
 		{
 			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), converter);
+		}
+		catch(Exception e)
+		{
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@GET
+	@Path("{command}/xml")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response executeInputJsonOutputXml(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
+	{
+		try
+		{
+			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
+		}
+		catch(Exception e)
+		{
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@GET
+	@Path("{command}/json")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response executeInputJsonOutputJson(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
+	{
+		try
+		{
+			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
+		}
+		catch(Exception e)
+		{
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@GET
+	@Path("{command}/csv")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response executeInputJsonOutputCsv(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
+	{
+		try
+		{
+			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
+		}
+		catch(Exception e)
+		{
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@GET
+	@Path("{command}/text")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response executeInputJsonOutputText(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
+	{
+		try
+		{
+			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
 		}
 		catch(Exception e)
 		{
