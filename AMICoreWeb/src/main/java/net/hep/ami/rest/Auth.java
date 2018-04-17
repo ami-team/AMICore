@@ -1,6 +1,7 @@
 package net.hep.ami.rest;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -8,6 +9,7 @@ import javax.servlet.http.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.utility.*;
 
 @Path("/auth")
 public class Auth
@@ -19,7 +21,7 @@ public class Auth
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Long> s_tokens = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Tuple3<String, String, Long>> s_tokens = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -103,6 +105,9 @@ public class Auth
 		/* CHECK USER                                                      */
 		/*-----------------------------------------------------------------*/
 
+		String AMIUser;
+		String AMIPass;
+
 		try
 		{
 			/*-------------------------------------------------------------*/
@@ -116,21 +121,24 @@ public class Auth
 				switch(mode)
 				{
 					case PASSWORD:
-						row = basicQuerier.executeSQLQuery("SELECT COUNT(*) FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /*---------------------*/(X), SecuritySingleton.encrypt(Y)).getAll();
+						row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /*---------------------*/(X), SecuritySingleton.encrypt(Y)).getAll();
 						break;
 
 					case CERTIFICATE:
-						row = basicQuerier.executeSQLQuery("SELECT COUNT(*) FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(X), SecuritySingleton.encrypt(Y)).getAll();
+						row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(X), SecuritySingleton.encrypt(Y)).getAll();
 						break;
 
 					default:
 						return Response.status(Response.Status.FORBIDDEN).build();
 				}
 
-				if("1".equals(row.get(0).getValue(0)) == false)
+				if(row.size() != 1)
 				{
 					return Response.status(Response.Status.FORBIDDEN).build();
 				}
+
+				AMIUser = row.get(0).getValue(0);
+				AMIPass = row.get(0).getValue(1);
 			}
 			finally
 			{
@@ -150,7 +158,7 @@ public class Auth
 
 		String result = UUID.randomUUID().toString();
 
-		s_tokens.put(result, System.currentTimeMillis());
+		s_tokens.put(result, new Tuple3<>(AMIUser, AMIPass, System.currentTimeMillis()));
 
 		/*-----------------------------------------------------------------*/
 
@@ -169,9 +177,9 @@ public class Auth
 
 		long currentTime = System.currentTimeMillis();
 
-		for(Map.Entry<String, Long> entry: s_tokens.entrySet())
+		for(Entry<String, Tuple3<String, String, Long>> entry: s_tokens.entrySet())
 		{
-			if((currentTime - entry.getValue()) > (2 * 60 * 60 * 1000))
+			if((currentTime - entry.getValue().z) > (2 * 60 * 60 * 1000))
 			{
 				oldTokens.add(entry.getKey());
 			}
@@ -185,6 +193,20 @@ public class Auth
 		}
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Tuple2<String, String> getCredentials(String token) throws Exception
+	{
+		Tuple3<String, String, Long> tuple = s_tokens.get(token);
+
+		if(tuple == null)
+		{
+			throw new Exception("invalid token");
+		}
+
+		return new Tuple2<>(tuple.x, tuple.y);
 	}
 
 	/*---------------------------------------------------------------------*/
