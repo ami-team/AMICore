@@ -182,7 +182,7 @@ public class FrontEnd extends HttpServlet
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* CONVERT COMMAND RESULT                                          */
+		/* CONVERT RESULT                                                  */
 		/*-----------------------------------------------------------------*/
 
 		String mime;

@@ -25,16 +25,11 @@ public class Auth
 
 	/*---------------------------------------------------------------------*/
 
-	@Context
-	private HttpServletRequest m_request;
-
-	/*---------------------------------------------------------------------*/
-
 	@GET
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType./*----*/WILDCARD/*----*/)
-	public Response password_alt(@QueryParam("username") @DefaultValue("") String username, @QueryParam("password") @DefaultValue("") String password)
+	public Response password_auth_get(@QueryParam("username") @DefaultValue("") String username, @QueryParam("password") @DefaultValue("") String password)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -49,7 +44,7 @@ public class Auth
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response password(@FormParam("username") @DefaultValue("") String username, @FormParam("password")  @DefaultValue("") String password)
+	public Response password_auth_post(@FormParam("username") @DefaultValue("") String username, @FormParam("password")  @DefaultValue("") String password)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -63,11 +58,11 @@ public class Auth
 	@POST
 	@Path("certificate")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response certificate()
+	public Response certificate_auth(@Context HttpServletRequest request)
 	{
 		/*-----------------------------------------------------------------*/
 
-		java.security.cert.X509Certificate[] certificates = (java.security.cert.X509Certificate[]) m_request.getAttribute("javax.servlet.request.X509Certificate");
+		java.security.cert.X509Certificate[] certificates = (java.security.cert.X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
 
 		if(certificates != null)
 		{
@@ -129,12 +124,16 @@ public class Auth
 						break;
 
 					default:
-						return Response.status(Response.Status.FORBIDDEN).build();
+						return Response.status(Response.Status.FORBIDDEN)
+						               .build()
+						;
 				}
 
 				if(row.size() != 1)
 				{
-					return Response.status(Response.Status.FORBIDDEN).build();
+					return Response.status(Response.Status.FORBIDDEN)
+					               .build()
+					;
 				}
 
 				AMIUser = row.get(0).getValue(0);
@@ -149,7 +148,9 @@ public class Auth
 		}
 		catch(Exception e)
 		{
-			return Response.status(Response.Status.FORBIDDEN).build();
+			return Response.status(Response.Status.FORBIDDEN)
+			               .build()
+			;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -162,7 +163,9 @@ public class Auth
 
 		/*-----------------------------------------------------------------*/
 
-		return Response.ok(result).build();
+		return Response.ok(result)
+		               .build()
+		;
 
 		/*-----------------------------------------------------------------*/
 	}
