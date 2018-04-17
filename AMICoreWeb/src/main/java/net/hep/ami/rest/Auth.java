@@ -123,16 +123,12 @@ public class Auth
 						break;
 
 					default:
-						return Response.status(Response.Status.FORBIDDEN)
-						               .build()
-						;
+						return Response.status(Response.Status.FORBIDDEN).build();
 				}
 
 				if(row.size() != 1)
 				{
-					return Response.status(Response.Status.FORBIDDEN)
-					               .build()
-					;
+					return Response.status(Response.Status.FORBIDDEN).build();
 				}
 
 				AMIUser = row.get(0).getValue(0);
@@ -147,9 +143,7 @@ public class Auth
 		}
 		catch(Exception e)
 		{
-			return Response.status(Response.Status.FORBIDDEN)
-			               .build()
-			;
+			return Response.status(Response.Status.FORBIDDEN).build();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -162,9 +156,7 @@ public class Auth
 
 		/*-----------------------------------------------------------------*/
 
-		return Response.ok(result)
-		               .build()
-		;
+		return Response.ok(result).build();
 
 		/*-----------------------------------------------------------------*/
 	}
