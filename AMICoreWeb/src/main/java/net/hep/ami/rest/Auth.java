@@ -28,11 +28,11 @@ public class Auth
 
 	/*---------------------------------------------------------------------*/
 
-	@POST
-	@Path("/password")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	Response password(@FormParam("username") String username, @FormParam("password") String password)
+	@GET
+	@Path("password")
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType./*----*/WILDCARD/*----*/)
+	public Response password_alt(@QueryParam("username") @DefaultValue("") String username, @QueryParam("password") @DefaultValue("") String password)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -44,10 +44,24 @@ public class Auth
 	/*---------------------------------------------------------------------*/
 
 	@POST
-	@Path("/certificate")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Path("password")
+	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	Response certificate()
+	public Response password(@FormParam("username") @DefaultValue("") String username, @FormParam("password")  @DefaultValue("") String password)
+	{
+		/*-----------------------------------------------------------------*/
+
+		return auth(username, password, PASSWORD);
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@POST
+	@Path("certificate")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response certificate()
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -102,7 +116,7 @@ public class Auth
 				switch(mode)
 				{
 					case PASSWORD:
-						row = basicQuerier.executeSQLQuery("SELECT COUNT(*) FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /*---------------------*/(X), /*---------------------*/(Y)).getAll();
+						row = basicQuerier.executeSQLQuery("SELECT COUNT(*) FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /*---------------------*/(X), SecuritySingleton.encrypt(Y)).getAll();
 						break;
 
 					case CERTIFICATE:
