@@ -1,8 +1,6 @@
 package net.hep.ami.rest;
 
 import java.util.*;
-import java.util.Map.*;
-import java.security.cert.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -10,7 +8,6 @@ import javax.servlet.http.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.*;
 
 @Path("/auth")
 public class Auth
@@ -22,7 +19,7 @@ public class Auth
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Long> s_tokens = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, false);
+	private static final Map<String, Long> s_tokens = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -54,11 +51,11 @@ public class Auth
 	{
 		/*-----------------------------------------------------------------*/
 
-		X509Certificate[] certificates = (X509Certificate[]) m_request.getAttribute("javax.servlet.request.X509Certificate");
+		java.security.cert.X509Certificate[] certificates = (java.security.cert.X509Certificate[]) m_request.getAttribute("javax.servlet.request.X509Certificate");
 
 		if(certificates != null)
 		{
-			for(X509Certificate certificate: certificates)
+			for(java.security.cert.X509Certificate certificate: certificates)
 			{
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
@@ -158,7 +155,7 @@ public class Auth
 
 		long currentTime = System.currentTimeMillis();
 
-		for(Entry<String, Long> entry: s_tokens.entrySet())
+		for(Map.Entry<String, Long> entry: s_tokens.entrySet())
 		{
 			if((currentTime - entry.getValue()) > (2 * 60 * 60 * 1000))
 			{
