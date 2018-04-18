@@ -1,5 +1,7 @@
 package net.hep.ami.filter;
 
+import javax.ws.rs.core.*;
+
 import com.sun.jersey.spi.container.*;
 
 public class CORS implements ContainerResponseFilter
@@ -15,9 +17,11 @@ public class CORS implements ContainerResponseFilter
 
 		if(origin != null)
 		{
-			response.getHttpHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE");
-			response.getHttpHeaders().add("Access-Control-Allow-Credentials", "true");
-			response.getHttpHeaders().add("Access-Control-Allow-Origin", origin);
+			MultivaluedMap<String, Object> headers = response.getHttpHeaders();
+
+			headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE");
+			headers.add("Access-Control-Allow-Credentials", "true");
+			headers.add("Access-Control-Allow-Origin", origin);
 		}
 
 		/*-----------------------------------------------------------------*/
