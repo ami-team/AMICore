@@ -28,7 +28,7 @@ public class Command
 
 	static
 	{
-		s_help.put("help", "help");
+		s_help.put("help", "");
 	}
 
 	/*---------------------------------------------------------------------*/
