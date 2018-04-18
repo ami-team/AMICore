@@ -98,8 +98,6 @@ public class Token
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-
 			SimpleQuerier basicQuerier = new SimpleQuerier("self");
 
 			try
@@ -128,15 +126,13 @@ public class Token
 					return Response.status(Response.Status.UNAUTHORIZED).build();
 				}
 
-				AMIUser = rows.get(0).getValue(0);
-				AMIPass = rows.get(0).getValue(1);
+				AMIUser = /*---------------------*/(rows.get(0).getValue(0));
+				AMIPass = SecuritySingleton.decrypt(rows.get(0).getValue(1));
 			}
 			finally
 			{
 				basicQuerier.rollbackAndRelease();
 			}
-
-			/*-------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
