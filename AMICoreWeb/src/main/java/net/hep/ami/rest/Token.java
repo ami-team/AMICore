@@ -1,5 +1,6 @@
 package net.hep.ami.rest;
 
+import java.text.*;
 import java.util.*;
 
 import javax.ws.rs.*;
@@ -10,17 +11,12 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 
-@Path("/auth")
-public class Auth
+@Path("/token")
+public class Token
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final int PASSWORD = 0;
-	private static final int CERTIFICATE = 1;
-
-	/*---------------------------------------------------------------------*/
-
-	private static final Map<String, Tuple3<String, String, Long>> s_tokens = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Map<String, Tuple7<Long, String, String, String, String, String, String>> s_tokens = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -28,37 +24,21 @@ public class Auth
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType./*----*/WILDCARD/*----*/)
-	public Response passwordAuthGet(@QueryParam("username") @DefaultValue("") String username, @QueryParam("password") @DefaultValue("") String password)
-	{
-		/*-----------------------------------------------------------------*/
-
-		return auth(username, password, PASSWORD);
-
-		/*-----------------------------------------------------------------*/
+	public Response passwordAuthGet(
+		@QueryParam("username") @DefaultValue("") String username,
+		@QueryParam("password") @DefaultValue("") String password
+	 ) {
+		return token_get(username, password, null, null, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	@POST
-	@Path("password")
-	@Produces(MediaType.TEXT_PLAIN)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response passwordAuthPost(@FormParam("username") @DefaultValue("") String username, @FormParam("password")  @DefaultValue("") String password)
-	{
-		/*-----------------------------------------------------------------*/
-
-		return auth(username, password, PASSWORD);
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@POST
+	@GET
 	@Path("certificate")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response certificateAuth(@Context HttpServletRequest request)
-	{
+	public Response certificateAuth(
+		@Context HttpServletRequest request
+	 ) {
 		/*-----------------------------------------------------------------*/
 
 		java.security.cert.X509Certificate[] certificates = (java.security.cert.X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
@@ -69,10 +49,17 @@ public class Auth
 			{
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
-					return auth(
+					return token_get(
+						null,
+						null,
 						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
 						SecuritySingleton.getDN(certificate.getIssuerX500Principal()),
-						CERTIFICATE
+						new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(
+							certificate.getNotBefore()
+						),
+						new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(
+							certificate.getNotAfter()
+						)
 					);
 				}
 			}
@@ -87,7 +74,23 @@ public class Auth
 
 	/*---------------------------------------------------------------------*/
 
-	private Response auth(String X, String Y, int mode)
+	@DELETE
+	public Response token_del(
+		@QueryParam("token") @DefaultValue("") String token
+	 ) {
+		Object tuple = s_tokens.remove(token);
+
+		if(tuple != null) {
+			return Response.status(Response.Status./*-*/OK/*-*/).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_MODIFIED).build();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private Response token_get(@Nullable String AMIUser, @Nullable String AMIPass, @Nullable String clientDN, @Nullable String issuerDN, String notBefore, String notAfter)
 	{
 		/*-----------------------------------------------------------------*/
 		/* REMOVE OLD TOKENS                                               */
@@ -99,9 +102,6 @@ public class Auth
 		/* CHECK USER                                                      */
 		/*-----------------------------------------------------------------*/
 
-		String AMIUser;
-		String AMIPass;
-
 		try
 		{
 			/*-------------------------------------------------------------*/
@@ -112,18 +112,21 @@ public class Auth
 			{
 				List<Row> row;
 
-				switch(mode)
+				/**/ if(clientDN != null
+				        &&
+				        issuerDN != null
+				 ) {
+					row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+				}
+				else if(AMIUser != null
+				        &&
+				        AMIPass != null
+				 ) {
+					row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /*---------------------*/(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
+				}
+				else
 				{
-					case PASSWORD:
-						row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /*---------------------*/(X), SecuritySingleton.encrypt(Y)).getAll();
-						break;
-
-					case CERTIFICATE:
-						row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(X), SecuritySingleton.encrypt(Y)).getAll();
-						break;
-
-					default:
-						return Response.status(Response.Status.FORBIDDEN).build();
+					return Response.status(Response.Status.FORBIDDEN).build();
 				}
 
 				if(row.size() != 1)
@@ -152,7 +155,7 @@ public class Auth
 
 		String result = UUID.randomUUID().toString();
 
-		s_tokens.put(result, new Tuple3<>(AMIUser, AMIPass, System.currentTimeMillis()));
+		s_tokens.put(result, new Tuple7<>(System.currentTimeMillis(), AMIUser, AMIPass, clientDN, issuerDN, notBefore, notAfter));
 
 		/*-----------------------------------------------------------------*/
 
@@ -171,9 +174,9 @@ public class Auth
 
 		long currentTime = System.currentTimeMillis();
 
-		for(Map.Entry<String, Tuple3<String, String, Long>> entry: s_tokens.entrySet())
+		for(Map.Entry<String, Tuple7<Long, String, String, String, String, String, String>> entry: s_tokens.entrySet())
 		{
-			if((currentTime - entry.getValue().z) > (2 * 60 * 60 * 1000))
+			if((currentTime - entry.getValue().x) > (2 * 60 * 60 * 1000))
 			{
 				oldTokens.add(entry.getKey());
 			}
@@ -191,16 +194,16 @@ public class Auth
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<String, String> getCredentials(String token) throws Exception
+	public static Tuple7<Long, String, String, String, String, String, String> getCredentials(String token) throws Exception
 	{
-		Tuple3<String, String, Long> tuple = s_tokens.get(token);
+		Tuple7<Long, String, String, String, String, String, String> result = s_tokens.get(token);
 
-		if(tuple == null)
+		if(result == null)
 		{
 			throw new Exception("invalid token");
 		}
 
-		return new Tuple2<>(tuple.x, tuple.y);
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

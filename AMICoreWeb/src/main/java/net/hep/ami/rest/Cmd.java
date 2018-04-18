@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import javax.servlet.http.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
@@ -17,18 +18,23 @@ public class Cmd
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final TypeReference<HashMap<String, String>> s_typeReference = new TypeReference<HashMap<String, String>>() {};
+	private static final TypeReference<LinkedHashMap<String, String>> s_typeReference = new TypeReference<LinkedHashMap<String, String>>() {};
 
 	/*---------------------------------------------------------------------*/
 
-	@GET
+	@POST
 	@Path("{command}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJson(@QueryParam("token") @DefaultValue("") String token, @QueryParam("converter") @DefaultValue("") String converter, @PathParam("command") String command, String arguments)
-	{
+	public Response executeInputJson(
+		@Context HttpServletRequest request,
+		@QueryParam("token") @DefaultValue("") String token,
+		@QueryParam("converter") @DefaultValue("") String converter,
+		@PathParam("command") String command,
+		String arguments
+	 ) {
 		try
 		{
-			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), converter);
+			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), converter);
 		}
 		catch(Exception e)
 		{
@@ -38,14 +44,18 @@ public class Cmd
 
 	/*---------------------------------------------------------------------*/
 
-	@GET
+	@POST
 	@Path("{command}/xml")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputXml(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
-	{
+	public Response executeInputJsonOutputXml(
+		@Context HttpServletRequest request,
+		@QueryParam("token") @DefaultValue("") String token,
+		@PathParam("command") String command,
+		String arguments
+	 ) {
 		try
 		{
-			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
+			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
 		}
 		catch(Exception e)
 		{
@@ -55,14 +65,18 @@ public class Cmd
 
 	/*---------------------------------------------------------------------*/
 
-	@GET
+	@POST
 	@Path("{command}/json")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputJson(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
-	{
+	public Response executeInputJsonOutputJson(
+		@Context HttpServletRequest request,
+		@QueryParam("token") @DefaultValue("") String token,
+		@PathParam("command") String command,
+		String arguments
+	 ) {
 		try
 		{
-			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
+			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
 		}
 		catch(Exception e)
 		{
@@ -72,14 +86,18 @@ public class Cmd
 
 	/*---------------------------------------------------------------------*/
 
-	@GET
+	@POST
 	@Path("{command}/csv")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputCsv(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
-	{
+	public Response executeInputJsonOutputCsv(
+		@Context HttpServletRequest request,
+		@QueryParam("token") @DefaultValue("") String token,
+		@PathParam("command") String command,
+		String arguments
+	 ) {
 		try
 		{
-			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
+			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
 		}
 		catch(Exception e)
 		{
@@ -89,14 +107,18 @@ public class Cmd
 
 	/*---------------------------------------------------------------------*/
 
-	@GET
+	@POST
 	@Path("{command}/text")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputText(@QueryParam("token") @DefaultValue("") String token, @PathParam("command") String command, String arguments)
-	{
+	public Response executeInputJsonOutputText(
+		@Context HttpServletRequest request,
+		@QueryParam("token") @DefaultValue("") String token,
+		@PathParam("command") String command,
+		String arguments
+	 ) {
 		try
 		{
-			return execute(token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
+			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
 		}
 		catch(Exception e)
 		{
@@ -106,17 +128,17 @@ public class Cmd
 
 	/*---------------------------------------------------------------------*/
 
-	private Response execute(String token, String command, Map<String, String> arguments, String converter)
+	private Response execute(HttpServletRequest request, String token, String command, Map<String, String> arguments, String converter)
 	{
 		/*-----------------------------------------------------------------*/
 		/* CHECK CRENDENTIALS                                              */
 		/*-----------------------------------------------------------------*/
 
-		Tuple2<String, String> credentials;
+		Tuple7<Long, String, String, String, String, String, String> credentials;
 
 		try
 		{
-			credentials = Auth.getCredentials(token);
+			credentials = Token.getCredentials(token);
 		}
 		catch(Exception e)
 		{
@@ -127,8 +149,38 @@ public class Cmd
 		/* EXECUTE COMMAND                                                 */
 		/*-----------------------------------------------------------------*/
 
-		arguments.put("AMIUser", credentials.x);
-		arguments.put("AMIPass", credentials.y);
+		arguments.put("AMIUser", credentials.y);
+		arguments.put("AMIPass", credentials.z);
+
+		arguments.put("clientDN", credentials.t);
+		arguments.put("issuerDN", credentials.u);
+
+		arguments.put("notBefore", credentials.v);
+		arguments.put("notAfter", credentials.w);
+
+		/**/
+
+		arguments.put("isSecure", request.isSecure() ? "true"
+		                                             : "false"
+		);
+
+		/**/
+
+		String agent = request.getHeader("User-Agent");
+
+		if(agent.startsWith("cami")
+		   ||
+		   agent.startsWith("jami")
+		   ||
+		   agent.startsWith("pami")
+		   ||
+		   agent.startsWith("pyAMI")
+		 ) {
+			arguments.put("userAgent", agent);
+		}
+		else {
+			arguments.put("userAgent", "web");
+		}
 
 		/*-----------------------------------------------------------------*/
 
