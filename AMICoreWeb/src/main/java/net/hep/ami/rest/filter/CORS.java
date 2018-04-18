@@ -1,4 +1,4 @@
-package net.hep.ami.filter;
+package net.hep.ami.rest.filter;
 
 import javax.ws.rs.core.*;
 
