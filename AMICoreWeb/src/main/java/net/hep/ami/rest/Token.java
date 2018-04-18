@@ -116,7 +116,7 @@ public class Token
 				        &&
 				        AMIPass != null
 				 ) {
-					row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /*---------------------*/(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
+					row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
 				}
 				else
 				{
@@ -155,7 +155,15 @@ public class Token
 
 		String result = UUID.randomUUID().toString();
 
-		s_tokens.put(result, new Tuple7<>(System.currentTimeMillis(), AMIUser, AMIPass, clientDN, issuerDN, notBefore, notAfter));
+		s_tokens.put(result, new Tuple7<>(
+			System.currentTimeMillis(),
+			AMIUser,
+			AMIPass,
+			clientDN != null ? clientDN : "",
+			issuerDN != null ? issuerDN : "",
+			notBefore != null ? notBefore : "",
+			notAfter != null ? notAfter : ""
+		));
 
 		/*-----------------------------------------------------------------*/
 
