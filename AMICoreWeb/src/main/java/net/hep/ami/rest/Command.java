@@ -22,14 +22,76 @@ public class Command
 
 	/*---------------------------------------------------------------------*/
 
-	@POST
-	@Path("{name}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJson(
+	private static final Map<String, String> s_help = new LinkedHashMap<>();
+
+	/*---------------------------------------------------------------------*/
+
+	static
+	{
+		s_help.put("help", "help");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@GET
+	@Path("{command}/help")
+	public Response help1(
 		@Context HttpServletRequest request,
 		@QueryParam("token") @DefaultValue("") String token,
 		@QueryParam("converter") @DefaultValue("") String converter,
-		@PathParam("name") String command,
+		@PathParam("command") String command
+	 ) {
+		try
+		{
+			return execute(request, token, command, s_help, converter);
+		}
+		catch(Exception e)
+		{
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@GET
+	@Path("{command}/help/{format}")
+	public Response help2(
+		@Context HttpServletRequest request,
+		@QueryParam("token") @DefaultValue("") String token,
+		@PathParam("command") String command,
+		@PathParam("format") String format
+	 ) {
+		try
+		{
+			/**/ if("json".equalsIgnoreCase(format)) {
+				return execute(request, token, command, s_help, "AMIXmlToJson.xsl");
+			}
+			else if("csv".equalsIgnoreCase(format)) {
+				return execute(request, token, command, s_help, "AMIXmlToCsv.xsl");
+			}
+			else if("text".equalsIgnoreCase(format)) {
+				return execute(request, token, command, s_help, "AMIXmlToText.xsl");
+			}
+			else {
+				return execute(request, token, command, s_help, /*----*/""/*----*/);
+			}
+		}
+		catch(Exception e)
+		{
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@POST
+	@Path("{command}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response execute1(
+		@Context HttpServletRequest request,
+		@QueryParam("token") @DefaultValue("") String token,
+		@QueryParam("converter") @DefaultValue("") String converter,
+		@PathParam("command") String command,
 		String arguments
 	 ) {
 		try
@@ -45,80 +107,29 @@ public class Command
 	/*---------------------------------------------------------------------*/
 
 	@POST
-	@Path("{name}/xml")
+	@Path("{command}/{format}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputXml(
+	public Response execute2(
 		@Context HttpServletRequest request,
 		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("name") String command,
+		@PathParam("command") String command,
+		@PathParam("format") String format,
 		String arguments
 	 ) {
 		try
 		{
-			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
-		}
-		catch(Exception e)
-		{
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@POST
-	@Path("{name}/json")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputJson(
-		@Context HttpServletRequest request,
-		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("name") String command,
-		String arguments
-	 ) {
-		try
-		{
-			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
-		}
-		catch(Exception e)
-		{
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@POST
-	@Path("{name}/csv")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputCsv(
-		@Context HttpServletRequest request,
-		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("name") String command,
-		String arguments
-	 ) {
-		try
-		{
-			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
-		}
-		catch(Exception e)
-		{
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@POST
-	@Path("{name}/text")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response executeInputJsonOutputText(
-		@Context HttpServletRequest request,
-		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("name") String command,
-		String arguments
-	 ) {
-		try
-		{
-			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
+			/**/ if("json".equalsIgnoreCase(format)) {
+				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
+			}
+			else if("csv".equalsIgnoreCase(format)) {
+				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
+			}
+			else if("text".equalsIgnoreCase(format)) {
+				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
+			}
+			else {
+				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
+			}
 		}
 		catch(Exception e)
 		{

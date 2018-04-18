@@ -7,11 +7,24 @@
 	<xsl:template match="/AMIMessage">
 		<xsl:text>#AMI Result&#x0a;&#x0a;</xsl:text>
 
+		<xsl:apply-templates select="help" />
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
 		<xsl:apply-templates select="rowset" />
 
 		<xsl:text>&#x0a;#</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="help">
+		<xsl:text>Help: </xsl:text>
+		<xsl:copy-of select="." />
+		<xsl:text>&#x0a;</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="usage">
+		<xsl:text>Usage: </xsl:text>
+		<xsl:copy-of select="." />
+		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="error">
