@@ -1,48 +1,28 @@
 package net.hep.ami.filter;
 
-import java.io.*;
+import com.sun.jersey.spi.container.*;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-public class CORS implements Filter
+public class CORS implements ContainerResponseFilter
 {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException
+	public ContainerResponse filter(ContainerRequest request, ContainerResponse response)
 	{
-		HttpServletRequest req = (HttpServletRequest) servletRequest;
-		HttpServletResponse res = (HttpServletResponse) servletResponse;
-
 		/*-----------------------------------------------------------------*/
 
-		try
-		{
-			req.setCharacterEncoding("UTF-8");
-			res.setCharacterEncoding("UTF-8");
-		}
-		catch(UnsupportedEncodingException e)
-		{
-			/* IGNORE */
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		String origin = req.getHeader("Origin");
+		String origin = request.getHeaderValue("Origin");
 
 		if(origin != null)
 		{
-			res.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE");
-			res.setHeader("Access-Control-Allow-Credentials", "true");
-			res.setHeader("Access-Control-Allow-Origin", origin);
+			response.getHttpHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE");
+			response.getHttpHeaders().add("Access-Control-Allow-Credentials", "true");
+			response.getHttpHeaders().add("Access-Control-Allow-Origin", origin);
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		filterChain.doFilter(req, servletResponse);
-
-		/*-----------------------------------------------------------------*/
+		return response;
 	}
 
 	/*---------------------------------------------------------------------*/
