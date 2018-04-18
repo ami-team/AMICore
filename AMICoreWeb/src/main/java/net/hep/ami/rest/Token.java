@@ -104,32 +104,32 @@ public class Token
 
 			try
 			{
-				List<Row> row;
+				List<Row> rows;
 
 				/**/ if(clientDN != null
 				        &&
 				        issuerDN != null
 				 ) {
-					row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+					rows = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
 				}
 				else if(AMIUser != null
 				        &&
 				        AMIPass != null
 				 ) {
-					row = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
+					rows = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
 				}
 				else
 				{
 					return Response.status(Response.Status.FORBIDDEN).build();
 				}
 
-				if(row.size() != 1)
+				if(rows.size() != 1)
 				{
 					return Response.status(Response.Status.FORBIDDEN).build();
 				}
 
-				AMIUser = row.get(0).getValue(0);
-				AMIPass = row.get(0).getValue(1);
+				AMIUser = rows.get(0).getValue(0);
+				AMIPass = rows.get(0).getValue(1);
 			}
 			finally
 			{
