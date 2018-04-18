@@ -8,6 +8,7 @@
 		<xsl:text>#AMI RESULT&#x0a;&#x0a;</xsl:text>
 
 		<xsl:apply-templates select="help" />
+		<xsl:apply-templates select="usage" />
 		<xsl:apply-templates select="error" />
 		<xsl:apply-templates select="info" />
 		<xsl:apply-templates select="rowset" />
