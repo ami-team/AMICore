@@ -515,7 +515,6 @@ public class FrontEnd extends HttpServlet
 
 		arguments.put("clientDN", clientDN);
 		arguments.put("issuerDN", issuerDN);
-
 		arguments.put("notBefore", notBefore);
 		arguments.put("notAfter", notAfter);
 

@@ -23,13 +23,13 @@ public class Cmd
 	/*---------------------------------------------------------------------*/
 
 	@POST
-	@Path("{command}")
+	@Path("{name}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response executeInputJson(
 		@Context HttpServletRequest request,
 		@QueryParam("token") @DefaultValue("") String token,
 		@QueryParam("converter") @DefaultValue("") String converter,
-		@PathParam("command") String command,
+		@PathParam("name") String command,
 		String arguments
 	 ) {
 		try
@@ -45,12 +45,12 @@ public class Cmd
 	/*---------------------------------------------------------------------*/
 
 	@POST
-	@Path("{command}/xml")
+	@Path("{name}/xml")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response executeInputJsonOutputXml(
 		@Context HttpServletRequest request,
 		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("command") String command,
+		@PathParam("name") String command,
 		String arguments
 	 ) {
 		try
@@ -66,12 +66,12 @@ public class Cmd
 	/*---------------------------------------------------------------------*/
 
 	@POST
-	@Path("{command}/json")
+	@Path("{name}/json")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response executeInputJsonOutputJson(
 		@Context HttpServletRequest request,
 		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("command") String command,
+		@PathParam("name") String command,
 		String arguments
 	 ) {
 		try
@@ -87,12 +87,12 @@ public class Cmd
 	/*---------------------------------------------------------------------*/
 
 	@POST
-	@Path("{command}/csv")
+	@Path("{name}/csv")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response executeInputJsonOutputCsv(
 		@Context HttpServletRequest request,
 		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("command") String command,
+		@PathParam("name") String command,
 		String arguments
 	 ) {
 		try
@@ -108,12 +108,12 @@ public class Cmd
 	/*---------------------------------------------------------------------*/
 
 	@POST
-	@Path("{command}/text")
+	@Path("{name}/text")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response executeInputJsonOutputText(
 		@Context HttpServletRequest request,
 		@QueryParam("token") @DefaultValue("") String token,
-		@PathParam("command") String command,
+		@PathParam("name") String command,
 		String arguments
 	 ) {
 		try
@@ -154,7 +154,6 @@ public class Cmd
 
 		arguments.put("clientDN", credentials.t);
 		arguments.put("issuerDN", credentials.u);
-
 		arguments.put("notBefore", credentials.v);
 		arguments.put("notAfter", credentials.w);
 
