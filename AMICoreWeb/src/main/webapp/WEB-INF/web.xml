@@ -2,49 +2,53 @@
 
 <web-app metadata-complete="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
-  <display-name>AMI Server</display-name>
+	<display-name>AMI Server</display-name>
 
-  <!--**************************************************************-->
+	<!--************************************************************-->
 
-  <servlet>
-    <servlet-name>REST</servlet-name>
-    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-    <init-param>
-        <param-name>com.sun.jersey.config.property.packages</param-name>
-        <param-value>net.hep.ami.rest</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
+	<servlet>
+		<servlet-name>REST</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+				<param-name>com.sun.jersey.config.property.packages</param-name>
+				<param-value>net.hep.ami.rest</param-value>
+		</init-param>
+		<init-param>
+				<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+				<param-value>net.hep.ami.filter</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>REST</servlet-name>
-    <url-pattern>/api/*</url-pattern>
-  </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>REST</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
 
-  <!--**************************************************************-->
+	<!--************************************************************-->
 
-  <servlet>
-    <servlet-name>FrontEnd</servlet-name>
-    <servlet-class>net.hep.ami.servlet.FrontEnd</servlet-class>
-  </servlet>
+	<servlet>
+		<servlet-name>FrontEnd</servlet-name>
+		<servlet-class>net.hep.ami.servlet.FrontEnd</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>FrontEnd</servlet-name>
-    <url-pattern>/FrontEnd/*</url-pattern>
-  </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FrontEnd</servlet-name>
+		<url-pattern>/FrontEnd/*</url-pattern>
+	</servlet-mapping>
 
-  <!--**************************************************************-->
+	<!--************************************************************-->
 
-  <servlet>
-    <servlet-name>Setup</servlet-name>
-    <servlet-class>net.hep.ami.servlet.Setup</servlet-class>
-  </servlet>
+	<servlet>
+		<servlet-name>Setup</servlet-name>
+		<servlet-class>net.hep.ami.servlet.Setup</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>Setup</servlet-name>
-    <url-pattern>/Setup/*</url-pattern>
-  </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Setup</servlet-name>
+		<url-pattern>/Setup/*</url-pattern>
+	</servlet-mapping>
 
-  <!--**************************************************************-->
+	<!--************************************************************-->
 
 </web-app>
