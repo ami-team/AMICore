@@ -66,7 +66,7 @@ public class Token
 
 		/*-----------------------------------------------------------------*/
 
-		return Response.status(Response.Status.FORBIDDEN).build();
+		return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -81,10 +81,10 @@ public class Token
 		Object tuple = s_tokens.remove(token);
 
 		if(tuple != null) {
-			return Response.status(Response.Status./*-*/OK/*-*/).build();
+			return Response.status(Response.Status./**/OK/**/).build();
 		}
 		else {
-			return Response.status(Response.Status.NOT_MODIFIED).build();
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
 
@@ -120,12 +120,12 @@ public class Token
 				}
 				else
 				{
-					return Response.status(Response.Status.FORBIDDEN).build();
+					return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 				}
 
 				if(rows.size() != 1)
 				{
-					return Response.status(Response.Status.FORBIDDEN).build();
+					return Response.status(Response.Status.UNAUTHORIZED).build();
 				}
 
 				AMIUser = rows.get(0).getValue(0);
@@ -140,7 +140,7 @@ public class Token
 		}
 		catch(Exception e)
 		{
-			return Response.status(Response.Status.FORBIDDEN).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		/*-----------------------------------------------------------------*/
