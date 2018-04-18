@@ -23,12 +23,11 @@ public class Token
 	@GET
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
-	@Consumes(MediaType./*----*/WILDCARD/*----*/)
-	public Response passwordAuthGet(
+	public Response getByPassword(
 		@QueryParam("username") @DefaultValue("") String username,
 		@QueryParam("password") @DefaultValue("") String password
 	 ) {
-		return token_get(username, password, null, null, null, null);
+		return get(username, password, null, null, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -36,7 +35,7 @@ public class Token
 	@GET
 	@Path("certificate")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response certificateAuth(
+	public Response getBycertificate(
 		@Context HttpServletRequest request
 	 ) {
 		/*-----------------------------------------------------------------*/
@@ -49,7 +48,7 @@ public class Token
 			{
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
-					return token_get(
+					return get(
 						null,
 						null,
 						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
@@ -75,8 +74,9 @@ public class Token
 	/*---------------------------------------------------------------------*/
 
 	@DELETE
-	public Response token_del(
-		@QueryParam("token") @DefaultValue("") String token
+	@Path("{token}")
+	public Response delete(
+		@PathParam("token") String token
 	 ) {
 		Object tuple = s_tokens.remove(token);
 
@@ -90,7 +90,7 @@ public class Token
 
 	/*---------------------------------------------------------------------*/
 
-	private Response token_get(@Nullable String AMIUser, @Nullable String AMIPass, @Nullable String clientDN, @Nullable String issuerDN, String notBefore, String notAfter)
+	private Response get(@Nullable String AMIUser, @Nullable String AMIPass, @Nullable String clientDN, @Nullable String issuerDN, String notBefore, String notAfter)
 	{
 		/*-----------------------------------------------------------------*/
 		/* CHECK CREDENTIALS                                               */
