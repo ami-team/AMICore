@@ -93,13 +93,7 @@ public class Token
 	private Response token_get(@Nullable String AMIUser, @Nullable String AMIPass, @Nullable String clientDN, @Nullable String issuerDN, String notBefore, String notAfter)
 	{
 		/*-----------------------------------------------------------------*/
-		/* REMOVE OLD TOKENS                                               */
-		/*-----------------------------------------------------------------*/
-
-		removeOldToken();
-
-		/*-----------------------------------------------------------------*/
-		/* CHECK USER                                                      */
+		/* CHECK CREDENTIALS                                               */
 		/*-----------------------------------------------------------------*/
 
 		try
@@ -150,6 +144,12 @@ public class Token
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* REMOVE OLD TOKENS                                               */
+		/*-----------------------------------------------------------------*/
+
+		removeOldToken(AMIUser, AMIPass);
+
+		/*-----------------------------------------------------------------*/
 		/* GET TOKEN                                                       */
 		/*-----------------------------------------------------------------*/
 
@@ -166,7 +166,7 @@ public class Token
 
 	/*---------------------------------------------------------------------*/
 
-	private void removeOldToken()
+	private void removeOldToken(String AMIUser, String AMIPass)
 	{
 		List<String> oldTokens = new ArrayList<>();
 
@@ -176,8 +176,13 @@ public class Token
 
 		for(Map.Entry<String, Tuple7<Long, String, String, String, String, String, String>> entry: s_tokens.entrySet())
 		{
-			if((currentTime - entry.getValue().x) > (2 * 60 * 60 * 1000))
-			{
+			if((currentTime - entry.getValue().x) > (2 * 60 * 60 * 1000)
+			   || (
+			       AMIUser.equals(entry.getValue().y)
+			       &&
+			       AMIPass.equals(entry.getValue().z)
+			   )
+			 ) {
 				oldTokens.add(entry.getKey());
 			}
 		}
