@@ -50,32 +50,6 @@ public class FrontEnd extends HttpServlet
 	private void doCommand(HttpServletRequest req, HttpServletResponse res)
 	{
 		/*-----------------------------------------------------------------*/
-		/* SET UTF-8 AS DEFAULT ENCODING                                   */
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			req.setCharacterEncoding("UTF-8");
-			res.setCharacterEncoding("UTF-8");
-		}
-		catch(UnsupportedEncodingException e)
-		{
-			/* IGNORE */
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* CROSS-ORIGIN RESOURCE SHARING                                   */
-		/*-----------------------------------------------------------------*/
-
-		String origin = req.getHeader("Origin");
-
-		if(origin != null)
-		{
-			res.setHeader("Access-Control-Allow-Credentials", "true");
-			res.setHeader("Access-Control-Allow-Origin", origin);
-		}
-
-		/*-----------------------------------------------------------------*/
 		/* VARIABLES FOR LINKS                                             */
 		/*-----------------------------------------------------------------*/
 
