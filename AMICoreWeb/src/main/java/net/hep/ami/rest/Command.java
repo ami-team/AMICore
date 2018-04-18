@@ -13,8 +13,8 @@ import net.hep.ami.utility.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.core.type.*;
 
-@Path("/cmd")
-public class Cmd
+@Path("/command")
+public class Command
 {
 	/*---------------------------------------------------------------------*/
 
