@@ -37,13 +37,12 @@ public class Command
 	@Path("{command}/help")
 	public Response help1(
 		@Context HttpServletRequest request,
-		@QueryParam("token") @DefaultValue("") String token,
 		@QueryParam("converter") @DefaultValue("") String converter,
 		@PathParam("command") String command
 	 ) {
 		try
 		{
-			return execute(request, token, command, s_help, converter);
+			return execute(request, command, s_help, converter);
 		}
 		catch(Exception e)
 		{
@@ -57,23 +56,22 @@ public class Command
 	@Path("{command}/help/{format}")
 	public Response help2(
 		@Context HttpServletRequest request,
-		@QueryParam("token") @DefaultValue("") String token,
 		@PathParam("command") String command,
 		@PathParam("format") String format
 	 ) {
 		try
 		{
 			/**/ if("json".equalsIgnoreCase(format)) {
-				return execute(request, token, command, s_help, "AMIXmlToJson.xsl");
+				return execute(request, command, s_help, "AMIXmlToJson.xsl");
 			}
 			else if("csv".equalsIgnoreCase(format)) {
-				return execute(request, token, command, s_help, "AMIXmlToCsv.xsl");
+				return execute(request, command, s_help, "AMIXmlToCsv.xsl");
 			}
 			else if("text".equalsIgnoreCase(format)) {
-				return execute(request, token, command, s_help, "AMIXmlToText.xsl");
+				return execute(request, command, s_help, "AMIXmlToText.xsl");
 			}
 			else {
-				return execute(request, token, command, s_help, /*----*/""/*----*/);
+				return execute(request, command, s_help, /*----*/""/*----*/);
 			}
 		}
 		catch(Exception e)
@@ -89,14 +87,13 @@ public class Command
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response execute1(
 		@Context HttpServletRequest request,
-		@QueryParam("token") @DefaultValue("") String token,
 		@QueryParam("converter") @DefaultValue("") String converter,
 		@PathParam("command") String command,
 		String arguments
 	 ) {
 		try
 		{
-			return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), converter);
+			return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), converter);
 		}
 		catch(Exception e)
 		{
@@ -111,7 +108,6 @@ public class Command
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response execute2(
 		@Context HttpServletRequest request,
-		@QueryParam("token") @DefaultValue("") String token,
 		@PathParam("command") String command,
 		@PathParam("format") String format,
 		String arguments
@@ -119,16 +115,16 @@ public class Command
 		try
 		{
 			/**/ if("json".equalsIgnoreCase(format)) {
-				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
+				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
 			}
 			else if("csv".equalsIgnoreCase(format)) {
-				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
+				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
 			}
 			else if("text".equalsIgnoreCase(format)) {
-				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
+				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
 			}
 			else {
-				return execute(request, token, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
+				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
 			}
 		}
 		catch(Exception e)
@@ -139,17 +135,23 @@ public class Command
 
 	/*---------------------------------------------------------------------*/
 
-	private Response execute(HttpServletRequest request, String token, String command, Map<String, String> arguments, String converter)
+	@SuppressWarnings("unchecked")
+	private Response execute(HttpServletRequest request, String command, Map<String, String> arguments, String converter)
 	{
 		/*-----------------------------------------------------------------*/
 		/* CHECK CRENDENTIALS                                              */
 		/*-----------------------------------------------------------------*/
 
-		Tuple7<Long, String, String, String, String, String, String> credentials;
+		Tuple7<Long, String, String, String, String, String, String> tuple;
 
 		try
 		{
-			credentials = Token.getCredentials(token);
+			tuple = (Tuple7<Long, String, String, String, String, String, String>) request.getSession(true).getAttribute("token");
+
+			if(tuple == null)
+			{
+				return Response.status(Response.Status.FORBIDDEN).build();
+			}
 		}
 		catch(Exception e)
 		{
@@ -160,13 +162,13 @@ public class Command
 		/* EXECUTE COMMAND                                                 */
 		/*-----------------------------------------------------------------*/
 
-		arguments.put("AMIUser", credentials.y);
-		arguments.put("AMIPass", credentials.z);
+		arguments.put("AMIUser", tuple.y);
+		arguments.put("AMIPass", tuple.z);
 
-		arguments.put("clientDN", credentials.t);
-		arguments.put("issuerDN", credentials.u);
-		arguments.put("notBefore", credentials.v);
-		arguments.put("notAfter", credentials.w);
+		arguments.put("clientDN", tuple.t);
+		arguments.put("issuerDN", tuple.u);
+		arguments.put("notBefore", tuple.v);
+		arguments.put("notAfter", tuple.w);
 
 		/**/
 

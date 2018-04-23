@@ -3,6 +3,7 @@ package net.hep.ami;
 import java.io.*;
 import java.math.*;
 import java.util.*;
+
 import java.security.*;
 import java.security.cert.*;
 import java.security.spec.*;
@@ -851,6 +852,32 @@ public class SecuritySingleton
 		return s.isEmpty() == false ? new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString()))
 		) : "";
+	}
+
+	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
+	/* HASH                                                                */
+	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
+
+	public static String md5Sum(String s) throws Exception
+	{
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+		messageDigest.update(s.getBytes("UTF-8"));
+
+		return String.format("%032x", new BigInteger(1, messageDigest.digest()));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String sha256Sum(String s) throws Exception
+	{
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+		messageDigest.update(s.getBytes("UTF-8"));
+
+		return String.format("%064x", new BigInteger(1, messageDigest.digest()));
 	}
 
 	/*---------------------------------------------------------------------*/

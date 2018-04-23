@@ -16,18 +16,15 @@ public class Token
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple7<Long, String, String, String, String, String, String>> s_tokens = new java.util.concurrent.ConcurrentHashMap<>();
-
-	/*---------------------------------------------------------------------*/
-
 	@GET
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getByPassword(
+		@Context HttpServletRequest request,
 		@QueryParam("username") @DefaultValue("") String username,
 		@QueryParam("password") @DefaultValue("") String password
 	 ) {
-		return get(username, password, null, null, null, null);
+		return get(request, username, password, null, null, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -49,6 +46,7 @@ public class Token
 				if(SecuritySingleton.isProxy(certificate) == false)
 				{
 					return get(
+						request,
 						null,
 						null,
 						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
@@ -76,21 +74,24 @@ public class Token
 	@DELETE
 	@Path("{token}")
 	public Response delete(
-		@PathParam("token") String token
+		@Context HttpServletRequest request
 	 ) {
-		Object tuple = s_tokens.remove(token);
+		HttpSession session = request.getSession(true);
 
-		if(tuple != null) {
-			return Response.status(Response.Status./**/OK/**/).build();
-		}
-		else {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
+		session.removeAttribute("token");
+
+		session.removeAttribute("AMIUser_credential");
+		session.removeAttribute("AMIPass_credential");
+
+		session.removeAttribute("AMIUser_certificate");
+		session.removeAttribute("AMIPass_certificate");
+
+		return Response.status(Response.Status./*-*/OK/*-*/).build();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private Response get(@Nullable String AMIUser, @Nullable String AMIPass, @Nullable String clientDN, @Nullable String issuerDN, String notBefore, String notAfter)
+	private Response get(HttpServletRequest request, @Nullable String AMIUser, @Nullable String AMIPass, @Nullable String clientDN, @Nullable String issuerDN, String notBefore, String notAfter)
 	{
 		/*-----------------------------------------------------------------*/
 		/* CHECK CREDENTIALS                                               */
@@ -140,18 +141,12 @@ public class Token
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* REMOVE OLD TOKENS                                               */
+		/* BUILD TOKEN                                                     */
 		/*-----------------------------------------------------------------*/
 
-		removeOldToken(AMIUser, AMIPass);
+		HttpSession session = request.getSession(true);
 
-		/*-----------------------------------------------------------------*/
-		/* GET TOKEN                                                       */
-		/*-----------------------------------------------------------------*/
-
-		String result = UUID.randomUUID().toString();
-
-		s_tokens.put(result, new Tuple7<>(
+		session.setAttribute("token", new Tuple7<>(
 			System.currentTimeMillis(),
 			AMIUser,
 			AMIPass,
@@ -161,58 +156,17 @@ public class Token
 			notAfter != null ? notAfter : ""
 		));
 
-		/*-----------------------------------------------------------------*/
+		session.setAttribute("AMIUser_credential", AMIUser);
+		session.setAttribute("AMIPass_credential", AMIPass);
 
-		return Response.ok(result).build();
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private void removeOldToken(String AMIUser, String AMIPass)
-	{
-		List<String> oldTokens = new ArrayList<>();
+		session.removeAttribute("AMIUser_certificate");
+		session.removeAttribute("AMIPass_certificate");
 
 		/*-----------------------------------------------------------------*/
 
-		long currentTime = System.currentTimeMillis();
-
-		for(Map.Entry<String, Tuple7<Long, String, String, String, String, String, String>> entry: s_tokens.entrySet())
-		{
-			if((currentTime - entry.getValue().x) > (2 * 60 * 60 * 1000)
-			   || (
-			       AMIUser.equals(entry.getValue().y)
-			       &&
-			       AMIPass.equals(entry.getValue().z)
-			   )
-			 ) {
-				oldTokens.add(entry.getKey());
-			}
-		}
+		return Response.ok("success").build();
 
 		/*-----------------------------------------------------------------*/
-
-		for(String token: oldTokens)
-		{
-			s_tokens.remove(token);
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static Tuple7<Long, String, String, String, String, String, String> getCredentials(String token) throws Exception
-	{
-		Tuple7<Long, String, String, String, String, String, String> result = s_tokens.get(token);
-
-		if(result == null)
-		{
-			throw new Exception("invalid token");
-		}
-
-		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
