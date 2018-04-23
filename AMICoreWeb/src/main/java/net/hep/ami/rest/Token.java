@@ -72,7 +72,6 @@ public class Token
 	/*---------------------------------------------------------------------*/
 
 	@DELETE
-	@Path("{token}")
 	public Response delete(
 		@Context HttpServletRequest request
 	 ) {
@@ -136,7 +135,9 @@ public class Token
 		/* BUILD TOKEN                                                     */
 		/*-----------------------------------------------------------------*/
 
-		request.getSession(true).setAttribute("token", new Tuple7<>(
+		HttpSession session = request.getSession(true);
+
+		session.setAttribute("token", new Tuple7<>(
 			System.currentTimeMillis(),
 			AMIUser,
 			AMIPass,
@@ -148,7 +149,7 @@ public class Token
 
 		/*-----------------------------------------------------------------*/
 
-		return Response.ok("success").build();
+		return Response.ok(session.getId()).build();
 
 		/*-----------------------------------------------------------------*/
 	}

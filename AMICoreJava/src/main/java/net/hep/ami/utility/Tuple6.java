@@ -1,7 +1,13 @@
 package net.hep.ami.utility;
 
-public class Tuple6<A, B, C, D, E, F>
+import java.io.*;
+
+public class Tuple6<A, B, C, D, E, F> implements Serializable
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final long serialVersionUID = 4847864711156867793L;
+
 	/*---------------------------------------------------------------------*/
 
 	public final A x;

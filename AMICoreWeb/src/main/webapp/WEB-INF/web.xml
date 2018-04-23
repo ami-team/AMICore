@@ -4,6 +4,10 @@
 
 	<display-name>AMI Server</display-name>
 
+	<session-config>
+		<session-timeout>120</session-timeout>
+	</session-config>
+
 	<!--************************************************************-->
 
 	<servlet>

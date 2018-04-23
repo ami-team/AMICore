@@ -1,7 +1,13 @@
 package net.hep.ami.utility;
 
-public class Tuple2<A, B>
+import java.io.*;
+
+public class Tuple2<A, B> implements Serializable
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final long serialVersionUID = -483227104742113803L;
+
 	/*---------------------------------------------------------------------*/
 
 	public final A x;
