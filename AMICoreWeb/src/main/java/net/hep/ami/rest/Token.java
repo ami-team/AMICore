@@ -76,15 +76,7 @@ public class Token
 	public Response delete(
 		@Context HttpServletRequest request
 	 ) {
-		HttpSession session = request.getSession(true);
-
-		session.removeAttribute("token");
-
-		session.removeAttribute("AMIUser_credential");
-		session.removeAttribute("AMIPass_credential");
-
-		session.removeAttribute("AMIUser_certificate");
-		session.removeAttribute("AMIPass_certificate");
+		request.getSession(true).removeAttribute("token");
 
 		return Response.status(Response.Status./*-*/OK/*-*/).build();
 	}
@@ -144,9 +136,7 @@ public class Token
 		/* BUILD TOKEN                                                     */
 		/*-----------------------------------------------------------------*/
 
-		HttpSession session = request.getSession(true);
-
-		session.setAttribute("token", new Tuple7<>(
+		request.getSession(true).setAttribute("token", new Tuple7<>(
 			System.currentTimeMillis(),
 			AMIUser,
 			AMIPass,
@@ -155,12 +145,6 @@ public class Token
 			notBefore != null ? notBefore : "",
 			notAfter != null ? notAfter : ""
 		));
-
-		session.setAttribute("AMIUser_credential", AMIUser);
-		session.setAttribute("AMIPass_credential", AMIPass);
-
-		session.removeAttribute("AMIUser_certificate");
-		session.removeAttribute("AMIPass_certificate");
 
 		/*-----------------------------------------------------------------*/
 
