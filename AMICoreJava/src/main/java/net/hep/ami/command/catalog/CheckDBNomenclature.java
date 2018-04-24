@@ -95,7 +95,7 @@ public class CheckDBNomenclature extends AbstractCommand
 
 				for(SchemaSingleton.FrgnKeys frgnKey: frgnKeys)
 				{
-					if(frgnKey.get(0).fkColumn.endsWith("fk") == false)
+					if(frgnKey.get(0).fkColumn.endsWith("FK") == false)
 					{
 						result.append("Foreign key `").append(frgnKey.get(0).fkTable).append("`.`").append(frgnKey.get(0).fkColumn).append("` should end with `FK`.\\n");
 					}
