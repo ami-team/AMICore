@@ -16,6 +16,18 @@ public class Token
 {
 	/*---------------------------------------------------------------------*/
 
+	protected static final class Tuple extends Tuple6<String, String, String, String, String, String>
+	{
+		private static final long serialVersionUID = -8015590076924252736L;
+
+		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v)
+		{
+			super(_x, _y, _z, _t, _u, _v);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@GET
 	@Path("password")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -137,8 +149,7 @@ public class Token
 
 		HttpSession session = request.getSession(true);
 
-		session.setAttribute("token", new Tuple7<>(
-			System.currentTimeMillis(),
+		session.setAttribute("token", new Tuple(
 			AMIUser,
 			AMIPass,
 			clientDN != null ? clientDN : "",

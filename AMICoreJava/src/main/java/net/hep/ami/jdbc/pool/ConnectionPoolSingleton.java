@@ -14,6 +14,8 @@ public class ConnectionPoolSingleton
 
 	private static final class Tuple extends Tuple2<HikariDataSource, HikariPoolMXBean>
 	{
+		private static final long serialVersionUID = 315517018319324046L;
+
 		public Tuple(HikariDataSource _x, HikariPoolMXBean _y)
 		{
 			super(_x, _y);

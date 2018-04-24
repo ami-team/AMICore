@@ -14,6 +14,8 @@ public class DriverSingleton
 
 	public static final class Tuple extends Tuple5<DriverMetadata.Type, String, String, String, Constructor<?>>
 	{
+		private static final long serialVersionUID = 3082894522888817449L;
+
 		public Tuple(DriverMetadata.Type _x, String _y, String _z, String _t, Constructor<?> _u)
 		{
 			super(_x, _y, _z, _t, _u);

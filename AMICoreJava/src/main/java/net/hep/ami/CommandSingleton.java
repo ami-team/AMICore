@@ -16,6 +16,8 @@ public class CommandSingleton
 
 	private static final class Tuple extends Tuple6<String, String, String, Constructor<?>, Boolean, Boolean>
 	{
+		private static final long serialVersionUID = -1908438407272143175L;
+
 		public Tuple(String _x, String _y, String _z, Constructor<?> _t, boolean _u, boolean _v)
 		{
 			super(_x, _y, _z, _t, _u, _v);

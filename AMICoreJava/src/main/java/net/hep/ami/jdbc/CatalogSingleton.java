@@ -13,6 +13,8 @@ public class CatalogSingleton
 
 	public static final class Tuple extends Tuple7<String, String, String, String, String, String, Boolean>
 	{
+		private static final long serialVersionUID = -7534852988258983396L;
+
 		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v, boolean _w)
 		{
 			super(_x, _y, _z, _t, _u, _v, _w);

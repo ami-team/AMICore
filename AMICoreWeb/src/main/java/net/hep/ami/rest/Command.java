@@ -8,7 +8,6 @@ import javax.ws.rs.core.*;
 import javax.servlet.http.*;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.core.type.*;
@@ -135,18 +134,17 @@ public class Command
 
 	/*---------------------------------------------------------------------*/
 
-	@SuppressWarnings("unchecked")
 	private Response execute(HttpServletRequest request, String command, Map<String, String> arguments, String converter)
 	{
 		/*-----------------------------------------------------------------*/
 		/* CHECK CRENDENTIALS                                              */
 		/*-----------------------------------------------------------------*/
 
-		Tuple7<Long, String, String, String, String, String, String> tuple;
+		Token.Tuple tuple;
 
 		try
 		{
-			tuple = (Tuple7<Long, String, String, String, String, String, String>) request.getSession(true).getAttribute("token");
+			tuple = (Token.Tuple) request.getSession(true).getAttribute("token");
 
 			if(tuple == null)
 			{
@@ -162,13 +160,13 @@ public class Command
 		/* EXECUTE COMMAND                                                 */
 		/*-----------------------------------------------------------------*/
 
-		arguments.put("AMIUser", tuple.y);
-		arguments.put("AMIPass", tuple.z);
+		arguments.put("AMIUser", tuple.x);
+		arguments.put("AMIPass", tuple.y);
 
-		arguments.put("clientDN", tuple.t);
-		arguments.put("issuerDN", tuple.u);
-		arguments.put("notBefore", tuple.v);
-		arguments.put("notAfter", tuple.w);
+		arguments.put("clientDN", tuple.z);
+		arguments.put("issuerDN", tuple.t);
+		arguments.put("notBefore", tuple.u);
+		arguments.put("notAfter", tuple.v);
 
 		/**/
 

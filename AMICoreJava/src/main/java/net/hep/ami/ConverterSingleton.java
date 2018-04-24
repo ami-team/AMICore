@@ -16,6 +16,8 @@ public class ConverterSingleton
 
 	private static final class Tuple extends Tuple3<String, String, Templates>
 	{
+		private static final long serialVersionUID = -4041558092571279841L;
+
 		public Tuple(String _x, String _y, Templates _z)
 		{
 			super(_x, _y, _z);
