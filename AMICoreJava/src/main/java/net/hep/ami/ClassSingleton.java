@@ -55,8 +55,11 @@ public class ClassSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		for(String PATH: System.getProperty("java.class.path", "").split(":"))
-		{
+		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":")) {
+			walk(PATH);
+		}
+
+		for(String PATH: ConfigSingleton.getProperty("custom_classes").split(":")) {
 			walk(PATH);
 		}
 
