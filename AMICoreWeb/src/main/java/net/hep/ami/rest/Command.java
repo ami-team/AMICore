@@ -32,6 +32,13 @@ public class Command
 
 	/*---------------------------------------------------------------------*/
 
+	private Map<String, String> parseArguments(String json) throws Exception
+	{
+		return new ObjectMapper().readValue(json.isEmpty() == false ? json : "{}", s_typeReference);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@GET
 	@Path("{command}/help")
 	public Response help1(
@@ -92,7 +99,7 @@ public class Command
 	 ) {
 		try
 		{
-			return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), converter);
+			return execute(request, command, parseArguments(arguments), converter);
 		}
 		catch(Exception e)
 		{
@@ -114,16 +121,16 @@ public class Command
 		try
 		{
 			/**/ if("json".equalsIgnoreCase(format)) {
-				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToJson.xsl");
+				return execute(request, command, parseArguments(arguments), "AMIXmlToJson.xsl");
 			}
 			else if("csv".equalsIgnoreCase(format)) {
-				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToCsv.xsl");
+				return execute(request, command, parseArguments(arguments), "AMIXmlToCsv.xsl");
 			}
 			else if("text".equalsIgnoreCase(format)) {
-				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), "AMIXmlToText.xsl");
+				return execute(request, command, parseArguments(arguments), "AMIXmlToText.xsl");
 			}
 			else {
-				return execute(request, command, new ObjectMapper().readValue(arguments, s_typeReference), /*----*/""/*----*/);
+				return execute(request, command, parseArguments(arguments), /*----*/""/*----*/);
 			}
 		}
 		catch(Exception e)
