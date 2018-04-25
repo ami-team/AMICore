@@ -2,9 +2,10 @@
 .settings
 .classpath
 *.log
-/AMICoreJava/bin/
-/AMICoreWeb/bin/
-/AMICoreJava/target/
-/AMICoreWeb/target/
+ojdbc*.jar
+AMICoreJava/bin/
+AMICoreWeb/bin/
+AMICoreJava/target/
+AMICoreWeb/target/
+doxygen/html/
 tomcat
-/ojdbc*.jar
