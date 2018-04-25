@@ -125,9 +125,21 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Set the default internal catalog.
+	 *
+	 * @param db The internal catalog.
+	 */
+
 	public abstract void setDB(String db) throws Exception;
 
 	/*---------------------------------------------------------------------*/
+
+	/**
+	 * Patches the givenSQL.
+	 * 
+	 * @return The patched SQL;
+	 */
 
 	public abstract String patchSQL(String sql) throws Exception;
 
@@ -244,7 +256,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql) throws Exception
+	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		try
 		{
@@ -254,33 +266,16 @@ public abstract class AbstractDriver implements Querier
 
 			if(result == null || result.isClosed())
 			{
-				m_statementMap.put(SQL, result = m_connection.prepareStatement(SQL));
-			}
-
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public PreparedStatement prepareStatement(String sql, @Nullable String[] columnNames) throws Exception
-	{
-		try
-		{
-			String SQL = patchSQL(sql);
-
-			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
-
-			if(result == null || result.isClosed())
-			{
-				m_statementMap.put(SQL, result = (columnNames != null ? m_connection.prepareStatement(SQL, /*-----*/ columnNames /*-----*/)
-				                                                      : m_connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)
-				));
+					m_statementMap.put(SQL, result = (returnGeneratedKeys == false) ? (
+							m_connection.prepareStatement(SQL)
+						) : (
+							(columnNames == null) ? (
+								m_connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)
+							) : (
+								m_connection.prepareStatement(SQL, /*-----*/ columnNames /*-----*/)
+							)
+						)
+					);
 			}
 
 			return result;

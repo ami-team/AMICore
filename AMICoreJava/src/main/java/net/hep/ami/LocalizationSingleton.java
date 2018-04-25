@@ -110,7 +110,7 @@ public class LocalizationSingleton
 
 			querier.executeSQLUpdate("DELETE FROM `router_locations`");
 
-			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)"))
+			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)", false, null))
 			{
 				String geonameId;
 				String continentCode;
@@ -148,7 +148,7 @@ public class LocalizationSingleton
 
 			querier.executeSQLUpdate("DELETE FROM `router_ipv4_blocks`");
 
-			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_ipv4_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
+			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_ipv4_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)", false, null))
 			{
 				String network;
 				String geonameId;
@@ -196,7 +196,7 @@ public class LocalizationSingleton
 
 			querier.executeSQLUpdate("DELETE FROM `router_ipv6_blocks`");
 
-			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_ipv6_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)"))
+			try(PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_ipv6_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)", false, null))
 			{
 				String network;
 				String geonameId;

@@ -98,17 +98,9 @@ public class SimpleQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql) throws Exception
+	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, String[] columnNames) throws Exception
 	{
-		return m_driver.prepareStatement(sql);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public PreparedStatement prepareStatement(String sql, String[] columnNames) throws Exception
-	{
-		return m_driver.prepareStatement(sql, columnNames);
+		return m_driver.prepareStatement(sql, returnGeneratedKeys, columnNames);
 	}
 
 	/*---------------------------------------------------------------------*/

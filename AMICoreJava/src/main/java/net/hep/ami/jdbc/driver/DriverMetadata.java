@@ -10,9 +10,16 @@ public @interface DriverMetadata
 {
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Database type. For NoSQL databases, MQL is disabled.
+	 *
+	 * @return The database type.
+	 */
+
 	public enum Type
 	{
-		SQL, NoSQL
+		SQL,	/**< SQL database */
+		NoSQL	/**< NoSQL database */
 	}
 
 	/*---------------------------------------------------------------------*/

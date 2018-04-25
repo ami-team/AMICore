@@ -71,7 +71,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, null);
+		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, true, null);
 
 		statement.execute();
 
