@@ -384,7 +384,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getCommandNames()
+	public static Set<String> getCommands()
 	{
 		return s_commands.keySet();
 	}

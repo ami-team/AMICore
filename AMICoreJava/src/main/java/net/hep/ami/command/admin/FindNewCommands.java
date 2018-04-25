@@ -37,7 +37,7 @@ public class FindNewCommands extends AbstractCommand
 
 		Set<String> foundCommandNames = new HashSet<>();
 
-		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
+		Set<String> existingCommandNames = CommandSingleton.getCommands();
 
 		PreparedStatement statement1 = querier.prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)");
 
