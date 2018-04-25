@@ -59,13 +59,15 @@ public class CommandSingletonTest
 		try
 		{
 //			Router router = new Router("test", "ami_router", "jdbc:postgresql://localhost:2432/ami_router", "radardb-ami-lpsc", "Pci62Emxt65zcZY84UO7");
-			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
+//			Router router = new Router("test", "router_test", "jdbc:mysql://localhost:3306/", "root", "root");
 //			Router router = new Router("test");
 
-			router.create();
-			router.fill();
+//			router.create();
+//			router.fill();
 
-			router.commitAndRelease();
+//			router.commitAndRelease();
+
+			System.out.println(CommandSingleton.executeCommand("FindNewCommands").replace(">", ">\n"));
 
 //			System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -fields=\"jsonSerialization\" -values=\"{}\" -keyFields=\"externalCatalog\" -keyValues=\"self\"").replace(">", ">\n"));
 

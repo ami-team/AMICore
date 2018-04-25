@@ -35,7 +35,9 @@ public class FindNewCommands extends AbstractCommand
 		int commandVisible;
 		int commandSecured;
 
-		Set<String> commands = new HashSet<>();
+		Set<String> foundCommandNames = new HashSet<>();
+
+		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
 		PreparedStatement statement1 = querier.prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)");
 
@@ -54,10 +56,11 @@ public class FindNewCommands extends AbstractCommand
 				   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
 				   &&
 				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
+				   &&
+				   existingCommandNames.contains(commandName = clazz.getSimpleName()) == false
 				 ) {
-					/*-----------------------------------------------------*/
 
-					commandName = clazz.getSimpleName();
+					/*-----------------------------------------------------*/
 
 					commandRole = commandMetadata.role();
 
@@ -79,7 +82,7 @@ public class FindNewCommands extends AbstractCommand
 
 					/*-----------------------------------------------------*/
 
-					commands.add(commandName);
+					foundCommandNames.add(commandName);
 
 					/*-----------------------------------------------------*/
 				}
@@ -109,7 +112,7 @@ public class FindNewCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[added with success: " + commands + "]]></info>");
+		return new StringBuilder("<info><![CDATA[added with success: " + foundCommandNames + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

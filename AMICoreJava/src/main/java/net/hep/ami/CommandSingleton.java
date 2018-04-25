@@ -28,6 +28,8 @@ public class CommandSingleton
 
 	private static final Map<String, Tuple> s_commands = new AMIMap<>();
 
+	private static final Set<String> s_reserved = new HashSet<>();
+
 	/*---------------------------------------------------------------------*/
 
 	private static final Pattern s_xml10Pattern = Pattern.compile(
@@ -47,6 +49,15 @@ public class CommandSingleton
 
 	static
 	{
+		s_reserved.add("AMIUser");
+		s_reserved.add("AMIPass");
+		s_reserved.add("clientDN");
+		s_reserved.add("issuerDN");
+		s_reserved.add("notBefore");
+		s_reserved.add("notAfter");
+		s_reserved.add("isSecure");
+		s_reserved.add("userAgent");
+
 		reload();
 	}
 
@@ -294,22 +305,8 @@ public class CommandSingleton
 			key = entry.getKey();
 			value = entry.getValue();
 
-			if("AMIUser".equals(key) == false
-			   &&
-			   "AMIPass".equals(key) == false
-			   &&
-			   "clientDN".equals(key) == false
-			   &&
-			   "issuerDN".equals(key) == false
-			   &&
-			   "notBefore".equals(key) == false
-			   &&
-			   "notAfter".equals(key) == false
-			   &&
-			   "isSecure".equals(key) == false
-			   &&
-			   "userAgent".equals(key) == false
-			 ) {
+			if(s_reserved.contains(key) == false)
+			{
 				key = Utility.escape(key).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
 				value = Utility.escape(value).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
 
@@ -387,6 +384,13 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static Set<String> getCommandNames()
+	{
+		return s_commands.keySet();
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static StringBuilder listCommands()
 	{
 		StringBuilder result = new StringBuilder();
@@ -399,11 +403,6 @@ public class CommandSingleton
 
 		for(Tuple tuple: s_commands.values())
 		{
-			if("GetConfig".equals(tuple.x))
-			{
-				continue;
-			}
-
 			result.append("<row>")
 			      .append("<field name=\"command\"><![CDATA[").append(tuple.x).append("]]></field>")
 			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
