@@ -41,6 +41,16 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Constructor
+	 *
+	 * @param externalCatalog The external catalog name.
+	 * @param internalCatalog The internal catalog name.
+	 * @param jdbcUrl The JDBC URL.
+	 * @param user The database user name.
+	 * @param pass The database password.
+	 */
+
 	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
