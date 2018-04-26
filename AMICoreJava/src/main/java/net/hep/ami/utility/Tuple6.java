@@ -52,6 +52,17 @@ public class Tuple6<A, B, C, D, E, F> implements Serializable
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Constructor
+	 *
+	 * @param _x x
+	 * @param _y y
+	 * @param _z z
+	 * @param _t t
+	 * @param _u u
+	 * @param _v v
+	 */
+
 	public Tuple6(A _x, B _y, C _z, D _t, E _u, F _v)
 	{
 		x = _x;

@@ -45,6 +45,16 @@ public class Tuple5<A, B, C, D, E> implements Serializable
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Constructor
+	 *
+	 * @param _x x
+	 * @param _y y
+	 * @param _z z
+	 * @param _t t
+	 * @param _u u
+	 */
+
 	public Tuple5(A _x, B _y, C _z, D _t, E _u)
 	{
 		x = _x;

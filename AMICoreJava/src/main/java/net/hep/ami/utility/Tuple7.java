@@ -58,6 +58,18 @@ public class Tuple7<A, B, C, D, E, F, G> implements Serializable
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Constructor
+	 *
+	 * @param _x x
+	 * @param _y y
+	 * @param _z z
+	 * @param _t t
+	 * @param _u u
+	 * @param _v v
+	 * @param _w w
+	 */
+
 	public Tuple7(A _x, B _y, C _z, D _t, E _u, F _v, G _w)
 	{
 		x = _x;

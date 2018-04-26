@@ -28,6 +28,13 @@ public class Tuple2<A, B> implements Serializable
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Constructor
+	 *
+	 * @param _x x
+	 * @param _y y
+	 */
+
 	public Tuple2(A _x, B _y)
 	{
 		x = _x;

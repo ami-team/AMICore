@@ -34,6 +34,14 @@ public class Tuple3<A, B, C> implements Serializable
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Constructor
+	 *
+	 * @param _x x
+	 * @param _y y
+	 * @param _z z
+	 */
+
 	public Tuple3(A _x, B _y, C _z)
 	{
 		x = _x;
