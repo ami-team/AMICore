@@ -215,6 +215,10 @@ public class Router implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Create the AMI routeur tables.
+	 */
+
 	@SuppressWarnings("deprecation")
 	public void create() throws Exception
 	{
@@ -281,14 +285,24 @@ public class Router implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Fill the AMI routeur tables.
+	 */
+
 	public void fill() throws Exception
 	{
-		fill("");
+		fill(null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public void fill(String schema) throws Exception
+	/**
+	 * Fill the AMI routeur tables.
+	 *
+	 * @param schema The schema name, an empty string or <code>null</code>;
+	 */
+
+	public void fill(@Nullable String schema) throws Exception
 	{
 		String admin_user = ConfigSingleton.getProperty("admin_user");
 		String admin_pass = ConfigSingleton.getProperty("admin_pass");
@@ -303,7 +317,7 @@ public class Router implements Querier
 		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, NULL, '0', 'admin', 'admin');",
 			getExternalCatalog(),
 			getInternalCatalog(),
-			schema,
+			(schema != null) ? schema : "",
 			getJdbcUrl(),
 			SecuritySingleton.encrypt(getUser()),
 			SecuritySingleton.encrypt(getPass())
