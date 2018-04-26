@@ -2,6 +2,10 @@ package net.hep.ami.utility;
 
 import java.io.*;
 
+/**
+ * A 7-tuple.
+ */
+
 public class Tuple7<A, B, C, D, E, F, G> implements Serializable
 {
 	/*---------------------------------------------------------------------*/
@@ -10,12 +14,46 @@ public class Tuple7<A, B, C, D, E, F, G> implements Serializable
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * x
+	 */
+
 	public final A x;
+
+	/**
+	 * y
+	 */
+
 	public final B y;
+
+	/**
+	 * z
+	 */
+
 	public final C z;
+
+	/**
+	 * t
+	 */
+
 	public final D t;
+
+	/**
+	 * u
+	 */
+
 	public final E u;
+
+	/**
+	 * v
+	 */
+
 	public final F v;
+
+	/**
+	 * w
+	 */
+
 	public final G w;
 
 	/*---------------------------------------------------------------------*/
