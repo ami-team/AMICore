@@ -43,7 +43,7 @@ function validateForm()
 		 ) {
 			if(param.value === '')
 			{
-				error += ' Error, field `' + param.name + '` empty!';
+				error += ' Error, field `' + param.name + '` is empty!';
 			}
 		}
 	});
