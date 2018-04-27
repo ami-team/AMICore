@@ -192,7 +192,7 @@ public class Setup extends HttpServlet
 		;
 
 		/*-----------------------------------------------------------------*/
-		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
+		/* GET/POST VARIABLES (AMI DATABASE)                               */
 		/*-----------------------------------------------------------------*/
 
 		String router_catalog = req.getParameter("router_catalog");
@@ -221,6 +221,15 @@ public class Setup extends HttpServlet
 		;
 
 		/*-----------------------------------------------------------------*/
+		/* GET/POST VARIABLES (USER EXTENTIONS)                            */
+		/*-----------------------------------------------------------------*/
+
+		String class_path = req.getParameter("class_path");
+		class_path = (class_path != null) ? class_path.trim()
+		                                  : ConfigSingleton.getProperty("class_path")
+		;
+
+		/*-----------------------------------------------------------------*/
 		/* BUILD HTML                                                      */
 		/*-----------------------------------------------------------------*/
 
@@ -245,6 +254,8 @@ public class Setup extends HttpServlet
 		                    .replace("{{ROUTER_URL}}", router_url)
 		                    .replace("{{ROUTER_USER}}", router_user)
 		                    .replace("{{ROUTER_PASS}}", router_pass)
+		                    /**/
+		                    .replace("{{CLASS_PATH}}", class_path)
 		;
 
 		/*-----------------------------------------------------------------*/
@@ -277,7 +288,7 @@ public class Setup extends HttpServlet
 		encryption_key = (encryption_key != null) ? encryption_key.trim() : "";
 
 		/*-----------------------------------------------------------------*/
-		/* GET/POST VARIABLES (ROUTER DATABASE)                            */
+		/* GET/POST VARIABLES (AMI DATABASE)                               */
 		/*-----------------------------------------------------------------*/
 
 		String router_catalog = req.getParameter("router_catalog");
@@ -294,6 +305,15 @@ public class Setup extends HttpServlet
 
 		String router_pass = req.getParameter("router_pass");
 		router_pass = (router_pass != null) ? router_pass.trim() : "";
+
+		/*-----------------------------------------------------------------*/
+		/* GET/POST VARIABLES (USER EXTENTIONS)                            */
+		/*-----------------------------------------------------------------*/
+
+		String class_path = req.getParameter("class_path");
+		class_path = (class_path != null) ? class_path.trim()
+		                                  : ConfigSingleton.getProperty("class_path")
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -320,6 +340,8 @@ public class Setup extends HttpServlet
 		              .append("  <property name=\"router_url\"><![CDATA[" + router_url + "]]></property>\n")
 		              .append("  <property name=\"router_user\"><![CDATA[" + router_user + "]]></property>\n")
 		              .append("  <property name=\"router_pass\"><![CDATA[" + router_pass + "]]></property>\n")
+		              .append("\n")
+		              .append("  <property name=\"class_path\"><![CDATA[" + class_path + "]]></property>\n")
 		              .append("</properties>\n")
 		;
 
@@ -395,6 +417,8 @@ public class Setup extends HttpServlet
 			                     .replace("{{ROUTER_URL}}", router_url)
 			                     .replace("{{ROUTER_USER}}", router_user)
 			                     .replace("{{ROUTER_PASS}}", router_pass)
+			                     /**/
+			                     .replace("{{CLASS_PATH}}", class_path)
 			;
 
 			/*-------------------------------------------------------------*/
@@ -432,6 +456,8 @@ public class Setup extends HttpServlet
 			                     .replace("{{ROUTER_URL}}", router_url)
 			                     .replace("{{ROUTER_USER}}", router_user)
 			                     .replace("{{ROUTER_PASS}}", router_pass)
+			                     /**/
+			                     .replace("{{CLASS_PATH}}", class_path)
 			                     /**/
 			                     .replace("{{MESSAGE}}", e.getMessage())
 			;

@@ -38,6 +38,8 @@ function validateForm()
 		if(param.name !== 'router_schema'
 		   &&
 		   param.name !== 'router_reset'
+		   &&
+		   param.name !== 'class_path'
 		 ) {
 			if(param.value === '')
 			{
@@ -51,11 +53,11 @@ function validateForm()
 	if(error)
 	{
 		error = '<div class="alert alert-danger alert-dismissible">\n'
-			+
-		        '  <button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>\n'
-			+
+		        +
+		        '  <button class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>\n'
+		        +
 		        '  <strong>Error!</strong>' + error + '\n'
-			+
+		        +
 		        '</div>'
 		;
 
