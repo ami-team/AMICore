@@ -13,6 +13,19 @@ public class CORS implements ContainerResponseFilter
 	{
 		/*-----------------------------------------------------------------*/
 
+		String token = request.getHeaderValue("AMI-Token");
+
+		if(token != null)
+		{
+			MultivaluedMap<String, Object> headers = response.getHttpHeaders();
+
+			headers.add("Cookie", "JSESSIONID=" + token);
+
+			headers.remove("AMI-Token");
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		String origin = request.getHeaderValue("Origin");
 
 		if(origin != null)
