@@ -16,11 +16,9 @@ public class SimpleShell extends AbstractShell
 
 		Process process = Runtime.getRuntime().exec(new String[] {"bash", "-c", argsToString(args)});
 
-		try(InputStream inputStream = process.getInputStream(); InputStream errorStream = process.getErrorStream())
+		try(StreamReader inputThread = new StreamReader(inputStringBuilder, process.getInputStream());
+		    StreamReader errorThread = new StreamReader(errorStringBuilder, process.getErrorStream()))
 		{
-			Thread inputThread = new StreamReader(inputStringBuilder, inputStream);
-			Thread errorThread = new StreamReader(errorStringBuilder, errorStream);
-
 			inputThread.start();
 			errorThread.start();
 

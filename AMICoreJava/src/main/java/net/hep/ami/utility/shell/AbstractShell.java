@@ -27,7 +27,7 @@ public abstract class AbstractShell
 
 	/*---------------------------------------------------------------------*/
 
-	protected static class StreamReader extends Thread
+	protected static class StreamReader extends Thread implements Closeable
 	{
 		private StringBuilder m_stringBuilder;
 		private InputStream m_inputStream;
@@ -49,6 +49,12 @@ public abstract class AbstractShell
 			{
 				LogSingleton.root.error("could not read text file", e);
 			}
+		}
+
+		@Override
+		public void close() throws IOException
+		{
+			m_inputStream.close();
 		}
 	}
 

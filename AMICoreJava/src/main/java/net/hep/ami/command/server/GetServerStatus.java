@@ -27,29 +27,20 @@ public class GetServerStatus extends AbstractCommand
 
 		Runtime runtime = java.lang.Runtime.getRuntime();
 
-		File file = new File(System.getProperty("catalina.base", "/"));
+		File file = new File(System.getProperty("catalina.base", GetServerStatus.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(
-			"<rowset type=\"system\">"
-			+
-			"<row>"
-			+
-			"<field name=\"freeDisk\">" + file.getFreeSpace() + "</field>"
-			+
-			"<field name=\"totalDisk\">" + file.getTotalSpace() + "</field>"
-			+
-			"<field name=\"freeMem\">" + runtime.freeMemory() + "</field>"
-			+
-			"<field name=\"totalMem\">" + runtime.totalMemory() + "</field>"
-			+
-			"<field name=\"nbOfCPUs\">" + runtime.availableProcessors() + "</field>"
-			+
-			"</row>"
-			+
-			"</rowset>"
-		);
+		result.append("<rowset type=\"system\">")
+		      .append("<row>")
+		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
+		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")
+		      .append("<field name=\"freeMem\"><![CDATA[").append(runtime.freeMemory()).append("]]></field>")
+		      .append("<field name=\"totalMem\"><![CDATA[").append(runtime.totalMemory()).append("]]></field>")
+		      .append("<field name=\"nbOfCPUs\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
+		      .append("</row>")
+		      .append("</rowset>")
+		;
 
 		/*-----------------------------------------------------------------*/
 

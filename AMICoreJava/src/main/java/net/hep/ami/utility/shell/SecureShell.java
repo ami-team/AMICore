@@ -86,11 +86,9 @@ public class SecureShell extends AbstractShell
 
 		try
 		{
-			try(InputStream inputStream = channel.getInputStream(); InputStream errorStream = channel.getErrStream())
+			try(StreamReader inputThread = new StreamReader(inputStringBuilder, channel.getInputStream());
+			    StreamReader errorThread = new StreamReader(errorStringBuilder, channel. getErrStream ()))
 			{
-				Thread inputThread = new StreamReader(inputStringBuilder, inputStream);
-				Thread errorThread = new StreamReader(errorStringBuilder, errorStream);
-
 				inputThread.start();
 				errorThread.start();
 
