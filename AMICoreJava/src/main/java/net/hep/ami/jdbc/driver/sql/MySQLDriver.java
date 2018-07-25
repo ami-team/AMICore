@@ -5,7 +5,7 @@ import net.hep.ami.jdbc.driver.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mysql",
-	clazz = "com.mysql.jdbc.Driver"
+	clazz = "com.mysql.cj.jdbc.Driver"
 )
 
 public class MySQLDriver extends AbstractDriver

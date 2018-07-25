@@ -67,7 +67,9 @@ public class CommandSingletonTest
 
 //			router.commitAndRelease();
 
-			System.out.println(CommandSingleton.executeCommand("FindNewCommands").replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"tasks\" -entity=\"router_task\" -fields=\"name,command,description,oneShot,priority,timeStep,serverName\" -values=\"example,echo 'Hello World!',Example,0,0,1000,test\"").replace(">", ">\n"));
+
+//			System.out.println(CommandSingleton.executeCommand("FindNewCommands").replace(">", ">\n"));
 
 //			System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -fields=\"jsonSerialization\" -values=\"{}\" -keyFields=\"externalCatalog\" -keyValues=\"self\"").replace(">", ">\n"));
 

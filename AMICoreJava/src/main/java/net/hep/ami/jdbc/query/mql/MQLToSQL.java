@@ -212,9 +212,9 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> columnsInDefaultEntity = SchemaSingleton.getColumns(m_internalCatalog, m_entity);
+		Map<String, SchemaSingleton.Column> columnsInDefaultEntity = SchemaSingleton.getColumns(m_externalCatalog, m_entity);
 
-		Map<String, SchemaSingleton.FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_internalCatalog, m_entity);
+		Map<String, SchemaSingleton.FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_externalCatalog, m_entity);
 
 		/*-----------------------------------------------------------------*/
 
