@@ -105,7 +105,7 @@ public class PostgreSQLDriver extends AbstractDriver
 		new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		11,		11,		-1,		9,		8,		7,		},
 		new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		11,		11,		-1,		-1,		10,		7,		},
 		new int[] {-1,		-1,		-1,		-1,		1,		1,		-1,		1,		11,		11,		-1,		-1,		8,		7,		},
-		new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		1,		-1,		-1, 		-1,		},
+		new int[] {-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		-1,		1,		-1,		-1, 	-1,		},
 	};
 
 	static final int[][] s_iii = new int[][] {
@@ -140,6 +140,13 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		for(String token: tokens)
 		{
+			/*-------------------------------------------------------------*/
+
+			/**/ if("FROM_UNIXTIME".equalsIgnoreCase(token))
+			{
+				token = "TO_TIMESTAMP";
+			}
+
 			/*-------------------------------------------------------------*/
 
 			result.add(token);
