@@ -35,7 +35,7 @@ public class AddCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = Class.forName(commandClass);
+		Class<?> clazz = ClassSingleton.forName(commandClass);
 
 		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00
 		   ||

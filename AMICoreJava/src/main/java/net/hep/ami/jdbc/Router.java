@@ -410,7 +410,7 @@ public class Router implements Querier
 
 			for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 			{
-				Class<?> clazz = Class.forName(commandClass);
+				Class<?> clazz = ClassSingleton.forName(commandClass);
 
 				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
 

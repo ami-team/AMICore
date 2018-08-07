@@ -110,7 +110,7 @@ public class RoleSingleton
 
 		if(result == null)
 		{
-			result = Class.forName(className);
+			result = ClassSingleton.forName(className);
 
 			if(ClassSingleton.extendsClass(result, CommandValidator.class))
 			{
@@ -131,7 +131,7 @@ public class RoleSingleton
 
 		if(result == null)
 		{
-			result = Class.forName(className);
+			result = ClassSingleton.forName(className);
 
 			if(ClassSingleton.extendsClass(result, NewUserValidator.class))
 			{

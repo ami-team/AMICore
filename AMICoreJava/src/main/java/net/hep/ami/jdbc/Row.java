@@ -99,6 +99,7 @@ public class Row
 		}
 		else
 		{
+			/* ESCAPE */
 			result.append("<row type=\"").append(type).append("\">");
 		}
 
@@ -106,6 +107,7 @@ public class Row
 
 		for(int i = 0; i < m_rowSet.m_numberOfFields; i++)
 		{
+			/* ESCAPE */
 			result.append("<field name=\"").append(m_rowSet.m_fieldNames[i]).append("\"><![CDATA[").append(m_values[i]).append("]]></field>");
 		}
 

@@ -40,7 +40,7 @@ public class RemoveElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || (keyFields.length == 0 && where.isEmpty()) || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || keyFields.length != keyValues.length || (keyFields.length == 0 && where.isEmpty()))
 		{
 			throw new Exception("invalid usage");
 		}

@@ -206,6 +206,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 			groupable = q /* TODO */;
 
+			/* ESCAPE */
 			result.append("<fieldDescription catalog=\"")
 			      .append(rowSet.m_fieldCatalogs[i])
 			      .append("\" entity=\"")
@@ -238,6 +239,7 @@ public final class RowSetIterable implements Iterable<Row>
 		}
 		else
 		{
+			/* ESCAPE */
 			result.append("<rowset type=\"" + type + "\">");
 		}
 

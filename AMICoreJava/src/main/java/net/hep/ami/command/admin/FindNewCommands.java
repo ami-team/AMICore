@@ -47,7 +47,7 @@ public class FindNewCommands extends AbstractCommand
 		{
 			try
 			{
-				Class<?> clazz = Class.forName(commandClass);
+				Class<?> clazz = ClassSingleton.forName(commandClass);
 
 				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
 

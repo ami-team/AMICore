@@ -379,11 +379,11 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				Timestamp tmsp = m_resultSet.getTimestamp(i + 1);
+				Timestamp timestamp = m_resultSet.getTimestamp(i + 1);
 
-				if(tmsp != null)
+				if(timestamp != null)
 				{
-					result[i] = m_dateFormat.format(tmsp);
+					result[i] = m_dateFormat.format(timestamp);
 
 					if(result[i] == null)
 					{
@@ -394,6 +394,7 @@ public class RowSet
 				{
 					result[i] = m_resultSet.getString(i + 1);
 				}
+
 				/*---------------------------------------------------------*/
 			}
 			else

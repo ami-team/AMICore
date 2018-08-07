@@ -93,7 +93,7 @@ public class DriverSingleton
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = Class.forName(className);
+		Class<?> clazz = ClassSingleton.forName(className);
 
 		if(ClassSingleton.extendsClass(clazz, AbstractDriver.class) == false)
 		{

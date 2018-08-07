@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.zip.*;
 import java.util.stream.*;
@@ -9,6 +10,31 @@ import net.hep.ami.utility.*;
 
 public class ClassSingleton
 {
+	/*---------------------------------------------------------------------*/
+
+	public static class JARLoader extends URLClassLoader
+	{
+		/*-----------------------------------------------------------------*/
+
+		public JARLoader(ClassLoader parent)
+		{
+			super(new URL[] {}, parent);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public void addJAR(File file) throws MalformedURLException
+		{
+			super.addURL(new URL("jar:file://" + file.getPath() + "!/"));
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static final JARLoader s_jarLoader = new JARLoader(JARLoader.class.getClassLoader());
+
 	/*---------------------------------------------------------------------*/
 
 	private static final Set<String> s_classNames = AMIMap.newSet(AMIMap.Type.CONCURENT_HASH_MAP, false, false);
@@ -56,30 +82,30 @@ public class ClassSingleton
 		/*-----------------------------------------------------------------*/
 
 		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":")) {
-			walk(PATH);
+			walk(PATH, false);
 		}
 
 		for(String PATH: ConfigSingleton.getProperty("class_path").split(":")) {
-			walk(PATH);
+			walk(PATH, true);
 		}
 
-		walk(path);
+		walk(path, false);
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(@Nullable String classPath)
+	private static void walk(@Nullable String classPath, boolean user)
 	{
 		File file = new File(classPath);
 
-		walk(file, file);
+		walk(file, file, user);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(File base, File file)
+	private static void walk(File base, File file, boolean user)
 	{
 		if(file.isDirectory())
 		{
@@ -89,7 +115,7 @@ public class ClassSingleton
 
 			for(File FILE: file.listFiles())
 			{
-				walk(base, FILE);
+				walk(base, FILE, user);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -106,7 +132,7 @@ public class ClassSingleton
 			}
 			else
 			{
-				addJarFile(file);
+				addJarFile(file, user);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -122,11 +148,16 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addJarFile(File file)
+	private static void addJarFile(File file, boolean user)
 	{
 		try(ZipFile zipFile = new ZipFile(file))
 		{
 			zipFile.stream().forEach(x -> addClass(x.getName()));
+
+			if(user)
+			{
+				s_jarLoader.addJAR(file);
+			}
 		}
 		catch(Exception e)
 		{
@@ -150,10 +181,20 @@ public class ClassSingleton
 	}
 
 	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
 
 	public static Set<String> findClassNames(String filter)
 	{
-		return s_classNames.stream().filter(x -> x.startsWith(filter)).collect(Collectors.toSet());
+		return s_classNames.stream().filter(x -> x.startsWith(filter))
+		                            .collect(Collectors.toSet())
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Class<?> forName(String name) throws ClassNotFoundException
+	{
+		return Class.forName(name, true, s_jarLoader);
 	}
 
 	/*---------------------------------------------------------------------*/

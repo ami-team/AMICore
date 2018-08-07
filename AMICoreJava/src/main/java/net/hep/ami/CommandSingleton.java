@@ -144,7 +144,7 @@ public class CommandSingleton
 		/* GET CLASS OBJECT                                                */
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = Class.forName(commandClass);
+		Class<?> clazz = ClassSingleton.forName(commandClass);
 
 		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
 		{

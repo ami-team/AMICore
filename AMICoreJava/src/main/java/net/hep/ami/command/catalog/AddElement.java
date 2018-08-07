@@ -95,7 +95,7 @@ public class AddElement extends AbstractCommand
 
 	public static String help()
 	{
-		return "Add element.";
+		return "Add one element.";
 	}
 
 	/*---------------------------------------------------------------------*/
