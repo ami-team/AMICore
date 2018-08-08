@@ -29,17 +29,24 @@ public class MailSingleton
 
 	private static Properties getProperties()
 	{
-		Properties result = new Properties();
-
-		/*-----------------------------------------------------------------*/
-		/* SET PROPERTIES                                                  */
 		/*-----------------------------------------------------------------*/
 
 		String host = ConfigSingleton.getProperty("email_host");
 		String port = ConfigSingleton.getProperty("email_port");
 		String mode = ConfigSingleton.getProperty("email_mode");
 
+		if(host.isEmpty()
+		   ||
+		   port.isEmpty()
+		   ||
+		   mode.isEmpty()
+		 ) {
+			return null;
+		}
+
 		/*-----------------------------------------------------------------*/
+
+		Properties result = new Properties();
 
 		result.setProperty("mail.smtp.host", (host));
 		result.setProperty("mail.smtp.port", (port));
@@ -54,9 +61,9 @@ public class MailSingleton
 			result.setProperty((("mail.smtp.starttls.enable")), ((((((((((((("true"))))))))))))));
 		}
 
-		/*-----------------------------------------------------------------*/
-
 		return result;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -74,7 +81,16 @@ public class MailSingleton
 		/* CREATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
 
-		Session session = Session.getInstance(getProperties(), s_authenticator);
+		Properties properties = getProperties();
+
+		if(properties == null)
+		{
+			return;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		Session session = Session.getInstance(properties, s_authenticator);
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE MESSAGE                                                  */

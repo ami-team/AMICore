@@ -225,7 +225,8 @@ public class CommandSingletonTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			e.printStackTrace(System.out);
+
+			//e.printStackTrace(System.out);
 		}
 
 		System.exit(0);

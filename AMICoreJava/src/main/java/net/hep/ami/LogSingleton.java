@@ -70,12 +70,10 @@ public class LogSingleton
 
 		for(Logger logger: context.getLoggerList())
 		{
-			name = logger.getName()
-			             .toLowerCase()
-			;
+			name = logger.getName().toLowerCase();
 
 			/**/ if(name.contains("hikari")) {
-				logger.setLevel(Level.WARN);
+				logger.setLevel(Level.OFF);
 			}
 			else if(name.contains("memcached")) {
 				logger.setLevel(Level.OFF);
