@@ -12,32 +12,11 @@ public class ClassSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static class JARLoader extends URLClassLoader
-	{
-		/*-----------------------------------------------------------------*/
-
-		public JARLoader(ClassLoader parent)
-		{
-			super(new URL[] {}, parent);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		public void addJAR(File file) throws MalformedURLException
-		{
-			super.addURL(new URL("jar:file://" + file.getPath() + "!/"));
-		}
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static final JARLoader s_jarLoader = new JARLoader(JARLoader.class.getClassLoader());
-
-	/*---------------------------------------------------------------------*/
-
 	private static final Set<String> s_classNames = AMIMap.newSet(AMIMap.Type.CONCURENT_HASH_MAP, false, false);
+
+	/*---------------------------------------------------------------------*/
+
+	private static ClassLoader s_classLoader = ClassLoader.getSystemClassLoader();
 
 	/*---------------------------------------------------------------------*/
 
@@ -81,31 +60,40 @@ public class ClassSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Set<URL> jars = new HashSet<>();
+
 		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":")) {
-			walk(PATH, false);
+			walk(PATH, null);
 		}
 
 		for(String PATH: ConfigSingleton.getProperty("class_path").split(":")) {
-			walk(PATH, true);
+			walk(PATH, jars);
 		}
 
-		walk(path, false);
+		walk(path, null);
+
+		/*-----------------------------------------------------------------*/
+
+		s_classLoader = new URLClassLoader(
+			jars.stream().toArray(URL[]::new),
+			ClassLoader.getSystemClassLoader()
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(@Nullable String classPath, boolean user)
+	private static void walk(@Nullable String classPath, Set<URL> jars)
 	{
 		File file = new File(classPath);
 
-		walk(file, file, user);
+		walk(file, file, jars);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(File base, File file, boolean user)
+	private static void walk(File base, File file, Set<URL> jars)
 	{
 		if(file.isDirectory())
 		{
@@ -115,7 +103,7 @@ public class ClassSingleton
 
 			for(File FILE: file.listFiles())
 			{
-				walk(base, FILE, user);
+				walk(base, FILE, jars);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -132,7 +120,7 @@ public class ClassSingleton
 			}
 			else
 			{
-				addJarFile(file, user);
+				addJarFile(file, jars);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -148,15 +136,15 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addJarFile(File file, boolean user)
+	private static void addJarFile(File file, Set<URL> jars)
 	{
 		try(ZipFile zipFile = new ZipFile(file))
 		{
 			zipFile.stream().forEach(x -> addClass(x.getName()));
 
-			if(user)
+			if(jars != null)
 			{
-				s_jarLoader.addJAR(file);
+				jars.add(file.toURI().toURL());
 			}
 		}
 		catch(Exception e)
@@ -185,16 +173,14 @@ public class ClassSingleton
 
 	public static Set<String> findClassNames(String filter)
 	{
-		return s_classNames.stream().filter(x -> x.startsWith(filter))
-		                            .collect(Collectors.toSet())
-		;
+		return s_classNames.stream().filter(x -> x.startsWith(filter)).collect(Collectors.toSet());
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Class<?> forName(String name) throws ClassNotFoundException
 	{
-		return Class.forName(name, true, s_jarLoader);
+		return Class.forName(name, true, s_classLoader);
 	}
 
 	/*---------------------------------------------------------------------*/
