@@ -43,11 +43,14 @@ public class ClassSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		int index = path.indexOf("!/"); // Check if this is a JAR file.
+		int index0 = path.indexOf("file:"); // Check if this is a JAR file.
+		int index1 = path.indexOf("!/");
 
-		if(index > 0)
-		{
-			path = new File(path.substring(5, index)).getParent();
+		if(index0 >= 0
+		   &&
+		   index1 >= 0
+		 ) {
+			path = new File(path.substring(index0 + 5, index1 + 0)).getParent();
 		}
 		else
 		{
@@ -63,7 +66,7 @@ public class ClassSingleton
 		Set<URL> jars = new HashSet<>();
 
 		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":")) {
-			walk(PATH, null);
+			walk(PATH, jars);
 		}
 
 		for(String PATH: ConfigSingleton.getProperty("class_path").split(":")) {
@@ -142,10 +145,7 @@ public class ClassSingleton
 		{
 			zipFile.stream().forEach(x -> addClass(x.getName()));
 
-			if(jars != null)
-			{
-				jars.add(file.toURI().toURL());
-			}
+			if(jars != null) jars.add(file.toURI().toURL());
 		}
 		catch(Exception e)
 		{
