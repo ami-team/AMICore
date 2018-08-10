@@ -77,7 +77,10 @@ public class ClassSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		s_classLoader = new URLClassLoader(jars.stream().toArray(URL[]::new));
+		s_classLoader = new URLClassLoader(
+			jars.stream().toArray(URL[]::new),
+			ClassSingleton.class.getClassLoader()
+		);
 
 		/*-----------------------------------------------------------------*/
 	}
