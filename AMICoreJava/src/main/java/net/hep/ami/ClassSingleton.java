@@ -87,7 +87,7 @@ public class ClassSingleton
 		}
 
 		for(String PATH: ConfigSingleton.getProperty("class_path").split(":")) {
-			walk(PATH, true);
+			walk(PATH, false);
 		}
 
 		walk(path, false);
