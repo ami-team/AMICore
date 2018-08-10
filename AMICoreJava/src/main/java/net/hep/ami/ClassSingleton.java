@@ -78,8 +78,7 @@ public class ClassSingleton
 		/*-----------------------------------------------------------------*/
 
 		s_classLoader = new URLClassLoader(
-			jars.stream().toArray(URL[]::new),
-			ClassSingleton.class.getClassLoader()
+			jars.stream().toArray(URL[]::new)
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -180,8 +179,8 @@ public class ClassSingleton
 
 	public static Class<?> forName(String name) throws ClassNotFoundException
 	{
-		return Class.forName(name);
-		//return Class.forName(name, true, s_classLoader);
+		//return Class.forName(name);
+		return Class.forName(name, true, s_classLoader);
 	}
 
 	/*---------------------------------------------------------------------*/
