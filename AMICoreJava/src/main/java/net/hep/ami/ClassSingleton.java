@@ -44,7 +44,7 @@ public class ClassSingleton
 		/*-----------------------------------------------------------------*/
 
 		int index0 = path.indexOf("file:"); // Check if this is a JAR file.
-		int index1 = path.indexOf("!/");
+		int index1 = path.indexOf("!/"); // Check if this is a JAR file.
 
 		if(index0 >= 0
 		   &&
