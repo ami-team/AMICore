@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.util.*;
 import java.util.zip.*;
@@ -16,10 +17,6 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static ClassLoader s_classLoader = ClassSingleton.class.getClassLoader();
-
-	/*---------------------------------------------------------------------*/
-
 	private ClassSingleton() {}
 
 	/*---------------------------------------------------------------------*/
@@ -27,6 +24,21 @@ public class ClassSingleton
 	static
 	{
 		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void addJarToClasspath(File jar) throws Exception
+	{
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+		Method method = classLoader.getClass().getSuperclass()
+		                           .getDeclaredMethod("addURL", new Class[] {URL.class})
+		;
+
+		method.setAccessible(true);
+
+		method.invoke(classLoader, new Object[] {jar.toURI().toURL()});
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -74,13 +86,6 @@ public class ClassSingleton
 		}
 
 		walk(path, null);
-
-		/*-----------------------------------------------------------------*/
-
-		s_classLoader = new URLClassLoader(
-			jars.stream().toArray(URL[]::new),
-			ClassSingleton.class.getClassLoader()
-		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -144,6 +149,8 @@ public class ClassSingleton
 		try(ZipFile zipFile = new ZipFile(file))
 		{
 			zipFile.stream().forEach(x -> addClass(x.getName()));
+
+			if(jars != null) addJarToClasspath(file);
 
 			if(jars != null) jars.add(file.toURI().toURL());
 		}
