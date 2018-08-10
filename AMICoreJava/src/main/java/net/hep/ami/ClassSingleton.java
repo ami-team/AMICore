@@ -180,14 +180,17 @@ public class ClassSingleton
 
 	public static Class<?> forName(String name) throws ClassNotFoundException
 	{
+		return Class.forName(name);
+/*
 		try
 		{
-			return Class.forName(name /*----------------*/);
+			return Class.forName(name *----------------*);
 		}
 		catch(Exception e)
 		{
 			return Class.forName(name, true, s_classLoader);
 		}
+*/
 	}
 
 	/*---------------------------------------------------------------------*/
