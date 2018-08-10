@@ -66,7 +66,7 @@ public class ClassSingleton
 		Set<URL> jars = new HashSet<>();
 
 		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":")) {
-			walk(PATH, jars);
+			walk(PATH, null);
 		}
 
 		for(String PATH: ConfigSingleton.getProperty("class_path").split(":")) {
