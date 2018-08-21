@@ -1,7 +1,6 @@
 package net.hep.ami;
 
 import java.io.*;
-import java.lang.reflect.Method;
 import java.net.*;
 import java.util.*;
 import java.util.zip.*;
@@ -15,6 +14,8 @@ public class ClassSingleton
 
 	private static final Set<String> s_classNames = AMIMap.newSet(AMIMap.Type.CONCURENT_HASH_MAP, false, false);
 
+	private static ClassLoader s_classLoader = ClassLoader.getSystemClassLoader();
+
 	/*---------------------------------------------------------------------*/
 
 	private ClassSingleton() {}
@@ -24,26 +25,6 @@ public class ClassSingleton
 	static
 	{
 		reload();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void addJarToClasspath(File jar)
-	{
-		try
-		{
-			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-			Method method = classLoader.getClass().getSuperclass().getDeclaredMethod("addURL", new Class[] {URL.class});
-
-			method.setAccessible(true);
-
-			method.invoke(classLoader, new Object[] {jar.toURI().toURL()});
-		}
-		catch(Exception e)
-		{
-			/* IGNORE */
-		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -80,31 +61,37 @@ public class ClassSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Set<URL> jars = new HashSet<>();
+
 		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":")) {
-			walk(PATH, false);
+			walk(PATH, null);
 		}
 
 		for(String PATH: ConfigSingleton.getProperty("class_path").split(":")) {
-			walk(PATH, false);
+			walk(PATH, jars);
 		}
 
-		walk(path, false);
+		walk(path, null);
+
+		/*-----------------------------------------------------------------*/
+
+		s_classLoader = new URLClassLoader(jars.stream().toArray(URL[]::new), ClassLoader.getSystemClassLoader());
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(@Nullable String classPath, boolean keep)
+	private static void walk(@Nullable String classPath, Set<URL> jars)
 	{
 		File file = new File(classPath);
 
-		walk(file, file, keep);
+		walk(file, file, jars);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static void walk(File base, File file, boolean keep)
+	private static void walk(File base, File file, Set<URL> jars)
 	{
 		if(file.isDirectory())
 		{
@@ -114,7 +101,7 @@ public class ClassSingleton
 
 			for(File FILE: file.listFiles())
 			{
-				walk(base, FILE, keep);
+				walk(base, FILE, jars);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -131,7 +118,7 @@ public class ClassSingleton
 			}
 			else
 			{
-				addJarFile(file, keep);
+				addJarFile(file, jars);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -147,13 +134,13 @@ public class ClassSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addJarFile(File file, boolean keep)
+	private static void addJarFile(File file, Set<URL> jars)
 	{
 		try(ZipFile zipFile = new ZipFile(file))
 		{
 			zipFile.stream().forEach(x -> addClass(x.getName()));
 
-			if(keep) addJarToClasspath(file);
+			if(jars != null) jars.add(file.toURI().toURL());
 		}
 		catch(Exception e)
 		{
@@ -188,7 +175,7 @@ public class ClassSingleton
 
 	public static Class<?> forName(String name) throws ClassNotFoundException
 	{
-		return Class.forName(name);
+		return Class.forName(name, true, s_classLoader);
 	}
 
 	/*---------------------------------------------------------------------*/
