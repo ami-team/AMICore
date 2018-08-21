@@ -14,7 +14,7 @@ public class ClassSingleton
 
 	private static final Set<String> s_classNames = AMIMap.newSet(AMIMap.Type.CONCURENT_HASH_MAP, false, false);
 
-	private static ClassLoader s_classLoader = ClassLoader.getSystemClassLoader();
+	private static ClassLoader s_classLoader = ClassSingleton.class.getClassLoader();
 
 	/*---------------------------------------------------------------------*/
 
@@ -75,7 +75,7 @@ public class ClassSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		s_classLoader = new URLClassLoader(jars.stream().toArray(URL[]::new), ClassLoader.getSystemClassLoader());
+		s_classLoader = new URLClassLoader(jars.stream().toArray(URL[]::new), ClassSingleton.class.getClassLoader());
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -175,6 +175,7 @@ public class ClassSingleton
 
 	public static Class<?> forName(String name) throws ClassNotFoundException
 	{
+	Class.forName(name);
 		return Class.forName(name, true, s_classLoader);
 	}
 

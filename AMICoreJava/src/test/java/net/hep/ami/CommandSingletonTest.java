@@ -26,7 +26,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("GetSessionInfo", arguments);
+		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 /*
 		arguments.put("amiLogin", "jodier");
 		arguments.put("cached", "");
