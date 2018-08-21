@@ -145,7 +145,10 @@ public class ClassSingleton
 		{
 			zipFile.stream().forEach(x -> addClass(x.getName()));
 
-			if(jars != null) jars.add(file.toURI().toURL());
+			if(jars != null)
+			{
+				jars.add(file.toURI().toURL());
+			}
 		}
 		catch(Exception e)
 		{
