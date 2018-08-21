@@ -175,7 +175,6 @@ public class ClassSingleton
 
 	public static Class<?> forName(String name) throws ClassNotFoundException
 	{
-	Class.forName(name);
 		return Class.forName(name, true, s_classLoader);
 	}
 
