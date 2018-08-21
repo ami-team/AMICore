@@ -34,9 +34,7 @@ public class ClassSingleton
 		{
 			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 
-			Method method = classLoader.getClass().getSuperclass()
-			                           .getDeclaredMethod("addURL", new Class[] {URL.class})
-			;
+			Method method = classLoader.getClass().getSuperclass().getDeclaredMethod("addURL", new Class[] {URL.class});
 
 			method.setAccessible(true);
 
