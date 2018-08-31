@@ -25,6 +25,10 @@ public class FindNewCommands extends AbstractCommand
 	{
 		/*-----------------------------------------------------------------*/
 
+		ClassSingleton.reload();
+
+		/*-----------------------------------------------------------------*/
+
 		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
@@ -105,10 +109,6 @@ public class FindNewCommands extends AbstractCommand
 			statement2.close();
 			statement1.close();
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		CommandSingleton.reload();
 
 		/*-----------------------------------------------------------------*/
 
