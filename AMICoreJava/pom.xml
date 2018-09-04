@@ -4,17 +4,18 @@
 
 	<artifactId>AMICoreJava</artifactId>
 
-	<name>AMICoreJava</name>
-	<url>http://www.cern.ch/ami/</url>
-
-	<packaging>jar</packaging>
-
 	<parent>
 		<groupId>net.hep.ami</groupId>
 		<artifactId>AMICore</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
+
+	<packaging>jar</packaging>
+
+	<name>AMICoreJava</name>
+	<description>AMI JAVA core</description>
+	<url>http://www.cern.ch/ami/</url>
 
 	<properties>
 		<antlr4.visitor>false</antlr4.visitor>
