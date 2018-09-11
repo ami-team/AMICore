@@ -13,6 +13,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<dependencies>
@@ -51,9 +53,9 @@
 		<!--***************************************************************-->
 
 		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.6.1</version>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 
 		<!--***************************************************************-->
@@ -69,7 +71,7 @@
 		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>Saxon-HE</artifactId>
-			<version>9.8.0-12</version>
+			<version>9.8.0-14</version>
 		</dependency>
 
 		<!--***************************************************************-->
@@ -141,7 +143,7 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-jdbc-driver</artifactId>
-			<version>3.3.1</version>
+			<version>3.4.0</version>
 		</dependency>
 
 		<!--***************************************************************-->
@@ -149,7 +151,7 @@
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>2.7.8</version>
+			<version>3.2.0</version>
 		</dependency>
 
 
@@ -167,19 +169,19 @@
 	<build>
 
 		<pluginManagement>
-			<plugins>
 
+			<plugins>
 				<!--*******************************************************-->
 
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
-					<version>3.1.1</version>
+					<version>3.5.4</version>
 				</plugin>
 
 				<!--*******************************************************-->
-
 			</plugins>
+
 		</pluginManagement>
 
 		<plugins>
@@ -188,24 +190,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.2</version>
+				<version>2.5.3</version>
 
 				<configuration>
 					<autoversionsubmodules>true</autoversionsubmodules>
-				</configuration>
-
-			</plugin>
-
-			<!--***********************************************************-->
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
 				</configuration>
 
 			</plugin>

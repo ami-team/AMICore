@@ -4,17 +4,18 @@
 
 	<artifactId>AMICoreWeb</artifactId>
 
-	<name>AMICoreWeb</name>
-	<url>http://www.cern.ch/ami/</url>
-
-	<packaging>war</packaging>
-
 	<parent>
 		<groupId>net.hep.ami</groupId>
 		<artifactId>AMICore</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
+	
+	<packaging>war</packaging>
+
+	<name>AMICoreWeb</name>
+	<description>AMI Web core</description>
+	<url>http://www.cern.ch/ami/</url>
 
 	<dependencies>
 		<!--***************************************************************-->
