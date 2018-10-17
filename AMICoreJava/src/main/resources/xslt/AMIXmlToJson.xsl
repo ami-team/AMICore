@@ -151,6 +151,10 @@
 		<xsl:value-of select="@type" />
 		<xsl:text>",</xsl:text>
 
+		<xsl:text>"@complet":</xsl:text>
+		<xsl:value-of select="@complet" />
+		<xsl:text>,</xsl:text>
+
 		<xsl:text>"row":[</xsl:text>
 		<xsl:apply-templates select="row" />
 		<xsl:text>]</xsl:text>

@@ -183,21 +183,14 @@ public final class RowSetIterable implements Iterable<Row>
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
-		if(type == null)
-		{
-			result.append("<fieldDescriptions>");
-		}
-		else
-		{
-			result.append("<fieldDescriptions rowset=\"").append(Utility.escapeHTML(type)).append("\">");
-		}
-
+		/* DESCRIPTIONS                                                    */
 		/*-----------------------------------------------------------------*/
 
 		boolean q;
 		boolean statable;
 		boolean groupable;
+
+		StringBuilder descrs = new StringBuilder();
 
 		for(int i = 0; i < rowSet.m_numberOfFields; i++)
 		{
@@ -207,7 +200,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 			groupable = q /* TODO */;
 
-			result.append("<fieldDescription catalog=\"")
+			descrs.append("<fieldDescription catalog=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldCatalogs[i]))
 			      .append("\" entity=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldEntities[i]))
@@ -228,32 +221,19 @@ public final class RowSetIterable implements Iterable<Row>
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		result.append("</fieldDescriptions>");
-
-		/*-----------------------------------------------------------------*/
-
-		if(type == null)
-		{
-			result.append("<rowset>");
-		}
-		else
-		{
-			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\">");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<sql><![CDATA[").append(rowSet.m_sql).append("]]></sql>")
-		      .append("<mql><![CDATA[").append(rowSet.m_mql).append("]]></mql>")
-		      .append("<ast><![CDATA[").append(rowSet.m_ast).append("]]></ast>")
-		;
-
+		/* ROWS                                                            */
 		/*-----------------------------------------------------------------*/
 
 		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
 
 		/*-----------------------------------------------------------------*/
+
+		boolean isComplet = true;
+
+		StringBuilder rows = new StringBuilder().append("<sql><![CDATA[").append(rowSet.m_sql).append("]]></sql>")
+		                                        .append("<mql><![CDATA[").append(rowSet.m_mql).append("]]></mql>")
+		                                        .append("<ast><![CDATA[").append(rowSet.m_ast).append("]]></ast>")
+		;
 
 		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
 		{ /* DO NOTHING */ }
@@ -261,17 +241,47 @@ public final class RowSetIterable implements Iterable<Row>
 		{
 			if(maxNumberOfRows == 0)
 			{
+				isComplet = false;
+
 				break;
 			}
 
 			maxNumberOfRows--;
 
-			result.append(new Row(rowSet).toStringBuilder());
+			rows.append(new Row(rowSet).toStringBuilder());
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* RESULT                                                          */
+		/*-----------------------------------------------------------------*/
 
-		result.append("</rowset>");
+		if(type == null)
+		{
+			result.append("<fieldDescriptions>");
+		}
+		else
+		{
+			result.append("<fieldDescriptions rowset=\"").append(Utility.escapeHTML(type)).append("\">");
+		}
+
+		result.append(descrs)
+		      .append("</fieldDescriptions>")
+		;
+
+		/*-----------------------------------------------------------------*/
+
+		if(type == null)
+		{
+			result.append("<rowset complet=\"").append(isComplet).append("\">");
+		}
+		else
+		{
+			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" complet=\"").append(isComplet).append("\">");
+		}
+
+		result.append(rows)
+		      .append("</rowset>")
+		;
 
 		/*-----------------------------------------------------------------*/
 
