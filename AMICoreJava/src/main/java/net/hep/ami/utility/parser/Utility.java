@@ -4,7 +4,7 @@ public class Utility
 {
 	/*---------------------------------------------------------------------*/
 
-	public static String escape(String s)
+	public static String escapeString(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());
 
@@ -66,7 +66,7 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String unescape(String s)
+	public static String unescapeString(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());
 
@@ -170,9 +170,40 @@ public class Utility
 			return "";
 		}
 
+		s = s.trim();
+
 		final int l = s.length();
 
-		return (l >= 2) ? unescape(s.substring(0 + 1, l - 1)) : "";
+		return (l >= 2) ? unescapeString(s.substring(0 + 1, l - 1)) : "";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String escapeHTML(String s)
+	{
+		StringBuilder result = new StringBuilder(s.length());
+
+		/*-----------------------------------------------------------------*/
+
+		final int l = s.length();
+
+		for(int i = 0; i < l; i++)
+		{
+			char c = s.charAt(i);
+
+			if(c > 127 || c == '"' || c == '<' || c == '>' || c == '&')
+			{
+				result.append("&#").append((int) c).append(";");
+			}
+			else
+			{
+				result.append(c);
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result.toString();
 	}
 
 	/*---------------------------------------------------------------------*/

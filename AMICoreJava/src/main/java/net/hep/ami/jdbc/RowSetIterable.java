@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.*;
+import net.hep.ami.utility.parser.*;
 
 public final class RowSetIterable implements Iterable<Row>
 {
@@ -141,7 +142,7 @@ public final class RowSetIterable implements Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
-		{ /* DO NOTHING  */ }
+		{ /* DO NOTHING */ }
 		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
 		{
 			if(maxNumberOfRows == 0)
@@ -189,7 +190,7 @@ public final class RowSetIterable implements Iterable<Row>
 		}
 		else
 		{
-			result.append("<fieldDescriptions rowset=\"" + type + "\">");
+			result.append("<fieldDescriptions rowset=\"").append(Utility.escapeHTML(type)).append("\">");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -206,17 +207,16 @@ public final class RowSetIterable implements Iterable<Row>
 
 			groupable = q /* TODO */;
 
-			/* ESCAPE */
 			result.append("<fieldDescription catalog=\"")
-			      .append(rowSet.m_fieldCatalogs[i])
+			      .append(Utility.escapeHTML(rowSet.m_fieldCatalogs[i]))
 			      .append("\" entity=\"")
-			      .append(rowSet.m_fieldEntities[i])
+			      .append(Utility.escapeHTML(rowSet.m_fieldEntities[i]))
 			      .append("\" field=\"")
-			      .append(rowSet.m_fieldNames[i])
+			      .append(Utility.escapeHTML(rowSet.m_fieldNames[i]))
 			      .append("\" label=\"")
-			      .append(rowSet.m_fieldLabels[i])
+			      .append(Utility.escapeHTML(rowSet.m_fieldLabels[i]))
 			      .append("\" type=\"")
-			      .append(rowSet.m_fieldTypes[i])
+			      .append(Utility.escapeHTML(rowSet.m_fieldTypes[i]))
 			      .append("\" statable=\"")
 			      .append(statable ? "true" : "false")
 			      .append("\" groupable=\"")
@@ -239,8 +239,7 @@ public final class RowSetIterable implements Iterable<Row>
 		}
 		else
 		{
-			/* ESCAPE */
-			result.append("<rowset type=\"" + type + "\">");
+			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\">");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -257,7 +256,7 @@ public final class RowSetIterable implements Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
-		{ /* DO NOTHING  */ }
+		{ /* DO NOTHING */ }
 		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
 		{
 			if(maxNumberOfRows == 0)
