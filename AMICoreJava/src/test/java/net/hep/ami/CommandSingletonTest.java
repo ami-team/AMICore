@@ -26,7 +26,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
+		//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments).replace(">", ">\n"));
 /*
 		arguments.put("amiLogin", "jodier");
 		arguments.put("cached", "");
@@ -48,16 +48,16 @@ public class CommandSingletonTest
 
 		//System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
 
-/*
+
 		arguments.put("country", "FR");
 		arguments.put("locality", "Grenoble");
 		arguments.put("organization", "CNRS");
 		arguments.put("organizationalUnit", "LPSC-AMI");
-		arguments.put("commonName", "Jerome Odier");
-		arguments.put("password", "????");
+		arguments.put("commonName", "Fabian Lambert");
+		arguments.put("password", "fofi1972");
 		arguments.put("validity", "10");
 		System.out.println(CommandSingleton.executeCommand("GenerateCertificate", arguments).replace(">", ">\n"));
-*/
+
 		try
 		{
 //			Router router = new Router("test", "ami_router", "jdbc:postgresql://localhost:2432/ami_router", "radardb-ami-lpsc", "Pci62Emxt65zcZY84UO7");
