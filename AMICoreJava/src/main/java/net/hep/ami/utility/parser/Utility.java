@@ -3,6 +3,8 @@ package net.hep.ami.utility.parser;
 public class Utility
 {
 	/*---------------------------------------------------------------------*/
+	/* TEXT                                                                */
+	/*---------------------------------------------------------------------*/
 
 	public static String escapeString(String s)
 	{
@@ -178,6 +180,8 @@ public class Utility
 	}
 
 	/*---------------------------------------------------------------------*/
+	/* HTML                                                                */
+	/*---------------------------------------------------------------------*/
 
 	public static String escapeHTML(String s)
 	{
@@ -197,7 +201,7 @@ public class Utility
 			}
 			else
 			{
-				result.append(c);
+				result.append((char) c);
 			}
 		}
 
