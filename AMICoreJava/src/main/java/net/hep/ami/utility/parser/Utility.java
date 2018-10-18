@@ -197,10 +197,7 @@ public class Utility
 		{
 			char c = s.charAt(i);
 
-			/**/ if(c == '"') {
-				result.append("&quot;");
-			}
-			else if(c == '<') {
+			/**/ if(c == '<') {
 				result.append("&lt;");
 			}
 			else if(c == '>') {
@@ -208,6 +205,9 @@ public class Utility
 			}
 			else if(c == '&') {
 				result.append("&amp;");
+			}
+			else if(c == '"') {
+				result.append("&quot;");
 			}
 			else if(c > 127) {
 				result.append("&#")
