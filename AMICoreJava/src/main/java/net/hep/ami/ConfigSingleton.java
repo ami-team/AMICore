@@ -7,7 +7,9 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class ConfigSingleton
 {

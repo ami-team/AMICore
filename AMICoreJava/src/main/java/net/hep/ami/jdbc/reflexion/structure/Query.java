@@ -2,6 +2,8 @@ package net.hep.ami.jdbc.reflexion.structure;
 
 import java.util.*;
 
+import net.hep.ami.utility.*;
+
 public class Query
 {
 	/*---------------------------------------------------------------------*/

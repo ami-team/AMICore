@@ -10,7 +10,9 @@ import javax.xml.transform.stream.*;
 import net.sf.saxon.*;
 import net.sf.saxon.dom.*;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import org.xml.sax.*;
 
 public class XMLFactory
@@ -21,7 +23,7 @@ public class XMLFactory
 
 	/*---------------------------------------------------------------------*/
 
-	public static Document newDocument(InputStream inputStream) throws Exception
+	public static org.w3c.dom.Document newDocument(InputStream inputStream) throws Exception
 	{
 		DocumentBuilder documentBuilder = new DocumentBuilderImpl();
 

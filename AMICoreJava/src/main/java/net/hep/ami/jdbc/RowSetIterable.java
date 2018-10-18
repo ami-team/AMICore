@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 public final class RowSetIterable implements Iterable<Row>
