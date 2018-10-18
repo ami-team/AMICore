@@ -233,6 +233,9 @@ public class Router implements Querier
 		/**/ if(jdbcUrl.contains("jdbc:mysql")) {
 			path = "/sql/mysql.sql";
 		}
+		else if(jdbcUrl.contains("jdbc:mariadb")) {
+			path = "/sql/mysql.sql";
+		}
 		else if(jdbcUrl.contains("jdbc:oracle")) {
 			path = "/sql/oracle.sql";
 		}
@@ -240,7 +243,7 @@ public class Router implements Querier
 			path = "/sql/postgresql.sql";
 		}
 		else {
-			throw new Exception("only `mysql`, `oracle` and `postgresql` are supported");
+			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
 		}
 
 		/*-----------------------------------------------------------------*/
