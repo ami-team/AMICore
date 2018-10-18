@@ -197,13 +197,26 @@ public class Utility
 		{
 			char c = s.charAt(i);
 
-			if(c > 127 || c == '"' || c == '<' || c == '>' || c == '&')
-			{
-				result.append("&#").append((int) c).append(";");
+			/**/ if(c == '"') {
+				result.append("&quot;");
 			}
-			else
-			{
-				result.append((char) c);
+			else if(c == '<') {
+				result.append("&lt;");
+			}
+			else if(c == '>') {
+				result.append("&gt;");
+			}
+			else if(c == '&') {
+				result.append("&amp;");
+			}
+			else if(c > 127) {
+				result.append("&#")
+				      .append((int) c)
+				      .append(";")
+				;
+			}
+			else {
+				result.append(c);
 			}
 		}
 
