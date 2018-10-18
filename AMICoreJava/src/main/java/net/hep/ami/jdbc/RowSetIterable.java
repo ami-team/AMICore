@@ -41,7 +41,7 @@ public final class RowSetIterable implements Iterable<Row>
 			throw new NullPointerException();
 		}
 
-		rowSet.lock();
+		rowSet.setLocked();
 
 		/*-----------------------------------------------------------------*/
 
@@ -131,7 +131,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 	public static List<Row> getAll(RowSet rowSet, int limit, int offset) throws Exception
 	{
-		rowSet.lock();
+		rowSet.setLocked();
 
 		List<Row> result = new ArrayList<>();
 
@@ -147,6 +147,8 @@ public final class RowSetIterable implements Iterable<Row>
 		{
 			if(maxNumberOfRows == 0)
 			{
+				rowSet.setIncomplete();
+
 				break;
 			}
 
@@ -178,7 +180,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type, int limit, int offset) throws Exception
 	{
-		rowSet.lock();
+		rowSet.setLocked();
 
 		StringBuilder result = new StringBuilder();
 
@@ -228,8 +230,6 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 
-		boolean isComplet = true;
-
 		StringBuilder rows = new StringBuilder().append("<sql><![CDATA[").append(rowSet.m_sql).append("]]></sql>")
 		                                        .append("<mql><![CDATA[").append(rowSet.m_mql).append("]]></mql>")
 		                                        .append("<ast><![CDATA[").append(rowSet.m_ast).append("]]></ast>")
@@ -241,7 +241,7 @@ public final class RowSetIterable implements Iterable<Row>
 		{
 			if(maxNumberOfRows == 0)
 			{
-				isComplet = false;
+				rowSet.setIncomplete();
 
 				break;
 			}
@@ -272,11 +272,11 @@ public final class RowSetIterable implements Iterable<Row>
 
 		if(type == null)
 		{
-			result.append("<rowset complet=\"").append(isComplet).append("\">");
+			result.append("<rowset incomplet=\"").append(rowSet.isIncomplet()).append("\">");
 		}
 		else
 		{
-			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" complet=\"").append(isComplet).append("\">");
+			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" incomplet=\"").append(rowSet.isIncomplet()).append("\">");
 		}
 
 		result.append(rows)

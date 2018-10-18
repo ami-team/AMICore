@@ -151,16 +151,16 @@
 		<xsl:value-of select="@type" />
 		<xsl:text>",</xsl:text>
 
-		<xsl:text>"@complet":</xsl:text>
+		<xsl:text>"@incomplete":</xsl:text>
 		<xsl:choose>
-			<xsl:when test="@complet = 'true' or @complet = 'false'">
-				<xsl:value-of select="@complet" />
+			<xsl:when test="@incomplete = 'true' or @incomplete = 'false'">
+				<xsl:value-of select="@incomplete" />
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:text>true</xsl:text>
+				<xsl:text>false</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-		<xsl:text>",</xsl:text>
+		<xsl:text>,</xsl:text>
 
 		<xsl:text>"row":[</xsl:text>
 		<xsl:apply-templates select="row" />
