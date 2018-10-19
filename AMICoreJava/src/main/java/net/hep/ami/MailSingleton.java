@@ -60,7 +60,7 @@ public class MailSingleton
 		}
 		else if("tls".equalsIgnoreCase(mode))
 		{
-			result.setProperty((("mail.smtp.starttls.enable")), ((((((((((((("true"))))))))))))));
+			result.setProperty(  "mail.smtp.starttls.enable"  , /*---------*/"true"/*---------*/);
 		}
 
 		return result;

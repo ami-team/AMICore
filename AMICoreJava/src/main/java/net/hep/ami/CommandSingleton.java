@@ -258,7 +258,7 @@ public class CommandSingleton
 		/*-----------------------------------------------------------------*/
 		/* CHECK ROLES                                                     */
 		/*-----------------------------------------------------------------*/
-/*
+
 		if(checkRoles)
 		{
 			AbstractDriver driver = DriverSingleton.getConnection(
@@ -278,7 +278,7 @@ public class CommandSingleton
 				driver.rollback();
 			}
 		}
-*/
+
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE COMMAND AND BUILD RESULT                                */
 		/*-----------------------------------------------------------------*/
