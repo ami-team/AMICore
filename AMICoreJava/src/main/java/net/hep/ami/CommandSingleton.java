@@ -337,9 +337,9 @@ public class CommandSingleton
 			StringBuilder content = commandObject.execute();
 			long t2 = System.currentTimeMillis();
 
-			/**/
+			/*-------------------------------------------------------------*/
 
-			stringBuilder.append("<executionTime>" + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "</executionTime>");
+			stringBuilder.append("<executionTime>").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("</executionTime>");
 
 			if(content != null)
 			{
@@ -352,23 +352,16 @@ public class CommandSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			stringBuilder.append("<executionTime>0.000</executionTime>");
+			stringBuilder.append("<executionTime>0.000</executionTime>")
 
-			if(tuple.y != null)
-			{
-				stringBuilder.append("<help><![CDATA[")
-				             .append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"))
-				             .append("]]></help>")
-				;
-			}
+			             .append("<help><![CDATA[")
+			             .append((tuple.y != null) ? s_xml10Pattern.matcher(tuple.y).replaceAll("?") : "")
+			             .append("]]></help>")
 
-			if(tuple.z != null)
-			{
-				stringBuilder.append("<usage><![CDATA[")
-				             .append(s_xml10Pattern.matcher(tuple.z).replaceAll("?"))
-				             .append("]]></usage>")
-				;
-			}
+			             .append("<usage><![CDATA[")
+			             .append((tuple.z != null) ? s_xml10Pattern.matcher(tuple.z).replaceAll("?") : "")
+			             .append("]]></usage>")
+			;
 
 			/*-------------------------------------------------------------*/
 		}
