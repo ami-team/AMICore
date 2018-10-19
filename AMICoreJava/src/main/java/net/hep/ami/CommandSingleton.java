@@ -275,7 +275,7 @@ public class CommandSingleton
 			}
 			finally
 			{
-				driver.rollback();
+				driver.commitAndRelease();
 			}
 		}
 
