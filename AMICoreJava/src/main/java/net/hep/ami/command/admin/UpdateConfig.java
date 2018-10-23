@@ -57,7 +57,7 @@ public class UpdateConfig extends AbstractCommand
 			{
 				ConfigSingleton.setProperty(name, value);
 
-				ConfigSingleton.setPropertyInDataBase(querier, name, value);
+				ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser);
 			}
 			else
 			{
@@ -83,7 +83,7 @@ public class UpdateConfig extends AbstractCommand
 
 	public static String usage()
 	{
-		return "(-separator=\"|\")? -names=\"\" -values=\"\"";
+		return "(-separator=\",\")? -names=\"\" -values=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

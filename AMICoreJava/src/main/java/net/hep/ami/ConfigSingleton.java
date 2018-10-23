@@ -282,19 +282,22 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void setPropertyInDataBase(Querier querier, String name, String value) throws Exception
+	public static void setPropertyInDataBase(Querier querier, String name, String value, String user) throws Exception
 	{
 		try
 		{
-			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES (?, ?)",
+			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)",
 				SecuritySingleton.encrypt(name),
-				SecuritySingleton.encrypt(value)
+				SecuritySingleton.encrypt(value),
+				user,
+				user
 			);
 		}
 		catch(Exception e)
 		{
-			querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ? WHERE `paramName` = ?",
+			querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?",
 				SecuritySingleton.encrypt(value),
+				user,
 				SecuritySingleton.encrypt(name)
 			);
 		}
