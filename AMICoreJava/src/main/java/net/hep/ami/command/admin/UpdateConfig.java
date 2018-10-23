@@ -4,8 +4,8 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.Querier;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
 public class UpdateConfig extends AbstractCommand
@@ -53,17 +53,17 @@ public class UpdateConfig extends AbstractCommand
 			name = _names[i].trim();
 			value = _values[i].trim();
 
-			if("::null::".equals(value) == false)
-			{
-				ConfigSingleton.setProperty(name, value);
-
-				ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser);
-			}
-			else
+			if("::null::".equals(value))
 			{
 				ConfigSingleton.removeProperty(name);
 
 				ConfigSingleton.removePropertyInDataBase(querier, name);
+			}
+			else
+			{
+				ConfigSingleton.setProperty(name, value);
+
+				ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser);
 			}
 		}
 
