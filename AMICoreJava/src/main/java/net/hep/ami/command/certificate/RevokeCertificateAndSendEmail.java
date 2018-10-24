@@ -60,7 +60,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		final String CODE = SecuritySingleton.sha256Sum(
+		final String CODE = SecuritySingleton.md5Sum(
 			Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
 			+ "::" +
 			SecuritySingleton.encrypt(email)
