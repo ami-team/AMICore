@@ -816,7 +816,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static byte[] encrypt(byte[] data) throws Exception
+	public static byte[] encrypt(byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
  		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
@@ -828,7 +828,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static byte[] decrypt(byte[] data) throws Exception
+	public static byte[] decrypt(byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
@@ -862,24 +862,38 @@ public class SecuritySingleton
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
-	public static String md5Sum(String s) throws Exception
+	public static String md5Sum(byte[] s) throws Exception
 	{
 		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 
-		messageDigest.update(s.getBytes("UTF-8"));
+		messageDigest.update(s);
 
 		return String.format("%032x", new BigInteger(1, messageDigest.digest()));
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String sha256Sum(String s) throws Exception
+	public static String md5Sum(String s) throws Exception
+	{
+		return md5Sum(s.getBytes("UTF-8"));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String sha256Sum(byte[] s) throws Exception
 	{
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
-		messageDigest.update(s.getBytes("UTF-8"));
+		messageDigest.update(s);
 
 		return String.format("%064x", new BigInteger(1, messageDigest.digest()));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String sha256Sum(String s) throws Exception
+	{
+		return sha256Sum(s.getBytes("UTF-8"));
 	}
 
 	/*---------------------------------------------------------------------*/
