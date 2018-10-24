@@ -40,7 +40,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		if(rows.size() == 0)
 		{
-			throw new Exception("no certificate found");
+			throw new Exception("no certificate found for email `" + email + "`");
 		}
 
 		/*-----------------------------------------------------------------*/
