@@ -40,7 +40,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		if(rows.size() == 0)
 		{
-			throw new Exception("unknown email");
+			throw new Exception("no certificate found");
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -76,15 +76,13 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 		{
 			if(CODE.equals(code))
 			{
-				getQuerier("self").executeSQLQuery("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?) WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND  `reason` IS NULL", reason, m_AMIUser);
-
 				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nThe following certivicate(s) has been revoked:\n\n" + dns);
+
+				getQuerier("self").executeSQLQuery("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?) WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND  `reason` IS NULL", reason, m_AMIUser);
 			}
 			else
 			{
-				getQuerier("self").executeSQLQuery("UPDATE `router_authority` SET `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?) WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND  `reason` IS NULL", reason, m_AMIUser);
-
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nInvalid confirmation code: \n\n" + code);
+				throw new Exception("invalid confirmation code");
 			}
 		}
 
