@@ -140,7 +140,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart("(" + visitExpressionOr(context.m_expression).toString() + ")");
+			query.addWherePart("(" + visitExpressionOr(context.m_expression, false).toString() + ")");
 		}
 
 		if(m_joins.isEmpty() == false)
@@ -339,7 +339,7 @@ public class MQLToSQL
 
 		if(context.expression != null)
 		{
-			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression).toString() + ")");
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, true).toString() + ")");
 
 			if(m_joins.isEmpty() == false)
 			{
@@ -366,7 +366,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			Query query = new Query().addWherePart("(" + visitExpressionOr(context.m_expression).toString() + ")");
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.m_expression, true).toString() + ")");
 
 			if(m_joins.isEmpty() == false)
 			{
@@ -403,7 +403,7 @@ public class MQLToSQL
 	{
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = visitExpressionOr(context.m_expression);
+		StringBuilder result = visitExpressionOr(context.m_expression, false);
 
 		/*-----------------------------------------------------------------*/
 
@@ -439,7 +439,7 @@ public class MQLToSQL
 
 		for(MQLParser.ExpressionOrContext child: context.m_expressions)
 		{
-			result.add(visitExpressionOr(child).toString());
+			result.add(visitExpressionOr(child, false).toString());
 		}
 
 		return result;
@@ -447,7 +447,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context) throws Exception
+	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, boolean isUpdate) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -463,7 +463,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAndContext)
 			{
-				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child));
+				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child, isUpdate));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -478,7 +478,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context) throws Exception
+	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context, boolean isUpdate) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -494,7 +494,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionCompContext)
 			{
-				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child));
+				result.append(visitExpressionComp((MQLParser.ExpressionCompContext ) child, isUpdate));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -509,7 +509,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context) throws Exception
+	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context, boolean isUpdate) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -529,11 +529,11 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, isUpdate));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
-				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child));
+				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, isUpdate));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -550,7 +550,14 @@ public class MQLToSQL
 		{
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
-			localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
+			if(isUpdate)
+			{
+				localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT * FROM (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
+			}		
+			else
+			{
+				localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
+			}	
 			boolean needAND = false;
 
 			for(Resolution pathList: m_resolutionList) 
@@ -630,7 +637,15 @@ public class MQLToSQL
 				localResult.append(" AND ");
 				localResult.append("(" + localJoins + ")");
 			}
-			localResult.append(")");
+			
+			if(isUpdate)
+			{
+				localResult.append("))");			}		
+			else
+			{
+				localResult.append(")");
+			}
+		
 			if(!m_inSelect)
 			{
 				result = localResult;
@@ -644,7 +659,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context) throws Exception
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, boolean isUpdate) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -660,7 +675,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionMulDivContext)
 			{
-				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child));
+				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child, isUpdate));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -678,7 +693,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context) throws Exception
+	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, boolean isUpdate) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -694,7 +709,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext)
 			{
-				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child));
+				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, isUpdate));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -712,7 +727,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context) throws Exception
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, boolean isUpdate) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -729,23 +744,23 @@ public class MQLToSQL
 
 		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
 		{
-			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child));
+			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, isUpdate));
 		}
 		else if(child instanceof MQLParser.ExpressionIsoGroupContext)
 		{
-			result.append(visitExpressionIsoGroup((MQLParser.ExpressionIsoGroupContext) child));
+			result.append(visitExpressionIsoGroup((MQLParser.ExpressionIsoGroupContext) child, isUpdate));
 		}
 		else if(child instanceof MQLParser.ExpressionFunctionContext)
 		{
-			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child));
+			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, isUpdate));
 		}
 		else if(child instanceof MQLParser.ExpressionQIdContext)
 		{
-			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child));
+			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, isUpdate));
 		}
 		else if(child instanceof MQLParser.ExpressionLiteralContext)
 		{
-			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child));
+			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, isUpdate));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -755,17 +770,17 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context) throws Exception
+	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, boolean isUpdate) throws Exception
 	{
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.m_expression))
+		                          .append(visitExpressionOr(context.m_expression, isUpdate))
 		                          .append(")")
 		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context) throws Exception
+	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context, boolean isUpdate) throws Exception
 	{
 		m_inIsoGroup = true ;
 
@@ -773,7 +788,7 @@ public class MQLToSQL
 		StringBuilder result = new StringBuilder();
 
 		StringBuilder isoResult = new StringBuilder().append("(")
-                .append(visitExpressionOr(context.m_isoExpression))
+                .append(visitExpressionOr(context.m_isoExpression, isUpdate))
                 .append(")")
                 ;
 
@@ -874,7 +889,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context) throws Exception
+	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, boolean isUpdate) throws Exception
 	{
 		m_inFunction = true;
 
@@ -884,11 +899,11 @@ public class MQLToSQL
 		/**/
 		/**/		if(context.m_param1 != null)
 		/**/		{
-		/**/			result.append( "" ).append(visitExpressionOr(context.m_param1));
+		/**/			result.append( "" ).append(visitExpressionOr(context.m_param1, isUpdate));
 		/**/
 		/**/			if(context.m_param2 != null)
 		/**/			{
-		/**/				result.append(", ").append(visitExpressionOr(context.m_param2));
+		/**/				result.append(", ").append(visitExpressionOr(context.m_param2, isUpdate));
 		/**/			}
 		/**/		}
 		/**/
@@ -901,7 +916,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context) throws Exception
+	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, boolean isUpdate) throws Exception
 	{
 		/*----------------------------------------------------------------*/
 
@@ -920,7 +935,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context) throws Exception
+	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, boolean isUpdate) throws Exception
 	{
 		return visitLiteral(context.m_literal);
 	}
@@ -982,7 +997,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context) throws Exception
+	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context, boolean isUpdate) throws Exception
 	{
 		return new StringBuilder().append("(")
 		                          .append(context.m_literals.stream().map(x -> x.getText()).collect(Collectors.joining(", ")))
