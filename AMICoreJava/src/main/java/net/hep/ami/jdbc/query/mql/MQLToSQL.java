@@ -550,14 +550,16 @@ public class MQLToSQL
 		{
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
+
 			if(isUpdate)
 			{
 				localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT * FROM (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
-			}		
+			}
 			else
 			{
 				localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
-			}	
+			}
+
 			boolean needAND = false;
 
 			for(Resolution pathList: m_resolutionList) 
@@ -637,15 +639,16 @@ public class MQLToSQL
 				localResult.append(" AND ");
 				localResult.append("(" + localJoins + ")");
 			}
-			
+
 			if(isUpdate)
 			{
-				localResult.append("))");			}		
+				localResult.append(") AS T)");
+			}
 			else
 			{
 				localResult.append(")");
 			}
-		
+
 			if(!m_inSelect)
 			{
 				result = localResult;
@@ -744,23 +747,23 @@ public class MQLToSQL
 
 		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
 		{
-			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, isUpdate));
+			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, false));
 		}
 		else if(child instanceof MQLParser.ExpressionIsoGroupContext)
 		{
-			result.append(visitExpressionIsoGroup((MQLParser.ExpressionIsoGroupContext) child, isUpdate));
+			result.append(visitExpressionIsoGroup((MQLParser.ExpressionIsoGroupContext) child, false));
 		}
 		else if(child instanceof MQLParser.ExpressionFunctionContext)
 		{
-			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, isUpdate));
+			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, false));
 		}
 		else if(child instanceof MQLParser.ExpressionQIdContext)
 		{
-			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, isUpdate));
+			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, false));
 		}
 		else if(child instanceof MQLParser.ExpressionLiteralContext)
 		{
-			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, isUpdate));
+			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, false));
 		}
 
 		/*-----------------------------------------------------------------*/
