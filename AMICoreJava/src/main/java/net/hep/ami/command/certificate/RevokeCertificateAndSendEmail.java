@@ -28,7 +28,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		if(((email == null || email.isEmpty())) || (
 			(reason == null || reason.isEmpty())
-			==
+			!=
 			(code == null || code.isEmpty())
 		 )) {
 			throw new Exception("invalid usage");
