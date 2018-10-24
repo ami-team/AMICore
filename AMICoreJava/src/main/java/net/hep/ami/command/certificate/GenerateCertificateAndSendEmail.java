@@ -185,7 +185,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* SAVE CERTIFICATE                                                */
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = getQuerier("self").prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`) VALUES (?, ?, ?, ?, ?, ?)", false, null);
+		PreparedStatement preparedStatement = getQuerier("self").prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, null);
 
 		preparedStatement.setString(1, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
 		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
@@ -193,6 +193,8 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		preparedStatement.setDate(4, new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()));
 		preparedStatement.setString(5, pem.x509Certificates[0].getSerialNumber().toString(10));
 		preparedStatement.setString(6, email);
+		preparedStatement.setString(7, m_AMIUser);
+		preparedStatement.setString(8, m_AMIUser);
 
 		preparedStatement.executeUpdate();
 

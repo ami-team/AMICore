@@ -5,6 +5,7 @@ import java.sql.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.utility.*;
 
 public class TransactionalQuerier implements Querier
 {
@@ -108,7 +109,7 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		return m_driver.prepareStatement(sql, returnGeneratedKeys, columnNames);
 	}

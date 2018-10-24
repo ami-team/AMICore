@@ -258,7 +258,7 @@ public class CommandSingleton
 		/*-----------------------------------------------------------------*/
 		/* CHECK ROLES                                                     */
 		/*-----------------------------------------------------------------*/
-/*
+
 		if(checkRoles)
 		{
 			AbstractDriver driver = DriverSingleton.getConnection(
@@ -275,10 +275,10 @@ public class CommandSingleton
 			}
 			finally
 			{
-				driver.rollback();
+				driver.commitAndRelease();
 			}
 		}
-*/
+
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE COMMAND AND BUILD RESULT                                */
 		/*-----------------------------------------------------------------*/
@@ -307,8 +307,8 @@ public class CommandSingleton
 
 			if(s_reserved.contains(key) == false)
 			{
-				key = Utility.escape(key).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
-				value = Utility.escape(value).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
+				key = Utility.escapeHTML(Utility.escapeString(key));
+				value = Utility.escapeHTML(Utility.escapeString(value));
 
 				stringBuilder.append("<argument name=\"").append(key).append("\" value=\"").append(value).append("\" />");
 			}
@@ -337,9 +337,9 @@ public class CommandSingleton
 			StringBuilder content = commandObject.execute();
 			long t2 = System.currentTimeMillis();
 
-			/**/
+			/*-------------------------------------------------------------*/
 
-			stringBuilder.append("<executionTime>" + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "</executionTime>");
+			stringBuilder.append("<executionTime>").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("</executionTime>");
 
 			if(content != null)
 			{
@@ -352,23 +352,16 @@ public class CommandSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			stringBuilder.append("<executionTime>0.000</executionTime>");
+			stringBuilder.append("<executionTime>0.000</executionTime>")
 
-			if(tuple.y != null)
-			{
-				stringBuilder.append("<help><![CDATA[")
-				             .append(s_xml10Pattern.matcher(tuple.y).replaceAll("?"))
-				             .append("]]></help>")
-				;
-			}
+			             .append("<help><![CDATA[")
+			             .append((tuple.y != null) ? s_xml10Pattern.matcher(tuple.y).replaceAll("?") : "")
+			             .append("]]></help>")
 
-			if(tuple.z != null)
-			{
-				stringBuilder.append("<usage><![CDATA[")
-				             .append(s_xml10Pattern.matcher(tuple.z).replaceAll("?"))
-				             .append("]]></usage>")
-				;
-			}
+			             .append("<usage><![CDATA[")
+			             .append((tuple.z != null) ? s_xml10Pattern.matcher(tuple.z).replaceAll("?") : "")
+			             .append("]]></usage>")
+			;
 
 			/*-------------------------------------------------------------*/
 		}

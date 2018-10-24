@@ -7,6 +7,7 @@ import java.lang.reflect.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.utility.*;
 
 public class Router implements Querier
 {
@@ -116,7 +117,7 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		return m_driver.prepareStatement(sql, returnGeneratedKeys, columnNames);
 	}
@@ -233,6 +234,9 @@ public class Router implements Querier
 		/**/ if(jdbcUrl.contains("jdbc:mysql")) {
 			path = "/sql/mysql.sql";
 		}
+		else if(jdbcUrl.contains("jdbc:mariadb")) {
+			path = "/sql/mysql.sql";
+		}
 		else if(jdbcUrl.contains("jdbc:oracle")) {
 			path = "/sql/oracle.sql";
 		}
@@ -240,7 +244,7 @@ public class Router implements Querier
 			path = "/sql/postgresql.sql";
 		}
 		else {
-			throw new Exception("only `mysql`, `oracle` and `postgresql` are supported");
+			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
 		}
 
 		/*-----------------------------------------------------------------*/

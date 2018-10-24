@@ -7,10 +7,16 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 
-import org.w3c.dom.*;
-
 public class ConfigSingleton
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final Map<String, String> s_properties = new AMIMap<>();
+
+	/*---------------------------------------------------------------------*/
+
+	private static final Set<String> s_reserved = new HashSet<>();
+
 	/*---------------------------------------------------------------------*/
 
 	private static String s_configPathName;
@@ -22,16 +28,25 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_properties = new AMIMap<>();
-
-	/*---------------------------------------------------------------------*/
-
 	private ConfigSingleton() {}
 
 	/*---------------------------------------------------------------------*/
 
 	static
 	{
+		s_reserved.add("host");
+		s_reserved.add("admin_user");
+		s_reserved.add("admin_pass");
+		s_reserved.add("admin_email");
+		s_reserved.add("guest_user");
+		s_reserved.add("guest_pass");
+		s_reserved.add("encryption_key");
+		s_reserved.add("router_catalog");
+		s_reserved.add("router_schema");
+		s_reserved.add("router_url");
+		s_reserved.add("router_user");
+		s_reserved.add("router_pass");
+
 		reload();
 	}
 
@@ -76,36 +91,6 @@ public class ConfigSingleton
 		       getProperty("router_user").isEmpty() == false
 		       &&
 		       getProperty("router_pass").isEmpty() == false
-		;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static boolean isReserved(String name)
-	{
-		return "host".equals(name)
-		       ||
-		       "admin_user".equals(name)
-		       ||
-		       "admin_pass".equals(name)
-		       ||
-		       "admin_email".equals(name)
-		       ||
-		       "guest_user".equals(name)
-		       ||
-		       "guest_pass".equals(name)
-		       ||
-		       "encryption_key".equals(name)
-		       ||
-		       "router_catalog".equals(name)
-		       ||
-		       "router_schema".equals(name)
-		       ||
-		       "router_url".equals(name)
-		       ||
-		       "router_user".equals(name)
-		       ||
-		       "router_pass".equals(name)
 		;
 	}
 
@@ -182,23 +167,23 @@ public class ConfigSingleton
 			/* PARSE CONFIG FILE                                           */
 			/*-------------------------------------------------------------*/
 
-			Document document = XMLFactory.newDocument(inputStream);
+			org.w3c.dom.Document document = XMLFactory.newDocument(inputStream);
 
 			/*-------------------------------------------------------------*/
 			/* READ CONFIG FILE                                            */
 			/*-------------------------------------------------------------*/
 
-			NodeList nodeList = document.getElementsByTagName("property");
+			org.w3c.dom.NodeList nodeList = document.getElementsByTagName("property");
 
 			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
 			/*-------------------------------------------------------------*/
 
-			for(Node node: XMLFactory.toIterable(nodeList))
+			for(org.w3c.dom.Node node: XMLFactory.toIterable(nodeList))
 			{
 				s_properties.put(
 					XMLFactory.getAttribute(node,
-					                          "name"),
+					                         "name"),
 					XMLFactory.getContent(node)
 				);
 			}
@@ -269,7 +254,7 @@ public class ConfigSingleton
 				name = SecuritySingleton.decrypt(row.getValue(0));
 				value = SecuritySingleton.decrypt(row.getValue(1));
 
-				if(isReserved(name) == false)
+				if(s_reserved.contains(name) == false)
 				{
 					s_properties.put(
 						name
@@ -297,19 +282,22 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void setPropertyInDataBase(Querier querier, String name, String value) throws Exception
+	public static void setPropertyInDataBase(Querier querier, String name, String value, String user) throws Exception
 	{
 		try
 		{
-			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`) VALUES (?, ?)",
+			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)",
 				SecuritySingleton.encrypt(name),
-				SecuritySingleton.encrypt(value)
+				SecuritySingleton.encrypt(value),
+				user,
+				user
 			);
 		}
 		catch(Exception e)
 		{
-			querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ? WHERE `paramName` = ?",
+			querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?",
 				SecuritySingleton.encrypt(value),
+				user,
 				SecuritySingleton.encrypt(name)
 			);
 		}

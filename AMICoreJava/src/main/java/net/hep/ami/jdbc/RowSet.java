@@ -39,6 +39,8 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	private boolean m_incomplete = false;
+
 	private boolean m_lock = false;
 
 	/*---------------------------------------------------------------------*/
@@ -421,7 +423,26 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected void lock() throws Exception
+	protected void setIncomplete() throws Exception
+	{
+		if(m_lock)
+		{
+			throw new Exception("rowset already read");
+		}
+
+		m_incomplete = true;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean isIncomplet()
+	{
+		return m_incomplete;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected void setLocked() throws Exception
 	{
 		if(m_lock)
 		{
@@ -429,6 +450,13 @@ public class RowSet
 		}
 
 		m_lock = true;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean isLocked()
+	{
+		return m_lock;
 	}
 
 	/*---------------------------------------------------------------------*/

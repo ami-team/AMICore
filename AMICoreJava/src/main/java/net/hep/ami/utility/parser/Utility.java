@@ -1,10 +1,14 @@
 package net.hep.ami.utility.parser;
 
+import net.hep.ami.utility.*;
+
 public class Utility
 {
 	/*---------------------------------------------------------------------*/
+	/* TEXT                                                                */
+	/*---------------------------------------------------------------------*/
 
-	public static String escape(String s)
+	public static String escapeString(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());
 
@@ -66,7 +70,7 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String unescape(String s)
+	public static String unescapeString(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());
 
@@ -170,9 +174,55 @@ public class Utility
 			return "";
 		}
 
+		s = s.trim();
+
 		final int l = s.length();
 
-		return (l >= 2) ? unescape(s.substring(0 + 1, l - 1)) : "";
+		return (l >= 2) ? unescapeString(s.substring(0 + 1, l - 1)) : "";
+	}
+
+	/*---------------------------------------------------------------------*/
+	/* HTML                                                                */
+	/*---------------------------------------------------------------------*/
+
+	public static String escapeHTML(String s)
+	{
+		StringBuilder result = new StringBuilder(s.length());
+
+		/*-----------------------------------------------------------------*/
+
+		final int l = s.length();
+
+		for(int i = 0; i < l; i++)
+		{
+			char c = s.charAt(i);
+
+			/**/ if(c == '<') {
+				result.append("&lt;");
+			}
+			else if(c == '>') {
+				result.append("&gt;");
+			}
+			else if(c == '&') {
+				result.append("&amp;");
+			}
+			else if(c == '"') {
+				result.append("&quot;");
+			}
+			else if(c > 127) {
+				result.append("&#")
+				      .append((int) c)
+				      .append(";")
+				;
+			}
+			else {
+				result.append(c);
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result.toString();
 	}
 
 	/*---------------------------------------------------------------------*/

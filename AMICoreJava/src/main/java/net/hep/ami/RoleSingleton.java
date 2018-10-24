@@ -6,8 +6,6 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
 import net.hep.ami.utility.*;
 
-/* Nested Set Model */
-
 public class RoleSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -18,6 +16,49 @@ public class RoleSingleton
 	/*---------------------------------------------------------------------*/
 
 	private RoleSingleton() {}
+
+	/*---------------------------------------------------------------------*/
+
+	private static boolean _commandIsGuest(Querier querier, String command) throws Exception
+	{
+		return querier.executeSQLQuery(
+			"SELECT 1 FROM `router_command`, `router_command_role`, `router_role` WHERE" +
+			/*-------------------------------------------------------------*/
+			/* SELECT COMMAND                                                 */
+			/*-------------------------------------------------------------*/
+			" `router_command`.`command` = ?" +
+			/*-------------------------------------------------------------*/
+			/* SELECT ROLE                                                 */
+			/*-------------------------------------------------------------*/
+			" AND `router_command_role`.`commandFK` = `router_command`.`id`" +
+			" AND `router_command_role`.`roleFK` = `router_role`.`id`" +
+			" AND `router_role`.`role` = 'AMI_GUEST'",
+			/*-------------------------------------------------------------*/
+			command
+		).getAll().size() == 1;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static boolean _userIsAdmin(Querier querier, String amiUser, String amiPass) throws Exception
+	{
+		return querier.executeSQLQuery(
+			"SELECT 1 FROM `router_user`, `router_user_role`, `router_role` WHERE" +
+			/*-------------------------------------------------------------*/
+			/* SELECT USER                                                 */
+			/*-------------------------------------------------------------*/
+			" `router_user`.`AMIUser` = ? AND `router_user`.`AMIPass` = ?" +
+			/*-------------------------------------------------------------*/
+			/* SELECT ROLE                                                 */
+			/*-------------------------------------------------------------*/
+			" AND `router_user_role`.`userFK` = `router_user`.`id`" +
+			" AND `router_user_role`.`roleFK` = `router_role`.`id`" +
+			" AND `router_role`.`role` = 'AMI_ADMIN'",
+			/*-------------------------------------------------------------*/
+			amiUser,
+			amiPass
+		).getAll().size() == 1;
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -53,7 +94,7 @@ public class RoleSingleton
 		/*-----------------------------------------------------------------*/
 
 		List<Row> rowList = querier.executeSQLQuery(
-			"SELECT `router_role`.`validatorClass` FROM `router_command`, `router_user`, `router_command_role`, `router_user_role`, `router_role` WHERE" +
+			"SELECT `router_role`.`roleValidatorClass` FROM `router_command`, `router_user`, `router_command_role`, `router_user_role`, `router_role` WHERE" +
 			/*-------------------------------------------------------------*/
 			/* SELECT COMMAND                                              */
 			/*-------------------------------------------------------------*/
@@ -64,17 +105,14 @@ public class RoleSingleton
 			" AND `router_user`.`AMIUser` = ?" +
 			" AND `router_user`.`AMIPass` = ?" +
 			/*-------------------------------------------------------------*/
-			/* SELECT COMMAND ROLE                                         */
+			/* SELECT ROLE                                                 */
 			/*-------------------------------------------------------------*/
 			" AND `router_command_role`.`commandFK` = `router_command`.`id`" +
+			" AND `router_command_role`.`roleFK` = `router_role`.`id`" +
 			/*-------------------------------------------------------------*/
 			/* SELECT USER ROLE                                            */
 			/*-------------------------------------------------------------*/
 			" AND `router_user_role`.`userFK` = `router_user`.`id`" +
-			/*-------------------------------------------------------------*/
-			/* SELECT ROLE                                                 */
-			/*-------------------------------------------------------------*/
-			" AND `router_command_role`.`roleFK` = `router_role`.`id`" +
 			" AND `router_user_role`.`roleFK` = `router_role`.`id`",
 			/*-------------------------------------------------------------*/
 			command,
@@ -82,22 +120,21 @@ public class RoleSingleton
 			amiPass
 		).getAll();
 
-		if(rowList.isEmpty())
-		{
-			throw new Exception("wrong role");
-		}
-
-		Row row = rowList.get(0);
-
-		/*-----------------------------------------------------------------*/
-
-		String validatorClass = row.getValue("validatorClass");
-
 		/*-----------------------------------------------------------------*/
 		/* CHECK ROLE                                                      */
 		/*-----------------------------------------------------------------*/
 
-		checkCommand(validatorClass, command, arguments);
+		if(rowList.isEmpty())
+		{
+			if(_userIsAdmin(querier, amiUser, amiPass) == false && _commandIsGuest(querier, command) == false)
+			{
+				throw new Exception("wrong role for command `" + command + "`");
+			}
+		}
+		else
+		{
+			checkCommand(rowList.get(0).getValue(0), command, arguments);
+		}
 
 		/*-----------------------------------------------------------------*/
 	}

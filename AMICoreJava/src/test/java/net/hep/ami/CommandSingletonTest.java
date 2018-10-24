@@ -53,8 +53,8 @@ public class CommandSingletonTest
 		arguments.put("locality", "Grenoble");
 		arguments.put("organization", "CNRS");
 		arguments.put("organizationalUnit", "LPSC-AMI");
-		arguments.put("commonName", "Jerome Odier");
-		arguments.put("password", "????");
+		arguments.put("commonName", "Fabian Lambert");
+		arguments.put("password", "fofi1972");
 		arguments.put("validity", "10");
 		System.out.println(CommandSingleton.executeCommand("GenerateCertificate", arguments).replace(">", ">\n"));
 */

@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import net.hep.ami.utility.*;
+
 public class Update
 {
 	/*---------------------------------------------------------------------*/

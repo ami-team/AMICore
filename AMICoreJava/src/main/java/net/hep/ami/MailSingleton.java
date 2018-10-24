@@ -5,66 +5,13 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
+import net.hep.ami.utility.*;
+
 public class MailSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Authenticator s_authenticator = new Authenticator()
-	{
-		@Override
-		protected PasswordAuthentication getPasswordAuthentication()
-		{
-			return new PasswordAuthentication(
-				ConfigSingleton.getProperty("email_user"),
-				ConfigSingleton.getProperty("email_pass")
-			);
-		}
-	};
-
-	/*---------------------------------------------------------------------*/
-
 	private MailSingleton() {}
-
-	/*---------------------------------------------------------------------*/
-
-	private static Properties getProperties()
-	{
-		/*-----------------------------------------------------------------*/
-
-		String host = ConfigSingleton.getProperty("email_host");
-		String port = ConfigSingleton.getProperty("email_port");
-		String mode = ConfigSingleton.getProperty("email_mode");
-
-		if(host.isEmpty()
-		   ||
-		   port.isEmpty()
-		   ||
-		   mode.isEmpty()
-		 ) {
-			return null;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		Properties result = new Properties();
-
-		result.setProperty("mail.smtp.host", (host));
-		result.setProperty("mail.smtp.port", (port));
-		result.setProperty("mail.smtp.auth", "true");
-
-		/**/ if("ssl".equalsIgnoreCase(mode))
-		{
-			result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		}
-		else if("tls".equalsIgnoreCase(mode))
-		{
-			result.setProperty((("mail.smtp.starttls.enable")), ((((((((((((("true"))))))))))))));
-		}
-
-		return result;
-
-		/*-----------------------------------------------------------------*/
-	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -77,20 +24,46 @@ public class MailSingleton
 
 	public static void sendMessage(String from, String to, String cc, String subject, String text, @Nullable BodyPart[] bodyParts) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE SESSION                                                  */
-		/*-----------------------------------------------------------------*/
+		String host = ConfigSingleton.getProperty("email_host");
+		String port = ConfigSingleton.getProperty("email_port");
+		String mode = ConfigSingleton.getProperty("email_mode");
+		String user = ConfigSingleton.getProperty("email_user");
+		String pass = ConfigSingleton.getProperty("email_pass");
 
-		Properties properties = getProperties();
-
-		if(properties == null)
-		{
+		if(host.isEmpty()
+		   ||
+		   port.isEmpty()
+		   ||
+		   mode.isEmpty()
+		   ||
+		   user.isEmpty()
+		   ||
+		   pass.isEmpty()
+		 ) {
 			return;
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* CREATE SESSION                                                  */
+		/*-----------------------------------------------------------------*/
 
-		Session session = Session.getInstance(properties, s_authenticator);
+		Properties properties = new Properties();
+
+		properties.setProperty("mail.smtp.port", port);
+		properties.setProperty("mail.smtp.auth", "true");
+
+		/**/ if("1".equalsIgnoreCase(mode))
+		{
+			properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		}
+		else if("2".equalsIgnoreCase(mode))
+		{
+			properties.setProperty(  "mail.smtp.starttls.enable"  , /*--------*/ "true" /*--------*/);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		Session session = Session.getInstance(properties);
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE MESSAGE                                                  */
@@ -134,7 +107,18 @@ public class MailSingleton
 		/* SEND MESSAGE                                                    */
 		/*-----------------------------------------------------------------*/
 
-		Transport.send(mimeMessage);
+		Transport transport = session.getTransport("smtp");
+
+		transport.connect(host, user, pass);
+
+		try
+		{
+			transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+		}
+		finally
+		{
+			transport.close();
+		}
 
 		/*-----------------------------------------------------------------*/
 	}

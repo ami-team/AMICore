@@ -1,5 +1,8 @@
 package net.hep.ami.jdbc;
 
+import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
+
 public class Row
 {
 	/*---------------------------------------------------------------------*/
@@ -99,16 +102,14 @@ public class Row
 		}
 		else
 		{
-			/* ESCAPE */
-			result.append("<row type=\"").append(type).append("\">");
+			result.append("<row type=\"").append(Utility.escapeHTML(type)).append("\">");
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < m_rowSet.m_numberOfFields; i++)
 		{
-			/* ESCAPE */
-			result.append("<field name=\"").append(m_rowSet.m_fieldNames[i]).append("\"><![CDATA[").append(m_values[i]).append("]]></field>");
+			result.append("<field name=\"").append(Utility.escapeHTML(m_rowSet.m_fieldNames[i])).append("\"><![CDATA[").append(m_values[i]).append("]]></field>");
 		}
 
 		/*-----------------------------------------------------------------*/
