@@ -24,19 +24,19 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 	{
 		String email = arguments.get("email");
 		String reason = arguments.get("reason");
-		String token = arguments.get("token");
+		String code = arguments.get("code");
 
 		if(((email == null || email.isEmpty())) || (
 			(reason == null || reason.isEmpty())
-			!=
-			(token == null || token.isEmpty())
+			==
+			(code == null || code.isEmpty())
 		 )) {
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rows = getQuerier("self").executeSQLQuery("SELECT `clientDN`, `serial`  FROM `router_authority` WHERE `email` = ? AND `reason` IS NULL", email).getAll();
+		List<Row> rows = getQuerier("self").executeSQLQuery("SELECT `clientDN`, `serial` FROM `router_authority` WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", email).getAll();
 
 		if(rows.size() == 0)
 		{
@@ -60,27 +60,31 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		final String TOKEN = SecuritySingleton.sha256Sum(Calendar.getInstance().get(Calendar.DAY_OF_YEAR) + SecuritySingleton.encrypt(email));
+		final String CODE = SecuritySingleton.sha256Sum(
+			Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+			+ "::" +
+			SecuritySingleton.encrypt(email)
+		);
 
 		/*-----------------------------------------------------------------*/
 
-		if(token == null)
+		if(code == null)
 		{
-			MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nYou are about to revoke the following AMI certificate(s):\n\n" + dns + "\n\nConfirmation code: " + TOKEN);
+			MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nYou are about to revoke the following AMI certificate(s):\n\n" + dns + "\n\nConfirmation code: " + CODE);
 		}
 		else
 		{
-			if(TOKEN.equals(token))
+			if(CODE.equals(code))
 			{
-				getQuerier("self").executeSQLQuery("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?) WHERE `email` = ? AND `reason` IS NULL", reason, m_AMIUser);
+				getQuerier("self").executeSQLQuery("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?) WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND  `reason` IS NULL", reason, m_AMIUser);
 
 				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nThe following certivicate(s) has been revoked:\n\n" + dns);
 			}
 			else
 			{
-				getQuerier("self").executeSQLQuery("UPDATE `router_authority` SET `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?) WHERE `email` = ? AND `reason` IS NULL", reason, m_AMIUser);
+				getQuerier("self").executeSQLQuery("UPDATE `router_authority` SET `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?) WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND  `reason` IS NULL", reason, m_AMIUser);
 
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nInvalid confirmation code: \n\n" + token);
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nInvalid confirmation code: \n\n" + code);
 			}
 		}
 
@@ -93,14 +97,14 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 	public static String help()
 	{
-		return "Revoke a client or server certificates.";
+		return "Revoke client or server certificate(s).";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-email=\"\" -reason=\"\"";
+		return "-email=\"\" (-reason=\"\" -code=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
