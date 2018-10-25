@@ -514,11 +514,11 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DERSequence _vo(final String vo)
+	public static DERSequence amiVO(final String vo)
 	{
 		return new DERSequence(new ASN1Encodable[] {
-			new ASN1ObjectIdentifier("1.2.3.4.5.6.7.8.9"),
-			new DERIA5String(vo)
+			new ASN1ObjectIdentifier("2.16.840.1.113883.3.676"),
+			new DERUTF8String(vo)
 		});
 	}
 
@@ -560,7 +560,7 @@ public class SecuritySingleton
 		}
 
 		if(vo != null) {
-			generalNames.add(new GeneralName(GeneralName.otherName, _vo(vo)));
+			generalNames.add(new GeneralName(GeneralName.otherName, amiVO(vo)));
 		}
 
 		/*-----------------------------------------------------------------*/

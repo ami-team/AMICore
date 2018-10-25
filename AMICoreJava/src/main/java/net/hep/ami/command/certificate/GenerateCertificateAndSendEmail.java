@@ -33,7 +33,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		X509Certificate caCrt;
 
 		String vo = arguments.containsKey("vo") ? arguments.get("vo")
-		                                        : "ami"
+		                                        : "AMI"
 		;
 
 		String country = arguments.containsKey("country") ? arguments.get("country")
