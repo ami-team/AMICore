@@ -11,6 +11,7 @@ import javax.mail.util.*;
 import javax.mail.internet.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_CERT", visible = false, secured = true)
@@ -79,6 +80,12 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		Querier querier = getQuerier("self");
+
+		/*-----------------------------------------------------------------*/
+		/* CREATE NEW CERTIFICATE                                          */
+		/*-----------------------------------------------------------------*/
+
 		String fileName = ConfigSingleton.getConfigPathName() + File.separator + "ca.pem";
 
 		/*-----------------------------------------------------------------*/
@@ -125,7 +132,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
 
 		/*-----------------------------------------------------------------*/
-		/* SEND CERTIFICATE                                                */
+		/* SEND NEW CERTIFICATE                                            */
 		/*-----------------------------------------------------------------*/
 
 		try(ByteArrayOutputStream output1 = new ByteArrayOutputStream())
@@ -182,10 +189,20 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* SAVE CERTIFICATE                                                */
+		/* REVOKE OLD CERTIFICATE
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = getQuerier("self").prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, null);
+		querier.executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
+			4, /* superseded */
+			m_AMIUser,
+			email
+		);
+
+		/*-----------------------------------------------------------------*/
+		/* SAVE NEW CERTIFICATE                                            */
+		/*-----------------------------------------------------------------*/
+
+		PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, null);
 
 		preparedStatement.setString(1, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
 		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
