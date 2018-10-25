@@ -549,8 +549,14 @@ public class SecuritySingleton
 			generalNames.add(new GeneralName(GeneralName.rfc822Name, email));
 		}
 
-		if(vo != null) {
-			generalNames.add(new GeneralName(GeneralName.otherName, vo));
+		if(vo != null)
+		{
+			DERSequence seq = new DERSequence(new ASN1Encodable[] {
+				new ASN1ObjectIdentifier("1.2.3.4.5.6.7.8.9"),
+				new org.bouncycastle.asn1.DERUTF8String(vo)
+			});
+
+			generalNames.add(new GeneralName(GeneralName.otherName, seq));
 		}
 
 		/*-----------------------------------------------------------------*/
