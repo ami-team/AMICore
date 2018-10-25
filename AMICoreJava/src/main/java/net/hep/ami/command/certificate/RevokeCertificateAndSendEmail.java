@@ -29,10 +29,10 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		if((email == null || email.isEmpty())
 		   ||
-		   (code == null || code.isEmpty())
-		   && (
-			(virtOrg == null || virtOrg.isEmpty())
-			||
+		   (virtOrg == null || virtOrg.isEmpty())
+		   || (
+			(code == null || code.isEmpty())
+			!=
 			(reason == null || reason.isEmpty())
 		)) {
 			throw new Exception("invalid usage");
@@ -40,7 +40,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rows = getQuerier("self").executeSQLQuery("SELECT `clientDN`, `serial` FROM `router_authority` WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", email).getAll();
+		List<Row> rows = getQuerier("self").executeSQLQuery("SELECT `clientDN`, `serial` FROM `router_authority` WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", virtOrg, email).getAll();
 
 		if(rows.size() == 0)
 		{
