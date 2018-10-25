@@ -32,8 +32,8 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
-		String vo = arguments.containsKey("vo") ? arguments.get("vo")
-		                                        : "AMI"
+		String virtOrg = arguments.containsKey("virtOrg") ? arguments.get("virtOrg")
+		                                                  : "AMI"
 		;
 
 		String country = arguments.containsKey("country") ? arguments.get("country")
@@ -124,7 +124,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 				country
 			),
 			email,
-			vo,
+			virtOrg,
 			validity
 		);
 
@@ -197,9 +197,10 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* REVOKE OLD CERTIFICATE
 		/*-----------------------------------------------------------------*/
 
-		querier.executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
+		querier.executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
 			4, /* superseded */
 			m_AMIUser,
+			virtOrg,
 			email
 		);
 
@@ -209,7 +210,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, null);
 
-		preparedStatement.setString(1, vo);
+		preparedStatement.setString(1, virtOrg);
 		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
 		preparedStatement.setString(3, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
 		preparedStatement.setDate(4, new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()));
@@ -237,7 +238,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 	public static String usage()
 	{
-		return "(-vo=\"\")? -country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -email=\"\" -password=\"\" (-validity=\"\")?";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\") (-virtOrg=\"\")? -password=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

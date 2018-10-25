@@ -275,7 +275,7 @@ public class SecuritySingleton
 
 		/*-----------------------------------------------------------------*/
 
-		public static PEM generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, int keysize, String subject, @Nullable String email, @Nullable String vo, int validity) throws Exception
+		public static PEM generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, int keysize, String subject, @Nullable String email, @Nullable String virtOrg, int validity) throws Exception
 		{
 			KeyPair keyPair = SecuritySingleton.generateKeyPair(keysize);
 
@@ -285,7 +285,7 @@ public class SecuritySingleton
 				keyPair.getPublic(),
 				subject,
 				email,
-				vo,
+				virtOrg,
 				validity
 			);
 
@@ -514,17 +514,17 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static DERSequence amiVO(final String vo)
+	public static DERSequence amiVirtOrg(final String virtOrg)
 	{
 		return new DERSequence(new ASN1Encodable[] {
 			new ASN1ObjectIdentifier("1.3.6.1.4.1.10813.666"),
-			new DERUTF8String(vo)
+			new DERUTF8String(virtOrg)
 		});
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, @Nullable String email, @Nullable String vo, int validity) throws Exception
+	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, @Nullable String email, @Nullable String virtOrg, int validity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 CERTIFICATE BUILDER                                 */
@@ -556,11 +556,11 @@ public class SecuritySingleton
 		List<GeneralName> generalNames = new ArrayList<>();
 
 		if(email != null) {
-			generalNames.add(new GeneralName(GeneralName.rfc822Name, email));
+			generalNames.add(new GeneralName(GeneralName.rfc822Name, /*--*/email/*--*/));
 		}
 
-		if(vo != null) {
-			generalNames.add(new GeneralName(GeneralName.otherName, amiVO(vo)));
+		if(virtOrg != null) {
+			generalNames.add(new GeneralName(GeneralName.otherName, amiVirtOrg(virtOrg)));
 		}
 
 		/*-----------------------------------------------------------------*/

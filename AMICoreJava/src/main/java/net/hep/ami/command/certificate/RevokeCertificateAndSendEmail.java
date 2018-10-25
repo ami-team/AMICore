@@ -23,14 +23,18 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		String email = arguments.get("email");
+		String virtOrg = arguments.get("virtOrg");
 		String reason = arguments.get("reason");
 		String code = arguments.get("code");
 
-		if(((email == null || email.isEmpty())) || (
+		if((email == null || email.isEmpty())
+		   ||
+		   (code == null || code.isEmpty())
+		   && (
+			(virtOrg == null || virtOrg.isEmpty())
+			||
 			(reason == null || reason.isEmpty())
-			!=
-			(code == null || code.isEmpty())
-		 )) {
+		)) {
 			throw new Exception("invalid usage");
 		}
 
@@ -78,9 +82,10 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 			{
 				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Hi,\n\nThe following certificate(s) is(are) revoked:\n\n" + dns);
 
-				getQuerier("self").executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
+				getQuerier("self").executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
 					reason,
 					m_AMIUser,
+					virtOrg,
 					email
 				);
 			}
@@ -106,7 +111,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-email=\"\" (-reason=\"\" -code=\"\")?";
+		return "-email=\"\" (-vo=\"\" -reason=\"\" -code=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
