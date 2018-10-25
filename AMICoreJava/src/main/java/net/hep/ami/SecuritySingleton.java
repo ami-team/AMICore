@@ -517,7 +517,7 @@ public class SecuritySingleton
 	public static DERSequence amiVO(final String vo)
 	{
 		return new DERSequence(new ASN1Encodable[] {
-			new ASN1ObjectIdentifier("2.16.840.1.113883.3.676"),
+			new ASN1ObjectIdentifier("1.3.6.1.4.1.10813.666"),
 			new DERUTF8String(vo)
 		});
 	}
@@ -612,20 +612,12 @@ public class SecuritySingleton
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.superseded);
 						break;
 
-					case Revocation.COMPROMISED:
-						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.keyCompromise);
-						break;
-
 					case Revocation.AFFILIATION_CHANGED:
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.affiliationChanged);
 						break;
 
-					case Revocation.PRIVILEGE_WITHDRAWN:
-						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.privilegeWithdrawn);
-						break;
-
-					case Revocation.CESSATION_OF_OPERATION:
-						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.cessationOfOperation);
+					case Revocation.COMPROMISED:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.keyCompromise);
 						break;
 
 					default:
