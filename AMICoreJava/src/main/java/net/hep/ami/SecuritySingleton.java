@@ -514,6 +514,16 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static DERSequence _vo(final String vo)
+	{
+		return new DERSequence(new ASN1Encodable[] {
+			new ASN1ObjectIdentifier("1.2.3.4.5.6.7.8.9"),
+			new DERIA5String(vo)
+		});
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, @Nullable String email, @Nullable String vo, int validity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
@@ -549,14 +559,8 @@ public class SecuritySingleton
 			generalNames.add(new GeneralName(GeneralName.rfc822Name, email));
 		}
 
-		if(vo != null)
-		{
-			DERSequence seq = new DERSequence(new ASN1Encodable[] {
-				new ASN1ObjectIdentifier("1.2.3.4.5.6.7.8.9"),
-				new org.bouncycastle.asn1.DERUTF8String(vo)
-			});
-
-			generalNames.add(new GeneralName(GeneralName.otherName, seq));
+		if(vo != null) {
+			generalNames.add(new GeneralName(GeneralName.otherName, _vo(vo)));
 		}
 
 		/*-----------------------------------------------------------------*/
