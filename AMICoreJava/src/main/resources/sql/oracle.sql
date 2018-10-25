@@ -804,6 +804,7 @@ CREATE TRIGGER "trig2_router_short_url"
 
 CREATE TABLE "router_authority" (
   "id" NUMBER(*, 0),
+  "vo" VARCHAR2(128) DEFAULT 'ami',
   "clientDN" VARCHAR2(512),
   "issuerDN" VARCHAR2(512),
   "not  BEFORE" DATE,
@@ -830,27 +831,31 @@ ALTER TABLE "router_authority"
 ;;
 
 ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck2_router_authority" CHECK("clientDN" IS NOT NULL)
+  ADD CONSTRAINT "ck2_router_authority" CHECK("vo" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck3_router_authority" CHECK("issuerDN" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_authority" CHECK("clientDN" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck4_router_authority" CHECK("not  BEFORE" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_authority" CHECK("issuerDN" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck5_router_authority" CHECK("notAfter" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_authority" CHECK("not  BEFORE" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck6_router_authority" CHECK("serial" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_authority" CHECK("notAfter" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck7_router_authority" CHECK("email" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_authority" CHECK("serial" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck8_router_authority" CHECK("email" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_authority"

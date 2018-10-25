@@ -32,6 +32,10 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
+		String vo = arguments.containsKey("vo") ? arguments.get("vo")
+		                                        : "ami"
+		;
+
 		String country = arguments.containsKey("country") ? arguments.get("country")
 		                                                  : ""
 		;
@@ -202,16 +206,17 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* SAVE NEW CERTIFICATE                                            */
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_authority` (`clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, null);
+		PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, null);
 
-		preparedStatement.setString(1, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
-		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
-		preparedStatement.setDate(3, new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()));
-		preparedStatement.setDate(4, new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()));
-		preparedStatement.setString(5, pem.x509Certificates[0].getSerialNumber().toString(10));
-		preparedStatement.setString(6, email);
-		preparedStatement.setString(7, m_AMIUser);
+		preparedStatement.setString(1, vo);
+		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
+		preparedStatement.setString(3, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
+		preparedStatement.setDate(4, new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()));
+		preparedStatement.setDate(5, new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()));
+		preparedStatement.setString(6, pem.x509Certificates[0].getSerialNumber().toString(10));
+		preparedStatement.setString(7, email);
 		preparedStatement.setString(8, m_AMIUser);
+		preparedStatement.setString(9, m_AMIUser);
 
 		preparedStatement.executeUpdate();
 
@@ -231,7 +236,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -email=\"\" -password=\"\" (-validity=\"\")?";
+		return "(-vo=\"\")? -country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -email=\"\" -password=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

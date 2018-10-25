@@ -211,6 +211,7 @@ CREATE TRIGGER "trig1_router_short_url"
 
 CREATE TABLE "router_authority" (
   "id" SERIAL,
+  "vo" VARCHAR(128) NOT NULL DEFAULT 'ami',
   "clientDN" VARCHAR(512) NOT NULL,
   "issuerDN" VARCHAR(512) NOT NULL,
   "notBefore" DATE NOT NULL,
