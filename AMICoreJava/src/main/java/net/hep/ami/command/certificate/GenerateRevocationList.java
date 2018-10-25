@@ -10,7 +10,7 @@ import java.security.cert.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", visible = false, secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class GenerateRevocationList extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -78,7 +78,7 @@ public class GenerateRevocationList extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<field name=\"PEM\">")
+		result.append("<field name=\"pem\">")
 		      .append(pem.toString())
 		      .append("</field>")
 		;
