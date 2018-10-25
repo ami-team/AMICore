@@ -275,7 +275,7 @@ public class SecuritySingleton
 
 		/*-----------------------------------------------------------------*/
 
-		public static PEM generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, int keysize, String subject, @Nullable String email, int validity) throws Exception
+		public static PEM generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, int keysize, String subject, @Nullable String email, @Nullable String vo, int validity) throws Exception
 		{
 			KeyPair keyPair = SecuritySingleton.generateKeyPair(keysize);
 
@@ -285,6 +285,7 @@ public class SecuritySingleton
 				keyPair.getPublic(),
 				subject,
 				email,
+				vo,
 				validity
 			);
 
@@ -513,7 +514,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, @Nullable String email, int validity) throws Exception
+	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, @Nullable String email, @Nullable String vo, int validity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 CERTIFICATE BUILDER                                 */
@@ -542,6 +543,18 @@ public class SecuritySingleton
 		/* ADD X509 EXTENSIONS                                             */
 		/*-----------------------------------------------------------------*/
 
+		List<GeneralName> generalNames = new ArrayList<>();
+
+		if(email != null) {
+			generalNames.add(new GeneralName(GeneralName.rfc822Name, email));
+		}
+
+		if(vo != null) {
+			generalNames.add(new GeneralName(GeneralName.otherName, vo));
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		// Basic Constraints
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(false));
 
@@ -551,11 +564,8 @@ public class SecuritySingleton
 		// Authority Key Identifier
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(caCertificate));
 
-		if(email != null)
-		{
-			// Subject Alternative Name
-			builder.addExtension(new ASN1ObjectIdentifier("2.5.29.17"), false, new GeneralNames(new GeneralName(GeneralName.rfc822Name, email)));
-		}
+		// Subject Alternative Name
+		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.17"), false, new GeneralNames(generalNames.stream().toArray(size -> new GeneralName[size])));
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE X509 CERTIFICATE                                         */

@@ -124,6 +124,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 				country
 			),
 			email,
+			vo,
 			validity
 		);
 

@@ -106,6 +106,7 @@ public class GenerateCertificate extends AbstractCommand
 				country
 			),
 			arguments.get("email"),
+			arguments.get("vo"),
 			validity
 		);
 
@@ -171,7 +172,7 @@ public class GenerateCertificate extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-validity=\"\")?";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-vo=\"\")? (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
