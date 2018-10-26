@@ -53,17 +53,20 @@ public class UpdateConfig extends AbstractCommand
 			name = _names[i].trim();
 			value = _values[i].trim();
 
-			if("::null::".equals(value))
+			if(name.isEmpty() == false)
 			{
-				ConfigSingleton.removeProperty(name);
+				if("::null::".equals(value))
+				{
+					ConfigSingleton.removeProperty(name);
 
-				ConfigSingleton.removePropertyInDataBase(querier, name);
-			}
-			else
-			{
-				ConfigSingleton.setProperty(name, value);
+					ConfigSingleton.removePropertyInDataBase(querier, name);
+				}
+				else
+				{
+					ConfigSingleton.setProperty(name, value);
 
-				ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser);
+					ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser);
+				}
 			}
 		}
 
