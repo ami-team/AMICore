@@ -190,7 +190,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				/*---------------------------------------------------------*/
 
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Hi,\n\nThis is your new AMI certificate. You can install \"" + commonName + ".p12\" in your web browser.\n\nBest regards.", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Dear user,\n\nThis is your new AMI certificate. You can install \"" + commonName + ".p12\" in your web browser.\n\nBest regards.", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
 
 				/*---------------------------------------------------------*/
 			}
