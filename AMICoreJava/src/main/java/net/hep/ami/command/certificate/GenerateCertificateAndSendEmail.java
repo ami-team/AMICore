@@ -32,37 +32,40 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
-		String virtOrg = arguments.containsKey("virtOrg") ? arguments.get("virtOrg")
-		                                                  : "AMI"
-		;
+		String country = arguments.get("country");
 
-		String country = arguments.containsKey("country") ? arguments.get("country")
-		                                                  : ""
-		;
+		String locality = arguments.get("locality");
 
-		String locality = arguments.containsKey("locality") ? arguments.get("locality")
-		                                                    : ""
-		;
+		String organization = arguments.get("organization");
 
-		String organization = arguments.containsKey("organization") ? arguments.get("organization")
-		                                                            : ""
-		;
+		String organizationalUnit = arguments.get("organizationalUnit");
 
-		String organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
-		                                                                        : ""
-		;
+		String commonName = arguments.get("commonName");
 
-		String commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
-		                                                        : ""
-		;
+		String email = arguments.get("email");
 
-		String password = arguments.containsKey("password") ? arguments.get("password")
-		                                                    : ""
-		;
+		String virtOrg = arguments.get("virtOrg");
 
-		String email = arguments.containsKey("email") ? arguments.get("email")
-		                                              : ""
-		;
+		String password = arguments.get("password");
+
+		if(country == null || country.isEmpty()
+		   ||
+		   locality == null || locality.isEmpty()
+		   ||
+		   organization == null || organization.isEmpty()
+		   ||
+		   organizationalUnit == null || organizationalUnit.isEmpty()
+		   ||
+		   commonName == null || commonName.isEmpty()
+		   ||
+		   email == null || email.isEmpty()
+		   ||
+		   virtOrg == null || virtOrg.isEmpty()
+		   ||
+		   password == null || password.isEmpty()
+		 ) {
+			throw new Exception("invalid usage");
+		}
 
 		int validity;
 
@@ -238,7 +241,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\") (-virtOrg=\"\")? -password=\"\" (-validity=\"\")?";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -email=\"\" -virtOrg=\"\" -password=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

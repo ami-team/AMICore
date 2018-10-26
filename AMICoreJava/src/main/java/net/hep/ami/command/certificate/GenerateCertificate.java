@@ -28,29 +28,40 @@ public class GenerateCertificate extends AbstractCommand
 
 		StringBuilder result = new StringBuilder();
 
-		String country = arguments.containsKey("country") ? arguments.get("country")
-		                                                  : ""
-		;
+		String country = arguments.get("country");
 
-		String locality = arguments.containsKey("locality") ? arguments.get("locality")
-		                                                    : ""
-		;
+		String locality = arguments.get("locality");
 
-		String organization = arguments.containsKey("organization") ? arguments.get("organization")
-		                                                            : ""
-		;
+		String organization = arguments.get("organization");
 
-		String organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
-		                                                                        : ""
-		;
+		String organizationalUnit = arguments.get("organizationalUnit");
 
-		String commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
-		                                                        : ""
-		;
+		String commonName = arguments.get("commonName");
 
-		String password = arguments.containsKey("password") ? arguments.get("password")
-		                                                    : ""
-		;
+		String email = arguments.get("email");
+
+		String virtOrg = arguments.get("virtOrg");
+
+		String password = arguments.get("password");
+
+		if(country == null || country.isEmpty()
+		   ||
+		   locality == null || locality.isEmpty()
+		   ||
+		   organization == null || organization.isEmpty()
+		   ||
+		   organizationalUnit == null || organizationalUnit.isEmpty()
+		   ||
+		   commonName == null || commonName.isEmpty()
+		   ||
+		   email == null || email.isEmpty()
+		   ||
+		   virtOrg == null || virtOrg.isEmpty()
+		   ||
+		   password == null || password.isEmpty()
+		 ) {
+			throw new Exception("invalid usage");
+		}
 
 		int validity;
 
@@ -105,8 +116,8 @@ public class GenerateCertificate extends AbstractCommand
 				locality,
 				country
 			),
-			arguments.get("email"),
-			arguments.get("virtOrg"),
+			email,
+			virtOrg,
 			validity
 		);
 
@@ -172,7 +183,7 @@ public class GenerateCertificate extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-virtOrg=\"\")? (-validity=\"\")?";
+		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-virtOrg=\"\")? -password=\"\" (-validity=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
