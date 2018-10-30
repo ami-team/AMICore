@@ -12,9 +12,9 @@ public class AddCommand extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public AddCommand(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public AddCommand(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

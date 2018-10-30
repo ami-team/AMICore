@@ -11,9 +11,9 @@ public class UpdateElements extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public UpdateElements(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public UpdateElements(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

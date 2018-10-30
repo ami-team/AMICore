@@ -10,9 +10,9 @@ public class RemoveRole extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public RemoveRole(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public RemoveRole(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

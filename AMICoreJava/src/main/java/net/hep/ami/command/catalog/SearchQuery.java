@@ -11,9 +11,9 @@ public class SearchQuery extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public SearchQuery(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public SearchQuery(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -38,7 +38,7 @@ public class SearchQuery extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		if("self".equals(catalog) && m_roles.contains("AMI_ADMIN") == false)
+		if("self".equals(catalog) && m_userRoles.contains("AMI_ADMIN") == false)
 		{
 			throw new Exception("wrong role for catalog `self`");
 		}

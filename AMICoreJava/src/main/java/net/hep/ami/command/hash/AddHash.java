@@ -10,9 +10,9 @@ public class AddHash extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public AddHash(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public AddHash(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

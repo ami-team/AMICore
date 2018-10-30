@@ -11,9 +11,9 @@ public class GetServerStatus extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetServerStatus(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public GetServerStatus(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

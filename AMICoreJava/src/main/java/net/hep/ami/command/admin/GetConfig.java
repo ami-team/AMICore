@@ -10,9 +10,9 @@ public class GetConfig extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetConfig(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public GetConfig(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

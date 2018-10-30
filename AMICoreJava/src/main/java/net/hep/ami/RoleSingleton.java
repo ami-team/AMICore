@@ -164,7 +164,7 @@ public class RoleSingleton
 			}
 			else
 			{
-				checkCommand(/* TODO */ null /* TODO */, command, arguments);
+				checkCommand(/* TODO */ null /* TODO */, command, userRoles, arguments);
 			}
 		}
 
@@ -217,7 +217,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void checkCommand(String validator, String command, Map<String, String> arguments) throws Exception
+	public static void checkCommand(String validator, String command, Set <String> userRoles, Map<String, String> arguments) throws Exception
 	{
 		if(validator == null || validator.isEmpty())
 		{
@@ -238,7 +238,7 @@ public class RoleSingleton
 
 		try
 		{
-			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, command, arguments);
+			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, command, userRoles, arguments);
 		}
 		catch(Exception e)
 		{

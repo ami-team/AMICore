@@ -19,9 +19,9 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GenerateCertificateAndSendEmail(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public GenerateCertificateAndSendEmail(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

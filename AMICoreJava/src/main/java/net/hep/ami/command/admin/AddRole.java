@@ -10,9 +10,9 @@ public class AddRole extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public AddRole(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public AddRole(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

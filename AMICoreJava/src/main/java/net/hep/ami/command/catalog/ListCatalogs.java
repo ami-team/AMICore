@@ -10,9 +10,9 @@ public class ListCatalogs extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListCatalogs(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public ListCatalogs(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

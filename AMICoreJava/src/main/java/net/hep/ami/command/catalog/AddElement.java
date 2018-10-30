@@ -13,9 +13,9 @@ public class AddElement extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public AddElement(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public AddElement(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -9,9 +9,9 @@ public class ListRoles extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListRoles(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public ListRoles(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -11,9 +11,9 @@ public class AddUser extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public AddUser(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public AddUser(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
-		super(roles, arguments, transactionId);
+		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -27,7 +27,7 @@ public abstract class AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Set<String> m_roles;
+	protected final Set<String> m_userRoles;
 
 	 private  final Map<String, String> m_arguments;
 
@@ -39,7 +39,7 @@ public abstract class AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
-	public AbstractCommand(Set<String> roles, Map<String, String> arguments, long transactionId)
+	public AbstractCommand(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		/*-----------------------------------------------------------------*/
 		/* ARGUMENT PARAMETERS                                             */
@@ -63,7 +63,7 @@ public abstract class AbstractCommand
 		/* CONSTRUCTOR PARAMETERS                                          */
 		/*-----------------------------------------------------------------*/
 
-		m_roles = roles;
+		m_userRoles = userRoles;
 
 		m_arguments = arguments;
 
