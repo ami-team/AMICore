@@ -10,9 +10,9 @@ public class GetFieldInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetFieldInfo(Map<String, String> arguments, long transactionId)
+	public GetFieldInfo(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

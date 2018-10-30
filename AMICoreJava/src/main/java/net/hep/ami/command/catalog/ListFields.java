@@ -10,9 +10,9 @@ public class ListFields extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListFields(Map<String, String> arguments, long transactionId)
+	public ListFields(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

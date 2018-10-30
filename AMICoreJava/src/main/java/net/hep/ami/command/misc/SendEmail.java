@@ -10,9 +10,9 @@ public class SendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public SendEmail(Map<String, String> arguments, long transactionId)
+	public SendEmail(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

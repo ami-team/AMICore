@@ -11,9 +11,9 @@ public class GetElementInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetElementInfo(Map<String, String> arguments, long transactionId)
+	public GetElementInfo(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

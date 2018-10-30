@@ -13,9 +13,9 @@ public class FindNewCommands extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public FindNewCommands(Map<String, String> arguments, long transactionId)
+	public FindNewCommands(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

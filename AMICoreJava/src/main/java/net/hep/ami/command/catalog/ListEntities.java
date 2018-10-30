@@ -10,9 +10,9 @@ public class ListEntities extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListEntities(Map<String, String> arguments, long transactionId)
+	public ListEntities(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

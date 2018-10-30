@@ -10,9 +10,9 @@ public class Decrypt extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public Decrypt(Map<String, String> arguments, long transactionId)
+	public Decrypt(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

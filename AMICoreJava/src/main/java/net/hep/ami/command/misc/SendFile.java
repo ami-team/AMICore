@@ -11,9 +11,9 @@ public class SendFile extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public SendFile(Map<String, String> arguments, long transactionId)
+	public SendFile(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

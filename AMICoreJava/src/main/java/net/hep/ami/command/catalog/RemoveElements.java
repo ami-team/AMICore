@@ -11,9 +11,9 @@ public class RemoveElements extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public RemoveElements(Map<String, String> arguments, long transactionId)
+	public RemoveElements(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

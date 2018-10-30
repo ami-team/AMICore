@@ -9,9 +9,9 @@ public class GetJSONSchema extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetJSONSchema(Map<String, String> arguments, long transactionId)
+	public GetJSONSchema(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

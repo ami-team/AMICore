@@ -15,9 +15,9 @@ public class GenerateRevocationList extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GenerateRevocationList(Map<String, String> arguments, long transactionId)
+	public GenerateRevocationList(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

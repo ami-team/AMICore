@@ -10,9 +10,9 @@ public class Encrypt extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public Encrypt(Map<String, String> arguments, long transactionId)
+	public Encrypt(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

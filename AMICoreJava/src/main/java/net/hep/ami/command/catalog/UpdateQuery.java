@@ -10,9 +10,9 @@ public class UpdateQuery extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public UpdateQuery(Map<String, String> arguments, long transactionId)
+	public UpdateQuery(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

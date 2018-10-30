@@ -12,9 +12,9 @@ public class UpdateConfig extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public UpdateConfig(Map<String, String> arguments, long transactionId)
+	public UpdateConfig(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

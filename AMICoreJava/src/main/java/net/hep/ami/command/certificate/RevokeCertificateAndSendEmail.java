@@ -12,9 +12,9 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public RevokeCertificateAndSendEmail(Map<String, String> arguments, long transactionId)
+	public RevokeCertificateAndSendEmail(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

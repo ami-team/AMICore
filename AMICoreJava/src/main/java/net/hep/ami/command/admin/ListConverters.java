@@ -10,9 +10,9 @@ public class ListConverters extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListConverters(Map<String, String> arguments, long transactionId)
+	public ListConverters(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

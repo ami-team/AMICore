@@ -9,9 +9,9 @@ public class Echo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public Echo(Map<String, String> arguments, long transactionId)
+	public Echo(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

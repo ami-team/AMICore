@@ -15,9 +15,9 @@ public class CheckDBNomenclature extends AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
-	public CheckDBNomenclature(Map<String, String> arguments, long transactionId)
+	public CheckDBNomenclature(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

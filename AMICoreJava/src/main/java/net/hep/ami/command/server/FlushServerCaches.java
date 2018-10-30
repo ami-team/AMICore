@@ -10,9 +10,9 @@ public class FlushServerCaches extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public FlushServerCaches(Map<String, String> arguments, long transactionId)
+	public FlushServerCaches(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

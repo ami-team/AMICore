@@ -10,9 +10,9 @@ public class SetConfigProperty extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public SetConfigProperty(Map<String, String> arguments, long transactionId)
+	public SetConfigProperty(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -2,16 +2,22 @@ package net.hep.ami.command.user;
 
 import java.util.*;
 
+import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
-public class GetUserInfo extends GetSessionInfo
+public class GetUserInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetUserInfo(Map<String, String> arguments, long transactionId)
+	static final String s_guest = ConfigSingleton.getProperty("guest_user");
+
+	/*---------------------------------------------------------------------*/
+
+	public GetUserInfo(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -19,14 +25,219 @@ public class GetUserInfo extends GetSessionInfo
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		if(arguments.containsKey("amiLogin") == false)
-		{
+		StringBuilder result = new StringBuilder();
+
+		boolean exception = arguments.containsKey("exception");
+		boolean attachCert = arguments.containsKey("attachCert");
+		boolean detachCert = arguments.containsKey("detachCert");
+
+		String amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
+		                                                    : m_AMIUser
+		;
+
+		String amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
+		                                                          : m_AMIPass
+		;
+
+		if(attachCert
+		   &&
+		   detachCert
+		 ) {
 			throw new Exception("invalid usage");
 		}
 
-		arguments.put("exception", "");
+		/*-----------------------------------------------------------------*/
 
-		return super.main(arguments);
+		Querier querier = getQuerier("self");
+
+		/*-----------------------------------------------------------------*/
+		/* GET USER INFO                                                   */
+		/*-----------------------------------------------------------------*/
+
+		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
+
+		String AMIUser;
+		String clientDNInAMI;
+		String issuerDNInAMI;
+		String firstName;
+		String lastName;
+		String email;
+		String valid;
+
+		if(rowList.size() == 1)
+		{
+			Row row1 = rowList.get(0);
+
+			AMIUser = row1.getValue("AMIUser");
+			clientDNInAMI = row1.getValue("clientDN");
+			issuerDNInAMI = row1.getValue("issuerDN");
+			firstName = row1.getValue("firstName");
+			lastName = row1.getValue("lastName");
+			email = row1.getValue("email");
+			valid = row1.getValue("valid");
+		}
+		else
+		{
+			if(exception)
+			{
+				throw new Exception("invalid user `" + amiLogin + "`");
+			}
+
+			AMIUser = s_guest;
+			clientDNInAMI = "";
+			issuerDNInAMI = "";
+			firstName = s_guest;
+			lastName = s_guest;
+			email = "N/A";
+			valid = "0";
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		String useVOMS = ConfigSingleton.getProperty("use_voms");
+
+		/*-----------------------------------------------------------------*/
+
+		boolean VALID = "0".equals(valid) == false;
+
+		boolean VOMS_ENABLED = !(
+			"0".equals(useVOMS) == false
+			&&
+			"no".equals(useVOMS) == false
+			&&
+			"false".equals(useVOMS) == false
+		);
+
+		/*-----------------------------------------------------------------*/
+		/* ATTACH CERTIFICATE                                              */
+		/*-----------------------------------------------------------------*/
+
+		if(attachCert)
+		{
+			amiPassword = SecuritySingleton.encrypt(amiPassword);
+
+			String clientDN = SecuritySingleton.encrypt(m_clientDN);
+			String issuerDN = SecuritySingleton.encrypt(m_issuerDN);
+
+			String sql;
+
+			if(VOMS_ENABLED == false)
+			{
+				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
+			}
+			else
+			{
+				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ?, `valid` = '1' WHERE `AMIUser` = ? AND `AMIPass` = ?";
+			}
+
+			if(querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword).getNbOfUpdatedRows() != 1)
+			{
+				throw new Exception("wrong authentication");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* DETACH CERTIFICATE                                              */
+		/*-----------------------------------------------------------------*/
+
+		if(detachCert)
+		{
+			amiPassword = SecuritySingleton.encrypt(amiPassword);
+
+			String clientDN = SecuritySingleton.encrypt("");
+			String issuerDN = SecuritySingleton.encrypt("");
+
+			String sql;
+
+			if(VOMS_ENABLED == false)
+			{
+				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
+			}
+			else
+			{
+				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ?, `valid` = '0' WHERE `AMIUser` = ? AND `AMIPass` = ?";
+			}
+
+			if(querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword).getNbOfUpdatedRows() != 1)
+			{
+				throw new Exception("wrong authentication");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* GET USER ROLES                                                  */
+		/*-----------------------------------------------------------------*/
+
+		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
+
+		/*-----------------------------------------------------------------*/
+		/* GET SSO INFO                                                    */
+		/*-----------------------------------------------------------------*/
+
+		String ssoName = ConfigSingleton.getProperty("sso_name", "SSO");
+		String ssoURL = ConfigSingleton.getProperty("sso_url", "N/A");
+
+		/*-----------------------------------------------------------------*/
+		/* USER                                                            */
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"user\">")
+		      .append("<row>")
+		      .append("<field name=\"AMIUser\"><![CDATA[").append(AMIUser).append("]]></field>")
+		      .append("<field name=\"guestUser\"><![CDATA[").append(s_guest).append("]]></field>")
+		      .append("<field name=\"clientDNInAMI\"><![CDATA[").append(SecuritySingleton.decrypt(clientDNInAMI)).append("]]></field>")
+		      .append("<field name=\"issuerDNInAMI\"><![CDATA[").append(SecuritySingleton.decrypt(issuerDNInAMI)).append("]]></field>")
+		      .append("<field name=\"clientDNInSession\"><![CDATA[").append(m_clientDN).append("]]></field>")
+		      .append("<field name=\"issuerDNInSession\"><![CDATA[").append(m_issuerDN).append("]]></field>")
+		      .append("<field name=\"notBefore\"><![CDATA[").append(m_notBefore).append("]]></field>")
+		      .append("<field name=\"notAfter\"><![CDATA[").append(m_notAfter).append("]]></field>")
+		      .append("<field name=\"firstName\"><![CDATA[").append(firstName).append("]]></field>")
+		      .append("<field name=\"lastName\"><![CDATA[").append(lastName).append("]]></field>")
+		      .append("<field name=\"email\"><![CDATA[").append(email).append("]]></field>")
+		      .append("<field name=\"valid\"><![CDATA[").append(VALID).append("]]></field>")
+		      .append("<field name=\"certEnabled\"><![CDATA[").append(m_isSecure).append("]]></field>")
+		      .append("<field name=\"vomsEnabled\"><![CDATA[").append(VOMS_ENABLED).append("]]></field>")
+		      .append("</row>")
+		      .append("</rowset>")
+		;
+
+		/*-----------------------------------------------------------------*/
+		/* ROLES                                                           */
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"role\">");
+
+		for(Row row2: rowSet2.iterate())
+		{
+			result.append("<row>")
+			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
+			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+
+		/*-----------------------------------------------------------------*/
+		/* SSO                                                            */
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"sso\">");
+
+		if("N/A".equals(ssoURL) == false)
+		{
+			result.append("<row>")
+			      .append("<field name=\"name\"><![CDATA[").append(ssoName).append("]]></field>")
+			      .append("<field name=\"url\"><![CDATA[").append(ssoURL).append("]]></field>")
+			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -40,7 +251,7 @@ public class GetUserInfo extends GetSessionInfo
 
 	public static String usage()
 	{
-		return "-amiLogin=\"\"";
+		return "(-amiLogin=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/

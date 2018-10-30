@@ -10,9 +10,9 @@ public class ListHashes extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public ListHashes(Map<String, String> arguments, long transactionId)
+	public ListHashes(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

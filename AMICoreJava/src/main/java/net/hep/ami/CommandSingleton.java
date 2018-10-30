@@ -168,6 +168,7 @@ public class CommandSingleton
 				clazz.getMethod("help").invoke(null).toString(),
 				clazz.getMethod("usage").invoke(null).toString(),
 				clazz.getConstructor(
+					Set.class,
 					Map.class,
 					long.class
 				),
@@ -259,24 +260,23 @@ public class CommandSingleton
 		/* CHECK ROLES                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(checkRoles)
-		{
-			AbstractDriver driver = DriverSingleton.getConnection(
-				"self",
-				ConfigSingleton.getProperty("router_catalog"),
-				ConfigSingleton.getProperty("router_url"),
-				ConfigSingleton.getProperty("router_user"),
-				ConfigSingleton.getProperty("router_pass")
-			);
+		Set<String> roles;
 
-			try
-			{
-				RoleSingleton.checkRoles(driver, command, arguments);
-			}
-			finally
-			{
-				driver.commitAndRelease();
-			}
+		AbstractDriver driver = DriverSingleton.getConnection(
+			"self",
+			ConfigSingleton.getProperty("router_catalog"),
+			ConfigSingleton.getProperty("router_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
+
+		try
+		{
+			roles = RoleSingleton.checkRoles(driver, command, arguments, checkRoles);
+		}
+		finally
+		{
+			driver.commitAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -325,6 +325,7 @@ public class CommandSingleton
 			/*-------------------------------------------------------------*/
 
 			AbstractCommand commandObject = (AbstractCommand) tuple.t.newInstance(
+				roles,
 				arguments,
 				transactionId
 			);

@@ -2,7 +2,7 @@ package net.hep.ami;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
@@ -10,8 +10,7 @@ import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.structure.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.Command;
-import net.hep.ami.utility.parser.JSON;
+import net.hep.ami.utility.parser.*;
 
 @SuppressWarnings("all")
 public class CommandSingletonTest

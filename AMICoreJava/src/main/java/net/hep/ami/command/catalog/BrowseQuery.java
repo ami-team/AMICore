@@ -9,9 +9,9 @@ public class BrowseQuery extends SearchQuery
 {
 	/*---------------------------------------------------------------------*/
 
-	public BrowseQuery(Map<String, String> arguments, long transactionId)
+	public BrowseQuery(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

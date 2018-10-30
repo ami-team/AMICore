@@ -1,5 +1,6 @@
 package net.hep.ami;
 
+import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
@@ -19,31 +20,53 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean _commandIsGuest(Querier querier, String command) throws Exception
+	private static Set<String> _getCommandRoles(Querier querier, String command) throws Exception
 	{
-		return querier.executeSQLQuery(
-			"SELECT 1 FROM `router_command`, `router_command_role`, `router_role` WHERE" +
+		Set<String> result = new HashSet<>();
+
+		PreparedStatement statement = querier.prepareStatement(
+			"SELECT `router_role`.`role` FROM `router_command`, `router_command_role`, `router_role` WHERE" +
 			/*-------------------------------------------------------------*/
-			/* SELECT COMMAND                                                 */
+			/* SELECT COMMAND                                              */
 			/*-------------------------------------------------------------*/
 			" `router_command`.`command` = ?" +
 			/*-------------------------------------------------------------*/
 			/* SELECT ROLE                                                 */
 			/*-------------------------------------------------------------*/
 			" AND `router_command_role`.`commandFK` = `router_command`.`id`" +
-			" AND `router_command_role`.`roleFK` = `router_role`.`id`" +
-			" AND `router_role`.`role` = 'AMI_GUEST'",
+			" AND `router_command_role`.`roleFK` = `router_role`.`id`",
 			/*-------------------------------------------------------------*/
-			command
-		).getAll().size() == 1;
+			false,
+			null
+		);
+
+		statement.setString(1, command);
+
+		try
+		{
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next())
+			{
+				result.add(resultSet.getString(1));
+			}
+		}
+		finally
+		{
+			statement.close();
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean _userIsAdmin(Querier querier, String amiUser, String amiPass) throws Exception
+	private static Set<String> _getUserRoles(Querier querier, String amiUser, String amiPass) throws Exception
 	{
-		return querier.executeSQLQuery(
-			"SELECT 1 FROM `router_user`, `router_user_role`, `router_role` WHERE" +
+		Set<String> result = new HashSet<>();
+
+		PreparedStatement statement = querier.prepareStatement(
+			"SELECT `router_role`.`role` FROM `router_user`, `router_user_role`, `router_role` WHERE" +
 			/*-------------------------------------------------------------*/
 			/* SELECT USER                                                 */
 			/*-------------------------------------------------------------*/
@@ -52,17 +75,35 @@ public class RoleSingleton
 			/* SELECT ROLE                                                 */
 			/*-------------------------------------------------------------*/
 			" AND `router_user_role`.`userFK` = `router_user`.`id`" +
-			" AND `router_user_role`.`roleFK` = `router_role`.`id`" +
-			" AND `router_role`.`role` = 'AMI_ADMIN'",
+			" AND `router_user_role`.`roleFK` = `router_role`.`id`",
 			/*-------------------------------------------------------------*/
-			amiUser,
-			amiPass
-		).getAll().size() == 1;
+			false,
+			null
+		);
+
+		statement.setString(1, amiUser);
+		statement.setString(2, amiPass);
+
+		try
+		{
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next())
+			{
+				result.add(resultSet.getString(1));
+			}
+		}
+		finally
+		{
+			statement.close();
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void checkRoles(Querier querier, String command, Map<String, String> arguments) throws Exception
+	public static Set<String> checkRoles(Querier querier, String command, Map<String, String> arguments, boolean check) throws Exception
 	{
 		/*---------------------------------*/
 
@@ -72,7 +113,7 @@ public class RoleSingleton
 		   ||
 		   "AddUser".equals(command)
 		 ) {
-			return;
+			return new HashSet<>();
 		}
 
 		/*---------------------------------*/
@@ -93,50 +134,43 @@ public class RoleSingleton
 		/* GET ROLE                                                        */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery(
-			"SELECT `router_role`.`roleValidatorClass` FROM `router_command`, `router_user`, `router_command_role`, `router_user_role`, `router_role` WHERE" +
-			/*-------------------------------------------------------------*/
-			/* SELECT COMMAND                                              */
-			/*-------------------------------------------------------------*/
-			" `router_command`.`command` = ?" +
-			/*-------------------------------------------------------------*/
-			/* SELECT USER                                                 */
-			/*-------------------------------------------------------------*/
-			" AND `router_user`.`AMIUser` = ?" +
-			" AND `router_user`.`AMIPass` = ?" +
-			/*-------------------------------------------------------------*/
-			/* SELECT ROLE                                                 */
-			/*-------------------------------------------------------------*/
-			" AND `router_command_role`.`commandFK` = `router_command`.`id`" +
-			" AND `router_command_role`.`roleFK` = `router_role`.`id`" +
-			/*-------------------------------------------------------------*/
-			/* SELECT USER ROLE                                            */
-			/*-------------------------------------------------------------*/
-			" AND `router_user_role`.`userFK` = `router_user`.`id`" +
-			" AND `router_user_role`.`roleFK` = `router_role`.`id`",
-			/*-------------------------------------------------------------*/
-			command,
+		Set<String> commandRoles = _getCommandRoles(
+			querier,
+			command
+		);
+
+		Set<String> userRoles = _getUserRoles(
+			querier,
 			amiUser,
 			amiPass
-		).getAll();
+		);
 
 		/*-----------------------------------------------------------------*/
 		/* CHECK ROLE                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(rowList.isEmpty())
+		if(check)
 		{
-			if(_userIsAdmin(querier, amiUser, amiPass) == false && _commandIsGuest(querier, command) == false)
-			{
+			boolean isGuestCommand = commandRoles.contains("AMI_GUEST");
+			boolean isAdminUser    = userRoles   .contains("AMI_ADMIN");
+
+			if(isGuestCommand == false
+			   &&
+			   isAdminUser == false
+			   &&
+			   Collections.disjoint(commandRoles, userRoles)
+			 ) {
 				throw new Exception("wrong role for command `" + command + "`");
 			}
-		}
-		else
-		{
-			checkCommand(rowList.get(0).getValue(0), command, arguments);
+			else
+			{
+				checkCommand(/* TODO */ null /* TODO */, command, arguments);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		return userRoles;
 	}
 
 	/*---------------------------------------------------------------------*/

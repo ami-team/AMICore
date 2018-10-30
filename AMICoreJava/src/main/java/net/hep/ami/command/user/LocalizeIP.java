@@ -10,9 +10,9 @@ public class LocalizeIP extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public LocalizeIP(Map<String, String> arguments, long transactionId)
+	public LocalizeIP(Set<String> roles, Map<String, String> arguments, long transactionId)
 	{
-		super(arguments, transactionId);
+		super(roles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
