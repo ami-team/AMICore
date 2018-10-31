@@ -14,13 +14,13 @@ public class CommandSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple6<String, String, String, Constructor<?>, Boolean, Boolean>
+	private static final class Tuple extends Tuple7<String, String, String, Constructor<?>, Boolean, Boolean, String>
 	{
 		private static final long serialVersionUID = -1908438407272143175L;
 
-		public Tuple(String _x, String _y, String _z, Constructor<?> _t, boolean _u, boolean _v)
+		public Tuple(String _x, String _y, String _z, Constructor<?> _t, boolean _u, boolean _v, String w)
 		{
-			super(_x, _y, _z, _t, _u, _v);
+			super(_x, _y, _z, _t, _u, _v, w);
 		}
 	}
 
@@ -103,7 +103,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class`, `visible`, `secured` FROM `router_command`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */
@@ -117,7 +117,8 @@ public class CommandSingleton
 						row.getValue(0),
 						row.getValue(1),
 						row.getValue(2),
-						row.getValue(3)
+						row.getValue(3),
+						row.getValue(4)
 					);
 				}
 				catch(Exception e)
@@ -138,7 +139,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addCommand(String commandName, String commandClass, String commandVisible, String commandSecured) throws Exception
+	private static void addCommand(String commandName, String commandClass, String commandVisible, String commandSecured, String commandRoleValidatorClass) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                */
@@ -173,7 +174,8 @@ public class CommandSingleton
 					long.class
 				),
 				commandVisible.equals("0") == false,
-				commandSecured.equals("0") == false
+				commandSecured.equals("0") == false,
+				commandRoleValidatorClass
 			)
 		);
 
@@ -272,7 +274,7 @@ public class CommandSingleton
 
 		try
 		{
-			userRoles = RoleSingleton.checkRoles(driver, command, arguments, checkRoles);
+			userRoles = RoleSingleton.checkRoles(driver, command, arguments, tuple.w, checkRoles);
 		}
 		finally
 		{
@@ -409,6 +411,7 @@ public class CommandSingleton
 			      .append("<field name=\"class\"><![CDATA[").append(tuple.t).append("]]></field>")
 			      .append("<field name=\"visible\"><![CDATA[").append(tuple.u).append("]]></field>")
 			      .append("<field name=\"secured\"><![CDATA[").append(tuple.v).append("]]></field>")
+			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(tuple.w).append("]]></field>")
 			      .append("</row>")
 			;
 		}

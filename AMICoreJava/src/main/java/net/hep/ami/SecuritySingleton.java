@@ -3,6 +3,7 @@ package net.hep.ami;
 import java.io.*;
 import java.math.*;
 import java.util.*;
+import java.nio.charset.*;
 
 import java.security.*;
 import java.security.cert.*;
@@ -392,7 +393,7 @@ public class SecuritySingleton
 
 		public byte[] toByteArray()
 		{
-			return toString().getBytes();
+			return toString().getBytes(StandardCharsets.UTF_8);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -427,11 +428,11 @@ public class SecuritySingleton
 		final int length = password.length();
 
 		/****/ if(length <= 16) {
-			key = String.format("%1$-16s", password).getBytes();
+			key = String.format("%1$-16s", password).getBytes(StandardCharsets.UTF_8);
 		} else if(length <= 24) {
-			key = String.format("%1$-24s", password).getBytes();
+			key = String.format("%1$-24s", password).getBytes(StandardCharsets.UTF_8);
 		} else if(length <= 32) {
-			key = String.format("%1$-32s", password).getBytes();
+			key = String.format("%1$-32s", password).getBytes(StandardCharsets.UTF_8);
 		} else {
 			throw new Exception("too long password (max 32)");
 		}
@@ -855,8 +856,8 @@ public class SecuritySingleton
 	public static String encrypt(String s) throws Exception
 	{
 		return s.isEmpty() == false ? new String(
-			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes()))
-		) : "";
+			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes(StandardCharsets.UTF_8)))
+		, StandardCharsets.UTF_8) : "";
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -864,8 +865,8 @@ public class SecuritySingleton
 	public static String decrypt(String s) throws Exception
 	{
 		return s.isEmpty() == false ? new String(
-			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString()))
-		) : "";
+			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString(/*------------------*/)))
+		, StandardCharsets.UTF_8) : "";
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -887,7 +888,7 @@ public class SecuritySingleton
 
 	public static String md5Sum(String s) throws Exception
 	{
-		return md5Sum(s.getBytes("UTF-8"));
+		return md5Sum(s.getBytes(StandardCharsets.UTF_8));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -905,7 +906,7 @@ public class SecuritySingleton
 
 	public static String sha256Sum(String s) throws Exception
 	{
-		return sha256Sum(s.getBytes("UTF-8"));
+		return sha256Sum(s.getBytes(StandardCharsets.UTF_8));
 	}
 
 	/*---------------------------------------------------------------------*/

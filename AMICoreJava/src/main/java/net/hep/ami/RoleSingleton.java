@@ -81,8 +81,8 @@ public class RoleSingleton
 			null
 		);
 
-		statement.setString(1, amiUser);
-		statement.setString(2, amiPass);
+		statement.setString(1, /*---------------------*/(amiUser));
+		statement.setString(2, SecuritySingleton.encrypt(amiPass));
 
 		try
 		{
@@ -103,7 +103,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> checkRoles(Querier querier, String command, Map<String, String> arguments, boolean check) throws Exception
+	public static Set<String> checkRoles(Querier querier, String command, Map<String, String> arguments, String validatorClass, boolean check) throws Exception
 	{
 		/*---------------------------------*/
 
@@ -127,15 +127,11 @@ public class RoleSingleton
 		 ) {
 			if(check)
 			{
-				throw new Exception("not authenticated");
+				throw new Exception("user not authenticated");
 			}
 
 			amiUser = ConfigSingleton.getProperty("admin_user");
 			amiPass = ConfigSingleton.getProperty("admin_pass");
-		}
-		else
-		{
-			amiPass = SecuritySingleton.encrypt(amiPass);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -162,17 +158,17 @@ public class RoleSingleton
 			boolean isGuestCommand = commandRoles.contains("AMI_GUEST");
 			boolean isAdminUser    = userRoles   .contains("AMI_ADMIN");
 
-			if(isGuestCommand == false
-			   &&
-			   isAdminUser == false
-			   &&
-			   Collections.disjoint(commandRoles, userRoles)
+			if(isGuestCommand
+			   ||
+			   isAdminUser
+			   ||
+			   Collections.disjoint(commandRoles, userRoles) == false
 			 ) {
-				throw new Exception("wrong role for command `" + command + "`");
+				checkCommand(validatorClass, command, userRoles, arguments);
 			}
 			else
 			{
-				checkCommand(/* TODO */ null /* TODO */, command, userRoles, arguments);
+				throw new Exception("wrong role for command `" + command + "`");
 			}
 		}
 
@@ -183,51 +179,9 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static Class<?> getRoleValidator(String className) throws Exception
+	public static void checkCommand(String validatorClass, String command, Set <String> userRoles, Map<String, String> arguments) throws Exception
 	{
-		Class<?> result = s_roleValidators.get(className);
-
-		if(result == null)
-		{
-			result = ClassSingleton.forName(className);
-
-			if(ClassSingleton.extendsClass(result, CommandValidator.class))
-			{
-				throw new Exception("class `" + className + "` doesn't extend `CommandValidator`");
-			}
-
-			s_roleValidators.put(className, result);
-		}
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static Class<?> getUserValidator(String className) throws Exception
-	{
-		Class<?> result = s_userValidators.get(className);
-
-		if(result == null)
-		{
-			result = ClassSingleton.forName(className);
-
-			if(ClassSingleton.extendsClass(result, NewUserValidator.class))
-			{
-				throw new Exception("class `" + className + "` doesn't extend `NewUserValidator`");
-			}
-
-			s_userValidators.put(className, result);
-		}
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void checkCommand(String validator, String command, Set <String> userRoles, Map<String, String> arguments) throws Exception
-	{
-		if(validator == null || validator.isEmpty())
+		if(validatorClass == null || validatorClass.isEmpty())
 		{
 			return;
 		}
@@ -236,7 +190,19 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = getRoleValidator(validator);
+		Class<?> clazz = s_roleValidators.get(validatorClass);
+
+		if(clazz == null)
+		{
+			clazz = ClassSingleton.forName(validatorClass);
+
+			if(ClassSingleton.extendsClass(clazz, CommandValidator.class))
+			{
+				throw new Exception("class `" + validatorClass + "` doesn't extend `CommandValidator`");
+			}
+
+			s_roleValidators.put(validatorClass, clazz);
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                               */
@@ -250,7 +216,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute command validator `" + validator + "`", e);
+			throw new Exception("could not execute command validator `" + validatorClass + "`", e);
 		}
 
 		if(isOk == false)
@@ -263,9 +229,9 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void checkNewUser(String validator, String amiLogin, String amiPassword, String clientDN, String issuerDN, String firstName, String lastName, String email) throws Exception
+	public static void checkNewUser(String validatorClass, String amiLogin, String amiPassword, String clientDN, String issuerDN, String firstName, String lastName, String email) throws Exception
 	{
-		if(validator == null || validator.isEmpty())
+		if(validatorClass == null || validatorClass.isEmpty())
 		{
 			return;
 		}
@@ -274,7 +240,19 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Class<?> clazz = getUserValidator(validator);
+		Class<?> clazz = s_userValidators.get(validatorClass);
+
+		if(clazz == null)
+		{
+			clazz = ClassSingleton.forName(validatorClass);
+
+			if(ClassSingleton.extendsClass(clazz, NewUserValidator.class))
+			{
+				throw new Exception("class `" + validatorClass + "` doesn't extend `NewUserValidator`");
+			}
+
+			s_userValidators.put(validatorClass, clazz);
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                               */
@@ -288,7 +266,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute user validator `" + validator + "`", e);
+			throw new Exception("could not execute user validator `" + validatorClass + "`", e);
 		}
 
 		if(isOk == false)
