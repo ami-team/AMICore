@@ -260,7 +260,7 @@ public class CommandSingleton
 		/* CHECK ROLES                                                     */
 		/*-----------------------------------------------------------------*/
 
-		Set<String> roles;
+		Set<String> userRoles;
 
 		AbstractDriver driver = DriverSingleton.getConnection(
 			"self",
@@ -272,7 +272,7 @@ public class CommandSingleton
 
 		try
 		{
-			roles = RoleSingleton.checkRoles(driver, command, arguments, checkRoles);
+			userRoles = RoleSingleton.checkRoles(driver, command, arguments, checkRoles);
 		}
 		finally
 		{
@@ -325,7 +325,7 @@ public class CommandSingleton
 			/*-------------------------------------------------------------*/
 
 			AbstractCommand commandObject = (AbstractCommand) tuple.t.newInstance(
-				roles,
+				userRoles,
 				arguments,
 				transactionId
 			);
