@@ -164,8 +164,17 @@ public class GetUserInfo extends AbstractCommand
 		/* GET SSO INFO                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
-		String ssoURL = ConfigSingleton.getProperty("sso_url", "N/A");
+		String ssoLabel = ConfigSingleton.getProperty("sso_label", null);
+
+		if(ssoLabel == null || ssoLabel.isEmpty()) {
+			ssoLabel = "SSO";
+		}
+
+		String ssoURL = ConfigSingleton.getProperty("sso_url", null);
+
+		if(ssoURL == null || ssoURL.isEmpty()) {
+			ssoURL = "N/A";
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* USER                                                            */
