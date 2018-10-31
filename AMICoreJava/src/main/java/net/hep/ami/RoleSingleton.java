@@ -185,7 +185,7 @@ public class RoleSingleton
 
 			if(ClassSingleton.extendsClass(result, CommandValidator.class))
 			{
-				throw new Exception("class '" + className + "' doesn't extend 'CommandValidator'");
+				throw new Exception("class `" + className + "` doesn't extend `CommandValidator`");
 			}
 
 			s_roleValidators.put(className, result);
@@ -206,7 +206,7 @@ public class RoleSingleton
 
 			if(ClassSingleton.extendsClass(result, NewUserValidator.class))
 			{
-				throw new Exception("class '" + className + "' doesn't extend 'NewUserValidator'");
+				throw new Exception("class `" + className + "` doesn't extend `NewUserValidator`");
 			}
 
 			s_userValidators.put(className, result);

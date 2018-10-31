@@ -94,19 +94,9 @@ public class GetUserInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String useVOMS = ConfigSingleton.getProperty("use_voms");
-
-		/*-----------------------------------------------------------------*/
-
 		boolean VALID = "0".equals(valid) == false;
 
-		boolean VOMS_ENABLED = !(
-			"0".equals(useVOMS) == false
-			&&
-			"no".equals(useVOMS) == false
-			&&
-			"false".equals(useVOMS) == false
-		);
+		boolean VOMS_ENABLED = ConfigSingleton.getProperty("has_virtual_organization", false);
 
 		/*-----------------------------------------------------------------*/
 		/* ATTACH CERTIFICATE                                              */
@@ -174,7 +164,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET SSO INFO                                                    */
 		/*-----------------------------------------------------------------*/
 
-		String ssoName = ConfigSingleton.getProperty("sso_name", "SSO");
+		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
 		String ssoURL = ConfigSingleton.getProperty("sso_url", "N/A");
 
 		/*-----------------------------------------------------------------*/
@@ -227,7 +217,7 @@ public class GetUserInfo extends AbstractCommand
 		if("N/A".equals(ssoURL) == false)
 		{
 			result.append("<row>")
-			      .append("<field name=\"name\"><![CDATA[").append(ssoName).append("]]></field>")
+			      .append("<field name=\"label\"><![CDATA[").append(ssoLabel).append("]]></field>")
 			      .append("<field name=\"url\"><![CDATA[").append(ssoURL).append("]]></field>")
 			      .append("</row>")
 			;
