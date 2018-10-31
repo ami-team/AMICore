@@ -98,8 +98,7 @@ ALTER TABLE "router_converter"
 CREATE TABLE "router_role" (
   "id" SERIAL,
   "role" VARCHAR(128) NOT NULL,
-  "description" VARCHAR(512),
-  "roleValidatorClass" VARCHAR(256)
+  "description" VARCHAR(512)
 );;
 
 ALTER TABLE "router_role"
@@ -114,7 +113,8 @@ CREATE TABLE "router_command" (
   "command" VARCHAR(128) NOT NULL,
   "class" VARCHAR(256) NOT NULL,
   "visible" SMALLINT NOT NULL DEFAULT '1',
-  "secured" SMALLINT NOT NULL DEFAULT '0'
+  "secured" SMALLINT NOT NULL DEFAULT '0',
+  "roleValidatorClass" VARCHAR(256)
 );;
 
 ALTER TABLE "router_command"

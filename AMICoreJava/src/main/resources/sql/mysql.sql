@@ -88,8 +88,7 @@ ALTER TABLE `router_converter`
 CREATE TABLE `router_role` (
   `id` INT NOT NULL,
   `role` VARCHAR(128) NOT NULL,
-  `description` VARCHAR(512),
-  `roleValidatorClass` VARCHAR(256)
+  `description` VARCHAR(512)
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;;
 
@@ -109,7 +108,8 @@ CREATE TABLE `router_command` (
   `command` VARCHAR(128) NOT NULL,
   `class` VARCHAR(256) NOT NULL,
   `visible` TINYINT(1) NOT NULL DEFAULT '1',
-  `secured` TINYINT(1) NOT NULL DEFAULT '0'
+  `secured` TINYINT(1) NOT NULL DEFAULT '0',
+  "roleValidatorClass" VARCHAR(256)
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;;
 

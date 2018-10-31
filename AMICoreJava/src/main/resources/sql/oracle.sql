@@ -457,8 +457,7 @@ CREATE TRIGGER "trig1_router_converter"
 CREATE TABLE "router_role" (
   "id" NUMBER(*, 0),
   "role" VARCHAR2(128),
-  "description" VARCHAR2(512),
-  "roleValidatorClass" VARCHAR2(256)
+  "description" VARCHAR2(512)
 );;
 
 ALTER TABLE "router_role"
@@ -496,7 +495,8 @@ CREATE TABLE "router_command" (
   "command" VARCHAR2(128),
   "class" VARCHAR2(256),
   "visible" NUMBER(1, 0) DEFAULT '1',
-  "secured" NUMBER(1, 0) DEFAULT '0'
+  "secured" NUMBER(1, 0) DEFAULT '0',
+  "roleValidatorClass" VARCHAR2(256)
 );;
 
 ALTER TABLE "router_command"
