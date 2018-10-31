@@ -109,7 +109,7 @@ CREATE TABLE `router_command` (
   `class` VARCHAR(256) NOT NULL,
   `visible` TINYINT(1) NOT NULL DEFAULT '1',
   `secured` TINYINT(1) NOT NULL DEFAULT '0',
-  `roleValidatorClass` VARCHAR(256) DEFAULT NULL
+  `roleValidatorClass` VARCHAR(256)
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;;
 
@@ -225,7 +225,7 @@ CREATE TABLE `router_authority` (
   `notAfter` DATE NOT NULL,
   `serial` VARCHAR(128) NOT NULL,
   `email` VARCHAR(128) NOT NULL,
-  `reason` SMALLINT DEFAULT NULL,
+  `reason` SMALLINT,
   `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
   `createdBy` VARCHAR(128) NOT NULL,
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

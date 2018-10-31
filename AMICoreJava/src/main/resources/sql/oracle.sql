@@ -496,7 +496,7 @@ CREATE TABLE "router_command" (
   "class" VARCHAR2(256),
   "visible" NUMBER(1, 0) DEFAULT '1',
   "secured" NUMBER(1, 0) DEFAULT '0',
-  "roleValidatorClass" VARCHAR2(256) DEFAULT NULL
+  "roleValidatorClass" VARCHAR2(256)
 );;
 
 ALTER TABLE "router_command"
@@ -811,7 +811,7 @@ CREATE TABLE "router_authority" (
   "notAfter" DATE,
   "serial" VARCHAR2(128),
   "email" VARCHAR2(128),
-  "reason" NUMBER(5, 0) DEFAULT NULL,
+  "reason" NUMBER(5, 0),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
