@@ -96,7 +96,7 @@ public class GetUserInfo extends AbstractCommand
 
 		boolean VALID = "0".equals(valid) == false;
 
-		boolean VOMS_ENABLED = ConfigSingleton.getProperty("has_virtual_organization", false);
+		boolean VOMS_ENABLED = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
 
 		/*-----------------------------------------------------------------*/
 		/* ATTACH CERTIFICATE                                              */
