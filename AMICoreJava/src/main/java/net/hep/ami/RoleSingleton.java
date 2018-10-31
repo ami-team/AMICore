@@ -125,10 +125,18 @@ public class RoleSingleton
 		   ||
 		   amiPass == null
 		 ) {
-			throw new Exception("not authenticated");
-		}
+			if(check)
+			{
+				throw new Exception("not authenticated");
+			}
 
-		amiPass = SecuritySingleton.encrypt(amiPass);
+			amiUser = ConfigSingleton.getProperty("admin_user");
+			amiPass = ConfigSingleton.getProperty("admin_pass");
+		}
+		else
+		{
+			amiPass = SecuritySingleton.encrypt(amiPass);
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* GET ROLE                                                        */
