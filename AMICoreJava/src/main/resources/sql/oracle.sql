@@ -496,7 +496,7 @@ CREATE TABLE "router_command" (
   "class" VARCHAR2(256),
   "visible" NUMBER(1, 0) DEFAULT '1',
   "secured" NUMBER(1, 0) DEFAULT '0',
-  "roleValidatorClass" VARCHAR2(256)
+  "roleValidatorClass" VARCHAR2(256) DEFAULT NULL
 );;
 
 ALTER TABLE "router_command"

@@ -114,7 +114,7 @@ CREATE TABLE "router_command" (
   "class" VARCHAR(256) NOT NULL,
   "visible" SMALLINT NOT NULL DEFAULT '1',
   "secured" SMALLINT NOT NULL DEFAULT '0',
-  "roleValidatorClass" VARCHAR(256)
+  "roleValidatorClass" VARCHAR(256) DEFAULT NULL
 );;
 
 ALTER TABLE "router_command"

@@ -109,7 +109,7 @@ CREATE TABLE `router_command` (
   `class` VARCHAR(256) NOT NULL,
   `visible` TINYINT(1) NOT NULL DEFAULT '1',
   `secured` TINYINT(1) NOT NULL DEFAULT '0',
-  "roleValidatorClass" VARCHAR(256)
+  `roleValidatorClass` VARCHAR(256) DEFAULT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;;
 
