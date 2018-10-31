@@ -29,7 +29,6 @@ public class CommandSingletonTest
 
 		System.out.println(CommandSingleton.executeCommand("GetJSONSchema", arguments, false).replace(">", ">\n"));
 /*
-		arguments.put("amiLogin", "jodier");
 		arguments.put("cached", "");
 		CommandSingleton.executeCommand("GetUserInfo", arguments);
 		arguments.put("cached", "");
