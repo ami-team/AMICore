@@ -122,7 +122,7 @@ public class GetUserInfo extends AbstractCommand
 
 			if(querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword).getNbOfUpdatedRows() != 1)
 			{
-				throw new Exception("wrong authentication");
+				throw new Exception("wrong authentication " + amiLogin + " " + amiPassword);
 			}
 		}
 

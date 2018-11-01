@@ -19,7 +19,12 @@ public class GetSessionInfo extends GetUserInfo
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		arguments.put("amiLogin", m_AMIUser);
+		if(arguments.containsKey("attachCert") == false
+		   &&
+		   arguments.containsKey("detachCert") == false
+		 ) {
+			arguments.put("amiLogin", m_AMIUser);
+		}
 
 		arguments.put("exception", null);
 
