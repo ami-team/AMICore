@@ -261,9 +261,9 @@ CREATE TABLE "router_config" (
   "paramName" VARCHAR2(128),
   "paramValue" VARCHAR2(512),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR(128) NOT NULL,
+  "createdBy" VARCHAR2(128) NOT NULL,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR2(128) NOT NULL
 );;
 
 ALTER TABLE "router_config"
@@ -328,16 +328,16 @@ CREATE TABLE "router_catalog" (
   "id" NUMBER(*, 0),
   "externalCatalog" VARCHAR2(128),
   "internalCatalog" VARCHAR2(128),
-  "internalSchema" VARCHAR(128),
+  "internalSchema" VARCHAR2(128),
   "jdbcUrl" VARCHAR2(512),
   "user" VARCHAR2(128),
   "pass" VARCHAR2(128),
   "custom" CLOB,
   "archived" NUMBER(1, 0) DEFAULT '0',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR(128) NOT NULL,
+  "createdBy" VARCHAR2(128) NOT NULL,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR2(128) NOT NULL
 );;
 
 ALTER TABLE "router_catalog"
@@ -813,9 +813,9 @@ CREATE TABLE "router_authority" (
   "email" VARCHAR2(128),
   "reason" NUMBER(5, 0),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR(128) NOT NULL,
+  "createdBy" VARCHAR2(128) NOT NULL,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR2(128) NOT NULL
 );;
 
 ALTER TABLE "router_authority"
@@ -886,9 +886,9 @@ CREATE TABLE "router_search_interface" (
   "json" CLOB,
   "archived" NUMBER(1, 0) DEFAULT '0',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR(128) NOT NULL,
+  "createdBy" VARCHAR2(128) NOT NULL,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR2(128) NOT NULL
 );;
 
 ALTER TABLE "router_search_interface"
