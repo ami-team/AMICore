@@ -329,7 +329,7 @@ CREATE TABLE "router_catalog" (
   "externalCatalog" VARCHAR2(128),
   "internalCatalog" VARCHAR2(128),
   "internalSchema" VARCHAR2(128),
-  "jdbcUrl" VARCHAR2(512),
+  "jdbcUrl" VARCHAR2(2048),
   "user" VARCHAR2(128),
   "pass" VARCHAR2(128),
   "custom" CLOB,

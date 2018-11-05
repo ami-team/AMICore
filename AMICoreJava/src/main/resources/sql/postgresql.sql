@@ -58,7 +58,7 @@ CREATE TABLE "router_catalog" (
   "externalCatalog" VARCHAR(128) NOT NULL,
   "internalCatalog" VARCHAR(128) NOT NULL,
   "internalSchema" VARCHAR(128),
-  "jdbcUrl" VARCHAR(512) NOT NULL,
+  "jdbcUrl" VARCHAR(2048) NOT NULL,
   "user" VARCHAR(128) NOT NULL,
   "pass" VARCHAR(128) NOT NULL,
   "custom" TEXT,
