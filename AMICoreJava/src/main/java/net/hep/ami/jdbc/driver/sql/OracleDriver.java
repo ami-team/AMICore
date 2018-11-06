@@ -36,7 +36,7 @@ public class OracleDriver extends AbstractDriver
 	{
 		/*-----------------------------------------------------------------*/
 
-		List<String> tokens = Tokenizer.tokenize(sql);
+		List<String> tokens = Tokenizer.tokenize(sql.trim());
 
 		/*-----------------------------------------------------------------*/
 
@@ -68,7 +68,10 @@ public class OracleDriver extends AbstractDriver
 			}
 			else
 			{
-				result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+				if(";".equals(token) == false)
+				{
+					result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+				}
 			}
 		}
 

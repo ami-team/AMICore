@@ -335,8 +335,18 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
-			" ('/xslt/AMIXmlToText.xsl', 'text/plain')," +
-			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')," +
+			" ('/xslt/AMIXmlToText.xsl', 'text/plain')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
+			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
 			" ('/xslt/AMIXmlToJson.xsl', 'application/json')" +
 			";"
 		);
@@ -349,9 +359,24 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_GUEST')," +
-			" ('AMI_USER')," +
-			" ('AMI_CERT')," +
+			" ('AMI_GUEST')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_role` (`role`) VALUES" +
+			" ('AMI_USER')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_role` (`role`) VALUES" +
+			" ('AMI_CERT')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_role` (`role`) VALUES" +
 			" ('AMI_ADMIN')" +
 			";"
 		);
