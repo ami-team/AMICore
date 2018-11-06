@@ -74,7 +74,9 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		if(sql.toUpperCase().contains("FROM") == false)
+		String SQL = sql.trim().toUpperCase();
+
+		if(SQL.startsWith("SELECT") && SQL.contains("FROM") == false)
 		{
 			result.append(" FROM \"dual\"");
 		}
