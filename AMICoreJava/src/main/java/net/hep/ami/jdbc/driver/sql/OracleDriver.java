@@ -81,7 +81,7 @@ public class OracleDriver extends AbstractDriver
 
 		if(SQL.startsWith("SELECT") && SQL.contains("FROM") == false)
 		{
-			result.append(" FROM \"dual\"");
+			result.append(" FROM dual");
 		}
 
 		/*-----------------------------------------------------------------*/

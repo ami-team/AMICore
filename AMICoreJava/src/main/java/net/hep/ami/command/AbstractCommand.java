@@ -45,8 +45,8 @@ public abstract class AbstractCommand
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/
 
-		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : "";
-		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : "";
+		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : ConfigSingleton.getProperty("guest_user");
+		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : ConfigSingleton.getProperty("guest_pass");
 
 		m_clientDN = arguments.containsKey("clientDN") ? arguments.remove("clientDN") : "";
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
