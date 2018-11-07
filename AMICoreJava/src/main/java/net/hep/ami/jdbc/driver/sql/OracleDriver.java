@@ -42,6 +42,7 @@ public class OracleDriver extends AbstractDriver
 
 		StringBuilder result = new StringBuilder();
 
+		boolean selectFound = false;
 		boolean fromFound = false;
 
 		int limitValue = 0;
@@ -82,9 +83,19 @@ public class OracleDriver extends AbstractDriver
 					{
 						cnt--;
 					}
-					else if(cnt == 0 && "FROM".equalsIgnoreCase(token))
+					else
 					{
-						fromFound = true;
+						if(cnt == 0)
+						{
+							/**/ if("SELECT".equalsIgnoreCase(token))
+							{
+								selectFound = true;
+							}
+							else if("FROM".equalsIgnoreCase(token))
+							{
+								fromFound = true;
+							}
+						}
 					}
 
 					result.append(Tokenizer.backQuotesToDoubleQuotes(token));
@@ -94,7 +105,7 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		if(fromFound == false)
+		if(selectFound == true && fromFound == false)
 		{
 			result.append(" FROM dual");
 		}
