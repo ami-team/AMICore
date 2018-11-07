@@ -45,7 +45,10 @@ public class OracleDriver extends AbstractDriver
 		int limit = 0;
 		int offset = 0;
 		int flag = 0;
+		int cnt = 0;
 
+		boolean fromFound = false;
+	
 		for(String token: tokens)
 		{
 			/**/ if("LIMIT".equalsIgnoreCase(token))
@@ -55,6 +58,18 @@ public class OracleDriver extends AbstractDriver
 			else if("OFFSET".equalsIgnoreCase(token))
 			{
 				flag = 2;
+			}
+			else if("FROM".equalsIgnoreCase(token) && cnt == 0)
+			{
+				fromFound = true;
+			}
+			else if("(".equals(token))
+			{
+				cnt++;
+			}
+			else if(")".equals(token))
+			{
+				cnt--;
 			}
 			else if(flag == 1)
 			{
@@ -77,9 +92,7 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		String SQL = sql.trim().toUpperCase();
-
-		if(SQL.startsWith("SELECT") && SQL.contains("FROM") == false)
+		if(fromFound == false)
 		{
 			result.append(" FROM dual");
 		}
