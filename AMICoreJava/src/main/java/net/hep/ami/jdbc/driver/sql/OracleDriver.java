@@ -45,7 +45,7 @@ public class OracleDriver extends AbstractDriver
 		boolean selectFound = false;
 		boolean fromFound = false;
 
-		int limitValue = 0;
+		int limitValue = -1;
 		int offsetValue = 0;
 
 		int flag = 0;
@@ -65,13 +65,21 @@ public class OracleDriver extends AbstractDriver
 				}
 				else if(flag == 1)
 				{
-					limitValue = Integer.valueOf(token);
-					flag = 0;
+					try
+					{
+						limitValue = Integer.valueOf(token);
+						flag = 0;
+					}
+					catch(NumberFormatException e) { /* do nothing */ }
 				}
 				else if(flag == 2)
 				{
-					offsetValue = Integer.valueOf(token);
-					flag = 0;
+					try
+					{
+						offsetValue = Integer.valueOf(token);
+						flag = 0;
+					}
+					catch(NumberFormatException e) { /* do nothing */ }
 				}
 				else
 				{
@@ -112,7 +120,7 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		if(limitValue > 0)
+		if(limitValue >= 0)
 		{
 			result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM rnum FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE rnum >= ").append(offsetValue + 1);
 		}
