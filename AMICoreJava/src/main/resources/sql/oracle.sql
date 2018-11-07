@@ -283,23 +283,19 @@ ALTER TABLE "router_config"
 ;;
 
 ALTER TABLE "router_config"
-  ADD CONSTRAINT "ck3_router_config" CHECK("paramValue" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_config" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_config"
-  ADD CONSTRAINT "ck4_router_config" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_config" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_config"
-  ADD CONSTRAINT "ck5_router_config" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_config" CHECK("modified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_config"
-  ADD CONSTRAINT "ck6_router_config" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_config"
-  ADD CONSTRAINT "ck7_router_config" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_config" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_config"
