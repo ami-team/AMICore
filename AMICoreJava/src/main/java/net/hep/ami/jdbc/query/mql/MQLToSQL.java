@@ -152,7 +152,7 @@ public class MQLToSQL
 
 		if(context.m_orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, context.m_orderBy.getText()).getQId().toString(QId.MASK_ENTITY_FIELD));
+			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, context.m_orderBy.getText()).getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
 			if(context.m_orderWay != null)
 			{
@@ -174,13 +174,21 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		query.addFromPart(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY));
+		// DOUBLE BERK
+		// DOUBLE BERK
+		// DOUBLE BERK		-> utiliser un SET
+		// DOUBLE BERK
+		// DOUBLE BERK
 
-		for(int i = 0; i < m_from.size(); i++) 
+		final String catalogEntity1 = new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_CATALOG_ENTITY);
+
+		query.addFromPart(catalogEntity1);
+
+		for(String catalogEntity2: m_from)
 		{
-			if(m_from.get(i).equalsIgnoreCase(m_entity) == false)
+			if(catalogEntity2.equalsIgnoreCase(catalogEntity1) == false)
 			{
-				query.addFromPart(new QId(m_internalCatalog, m_from.get(i), null).toString(QId.FLAG_ENTITY));
+				query.addFromPart(catalogEntity2);
 			}
 		}
 
@@ -551,38 +559,64 @@ public class MQLToSQL
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
 
+			/*-------------------------------------------------------------*/
+
+			QId qid1 = new QId(m_internalCatalog, m_entity, m_primaryKey);
+
+			/*-------------------------------------------------------------*/
+
 			if(isUpdate)
 			{
-				localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT * FROM (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
+				Query query = new Query().addSelectPart(qid1.toString(QId.MASK_ENTITY_FIELD))
+				                         .addFromPart(qid1.toString(QId.FLAG_ENTITY))
+				;
+
+				localResult.append(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+				           .append(" IN (SELECT * FROM (")
+				           .append(query)
+				;
 			}
 			else
 			{
-				localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
+				Query query = new Query().addSelectPart(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+				                         .addFromPart(qid1.toString(QId.MASK_CATALOG_ENTITY))
+				;
+
+				localResult.append(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+				           .append(" IN (")
+				           .append(query)
+				;
 			}
+
+			/*-------------------------------------------------------------*/
 
 			boolean needAND = false;
 
 			for(Resolution pathList: m_resolutionList) 
 			{
-				String localTableName = pathList.getQId().getEntity();
 				String localCatalogName = pathList.getQId().getCatalog();
+				String localTableName = pathList.getQId().getEntity();
 
-				if(!localTableName.equalsIgnoreCase(m_entity))
-				{
-					localResult.append(", `" + localTableName + "` ");
+				/*---------------------------------------------------------*/
 
-					if(m_inSelect && !m_from.contains(localTableName))
+				if(localCatalogName.equalsIgnoreCase(m_internalCatalog) == false
+				   ||
+				   localTableName.equalsIgnoreCase(m_entity) == false
+				 ) {
+					String localCatalogTable = pathList.getQId().toString(QId.MASK_CATALOG_ENTITY);
+
+					localResult.append(", ")
+					           .append(localCatalogTable)
+					;
+
+					if(m_inSelect && m_from.contains(localCatalogTable) == false)
 					{
-						m_from.add(localTableName);
+						m_from.add(localCatalogTable);
 					}
-
-					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
-						SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
-					);
 
 					if(needAND)
 					{
-						localJoins.append("  AND ");
+						localJoins.append(" AND ");
 					}
 
 					List<String> localFromList = new ArrayList<String>();
@@ -597,37 +631,61 @@ public class MQLToSQL
 
 						for(SchemaSingleton.FrgnKey frgnKey: list)
 						{
-							if(!localFromList.contains(frgnKey.fkTable))
+							if(localFromList.contains(frgnKey.fkTable) == false)
 							{
-								localFromList.add(frgnKey.fkTable);
+								localFromList.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY));
 							}
-							if(!localFromList.contains(frgnKey.pkTable))
+
+							if(localFromList.contains(frgnKey.pkTable) == false)
 							{
-								localFromList.add(frgnKey.pkTable);
+								localFromList.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY));
 							}
+
 							localWhereList.add(frgnKey.toString());
 						}
+
 						if(!localWhereList.isEmpty())
 						{
 							if(needOR)
 							{
 								localJoins.append(" OR ");
 							}
-							localJoins.append("(");
-							localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + m_primaryKey + "`) IN ");
-							localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + m_primaryKey + "` "
-									+ "FROM `"+ String.join("`,`", localFromList) + "` "
-									+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
-							localJoins.append(")");
+
+							String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
+								SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
+							);
+
+							QId qid2 = new QId(localCatalogName, localTableName, localTablePrimaryKey);
+
+							Query query2 = new Query().addSelectPart(qid2.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+							                          .addSelectPart(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+							                          .addFromPart(localFromList)
+							                          .addWherePart(localWhereList)
+							;
+
+							localJoins.append("(")
+							          .append("(")
+							          .append(qid2)
+							          .append(", ")
+							          .append(qid1)
+							          .append(") IN (")
+							          .append(query2)
+							          .append(")")
+							          .append(")")
+							;
 						}
 
 						needOR = true;
 					}
 					needAND = true;
 				}
+
+				/*---------------------------------------------------------*/
 			}
-			localResult.append(" WHERE ");
-			localResult.append(result.toString());
+
+			localResult.append(" WHERE ")
+			           .append(result)
+			;
 
 			if(!localJoins.toString().isEmpty())
 			{
@@ -636,8 +694,9 @@ public class MQLToSQL
 					m_joins.add("(" + localJoins.toString() + ")");
 				}
 
-				localResult.append(" AND ");
-				localResult.append("(" + localJoins + ")");
+				localResult.append(" AND ")
+				           .append("(" + localJoins + ")")
+				;
 			}
 
 			if(isUpdate)
@@ -931,7 +990,7 @@ public class MQLToSQL
 
 		/*----------------------------------------------------------------*/
 
-		return new StringBuilder(list.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+		return new StringBuilder(list.stream().map(x -> x.getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", ")));
 
 		/*----------------------------------------------------------------*/
 	}
