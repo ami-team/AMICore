@@ -42,49 +42,51 @@ public class OracleDriver extends AbstractDriver
 
 		StringBuilder result = new StringBuilder();
 
-		int limit = 0;
-		int offset = 0;
+		boolean fromFound = false;
+
+		int limitValue = 0;
+		int offsetValue = 0;
+
 		int flag = 0;
 		int cnt = 0;
 
-		boolean fromFound = false;
-	
 		for(String token: tokens)
 		{
-			/**/ if("LIMIT".equalsIgnoreCase(token))
+			if(";".equals(token) == false)
 			{
-				flag = 1;
-			}
-			else if("OFFSET".equalsIgnoreCase(token))
-			{
-				flag = 2;
-			}
-			else if("FROM".equalsIgnoreCase(token) && cnt == 0)
-			{
-				fromFound = true;
-			}
-			else if("(".equals(token))
-			{
-				cnt++;
-			}
-			else if(")".equals(token))
-			{
-				cnt--;
-			}
-			else if(flag == 1)
-			{
-				limit = Integer.valueOf(token);
-				flag = 0;
-			}
-			else if(flag == 2)
-			{
-				offset = Integer.valueOf(token);
-				flag = 0;
-			}
-			else
-			{
-				if(";".equals(token) == false)
+				/**/ if("LIMIT".equalsIgnoreCase(token))
 				{
+					flag = 1;
+				}
+				else if("OFFSET".equalsIgnoreCase(token))
+				{
+					flag = 2;
+				}
+				else if(flag == 1)
+				{
+					limitValue = Integer.valueOf(token);
+					flag = 0;
+				}
+				else if(flag == 2)
+				{
+					offsetValue = Integer.valueOf(token);
+					flag = 0;
+				}
+				else
+				{
+					/**/ if("(".equals(token))
+					{
+						cnt++;
+					}
+					else if(")".equals(token))
+					{
+						cnt--;
+					}
+					else if(cnt == 0 && "FROM".equalsIgnoreCase(token))
+					{
+						fromFound = true;
+					}
+
 					result.append(Tokenizer.backQuotesToDoubleQuotes(token));
 				}
 			}
@@ -99,9 +101,9 @@ public class OracleDriver extends AbstractDriver
 
 		/*-----------------------------------------------------------------*/
 
-		if(limit > 0)
+		if(limitValue > 0)
 		{
-			result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM rnum FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limit + offset).append(") WHERE rnum >= ").append(offset + 1);
+			result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM rnum FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE rnum >= ").append(offsetValue + 1);
 		}
 
 		/*-----------------------------------------------------------------*/
