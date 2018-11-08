@@ -52,7 +52,7 @@ public abstract class AbstractCommand
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
 
 		m_notBefore = arguments.containsKey("notBefore") ? arguments.remove("notBefore") : "";
-		m_notAfter = arguments.containsKey("notAfter") ? arguments.remove("notAfter") : "";
+		m_notAfter  = arguments.containsKey("notAfter" ) ? arguments.remove("notAfter" ) : "";
 
 		m_isSecure = arguments.containsKey("isSecure") ? "false".equalsIgnoreCase(arguments.remove("isSecure")) == false : false;
 		m_isCached = arguments.containsKey( "cached" ) ? "false".equalsIgnoreCase(arguments.remove( "cached" )) == false : false;
@@ -137,7 +137,11 @@ public abstract class AbstractCommand
 		{
 			Object value = CacheSingleton.get(key);
 
-			result = (StringBuilder) ((value instanceof StringBuilder == false) ? CacheSingleton.put(key, _execute()) : value);
+			result = (value instanceof StringBuilder) ? (StringBuilder) value
+			                                          : (StringBuilder) execute()
+			;
+
+			CacheSingleton.put(key, result);
 		}
 		else
 		{
