@@ -89,7 +89,7 @@ public class ConnectionPoolSingleton
 		/**/
 		/**/		if(catalog != null)
 		/**/		{
-		/**/			config.setPoolName(catalog);
+		/**/			config.setPoolName(catalog.replace(":", "|"));
 		/**/		}
 		/**/
 		/**/		if(properties == null || properties.containsKey("maximumPoolSize") == false) {

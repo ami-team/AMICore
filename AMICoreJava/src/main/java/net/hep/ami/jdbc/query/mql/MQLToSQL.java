@@ -954,6 +954,7 @@ public class MQLToSQL
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, boolean isUpdate) throws Exception
 	{
 		m_inFunction = true;
+		m_inIsoGroup = true;
 
 		/**/		StringBuilder result = new StringBuilder(context.m_functionName.getText());
 		/**/
@@ -971,6 +972,7 @@ public class MQLToSQL
 		/**/
 		/**/		result.append(")");
 
+		m_inIsoGroup = false;
 		m_inFunction = false;
 
 		return result;
