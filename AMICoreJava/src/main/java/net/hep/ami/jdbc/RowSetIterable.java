@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc;
 
 import java.util.*;
-import java.util.regex.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
@@ -9,10 +8,6 @@ import net.hep.ami.utility.parser.*;
 
 public final class RowSetIterable implements Iterable<Row>
 {
-	/*---------------------------------------------------------------------*/
-
-	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
-
 	/*---------------------------------------------------------------------*/
 
 	private final RowSet m_rowSet;
@@ -189,22 +184,10 @@ public final class RowSetIterable implements Iterable<Row>
 		/* DESCRIPTIONS                                                    */
 		/*-----------------------------------------------------------------*/
 
-		boolean q;
-
-		boolean encrypted;
-		boolean statable;
-		boolean groupable;
-
 		StringBuilder descrs = new StringBuilder();
 
 		for(int i = 0; i < rowSet.m_numberOfFields; i++)
 		{
-			q = "N/A".equals(rowSet.m_fieldEntities[i]) == false;
-
-			encrypted = /**/ rowSet.m_fieldCrypted[i];
-			statable = q && s_numberPattern.matcher(rowSet.m_fieldTypes[i]).matches();
-			groupable = q && rowSet.m_fieldGroupable[i];
-
 			descrs.append("<fieldDescription catalog=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldCatalogs[i]))
 			      .append("\" entity=\"")
@@ -215,14 +198,14 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(Utility.escapeHTML(rowSet.m_fieldLabels[i]))
 			      .append("\" type=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldTypes[i]))
-			      .append("\" encrypted=\"")
-			      .append(encrypted ? "true" : "false")
+			      .append("\" crypted=\"")
+			      .append(rowSet.m_fieldCrypted[i] ? "true" : "false")
 			      .append("\" statable=\"")
-			      .append(statable ? "true" : "false")
+			      .append(rowSet.m_fieldStatable[i] ? "true" : "false")
 			      .append("\" groupable=\"")
-			      .append(groupable ? "true" : "false")
+			      .append(rowSet.m_fieldGroupable[i] ? "true" : "false")
 			      .append("\"><![CDATA[")
-			      .append("N/A")
+			      .append(rowSet.m_fieldDescription[i])
 			      .append("]]></fieldDescription>")
 			;
 		}
@@ -277,11 +260,11 @@ public final class RowSetIterable implements Iterable<Row>
 
 		if(type == null)
 		{
-			result.append("<rowset incomplet=\"").append(rowSet.isIncomplet()).append("\">");
+			result.append("<rowset truncated=\"").append(rowSet.isTruncated()).append("\">");
 		}
 		else
 		{
-			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" incomplet=\"").append(rowSet.isIncomplet()).append("\">");
+			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isTruncated()).append("\">");
 		}
 
 		result.append(rows)

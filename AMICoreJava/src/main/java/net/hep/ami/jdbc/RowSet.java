@@ -3,13 +3,19 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class RowSet
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
+
 	/*---------------------------------------------------------------------*/
 
 	protected final ResultSet m_resultSet;
@@ -33,7 +39,9 @@ public class RowSet
 	/*---------------------------------------------------------------------*/
 
 	protected final Boolean[] m_fieldCrypted;
+	protected final Boolean[] m_fieldStatable;
 	protected final Boolean[] m_fieldGroupable;
+	protected final String[] m_fieldDescription;
 
 	/*---------------------------------------------------------------------*/
 
@@ -85,7 +93,9 @@ public class RowSet
 		m_fieldTypes = new String[m_numberOfFields];
 
 		m_fieldCrypted = new Boolean[m_numberOfFields];
+		m_fieldStatable = new Boolean[m_numberOfFields];
 		m_fieldGroupable = new Boolean[m_numberOfFields];
+		m_fieldDescription = new String[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
 		/* FILL DATA STRUCTURES                                            */
@@ -181,33 +191,51 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			/* TEMP */
+			try
+			{
+				Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
-			m_fieldCrypted[i] = "self".equals(defaultCatalog) && (
-				"router_config".equals(m_fieldEntities[i]) && (
-					"paramName".equals(m_fieldNames[i])
+				m_fieldCrypted[i] = column.crypted;
+				m_fieldGroupable[i] = column.groupable;
+				m_fieldDescription[i] = column.description;
+			}
+			catch(Exception e)
+			{
+				m_fieldCrypted[i] = "self".equals(defaultCatalog) && (
+					"router_config".equals(m_fieldEntities[i]) && (
+						"paramName".equals(m_fieldNames[i])
+						||
+						"paramValue".equals(m_fieldNames[i])
+					)
 					||
-					"paramValue".equals(m_fieldNames[i])
-				)
-				||
-				"router_catalog".equals(m_fieldEntities[i]) && (
-					"user".equals(m_fieldNames[i])
+					"router_catalog".equals(m_fieldEntities[i]) && (
+						"user".equals(m_fieldNames[i])
+						||
+						"pass".equals(m_fieldNames[i])
+					)
 					||
-					"pass".equals(m_fieldNames[i])
-				)
-				||
-				"router_user".equals(m_fieldEntities[i]) && (
-					"AMIPass".equals(m_fieldNames[i])
-					||
-					"clientDN".equals(m_fieldNames[i])
-					||
-					"issuerDN".equals(m_fieldNames[i])
-				)
-			);
+					"router_user".equals(m_fieldEntities[i]) && (
+						"AMIPass".equals(m_fieldNames[i])
+						||
+						"clientDN".equals(m_fieldNames[i])
+						||
+						"issuerDN".equals(m_fieldNames[i])
+					)
+				);
 
-			m_fieldGroupable[i] = false;
+				m_fieldGroupable[i] = false;
 
-			/* TEMP */
+				m_fieldDescription[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			m_fieldStatable[i] = "N/A".equals(m_fieldTypes[i]) == false
+			                     &&
+			                     "N/A".equals(m_fieldEntities[i]) == false
+			                     &&
+			                     s_numberPattern.matcher(m_fieldTypes[i]).matches()
+			;
 
 			/*-------------------------------------------------------------*/
 
@@ -488,7 +516,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean isIncomplet()
+	public boolean isTruncated()
 	{
 		return m_incomplete;
 	}

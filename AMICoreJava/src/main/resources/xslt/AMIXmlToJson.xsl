@@ -151,10 +151,10 @@
 		<xsl:value-of select="@type" />
 		<xsl:text>",</xsl:text>
 
-		<xsl:text>"@incomplete":</xsl:text>
+		<xsl:text>"@truncated":</xsl:text>
 		<xsl:choose>
-			<xsl:when test="@incomplete = 'true' or @incomplete = 'false'">
-				<xsl:value-of select="@incomplete" />
+			<xsl:when test="@truncated = 'true' or @truncated = 'false'">
+				<xsl:value-of select="@truncated" />
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>false</xsl:text>

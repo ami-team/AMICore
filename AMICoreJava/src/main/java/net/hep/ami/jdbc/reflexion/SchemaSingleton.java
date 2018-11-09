@@ -28,6 +28,12 @@ public class SchemaSingleton
 
 		public boolean primary = false;
 
+		public boolean crypted = false;
+
+		public boolean groupable = false;
+
+		public String description = "N/A";
+
 		public Column(String _externalCatalog, String _internalCatalog, String _table, String _name, String _type, int _size, int _digits, String _def)
 		{
 			externalCatalog = _externalCatalog;
@@ -918,6 +924,26 @@ public class SchemaSingleton
 		return new LinkedHashSet<>(
 			getBackwardFKs(catalog, table).keySet()
 		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Column getColumn(String catalog, String table, String field) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Column column = getColumns(catalog, table).get(field);
+
+		if(column != null)
+		{
+			return column;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("field not found for `" + catalog + "`.`" + table + "`.`" + field + "`");
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
