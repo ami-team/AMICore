@@ -198,6 +198,8 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(Utility.escapeHTML(rowSet.m_fieldLabels[i]))
 			      .append("\" type=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldTypes[i]))
+			      .append("\" rank=\"")
+			      .append(rowSet.m_fieldRank[i])
 			      .append("\" crypted=\"")
 			      .append(rowSet.m_fieldCrypted[i] ? "true" : "false")
 			      .append("\" statable=\"")

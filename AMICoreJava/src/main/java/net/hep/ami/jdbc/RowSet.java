@@ -8,7 +8,6 @@ import java.util.regex.*;
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class RowSet
 {
@@ -38,9 +37,10 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Boolean[] m_fieldCrypted;
-	protected final Boolean[] m_fieldStatable;
-	protected final Boolean[] m_fieldGroupable;
+	protected final int[] m_fieldRank;
+	protected final boolean[] m_fieldCrypted;
+	protected final boolean[] m_fieldStatable;
+	protected final boolean[] m_fieldGroupable;
 	protected final String[] m_fieldDescription;
 
 	/*---------------------------------------------------------------------*/
@@ -92,9 +92,10 @@ public class RowSet
 		m_fieldLabels = new String[m_numberOfFields];
 		m_fieldTypes = new String[m_numberOfFields];
 
-		m_fieldCrypted = new Boolean[m_numberOfFields];
-		m_fieldStatable = new Boolean[m_numberOfFields];
-		m_fieldGroupable = new Boolean[m_numberOfFields];
+		m_fieldRank = new int[m_numberOfFields];
+		m_fieldCrypted = new boolean[m_numberOfFields];
+		m_fieldStatable = new boolean[m_numberOfFields];
+		m_fieldGroupable = new boolean[m_numberOfFields];
 		m_fieldDescription = new String[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
@@ -193,8 +194,9 @@ public class RowSet
 
 			try
 			{
-				Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
+				SchemaSingleton.Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
+				m_fieldRank[i] = column.rank;
 				m_fieldCrypted[i] = column.crypted;
 				m_fieldGroupable[i] = column.groupable;
 				m_fieldDescription[i] = column.description;

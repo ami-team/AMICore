@@ -7,7 +7,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.AMIMap.Type;
 
 public class SchemaSingleton
 {
@@ -16,6 +15,8 @@ public class SchemaSingleton
 	public static final class Column implements Serializable
 	{
 		private static final long serialVersionUID = 9088165113864128126L;
+
+		/**/
 
 		public final String externalCatalog;
 		public final String internalCatalog;
@@ -26,13 +27,17 @@ public class SchemaSingleton
 		public final int digits;
 		public final String def;
 
+		/**/
+
+		public int rank = 0;
 		public boolean primary = false;
-
 		public boolean crypted = false;
-
 		public boolean groupable = false;
-
+		public boolean createdBy = false;
+		public boolean modifiedBy = false;
 		public String description = "N/A";
+
+		/**/
 
 		public Column(String _externalCatalog, String _internalCatalog, String _table, String _name, String _type, int _size, int _digits, String _def)
 		{
@@ -59,6 +64,8 @@ public class SchemaSingleton
 	{
 		private static final long serialVersionUID = 7467966033785286381L;
 
+		/**/
+
 		public final String name;
 		public final String fkExternalCatalog;
 		public final String fkInternalCatalog;
@@ -68,6 +75,8 @@ public class SchemaSingleton
 		public final String pkInternalCatalog;
 		public final String pkTable;
 		public final String pkColumn;
+
+		/**/
 
 		public FrgnKey(String _name, String _fkExternalCatalog, String _fkInternalCatalog, String _fkTable, String _fkColumn, String _pkExternalCatalog, String _pkInternalCatalog, String _pkTable, String _pkColumn)
 		{
@@ -113,14 +122,14 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
-	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_forwardFKs = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
-	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_backwardFKs = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_forwardFKs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_backwardFKs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 

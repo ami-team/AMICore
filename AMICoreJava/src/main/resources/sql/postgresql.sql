@@ -82,6 +82,36 @@ CREATE TRIGGER "trig1_router_catalog"
 
 -----------------------------------------------------------------------------
 
+CREATE TABLE "router_catalog_extra" (
+  "id" SERIAL,
+  "catalog" VARCHAR(128) NOT NULL,
+  "entity" VARCHAR(128) NOT NULL,
+  "field" VARCHAR(128) NOT NULL,
+  "rank" INT NOT NULL DEFAULT '0',
+  "isCrypted" TINYINT(1) NOT NULL DEFAULT '0',
+  "isGroupable" TINYINT(1) NOT NULL DEFAULT '0',
+  "isCreatedBy" TINYINT(1) NOT NULL DEFAULT '0',
+  "isModifiedBy" TINYINT(1) NOT NULL DEFAULT '0',
+  "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR(128) NOT NULL,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR(128) NOT NULL
+);;
+
+ALTER TABLE `router_catalog_extra`
+  ADD CONSTRAINT `pk1_router_catalog_extra` PRIMARY KEY ("id"),
+  ADD CONSTRAINT `uk1_router_catalog_extra` UNIQUE KEY ("catalog", "entity", "field")
+;;
+
+CREATE TRIGGER "trig1_router_catalog_extra"
+  BEFORE UPDATE ON "router_catalog_extra"
+  FOR EACH ROW
+    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+-----------------------------------------------------------------------------
+
 CREATE TABLE "router_converter" (
   "id" SERIAL,
   "xslt" VARCHAR(128) NOT NULL,

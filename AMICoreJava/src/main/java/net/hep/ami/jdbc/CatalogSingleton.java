@@ -49,6 +49,8 @@ public class CatalogSingleton
 			CatalogSingleton.addCatalogs();
 
 			SchemaSingleton.rebuildSchemas();
+
+			SchemaExtraSingleton.updateSchemas();
 		}
 		catch(Exception e)
 		{

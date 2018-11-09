@@ -109,6 +109,16 @@ END;
 ;;
 
 BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_catalog_extra"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+
+BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE "router_catalog"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -229,6 +239,15 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_converter"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_catalog_extra"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -402,6 +421,105 @@ CREATE TRIGGER "trig1_router_catalog"
 
 CREATE TRIGGER "trig2_router_catalog"
   BEFORE UPDATE ON "router_catalog"
+  FOR EACH ROW
+  BEGIN
+    :NEW."modified" := SYSDATE;
+  END;
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE "router_catalog_extra" (
+  "id" NUMBER(*, 0),
+  "catalog" VARCHAR2(128) NOT NULL,
+  "entity" VARCHAR2(128) NOT NULL,
+  "field" VARCHAR2(128) NOT NULL,
+  "rank" NUMBER(*, 0) NOT NULL DEFAULT '0',
+  "isCrypted" NUMBER(1, 0) NOT NULL DEFAULT '0',
+  "isGroupable" NUMBER(1, 0) NOT NULL DEFAULT '0',
+  "isCreatedBy" NUMBER(1, 0) NOT NULL DEFAULT '0',
+  "isModifiedBy" NUMBER(1, 0) NOT NULL DEFAULT '0',
+  "description" VARCHAR2(512) NOT NULL DEFAULT 'N/A',
+  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR2(128) NOT NULL,
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR2(128) NOT NULL
+);;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "pk1_router_catalog_extra" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "uk1_router_catalog_extra" UNIQUE ("catalog", "entity", "field")
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck1_router_catalog_extra" CHECK("catalog" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck2_router_catalog_extra" CHECK("entity" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck3_router_catalog_extra" CHECK("field" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck4_router_catalog_extra" CHECK("rank" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck5_router_catalog_extra" CHECK("isCrypted" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck6_router_catalog_extra" CHECK("isGroupable" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck7_router_catalog_extra" CHECK("isCreatedBy" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck8_router_catalog_extra" CHECK("isModifiedBy" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck9_router_catalog_extra" CHECK("description" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck10_router_catalog_extra" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck11_router_catalog_extra" CHECK("createdBy" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck12_router_catalog_extra" CHECK("modified" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck13_router_catalog_extra" CHECK("modifiedBy" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_catalog_extra"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_catalog_extra"
+  BEFORE INSERT ON "router_catalog_extra"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_catalog_extra".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+CREATE TRIGGER "trig2_router_catalog_extra"
+  BEFORE UPDATE ON "router_catalog_extra"
   FOR EACH ROW
   BEGIN
     :NEW."modified" := SYSDATE;
