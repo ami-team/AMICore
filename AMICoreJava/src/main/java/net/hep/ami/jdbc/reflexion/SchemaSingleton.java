@@ -7,6 +7,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.AMIMap.Type;
 
 public class SchemaSingleton
 {
@@ -106,14 +107,14 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>();
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>();
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>();
-	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_forwardFKs = new AMIMap<>();
-	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_backwardFKs = new AMIMap<>();
+	private static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_forwardFKs = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
+	private static final Map<String, Map<String, Map<String, FrgnKeys>>> s_backwardFKs = new AMIMap<>(Type.CONCURENT_HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 
