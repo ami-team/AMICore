@@ -34,7 +34,7 @@ public class SchemaExtraSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isCrypted`, `isGroupable`, `isCreatedBy`, `isModifiedBy`, `description` FROM `router_catalog_extra`");
+			RowSet rowSet = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isCrypted`, `isGroupable`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `description` FROM `router_catalog_extra`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMN                                               */
@@ -51,7 +51,9 @@ public class SchemaExtraSingleton
 					Integer.parseInt(row.getValue(5)) != 0,
 					Integer.parseInt(row.getValue(6)) != 0,
 					Integer.parseInt(row.getValue(7)) != 0,
-					row.getValue(8)
+					Integer.parseInt(row.getValue(8)) != 0,
+					Integer.parseInt(row.getValue(9)) != 0,
+					row.getValue(10)
 				);
 			}
 
@@ -67,7 +69,7 @@ public class SchemaExtraSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, int rank, boolean crypted, boolean groupable, boolean createdBy, boolean modifiedBy, String description)
+	public static void updateColumn(String catalog, String entity, String field, int rank, boolean crypted, boolean groupable, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, String description)
 	{
 		try
 		{
@@ -76,7 +78,9 @@ public class SchemaExtraSingleton
 			column.rank = rank;
 			column.crypted = crypted;
 			column.groupable = groupable;
+			column.created = created;
 			column.createdBy = createdBy;
+			column.modified = modified;
 			column.modifiedBy = modifiedBy;
 			column.description = description;
 		}

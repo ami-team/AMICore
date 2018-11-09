@@ -33,7 +33,9 @@ public class SchemaSingleton
 		public boolean primary = false;
 		public boolean crypted = false;
 		public boolean groupable = false;
+		public boolean created = false;
 		public boolean createdBy = false;
+		public boolean modified = false;
 		public boolean modifiedBy = false;
 		public String description = "N/A";
 
