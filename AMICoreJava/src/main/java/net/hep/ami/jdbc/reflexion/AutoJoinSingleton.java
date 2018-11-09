@@ -34,9 +34,9 @@ public class AutoJoinSingleton
 		String givenTable = givenQId.getEntity();
 		String givenColumn = givenQId.getField();
 
-		boolean checkNow = (givenCatalog == null || defaultCatalog.equals(givenCatalog))
+		boolean checkNow = (givenCatalog == null || defaultCatalog.equalsIgnoreCase(givenCatalog))
 		                   &&
-		                   (givenTable == null || defaultTable.equals(givenTable))
+		                   (givenTable == null || defaultTable.equalsIgnoreCase(givenTable))
 		;
 
 		SchemaSingleton.Column column = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;

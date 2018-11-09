@@ -554,7 +554,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_inInsert == false && m_inUpdate == false && m_inIsoGroup == false)
+		if(m_inInsert == false && m_inUpdate == false && m_inIsoGroup == false && m_inFunction == false)
 		{
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
@@ -954,7 +954,6 @@ public class MQLToSQL
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, boolean isUpdate) throws Exception
 	{
 		m_inFunction = true;
-		m_inIsoGroup = true;
 
 		/**/		StringBuilder result = new StringBuilder(context.m_functionName.getText());
 		/**/
@@ -972,7 +971,6 @@ public class MQLToSQL
 		/**/
 		/**/		result.append(")");
 
-		m_inIsoGroup = false;
 		m_inFunction = false;
 
 		return result;
