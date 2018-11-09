@@ -201,7 +201,16 @@ public class RowSet
 			}
 			catch(Exception e)
 			{
-				m_fieldCrypted[i] = "self".equals(defaultCatalog) && (
+				m_fieldCrypted[i] = false;
+				m_fieldGroupable[i] = false;
+				m_fieldDescription[i] = "N/A";
+			}
+
+			/*-------------------------------------------------------------*/
+
+			if("self".equals(defaultCatalog))
+			{
+				m_fieldCrypted[i] = (
 					"router_config".equals(m_fieldEntities[i]) && (
 						"paramName".equals(m_fieldNames[i])
 						||
@@ -222,10 +231,6 @@ public class RowSet
 						"issuerDN".equals(m_fieldNames[i])
 					)
 				);
-
-				m_fieldGroupable[i] = false;
-
-				m_fieldDescription[i] = "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
