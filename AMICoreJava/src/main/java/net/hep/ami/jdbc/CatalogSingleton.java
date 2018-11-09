@@ -95,8 +95,8 @@ public class CatalogSingleton
 						row.getValue(1),
 						row.getValue(2),
 						row.getValue(3),
-						SecuritySingleton.decrypt(row.getValue(4)),
-						SecuritySingleton.decrypt(row.getValue(5)),
+						row.getValue(4),
+						row.getValue(5),
 						row.getValue(6)
 					);
 				}

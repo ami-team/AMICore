@@ -368,8 +368,8 @@ public class FrontEnd extends HttpServlet
 		/*-----------------------------------------------------------------*/
 
 		return new Tuple2<>(
-			/***********************/(row.getValue("AMIUser")),
-			SecuritySingleton.decrypt(row.getValue("AMIPass"))
+			row.getValue("AMIUser"),
+			row.getValue("AMIPass")
 		);
 
 		/*-----------------------------------------------------------------*/

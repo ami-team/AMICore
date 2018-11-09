@@ -27,7 +27,7 @@ public class CommandSingletonTest
 
 		arguments.put("catalog", "self");
 
-		System.out.println(CommandSingleton.executeCommand("GetJSONSchema", arguments, false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, false).replace(">", ">\n"));
 /*
 		arguments.put("cached", "");
 		CommandSingleton.executeCommand("GetUserInfo", arguments);
