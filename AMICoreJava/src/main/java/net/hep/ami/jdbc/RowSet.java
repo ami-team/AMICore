@@ -4,6 +4,7 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
 
@@ -28,6 +29,11 @@ public class RowSet
 	protected final String[] m_fieldNames;
 	protected final String[] m_fieldLabels;
 	protected final String[] m_fieldTypes;
+
+	/*---------------------------------------------------------------------*/
+
+	protected final Boolean[] m_fieldCrypted;
+	protected final Boolean[] m_fieldGroupable;
 
 	/*---------------------------------------------------------------------*/
 
@@ -77,6 +83,9 @@ public class RowSet
 		m_fieldNames = new String[m_numberOfFields];
 		m_fieldLabels = new String[m_numberOfFields];
 		m_fieldTypes = new String[m_numberOfFields];
+
+		m_fieldCrypted = new Boolean[m_numberOfFields];
+		m_fieldGroupable = new Boolean[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
 		/* FILL DATA STRUCTURES                                            */
@@ -169,6 +178,36 @@ public class RowSet
 			{
 				m_fieldTypes[i] = "N/A";
 			}
+
+			/*-------------------------------------------------------------*/
+
+			/* TEMP */
+
+			m_fieldCrypted[i] = "self".equals(defaultCatalog) && (
+				"router_config".equals(m_fieldEntities[i]) && (
+					"paramName".equals(m_fieldNames[i])
+					||
+					"paramValue".equals(m_fieldNames[i])
+				)
+				||
+				"router_catalog".equals(m_fieldEntities[i]) && (
+					"user".equals(m_fieldNames[i])
+					||
+					"pass".equals(m_fieldNames[i])
+				)
+				||
+				"router_user".equals(m_fieldEntities[i]) && (
+					"AMIPass".equals(m_fieldNames[i])
+					||
+					"clientDN".equals(m_fieldNames[i])
+					||
+					"issuerDN".equals(m_fieldNames[i])
+				)
+			);
+
+			m_fieldGroupable[i] = false;
+
+			/* TEMP */
 
 			/*-------------------------------------------------------------*/
 
@@ -410,7 +449,21 @@ public class RowSet
 				/*---------------------------------------------------------*/
 			}
 
-			if(result[i] == null)
+			if(result[i] != null)
+			{
+				if(m_fieldCrypted[i])
+				{
+					try
+					{
+						result[i] = SecuritySingleton.decrypt(result[i]);
+					}
+					catch(Exception e)
+					{
+						result[i] = "";
+					}
+				}
+			}
+			else
 			{
 				result[i] = "";
 			}

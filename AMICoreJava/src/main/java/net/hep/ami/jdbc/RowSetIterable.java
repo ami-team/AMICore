@@ -190,6 +190,8 @@ public final class RowSetIterable implements Iterable<Row>
 		/*-----------------------------------------------------------------*/
 
 		boolean q;
+
+		boolean encrypted;
 		boolean statable;
 		boolean groupable;
 
@@ -199,9 +201,9 @@ public final class RowSetIterable implements Iterable<Row>
 		{
 			q = "N/A".equals(rowSet.m_fieldEntities[i]) == false;
 
+			encrypted = /**/ rowSet.m_fieldCrypted[i];
 			statable = q && s_numberPattern.matcher(rowSet.m_fieldTypes[i]).matches();
-
-			groupable = q /* TODO */;
+			groupable = q && rowSet.m_fieldGroupable[i];
 
 			descrs.append("<fieldDescription catalog=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldCatalogs[i]))
@@ -213,6 +215,8 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(Utility.escapeHTML(rowSet.m_fieldLabels[i]))
 			      .append("\" type=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldTypes[i]))
+			      .append("\" encrypted=\"")
+			      .append(encrypted ? "true" : "false")
 			      .append("\" statable=\"")
 			      .append(statable ? "true" : "false")
 			      .append("\" groupable=\"")

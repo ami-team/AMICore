@@ -251,8 +251,8 @@ public class ConfigSingleton
 
 			for(Row row: rowSet.iterate())
 			{
-				name = SecuritySingleton.decrypt(row.getValue(0));
-				value = SecuritySingleton.decrypt(row.getValue(1));
+				name = row.getValue(0);
+				value = row.getValue(1);
 
 				if(s_reserved.contains(name) == false)
 				{
