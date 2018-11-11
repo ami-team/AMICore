@@ -1,8 +1,11 @@
 package net.hep.ami.jdbc.reflexion;
 
+import java.util.*;
+
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.utility.*;
 
 public class SchemaExtraSingleton
 {
@@ -109,7 +112,7 @@ public class SchemaExtraSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.warn(e.getMessage(), e);
+			LogSingleton.root.error(e.getMessage(), e);
 		}
 	}
 
@@ -117,7 +120,73 @@ public class SchemaExtraSingleton
 
 	public static void updateForeignKeys(String name, String fkCatalog, String fkTable, String fkColumn, String pkCatalog, String pkTable, String pkColumn)
 	{
-		/* TODO */
+		Map<String, Map<String, Map<String, SchemaSingleton.FrgnKeys>>> a1 = SchemaSingleton.s_forwardFKs;
+		Map<String, Map<String, Map<String, SchemaSingleton.FrgnKeys>>> a2 = SchemaSingleton.s_backwardFKs;
+
+		try
+		{
+			/*-------------------------------------------------------------*/
+
+			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b1 = a1.get(fkCatalog);
+			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b2 = a2.get(pkCatalog);
+
+			if(b1 == null) {
+				a1.put(fkCatalog, b1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+			}
+
+			if(b2 == null) {
+				a2.put(pkCatalog, b2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+			}
+
+			/*-------------------------------------------------------------*/
+
+			Map<String, SchemaSingleton.FrgnKeys> c1 = b1.get(fkTable);
+			Map<String, SchemaSingleton.FrgnKeys> c2 = b2.get(pkTable);
+
+			if(c1 == null) {
+				b1.put(fkCatalog, c1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+			}
+
+			if(c2 == null) {
+				b2.put(pkCatalog, c2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+			}
+
+			/*-------------------------------------------------------------*/
+
+			SchemaSingleton.FrgnKeys d1 = c1.get(fkColumn);
+			SchemaSingleton.FrgnKeys d2 = c2.get(pkColumn);
+
+			if(d1 == null) {
+				c1.put(fkCatalog, d1 = new SchemaSingleton.FrgnKeys());
+			}
+
+			if(d2 == null) {
+				c2.put(pkCatalog, d2 = new SchemaSingleton.FrgnKeys());
+			}
+
+			/*-------------------------------------------------------------*/
+
+			SchemaSingleton.FrgnKey frgnKey = new SchemaSingleton.FrgnKey(
+				name,
+				fkCatalog,
+				SchemaSingleton.externalCatalogToInternalCatalog(fkCatalog),
+				fkTable,
+				fkColumn,
+				pkCatalog,
+				SchemaSingleton.externalCatalogToInternalCatalog(pkCatalog),
+				pkTable,
+				pkColumn
+			);
+
+			d1.add(frgnKey);
+			d2.add(frgnKey);
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.error(e.getMessage(), e);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
