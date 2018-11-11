@@ -12,6 +12,8 @@ DROP TABLE IF EXISTS "router_command_role";;
 DROP TABLE IF EXISTS "router_command";;
 DROP TABLE IF EXISTS "router_role";;
 DROP TABLE IF EXISTS "router_converter";;
+DROP TABLE IF EXISTS "router_foreign_key";;
+DROP TABLE IF EXISTS "router_catalog_extra";;
 DROP TABLE IF EXISTS "router_catalog";;
 DROP TABLE IF EXISTS "router_config";;
 
@@ -108,6 +110,34 @@ ALTER TABLE `router_catalog_extra`
 
 CREATE TRIGGER "trig1_router_catalog_extra"
   BEFORE UPDATE ON "router_catalog_extra"
+  FOR EACH ROW
+    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE "router_foreign_key" (
+  "id" SERIAL,
+  "name" VARCHAR(128) NOT NULL,
+  "fkCatalog" VARCHAR(128) NOT NULL,
+  "fkTable" VARCHAR(128) NOT NULL,
+  "fkColumn" VARCHAR(128) NOT NULL,
+  "pkCatalog" VARCHAR(128) NOT NULL,
+  "pkTable" VARCHAR(128) NOT NULL,
+  "pkColumn" VARCHAR(128) NOT NULL,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR(128) NOT NULL,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR(128) NOT NULL
+);;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "pk1_router_catalog_extra" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_catalog_extra" UNIQUE KEY ("name")
+;;
+
+CREATE TRIGGER "trig1_router_foreign_key"
+  BEFORE UPDATE ON "router_foreign_key"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;

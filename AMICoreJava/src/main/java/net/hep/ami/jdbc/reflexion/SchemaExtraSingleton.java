@@ -34,13 +34,13 @@ public class SchemaExtraSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isCrypted`, `isGroupable`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `description` FROM `router_catalog_extra`");
+			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isCrypted`, `isGroupable`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `description` FROM `router_catalog_extra`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMN                                               */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet.iterate())
+			for(Row row: rowSet1.iterate())
 			{
 				updateColumn(
 					row.getValue(0),
@@ -54,6 +54,29 @@ public class SchemaExtraSingleton
 					Integer.parseInt(row.getValue(8)) != 0,
 					Integer.parseInt(row.getValue(9)) != 0,
 					row.getValue(10)
+				);
+			}
+
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			RowSet rowSet2 = driver.executeSQLQuery("SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
+
+			/*-------------------------------------------------------------*/
+			/* UPDATE FOREIGN KEYS                                         */
+			/*-------------------------------------------------------------*/
+
+			for(Row row: rowSet2.iterate())
+			{
+				updateForeignKeys(
+					row.getValue(0),
+					row.getValue(1),
+					row.getValue(2),
+					row.getValue(3),
+					row.getValue(4),
+					row.getValue(5),
+					row.getValue(6)
 				);
 			}
 
@@ -88,6 +111,13 @@ public class SchemaExtraSingleton
 		{
 			LogSingleton.root.warn(e.getMessage(), e);
 		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void updateForeignKeys(String name, String fkCatalog, String fkTable, String fkColumn, String pkCatalog, String pkTable, String pkColumn)
+	{
+		/* TODO */
 	}
 
 	/*---------------------------------------------------------------------*/

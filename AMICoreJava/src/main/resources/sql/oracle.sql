@@ -109,6 +109,15 @@ END;
 ;;
 
 BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_foreign_key"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE "router_catalog_extra"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -239,6 +248,15 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_converter"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_foreign_key"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -530,6 +548,95 @@ CREATE TRIGGER "trig1_router_catalog_extra"
 
 CREATE TRIGGER "trig2_router_catalog_extra"
   BEFORE UPDATE ON "router_catalog_extra"
+  FOR EACH ROW
+  BEGIN
+    :NEW."modified" := SYSDATE;
+  END;
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE "router_foreign_key" (
+  "id" NUMBER(*, 0),
+  "name" VARCHAR2(128) NOT NULL,
+  "fkCatalog" VARCHAR2(128) NOT NULL,
+  "fkTable" VARCHAR2(128) NOT NULL,
+  "fkColumn" VARCHAR2(128) NOT NULL,
+  "pkCatalog" VARCHAR2(128) NOT NULL,
+  "pkTable" VARCHAR2(128) NOT NULL,
+  "pkColumn" VARCHAR2(128) NOT NULL,
+  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR2(128) NOT NULL,
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR2(128) NOT NULL
+);;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "pk1_router_foreign_key" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "uk1_router_foreign_key" UNIQUE ("name")
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck1_router_foreign_key" CHECK("name" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck2_router_foreign_key" CHECK("fkCatalog" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck3_router_foreign_key" CHECK("fkTable" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck4_router_foreign_key" CHECK("fkColumn" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck5_router_foreign_key" CHECK("pkCatalog" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck6_router_foreign_key" CHECK("pkTable" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck7_router_foreign_key" CHECK("pkColumn" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck8_router_foreign_key" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck9_router_foreign_key" CHECK("createdBy" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck10_router_foreign_key" CHECK("modified" IS NOT NULL)
+;;
+
+ALTER TABLE "router_foreign_key"
+  ADD CONSTRAINT "ck11_router_foreign_key" CHECK("modifiedBy" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_foreign_key"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_foreign_key"
+  BEFORE INSERT ON "router_foreign_key"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_foreign_key".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+CREATE TRIGGER "trig2_router_foreign_key"
+  BEFORE UPDATE ON "router_foreign_key"
   FOR EACH ROW
   BEGIN
     :NEW."modified" := SYSDATE;

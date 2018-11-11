@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS `router_command_role`;;
 DROP TABLE IF EXISTS `router_command`;;
 DROP TABLE IF EXISTS `router_role`;;
 DROP TABLE IF EXISTS `router_converter`;;
+DROP TABLE IF EXISTS `router_foreign_key`;;
 DROP TABLE IF EXISTS `router_catalog_extra`;;
 DROP TABLE IF EXISTS `router_catalog`;;
 DROP TABLE IF EXISTS `router_config`;;
@@ -95,6 +96,33 @@ ALTER TABLE `router_catalog_extra`
 ;;
 
 ALTER TABLE `router_catalog_extra`
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE `router_foreign_key` (
+  `id` INT NOT NULL,
+  `name` VARCHAR(128) NOT NULL,
+  `fkCatalog` VARCHAR(128) NOT NULL,
+  `fkTable` VARCHAR(128) NOT NULL,
+  `fkColumn` VARCHAR(128) NOT NULL,
+  `pkCatalog` VARCHAR(128) NOT NULL,
+  `pkTable` VARCHAR(128) NOT NULL,
+  `pkColumn` VARCHAR(128) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT '2018-03-19 18:54:52',
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
+
+) CHARSET=`utf8` COLLATE=`utf8_unicode_ci`;;
+
+ALTER TABLE `router_foreign_key`
+  ADD CONSTRAINT `pk1_router_catalog_extra` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_catalog_extra` UNIQUE KEY (`name`)
+;;
+
+ALTER TABLE `router_foreign_key`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
