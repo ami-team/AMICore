@@ -13,13 +13,13 @@ public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
-
-	/*---------------------------------------------------------------------*/
-
 	public static final class Column implements Serializable
 	{
 		private static final long serialVersionUID = 9088165113864128126L;
+
+		/**/
+
+		private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
 
 		/**/
 
