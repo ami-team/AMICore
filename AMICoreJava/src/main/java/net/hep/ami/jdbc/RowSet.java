@@ -3,7 +3,6 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
-import java.util.regex.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
@@ -11,10 +10,6 @@ import net.hep.ami.jdbc.reflexion.*;
 
 public class RowSet
 {
-	/*---------------------------------------------------------------------*/
-
-	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
-
 	/*---------------------------------------------------------------------*/
 
 	protected final ResultSet m_resultSet;
@@ -41,6 +36,10 @@ public class RowSet
 	protected final boolean[] m_fieldCrypted;
 	protected final boolean[] m_fieldStatable;
 	protected final boolean[] m_fieldGroupable;
+	protected final boolean[] m_fieldCreated;
+	protected final boolean[] m_fieldCreatedBy;
+	protected final boolean[] m_fieldModified;
+	protected final boolean[] m_fieldModifiedBy;
 	protected final String[] m_fieldDescription;
 
 	/*---------------------------------------------------------------------*/
@@ -96,6 +95,10 @@ public class RowSet
 		m_fieldCrypted = new boolean[m_numberOfFields];
 		m_fieldStatable = new boolean[m_numberOfFields];
 		m_fieldGroupable = new boolean[m_numberOfFields];
+		m_fieldCreated = new boolean[m_numberOfFields];
+		m_fieldCreatedBy = new boolean[m_numberOfFields];
+		m_fieldModified = new boolean[m_numberOfFields];
+		m_fieldModifiedBy = new boolean[m_numberOfFields];
 		m_fieldDescription = new String[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
@@ -198,13 +201,24 @@ public class RowSet
 
 				m_fieldRank[i] = column.rank;
 				m_fieldCrypted[i] = column.crypted;
+				m_fieldStatable[i] = column.statable;
 				m_fieldGroupable[i] = column.groupable;
+				m_fieldCreated[i] = column.created;
+				m_fieldCreatedBy[i] = column.createdBy;
+				m_fieldModified[i] = column.modified;
+				m_fieldModifiedBy[i] = column.modifiedBy;
 				m_fieldDescription[i] = column.description;
 			}
 			catch(Exception e)
 			{
+				m_fieldRank[i] = 0;
 				m_fieldCrypted[i] = false;
+				m_fieldStatable[i] = false;
 				m_fieldGroupable[i] = false;
+				m_fieldCreated[i] = false;
+				m_fieldCreatedBy[i] = false;
+				m_fieldModified[i] = false;
+				m_fieldModifiedBy[i] = false;
 				m_fieldDescription[i] = "N/A";
 			}
 
@@ -234,15 +248,6 @@ public class RowSet
 					)
 				);
 			}
-
-			/*-------------------------------------------------------------*/
-
-			m_fieldStatable[i] = "N/A".equals(m_fieldTypes[i]) == false
-			                     &&
-			                     "N/A".equals(m_fieldEntities[i]) == false
-			                     &&
-			                     s_numberPattern.matcher(m_fieldTypes[i]).matches()
-			;
 
 			/*-------------------------------------------------------------*/
 

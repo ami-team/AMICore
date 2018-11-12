@@ -37,7 +37,7 @@ public class SchemaExtraSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isCrypted`, `isGroupable`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `description` FROM `router_catalog_extra`");
+			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isCrypted`, `isStatable`, `isGroupable`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `description` FROM `router_catalog_extra`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMN                                               */
@@ -56,7 +56,8 @@ public class SchemaExtraSingleton
 					Integer.parseInt(row.getValue(7)) != 0,
 					Integer.parseInt(row.getValue(8)) != 0,
 					Integer.parseInt(row.getValue(9)) != 0,
-					row.getValue(10)
+					Integer.parseInt(row.getValue(10)) != 0,
+					row.getValue(11)
 				);
 			}
 
@@ -95,7 +96,7 @@ public class SchemaExtraSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, int rank, boolean crypted, boolean groupable, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, String description)
+	public static void updateColumn(String catalog, String entity, String field, int rank, boolean crypted, boolean statable, boolean groupable, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, String description)
 	{
 		try
 		{
@@ -103,6 +104,7 @@ public class SchemaExtraSingleton
 
 			column.rank = rank;
 			column.crypted = crypted;
+			column.statable = statable;
 			column.groupable = groupable;
 			column.created = created;
 			column.createdBy = createdBy;
@@ -127,55 +129,60 @@ public class SchemaExtraSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b1 = a1.get(fkCatalog);
-			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b2 = a2.get(pkCatalog);
+			SchemaSingleton.Column column1 = SchemaSingleton.getColumn(fkCatalog, fkTable, fkColumn);
+			SchemaSingleton.Column column2 = SchemaSingleton.getColumn(pkCatalog, pkTable, pkColumn);
+
+			/*-------------------------------------------------------------*/
+
+			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b1 = a1.get(column1.externalCatalog);
+			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b2 = a2.get(column2.externalCatalog);
 
 			if(b1 == null) {
-				a1.put(fkCatalog, b1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+				a1.put(column1.externalCatalog, b1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
 			}
 
 			if(b2 == null) {
-				a2.put(pkCatalog, b2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+				a2.put(column2.externalCatalog, b2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
 			}
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, SchemaSingleton.FrgnKeys> c1 = b1.get(fkTable);
-			Map<String, SchemaSingleton.FrgnKeys> c2 = b2.get(pkTable);
+			Map<String, SchemaSingleton.FrgnKeys> c1 = b1.get(column1.table);
+			Map<String, SchemaSingleton.FrgnKeys> c2 = b2.get(column2.table);
 
 			if(c1 == null) {
-				b1.put(fkCatalog, c1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+				b1.put(column1.table, c1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
 			}
 
 			if(c2 == null) {
-				b2.put(pkCatalog, c2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+				b2.put(column2.table, c2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
 			}
 
 			/*-------------------------------------------------------------*/
 
-			SchemaSingleton.FrgnKeys d1 = c1.get(fkColumn);
-			SchemaSingleton.FrgnKeys d2 = c2.get(pkColumn);
+			SchemaSingleton.FrgnKeys d1 = c1.get(column1.name);
+			SchemaSingleton.FrgnKeys d2 = c2.get(column2.name);
 
 			if(d1 == null) {
-				c1.put(fkCatalog, d1 = new SchemaSingleton.FrgnKeys());
+				c1.put(column1.name, d1 = new SchemaSingleton.FrgnKeys());
 			}
 
 			if(d2 == null) {
-				c2.put(pkCatalog, d2 = new SchemaSingleton.FrgnKeys());
+				c2.put(column2.name, d2 = new SchemaSingleton.FrgnKeys());
 			}
 
 			/*-------------------------------------------------------------*/
 
 			SchemaSingleton.FrgnKey frgnKey = new SchemaSingleton.FrgnKey(
 				name,
-				fkCatalog,
-				SchemaSingleton.externalCatalogToInternalCatalog(fkCatalog),
-				fkTable,
-				fkColumn,
-				pkCatalog,
-				SchemaSingleton.externalCatalogToInternalCatalog(pkCatalog),
-				pkTable,
-				pkColumn
+				column1.externalCatalog,
+				column1.internalCatalog,
+				column1.table,
+				column1.name,
+				column2.externalCatalog,
+				column2.internalCatalog,
+				column2.table,
+				column2.name
 			);
 
 			d1.add(frgnKey);

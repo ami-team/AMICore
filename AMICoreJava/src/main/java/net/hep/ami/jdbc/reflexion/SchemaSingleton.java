@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.reflexion;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
@@ -10,6 +11,10 @@ import net.hep.ami.utility.*;
 
 public class SchemaSingleton
 {
+	/*---------------------------------------------------------------------*/
+
+	private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
+
 	/*---------------------------------------------------------------------*/
 
 	public static final class Column implements Serializable
@@ -32,6 +37,7 @@ public class SchemaSingleton
 		public int rank = 0;
 		public boolean primary = false;
 		public boolean crypted = false;
+		public boolean statable = false;
 		public boolean groupable = false;
 		public boolean created = false;
 		public boolean createdBy = false;
@@ -51,6 +57,8 @@ public class SchemaSingleton
 			size = _size;
 			digits = _digits;
 			def = _def;
+
+			statable = s_numberPattern.matcher(type).matches();
 		}
 
 		@Override

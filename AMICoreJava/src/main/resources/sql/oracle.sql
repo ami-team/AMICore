@@ -298,9 +298,9 @@ CREATE TABLE "router_config" (
   "paramName" VARCHAR2(128),
   "paramValue" VARCHAR2(512),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128) NOT NULL,
+  "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128) NOT NULL
+  "modifiedBy" VARCHAR2(128)
 );;
 
 ALTER TABLE "router_config"
@@ -368,9 +368,9 @@ CREATE TABLE "router_catalog" (
   "custom" CLOB,
   "archived" NUMBER(1, 0) DEFAULT '0',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128) NOT NULL,
+  "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128) NOT NULL
+  "modifiedBy" VARCHAR2(128)
 );;
 
 ALTER TABLE "router_catalog"
@@ -449,21 +449,22 @@ CREATE TRIGGER "trig2_router_catalog"
 
 CREATE TABLE "router_catalog_extra" (
   "id" NUMBER(*, 0),
-  "catalog" VARCHAR2(128) NOT NULL,
-  "entity" VARCHAR2(128) NOT NULL,
-  "field" VARCHAR2(128) NOT NULL,
-  "rank" NUMBER(*, 0) NOT NULL DEFAULT '0',
-  "isCrypted" NUMBER(1, 0) NOT NULL DEFAULT '0',
-  "isGroupable" NUMBER(1, 0) NOT NULL DEFAULT '0',
-  "isCreated" NUMBER(1, 0) NOT NULL DEFAULT '0',
-  "isCreatedBy" NUMBER(1, 0) NOT NULL DEFAULT '0',
-  "isModified" NUMBER(1, 0) NOT NULL DEFAULT '0',
-  "isModifiedBy" NUMBER(1, 0) NOT NULL DEFAULT '0',
-  "description" VARCHAR2(512) NOT NULL DEFAULT 'N/A',
+  "catalog" VARCHAR2(128),
+  "entity" VARCHAR2(128),
+  "field" VARCHAR2(128),
+  "rank" NUMBER(*, 0) DEFAULT '0',
+  "isCrypted" NUMBER(1, 0) DEFAULT '0',
+  "isStatable" NUMBER(1, 0) DEFAULT '0',
+  "isGroupable" NUMBER(1, 0) DEFAULT '0',
+  "isCreated" NUMBER(1, 0) DEFAULT '0',
+  "isCreatedBy" NUMBER(1, 0) DEFAULT '0',
+  "isModified" NUMBER(1, 0) DEFAULT '0',
+  "isModifiedBy" NUMBER(1, 0) DEFAULT '0',
+  "description" VARCHAR2(512) DEFAULT 'N/A',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128) NOT NULL,
+  "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128) NOT NULL
+  "modifiedBy" VARCHAR2(128)
 );;
 
 ALTER TABLE "router_catalog_extra"
@@ -495,43 +496,47 @@ ALTER TABLE "router_catalog_extra"
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck6_router_catalog_extra" CHECK("isGroupable" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_catalog_extra" CHECK("isStatable" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck7_router_catalog_extra" CHECK("isCreated" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_catalog_extra" CHECK("isGroupable" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck8_router_catalog_extra" CHECK("isCreatedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_catalog_extra" CHECK("isCreated" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck9_router_catalog_extra" CHECK("isModified" IS NOT NULL)
+  ADD CONSTRAINT "ck9_router_catalog_extra" CHECK("isCreatedBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck10_router_catalog_extra" CHECK("isModifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck10_router_catalog_extra" CHECK("isModified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck11_router_catalog_extra" CHECK("description" IS NOT NULL)
+  ADD CONSTRAINT "ck11_router_catalog_extra" CHECK("isModifiedBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck12_router_catalog_extra" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck12_router_catalog_extra" CHECK("description" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck13_router_catalog_extra" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck13_router_catalog_extra" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck14_router_catalog_extra" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck14_router_catalog_extra" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck15_router_catalog_extra" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck15_router_catalog_extra" CHECK("modified" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck16_router_catalog_extra" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_catalog_extra"
@@ -558,17 +563,17 @@ CREATE TRIGGER "trig2_router_catalog_extra"
 
 CREATE TABLE "router_foreign_key" (
   "id" NUMBER(*, 0),
-  "name" VARCHAR2(128) NOT NULL,
-  "fkCatalog" VARCHAR2(128) NOT NULL,
-  "fkTable" VARCHAR2(128) NOT NULL,
-  "fkColumn" VARCHAR2(128) NOT NULL,
-  "pkCatalog" VARCHAR2(128) NOT NULL,
-  "pkTable" VARCHAR2(128) NOT NULL,
-  "pkColumn" VARCHAR2(128) NOT NULL,
+  "name" VARCHAR2(128),
+  "fkCatalog" VARCHAR2(128),
+  "fkTable" VARCHAR2(128),
+  "fkColumn" VARCHAR2(128),
+  "pkCatalog" VARCHAR2(128),
+  "pkTable" VARCHAR2(128),
+  "pkColumn" VARCHAR2(128),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128) NOT NULL,
+  "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128) NOT NULL
+  "modifiedBy" VARCHAR2(128)
 );;
 
 ALTER TABLE "router_foreign_key"
@@ -954,9 +959,9 @@ CREATE TABLE "router_short_url" (
   "shared" NUMBER(1, 0) DEFAULT '0',
   "expire" NUMBER(1, 0) DEFAULT '0',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128) NOT NULL,
+  "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128) NOT NULL
+  "modifiedBy" VARCHAR2(128)
  );;
 
 ALTER TABLE "router_short_url"
@@ -1044,9 +1049,9 @@ CREATE TABLE "router_authority" (
   "email" VARCHAR2(128),
   "reason" NUMBER(5, 0),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128) NOT NULL,
+  "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128) NOT NULL
+  "modifiedBy" VARCHAR2(128)
 );;
 
 ALTER TABLE "router_authority"
@@ -1117,9 +1122,9 @@ CREATE TABLE "router_search_interface" (
   "json" CLOB,
   "archived" NUMBER(1, 0) DEFAULT '0',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128) NOT NULL,
+  "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128) NOT NULL
+  "modifiedBy" VARCHAR2(128)
 );;
 
 ALTER TABLE "router_search_interface"

@@ -77,6 +77,7 @@ CREATE TABLE `router_catalog_extra` (
   `field` VARCHAR(128) NOT NULL,
   `rank` INT NOT NULL DEFAULT '0',
   `isCrypted` TINYINT(1) NOT NULL DEFAULT '0',
+  `isStatable` TINYINT(1) NOT NULL DEFAULT '0',
   `isGroupable` TINYINT(1) NOT NULL DEFAULT '0',
   `isCreated` TINYINT(1) NOT NULL DEFAULT '0',
   `isCreatedBy` TINYINT(1) NOT NULL DEFAULT '0',
