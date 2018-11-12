@@ -453,13 +453,15 @@ CREATE TABLE "router_catalog_extra" (
   "entity" VARCHAR2(128),
   "field" VARCHAR2(128),
   "rank" NUMBER(*, 0) DEFAULT '0',
+  "isHidden" NUMBER(1, 0) DEFAULT '0',
   "isCrypted" NUMBER(1, 0) DEFAULT '0',
-  "isStatable" NUMBER(1, 0) DEFAULT '0',
-  "isGroupable" NUMBER(1, 0) DEFAULT '0',
+  "isPrimary" NUMBER(1, 0) DEFAULT '0',
   "isCreated" NUMBER(1, 0) DEFAULT '0',
   "isCreatedBy" NUMBER(1, 0) DEFAULT '0',
   "isModified" NUMBER(1, 0) DEFAULT '0',
   "isModifiedBy" NUMBER(1, 0) DEFAULT '0',
+  "isStatable" NUMBER(1, 0) DEFAULT '0',
+  "isGroupable" NUMBER(1, 0) DEFAULT '0',
   "description" VARCHAR2(512) DEFAULT 'N/A',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR2(128),
@@ -492,15 +494,15 @@ ALTER TABLE "router_catalog_extra"
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck5_router_catalog_extra" CHECK("isCrypted" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_catalog_extra" CHECK("isHidden" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck6_router_catalog_extra" CHECK("isStatable" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_catalog_extra" CHECK("isCrypted" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck7_router_catalog_extra" CHECK("isGroupable" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_catalog_extra" CHECK("isPrimary" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
@@ -520,23 +522,31 @@ ALTER TABLE "router_catalog_extra"
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck12_router_catalog_extra" CHECK("description" IS NOT NULL)
+  ADD CONSTRAINT "ck12_router_catalog_extra" CHECK("isStatable" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck13_router_catalog_extra" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck13_router_catalog_extra" CHECK("isGroupable" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck14_router_catalog_extra" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck14_router_catalog_extra" CHECK("description" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck15_router_catalog_extra" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck15_router_catalog_extra" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "ck16_router_catalog_extra" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck16_router_catalog_extra" CHECK("createdBy" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck17_router_catalog_extra" CHECK("modified" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "ck18_router_catalog_extra" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_catalog_extra"

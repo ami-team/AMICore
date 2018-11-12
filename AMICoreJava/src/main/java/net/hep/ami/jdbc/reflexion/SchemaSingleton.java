@@ -35,14 +35,15 @@ public class SchemaSingleton
 		/**/
 
 		public int rank = 0;
-		public boolean primary = false;
+		public boolean hidden = false;
 		public boolean crypted = false;
-		public boolean statable = false;
-		public boolean groupable = false;
+		public boolean primary = false;
 		public boolean created = false;
 		public boolean createdBy = false;
 		public boolean modified = false;
 		public boolean modifiedBy = false;
+		public boolean statable = false;
+		public boolean groupable = false;
 		public String description = "N/A";
 
 		/**/

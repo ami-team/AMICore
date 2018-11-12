@@ -33,13 +33,15 @@ public class RowSet
 	/*---------------------------------------------------------------------*/
 
 	protected final int[] m_fieldRank;
+	protected final boolean[] m_fieldHidden;
 	protected final boolean[] m_fieldCrypted;
-	protected final boolean[] m_fieldStatable;
-	protected final boolean[] m_fieldGroupable;
+	protected final boolean[] m_fieldPrimary;
 	protected final boolean[] m_fieldCreated;
 	protected final boolean[] m_fieldCreatedBy;
 	protected final boolean[] m_fieldModified;
 	protected final boolean[] m_fieldModifiedBy;
+	protected final boolean[] m_fieldStatable;
+	protected final boolean[] m_fieldGroupable;
 	protected final String[] m_fieldDescription;
 
 	/*---------------------------------------------------------------------*/
@@ -92,13 +94,15 @@ public class RowSet
 		m_fieldTypes = new String[m_numberOfFields];
 
 		m_fieldRank = new int[m_numberOfFields];
+		m_fieldHidden = new boolean[m_numberOfFields];
 		m_fieldCrypted = new boolean[m_numberOfFields];
-		m_fieldStatable = new boolean[m_numberOfFields];
-		m_fieldGroupable = new boolean[m_numberOfFields];
+		m_fieldPrimary = new boolean[m_numberOfFields];
 		m_fieldCreated = new boolean[m_numberOfFields];
 		m_fieldCreatedBy = new boolean[m_numberOfFields];
 		m_fieldModified = new boolean[m_numberOfFields];
 		m_fieldModifiedBy = new boolean[m_numberOfFields];
+		m_fieldStatable = new boolean[m_numberOfFields];
+		m_fieldGroupable = new boolean[m_numberOfFields];
 		m_fieldDescription = new String[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
@@ -200,25 +204,29 @@ public class RowSet
 				SchemaSingleton.Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
 				m_fieldRank[i] = column.rank;
+				m_fieldHidden[i] = column.hidden;
 				m_fieldCrypted[i] = column.crypted;
-				m_fieldStatable[i] = column.statable;
-				m_fieldGroupable[i] = column.groupable;
+				m_fieldPrimary[i] = column.primary;
 				m_fieldCreated[i] = column.created;
 				m_fieldCreatedBy[i] = column.createdBy;
 				m_fieldModified[i] = column.modified;
 				m_fieldModifiedBy[i] = column.modifiedBy;
+				m_fieldStatable[i] = column.statable;
+				m_fieldGroupable[i] = column.groupable;
 				m_fieldDescription[i] = column.description;
 			}
 			catch(Exception e)
 			{
 				m_fieldRank[i] = 0;
+				m_fieldHidden[i] = false;
 				m_fieldCrypted[i] = false;
-				m_fieldStatable[i] = false;
-				m_fieldGroupable[i] = false;
+				m_fieldPrimary[i] = false;
 				m_fieldCreated[i] = false;
 				m_fieldCreatedBy[i] = false;
 				m_fieldModified[i] = false;
 				m_fieldModifiedBy[i] = false;
+				m_fieldStatable[i] = false;
+				m_fieldGroupable[i] = false;
 				m_fieldDescription[i] = "N/A";
 			}
 
