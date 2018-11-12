@@ -844,7 +844,8 @@ CREATE TABLE "router_user" (
   "firstName" VARCHAR2(128),
   "lastName" VARCHAR2(128),
   "email" VARCHAR2(128),
-  "country" VARCHAR2(128) DEFAULT 'N;;A',
+  "country" VARCHAR2(128) DEFAULT 'N/A',
+  "custom" CLOB,
   "valid" NUMBER(1, 0) DEFAULT '1',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
