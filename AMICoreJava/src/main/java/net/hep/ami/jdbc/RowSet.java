@@ -6,7 +6,9 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.structure.*;
 
 public class RowSet
 {
@@ -46,7 +48,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Map<String, Integer> m_fieldIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
+	protected final Map<String, Integer> m_labelIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 
@@ -87,6 +89,8 @@ public class RowSet
 
 		m_numberOfFields = resultSetMetaData.getColumnCount();
 
+		/*-----------------------------------------------------------------*/
+
 		m_fieldCatalogs = new String[m_numberOfFields];
 		m_fieldEntities = new String[m_numberOfFields];
 		m_fieldNames = new String[m_numberOfFields];
@@ -109,28 +113,34 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                            */
 		/*-----------------------------------------------------------------*/
 
+		Map<String, String> labelResolutions = null;
+
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
 			/*-------------------------------------------------------------*/
 
 			try
 			{
-				m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(
-					resultSetMetaData.getCatalogName(i + 1)
-				);
+				m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resultSetMetaData.getCatalogName(i + 1));
+
+				if(m_fieldCatalogs[i] == null)
+				{
+					if(labelResolutions == null)
+					{
+						labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
+					}
+
+					m_fieldCatalogs[i] = "N/A";
+				}
 			}
 			catch(Exception e1)
 			{
-				try
+				if(labelResolutions == null)
 				{
-					m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog(
-						defaultCatalog
-					);
+					labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
 				}
-				catch(Exception e2)
-				{
-					m_fieldCatalogs[i] =  "N/A";
-				}
+
+				m_fieldCatalogs[i] =  "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
@@ -141,11 +151,21 @@ public class RowSet
 
 				if(m_fieldEntities[i].isEmpty())
 				{
+					if(labelResolutions == null)
+					{
+						labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
+					}
+
 					m_fieldEntities[i] = "N/A";
 				}
 			}
 			catch(Exception e)
 			{
+				if(labelResolutions == null)
+				{
+					labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
+				}
+
 				m_fieldEntities[i] = "N/A";
 			}
 
@@ -199,6 +219,42 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
+			if((
+				"N/A".equals(m_fieldCatalogs[i]) == true
+				||
+				"N/A".equals(m_fieldEntities[i]) == true
+			   )
+			   &&
+			   "N/A".equals(m_fieldLabels[i]) == false
+			 ) {
+				if("PROJECTTAG".equals(m_fieldLabels[i]))
+				{
+					System.out.println("/////////////////////////////////////////////////");
+					System.out.println(sql);
+					System.out.println(labelResolutions);
+					System.out.println(m_fieldLabels[i]);
+					System.out.println(labelResolutions.get(new QId(m_fieldLabels[i]).toString()));
+					System.out.println("|||||||||||||||||||||||||||||||||||||||||||||||||");
+				}
+				/*
+				for(String table: tables)
+				{
+					try
+					{
+						QId qid = AutoJoinSingleton.resolve(defaultCatalog, table, new QId(m_fieldNames[i])).getQId();
+
+						m_fieldCatalogs[i] = qid.getCatalog();
+						m_fieldEntities[i] = qid.getEntity();
+
+						break;
+					}
+					catch(Exception e) { * DO NOTHING * }
+				}
+*/
+			}
+
+			/*-------------------------------------------------------------*/
+
 			try
 			{
 				SchemaSingleton.Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
@@ -235,35 +291,32 @@ public class RowSet
 			if("self".equals(defaultCatalog))
 			{
 				m_fieldCrypted[i] = (
-					"router_config".equals(m_fieldEntities[i]) && (
-						"paramName".equals(m_fieldNames[i])
-						||
-						"paramValue".equals(m_fieldNames[i])
-					)
+					"paramName".equals(m_fieldNames[i])
 					||
-					"router_catalog".equals(m_fieldEntities[i]) && (
-						"user".equals(m_fieldNames[i])
-						||
-						"pass".equals(m_fieldNames[i])
-					)
+					"paramValue".equals(m_fieldNames[i])
 					||
-					"router_user".equals(m_fieldEntities[i]) && (
-						"AMIPass".equals(m_fieldNames[i])
-						||
-						"clientDN".equals(m_fieldNames[i])
-						||
-						"issuerDN".equals(m_fieldNames[i])
-					)
+					"user".equals(m_fieldNames[i])
+					||
+					"pass".equals(m_fieldNames[i])
+					||
+					"clientDN".equals(m_fieldNames[i])
+					||
+					"issuerDN".equals(m_fieldNames[i])
 				);
 			}
 
 			/*-------------------------------------------------------------*/
 
-			m_fieldIndices.put(m_fieldNames[i], i);
+			m_labelIndices.put(m_fieldLabels[i], i);
 
 			/*-------------------------------------------------------------*/
 		}
-
+/*
+		System.out.println(sql);
+		System.out.println(Arrays.asList(m_fieldCatalogs));
+		System.out.println(Arrays.asList(m_fieldEntities));
+		System.out.println(Arrays.asList(m_fieldNames));
+*/
 		/*-----------------------------------------------------------------*/
 	}
 

@@ -5,6 +5,9 @@ import java.util.*;
 
 import org.antlr.v4.runtime.*;
 
+import net.hep.ami.jdbc.reflexion.structure.*;
+import net.hep.ami.utility.*;
+
 public class Tokenizer
 {
 	/*---------------------------------------------------------------------*/
@@ -124,6 +127,195 @@ public class Tokenizer
 		}
 
 		return token;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Map<QId, QId> extractLabelResolutions(String sql) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		int cnt = 0;
+
+		boolean inSelect = false;
+		boolean inFrom = false;
+
+		List<String> tmp1 = null;
+		List<String> tmp2 = null;
+
+		List<String> tokens = Tokenizer.tokenize(sql);
+
+		List<List<String>> fields = new ArrayList<>();
+		List<List<String>> tables = new ArrayList<>();
+
+		for(String token: tokens)
+		{
+			/**/ if("(".equals(token)) {
+				cnt++;
+			}
+			else if(")".equals(token)) {
+				cnt--;
+			}
+			else if(cnt == 0 && "SELECT".equalsIgnoreCase(token)) {
+				inSelect = true;
+				inFrom = false;
+			}
+			else if(cnt == 0 && "FROM".equalsIgnoreCase(token)) {
+				inSelect = false;
+				inFrom = true;
+			}
+			else if(cnt == 0 && "WHERE".equalsIgnoreCase(token)) {
+				inSelect = false;
+				inFrom = false;
+			}
+			else
+			{
+				/**/ if(inSelect)
+				{
+					if("AS".equalsIgnoreCase(token))
+					{
+						token = " ";
+					}
+
+					if(",".equals(token) == false)
+					{
+						if(tmp1 == null)
+						{
+							tmp1 = new ArrayList<>();
+						}
+
+						tmp1.add(token);
+					}
+					else
+					{
+						if(tmp1 != null)
+						{
+							fields.add(tmp1);
+							tmp1 = null;
+						}
+					}
+				}
+				else if(inFrom)
+				{
+					if("AS".equalsIgnoreCase(token))
+					{
+						token = " ";
+					}
+
+					if(",".equals(token) == false)
+					{
+						if(tmp2 == null)
+						{
+							tmp2 = new ArrayList<>();
+						}
+
+						tmp2.add(token);
+					}
+					else
+					{
+						if(tmp2 != null)
+						{
+							tables.add(tmp2);
+							tmp2 = null;
+						}
+					}
+				}
+			}
+		}
+
+		if(tmp1 != null) {
+			fields.add(tmp1);
+		}
+
+		if(tmp2 != null) {
+			tables.add(tmp2);
+		}
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		String[] tmp;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<QId, QId> fieldAliasMap = new HashMap<>();
+
+		for(List<String> field: fields)
+		{
+			tmp = String.join("", field).trim().split("[ \t]", 2);
+
+			if(tmp.length == 2)
+			{
+				fieldAliasMap.put(new QId(tmp[1], QId.MASK_FIELD), new QId(tmp[0], QId.MASK_FIELD));
+			}
+			else
+			{
+				fieldAliasMap.put(new QId(tmp[0], QId.MASK_FIELD), new QId(tmp[0], QId.MASK_FIELD));
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		Map<QId, QId> tableAliasMap = new HashMap<>();
+
+		for(List<String> table: tables)
+		{
+			tmp = String.join("", table).trim().split("[ \t]", 2);
+
+			if(tmp.length == 2)
+			{
+				tableAliasMap.put(new QId(tmp[1], QId.MASK_ENTITY), new QId(tmp[0], QId.MASK_ENTITY));
+			}
+			else
+			{
+				tableAliasMap.put(new QId(tmp[0], QId.MASK_ENTITY), new QId(tmp[0], QId.MASK_ENTITY));
+			}
+		}
+
+		System.out.println(fieldAliasMap);
+		System.out.println(tableAliasMap);
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		Map<QId, QId> result = new HashMap<>();
+
+		for(Map.Entry<QId, QId> entry: fieldAliasMap.entrySet())
+		{
+			System.out.println("-> " + entry.getValue() + " " + entry.getValue().is(QId.MASK_ENTITY | QId.MASK_FIELD));
+
+			if(entry.getValue().is(QId.MASK_ENTITY | QId.MASK_FIELD) && tableAliasMap.containsKey( new QId( entry.getValue().getEntity(), QId.MASK_FIELD)  ))
+			{
+				result.put(
+					entry.getKey(),
+					new QId(tableAliasMap.get(new QId( entry.getValue().getEntity(), QId.MASK_FIELD)) + "." + entry.getValue().getField(), QId.MASK_FIELD)
+				);
+			}
+			else
+			{
+				result.put(
+					entry.getKey(),
+					entry.getValue()
+				);
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void main(String[] args) throws Exception
+	{
+		System.out.println(extractLabelResolutions("SELECT `c`.x AS yy, b AS \"toto\" FROM `AA`, ZZ.BB c WHERE titi"));
+
+		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/

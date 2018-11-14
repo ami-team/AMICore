@@ -13,11 +13,16 @@ public class QId
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final int FLAG_CONSTRAINTS = 0b1000;
+	public static final int TYPE_CONSTRAINTS = 0b1000;
+	public static final int TYPE_CATALOG = 0b0100;
+	public static final int TYPE_ENTITY = 0b0010;
+	public static final int TYPE_FIELD = 0b0001;
 
-	public static final int FLAG_CATALOG = 0b0100;
-	public static final int FLAG_ENTITY = 0b0010;
-	public static final int FLAG_FIELD = 0b0001;
+	/*---------------------------------------------------------------------*/
+
+	public static final int MASK_CATALOG = 0b0100;
+	public static final int MASK_ENTITY = 0b0010;
+	public static final int MASK_FIELD = 0b0001;
 
 	public static final int MASK_CATALOG_ENTITY = 0b0110;
 	public static final int MASK_ENTITY_FIELD = 0b0011;
@@ -52,11 +57,17 @@ public class QId
 		{
 			final int l = s.length() - 1;
 
-			if(s.charAt(0) == '`'
-			   &&
-			   s.charAt(l) == '`'
+			/**/ if(s.charAt(0) == '`'
+			        &&
+			        s.charAt(l) == '`'
 			 ) {
 				s = s.substring(1, l).replace("``", "`");
+			}
+			else if(s.charAt(0) == '"'
+			        &&
+			        s.charAt(l) == '"'
+			 ) {
+				s = s.substring(1, l).replace("\"\"", "\"");
 			}
 		}
 
@@ -111,14 +122,14 @@ public class QId
 
 	public QId(String qId) throws Exception
 	{
-		this(qId, FLAG_FIELD | FLAG_CONSTRAINTS, FLAG_FIELD);
+		this(qId, TYPE_FIELD | TYPE_CONSTRAINTS, TYPE_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public QId(String qId, int typeForQId) throws Exception
 	{
-		this(qId, typeForQId, FLAG_FIELD);
+		this(qId, typeForQId, TYPE_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -169,7 +180,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if((typeForQId & FLAG_CONSTRAINTS) != 0)
+		if((typeForQId & TYPE_CONSTRAINTS) != 0)
 		{
 			for(MQLParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
 			{
@@ -190,7 +201,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		/**/ if((typeForQId & FLAG_FIELD) != 0)
+		/**/ if((typeForQId & TYPE_FIELD) != 0)
 		{
 			/**/ if(size == 3)
 			{
@@ -215,7 +226,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		else if((typeForQId & FLAG_ENTITY) != 0)
+		else if((typeForQId & TYPE_ENTITY) != 0)
 		{
 				/**/ if(size == 2)
 				{
@@ -234,7 +245,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		else if((typeForQId & FLAG_CATALOG) != 0)
+		else if((typeForQId & TYPE_CATALOG) != 0)
 		{
 			/**/ if(size == 1)
 			{
@@ -357,12 +368,34 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public boolean is(int mask)
+	{
+		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
+		       &&
+		       (((mask & MASK_ENTITY) != 0) == (m_entity != null))
+		       &&
+		       (((mask & MASK_FIELD) != 0) == (m_field != null))
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public int hashCode()
+	{
+		return toString().hashCode();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public boolean equals(Object anObject)
 	{
 		return equals(anObject, MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
+
 
 	public boolean equals(Object anObject, int mask)
 	{
@@ -399,7 +432,7 @@ public class QId
 
 	public String toString()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | FLAG_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD).toString();
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | MASK_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -420,7 +453,7 @@ public class QId
 
 	public StringBuilder toStringBuilder()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | FLAG_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD);
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | MASK_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -440,15 +473,15 @@ public class QId
 
 		List<String> parts = new ArrayList<>();
 
-		if((mask & FLAG_CATALOG) != 0 && m_catalog != null) {
+		if((mask & MASK_CATALOG) != 0 && m_catalog != null) {
 			parts.add(quote(m_catalog));
 		}
 
-		if((mask & FLAG_ENTITY) != 0 && m_entity != null) {
+		if((mask & MASK_ENTITY) != 0 && m_entity != null) {
 			parts.add(quote(m_entity));
 		}
 
-		if((mask & FLAG_FIELD) != 0 && m_field != null) {
+		if((mask & MASK_FIELD) != 0 && m_field != null) {
 			parts.add(quote(m_field));
 		}
 
@@ -463,7 +496,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if((mask & FLAG_CONSTRAINTS) != 0 && m_constraints.isEmpty() == false)
+		if((mask & MASK_CONSTRAINTS) != 0 && m_constraints.isEmpty() == false)
 		{
 			result.append("{")
 			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(", ")))

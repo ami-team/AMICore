@@ -1,7 +1,7 @@
 package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
@@ -48,14 +48,14 @@ public class MQLToSQL
 	{
 		/*-----------------------------------------------------------------*/
 
-		m_externalCatalog = externalCatalog;
-		m_internalCatalog = internalCatalog;
+		SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(externalCatalog, entity);
 
-		m_entity = entity;
+		m_externalCatalog = primaryKey.externalCatalog;
+		m_internalCatalog = primaryKey.internalCatalog;
 
-		/*-----------------------------------------------------------------*/
+		m_entity = primaryKey.table;
 
-		m_primaryKey = SchemaSingleton.getPrimaryKey(externalCatalog, entity);
+		m_primaryKey = primaryKey.name;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -311,7 +311,7 @@ public class MQLToSQL
 			tmpFieldsOfDefaultEntity.append("`"+fieldsInDefaultEntity.get(i).getField()+"`");
 		}
 		result.append("INSERT INTO ")
-		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY))
+		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_ENTITY))
 		      .append(" (")
 		      .append(tmpFieldsOfDefaultEntity)
 		      .append(") VALUES (")
@@ -340,7 +340,7 @@ public class MQLToSQL
 		}
 
 		result.append("UPDATE ")
-		      .append(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.FLAG_ENTITY))
+		      .append(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_ENTITY))
 		      .append(" SET ")
 		      .append(String.join(", ", tmpSet))
 		;
@@ -368,7 +368,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("DELETE FROM ").append(new QId(m_internalCatalog, m_entity, null).toString(QId.FLAG_ENTITY));
+		result.append("DELETE FROM ").append(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_ENTITY));
 
 		/*-----------------------------------------------------------------*/
 
@@ -417,7 +417,7 @@ public class MQLToSQL
 
 		if(context.m_alias != null)
 		{
-			result.append(" AS " + new QId(context.m_alias.getText()).toString(QId.FLAG_FIELD));
+			result.append(" AS " + new QId(context.m_alias.getText()).toString(QId.MASK_FIELD));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -568,7 +568,7 @@ public class MQLToSQL
 			if(isUpdate)
 			{
 				Query query = new Query().addSelectPart(qid1.toString(QId.MASK_ENTITY_FIELD))
-				                         .addFromPart(qid1.toString(QId.FLAG_ENTITY))
+				                         .addFromPart(qid1.toString(QId.MASK_ENTITY))
 				;
 
 				localResult.append(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
@@ -651,11 +651,11 @@ public class MQLToSQL
 								localJoins.append(" OR ");
 							}
 
-							String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
+							SchemaSingleton.Column localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
 								SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
 							);
 
-							QId qid2 = new QId(localCatalogName, localTableName, localTablePrimaryKey);
+							QId qid2 = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
 
 							Query query2 = new Query().addSelectPart(qid2.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 							                          .addSelectPart(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
@@ -877,7 +877,7 @@ public class MQLToSQL
 
 					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
 							SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
-							);
+							).name;
 
 					if(needAND)
 					{
@@ -1010,7 +1010,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		QId qid = new QId(context, QId.FLAG_FIELD | QId.FLAG_CONSTRAINTS, QId.FLAG_FIELD);
+		QId qid = new QId(context, QId.MASK_FIELD | QId.MASK_CONSTRAINTS, QId.MASK_FIELD);
 
 		/*-----------------------------------------------------------------*/
 
@@ -1028,7 +1028,9 @@ public class MQLToSQL
 		{
 			if(m_inFunction)
 			{
-				list = Arrays.asList(qid.setCatalog(catalogName).setEntity(entityName).setField(SchemaSingleton.getPrimaryKey(catalogName, entityName)));
+				SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(catalogName, entityName);
+
+				list = Arrays.asList(qid.setCatalog(primaryKey.internalCatalog).setEntity(primaryKey.table).setField(primaryKey.name));
 			}
 			else
 			{
