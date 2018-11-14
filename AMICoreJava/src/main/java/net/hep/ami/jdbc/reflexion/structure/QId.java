@@ -261,7 +261,7 @@ public class QId
 
 	public QId setCatalog(@Nullable String catalog)
 	{
-		m_catalog = catalog != null ? Utility.sqlIdToText(catalog) : null;
+		m_catalog = Utility.sqlIdToText(catalog);
 
 		return this;
 	}
@@ -275,7 +275,7 @@ public class QId
 
 	public QId setEntity(@Nullable String entity)
 	{
-		m_entity = entity != null ? Utility.sqlIdToText(entity) : null;
+		m_entity = Utility.sqlIdToText(entity);
 
 		return this;
 	}
@@ -289,7 +289,7 @@ public class QId
 
 	public QId setField(@Nullable String field)
 	{
-		m_field = field != null ? Utility.sqlIdToText(field) : null;
+		m_field = Utility.sqlIdToText(field);
 
 		return this;
 	}
@@ -308,10 +308,14 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	@Override
-	public int hashCode()
+	public boolean is(int mask)
 	{
-		return this.toString().hashCode();
+		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
+		       &&
+		       (((mask & MASK_ENTITY) != 0) == (m_entity != null))
+		       &&
+		       (((mask & MASK_FIELD) != 0) == (m_field != null))
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -328,14 +332,24 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean is(int mask)
+	@Override
+	public int hashCode()
 	{
-		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
-		       &&
-		       (((mask & MASK_ENTITY) != 0) == (m_entity != null))
-		       &&
-		       (((mask & MASK_FIELD) != 0) == (m_field != null))
-		;
+		return this.hashCode(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public int hashCode(int mask)
+	{
+		return this.hashCode(mask, MASK_CATALOG_ENTITY_FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public int hashCode(int mask, int maskForPath)
+	{
+		return this.toString(mask, maskForPath).hashCode();
 	}
 
 	/*---------------------------------------------------------------------*/
