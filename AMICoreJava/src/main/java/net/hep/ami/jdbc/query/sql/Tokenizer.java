@@ -249,11 +249,11 @@ public class Tokenizer
 
 			if(tmp.length == 2)
 			{
-				fieldAliasMap.put(new QId(tmp[1], QId.MASK_FIELD), new QId(tmp[0], QId.MASK_FIELD));
+				fieldAliasMap.put(new QId(tmp[1], QId.Type.FIELD, QId.Type.NONE), new QId(tmp[0], QId.Type.FIELD, QId.Type.NONE));
 			}
 			else
 			{
-				fieldAliasMap.put(new QId(tmp[0], QId.MASK_FIELD), new QId(tmp[0], QId.MASK_FIELD));
+				fieldAliasMap.put(new QId(tmp[0], QId.Type.FIELD, QId.Type.NONE), new QId(tmp[0], QId.Type.FIELD, QId.Type.NONE));
 			}
 		}
 
@@ -267,11 +267,11 @@ public class Tokenizer
 
 			if(tmp.length == 2)
 			{
-				tableAliasMap.put(new QId(tmp[1], QId.MASK_ENTITY), new QId(tmp[0], QId.MASK_ENTITY));
+				tableAliasMap.put(new QId(tmp[1], QId.Type.ENTITY, QId.Type.NONE), new QId(tmp[0], QId.Type.ENTITY, QId.Type.NONE));
 			}
 			else
 			{
-				tableAliasMap.put(new QId(tmp[0], QId.MASK_ENTITY), new QId(tmp[0], QId.MASK_ENTITY));
+				tableAliasMap.put(new QId(tmp[0], QId.Type.ENTITY, QId.Type.NONE), new QId(tmp[0], QId.Type.ENTITY, QId.Type.NONE));
 			}
 		}
 
@@ -288,13 +288,13 @@ public class Tokenizer
 		{
 			System.out.println("-> " + entry.getValue() + " " + entry.getValue().is(QId.MASK_ENTITY | QId.MASK_FIELD));
 
-			if(entry.getValue().is(QId.MASK_ENTITY | QId.MASK_FIELD) && tableAliasMap.containsKey( new QId( entry.getValue().getEntity(), QId.MASK_FIELD)  ))
+			if(entry.getValue().is(QId.MASK_ENTITY | QId.MASK_FIELD) && tableAliasMap.containsKey( new QId( entry.getValue().getEntity(), QId.Type.FIELD)  ))
 			{
-				result.put(
+/*				result.put(
 					entry.getKey(),
 					new QId(tableAliasMap.get(new QId( entry.getValue().getEntity(), QId.MASK_FIELD)) + "." + entry.getValue().getField(), QId.MASK_FIELD)
 				);
-			}
+*/			}
 			else
 			{
 				result.put(

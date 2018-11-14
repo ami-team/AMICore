@@ -141,7 +141,7 @@ public abstract class AbstractCommand
 			                                          : (StringBuilder) execute()
 			;
 
-			CacheSingleton.put(key, result);
+			CacheSingleton.put(key, result); /* PAS BON !!! */
 		}
 		else
 		{

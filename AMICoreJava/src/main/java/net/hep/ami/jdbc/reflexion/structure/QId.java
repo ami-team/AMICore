@@ -13,12 +13,17 @@ public class QId
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final int TYPE_CONSTRAINTS = 0b1000;
-	public static final int TYPE_CATALOG = 0b0100;
-	public static final int TYPE_ENTITY = 0b0010;
-	public static final int TYPE_FIELD = 0b0001;
+	public enum Type
+	{
+		NONE,
+		CATALOG,
+		ENTITY,
+		FIELD,
+	}
 
 	/*---------------------------------------------------------------------*/
+
+	public static final int MASK_NONE = 0b0000;
 
 	public static final int MASK_CATALOG = 0b0100;
 	public static final int MASK_ENTITY = 0b0010;
@@ -45,74 +50,6 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public static String unquote(String s)
-	{
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		if(s.isEmpty() == false)
-		{
-			final int l = s.length() - 1;
-
-			/**/ if(s.charAt(0) == '`'
-			        &&
-			        s.charAt(l) == '`'
-			 ) {
-				s = s.substring(1, l).replace("``", "`");
-			}
-			else if(s.charAt(0) == '"'
-			        &&
-			        s.charAt(l) == '"'
-			 ) {
-				s = s.substring(1, l).replace("\"\"", "\"");
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		return s;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String quote(String s)
-	{
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		if(s.isEmpty() == false)
-		{
-			final int l = s.length() - 1;
-
-			if(s.charAt(0) != '`'
-			   ||
-			   s.charAt(l) != '`'
-			 ) {
-				s = '`' + s.replace("`", "``") + '`';
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		s = s.trim();
-
-		/*-----------------------------------------------------------------*/
-
-		return s;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public QId()
 	{
 		/* DO NOTHING */
@@ -122,19 +59,19 @@ public class QId
 
 	public QId(String qId) throws Exception
 	{
-		this(qId, TYPE_FIELD | TYPE_CONSTRAINTS, TYPE_FIELD);
+		this(qId, Type.FIELD, Type.FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId, int typeForQId) throws Exception
+	public QId(String qId, Type typeForQId) throws Exception
 	{
-		this(qId, typeForQId, TYPE_FIELD);
+		this(qId, typeForQId, Type.FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId, int typeForQId, int typeForConstraints) throws Exception
+	public QId(String qId, Type typeForQId, Type typeForConstraints) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -162,17 +99,14 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(MQLParser.QIdContext context, int typeForQId, int typeForConstraints) throws Exception
+	public QId(MQLParser.QIdContext context, Type typeForQId, Type typeForConstraints) throws Exception
 	{
-		/* This constructor is used by MQLToSQL.java
-		 */
-
 		visitQId(this, context, typeForQId, typeForConstraints);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitQId(QId result, MQLParser.QIdContext context, int typeForQId, int typeForConstraints) throws Exception
+	private QId visitQId(QId result, MQLParser.QIdContext context, Type typeForQId, Type typeForConstraints) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -180,7 +114,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if((typeForQId & TYPE_CONSTRAINTS) != 0)
+		if(typeForConstraints != Type.NONE)
 		{
 			for(MQLParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
 			{
@@ -195,71 +129,83 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitBasicQId(QId result, MQLParser.BasicQIdContext context, int typeForQId) throws Exception
+	private QId visitBasicQId(QId result, MQLParser.BasicQIdContext context, Type typeForQId) throws Exception
 	{
 		final int size = context.m_ids.size();
 
 		/*-----------------------------------------------------------------*/
 
-		/**/ if((typeForQId & TYPE_FIELD) != 0)
+		switch(typeForQId)
 		{
-			/**/ if(size == 3)
-			{
-				result.m_catalog = unquote(context.m_ids.get(0).getText());
-				result.m_entity = unquote(context.m_ids.get(1).getText());
-				result.m_field = unquote(context.m_ids.get(2).getText());
-			}
-			else if(size == 2)
-			{
-				result.m_entity = unquote(context.m_ids.get(0).getText());
-				result.m_field = unquote(context.m_ids.get(1).getText());
-			}
-			else if(size == 1)
-			{
-				result.m_field = unquote(context.m_ids.get(0).getText());
-			}
-			else
-			{
-				throw new Exception("syntax error for field");
-			}
-		}
+			/*-------------------------------------------------------------*/
 
-		/*-----------------------------------------------------------------*/
+			case FIELD:
 
-		else if((typeForQId & TYPE_ENTITY) != 0)
-		{
-				/**/ if(size == 2)
+				/**/ if(size == 3)
 				{
-					result.m_catalog = unquote(context.m_ids.get(0).getText());
-					result.m_entity = unquote(context.m_ids.get(1).getText());
+					result.m_catalog = Utility.sqlIdToText(context.m_ids.get(0).getText());
+					result.m_entity = Utility.sqlIdToText(context.m_ids.get(1).getText());
+					result.m_field = Utility.sqlIdToText(context.m_ids.get(2).getText());
+				}
+				else if(size == 2)
+				{
+					result.m_entity = Utility.sqlIdToText(context.m_ids.get(0).getText());
+					result.m_field = Utility.sqlIdToText(context.m_ids.get(1).getText());
 				}
 				else if(size == 1)
 				{
-					result.m_entity = unquote(context.m_ids.get(0).getText());
+					result.m_field = Utility.sqlIdToText(context.m_ids.get(0).getText());
+				}
+				else
+				{
+					throw new Exception("syntax error for field");
+				}
+
+				break;
+
+			/*-------------------------------------------------------------*/
+
+			case ENTITY:
+
+				/**/ if(size == 2)
+				{
+					result.m_catalog = Utility.sqlIdToText(context.m_ids.get(0).getText());
+					result.m_entity = Utility.sqlIdToText(context.m_ids.get(1).getText());
+				}
+				else if(size == 1)
+				{
+					result.m_entity = Utility.sqlIdToText(context.m_ids.get(0).getText());
 				}
 				else
 				{
 					throw new Exception("syntax error for entity");
 				}
+
+				break;
+
+			/*-------------------------------------------------------------*/
+
+			case CATALOG:
+
+				/**/ if(size == 1)
+				{
+					result.m_catalog = Utility.sqlIdToText(context.m_ids.get(0).getText());
+				}
+				else
+				{
+					throw new Exception("syntax error for catalog");
+				}
+
+				break;
+
+			/*-------------------------------------------------------------*/
+
+			default:
+
+				throw new Exception("invalid type");
+
+			/*-------------------------------------------------------------*/
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		else if((typeForQId & TYPE_CATALOG) != 0)
-		{
-			/**/ if(size == 1)
-			{
-				result.m_catalog = unquote(context.m_ids.get(0).getText());
-			}
-			else
-			{
-				throw new Exception("syntax error for catalog");
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		else throw new Exception("invalid type");
 
 		/*-----------------------------------------------------------------*/
 
@@ -270,6 +216,8 @@ public class QId
 		if("*".equals(result.m_entity)) {
 			throw new Exception("`*` not allowed in `entity` part");
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
@@ -304,8 +252,6 @@ public class QId
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
-
 	public boolean getExclusion()
 	{
 		return m_exclusion;
@@ -315,12 +261,10 @@ public class QId
 
 	public QId setCatalog(@Nullable String catalog)
 	{
-		m_catalog = catalog != null ? unquote(catalog) : null;
+		m_catalog = catalog != null ? Utility.sqlIdToText(catalog) : null;
 
 		return this;
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public String getCatalog()
 	{
@@ -331,12 +275,10 @@ public class QId
 
 	public QId setEntity(@Nullable String entity)
 	{
-		m_entity = entity != null ? unquote(entity) : null;
+		m_entity = entity != null ? Utility.sqlIdToText(entity) : null;
 
 		return this;
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public String getEntity()
 	{
@@ -347,12 +289,10 @@ public class QId
 
 	public QId setField(@Nullable String field)
 	{
-		m_field = field != null ? unquote(field) : null;
+		m_field = field != null ? Utility.sqlIdToText(field) : null;
 
 		return this;
 	}
-
-	/*---------------------------------------------------------------------*/
 
 	public String getField()
 	{
@@ -368,6 +308,26 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
+	public int hashCode()
+	{
+		return this.toString().hashCode();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean matches(QId qId)
+	{
+		return (this.m_catalog == null || qId.m_catalog == null || "$".equals(this.m_catalog) || "$".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
+		       &&
+		       (this.m_entity == null || qId.m_entity == null || "$".equals(this.m_entity) || "$".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
+		       &&
+		       (this.m_field == null || qId.m_field == null || "$".equals(this.m_field) || "$".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public boolean is(int mask)
 	{
 		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
@@ -376,14 +336,6 @@ public class QId
 		       &&
 		       (((mask & MASK_FIELD) != 0) == (m_field != null))
 		;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public int hashCode()
-	{
-		return toString().hashCode();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -418,21 +370,9 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean matches(QId qId)
-	{
-		return (this.m_catalog == null || qId.m_catalog == null || "$".equals(this.m_catalog) || "$".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
-		       &&
-		       (this.m_entity == null || qId.m_entity == null || "$".equals(this.m_entity) || "$".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
-		       &&
-		       (this.m_field == null || qId.m_field == null || "$".equals(this.m_field) || "$".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
-		;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public String toString()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | MASK_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD).toString();
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -453,7 +393,7 @@ public class QId
 
 	public StringBuilder toStringBuilder()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD | MASK_CONSTRAINTS, MASK_CATALOG_ENTITY_FIELD);
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -474,15 +414,15 @@ public class QId
 		List<String> parts = new ArrayList<>();
 
 		if((mask & MASK_CATALOG) != 0 && m_catalog != null) {
-			parts.add(quote(m_catalog));
+			parts.add(Utility.textToSqlId(m_catalog));
 		}
 
 		if((mask & MASK_ENTITY) != 0 && m_entity != null) {
-			parts.add(quote(m_entity));
+			parts.add(Utility.textToSqlId(m_entity));
 		}
 
 		if((mask & MASK_FIELD) != 0 && m_field != null) {
-			parts.add(quote(m_field));
+			parts.add(Utility.textToSqlId(m_field));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -496,7 +436,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if((mask & MASK_CONSTRAINTS) != 0 && m_constraints.isEmpty() == false)
+		if(maskForPath != 0 && m_constraints.isEmpty() == false)
 		{
 			result.append("{")
 			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(", ")))

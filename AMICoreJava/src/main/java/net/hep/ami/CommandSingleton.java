@@ -309,8 +309,8 @@ public class CommandSingleton
 
 			if(s_reserved.contains(key) == false)
 			{
-				key = Utility.escapeHTML(Utility.escapeString(key));
-				value = Utility.escapeHTML(Utility.escapeString(value));
+				key = Utility.escapeHTML(Utility.escapeJavaString(key));
+				value = Utility.escapeHTML(Utility.escapeJavaString(value));
 
 				stringBuilder.append("<argument name=\"").append(key).append("\" value=\"").append(value).append("\" />");
 			}

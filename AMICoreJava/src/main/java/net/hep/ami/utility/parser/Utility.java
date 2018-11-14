@@ -5,11 +5,16 @@ import net.hep.ami.utility.*;
 public class Utility
 {
 	/*---------------------------------------------------------------------*/
-	/* TEXT                                                                */
+	/* JAVA STRING                                                         */
 	/*---------------------------------------------------------------------*/
 
-	public static String escapeString(String s)
+	public static String escapeJavaString(@Nullable String s)
 	{
+		if(s == null)
+		{
+			return null;
+		}
+
 		StringBuilder result = new StringBuilder(s.length());
 
 		/*-----------------------------------------------------------------*/
@@ -70,8 +75,13 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String unescapeString(String s)
+	public static String unescapeJavaString(@Nullable String s)
 	{
+		if(s == null)
+		{
+			return null;
+		}
+
 		StringBuilder result = new StringBuilder(s.length());
 
 		/*-----------------------------------------------------------------*/
@@ -167,26 +177,113 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parseString(@Nullable String s)
+	public static String javaStringToText(@Nullable String s)
 	{
 		if(s == null)
 		{
-			return "";
+			return null;
 		}
 
 		s = s.trim();
 
+		/*-----------------------------------------------------------------*/
+
 		final int l = s.length();
 
-		return (l >= 2) ? unescapeString(s.substring(0 + 1, l - 1)) : "";
+		if(l >= 2)
+		{
+			if(s.charAt(0 + 0) == '"'
+			   &&
+			   s.charAt(l - 1) == '"'
+			 ) {
+				s = unescapeJavaString(s.substring(0 + 1, l - 1));
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+	/* XQL STRING                                                          */
+	/*---------------------------------------------------------------------*/
+
+	public static String sqlIdToText(@Nullable String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		final int l = s.length();
+
+		if(l >= 2)
+		{
+			/**/ if(s.charAt(0 + 0) == '`'
+			        &&
+			        s.charAt(l - 1) == '`'
+			 ) {
+				s = s.substring(0 + 1, l - 1).trim().replace("``", "`");
+			}
+			else if(s.charAt(0 + 0) == '"'
+			        &&
+			        s.charAt(l - 1) == '"'
+			 ) {
+				s = s.substring(0 + 1, l - 1).trim().replace("\"\"", "\"");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String textToSqlId(@Nullable String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		s = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		final int l = s.length();
+
+		if(l >= 2)
+		{
+			if((s.charAt(0 + 0) != '`' && s.charAt(0 + 0) != '"')
+			   ||
+			   (s.charAt(l - 1) != '`' && s.charAt(l - 1) != '"')
+			 ) {
+				s = '`' + s.replace("`", "``") + '`';
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return s;
 	}
 
 	/*---------------------------------------------------------------------*/
 	/* HTML                                                                */
 	/*---------------------------------------------------------------------*/
 
-	public static String escapeHTML(String s)
+	public static String escapeHTML(@Nullable String s)
 	{
+		if(s == null)
+		{
+			return null;
+		}
+
 		StringBuilder result = new StringBuilder(s.length());
 
 		/*-----------------------------------------------------------------*/

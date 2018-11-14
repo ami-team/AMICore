@@ -1010,7 +1010,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		QId qid = new QId(context, QId.MASK_FIELD | QId.MASK_CONSTRAINTS, QId.MASK_FIELD);
+		QId qid = new QId(context, QId.Type.FIELD, QId.Type.FIELD);
 
 		/*-----------------------------------------------------------------*/
 
