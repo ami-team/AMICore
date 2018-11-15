@@ -258,7 +258,7 @@ public class Utility
 
 		final int l = s.length();
 
-		if(l >= 2)
+		if(l >= 1)
 		{
 			if((s.charAt(0 + 0) != '`' && s.charAt(0 + 0) != '"')
 			   ||

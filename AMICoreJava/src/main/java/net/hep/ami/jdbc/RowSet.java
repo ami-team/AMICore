@@ -113,7 +113,9 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                            */
 		/*-----------------------------------------------------------------*/
 
-		Map<String, String> labelResolutions = null;
+		Map<QId, QId> labelToFieldMap = null;
+
+		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
@@ -125,21 +127,11 @@ public class RowSet
 
 				if(m_fieldCatalogs[i] == null)
 				{
-					if(labelResolutions == null)
-					{
-						labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
-					}
-
 					m_fieldCatalogs[i] = "N/A";
 				}
 			}
 			catch(Exception e1)
 			{
-				if(labelResolutions == null)
-				{
-					labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
-				}
-
 				m_fieldCatalogs[i] =  "N/A";
 			}
 
@@ -151,21 +143,11 @@ public class RowSet
 
 				if(m_fieldEntities[i].isEmpty())
 				{
-					if(labelResolutions == null)
-					{
-						labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
-					}
-
 					m_fieldEntities[i] = "N/A";
 				}
 			}
 			catch(Exception e)
 			{
-				if(labelResolutions == null)
-				{
-					labelResolutions = null;//Tokenizer.extractLabelResolutions(sql);
-				}
-
 				m_fieldEntities[i] = "N/A";
 			}
 
@@ -227,13 +209,18 @@ public class RowSet
 			   &&
 			   "N/A".equals(m_fieldLabels[i]) == false
 			 ) {
+				if(labelToFieldMap == null)
+				{
+					labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
+				}
+
 				if("PROJECTTAG".equals(m_fieldLabels[i]))
 				{
 					System.out.println("/////////////////////////////////////////////////");
 					System.out.println(sql);
-					System.out.println(labelResolutions);
+					System.out.println(labelToFieldMap);
 					System.out.println(m_fieldLabels[i]);
-					System.out.println(labelResolutions.get(new QId(m_fieldLabels[i]).toString()));
+					System.out.println(labelToFieldMap.get(new QId(m_fieldLabels[i])));
 					System.out.println("|||||||||||||||||||||||||||||||||||||||||||||||||");
 				}
 				/*
