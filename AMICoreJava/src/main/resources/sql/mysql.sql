@@ -216,7 +216,7 @@ CREATE TABLE `router_user` (
   `issuerDN` VARCHAR(512),
   `firstName` VARCHAR(128) NOT NULL,
   `lastName` VARCHAR(128) NOT NULL,
-  `email` VARCHAR(128),
+  `email` VARCHAR(128) NOT NULL,
   `country` VARCHAR(128) DEFAULT 'N/A',
   `custom` TEXT,
   `valid` TINYINT(1) NOT NULL DEFAULT '1',

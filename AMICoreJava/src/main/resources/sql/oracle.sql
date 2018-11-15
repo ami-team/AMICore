@@ -880,15 +880,19 @@ ALTER TABLE "router_user"
 ;;
 
 ALTER TABLE "router_user"
-  ADD CONSTRAINT "ck6_router_user" CHECK("valid" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_user" CHECK("email" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_user"
-  ADD CONSTRAINT "ck7_router_user" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_user" CHECK("valid" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_user"
-  ADD CONSTRAINT "ck8_router_user" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_user" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_user"
+  ADD CONSTRAINT "ck9_router_user" CHECK("modified" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_user"

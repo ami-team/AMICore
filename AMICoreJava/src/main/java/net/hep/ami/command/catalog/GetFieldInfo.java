@@ -40,23 +40,25 @@ public class GetFieldInfo extends AbstractCommand
 
 		for(SchemaSingleton.Column column: SchemaSingleton.getColumns(catalog, entity).values())
 		{
-			result.append(
-				"<row>"
-				+
-				"<field name=\"name\">" + column.name + "</field>"
-				+
-				"<field name=\"type\">" + column.type + "</field>"
-				+
-				"<field name=\"size\">" + column.size + "</field>"
-				+
-				"<field name=\"digits\">" + column.digits + "</field>"
-				+
-				"<field name=\"def\">" + column.def + "</field>"
-				+
-				"<field name=\"primary\">" + column.primary + "</field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"name\">").append(column.name).append("</field>")
+			      .append("<field name=\"type\">").append(column.type).append("</field>")
+			      .append("<field name=\"size\">").append(column.size).append("</field>")
+			      .append("<field name=\"digits\">").append(column.digits).append("</field>")
+			      .append("<field name=\"def\">").append(column.def).append("</field>")
+			      .append("<field name=\"rank\">").append(column.rank).append("</field>")
+			      .append("<field name=\"hidden\">").append(column.hidden).append("</field>")
+			      .append("<field name=\"crypted\">").append(column.crypted).append("</field>")
+			      .append("<field name=\"primary\">").append(column.primary).append("</field>")
+			      .append("<field name=\"created\">").append(column.created).append("</field>")
+			      .append("<field name=\"createdBy\">").append(column.createdBy).append("</field>")
+			      .append("<field name=\"modified\">").append(column.modified).append("</field>")
+			      .append("<field name=\"modifiedBy\">").append(column.modifiedBy).append("</field>")
+			      .append("<field name=\"statable\">").append(column.statable).append("</field>")
+			      .append("<field name=\"groupable\">").append(column.groupable).append("</field>")
+			      .append("<field name=\"description\">").append(column.description).append("</field>")
+			      .append("</row>")
+			;
 		}
 
 		/*-----------------------------------------------------------------*/
