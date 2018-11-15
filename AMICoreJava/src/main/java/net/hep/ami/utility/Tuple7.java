@@ -82,4 +82,28 @@ public class Tuple7<A, B, C, D, E, F, G> implements Serializable
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String toString()
+	{
+		return new StringBuilder().append("[")
+		                          .append(x.toString())
+		                          .append(",")
+		                          .append(y.toString())
+		                          .append(",")
+		                          .append(z.toString())
+		                          .append(",")
+		                          .append(t.toString())
+		                          .append(",")
+		                          .append(u.toString())
+		                          .append(",")
+		                          .append(v.toString())
+		                          .append(",")
+		                          .append(w.toString())
+		                          .append("]")
+		                          .toString()
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
 }

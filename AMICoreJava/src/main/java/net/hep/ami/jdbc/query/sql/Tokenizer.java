@@ -6,6 +6,7 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 
 import net.hep.ami.jdbc.reflexion.structure.*;
+import net.hep.ami.utility.Tuple2;
 
 public class Tokenizer
 {
@@ -130,7 +131,7 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<QId, QId> buildLabelToFieldMap(String sql) throws Exception
+	public static Tuple2<Map<QId, QId>, Set<QId>> buildLabelToFieldMap(String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -254,19 +255,26 @@ public class Tokenizer
 
 			l = tmp.length();
 
-			/**/ if(idx > 0)
+			try
 			{
-				fieldAliasMap.put(
-					new QId(tmp.substring(idx + 1, l), QId.Type.FIELD, QId.Type.NONE),
-					new QId(tmp.substring(0, idx + 0), QId.Type.FIELD, QId.Type.NONE)
-				);
+				/**/ if(idx > 0)
+				{
+					fieldAliasMap.put(
+						new QId(tmp.substring(idx + 1, l), QId.Type.FIELD, QId.Type.NONE),
+						new QId(tmp.substring(0, idx + 0), QId.Type.FIELD, QId.Type.NONE)
+					);
+				}
+				else
+				{
+					fieldAliasMap.put(
+						new QId(tmp, QId.Type.FIELD, QId.Type.NONE),
+						new QId(tmp, QId.Type.FIELD, QId.Type.NONE)
+					);
+				}
 			}
-			else
+			catch(Exception e)
 			{
-				fieldAliasMap.put(
-					new QId(tmp, QId.Type.FIELD, QId.Type.NONE),
-					new QId(tmp, QId.Type.FIELD, QId.Type.NONE)
-				);
+				/* IGNORE */
 			}
 		}
 
@@ -285,19 +293,26 @@ public class Tokenizer
 
 			l = tmp.length();
 
-			/**/ if(idx > 0)
+			try
 			{
-				tableAliasMap.put(
-					new QId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
-					new QId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
-				);
+				/**/ if(idx > 0)
+				{
+					tableAliasMap.put(
+						new QId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
+						new QId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
+					);
+				}
+				else
+				{
+					tableAliasMap.put(
+						new QId(tmp, QId.Type.ENTITY, QId.Type.NONE),
+						new QId(tmp, QId.Type.ENTITY, QId.Type.NONE)
+					);
+				}
 			}
-			else
+			catch(Exception e)
 			{
-				tableAliasMap.put(
-					new QId(tmp, QId.Type.ENTITY, QId.Type.NONE),
-					new QId(tmp, QId.Type.ENTITY, QId.Type.NONE)
-				);
+				/* IGNORE */
 			}
 		}
 
@@ -347,13 +362,17 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		return new Tuple2<>(
+			result,
+			tableAliasMap.keySet()
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static void main(String[] args) throws Exception
 	{
+		System.out.println(buildLabelToFieldMap("SELECT 1"));
 		System.out.println(buildLabelToFieldMap("SELECT `c`.x AS yy, b AS \"toto\" FROM `AA`, ZZ.BB c WHERE titi"));
 
 		System.exit(0);

@@ -58,4 +58,22 @@ public class Tuple4<A, B, C, D> implements Serializable
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String toString()
+	{
+		return new StringBuilder().append("[")
+		                          .append(x.toString())
+		                          .append(",")
+		                          .append(y.toString())
+		                          .append(",")
+		                          .append(z.toString())
+		                          .append(",")
+		                          .append(t.toString())
+		                          .append("]")
+		                          .toString()
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
 }

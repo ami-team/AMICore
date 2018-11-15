@@ -652,7 +652,7 @@ public class MQLToSQL
 							}
 
 							SchemaSingleton.Column localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
-								SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
+								SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName, ""), localTableName
 							);
 
 							QId qid2 = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
@@ -876,7 +876,7 @@ public class MQLToSQL
 					}
 
 					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
-							SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName), localTableName
+							SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName, ""), localTableName
 							).name;
 
 					if(needAND)

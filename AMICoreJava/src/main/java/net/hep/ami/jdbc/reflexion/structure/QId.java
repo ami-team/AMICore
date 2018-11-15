@@ -384,6 +384,7 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
 	public String toString()
 	{
 		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD).toString();

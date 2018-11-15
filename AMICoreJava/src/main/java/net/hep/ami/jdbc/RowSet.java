@@ -3,6 +3,7 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
@@ -113,7 +114,7 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                            */
 		/*-----------------------------------------------------------------*/
 
-		Map<QId, QId> labelToFieldMap = null;
+		Tuple2<Map<QId, QId>, Set<QId>> labelToFieldMap = null;
 
 		/*-----------------------------------------------------------------*/
 
@@ -123,9 +124,9 @@ public class RowSet
 
 			try
 			{
-				m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resultSetMetaData.getCatalogName(i + 1));
+				m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resultSetMetaData.getCatalogName(i + 1), "");
 
-				if(m_fieldCatalogs[i] == null)
+				if(m_fieldEntities[i].isEmpty())
 				{
 					m_fieldCatalogs[i] = "N/A";
 				}
@@ -214,30 +215,7 @@ public class RowSet
 					labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
 				}
 
-				if("PROJECTTAG".equals(m_fieldLabels[i]))
-				{
-					System.out.println("/////////////////////////////////////////////////");
-					System.out.println(sql);
-					System.out.println(labelToFieldMap);
-					System.out.println(m_fieldLabels[i]);
-					System.out.println(labelToFieldMap.get(new QId(m_fieldLabels[i])));
-					System.out.println("|||||||||||||||||||||||||||||||||||||||||||||||||");
-				}
-				/*
-				for(String table: tables)
-				{
-					try
-					{
-						QId qid = AutoJoinSingleton.resolve(defaultCatalog, table, new QId(m_fieldNames[i])).getQId();
-
-						m_fieldCatalogs[i] = qid.getCatalog();
-						m_fieldEntities[i] = qid.getEntity();
-
-						break;
-					}
-					catch(Exception e) { * DO NOTHING * }
-				}
-*/
+				jklsfjsldfjk(labelToFieldMap, defaultCatalog, sql, i);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -298,12 +276,50 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 		}
-/*
-		System.out.println(sql);
-		System.out.println(Arrays.asList(m_fieldCatalogs));
-		System.out.println(Arrays.asList(m_fieldEntities));
-		System.out.println(Arrays.asList(m_fieldNames));
-*/
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private void jklsfjsldfjk(Tuple2<Map<QId, QId>, Set<QId>> labelToFieldMap, String defaultCatalog, String sql, int idx) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		QId qId = new QId(m_fieldLabels[idx], QId.Type.FIELD);
+
+		for(Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
+		{
+			if(qId.matches(entry.getKey()))
+			{
+				qId = entry.getValue();
+
+				break;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(qId.is(QId.MASK_CATALOG_ENTITY_FIELD) == false)
+		{
+			for(QId table: labelToFieldMap.y)
+			{
+				try
+				{
+					QId qid = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getQId();
+
+					m_fieldCatalogs[idx] = qid.getCatalog();
+					m_fieldEntities[idx] = qid.getEntity();
+
+					break;
+				}
+				catch(Exception e)
+				{
+					/* IGNORE */
+				}
+			}
+		}
+
 		/*-----------------------------------------------------------------*/
 	}
 

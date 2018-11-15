@@ -762,16 +762,20 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog_noException(String catalog)
+	public static String internalCatalogToExternalCatalog_noException(String catalog, String value)
 	{
-		return s_internalCatalogToExternalCatalog.get(catalog);
+		String result = s_internalCatalogToExternalCatalog.get(catalog);
+
+		return result != null ? result : value;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog_noException(String catalog)
+	public static String externalCatalogToInternalCatalog_noException(String catalog, String value)
 	{
-		return s_externalCatalogToInternalCatalog.get(catalog);
+		String result =  s_externalCatalogToInternalCatalog.get(catalog);
+
+		return result != null ? result : value;
 	}
 
 	/*---------------------------------------------------------------------*/

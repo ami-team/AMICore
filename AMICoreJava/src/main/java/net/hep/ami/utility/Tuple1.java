@@ -34,4 +34,16 @@ public class Tuple1<A> implements Serializable
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String toString()
+	{
+		return new StringBuilder().append("[")
+		                          .append(x.toString())
+		                          .append("]")
+		                          .toString()
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
 }

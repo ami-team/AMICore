@@ -124,6 +124,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	@SuppressWarnings("deprecation")
 	public static void commitAndRelease(long transactionId) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
@@ -156,7 +157,7 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == DriverMetadata.Type.SQL)
 				{
-					driver.executeSQLQuery("SELECT 1");
+					driver.getStatement().executeQuery(driver.patchSQL("SELECT 1"));
 				}
 			}
 
@@ -208,6 +209,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	@SuppressWarnings("deprecation")
 	public static void rollbackAndRelease(long transactionId) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
@@ -240,7 +242,7 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == DriverMetadata.Type.SQL)
 				{
-					driver.executeSQLQuery("SELECT 1");
+					driver.getStatement().executeQuery(driver.patchSQL("SELECT 1"));
 				}
 			}
 

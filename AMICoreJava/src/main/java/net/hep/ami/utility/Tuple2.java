@@ -42,4 +42,18 @@ public class Tuple2<A, B> implements Serializable
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	@Override
+	public String toString()
+	{
+		return new StringBuilder().append("[")
+		                          .append(x.toString())
+		                          .append(",")
+		                          .append(y.toString())
+		                          .append("]")
+		                          .toString()
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
 }
