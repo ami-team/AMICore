@@ -168,15 +168,12 @@ public class Tokenizer
 				inSelect = false;
 				inFrom = false;
 			}
-			else
-			{
+			else if("DISTINCT".equalsIgnoreCase(token) == false
+			        &&
+			        ((("AS"))).equalsIgnoreCase(token) == false
+			 ) {
 				/**/ if(inSelect)
 				{
-					if("AS".equalsIgnoreCase(token))
-					{
-						token = " ";
-					}
-
 					if(",".equals(token) == false)
 					{
 						if(tmp1 == null)
@@ -197,11 +194,6 @@ public class Tokenizer
 				}
 				else if(inFrom)
 				{
-					if("AS".equalsIgnoreCase(token))
-					{
-						token = " ";
-					}
-
 					if(",".equals(token) == false)
 					{
 						if(tmp2 == null)
@@ -372,7 +364,7 @@ public class Tokenizer
 
 	public static void main(String[] args) throws Exception
 	{
-		System.out.println(buildLabelToFieldMap("SELECT 1"));
+		System.out.println(buildLabelToFieldMap("SELECT DISTINCT 1"));
 		System.out.println(buildLabelToFieldMap("SELECT `c`.x AS yy, b AS \"toto\" FROM `AA`, ZZ.BB c WHERE titi"));
 
 		System.exit(0);

@@ -315,10 +315,11 @@ public class RowSet
 			{
 				try
 				{
-					QId qid = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getQId();
+					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getQId();
 
-					m_fieldCatalogs[idx] = qid.getCatalog();
-					m_fieldEntities[idx] = qid.getEntity();
+					m_fieldCatalogs[idx] = resolvedQId.getCatalog();
+					m_fieldEntities[idx] = resolvedQId.getEntity();
+					m_fieldNames[idx] = resolvedQId.getField();
 
 					break;
 				}
@@ -327,6 +328,12 @@ public class RowSet
 					/* IGNORE */
 				}
 			}
+		}
+		else
+		{
+			m_fieldCatalogs[idx] = qId.getCatalog();
+			m_fieldEntities[idx] = qId.getEntity();
+			m_fieldNames[idx] = qId.getField();
 		}
 
 		/*-----------------------------------------------------------------*/
