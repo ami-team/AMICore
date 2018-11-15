@@ -176,8 +176,6 @@ public final class RowSetIterable implements Iterable<Row>
 
 	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type, int limit, int offset) throws Exception
 	{
-		rowSet.setLocked();
-
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -255,6 +253,10 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 		/* RESULT                                                          */
+		/*-----------------------------------------------------------------*/
+
+		rowSet.setLocked();
+
 		/*-----------------------------------------------------------------*/
 
 		if(type == null)

@@ -215,7 +215,7 @@ public class RowSet
 					labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
 				}
 
-				jklsfjsldfjk(labelToFieldMap, defaultCatalog, sql, i);
+				resolveLabel(labelToFieldMap, defaultCatalog, sql, i);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -282,20 +282,29 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private void jklsfjsldfjk(Tuple2<Map<QId, QId>, Set<QId>> labelToFieldMap, String defaultCatalog, String sql, int idx) throws Exception
+	private void resolveLabel(Tuple2<Map<QId, QId>, Set<QId>> labelToFieldMap, String defaultCatalog, String sql, int idx)
 	{
 		/*-----------------------------------------------------------------*/
 
-		QId qId = new QId(m_fieldLabels[idx], QId.Type.FIELD);
+		QId qId;
 
-		for(Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
+		try
 		{
-			if(qId.matches(entry.getKey()))
-			{
-				qId = entry.getValue();
+			qId = new QId(m_fieldLabels[idx], QId.Type.FIELD);
 
-				break;
+			for(Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
+			{
+				if(qId.matches(entry.getKey()))
+				{
+					qId = entry.getValue();
+
+					break;
+				}
 			}
+		}
+		catch(Exception e)
+		{
+			return;
 		}
 
 		/*-----------------------------------------------------------------*/
