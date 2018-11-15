@@ -28,8 +28,8 @@ row returns [ List<String> v ]
 /*-------------------------------------------------------------------------*/
 
 field returns [ String v ]
-	: STRING { $v = Utility.parseString($STRING.text); }
-	| VALUE { $v = /*---------------*/($VALUE.text); }
+	: STRING { $v = Utility.javaStringToText($STRING.text); }
+	| VALUE { $v = /*--------------------*/($VALUE.text); }
 	;
 
 /*-------------------------------------------------------------------------*/

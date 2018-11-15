@@ -5,7 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class UpdateQuery extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/

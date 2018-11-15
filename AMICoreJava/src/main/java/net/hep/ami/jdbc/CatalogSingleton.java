@@ -23,7 +23,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_catalogs = new AMIMap<>();
+	private static final Map<String, Tuple> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, true, true);
 
 	/*---------------------------------------------------------------------*/
 

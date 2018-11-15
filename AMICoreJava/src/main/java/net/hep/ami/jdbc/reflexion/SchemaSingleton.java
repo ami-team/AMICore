@@ -762,14 +762,14 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog_noException(String catalog) throws Exception
+	public static String internalCatalogToExternalCatalog_noException(String catalog)
 	{
 		return s_internalCatalogToExternalCatalog.get(catalog);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog_noException(String catalog) throws Exception
+	public static String externalCatalogToInternalCatalog_noException(String catalog)
 	{
 		return s_externalCatalogToInternalCatalog.get(catalog);
 	}
@@ -816,16 +816,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getCatalogNames()
-	{
-		return new ArrayList<>(
-			s_columns.keySet()
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static List<String> getTableNames(String catalog) throws Exception
+	public static Map<String, Map<String, Column>> getTables(String catalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -833,9 +824,7 @@ public class SchemaSingleton
 
 		if(map != null)
 		{
-			return new ArrayList<>(
-				map.keySet()
-			);
+			return map;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -851,16 +840,11 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, Column>> map1 = s_columns.get(catalog);
+		Map<String, Column> map = getTables(catalog).get(table);
 
-		if(map1 != null)
+		if(map != null)
 		{
-			Map<String, Column> map2 = map1.get(table);
-
-			if(map2 != null)
-			{
-				return map2;
-			}
+			return map;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -921,9 +905,27 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getColumnNames(String catalog, String table) throws Exception
+	public static List<String> getCatalogNames()
 	{
-		return new LinkedHashSet<>(
+		return new ArrayList<>(
+			s_columns.keySet()
+		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<String> getTableNames(String catalog) throws Exception
+	{
+		return new ArrayList<>(
+			getTables(catalog).keySet()
+		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<String> getColumnNames(String catalog, String table) throws Exception
+	{
+		return new ArrayList<>(
 			getColumns(catalog, table).keySet()
 		);
 	}
@@ -968,7 +970,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getPrimaryKey(String catalog, String table) throws Exception
+	public static Column getPrimaryKey(String catalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -976,7 +978,7 @@ public class SchemaSingleton
 		{
 			if(column.primary)
 			{
-				return column.name;
+				return column;
 			}
 		}
 

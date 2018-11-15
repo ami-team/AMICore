@@ -59,7 +59,7 @@ public class Row
 	{
 		if(fieldIndex < 0 || fieldIndex >= m_rowSet.m_numberOfFields)
 		{
-			throw new Exception("index out of range");
+			throw new Exception("field index out of range");
 		}
 
 		return m_values[
@@ -69,15 +69,15 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(String fieldName) throws Exception
+	public String getValue(String labelName) throws Exception
 	{
-		if(m_rowSet.m_fieldIndices.containsKey(fieldName) == false)
+		if(m_rowSet.m_labelIndices.containsKey(labelName) == false)
 		{
-			throw new Exception("field not in row");
+			throw new Exception("label not in row");
 		}
 
 		return m_values[
-			m_rowSet.m_fieldIndices.get(fieldName)
+			m_rowSet.m_labelIndices.get(labelName)
 		];
 	}
 

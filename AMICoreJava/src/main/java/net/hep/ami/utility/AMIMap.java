@@ -52,9 +52,9 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 
 	private final boolean m_isOrdered;
 
-	private final boolean m_isCaseInsensitive;
-
 	private final Map<String, U> m_underlyingMap;
+
+	private final Map<String, String> m_lowerCaseToOrigCaseMap;
 
 	/*---------------------------------------------------------------------*/
 
@@ -69,7 +69,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	{
 		m_isOrdered = isOrdered;
 
-		m_isCaseInsensitive = isCaseInsensitive;
+		m_lowerCaseToOrigCaseMap = isCaseInsensitive ? new HashMap<>() : null;
 
 		switch(type)
 		{
@@ -119,20 +119,40 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 
 	/*---------------------------------------------------------------------*/
 
-	private String _key(Object key)
+	private String _getKey(Object key)
 	{
-		return m_isCaseInsensitive ? key.toString()
-		                                .toLowerCase()
-		                           : key.toString()
-		;
+		if(m_lowerCaseToOrigCaseMap != null)
+		{
+			String lowerKey = key.toString().toLowerCase();
+
+			if(m_lowerCaseToOrigCaseMap.containsKey(lowerKey))
+			{
+				return m_lowerCaseToOrigCaseMap.get(lowerKey);
+			}
+		}
+
+		return key.toString();
 	}
 
+	/*---------------------------------------------------------------------*/
+
+	private String _setKey(Object key)
+	{
+		if(m_lowerCaseToOrigCaseMap != null)
+		{
+			String lowerKey = key.toString().toLowerCase();
+
+			m_lowerCaseToOrigCaseMap.put(lowerKey, key.toString());
+		}
+
+		return key.toString();
+	}
 	/*---------------------------------------------------------------------*/
 
 	@Override
 	public boolean containsKey(Object key)
 	{
-		return m_underlyingMap.containsKey(_key(key));
+		return m_underlyingMap.containsKey(_getKey(key));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -148,7 +168,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	@Override
 	public U remove(Object key)
 	{
-		return m_underlyingMap.remove(_key(key));
+		return m_underlyingMap.remove(_getKey(key));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -156,7 +176,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	@Override
 	public U get(Object key)
 	{
-		return m_underlyingMap.get(_key(key));
+		return m_underlyingMap.get(_getKey(key));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -165,7 +185,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	public U put(String key, U value)
 	{
 		return m_underlyingMap.put(
-			_key(key),
+			_setKey(key),
 			value
 		);
 	}
@@ -178,7 +198,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 		for(final Entry<? extends String, ? extends U> entry: map.entrySet())
 		{
 			m_underlyingMap.put(
-				_key(entry.getKey()),
+				_setKey(entry.getKey()),
 				entry.getValue()
 			);
 		}

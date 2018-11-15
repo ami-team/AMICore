@@ -90,15 +90,15 @@ CREATE TABLE "router_catalog_extra" (
   "entity" VARCHAR(128) NOT NULL,
   "field" VARCHAR(128) NOT NULL,
   "rank" INT NOT NULL DEFAULT '0',
-  "isHidden" TINYINT(1) NOT NULL DEFAULT '0',
-  "isCrypted" TINYINT(1) NOT NULL DEFAULT '0',
-  "isPrimary" TINYINT(1) NOT NULL DEFAULT '0',
-  "isCreated" TINYINT(1) NOT NULL DEFAULT '0',
-  "isCreatedBy" TINYINT(1) NOT NULL DEFAULT '0',
-  "isModified" TINYINT(1) NOT NULL DEFAULT '0',
-  "isModifiedBy" TINYINT(1) NOT NULL DEFAULT '0',
-  "isStatable" TINYINT(1) NOT NULL DEFAULT '0',
-  "isGroupable" TINYINT(1) NOT NULL DEFAULT '0',
+  "isHidden" SMALLINT NOT NULL DEFAULT '0',
+  "isCrypted" SMALLINT NOT NULL DEFAULT '0',
+  "isPrimary" SMALLINT NOT NULL DEFAULT '0',
+  "isCreated" SMALLINT NOT NULL DEFAULT '0',
+  "isCreatedBy" SMALLINT NOT NULL DEFAULT '0',
+  "isModified" SMALLINT NOT NULL DEFAULT '0',
+  "isModifiedBy" SMALLINT NOT NULL DEFAULT '0',
+  "isStatable" SMALLINT NOT NULL DEFAULT '0',
+  "isGroupable" SMALLINT NOT NULL DEFAULT '0',
   "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
@@ -106,9 +106,9 @@ CREATE TABLE "router_catalog_extra" (
   "modifiedBy" VARCHAR(128) NOT NULL
 );;
 
-ALTER TABLE `router_catalog_extra`
-  ADD CONSTRAINT `pk1_router_catalog_extra` PRIMARY KEY ("id"),
-  ADD CONSTRAINT `uk1_router_catalog_extra` UNIQUE KEY ("catalog", "entity", "field")
+ALTER TABLE "router_catalog_extra"
+  ADD CONSTRAINT "pk1_router_catalog_extra" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_catalog_extra" UNIQUE ("catalog", "entity", "field")
 ;;
 
 CREATE TRIGGER "trig1_router_catalog_extra"

@@ -25,24 +25,13 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		//arguments.put("catalog", "self");
-		//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, false).replace(">", ">\n"));
 
 		arguments.put("catalog", "self");
-		arguments.put("entity", "router_catalog_extra");
-		arguments.put("mql", "SELECT *");
+		arguments.put("entity", "router_command");
+		arguments.put("mql", "SELECT `id`, `command`, `class`, `visible`, `secured`, `roleValidatorClass` WHERE `command` LIKE '%%' ORDER BY `command`");
 		System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
 
-/*
-		arguments.put("cached", "");
-		CommandSingleton.executeCommand("GetUserInfo", arguments);
-		arguments.put("cached", "");
-		CommandSingleton.executeCommand("GetUserInfo", arguments);
-		arguments.put("cached", "");
-		CommandSingleton.executeCommand("GetUserInfo", arguments);
-		arguments.put("cached", "");
-		CommandSingleton.executeCommand("GetUserInfo", arguments);
-*/
 		//System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
 
 		//System.out.println("--------");
