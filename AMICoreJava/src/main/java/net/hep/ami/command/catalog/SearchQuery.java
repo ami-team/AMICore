@@ -4,7 +4,7 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class SearchQuery extends AbstractCommand

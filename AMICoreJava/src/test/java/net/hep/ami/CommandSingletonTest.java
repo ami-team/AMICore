@@ -8,7 +8,6 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 

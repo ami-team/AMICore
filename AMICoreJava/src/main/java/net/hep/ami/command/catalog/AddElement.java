@@ -6,7 +6,7 @@ import java.util.regex.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.mql.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class AddElement extends AbstractCommand

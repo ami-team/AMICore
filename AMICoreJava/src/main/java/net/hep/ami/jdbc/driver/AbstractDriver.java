@@ -128,6 +128,12 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	/**
+	 * Puts this connection in read-only mode.
+	 *
+	 * @param readOnly `true` enables read-only mode; `false` disables it.
+	 */
+
 	public void setReadOnly(boolean readOnly) throws Exception
 	{
 		m_connection.setReadOnly(readOnly);
@@ -146,7 +152,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	/**
-	 * Patches the givenSQL.
+	 * Patches the given SQL.
 	 * 
 	 * @return The patched SQL;
 	 */

@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.reflexion.structure;
+package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 

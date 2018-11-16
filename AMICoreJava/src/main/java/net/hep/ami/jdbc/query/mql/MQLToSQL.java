@@ -7,8 +7,6 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
-
 import net.hep.ami.utility.parser.*;
 
 public class MQLToSQL

@@ -5,8 +5,8 @@ import java.util.*;
 
 import org.antlr.v4.runtime.*;
 
-import net.hep.ami.jdbc.reflexion.structure.*;
-import net.hep.ami.utility.Tuple2;
+import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.utility.*;
 
 public class Tokenizer
 {
@@ -131,7 +131,7 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<Map<QId, QId>, Set<QId>> buildLabelToFieldMap(String sql) throws Exception
+	public static Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> buildLabelToFieldMap(String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -140,7 +140,7 @@ public class Tokenizer
 		int cnt = 0;
 
 		boolean inSelect = false;
-		boolean inFrom = false;
+		boolean  inFrom  = false;
 
 		List<String> tmp1 = null;
 		List<String> tmp2 = null;
@@ -354,9 +354,10 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple2<>(
+		return new Tuple3<>(
 			result,
-			tableAliasMap.keySet()
+			tableAliasMap.keySet(),
+			fieldAliasMap.keySet()
 		);
 	}
 

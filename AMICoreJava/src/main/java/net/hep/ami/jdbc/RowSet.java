@@ -3,13 +3,11 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
-import java.util.Map.Entry;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.structure.*;
 
 public class RowSet
 {
@@ -92,11 +90,15 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
+		/* From JDBC */
+
 		m_fieldCatalogs = new String[m_numberOfFields];
 		m_fieldEntities = new String[m_numberOfFields];
 		m_fieldNames = new String[m_numberOfFields];
 		m_fieldLabels = new String[m_numberOfFields];
 		m_fieldTypes = new String[m_numberOfFields];
+
+		/* From AMI */
 
 		m_fieldRank = new int[m_numberOfFields];
 		m_fieldHidden = new boolean[m_numberOfFields];
@@ -114,7 +116,7 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                            */
 		/*-----------------------------------------------------------------*/
 
-		Tuple2<Map<QId, QId>, Set<QId>> labelToFieldMap = null;
+		Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap = null;
 
 		/*-----------------------------------------------------------------*/
 
@@ -282,7 +284,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private void resolveLabel(Tuple2<Map<QId, QId>, Set<QId>> labelToFieldMap, String defaultCatalog, String sql, int idx)
+	private void resolveLabel(Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap, String defaultCatalog, String sql, int idx)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -292,7 +294,7 @@ public class RowSet
 		{
 			qId = new QId(m_fieldLabels[idx], QId.Type.FIELD);
 
-			for(Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
+			for(Map.Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
 			{
 				if(qId.matches(entry.getKey()))
 				{

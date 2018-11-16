@@ -123,12 +123,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	{
 		if(m_lowerCaseToOrigCaseMap != null)
 		{
-			String lowerKey = key.toString().toLowerCase();
-
-			if(m_lowerCaseToOrigCaseMap.containsKey(lowerKey))
-			{
-				return m_lowerCaseToOrigCaseMap.get(lowerKey);
-			}
+			return m_lowerCaseToOrigCaseMap.get(key.toString().toLowerCase());
 		}
 
 		return key.toString();
@@ -140,9 +135,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	{
 		if(m_lowerCaseToOrigCaseMap != null)
 		{
-			String lowerKey = key.toString().toLowerCase();
-
-			m_lowerCaseToOrigCaseMap.put(lowerKey, key.toString());
+			m_lowerCaseToOrigCaseMap.put(key.toString().toLowerCase(), key.toString());
 		}
 
 		return key.toString();

@@ -3,9 +3,6 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.jdbc.reflexion.structure.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
-
 public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/
@@ -16,7 +13,7 @@ public class AutoJoinSingleton
 
 	private static void resolve(
 		Resolution pathList,
-		Stack<FrgnKey> path,
+		Stack<SchemaSingleton.FrgnKey> path,
 		Set<String> done,
 		int cnt,
 		int max,
@@ -45,8 +42,8 @@ public class AutoJoinSingleton
 		{
 			String key;
 
-			Collection<FrgnKeys> forwardLists;
-			Collection<FrgnKeys> backwardLists;
+			Collection<SchemaSingleton.FrgnKeys> forwardLists;
+			Collection<SchemaSingleton.FrgnKeys> backwardLists;
 
 			/*-------------------------------------------------------------*/
 			/* FORWARD RESOLUTION                                          */
@@ -56,9 +53,9 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(FrgnKeys list: forwardLists)
+			for(SchemaSingleton.FrgnKeys list: forwardLists)
 			{
-				for(FrgnKey frgnKey: list)
+				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
 					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkTable;
 
@@ -81,9 +78,9 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			for(FrgnKeys list: backwardLists)
+			for(SchemaSingleton.FrgnKeys list: backwardLists)
 			{
-				for(FrgnKey frgnKey: list)
+				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
 					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkTable;
 
@@ -114,7 +111,7 @@ public class AutoJoinSingleton
 
 			for(QId qId: map.keySet())
 			{
-				for(FrgnKey frgnKey: path)
+				for(SchemaSingleton.FrgnKey frgnKey: path)
 				{
 					if(qId.matches(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn))
 					   ||

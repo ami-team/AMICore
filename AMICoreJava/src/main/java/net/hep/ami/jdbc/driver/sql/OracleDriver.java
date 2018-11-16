@@ -70,7 +70,7 @@ public class OracleDriver extends AbstractDriver
 						limitValue = Integer.valueOf(token);
 						flag = 0;
 					}
-					catch(NumberFormatException e) { /* do nothing */ }
+					catch(NumberFormatException e) { /* IGNORE */ }
 				}
 				else if(flag == 2)
 				{
@@ -79,7 +79,7 @@ public class OracleDriver extends AbstractDriver
 						offsetValue = Integer.valueOf(token);
 						flag = 0;
 					}
-					catch(NumberFormatException e) { /* do nothing */ }
+					catch(NumberFormatException e) { /* IGNORE */ }
 				}
 				else
 				{

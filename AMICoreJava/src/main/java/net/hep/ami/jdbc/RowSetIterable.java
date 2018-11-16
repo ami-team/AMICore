@@ -179,7 +179,7 @@ public final class RowSetIterable implements Iterable<Row>
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-		/* DESCRIPTIONS                                                    */
+		/* FIELD DESCRIPTIONS                                              */
 		/*-----------------------------------------------------------------*/
 
 		StringBuilder descrs = new StringBuilder();
@@ -223,7 +223,7 @@ public final class RowSetIterable implements Iterable<Row>
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* ROWS                                                            */
+		/* ROWSET                                                          */
 		/*-----------------------------------------------------------------*/
 
 		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
