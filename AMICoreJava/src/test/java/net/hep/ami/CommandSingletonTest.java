@@ -26,13 +26,10 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
-		arguments.put("AMIUser", "jodier");
-		arguments.put("AMIPass", "Xk3mgg256");
-
 		arguments.put("catalog", "self");
 		arguments.put("entity", "router_command");
 		arguments.put("mql", "SELECT `id`, `command`, `class`, `visible`, `secured`, `roleValidatorClass` WHERE `command` LIKE '%%' ORDER BY `command`");
-		System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, true).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
 
