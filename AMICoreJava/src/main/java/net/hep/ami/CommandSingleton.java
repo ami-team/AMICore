@@ -307,7 +307,7 @@ public class CommandSingleton
 			key = entry.getKey();
 			value = entry.getValue();
 
-			if(s_reserved.contains(key) == false)
+			//if(s_reserved.contains(key) == false)
 			{
 				key = Utility.escapeHTML(Utility.escapeJavaString(key));
 				value = Utility.escapeHTML(Utility.escapeJavaString(value));

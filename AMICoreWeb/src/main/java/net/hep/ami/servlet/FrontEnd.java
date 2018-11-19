@@ -10,6 +10,7 @@ import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -276,7 +277,13 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		SimpleQuerier basicQuerier = new SimpleQuerier("self");
+		AbstractDriver basicQuerier = DriverSingleton.getConnection(
+			"self",
+			ConfigSingleton.getProperty("router_catalog"),
+			ConfigSingleton.getProperty("router_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
 
 		/*-----------------------------------------------------------------*/
 
@@ -288,7 +295,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id` = '" + linkId.replace("'", "''") + "'").getAll();
+			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `command`,`converter` FROM `router_link` WHERE `id` = ?", linkId).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET LINK                                                    */
@@ -322,13 +329,19 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private Tuple2<String, String> resolveCertificate(String clientDN) throws Exception
+	private Tuple2<String, String> resolveUserByCertificate(String clientDN, String issuerDN) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		SimpleQuerier basicQuerier = new SimpleQuerier("self");
+		AbstractDriver basicQuerier = DriverSingleton.getConnection(
+			"self",
+			ConfigSingleton.getProperty("router_catalog"),
+			ConfigSingleton.getProperty("router_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
 
 		/*-----------------------------------------------------------------*/
 
@@ -340,7 +353,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = '" + SecuritySingleton.encrypt(clientDN).replace("'", "''") + "'").getAll();
+			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -368,8 +381,69 @@ public class FrontEnd extends HttpServlet
 		/*-----------------------------------------------------------------*/
 
 		return new Tuple2<>(
-			row.getValue("AMIUser"),
-			row.getValue("AMIPass")
+			/*---------------------*/(row.getValue("AMIUser")),
+			SecuritySingleton.decrypt(row.getValue("AMIPass"))
+		);
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private Tuple2<String, String> resolveUserByUserPass(String AMIUser, String AMIPass) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* CREATE QUERIER                                                  */
+		/*-----------------------------------------------------------------*/
+
+		AbstractDriver basicQuerier = DriverSingleton.getConnection(
+			"self",
+			ConfigSingleton.getProperty("router_catalog"),
+			ConfigSingleton.getProperty("router_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		);
+
+		/*-----------------------------------------------------------------*/
+
+		Row row;
+
+		try
+		{
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", AMIUser, SecuritySingleton.encrypt(AMIPass)).getAll();
+
+			/*-------------------------------------------------------------*/
+			/* GET CREDENTIALS                                             */
+			/*-------------------------------------------------------------*/
+
+			if(rowList.isEmpty())
+			{
+				return new Tuple2<>(
+					s_guest_user,
+					s_guest_pass
+				);
+			}
+
+			row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
+		}
+		finally
+		{
+			basicQuerier.rollbackAndRelease();
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* RETURN CREDENTIALS                                              */
+		/*-----------------------------------------------------------------*/
+
+		return new Tuple2<>(
+			/*---------------------*/(row.getValue("AMIUser")),
+			SecuritySingleton.decrypt(row.getValue("AMIPass"))
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -379,11 +453,8 @@ public class FrontEnd extends HttpServlet
 
 	private void updateSessionAndCommandArgs(Map<String, String> arguments, HttpSession session, HttpServletRequest request) throws Exception
 	{
-		String AMIUser;
-		String AMIPass;
-
 		/*-----------------------------------------------------------------*/
-		/* GET DNs                                                         */
+		/* GET CLIENT_DN, ISSUER_DN, AMI_USER, AMI_PASS                    */
 		/*-----------------------------------------------------------------*/
 
 		Tuple4<String, String, String, String> dns = getDNs(request);
@@ -395,6 +466,11 @@ public class FrontEnd extends HttpServlet
 
 		String notBefore = dns.z;
 		String notAfter = dns.t;
+
+		/*-----------------------------------------------------------------*/
+
+		String AMIUser = arguments.get("AMIUser");
+		String AMIPass = arguments.get("AMIPass");
 
 		/*-----------------------------------------------------------------*/
 		/* GET NOCERT FLAG                                                 */
@@ -423,17 +499,22 @@ public class FrontEnd extends HttpServlet
 			/* CERTIFICATE LOGIN                                           */
 			/*-------------------------------------------------------------*/
 
-			AMIUser = (String) session.getAttribute("AMIUser_certificate");
-			AMIPass = (String) session.getAttribute("AMIPass_certificate");
+			String tmpAMIUser = (String) session.getAttribute("AMIUser_certificate");
+			String tmpAMIPass = (String) session.getAttribute("AMIPass_certificate");
 
-			if(AMIUser == null || AMIUser.isEmpty()
+			if(tmpAMIUser == null || tmpAMIUser.isEmpty()
 			   ||
-			   AMIPass == null || AMIPass.isEmpty()
+			   tmpAMIPass == null || tmpAMIPass.isEmpty()
 			 ) {
-				Tuple2<String, String> result = resolveCertificate(clientDN);
+				Tuple2<String, String> result = resolveUserByCertificate(clientDN, issuerDN);
 
 				AMIUser = result.x;
 				AMIPass = result.y;
+			}
+			else
+			{
+				AMIUser = tmpAMIUser;
+				AMIPass = tmpAMIPass;
 			}
 
 			if(AMIUser.equals(s_guest_user) == false)
@@ -446,8 +527,8 @@ public class FrontEnd extends HttpServlet
 			}
 			else
 			{
-				session.setAttribute("AMIUser_credential", AMIUser);
-				session.setAttribute("AMIPass_credential", AMIPass);
+				session.setAttribute("AMIUser_credential", s_guest_user);
+				session.setAttribute("AMIPass_credential", s_guest_pass);
 
 				session.removeAttribute("AMIUser_certificate");
 				session.removeAttribute("AMIPass_certificate");
@@ -461,40 +542,40 @@ public class FrontEnd extends HttpServlet
 			/* CREDENTIAL LOGIN                                            */
 			/*-------------------------------------------------------------*/
 
-			AMIUser = arguments.get("AMIUser");
-			AMIPass = arguments.get("AMIPass");
+			String tmpAMIUser = (String) session.getAttribute("AMIUser_credential");
+			String tmpAMIPass = (String) session.getAttribute("AMIPass_credential");
 
-			if(AMIUser == null
+			if(tmpAMIUser == null || tmpAMIUser.isEmpty()
 			   ||
-			   AMIPass == null
+			   tmpAMIPass == null || tmpAMIPass.isEmpty()
 			 ) {
-				AMIUser = (String) session.getAttribute("AMIUser_credential");
-				AMIPass = (String) session.getAttribute("AMIPass_credential");
+				Tuple2<String, String> result = resolveUserByUserPass(AMIUser, AMIPass);
 
-				if(AMIUser == null || AMIUser.isEmpty()
-				   ||
-				   AMIPass == null || AMIPass.isEmpty()
-				 ) {
-					AMIUser = s_guest_user;
-					AMIPass = s_guest_pass;
-				}
+				AMIUser = result.x;
+				AMIPass = result.y;
 			}
 			else
 			{
-				if(AMIUser.isEmpty()
-				   ||
-				   AMIPass.isEmpty()
-				 ) {
-					AMIUser = s_guest_user;
-					AMIPass = s_guest_pass;
-				}
+				AMIUser = tmpAMIUser;
+				AMIPass = tmpAMIPass;
 			}
 
-			session.setAttribute("AMIUser_credential", AMIUser);
-			session.setAttribute("AMIPass_credential", AMIPass);
+			if(AMIUser.equals(s_guest_user) == false)
+			{
+				session.setAttribute("AMIUser_credential", AMIUser);
+				session.setAttribute("AMIPass_credential", AMIPass);
 
-			session.removeAttribute("AMIUser_certificate");
-			session.removeAttribute("AMIPass_certificate");
+				session.removeAttribute("AMIUser_certificate");
+				session.removeAttribute("AMIPass_certificate");
+			}
+			else
+			{
+				session.setAttribute("AMIUser_credential", s_guest_user);
+				session.setAttribute("AMIPass_credential", s_guest_pass);
+
+				session.removeAttribute("AMIUser_certificate");
+				session.removeAttribute("AMIPass_certificate");
+			}
 
 			/*-------------------------------------------------------------*/
 		}
