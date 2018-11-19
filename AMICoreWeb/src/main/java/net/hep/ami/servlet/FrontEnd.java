@@ -480,9 +480,9 @@ public class FrontEnd extends HttpServlet
 
 		if(request.getParameter("NoCert") != null)
 		{
-			session.setAttribute("NoCert", "NoCert");
+			session.setAttribute("NoCert", "1");
 
-			noCert = 0x0000000000000000000000000000 != 0x01;
+			noCert = /*------------*/ true /*------------*/;
 		}
 		else
 		{
@@ -524,6 +524,8 @@ public class FrontEnd extends HttpServlet
 
 				session.removeAttribute("AMIUser_credential");
 				session.removeAttribute("AMIPass_credential");
+
+				session.removeAttribute("NoCert");
 			}
 			else
 			{
@@ -532,6 +534,8 @@ public class FrontEnd extends HttpServlet
 
 				session.removeAttribute("AMIUser_certificate");
 				session.removeAttribute("AMIPass_certificate");
+
+				session.removeAttribute("NoCert");
 			}
 
 			/*-------------------------------------------------------------*/
@@ -545,9 +549,9 @@ public class FrontEnd extends HttpServlet
 			String tmpAMIUser = (String) session.getAttribute("AMIUser_credential");
 			String tmpAMIPass = (String) session.getAttribute("AMIPass_credential");
 
-			if(tmpAMIUser == null || tmpAMIUser.isEmpty()
+			if(tmpAMIUser == null || tmpAMIUser.isEmpty() || (AMIUser != null && tmpAMIUser != null && AMIUser.equals(tmpAMIUser) == false)
 			   ||
-			   tmpAMIPass == null || tmpAMIPass.isEmpty()
+			   tmpAMIPass == null || tmpAMIPass.isEmpty() || (AMIPass != null && tmpAMIPass != null && AMIPass.equals(tmpAMIPass) == false)
 			 ) {
 				Tuple2<String, String> result = resolveUserByUserPass(AMIUser, AMIPass);
 
@@ -567,6 +571,8 @@ public class FrontEnd extends HttpServlet
 
 				session.removeAttribute("AMIUser_certificate");
 				session.removeAttribute("AMIPass_certificate");
+
+				session.setAttribute("NoCert", "1");
 			}
 			else
 			{
@@ -575,16 +581,11 @@ public class FrontEnd extends HttpServlet
 
 				session.removeAttribute("AMIUser_certificate");
 				session.removeAttribute("AMIPass_certificate");
+
+				session.removeAttribute("NoCert");
 			}
 
 			/*-------------------------------------------------------------*/
-		}
-
-		if(AMIUser.equals(s_guest_user)
-		   &&
-		   AMIPass.equals(s_guest_pass)
-		 ) {
-			session.removeAttribute("NoCert");
 		}
 
 		/*-----------------------------------------------------------------*/
