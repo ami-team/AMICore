@@ -92,9 +92,6 @@ public class RoleSingleton
 			{
 				result.add(resultSet.getString(1));
 			}
-			result.add("amiUser: " + amiUser);
-			result.add(SecuritySingleton.encrypt(amiPass));
-			result.add("amiPass: " + amiPass);
 		}
 		finally
 		{
