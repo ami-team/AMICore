@@ -561,7 +561,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(isInsert == false && isUpdate2 == false && /*inGroup == false &&*/ inIsoGroup == false && inFunction == false)
+		if(nb > 1 && isInsert == false && isUpdate2 == false && /*inGroup == false &&*/ inIsoGroup == false && inFunction == false)
 		{
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
