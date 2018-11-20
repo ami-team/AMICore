@@ -36,15 +36,8 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------*/
-
 	private List<String> m_from = new ArrayList<String>();
 	private List<String> m_joins = new ArrayList<String>();
-
-	/*---------------------------------------------------------------------*/
-
-	List<Resolution> m_resolutionList = new ArrayList<Resolution>();
-	List<Resolution> m_isoResolutionList = new ArrayList<Resolution>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -133,14 +126,14 @@ public class MQLToSQL
 		{
 			query.setDistinct(context.m_distinct != null);
 
-			query.addSelectPart(visitColumnList(context.m_columns, IN_SELECT).toString());
+			query.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart("(" + visitExpressionOr(context.m_expression, 0).toString() + ")");
+			query.addWherePart("(" + visitExpressionOr(context.m_expression, null, 0).toString() + ")");
 		}
 
 		if(m_joins.isEmpty() == false)
@@ -213,8 +206,8 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		List<Resolution> resolutions = visitQIdTuple(context.m_qIds, IN_INSERT);
-		List<String> expressions = visitExpressionTuple(context.m_expressions, IN_INSERT);
+		List<Resolution> resolutions = visitQIdTuple(context.m_qIds, null, IN_INSERT);
+		List<String> expressions = visitExpressionTuple(context.m_expressions, null, IN_INSERT);
 
 		/*-----------------------------------------------------------------*/
 
@@ -327,8 +320,8 @@ public class MQLToSQL
 		StringBuilder result = new StringBuilder();
 		StringBuilder tmpSet = new StringBuilder();
 
-		List<Resolution> tmpFields = visitQIdTuple(context.m_qIds, IN_UPDATE);
-		List<String> tmpExpressions = visitExpressionTuple(context.m_expressions, IN_UPDATE);
+		List<Resolution> tmpFields = visitQIdTuple(context.m_qIds, null, IN_UPDATE);
+		List<String> tmpExpressions = visitExpressionTuple(context.m_expressions, null, IN_UPDATE);
 
 		for(int i = 0; i < tmpFields.size(); i++)
 		{
@@ -343,7 +336,7 @@ public class MQLToSQL
 
 		if(context.expression != null)
 		{
-			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, BERK).toString() + ")");
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null, BERK).toString() + ")");
 
 			if(m_joins.isEmpty() == false)
 			{
@@ -370,7 +363,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			Query query = new Query().addWherePart("(" + visitExpressionOr(context.m_expression, IN_DELETE | BERK).toString() + ")");
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.m_expression, null, IN_DELETE | BERK).toString() + ")");
 
 			if(m_joins.isEmpty() == false)
 			{
@@ -388,14 +381,15 @@ public class MQLToSQL
 	}
 
 	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnList(MQLParser.ColumnListContext context, int mask) throws Exception
+	private StringBuilder visitColumnList(MQLParser.ColumnListContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
 		for(MQLParser.AColumnContext child: context.m_columns)
 		{
-			result.add(visitAColumnExpression(child, mask).toString());
+			result.add(visitAColumnExpression(child, resolutionList, mask).toString());
 		}
 
 		return new StringBuilder(String.join(",", result));
@@ -403,11 +397,11 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitAColumnExpression(MQLParser.AColumnContext context, int mask) throws Exception
+	private StringBuilder visitAColumnExpression(MQLParser.AColumnContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = visitExpressionOr(context.m_expression, mask);
+		StringBuilder result = visitExpressionOr(context.m_expression, resolutionList, mask);
 
 		/*-----------------------------------------------------------------*/
 
@@ -423,13 +417,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<Resolution> visitQIdTuple(MQLParser.QIdTupleContext context, int mask) throws Exception
+	private List<Resolution> visitQIdTuple(MQLParser.QIdTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<Resolution> result = new ArrayList<>();
 
 		for(MQLParser.QIdContext child: context.m_qIds)
 		{
-			result.addAll(visitQId(child, mask));
+			result.addAll(visitQId(child, resolutionList, mask));
 		}
 
 		return result;
@@ -437,13 +431,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, int mask) throws Exception
+	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
 		for(MQLParser.ExpressionOrContext child: context.m_expressions)
 		{
-			result.add(visitExpressionOr(child, mask).toString());
+			result.add(visitExpressionOr(child, resolutionList, mask).toString());
 		}
 
 		return result;
@@ -451,7 +445,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, int mask) throws Exception
+	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -467,7 +461,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAndContext)
 			{
-				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child, mask));
+				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -482,7 +476,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context, int mask) throws Exception
+	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -498,7 +492,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionCompContext)
 			{
-				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child, mask));
+				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -513,25 +507,14 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context, int mask) throws Exception
+	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		m_resolutionList.clear();
+		List<Resolution> tmpResolutionList = resolutionList != null ? resolutionList : new ArrayList<>();
 
-		boolean isInsert = (mask & IN_INSERT) != 0;
-		boolean isUpdate2 = (mask & IN_UPDATE) != 0;
-
-		boolean inGroup = (mask & IN_GROUP) != 0;
-		boolean inIsoGroup = (mask & IN_ISOGROUP) != 0;
-		boolean inFunction = (mask & IN_FUNCTION) != 0;
-
-		mask &= ~IN_GROUP;
-//		mask &= ~IN_ISOGROUP;
-/*		mask &= ~IN_FUNCTION; // Ne doit pas être enlevé !
- */
 		/*-----------------------------------------------------------------*/
 
 		ParseTree child;
@@ -544,11 +527,11 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, mask));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, mask));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
-				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, mask));
+				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -561,7 +544,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(nb > 1 && isInsert == false && isUpdate2 == false && /*inGroup == false &&*/ inIsoGroup == false && inFunction == false)
+		if(nb > 1 && (mask & IN_INSERT) == 0 && (mask & IN_UPDATE) == 0 && (mask & IN_ISOGROUP) == 0 && (mask & IN_FUNCTION) == 0)
 		{
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
@@ -599,7 +582,7 @@ public class MQLToSQL
 
 			boolean needAND = false;
 
-			for(Resolution pathList: m_resolutionList) 
+			for(Resolution pathList: tmpResolutionList) 
 			{
 				String localCatalogName = pathList.getQId().getCatalog();
 				String localTableName = pathList.getQId().getEntity();
@@ -690,8 +673,6 @@ public class MQLToSQL
 				/*---------------------------------------------------------*/
 			}
 
-			m_resolutionList.clear();
-
 			localResult.append(" WHERE ")
 			           .append(result)
 			;
@@ -730,7 +711,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, int mask) throws Exception
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -746,7 +727,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionMulDivContext)
 			{
-				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child, mask));
+				result.append(visitExpressionMulDiv((MQLParser.ExpressionMulDivContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -764,7 +745,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, int mask) throws Exception
+	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -780,7 +761,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext)
 			{
-				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, mask));
+				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -798,7 +779,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, int mask) throws Exception
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -817,23 +798,23 @@ public class MQLToSQL
 
 		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
 		{
-			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, mask));
+			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, resolutionList, mask));
 		}
 		else if(child instanceof MQLParser.ExpressionIsoGroupContext)
 		{
-			result.append(visitExpressionIsoGroup((MQLParser.ExpressionIsoGroupContext) child, mask));
+			result.append(visitExpressionIsoGroup((MQLParser.ExpressionIsoGroupContext) child, resolutionList, mask));
 		}
 		else if(child instanceof MQLParser.ExpressionFunctionContext)
 		{
-			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, mask));
+			result.append(visitExpressionFunction((MQLParser.ExpressionFunctionContext) child, resolutionList, mask));
 		}
 		else if(child instanceof MQLParser.ExpressionQIdContext)
 		{
-			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, mask));
+			result.append(visitExpressionQId((MQLParser.ExpressionQIdContext) child, resolutionList, mask));
 		}
 		else if(child instanceof MQLParser.ExpressionLiteralContext)
 		{
-			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, mask));
+			result.append(visitExpressionLiteral((MQLParser.ExpressionLiteralContext) child, resolutionList, mask));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -843,23 +824,24 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, int mask) throws Exception
+	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.m_expression, mask | IN_GROUP))
+		                          .append(visitExpressionOr(context.m_expression, resolutionList, mask | IN_GROUP))
 		                          .append(")")
 		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context, int mask) throws Exception
+	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
-		m_isoResolutionList.clear();
 		StringBuilder result = new StringBuilder();
 
+		List<Resolution> tmpResolutionList = new ArrayList<>();
+
 		StringBuilder isoResult = new StringBuilder().append("(")
-                .append(visitExpressionOr(context.m_isoExpression, mask | IN_ISOGROUP))
+                .append(visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask | IN_ISOGROUP))
                 .append(")")
                 ;
 
@@ -868,7 +850,7 @@ public class MQLToSQL
 		localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
 		boolean needAND = false;
 		ArrayList<String> testCatalogTable = new ArrayList<String>();
-		for(Resolution pathList: m_isoResolutionList) 
+		for(Resolution pathList: tmpResolutionList) 
 		{
 
 			String localTableName = pathList.getQId().getEntity();
@@ -959,7 +941,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, int mask) throws Exception
+	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder(context.m_functionName.getText());
 
@@ -967,11 +949,11 @@ public class MQLToSQL
 
 		if(context.m_param1 != null)
 		{
-			result.append( "" ).append(visitExpressionOr(context.m_param1, mask | IN_FUNCTION));
+			result.append( "" ).append(visitExpressionOr(context.m_param1, resolutionList, mask | IN_FUNCTION));
 
 			if(context.m_param2 != null)
 			{
-				result.append(", ").append(visitExpressionOr(context.m_param2, mask | IN_FUNCTION));
+				result.append(", ").append(visitExpressionOr(context.m_param2, resolutionList, mask | IN_FUNCTION));
 			}
 		}
 
@@ -982,15 +964,15 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, int mask) throws Exception
+	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		/*----------------------------------------------------------------*/
 
-		List<Resolution> list = visitQId(context.m_qId, mask);
+		List<Resolution> list = visitQId(context.m_qId, resolutionList, mask);
 
 		/*----------------------------------------------------------------*/
 
-		((mask & IN_ISOGROUP) != 0 ? m_isoResolutionList : m_resolutionList).addAll(list);
+		resolutionList.addAll(list);
 
 		/*----------------------------------------------------------------*/
 
@@ -1001,14 +983,14 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, int mask) throws Exception
+	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
-		return visitLiteral(context.m_literal, mask);
+		return visitLiteral(context.m_literal, resolutionList, mask);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private List<Resolution> visitQId(MQLParser.QIdContext context, int mask) throws Exception
+	private List<Resolution> visitQId(MQLParser.QIdContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<Resolution> result = new ArrayList<>();
 
@@ -1065,7 +1047,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context, int mask) throws Exception
+	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return new StringBuilder().append("(")
 		                          .append(context.m_literals.stream().map(x -> x.getText()).collect(Collectors.joining(", ")))
@@ -1075,7 +1057,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitLiteral(MQLParser.LiteralContext context, int mask) throws Exception
+	private StringBuilder visitLiteral(MQLParser.LiteralContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return new StringBuilder(context.getText());
 	}
