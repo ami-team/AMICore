@@ -32,7 +32,7 @@ public class CommandSingletonTest
 		//System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
 
 		Router router = new Router("self");
-		RowSet rowSet = router.executeMQLQuery("router_locations", "SELECT continentCode, countryCode WHERE (router_ipv4_blocks.network = '1.0.0.0/24')");
+		RowSet rowSet = router.executeMQLQuery("router_locations", "SELECT continentCode, countryCode WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')");
 
 		System.out.println(rowSet.getMQL());
 		System.out.println(rowSet.getSQL());

@@ -561,7 +561,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(isInsert == false && isUpdate2 == false && inGroup == false && inIsoGroup == false && inFunction == false)
+		if(isInsert == false && isUpdate2 == false && /*inGroup == false &&*/ inIsoGroup == false && inFunction == false)
 		{
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
@@ -689,6 +689,8 @@ public class MQLToSQL
 
 				/*---------------------------------------------------------*/
 			}
+
+			m_resolutionList.clear();
 
 			localResult.append(" WHERE ")
 			           .append(result)
