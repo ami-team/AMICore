@@ -529,7 +529,7 @@ public class MQLToSQL
 		boolean inFunction = (mask & IN_FUNCTION) != 0;
 
 		mask &= ~IN_GROUP;
-		mask &= ~IN_ISOGROUP;
+//		mask &= ~IN_ISOGROUP;
 /*		mask &= ~IN_FUNCTION; // Ne doit pas être enlevé !
  */
 		/*-----------------------------------------------------------------*/
