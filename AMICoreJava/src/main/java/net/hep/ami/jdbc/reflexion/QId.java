@@ -322,11 +322,11 @@ public class QId
 
 	public boolean matches(QId qId)
 	{
-		return (this.m_catalog == null || qId.m_catalog == null || "$".equals(this.m_catalog) || "$".equals(qId.m_catalog) || this.m_catalog.equalsIgnoreCase(qId.m_catalog))
+		return (m_catalog == null || qId.m_catalog == null || "$".equals(m_catalog) || "$".equals(qId.m_catalog) || m_catalog.equalsIgnoreCase(qId.m_catalog))
 		       &&
-		       (this.m_entity == null || qId.m_entity == null || "$".equals(this.m_entity) || "$".equals(qId.m_entity) || this.m_entity.equalsIgnoreCase(qId.m_entity))
+		       (m_entity == null || qId.m_entity == null || "$".equals(m_entity) || "$".equals(qId.m_entity) || m_entity.equalsIgnoreCase(qId.m_entity))
 		       &&
-		       (this.m_field == null || qId.m_field == null || "$".equals(this.m_field) || "$".equals(qId.m_field) || this.m_field.equalsIgnoreCase(qId.m_field))
+		       (m_field == null || qId.m_field == null || "$".equals(m_field) || "$".equals(qId.m_field) || m_field.equalsIgnoreCase(qId.m_field))
 		;
 	}
 
@@ -335,21 +335,21 @@ public class QId
 	@Override
 	public int hashCode()
 	{
-		return this.hashCode(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+		return hashCode(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public int hashCode(int mask)
 	{
-		return this.hashCode(mask, MASK_CATALOG_ENTITY_FIELD);
+		return hashCode(mask, MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public int hashCode(int mask, int maskForPath)
 	{
-		return this.toString(mask, maskForPath).hashCode();
+		return toString(mask, maskForPath).hashCode();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -376,7 +376,7 @@ public class QId
 		{
 			QId that = (QId) anObject;
 
-			return this == that || this.toString(mask, maskForPath).equals(that.toString(mask, maskForPath));
+			return this == that || toString(mask, maskForPath).equals(that.toString(mask, maskForPath));
 		}
 
 		return false;

@@ -70,6 +70,14 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
+	public int hashCode()
+	{
+		return toString().hashCode();
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public QId getQId()
 	{
 		return m_resolvedQId;
