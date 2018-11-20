@@ -29,7 +29,7 @@ row returns [ List<String> v ]
 
 field returns [ String v ]
 	: STRING { $v = Utility.javaStringToText($STRING.text); }
-	| VALUE { $v = /*--------------------*/($VALUE.text); }
+	| VALUE { $v = Utility.javaStringToText($VALUE.text); }
 	;
 
 /*-------------------------------------------------------------------------*/

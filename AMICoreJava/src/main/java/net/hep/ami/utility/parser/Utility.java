@@ -192,9 +192,9 @@ public class Utility
 
 		if(l >= 2)
 		{
-			if(s.charAt(0 + 0) == '"'
-			   &&
-			   s.charAt(l - 1) == '"'
+			if((s.charAt(0 + 0) == '\"' && s.charAt(l - 1) == '\"')
+			   ||
+			   (s.charAt(0 + 0) == '\'' && s.charAt(l - 1) == '\'')
 			 ) {
 				s = unescapeJavaString(s.substring(0 + 1, l - 1));
 			}

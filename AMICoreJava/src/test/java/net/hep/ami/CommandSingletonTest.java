@@ -29,6 +29,13 @@ public class CommandSingletonTest
 		arguments.put("catalog", "self");
 		arguments.put("entity", "router_command");
 		arguments.put("mql", "SELECT `id`, `command`, `class`, `visible`, `secured`, `roleValidatorClass` WHERE `command` LIKE '%%' ORDER BY `command`");
+		//System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
+
+		
+		arguments.put("catalog", "tasks");
+		arguments.put("sql", "SELECT id, running, success, FROM_UNIXTIME(lastStartDate) AS lastStartDate, FROM_UNIXTIME(lastStopDate)+AS+lastStopDate, name, description, command, commaSeparatedLocks AS locks, priority, timeStep, serverName, stdout, stderr FROM router_task WHERE oneShot = '1'");
+		arguments.put("limit", "10");
+		arguments.put("offset", "0");
 		System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));

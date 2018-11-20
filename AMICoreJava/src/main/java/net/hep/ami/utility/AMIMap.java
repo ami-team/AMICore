@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class AMIMap<U> implements Map<String, U>, Serializable
+public class AMIMap<U, V> implements Map<U, V>, Serializable
 {
 	/*---------------------------------------------------------------------*/
 
@@ -52,9 +52,9 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 
 	private final boolean m_isOrdered;
 
-	private final Map<String, U> m_underlyingMap;
+	private final Map<U, V> m_underlyingMap;
 
-	private final Map<String, String> m_lowerCaseToOrigCaseMap;
+	private final Map<Object, Object> m_lowerCaseToOrigCaseMap;
 
 	/*---------------------------------------------------------------------*/
 
@@ -119,27 +119,38 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 
 	/*---------------------------------------------------------------------*/
 
-	private String _getKey(Object key)
+	private Object _getKey(Object key)
 	{
-		if(m_lowerCaseToOrigCaseMap != null)
+		if(m_lowerCaseToOrigCaseMap != null && key instanceof String)
 		{
-			return m_lowerCaseToOrigCaseMap.get(key.toString().toLowerCase());
+			Object tmp = m_lowerCaseToOrigCaseMap.get(((String) key).toLowerCase());
+
+			if(tmp != null)
+			{
+				key = tmp;
+			}
 		}
 
-		return key.toString();
+		return key;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private String _setKey(Object key)
+	private Object _setKey(Object key)
 	{
-		if(m_lowerCaseToOrigCaseMap != null)
+		if(m_lowerCaseToOrigCaseMap != null && key instanceof String)
 		{
-			m_lowerCaseToOrigCaseMap.put(key.toString().toLowerCase(), key.toString());
+			m_lowerCaseToOrigCaseMap.put(((String) key).toLowerCase(), key);
+
+		//	if(key != null)
+		//	{
+		//		key = key;
+		//	}
 		}
 
-		return key.toString();
+		return key;
 	}
+
 	/*---------------------------------------------------------------------*/
 
 	@Override
@@ -159,7 +170,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public U remove(Object key)
+	public V remove(Object key)
 	{
 		return m_underlyingMap.remove(_getKey(key));
 	}
@@ -167,7 +178,7 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public U get(Object key)
+	public V get(Object key)
 	{
 		return m_underlyingMap.get(_getKey(key));
 	}
@@ -175,10 +186,11 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public U put(String key, U value)
+	@SuppressWarnings("unchecked")
+	public V put(U key, V value)
 	{
 		return m_underlyingMap.put(
-			_setKey(key),
+			(U) _setKey(key),
 			value
 		);
 	}
@@ -186,12 +198,13 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void putAll(Map<? extends String, ? extends U> map)
+	@SuppressWarnings("unchecked")
+	public void putAll(Map<? extends U, ? extends V> map)
 	{
-		for(final Entry<? extends String, ? extends U> entry: map.entrySet())
+		for(final Entry<? extends U, ? extends V> entry: map.entrySet())
 		{
 			m_underlyingMap.put(
-				_setKey(entry.getKey()),
+				(U) _setKey(entry.getKey()),
 				entry.getValue()
 			);
 		}
@@ -208,9 +221,9 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Set<Map.Entry<String, U>> entrySet()
+	public Set<Map.Entry<U, V>> entrySet()
 	{
-		Set<Map.Entry<String, U>> result;
+		Set<Map.Entry<U, V>> result;
 
 		if(m_isOrdered)
 		{
@@ -229,9 +242,9 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Set<String> keySet()
+	public Set<U> keySet()
 	{
-		Set<String> result;
+		Set<U> result;
 
 		if(m_isOrdered)
 		{
@@ -250,15 +263,15 @@ public class AMIMap<U> implements Map<String, U>, Serializable
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Collection<U> values()
+	public Collection<V> values()
 	{
-		Collection<U> result;
+		Collection<V> result;
 
 		if(m_isOrdered)
 		{
 			result = new ArrayList<>();
 
-			for(String key: this.keySet())
+			for(U key: this.keySet())
 			{
 				result.add(m_underlyingMap.get(key));
 			}
