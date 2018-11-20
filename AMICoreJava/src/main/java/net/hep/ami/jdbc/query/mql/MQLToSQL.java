@@ -581,7 +581,7 @@ public class MQLToSQL
 			/*-------------------------------------------------------------*/
 
 			boolean needAND = false;
-System.out.println(tmpResolutionList);
+
 			for(Resolution pathList: tmpResolutionList) 
 			{
 				String localCatalogName = pathList.getQId().getCatalog();
