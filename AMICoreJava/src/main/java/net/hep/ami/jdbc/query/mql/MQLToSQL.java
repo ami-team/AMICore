@@ -544,7 +544,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(nb > 1 && (mask & IN_INSERT) == 0 && (mask & IN_UPDATE) == 0 && (mask & IN_ISOGROUP) == 0 && (mask & IN_FUNCTION) == 0)
+		if(nb > 1 && (mask & IN_INSERT) == 0 && (mask & IN_UPDATE) == 0 && (mask & IN_ISOGROUP) == 0)
 		{
 			StringBuilder localResult = new StringBuilder();
 			StringBuilder localJoins = new StringBuilder();
