@@ -35,7 +35,7 @@ public class UpdateObj
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addSetPart(CharSequence fieldPart, CharSequence valuePart)
+	public UpdateObj addFieldValuePart(CharSequence fieldPart, CharSequence valuePart)
 	{
 		m_fieldList.add(fieldPart.toString());
 		m_valueList.add(valuePart.toString());
@@ -43,11 +43,11 @@ public class UpdateObj
 		return this;
 	}
 
-	public UpdateObj addSetFieldPart(List<?> fieldPart, List<?> valuePart) throws Exception
+	public UpdateObj addFieldValuePart(List<?> fieldPart, List<?> valuePart) throws Exception
 	{
 		if(fieldPart.size() != valuePart.size())
 		{
-			throw new Exception(""); //TODO//
+			throw new Exception("bad number of values");
 		}
 
 		m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));

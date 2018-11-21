@@ -3,10 +3,12 @@ package net.hep.ami.command.catalog;
 import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.obj.*;
 import net.hep.ami.jdbc.query.mql.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class AddElement extends AbstractCommand
@@ -30,48 +32,44 @@ public class AddElement extends AbstractCommand
 		                                                      : ","
 		;
 
-		String[] _fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
+		String[] fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
 		                                                   : new String[] {}
 		;
 
-		String[] _values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
+		String[] values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
 		                                                   : new String[] {}
 		;
 
-		if(catalog == null || entity == null || _fields.length == 0 || _fields.length != _values.length)
+		if(catalog == null || entity == null || fields.length == 0 || fields.length != values.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder stringBuilder = new StringBuilder();
+		InsertObj query = new InsertObj().addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
+		                                 .addFieldValuePart(
+												Arrays.stream(fields).map(x -> {
+													try {
+														return new QId(x).toString(QId.MASK_CATALOG_ENTITY_FIELD);
+													} catch (Exception e) {
+														return /*-------------------*/ x /*--------------------*/;
+													}
+												}).collect(Collectors.toList()),
+												Arrays.stream(values).map(x -> x.replace("'", "''")).collect(Collectors.toList())
+		                                 )
+		;
 
 		/*-----------------------------------------------------------------*/
 
-		List<String> fields = new ArrayList<>();
-		List<String> values = new ArrayList<>();
-
-		for(int i = 0; i < _fields.length; i++)
-		{
-			fields.add(new QId(_fields[i]).toString());
-			values.add("'" + _values[i].trim().replace("'", "''") + "'");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		stringBuilder.append("INSERT (").append(String.join(", ", fields)).append(") VALUES (").append(String.join(", ", values)).append(")");
-
-		/*-----------------------------------------------------------------*/
-
-		String mql = stringBuilder.toString();
+		String mql = query.toString();
 
 		String sql = MQLToSQL.parse(catalog, entity, mql);
 		String ast = MQLToAST.parse(catalog, entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, true, null);
+		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, true, null); /* POURQUOI COMME CA ??? */
 
 		statement.execute();
 

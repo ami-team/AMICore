@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.obj;
+package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 import java.util.stream.*;

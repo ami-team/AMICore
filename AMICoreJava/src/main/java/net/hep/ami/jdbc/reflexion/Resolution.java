@@ -2,9 +2,6 @@ package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.obj.QId;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
-
 public class Resolution
 {
 	/*---------------------------------------------------------------------*/
@@ -13,7 +10,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	private List<List<FrgnKey>> m_paths = new ArrayList<>();
+	private List<List<SchemaSingleton.FrgnKey>> m_paths = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -44,7 +41,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public Resolution addPath(QId givenQId, QId resolvedQId, Vector<FrgnKey> path) throws Exception
+	public Resolution addPath(QId givenQId, QId resolvedQId, Vector<SchemaSingleton.FrgnKey> path) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -86,7 +83,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public List<List<FrgnKey>> getPaths()
+	public List<List<SchemaSingleton.FrgnKey>> getPaths()
 	{
 		return m_paths;
 	}

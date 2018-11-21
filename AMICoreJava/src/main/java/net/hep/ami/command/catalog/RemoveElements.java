@@ -5,6 +5,7 @@ import java.util.regex.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.obj.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class RemoveElements extends AbstractCommand
@@ -47,32 +48,20 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		DeleteObj query = new DeleteObj().addDeletePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY));
+
 		List<String> whereList = new ArrayList<>();
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add(new QId(keyFields[i]).toString() + " = '" + keyValues[i].trim().replace("'", "''") + "'");
+			whereList.add(new QId(keyFields[i]).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
+
+		query.addWherePart(whereList);
 
 		/*-----------------------------------------------------------------*/
 
-		if(where.isEmpty() == false)
-		{
-			whereList.add(where);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder stringBuilder = new StringBuilder("DELETE");
-
-		if(whereList.isEmpty() == false)
-		{
-			stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return getQuerier(catalog).executeMQLUpdate(entity, stringBuilder.toString()).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.toString(where)).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

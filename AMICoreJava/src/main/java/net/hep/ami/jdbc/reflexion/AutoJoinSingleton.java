@@ -3,8 +3,6 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.jdbc.obj.QId;
-
 public class AutoJoinSingleton
 {
 	/*---------------------------------------------------------------------*/

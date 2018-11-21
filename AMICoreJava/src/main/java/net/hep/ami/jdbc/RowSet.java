@@ -6,7 +6,6 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.jdbc.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.query.sql.*;
 

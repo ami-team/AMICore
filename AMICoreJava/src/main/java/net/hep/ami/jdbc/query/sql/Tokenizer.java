@@ -6,6 +6,7 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 
 import net.hep.ami.jdbc.obj.*;
+import net.hep.ami.jdbc.reflexion.QId;
 import net.hep.ami.utility.*;
 
 public class Tokenizer

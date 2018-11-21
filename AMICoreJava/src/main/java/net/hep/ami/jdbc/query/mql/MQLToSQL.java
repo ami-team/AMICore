@@ -296,7 +296,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		query.addSetFieldPart(
+		query.addFieldValuePart(
 			visitQIdTuple(context.m_qIds, null, IN_UPDATE_PART)
 					.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY)).collect(Collectors.toList()),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)

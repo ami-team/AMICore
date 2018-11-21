@@ -2,9 +2,11 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.obj.*;
+import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
@@ -28,12 +30,12 @@ public class UpdateElements extends AbstractCommand
 		                                                      : ","
 		;
 
-		String[] _fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
-		                                                   : new String[] {}
+		String[] fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
+		                                                  : new String[] {}
 		;
 
-		String[] _values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
-		                                                   : new String[] {}
+		String[] values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
+		                                                  : new String[] {}
 		;
 
 		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
@@ -48,54 +50,38 @@ public class UpdateElements extends AbstractCommand
 		                                              : ""
 		;
 
-		if(catalog == null || entity == null || _fields.length == 0 || _fields.length != _values.length || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || fields.length == 0 || fields.length != values.length || keyFields.length != keyValues.length)
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder stringBuilder = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		List<String> fields = new ArrayList<>();
-		List<String> values = new ArrayList<>();
-
-		for(int i = 0; i < _fields.length; i++)
-		{
-			fields.add(new QId(_fields[i]).toString());
-			values.add("'" + _values[i].trim().replace("'", "''") + "'");
-		}
-
-		/*-----------------------------------------------------------------*/
+		UpdateObj query = new UpdateObj().addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
+		                                 .addFieldValuePart(
+												Arrays.stream(fields).map(x -> {
+													try {
+														return new QId(x).toString(QId.MASK_CATALOG_ENTITY_FIELD);
+													} catch (Exception e) {
+														return /*-------------------*/ x /*--------------------*/;
+													}
+												}).collect(Collectors.toList()),
+												Arrays.stream(values).map(x -> x.replace("'", "''")).collect(Collectors.toList())
+		                                  )
+		;
 
 		List<String> whereList = new ArrayList<>();
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add(new QId(keyFields[i]).toString() + " = '" + keyValues[i].trim().replace("'", "''") + "'");
+			whereList.add(new QId(keyFields[i]).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
+
+		query.addWherePart(whereList);
 
 		/*-----------------------------------------------------------------*/
 
-		if(where.isEmpty() == false)
-		{
-			whereList.add(where);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		stringBuilder.append("UPDATE (").append(String.join(", ", fields)).append(") VALUES (").append(String.join(", ", values)).append(")");
-
-		if(whereList.isEmpty() == false)
-		{
-			stringBuilder.append(" WHERE ").append(String.join(" AND ", whereList));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return getQuerier(catalog).executeMQLUpdate(entity, stringBuilder.toString()).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.toString(where)).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
