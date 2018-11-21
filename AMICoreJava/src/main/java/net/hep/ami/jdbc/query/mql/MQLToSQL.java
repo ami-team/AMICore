@@ -17,8 +17,9 @@ public class MQLToSQL
 	private static final int IN_SELECT_PART = (1 << 0);
 	private static final int IN_INSERT_PART = (1 << 1);
 	private static final int IN_UPDATE_PART = (1 << 2);
-	private static final int IN_FUNCTION = (1 << 3);
-	private static final int IS_MODIF_STM = (1 << 4);
+	private static final int IN_ISO_GROUP = (1 << 3);
+	private static final int IN_FUNCTION = (1 << 4);
+	private static final int IS_MODIF_STM = (1 << 5);
 
 	/*---------------------------------------------------------------------*/
 
@@ -491,7 +492,7 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		List<Resolution> tmpResolutionList = new ArrayList<>();
+		List<Resolution> tmpResolutionList = (mask & IN_ISO_GROUP) != 0 ? resolutionList : new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -522,7 +523,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0)
+		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0 && (mask & IN_ISO_GROUP) == 0)
 		{
 			result = Isolation.isolate(
 				m_internalCatalog, m_entity, m_primaryKey,
@@ -669,7 +670,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask & ~IS_MODIF_STM);
+		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask | IN_ISO_GROUP);
 
 		/*-----------------------------------------------------------------*/
 
