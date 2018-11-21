@@ -138,11 +138,6 @@ public class MQLToSQL
 			query.addWherePart("(" + visitExpressionOr(context.m_expression, null, 0).toString() + ")");
 		}
 
-		if(m_joinSet.isEmpty() == false)
-		{
-			query.addWherePart(String.join(" AND ", m_joinSet));
-		}
-
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_orderBy != null)
@@ -169,7 +164,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder(query.addFromPart(m_fromSet).toString(extra));
+		return new StringBuilder(query.addFromPart(m_fromSet).addWherePart(m_joinSet).toString(extra));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -316,17 +311,21 @@ public class MQLToSQL
 		      .append(String.join(", ", tmpSet))
 		;
 
+		/*-----------------------------------------------------------------*/
+
 		if(context.expression != null)
 		{
 			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null, IS_MODIF_STM).toString() + ")");
 
 			if(m_joinSet.isEmpty() == false)
 			{
-				query.addWherePart(String.join(" AND ", m_joinSet));
+				query.addWherePart(m_joinSet);
 			}
 
 			result.append(" WHERE ").append(query.getWherePart());
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}
@@ -349,7 +348,7 @@ public class MQLToSQL
 
 			if(m_joinSet.isEmpty() == false)
 			{
-				query.addWherePart(String.join(" AND ", m_joinSet));
+				query.addWherePart(m_joinSet);
 			}
 
 			result.append(" WHERE ").append(query.getWherePart());

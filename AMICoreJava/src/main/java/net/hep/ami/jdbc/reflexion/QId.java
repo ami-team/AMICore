@@ -6,8 +6,8 @@ import java.util.stream.*;
 import org.antlr.v4.runtime.*;
 
 import net.hep.ami.jdbc.query.mql.*;
-import net.hep.ami.utility.parser.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
 
 public class QId
 {
@@ -342,7 +342,7 @@ public class QId
 
 	public int hashCode(int mask)
 	{
-		return hashCode(mask, MASK_CATALOG_ENTITY_FIELD);
+		return hashCode(mask, MASK_NONE);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -365,7 +365,7 @@ public class QId
 
 	public boolean equals(Object anObject, int mask)
 	{
-		return equals(anObject, mask, MASK_CATALOG_ENTITY_FIELD);
+		return equals(anObject, mask, MASK_NONE);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -394,7 +394,7 @@ public class QId
 
 	public String toString(int mask)
 	{
-		return toStringBuilder(mask, MASK_CATALOG_ENTITY_FIELD).toString();
+		return toStringBuilder(mask, MASK_NONE).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -415,7 +415,7 @@ public class QId
 
 	public StringBuilder toStringBuilder(int mask)
 	{
-		return toStringBuilder(mask, MASK_CATALOG_ENTITY_FIELD);
+		return toStringBuilder(mask, MASK_NONE);
 	}
 
 	/*---------------------------------------------------------------------*/
