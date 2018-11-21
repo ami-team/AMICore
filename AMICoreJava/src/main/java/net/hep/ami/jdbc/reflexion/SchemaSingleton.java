@@ -137,7 +137,7 @@ public class SchemaSingleton
 			super(); add(frgnKey);
 		}
 
-		public FrgnKeys(FrgnKeys frgnKeys)
+		public FrgnKeys(Collection<FrgnKey> frgnKeys)
 		{
 			super(); addAll(frgnKeys);
 		}

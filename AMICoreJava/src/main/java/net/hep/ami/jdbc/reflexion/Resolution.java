@@ -10,7 +10,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	private List<List<SchemaSingleton.FrgnKey>> m_paths = new ArrayList<>();
+	private List<SchemaSingleton.FrgnKeys> m_paths = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -59,7 +59,7 @@ public class Resolution
 
 		/*-----------------------------------------------------------------*/
 
-		m_paths.add(new ArrayList<>(path));
+		m_paths.add(new SchemaSingleton.FrgnKeys(path));
 
 		/*-----------------------------------------------------------------*/
 
@@ -83,7 +83,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public List<List<SchemaSingleton.FrgnKey>> getPaths()
+	public List<SchemaSingleton.FrgnKeys> getPaths()
 	{
 		return m_paths;
 	}
