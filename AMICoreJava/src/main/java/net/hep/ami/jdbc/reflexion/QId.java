@@ -362,7 +362,6 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-
 	public boolean equals(Object anObject, int mask)
 	{
 		return equals(anObject, mask, MASK_NONE);
@@ -376,7 +375,7 @@ public class QId
 		{
 			QId that = (QId) anObject;
 
-			return this == that || toString(mask, maskForPath).equals(that.toString(mask, maskForPath));
+			return this == that || this.toString(mask, maskForPath).equals(that.toString(mask, maskForPath));
 		}
 
 		return false;

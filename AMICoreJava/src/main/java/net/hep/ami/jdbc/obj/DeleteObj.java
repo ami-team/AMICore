@@ -49,9 +49,9 @@ public class DeleteObj
 
 	public DeleteObj addWholeQuery(DeleteObj query)
 	{
-		this.m_deleteSet.addAll(query.m_deleteSet);
+		m_deleteSet.addAll(query.m_deleteSet);
 
-		this.m_whereSet.addAll(query.m_whereSet);
+		m_whereSet.addAll(query.m_whereSet);
 
 		return this;
 	}

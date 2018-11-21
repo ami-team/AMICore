@@ -65,7 +65,7 @@ public class SchemaSingleton
 		@Override
 		public int hashCode()
 		{
-			return toString().hashCode();
+			return Objects.hash(internalCatalog, ".", table, "." + name);
 		}
 
 		@Override
@@ -111,7 +111,7 @@ public class SchemaSingleton
 		@Override
 		public int hashCode()
 		{
-			return toString().hashCode();
+			return Objects.hash(fkInternalCatalog, ".", fkTable, ".", fkColumn, "=", pkInternalCatalog, ".", pkTable, ".", pkColumn);
 		}
 
 		@Override

@@ -76,13 +76,13 @@ public class UpdateObj
 
 	public UpdateObj addWholeQuery(UpdateObj query)
 	{
-		this.m_updateSet.addAll(query.m_updateSet);
+		m_updateSet.addAll(query.m_updateSet);
 
-		this.m_fieldList.addAll(query.m_fieldList);
+		m_fieldList.addAll(query.m_fieldList);
 
-		this.m_valueList.addAll(query.m_valueList);
+		m_valueList.addAll(query.m_valueList);
 
-		this.m_whereSet.addAll(query.m_whereSet);
+		m_whereSet.addAll(query.m_whereSet);
 
 		return this;
 	}

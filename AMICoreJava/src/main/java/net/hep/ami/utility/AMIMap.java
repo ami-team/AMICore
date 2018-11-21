@@ -271,7 +271,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		{
 			result = new ArrayList<>();
 
-			for(U key: this.keySet())
+			for(U key: keySet())
 			{
 				result.add(m_underlyingMap.get(key));
 			}

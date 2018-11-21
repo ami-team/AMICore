@@ -10,7 +10,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	private List<SchemaSingleton.FrgnKeys> m_paths = new ArrayList<>();
+	private List<SchemaSingleton.FrgnKeys> m_resolvedPaths = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -25,7 +25,7 @@ public class Resolution
 
 		/*-----------------------------------------------------------------*/
 
-		Collections.sort(m_paths, new Comparator<List<?>>() {
+		Collections.sort(m_resolvedPaths, new Comparator<List<?>>() {
 
 			@Override
 			public int compare(List<?> o1, List<?> o2)
@@ -59,19 +59,11 @@ public class Resolution
 
 		/*-----------------------------------------------------------------*/
 
-		m_paths.add(new SchemaSingleton.FrgnKeys(path));
+		m_resolvedPaths.add(new SchemaSingleton.FrgnKeys(path));
 
 		/*-----------------------------------------------------------------*/
 
 		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public int hashCode()
-	{
-		return toString().hashCode();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -85,14 +77,23 @@ public class Resolution
 
 	public List<SchemaSingleton.FrgnKeys> getPaths()
 	{
-		return m_paths;
+		return m_resolvedPaths;
 	}
 
 	/*---------------------------------------------------------------------*/
 
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(m_resolvedQId, "@", m_resolvedPaths);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String toString()
 	{
-		return m_resolvedQId.toString() + "@" + m_paths.toString();
+		return m_resolvedQId.toString() + "@" + m_resolvedPaths.toString();
 	}
 
 	/*---------------------------------------------------------------------*/

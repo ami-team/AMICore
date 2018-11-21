@@ -71,11 +71,11 @@ public class SelectObj
 
 	public SelectObj addWholeQuery(SelectObj query)
 	{
-		this.m_selectList.addAll(query.m_selectList);
+		m_selectList.addAll(query.m_selectList);
 
-		this.m_fromSet.addAll(query.m_fromSet);
+		m_fromSet.addAll(query.m_fromSet);
 
-		this.m_whereSet.addAll(query.m_whereSet);
+		m_whereSet.addAll(query.m_whereSet);
 
 		return this;
 	}

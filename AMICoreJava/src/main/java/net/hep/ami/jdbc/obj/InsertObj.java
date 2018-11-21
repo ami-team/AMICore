@@ -58,11 +58,11 @@ public class InsertObj
 
 	public InsertObj addWholeQuery(InsertObj query)
 	{
-		this.m_insertSet.addAll(query.m_insertSet);
+		m_insertSet.addAll(query.m_insertSet);
 
-		this.m_fieldList.addAll(query.m_fieldList);
+		m_fieldList.addAll(query.m_fieldList);
 
-		this.m_valueList.addAll(query.m_valueList);
+		m_valueList.addAll(query.m_valueList);
 
 		return this;
 	}

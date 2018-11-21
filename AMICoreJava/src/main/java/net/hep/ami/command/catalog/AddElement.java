@@ -6,8 +6,8 @@ import java.util.regex.*;
 import java.util.stream.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.Querier;
 import net.hep.ami.jdbc.obj.*;
-import net.hep.ami.jdbc.query.mql.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
@@ -64,12 +64,14 @@ public class AddElement extends AbstractCommand
 
 		String mql = query.toString();
 
-		String sql = MQLToSQL.parse(catalog, entity, mql);
-		String ast = MQLToAST.parse(catalog, entity, mql);
+		Querier querier = getQuerier(catalog);
+
+		String sql = querier.mqlToSQL(entity, mql);
+		String ast = querier.mqlToAST(entity, mql);
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = getQuerier(catalog).prepareStatement(sql, true, null); /* POURQUOI COMME CA ??? */
+		PreparedStatement statement = querier.prepareStatement(sql, true, null);
 
 		statement.execute();
 
