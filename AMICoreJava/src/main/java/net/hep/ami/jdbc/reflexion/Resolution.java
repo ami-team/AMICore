@@ -2,6 +2,7 @@ package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.obj.QId;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class Resolution

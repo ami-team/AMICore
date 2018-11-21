@@ -3,6 +3,8 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 import java.util.stream.*;
 
+import net.hep.ami.jdbc.obj.QId;
+import net.hep.ami.jdbc.obj.SelectObj;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
@@ -83,7 +85,7 @@ public class Isolation
 
 						QId localPrimarykeyQId = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
 
-						Query query2 = new Query().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                          .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                          .addFromPart(tmpFromList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 						                          .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
@@ -133,7 +135,7 @@ public class Isolation
 
 				if(isModifStm)
 				{
-					Query query = new Query().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY_FIELD))
+					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY_FIELD))
 					                         .addFromPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY))
 					                         .addFromPart(localFromSet)
 					                         .addWherePart(expression)
@@ -148,7 +150,7 @@ public class Isolation
 				}
 				else
 				{
-					Query query = new Query().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 					                         .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
 					                         .addFromPart(localFromSet)
 					                         .addWherePart(expression)

@@ -1,11 +1,11 @@
-package net.hep.ami.jdbc.reflexion;
+package net.hep.ami.jdbc.obj;
 
 import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.utility.*;
 
-public class Query
+public class SelectObj
 {
 	/*---------------------------------------------------------------------*/
 
@@ -21,30 +21,30 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public Query addSelectPart(CharSequence selecPart)
+	public SelectObj addSelectPart(CharSequence selectPart)
 	{
-		m_selectList.add(selecPart.toString());
+		m_selectList.add(selectPart.toString());
 
 		return this;
 	}
 
-	public Query addSelectPart(Collection<?> selecPart)
+	public SelectObj addSelectPart(Collection<?> selectPart)
 	{
-		m_fromSet.addAll(selecPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		m_fromSet.addAll(selectPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Query addFromPart(CharSequence fromPart)
+	public SelectObj addFromPart(CharSequence fromPart)
 	{
 		m_fromSet.add(fromPart.toString());
 
 		return this;
 	}
 
-	public Query addFromPart(Collection<?> fromPart)
+	public SelectObj addFromPart(Collection<?> fromPart)
 	{
 		m_fromSet.addAll(fromPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 
@@ -53,14 +53,14 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public Query addWherePart(CharSequence wherePart)
+	public SelectObj addWherePart(CharSequence wherePart)
 	{
 		m_whereSet.add(wherePart.toString());
 
 		return this;
 	}
 
-	public Query addWherePart(Collection<?> wherePart)
+	public SelectObj addWherePart(Collection<?> wherePart)
 	{
 		if(wherePart.isEmpty() == false)
 		{
@@ -74,7 +74,7 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public Query addWholeQuery(Query query)
+	public SelectObj addWholeQuery(SelectObj query)
 	{
 		this.m_selectList.addAll(query.m_selectList);
 
@@ -150,16 +150,16 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuffer toStringBuilder()
+	public StringBuilder toStringBuilder()
 	{
 		return toStringBuilder(null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuffer toStringBuilder(@Nullable CharSequence extra)
+	public StringBuilder toStringBuilder(@Nullable CharSequence extra)
 	{
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 

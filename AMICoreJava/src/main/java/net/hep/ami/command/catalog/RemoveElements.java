@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.obj.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class RemoveElements extends AbstractCommand
