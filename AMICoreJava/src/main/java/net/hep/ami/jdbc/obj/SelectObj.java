@@ -62,7 +62,7 @@ public class SelectObj
 
 	public SelectObj addWherePart(Collection<?> wherePart)
 	{
-		m_whereSet.add(wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND ")));
+		m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 
 		return this;
 	}

@@ -43,18 +43,15 @@ public class UpdateObj
 		return this;
 	}
 
-	public UpdateObj addSetFieldPart(List<?> fieldPart, List<?> valuePart)
+	public UpdateObj addSetFieldPart(List<?> fieldPart, List<?> valuePart) throws Exception
 	{
-		final int length = Math.min(
-			fieldPart.size(),
-			valuePart.size()
-		);
-
-		for(int i = 0; i < length; i++)
+		if(fieldPart.size() != valuePart.size())
 		{
-			m_fieldList.add(fieldPart.get(i).toString());
-			m_valueList.add(valuePart.get(i).toString());
+			throw new Exception(""); //TODO//
 		}
+
+		m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
 
 		return this;
 	}
@@ -70,10 +67,7 @@ public class UpdateObj
 
 	public UpdateObj addWherePart(Collection<?> wherePart)
 	{
-		if(wherePart.isEmpty() == false)
-		{
-			m_whereSet.add(wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND ")));
-		}
+		m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 
 		return this;
 	}

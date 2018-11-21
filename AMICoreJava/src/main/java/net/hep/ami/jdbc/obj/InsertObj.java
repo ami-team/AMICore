@@ -41,18 +41,15 @@ public class InsertObj
 		return this;
 	}
 
-	public InsertObj addSetFieldPart(List<?> fieldPart, List<?> valuePart)
+	public InsertObj addSetFieldPart(List<?> fieldPart, List<?> valuePart) throws Exception
 	{
-		final int length = Math.min(
-			fieldPart.size(),
-			valuePart.size()
-		);
-
-		for(int i = 0; i < length; i++)
+		if(fieldPart.size() != valuePart.size())
 		{
-			m_fieldList.add(fieldPart.get(i).toString());
-			m_valueList.add(valuePart.get(i).toString());
+			throw new Exception(""); //TODO//
 		}
+
+		m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
 
 		return this;
 	}
