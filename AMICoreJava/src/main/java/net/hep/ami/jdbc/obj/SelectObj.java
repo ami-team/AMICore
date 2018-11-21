@@ -65,7 +65,7 @@ public class SelectObj
 		if(wherePart.isEmpty() == false)
 		{
 			m_whereSet.add(
-				"(" + wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND ")) + ")"
+				wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND "))
 			);
 		}
 

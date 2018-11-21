@@ -135,7 +135,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart("(" + visitExpressionOr(context.m_expression, null, 0).toString() + ")");
+			query.addWherePart(visitExpressionOr(context.m_expression, null, 0).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -312,7 +312,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart("(" + visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString() + ")");
+			query.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -336,7 +336,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart("(" + visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString() + ")");
+			query.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
 		}
 
 		/*-----------------------------------------------------------------*/

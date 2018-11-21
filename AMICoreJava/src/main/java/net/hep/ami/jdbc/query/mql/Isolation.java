@@ -3,8 +3,7 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.jdbc.obj.QId;
-import net.hep.ami.jdbc.obj.SelectObj;
+import net.hep.ami.jdbc.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
@@ -86,9 +85,9 @@ public class Isolation
 						QId localPrimarykeyQId = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
 
 						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-						                          .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-						                          .addFromPart(tmpFromList.stream().map(x -> x.toString()).collect(Collectors.toList()))
-						                          .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
+						                                  .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+						                                  .addFromPart(tmpFromList.stream().map(x -> x.toString()).collect(Collectors.toList()))
+						                                  .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 						;
 
 						tmpJoinList.add(
@@ -124,7 +123,7 @@ public class Isolation
 		{
 			if(localJoinList.isEmpty() == false)
 			{
-				globalJoinSet.add("(" + String.join(" AND ", localJoinList) + ")");
+				globalJoinSet.add(String.join(" AND ", localJoinList));
 			}
 		}
 		else
@@ -136,10 +135,10 @@ public class Isolation
 				if(isModifStm)
 				{
 					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY_FIELD))
-					                         .addFromPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY))
-					                         .addFromPart(localFromSet)
-					                         .addWherePart(expression)
-					                         .addWherePart(localJoinList)
+					                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY))
+					                                 .addFromPart(localFromSet)
+					                                 .addWherePart(expression)
+					                                 .addWherePart(localJoinList)
 					;
 
 					result.append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
@@ -151,10 +150,10 @@ public class Isolation
 				else
 				{
 					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-					                         .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
-					                         .addFromPart(localFromSet)
-					                         .addWherePart(expression)
-					                         .addWherePart(localJoinList)
+					                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
+					                                 .addFromPart(localFromSet)
+					                                 .addWherePart(expression)
+					                                 .addWherePart(localJoinList)
 					;
 
 					result.append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
