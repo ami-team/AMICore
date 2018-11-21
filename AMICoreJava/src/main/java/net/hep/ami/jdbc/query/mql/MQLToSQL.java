@@ -34,15 +34,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private Set<QId> m_fromSet = new LinkedHashSet<QId>();
-	private Set<String> m_joinSet = new LinkedHashSet<String>();
+	private Set<QId> m_globalFromSet = new LinkedHashSet<QId>();
+	private Set<String> m_globalJoinSet = new LinkedHashSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
 	private MQLToSQL(String externalCatalog, String internalCatalog, String entity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
 		SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(externalCatalog, entity);
 
 		m_externalCatalog = primaryKey.externalCatalog;
@@ -51,12 +49,6 @@ public class MQLToSQL
 		m_entity = primaryKey.table;
 
 		m_primaryKey = primaryKey.name;
-
-		/*-----------------------------------------------------------------*/
-
-		m_fromSet.add(new QId(m_internalCatalog, m_entity, null));
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -122,6 +114,8 @@ public class MQLToSQL
 
 		StringBuilder extra = new StringBuilder();
 
+		m_globalFromSet.add(new QId(m_internalCatalog, m_entity, null));
+
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_columns != null)
@@ -164,7 +158,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder(query.addFromPart(m_fromSet).addWherePart(m_joinSet).toString(extra));
+		return new StringBuilder(query.addFromPart(m_globalFromSet).addWherePart(m_globalJoinSet).toString(extra));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -317,7 +311,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return query.addWherePart(m_joinSet).toStringBuilder();
+		return query.addWherePart(m_globalJoinSet).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -341,7 +335,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return query.addWherePart(m_joinSet).toStringBuilder();
+		return query.addWherePart(m_globalJoinSet).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -511,7 +505,7 @@ public class MQLToSQL
 		{
 			result = Isolation.isolate(
 				m_internalCatalog, m_entity, m_primaryKey,
-				m_fromSet, m_joinSet,
+				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,
 				nb > 1,
@@ -662,7 +656,7 @@ public class MQLToSQL
 		{
 			result = Isolation.isolate(
 				m_internalCatalog, m_entity, m_primaryKey,
-				m_fromSet, m_joinSet,
+				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,
 				true,

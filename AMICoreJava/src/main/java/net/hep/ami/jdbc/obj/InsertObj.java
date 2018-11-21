@@ -5,37 +5,35 @@ import java.util.stream.*;
 
 import net.hep.ami.utility.*;
 
-public class UpdateObj
+public class InsertObj
 {
 	/*---------------------------------------------------------------------*/
 
-	private final Set<String> m_updateSet = new LinkedHashSet<>();
+	private final Set<String> m_insertSet = new LinkedHashSet<>();
 
 	private final List<String> m_fieldList = new ArrayList<>();
 
 	private final List<String> m_valueList = new ArrayList<>();
 
-	private final Set<String> m_whereSet = new LinkedHashSet<>();
-
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addUpdatePart(CharSequence updatePart)
+	public InsertObj addInsertPart(CharSequence updatePart)
 	{
-		m_updateSet.add(updatePart.toString());
+		m_insertSet.add(updatePart.toString());
 
 		return this;
 	}
 
-	public UpdateObj addUpdatePart(Collection<?> updatePart)
+	public InsertObj addInsertPart(Collection<?> updatePart)
 	{
-		m_updateSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		m_insertSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addSetPart(CharSequence fieldPart, CharSequence valuePart)
+	public InsertObj addSetPart(CharSequence fieldPart, CharSequence valuePart)
 	{
 		m_fieldList.add(fieldPart.toString());
 		m_valueList.add(valuePart.toString());
@@ -43,7 +41,7 @@ public class UpdateObj
 		return this;
 	}
 
-	public UpdateObj addSetFieldPart(List<?> fieldPart, List<?> valuePart)
+	public InsertObj addSetFieldPart(List<?> fieldPart, List<?> valuePart)
 	{
 		final int length = Math.min(
 			fieldPart.size(),
@@ -61,43 +59,22 @@ public class UpdateObj
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addWherePart(CharSequence wherePart)
+	public InsertObj addWholeQuery(InsertObj query)
 	{
-		m_whereSet.add(wherePart.toString());
-
-		return this;
-	}
-
-	public UpdateObj addWherePart(Collection<?> wherePart)
-	{
-		if(wherePart.isEmpty() == false)
-		{
-			m_whereSet.add(wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND ")));
-		}
-
-		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public UpdateObj addWholeQuery(UpdateObj query)
-	{
-		this.m_updateSet.addAll(query.m_updateSet);
+		this.m_insertSet.addAll(query.m_insertSet);
 
 		this.m_fieldList.addAll(query.m_fieldList);
 
 		this.m_valueList.addAll(query.m_valueList);
 
-		this.m_whereSet.addAll(query.m_whereSet);
-
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> getUpdateCollection()
+	public Set<String> getInsertCollection()
 	{
-		return m_updateSet;
+		return m_insertSet;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -116,45 +93,23 @@ public class UpdateObj
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> getWhereCollection()
+	public String getInsertPart()
 	{
-		return m_whereSet;
+		return String.join(", ", m_insertSet);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getUpdatePart()
+	public String getFieldValuePart()
 	{
-		return String.join(", ", m_updateSet);
-	}
+		return new StringBuilder().append("(")
+		                          .append(String.join(", ", m_fieldList))
+		                          .append(") VALUES (")
+		                          .append(String.join(", ", m_valueList))
+		                          .append(")")
+		                          .toString()
+		;
 
-	/*---------------------------------------------------------------------*/
-
-	public String getSetPart()
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-
-		final int length = Math.min(
-			m_fieldList.size(),
-			m_valueList.size()
-		);
-
-		for(int i = 0; i < length; i++)
-		{
-			stringBuilder.append(m_fieldList.get(i).toString())
-			             .append( " = ")
-			             .append(m_valueList.get(i).toString())
-			;
-		}
-
-		return stringBuilder.toString();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getWherePart()
-	{
-		return String.join(" AND ", m_whereSet);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -186,12 +141,7 @@ public class UpdateObj
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("UPDATE ").append(getUpdatePart()).append(" SET ").append(getSetPart());
-
-		if(m_whereSet.isEmpty() == false)
-		{
-			result.append(" WHERE ").append(getWherePart());
-		}
+		result.append("INSERT INTO ").append(getInsertPart()).append(getFieldValuePart());
 
 		/*-----------------------------------------------------------------*/
 

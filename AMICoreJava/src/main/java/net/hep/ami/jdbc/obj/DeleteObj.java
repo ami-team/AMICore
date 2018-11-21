@@ -40,12 +40,7 @@ public class DeleteObj
 
 	public DeleteObj addWherePart(Collection<?> wherePart)
 	{
-		if(wherePart.isEmpty() == false)
-		{
-			m_whereSet.add(
-				wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND "))
-			);
-		}
+		m_whereSet.add(wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND ")));
 
 		return this;
 	}
@@ -79,7 +74,7 @@ public class DeleteObj
 
 	public String getDeletePart()
 	{
-		return String.join(", ", m_whereSet);
+		return String.join(", ", m_deleteSet);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -118,11 +113,10 @@ public class DeleteObj
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_deleteSet.isEmpty() == false) {
-			result.append("DELETE FROM ").append(getDeletePart());
-		}
+		result.append("DELETE FROM ").append(getDeletePart());
 
-		if(m_whereSet.isEmpty() == false) {
+		if(m_whereSet.isEmpty() == false)
+		{
 			result.append(" WHERE ").append(getWherePart());
 		}
 

@@ -62,12 +62,7 @@ public class SelectObj
 
 	public SelectObj addWherePart(Collection<?> wherePart)
 	{
-		if(wherePart.isEmpty() == false)
-		{
-			m_whereSet.add(
-				wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND "))
-			);
-		}
+		m_whereSet.add(wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND ")));
 
 		return this;
 	}
@@ -163,13 +158,7 @@ public class SelectObj
 
 		/*-----------------------------------------------------------------*/
 
-		final String SELECT = m_isDistinct ? "SELECT DISTINCT " : "SELECT ";
-
-		/*-----------------------------------------------------------------*/
-
-		if(m_selectList.isEmpty() == false) {
-			result.append(SELECT).append(getSelectPart());
-		}
+		result.append(m_isDistinct ? "SELECT DISTINCT " : "SELECT ").append(getSelectPart());
 
 		if(m_fromSet.isEmpty() == false) {
 			result.append(" FROM ").append(getFromPart());
