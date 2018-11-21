@@ -36,9 +36,11 @@ public class CommandSingletonTest
 //		System.out.println(rowSet.getMQL());
 //		System.out.println(rowSet.getSQL());
 
-		System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')"));
-		System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode WHERE [router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24']"));
-
+		//System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode, router_ipv4_blocks.network WHERE router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24'").replace("WHERE", "WHERE\n"));
+		//System.out.println();
+		System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode, router_ipv4_blocks.network WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')").replace("WHERE", "WHERE\n"));
+		//System.out.println();
+		//System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode, router_ipv4_blocks.network WHERE [router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24']").replace("WHERE", "WHERE\n"));
 
 		//System.out.println(CommandSingleton.executeCommand("GetSchemas", arguments).replace(">", ">\n"));
 

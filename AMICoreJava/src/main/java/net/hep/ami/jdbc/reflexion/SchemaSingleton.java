@@ -63,6 +63,12 @@ public class SchemaSingleton
 		}
 
 		@Override
+		public int hashCode()
+		{
+			return toString().hashCode();
+		}
+
+		@Override
 		public String toString()
 		{
 			return "`" + internalCatalog + "`.`" + table + "`.`" + name + "`";
@@ -100,6 +106,12 @@ public class SchemaSingleton
 			pkInternalCatalog = _pkInternalCatalog;
 			pkTable = _pkTable;
 			pkColumn = _pkColumn;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return toString().hashCode();
 		}
 
 		@Override

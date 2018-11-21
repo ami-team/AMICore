@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
+import java.util.stream.*;
 
 import net.hep.ami.utility.*;
 
@@ -20,48 +21,53 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public Query addSelectPart(String selecPart)
+	public Query addSelectPart(CharSequence selecPart)
 	{
-		m_selectList.add(selecPart);
+		m_selectList.add(selecPart.toString());
 
 		return this;
 	}
 
-	public Query addSelectPart(Collection<String> selecPart)
+	public Query addSelectPart(Collection<?> selecPart)
 	{
-		m_selectList.addAll(selecPart);
-
-		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public Query addFromPart(String fromPart)
-	{
-		m_fromSet.add(fromPart);
-
-		return this;
-	}
-
-	public Query addFromPart(Collection<String> fromPart)
-	{
-		m_fromSet.addAll(fromPart);
+		m_fromSet.addAll(selecPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Query addWherePart(String wherePart)
+	public Query addFromPart(CharSequence fromPart)
 	{
-		m_whereSet.add(wherePart);
+		m_fromSet.add(fromPart.toString());
 
 		return this;
 	}
 
-	public Query addWherePart(Collection<String> wherePart)
+	public Query addFromPart(Collection<?> fromPart)
 	{
-		m_whereSet.addAll(wherePart);
+		m_fromSet.addAll(fromPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Query addWherePart(CharSequence wherePart)
+	{
+		m_whereSet.add(wherePart.toString());
+
+		return this;
+	}
+
+	public Query addWherePart(Collection<?> wherePart)
+	{
+		if(wherePart.isEmpty() == false)
+		{
+			m_whereSet.add(
+				"(" + wherePart.stream().map(x -> x.toString()).collect(Collectors.joining(" AND ")) + ")"
+			);
+		}
 
 		return this;
 	}
@@ -137,7 +143,7 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public String toString(@Nullable String extra)
+	public String toString(@Nullable CharSequence extra)
 	{
 		return toStringBuilder(extra).toString();
 	}
@@ -151,7 +157,7 @@ public class Query
 
 	/*---------------------------------------------------------------------*/
 
-	public StringBuffer toStringBuilder(@Nullable String extra)
+	public StringBuffer toStringBuilder(@Nullable CharSequence extra)
 	{
 		StringBuffer result = new StringBuffer();
 

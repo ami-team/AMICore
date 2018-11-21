@@ -7,21 +7,18 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.utility.parser.*;
 
 public class MQLToSQL
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final int IN_SELECT = (1 << 0);
-	private static final int IN_INSERT = (1 << 1);
-	private static final int IN_UPDATE = (1 << 2);
-	private static final int IN_DELETE = (1 << 3);
-	private static final int IN_GROUP = (1 << 4);
-	private static final int IN_ISOGROUP = (1 << 5);
-	private static final int IN_FUNCTION = (1 << 6);
-
-	private static final int BERK = (1 << 7);
+	private static final int IN_SELECT_PART = (1 << 0);
+	private static final int IN_INSERT_PART = (1 << 1);
+	private static final int IN_UPDATE_PART = (1 << 2);
+	private static final int IN_FUNCTION = (1 << 3);
+	private static final int IS_MODIF_STM = (1 << 4);
 
 	/*---------------------------------------------------------------------*/
 
@@ -36,8 +33,8 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<String> m_from = new ArrayList<String>();
-	private List<String> m_joins = new ArrayList<String>();
+	private Set<QId> m_fromSet = new LinkedHashSet<QId>();
+	private Set<String> m_joinSet = new LinkedHashSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -53,6 +50,10 @@ public class MQLToSQL
 		m_entity = primaryKey.table;
 
 		m_primaryKey = primaryKey.name;
+
+		/*-----------------------------------------------------------------*/
+
+		m_fromSet.add(new QId(m_internalCatalog, m_entity, null));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -126,7 +127,7 @@ public class MQLToSQL
 		{
 			query.setDistinct(context.m_distinct != null);
 
-			query.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT).toString());
+			query.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT_PART).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -136,9 +137,9 @@ public class MQLToSQL
 			query.addWherePart("(" + visitExpressionOr(context.m_expression, null, 0).toString() + ")");
 		}
 
-		if(m_joins.isEmpty() == false)
+		if(m_joinSet.isEmpty() == false)
 		{
-			query.addWherePart(String.join(" AND ", m_joins));
+			query.addWherePart(String.join(" AND ", m_joinSet));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -167,27 +168,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		// DOUBLE BERK
-		// DOUBLE BERK
-		// DOUBLE BERK		-> utiliser un SET
-		// DOUBLE BERK
-		// DOUBLE BERK
-
-		final String catalogEntity1 = new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_CATALOG_ENTITY);
-
-		query.addFromPart(catalogEntity1);
-
-		for(String catalogEntity2: m_from)
-		{
-			if(catalogEntity2.equalsIgnoreCase(catalogEntity1) == false)
-			{
-				query.addFromPart(catalogEntity2);
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return new StringBuilder(query.toString(extra.toString()));
+		return new StringBuilder(query.addFromPart(m_fromSet).toString(extra));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -206,14 +187,14 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		List<Resolution> resolutions = visitQIdTuple(context.m_qIds, null, IN_INSERT);
-		List<String> expressions = visitExpressionTuple(context.m_expressions, null, IN_INSERT);
+		List<Resolution> resolutions = visitQIdTuple(context.m_qIds, null, IN_INSERT_PART);
+		List<String> expressions = visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART);
 
 		/*-----------------------------------------------------------------*/
 
 		Map<String, SchemaSingleton.Column> columnsInDefaultEntity = SchemaSingleton.getColumns(m_externalCatalog, m_entity);
 
-		Map<String, SchemaSingleton.FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_externalCatalog, m_entity);
+		Map<String, FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_externalCatalog, m_entity);
 
 		/*-----------------------------------------------------------------*/
 
@@ -246,7 +227,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		for(SchemaSingleton.FrgnKeys frgnKeys: frgnKeysInDefaultEntity.values()) 
+		for(FrgnKeys frgnKeys: frgnKeysInDefaultEntity.values()) 
 		{
 			QId fk = new QId(frgnKeys.get(0).fkInternalCatalog, frgnKeys.get(0).fkTable, frgnKeys.get(0).fkColumn);
 			QId pk = new QId(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, frgnKeys.get(0).pkColumn);
@@ -320,8 +301,8 @@ public class MQLToSQL
 		StringBuilder result = new StringBuilder();
 		StringBuilder tmpSet = new StringBuilder();
 
-		List<Resolution> tmpFields = visitQIdTuple(context.m_qIds, null, IN_UPDATE);
-		List<String> tmpExpressions = visitExpressionTuple(context.m_expressions, null, IN_UPDATE);
+		List<Resolution> tmpFields = visitQIdTuple(context.m_qIds, null, IN_UPDATE_PART);
+		List<String> tmpExpressions = visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART);
 
 		for(int i = 0; i < tmpFields.size(); i++)
 		{
@@ -336,11 +317,11 @@ public class MQLToSQL
 
 		if(context.expression != null)
 		{
-			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null, BERK).toString() + ")");
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.expression, null, IS_MODIF_STM).toString() + ")");
 
-			if(m_joins.isEmpty() == false)
+			if(m_joinSet.isEmpty() == false)
 			{
-				query.addWherePart(String.join(" AND ", m_joins));
+				query.addWherePart(String.join(" AND ", m_joinSet));
 			}
 
 			result.append(" WHERE ").append(query.getWherePart());
@@ -363,11 +344,11 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			Query query = new Query().addWherePart("(" + visitExpressionOr(context.m_expression, null, IN_DELETE | BERK).toString() + ")");
+			Query query = new Query().addWherePart("(" + visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString() + ")");
 
-			if(m_joins.isEmpty() == false)
+			if(m_joinSet.isEmpty() == false)
 			{
-				query.addWherePart(String.join(" AND ", m_joins));
+				query.addWherePart(String.join(" AND ", m_joinSet));
 			}
 
 			result.append(" WHERE ").append(query.getWherePart());
@@ -381,9 +362,8 @@ public class MQLToSQL
 	}
 
 	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitColumnList(MQLParser.ColumnListContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitColumnList(MQLParser.ColumnListContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
@@ -397,7 +377,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitAColumnExpression(MQLParser.AColumnContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitAColumnExpression(MQLParser.AColumnContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -417,7 +397,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<Resolution> visitQIdTuple(MQLParser.QIdTupleContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private List<Resolution> visitQIdTuple(MQLParser.QIdTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<Resolution> result = new ArrayList<>();
 
@@ -431,7 +411,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<String> result = new ArrayList<>();
 
@@ -445,7 +425,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionOr(MQLParser.ExpressionOrContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -476,7 +456,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionAnd(MQLParser.ExpressionAndContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -492,7 +472,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionCompContext)
 			{
-				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child, resolutionList, mask));
+				result.append(visitExpressionComp((MQLParser.ExpressionCompContext ) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -507,13 +487,11 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionComp(MQLParser.ExpressionCompContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
-
-		Set<Resolution> tmpResolutionList = (mask & IN_ISOGROUP) == 0 ? new HashSet<>() : resolutionList ;
+		List<Resolution> tmpResolutionList = new ArrayList<>();
 
 		/*-----------------------------------------------------------------*/
 
@@ -527,11 +505,11 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, mask));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, mask & ~IS_MODIF_STM));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
-				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, mask));
+				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, mask & ~IS_MODIF_STM));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -544,164 +522,17 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if(nb > 1 && (mask & IN_INSERT) == 0 && (mask & IN_UPDATE) == 0 && (mask & IN_ISOGROUP) == 0)
+		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0)
 		{
-			StringBuilder localResult = new StringBuilder();
-			StringBuilder localJoins = new StringBuilder();
-
-			/*-------------------------------------------------------------*/
-
-			QId qid1 = new QId(m_internalCatalog, m_entity, m_primaryKey);
-
-			/*-------------------------------------------------------------*/
-
-			if((mask & BERK) != 0)
-			{
-				Query query = new Query().addSelectPart(qid1.toString(QId.MASK_ENTITY_FIELD))
-				                         .addFromPart(qid1.toString(QId.MASK_ENTITY))
-				;
-
-				localResult.append(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-				           .append(" IN (SELECT * FROM (")
-				           .append(query)
-				;
-			}
-			else
-			{
-				Query query = new Query().addSelectPart(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-				                         .addFromPart(qid1.toString(QId.MASK_CATALOG_ENTITY))
-				;
-
-				localResult.append(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-				           .append(" IN (")
-				           .append(query)
-				;
-			}
-
-			/*-------------------------------------------------------------*/
-
-			boolean needAND = false;
-
-			for(Resolution pathList: tmpResolutionList) 
-			{
-				String localCatalogName = pathList.getQId().getCatalog();
-				String localTableName = pathList.getQId().getEntity();
-
-				/*---------------------------------------------------------*/
-
-				if(localCatalogName.equalsIgnoreCase(m_internalCatalog) == false
-				   ||
-				   localTableName.equalsIgnoreCase(m_entity) == false
-				 ) {
-					String localCatalogTable = pathList.getQId().toString(QId.MASK_CATALOG_ENTITY);
-
-					localResult.append(", ")
-					           .append(localCatalogTable)
-					;
-
-					if((mask & IN_SELECT) != 0 && m_from.contains(localCatalogTable) == false)
-					{
-						m_from.add(localCatalogTable);
-					}
-
-					if(needAND)
-					{
-						localJoins.append(" AND ");
-					}
-
-					List<String> localFromList = new ArrayList<String>();
-
-					List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
-
-					boolean needOR = false;
-
-					for(List<SchemaSingleton.FrgnKey> list: paths) 
-					{
-						List<String> localWhereList = new ArrayList<String>();
-
-						for(SchemaSingleton.FrgnKey frgnKey: list)
-						{
-							if(localFromList.contains(frgnKey.fkTable) == false)
-							{
-								localFromList.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY));
-							}
-
-							if(localFromList.contains(frgnKey.pkTable) == false)
-							{
-								localFromList.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY));
-							}
-
-							localWhereList.add(frgnKey.toString());
-						}
-
-						if(!localWhereList.isEmpty())
-						{
-							if(needOR)
-							{
-								localJoins.append(" OR ");
-							}
-
-							SchemaSingleton.Column localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
-								SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName, ""), localTableName
-							);
-
-							QId qid2 = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
-
-							Query query2 = new Query().addSelectPart(qid2.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-							                          .addSelectPart(qid1.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-							                          .addFromPart(localFromList)
-							                          .addWherePart(localWhereList)
-							;
-
-							localJoins.append("(")
-							          .append("(")
-							          .append(qid2)
-							          .append(", ")
-							          .append(qid1)
-							          .append(") IN (")
-							          .append(query2)
-							          .append(")")
-							          .append(")")
-							;
-						}
-
-						needOR = true;
-					}
-					needAND = true;
-				}
-
-				/*---------------------------------------------------------*/
-			}
-
-			localResult.append(" WHERE ")
-			           .append(result)
-			;
-
-			if(!localJoins.toString().isEmpty())
-			{
-				if((mask & IN_SELECT) != 0)
-				{
-					m_joins.add("(" + localJoins.toString() + ")");
-				}
-
-				localResult.append(" AND ")
-				           .append("(" + localJoins + ")")
-				;
-			}
-
-			if((mask & BERK) != 0)
-			{
-				localResult.append(") AS T)");
-			}
-			else
-			{
-				localResult.append(")");
-			}
-
-			if((mask & IN_SELECT) == 0)
-			{
-				result = localResult;
-			}
+			result = Isolation.isolate(
+				m_internalCatalog, m_entity, m_primaryKey,
+				m_fromSet, m_joinSet,
+				tmpResolutionList,
+				result,
+				nb > 1,
+				(mask & IN_SELECT_PART) != 0,
+				(mask &  IS_MODIF_STM ) != 0
+			);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -711,7 +542,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -745,7 +576,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionMulDiv(MQLParser.ExpressionMulDivContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -779,7 +610,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -791,8 +622,6 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		mask &= ~BERK;
 
 		ParseTree child = context.getChild(0);
 
@@ -824,124 +653,50 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.m_expression, resolutionList, mask | IN_GROUP))
+		                          .append(visitExpressionOr(context.m_expression, resolutionList, mask))
 		                          .append(")")
 		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		List<Resolution> tmpResolutionList = new ArrayList<>();
 
-		Set<Resolution> tmpResolutionList = new HashSet<>();
+		/*-----------------------------------------------------------------*/
 
-		StringBuilder isoResult = new StringBuilder().append("(")
-                .append(visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask | IN_ISOGROUP))
-                .append(")")
-                ;
+		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask & ~IS_MODIF_STM);
 
-		StringBuilder localResult = new StringBuilder();
-		StringBuilder localJoins = new StringBuilder();
-		localResult.append("`" + m_entity + "`.`" + m_primaryKey + "` IN (SELECT `" + m_entity + "`.`" + m_primaryKey + "` FROM `" + m_entity + "` ");
-		boolean needAND = false;
-		ArrayList<String> testCatalogTable = new ArrayList<String>();
-		for(Resolution pathList: tmpResolutionList) 
+		/*-----------------------------------------------------------------*/
+
+		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0)
 		{
-
-			String localTableName = pathList.getQId().getEntity();
-			String localCatalogName = pathList.getQId().getCatalog();
-			if (!testCatalogTable.contains(localCatalogName + ":" + localTableName))
-			{
-				testCatalogTable.add(localCatalogName + ":" + localTableName);
-				if(!localTableName.equalsIgnoreCase(m_entity))
-				{
-					localResult.append(", `" + localTableName + "` ");
-					if((mask & IN_SELECT) != 0 && !m_from.contains(localTableName))
-					{
-						m_from.add(localTableName);
-					}
-
-					String localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
-							SchemaSingleton.internalCatalogToExternalCatalog_noException(localCatalogName, ""), localTableName
-							).name;
-
-					if(needAND)
-					{
-						localJoins.append("  AND ");
-					}
-					List<String> localFromList = new ArrayList<String>();
-					List<List<SchemaSingleton.FrgnKey>> paths = pathList.getPaths();
-					boolean needOR = false;
-
-					for(List<SchemaSingleton.FrgnKey> list: paths) 
-					{
-						List<String> localWhereList = new ArrayList<String>();
-						for(SchemaSingleton.FrgnKey frgnKey: list)
-						{
-							if(!localFromList.contains(frgnKey.fkTable))
-							{
-								localFromList.add(frgnKey.fkTable);
-							}
-							if(!localFromList.contains(frgnKey.pkTable))
-							{
-								localFromList.add(frgnKey.pkTable);
-							}
-
-							localWhereList.add(frgnKey.toString());
-						}
-						if(!localWhereList.isEmpty())
-						{
-							if(needOR)
-							{
-								localJoins.append(" OR ");
-							}
-
-							localJoins.append("(");
-							localJoins.append("(`" + localTableName + "`.`" + localTablePrimaryKey + "`, `" + m_entity + "`.`" + m_primaryKey + "`) IN ");
-							localJoins.append("(SELECT `" + localTableName + "`.`" + localTablePrimaryKey + "`, " + "`" + m_entity + "`" + ".`" + m_primaryKey + "` "
-									+ "FROM `"+ String.join("`,`", localFromList) + "` "
-									+ "WHERE "+ String.join(" AND ", localWhereList) + ")");
-							localJoins.append(")");
-						}
-
-						needOR = true;
-					}
-					needAND = true;
-				}
-			}
+			result = Isolation.isolate(
+				m_internalCatalog, m_entity, m_primaryKey,
+				m_fromSet, m_joinSet,
+				tmpResolutionList,
+				result,
+				true,
+				(mask & IN_SELECT_PART) != 0,
+				(mask &  IS_MODIF_STM ) != 0
+			);
 		}
 
-		localResult.append(" WHERE ");
+		/*-----------------------------------------------------------------*/
 
-		localResult.append(isoResult.toString());
-
-		if(!localJoins.toString().isEmpty())
-		{
-			if((mask & IN_SELECT) != 0)
-			{
-				m_joins.add("(" + localJoins.toString() + ")");
-			}
-
-			localResult.append(" AND ");
-			localResult.append("(" + localJoins + ")");
-		}
-		localResult.append(")");
-		if((mask & IN_SELECT) == 0)
-		{
-			result = localResult;
-		}
-
-		return result;
+		return new StringBuilder().append("(")
+		                          .append(result)
+		                          .append(")")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder(context.m_functionName.getText());
 
@@ -964,7 +719,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		/*----------------------------------------------------------------*/
 
@@ -983,14 +738,14 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionLiteral(MQLParser.ExpressionLiteralContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return visitLiteral(context.m_literal, resolutionList, mask);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private List<Resolution> visitQId(MQLParser.QIdContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private List<Resolution> visitQId(MQLParser.QIdContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<Resolution> result = new ArrayList<>();
 
@@ -1047,7 +802,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return new StringBuilder().append("(")
 		                          .append(context.m_literals.stream().map(x -> x.getText()).collect(Collectors.joining(", ")))
@@ -1057,7 +812,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitLiteral(MQLParser.LiteralContext context, Set<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitLiteral(MQLParser.LiteralContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return new StringBuilder(context.getText());
 	}

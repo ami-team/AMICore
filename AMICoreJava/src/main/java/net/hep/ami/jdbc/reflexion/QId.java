@@ -335,7 +335,7 @@ public class QId
 	@Override
 	public int hashCode()
 	{
-		return hashCode(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+		return hashCode(MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -357,7 +357,7 @@ public class QId
 	@Override
 	public boolean equals(Object anObject)
 	{
-		return equals(anObject, MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+		return equals(anObject, MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -387,7 +387,7 @@ public class QId
 	@Override
 	public String toString()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD).toString();
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_NONE).toString();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -408,7 +408,7 @@ public class QId
 
 	public StringBuilder toStringBuilder()
 	{
-		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_CATALOG_ENTITY_FIELD);
+		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -451,7 +451,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if(maskForPath != 0 && m_constraints.isEmpty() == false)
+		if(maskForPath != MASK_NONE && m_constraints.isEmpty() == false)
 		{
 			result.append("{")
 			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(", ")))
