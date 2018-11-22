@@ -43,7 +43,7 @@ public class UpdateObj
 		return this;
 	}
 
-	public UpdateObj addFieldValuePart(List<?> fieldPart, List<?> valuePart) throws Exception
+	public UpdateObj addFieldValuePart(Collection<?> fieldPart, Collection<?> valuePart) throws Exception
 	{
 		if(fieldPart.size() != valuePart.size())
 		{

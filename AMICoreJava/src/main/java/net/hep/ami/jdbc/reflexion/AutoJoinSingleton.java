@@ -166,14 +166,14 @@ public class AutoJoinSingleton
 
 	public static Resolution resolve(String defaultCatalog, String defaultTable, String givenQId, int max) throws Exception
 	{
-		return resolve(defaultCatalog, defaultTable, new QId(givenQId), max);
+		return resolve(defaultCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), max);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Resolution resolve(String defaultCatalog, String defaultTable, String givenQId) throws Exception
 	{
-		return resolve(defaultCatalog, defaultTable, new QId(givenQId), 999);
+		return resolve(defaultCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), 999);
 	}
 
 	/*---------------------------------------------------------------------*/

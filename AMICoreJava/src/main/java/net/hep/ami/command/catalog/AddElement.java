@@ -47,18 +47,21 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		InsertObj query = new InsertObj().addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
-		                                 .addFieldValuePart(
-												Arrays.stream(fields).map(x -> {
-													try {
-														return new QId(x).toString(QId.MASK_CATALOG_ENTITY_FIELD);
-													} catch (Exception e) {
-														return /*-------------------*/ x /*--------------------*/;
-													}
-												}).collect(Collectors.toList()),
-												Arrays.stream(values).map(x -> x.replace("'", "''")).collect(Collectors.toList())
-		                                 )
-		;
+		InsertObj query;
+
+		try
+		{
+			query = new InsertObj().addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
+			                       .addFieldValuePart(
+										Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
+										Arrays.stream(values).map(  x -> x.replace("'", "''")  ).collect(Collectors.toList())
+			                        )
+			;
+		}
+		catch(RuntimeException e)
+		{
+			throw new Exception(e);
+		}
 
 		/*-----------------------------------------------------------------*/
 

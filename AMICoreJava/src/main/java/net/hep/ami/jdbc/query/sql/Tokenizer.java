@@ -5,8 +5,7 @@ import java.util.*;
 
 import org.antlr.v4.runtime.*;
 
-import net.hep.ami.jdbc.obj.*;
-import net.hep.ami.jdbc.reflexion.QId;
+import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
 
 public class Tokenizer
@@ -253,15 +252,15 @@ public class Tokenizer
 				/**/ if(idx > 0)
 				{
 					fieldAliasMap.put(
-						new QId(tmp.substring(idx + 1, l), QId.Type.FIELD, QId.Type.NONE),
-						new QId(tmp.substring(0, idx + 0), QId.Type.FIELD, QId.Type.NONE)
+						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.FIELD, QId.Type.NONE),
+						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.FIELD, QId.Type.NONE)
 					);
 				}
 				else
 				{
 					fieldAliasMap.put(
-						new QId(tmp, QId.Type.FIELD, QId.Type.NONE),
-						new QId(tmp, QId.Type.FIELD, QId.Type.NONE)
+						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE),
+						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE)
 					);
 				}
 			}
@@ -291,15 +290,15 @@ public class Tokenizer
 				/**/ if(idx > 0)
 				{
 					tableAliasMap.put(
-						new QId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
-						new QId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
+						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
+						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
 					);
 				}
 				else
 				{
 					tableAliasMap.put(
-						new QId(tmp, QId.Type.ENTITY, QId.Type.NONE),
-						new QId(tmp, QId.Type.ENTITY, QId.Type.NONE)
+						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE),
+						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE)
 					);
 				}
 			}

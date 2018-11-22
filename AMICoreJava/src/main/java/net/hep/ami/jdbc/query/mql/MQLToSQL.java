@@ -110,7 +110,7 @@ public class MQLToSQL
 
 	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context) throws Exception
 	{
-		SelectObj query = new SelectObj();
+		SelectObj result = new SelectObj();
 
 		StringBuilder extra = new StringBuilder();
 
@@ -120,16 +120,16 @@ public class MQLToSQL
 
 		if(context.m_columns != null)
 		{
-			query.setDistinct(context.m_distinct != null);
+			result.setDistinct(context.m_distinct != null);
 
-			query.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT_PART).toString());
+			result.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT_PART).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart(visitExpressionOr(context.m_expression, null, 0).toString());
+			result.addWherePart(visitExpressionOr(context.m_expression, null, 0).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -158,7 +158,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder(query.addFromPart(m_globalFromSet).addWherePart(m_globalJoinSet).toString(extra));
+		return new StringBuilder(result.addFromPart(m_globalFromSet).addWherePart(m_globalJoinSet).toString(extra));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -167,151 +167,48 @@ public class MQLToSQL
 
 	private StringBuilder visitInsertStatement(MQLParser.InsertStatementContext context) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
-		List<QId> fieldsInDefaultEntity = new ArrayList<>();
-		List<String> valuesInDefaultEntity = new ArrayList<>();
-
-		List<QId> fieldsNotInDefaultEntity = new ArrayList<>();
-		List<String> valuesNotInDefaultEntity = new ArrayList<>();
+		InsertObj result = new InsertObj();
 
 		/*-----------------------------------------------------------------*/
 
-		List<Resolution> resolutions = visitQIdTuple(context.m_qIds, null, IN_INSERT_PART);
-		List<String> expressions = visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART);
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> columnsInDefaultEntity = SchemaSingleton.getColumns(m_externalCatalog, m_entity);
-
-		Map<String, SchemaSingleton.FrgnKeys> frgnKeysInDefaultEntity = SchemaSingleton.getForwardFKs(m_externalCatalog, m_entity);
-
-		/*-----------------------------------------------------------------*/
-
-		List<QId> frgnKeysAlreadyTreated = new ArrayList<>();
-
-		for(int i = 0; i < resolutions.size(); i++)
-		{
-			QId tmpQId = resolutions.get(i).getQId();
-
-			if(m_internalCatalog.equalsIgnoreCase(tmpQId.getCatalog())
-			   &&
-			   m_entity.equalsIgnoreCase(tmpQId.getEntity())
-			   &&
-			   columnsInDefaultEntity.get(tmpQId.getField()) != null
-			 ) {
-				if(frgnKeysInDefaultEntity.containsKey(tmpQId.getField())) // A OPTIMISER
-				{
-					frgnKeysAlreadyTreated.add(tmpQId);
-				}
-
-				fieldsInDefaultEntity.add(resolutions.get(i).getQId());
-				valuesInDefaultEntity.add(expressions.get(i));
-			}
-			else
-			{
-				fieldsNotInDefaultEntity.add(resolutions.get(i).getQId());
-				valuesNotInDefaultEntity.add(expressions.get(i));
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		for(SchemaSingleton.FrgnKeys frgnKeys: frgnKeysInDefaultEntity.values()) 
-		{
-			QId fk = new QId(frgnKeys.get(0).fkInternalCatalog, frgnKeys.get(0).fkTable, frgnKeys.get(0).fkColumn);
-			QId pk = new QId(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, frgnKeys.get(0).pkColumn);
-
-			if(!frgnKeysAlreadyTreated.contains(fk))
-			{
-				List<String> tmpWhere = new ArrayList<String>();
-
-				for(int i = 0; i < fieldsNotInDefaultEntity.size(); i++)
-				{
-					boolean pass = false;
-
-					List<QId> tmpQIds = fieldsNotInDefaultEntity.get(i).getConstraints();
-					if(tmpQIds.size() == 0)
-					{
-						pass = true;
-					}
-					else 
-					{
-						for(int cpt = 0; cpt < tmpQIds.size(); cpt++)
-						{
-							if(tmpQIds.get(cpt).matches(fk))
-							{
-								pass = true;
-								break;
-							}
-						}
-					}
-
-					if(pass)
-					{
-						tmpWhere.add(fieldsNotInDefaultEntity.get(i).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = " + valuesNotInDefaultEntity.get(i));
-					}
-				}
-
-				if(!tmpWhere.isEmpty())
-				{
-					String tmpMQL = "SELECT " + pk.toString() + " WHERE " + String.join(" AND ", tmpWhere);
-
-					String tmpSQL = "(" + MQLToSQL.parse(frgnKeys.get(0).pkInternalCatalog, frgnKeys.get(0).pkTable, tmpMQL).replaceAll("`" + frgnKeys.get(0).pkInternalCatalog + "`.", "") + ")";
-
-					fieldsInDefaultEntity.add(fk);
-					valuesInDefaultEntity.add(tmpSQL);
-				}
-			}
-		}
-
-		StringBuilder tmpFieldsOfDefaultEntity = new StringBuilder();
-		for(int i = 0; i < fieldsInDefaultEntity.size(); i++)
-		{
-			if(i > 0)
-				tmpFieldsOfDefaultEntity.append(",");
-			tmpFieldsOfDefaultEntity.append("`"+fieldsInDefaultEntity.get(i).getField()+"`");
-		}
-		result.append("INSERT INTO ")
-		      .append(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_ENTITY))
-		      .append(" (")
-		      .append(tmpFieldsOfDefaultEntity)
-		      .append(") VALUES (")
-		      .append(String.join(", ", valuesInDefaultEntity))
-		      .append(")")
+		result.addInsertPart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_CATALOG_ENTITY))
+		      .addFieldValuePart(
+					(List<String>) null,
+					(List<String>) null
+		       )
 		;
 
-		return result;
+		/*-----------------------------------------------------------------*/
+
+		return result.toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	private StringBuilder visitUpdateStatement(MQLParser.UpdateStatementContext context) throws Exception
 	{
-		UpdateObj query = new UpdateObj();
+		UpdateObj result = new UpdateObj();
 
 		/*-----------------------------------------------------------------*/
 
-		query.addUpdatePart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_ENTITY));
-
-		/*-----------------------------------------------------------------*/
-
-		query.addFieldValuePart(
-			visitQIdTuple(context.m_qIds, null, IN_UPDATE_PART)
-					.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY)).collect(Collectors.toList()),
-			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
-		);
+		result.addUpdatePart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_CATALOG_ENTITY)) // VOIR
+		      .addFieldValuePart(
+					   visitQIdTuple    (   context.m_qIds    , null, IN_UPDATE_PART)
+						.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY)).collect(Collectors.toList()),
+					visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
+		       )
+		;
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
+			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return query.addWherePart(m_globalJoinSet).toStringBuilder();
+		return result.addWherePart(m_globalJoinSet).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -320,22 +217,22 @@ public class MQLToSQL
 
 	private StringBuilder visitDeleteStatement(MQLParser.DeleteStatementContext context) throws Exception
 	{
-		DeleteObj query = new DeleteObj();
+		DeleteObj result = new DeleteObj();
 
 		/*-----------------------------------------------------------------*/
 
-		query.addDeletePart(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_ENTITY));
+		result.addDeletePart(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_CATALOG_ENTITY)); // VOIR
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_expression != null)
 		{
-			query.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
+			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return query.addWherePart(m_globalJoinSet).toStringBuilder();
+		return result.addWherePart(m_globalJoinSet).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -348,7 +245,7 @@ public class MQLToSQL
 
 		for(MQLParser.AColumnContext child: context.m_columns)
 		{
-			result.add(visitAColumnExpression(child, resolutionList, mask).toString());
+			result.add(visitAColumn(child, resolutionList, mask).toString());
 		}
 
 		return new StringBuilder(String.join(",", result));
@@ -356,7 +253,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitAColumnExpression(MQLParser.AColumnContext context, List<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitAColumn(MQLParser.AColumnContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -366,7 +263,7 @@ public class MQLToSQL
 
 		if(context.m_alias != null)
 		{
-			result.append(" AS " + new QId(context.m_alias.getText()).toString(QId.MASK_FIELD));
+			result.append(" AS ").append(Utility.sqlIdToText(context.m_alias.getText()));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -730,7 +627,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		QId qid = new QId(context, QId.Type.FIELD, QId.Type.FIELD);
+		QId qid = QId.visitQId(context, QId.Type.FIELD, QId.Type.FIELD);
 
 		/*-----------------------------------------------------------------*/
 

@@ -292,7 +292,7 @@ public class RowSet
 
 		try
 		{
-			qId = new QId(m_fieldLabels[idx], QId.Type.FIELD);
+			qId = QId.parseQId(m_fieldLabels[idx], QId.Type.FIELD);
 
 			for(Map.Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
 			{

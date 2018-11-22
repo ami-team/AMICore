@@ -49,7 +49,7 @@ public class SearchQuery extends AbstractCommand
 
 		if(orderBy != null)
 		{
-			extra += " ORDER BY " + new QId(orderBy).toString();
+			extra += " ORDER BY " + QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
 
 			if(orderWay != null)
 			{

@@ -4,8 +4,8 @@ import java.util.*;
 import java.util.stream.*;
 
 import org.antlr.v4.runtime.*;
-
 import net.hep.ami.jdbc.query.mql.*;
+
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -36,6 +36,10 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public static final String WILDCARD = "$";
+
+	/*---------------------------------------------------------------------*/
+
 	private boolean m_exclusion = false;
 
 	/*---------------------------------------------------------------------*/
@@ -57,21 +61,86 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId) throws Exception
+	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field)
 	{
-		this(qId, Type.FIELD, Type.FIELD);
+		setCatalog(catalog);
+		setEntity(entity);
+		setField(field);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId, Type typeForQId) throws Exception
+	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field, @Nullable Collection<QId> constraints)
 	{
-		this(qId, typeForQId, Type.FIELD);
+		setCatalog(catalog);
+		setEntity(entity);
+		setField(field);
+
+		if(constraints != null)
+		{
+			m_constraints.addAll(constraints);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(String qId, Type typeForQId, Type typeForConstraints) throws Exception
+	public static QId parseQId_RuntimeException(String qId)
+	{
+		try
+		{
+			return parseQId(qId, Type.FIELD, Type.FIELD);
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static QId parseQId_RuntimeException(String qId, Type typeForQId)
+	{
+		try
+		{
+			return parseQId(qId, typeForQId, Type.FIELD);
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static QId parseQId_RuntimeException(String qId, Type typeForQId, Type typeForConstraints)
+	{
+		try
+		{
+			return parseQId(qId, typeForQId, typeForConstraints);
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static QId parseQId(String qId) throws Exception
+	{
+		return parseQId(qId, Type.FIELD, Type.FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static QId parseQId(String qId, Type typeForQId) throws Exception
+	{
+		return parseQId(qId, typeForQId, Type.FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static QId parseQId(String qId, Type typeForQId, Type typeForConstraints) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -85,7 +154,7 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		visitQId(this, parser.qId(), typeForQId, typeForConstraints);
+		QId result = visitQId(parser.qId(), typeForQId, typeForConstraints);
 
 		/*-----------------------------------------------------------------*/
 
@@ -95,22 +164,17 @@ public class QId
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public QId(MQLParser.QIdContext context, Type typeForQId, Type typeForConstraints) throws Exception
-	{
-		visitQId(this, context, typeForQId, typeForConstraints);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private QId visitQId(QId result, MQLParser.QIdContext context, Type typeForQId, Type typeForConstraints) throws Exception
+	public static QId visitQId(MQLParser.QIdContext context, Type typeForQId, Type typeForConstraints) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		visitBasicQId(result, context.m_basicQId, typeForQId);
+		QId result = visitBasicQId(context.m_basicQId, typeForQId);
 
 		/*-----------------------------------------------------------------*/
 
@@ -118,7 +182,7 @@ public class QId
 		{
 			for(MQLParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
 			{
-				result.m_constraints.add(visitQId(new QId().setExclusion(constraintQIdContext.m_op != null), constraintQIdContext.m_qId, typeForConstraints, typeForConstraints));
+				result.m_constraints.add(visitQId(constraintQIdContext.m_qId, typeForConstraints, typeForConstraints).setExclusion(constraintQIdContext.m_op != null));
 			}
 		}
 
@@ -129,8 +193,10 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	private QId visitBasicQId(QId result, MQLParser.BasicQIdContext context, Type typeForQId) throws Exception
+	private static QId visitBasicQId(MQLParser.BasicQIdContext context, Type typeForQId) throws Exception
 	{
+		QId result;
+
 		final int size = context.m_ids.size();
 
 		/*-----------------------------------------------------------------*/
@@ -143,18 +209,27 @@ public class QId
 
 				/**/ if(size == 3)
 				{
-					result.m_catalog = Utility.sqlIdToText(context.m_ids.get(0).getText());
-					result.m_entity = Utility.sqlIdToText(context.m_ids.get(1).getText());
-					result.m_field = Utility.sqlIdToText(context.m_ids.get(2).getText());
+					result = new QId(
+						context.m_ids.get(0).getText(),
+						context.m_ids.get(1).getText(),
+						context.m_ids.get(2).getText()
+					);
 				}
 				else if(size == 2)
 				{
-					result.m_entity = Utility.sqlIdToText(context.m_ids.get(0).getText());
-					result.m_field = Utility.sqlIdToText(context.m_ids.get(1).getText());
+					result = new QId(
+						null,
+						context.m_ids.get(0).getText(),
+						context.m_ids.get(1).getText()
+					);
 				}
 				else if(size == 1)
 				{
-					result.m_field = Utility.sqlIdToText(context.m_ids.get(0).getText());
+					result = new QId(
+						null,
+						null,
+						context.m_ids.get(0).getText()
+					);
 				}
 				else
 				{
@@ -169,12 +244,19 @@ public class QId
 
 				/**/ if(size == 2)
 				{
-					result.m_catalog = Utility.sqlIdToText(context.m_ids.get(0).getText());
-					result.m_entity = Utility.sqlIdToText(context.m_ids.get(1).getText());
+					result = new QId(
+						context.m_ids.get(0).getText(),
+						context.m_ids.get(1).getText(),
+						null
+					);
 				}
 				else if(size == 1)
 				{
-					result.m_entity = Utility.sqlIdToText(context.m_ids.get(0).getText());
+					result = new QId(
+						null,
+						context.m_ids.get(0).getText(),
+						null
+					);
 				}
 				else
 				{
@@ -189,7 +271,11 @@ public class QId
 
 				/**/ if(size == 1)
 				{
-					result.m_catalog = Utility.sqlIdToText(context.m_ids.get(0).getText());
+					result = new QId(
+						context.m_ids.get(0).getText(),
+						null,
+						null
+					);
 				}
 				else
 				{
@@ -220,27 +306,6 @@ public class QId
 		/*-----------------------------------------------------------------*/
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field)
-	{
-		this(catalog, entity, field, null);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field, @Nullable List<QId> constraints)
-	{
-		setCatalog(catalog);
-		setEntity(entity);
-		setField(field);
-
-		if(constraints != null)
-		{
-			m_constraints.addAll(constraints);
-		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -308,6 +373,18 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public QId as(int mask)
+	{
+		return new QId(
+			(mask & MASK_CATALOG) != 0 ? m_catalog : null,
+			(mask & MASK_ENTITY) != 0 ? m_entity : null,
+			(mask & MASK_FIELD) != 0 ? m_field : null,
+			m_constraints
+		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public boolean is(int mask)
 	{
 		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
@@ -322,11 +399,11 @@ public class QId
 
 	public boolean matches(QId qId)
 	{
-		return (m_catalog == null || qId.m_catalog == null || "$".equals(m_catalog) || "$".equals(qId.m_catalog) || m_catalog.equalsIgnoreCase(qId.m_catalog))
+		return (m_catalog == null || qId.m_catalog == null || WILDCARD.equals(m_catalog) || WILDCARD.equals(qId.m_catalog) || m_catalog.equalsIgnoreCase(qId.m_catalog))
 		       &&
-		       (m_entity == null || qId.m_entity == null || "$".equals(m_entity) || "$".equals(qId.m_entity) || m_entity.equalsIgnoreCase(qId.m_entity))
+		       (m_entity == null || qId.m_entity == null || WILDCARD.equals(m_entity) || WILDCARD.equals(qId.m_entity) || m_entity.equalsIgnoreCase(qId.m_entity))
 		       &&
-		       (m_field == null || qId.m_field == null || "$".equals(m_field) || "$".equals(qId.m_field) || m_field.equalsIgnoreCase(qId.m_field))
+		       (m_field == null || qId.m_field == null || WILDCARD.equals(m_field) || WILDCARD.equals(qId.m_field) || m_field.equalsIgnoreCase(qId.m_field))
 		;
 	}
 
@@ -335,14 +412,14 @@ public class QId
 	@Override
 	public int hashCode()
 	{
-		return hashCode(MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
+		return toString(MASK_CATALOG_ENTITY_FIELD, MASK_NONE).hashCode();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public int hashCode(int mask)
 	{
-		return hashCode(mask, MASK_NONE);
+		return toString(mask, MASK_NONE).hashCode();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -350,35 +427,6 @@ public class QId
 	public int hashCode(int mask, int maskForPath)
 	{
 		return toString(mask, maskForPath).hashCode();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	@Override
-	public boolean equals(Object anObject)
-	{
-		return equals(anObject, MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public boolean equals(Object anObject, int mask)
-	{
-		return equals(anObject, mask, MASK_NONE);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public boolean equals(Object anObject, int mask, int maskForPath)
-	{
-		if(anObject instanceof QId)
-		{
-			QId that = (QId) anObject;
-
-			return this == that || this.toString(mask, maskForPath).equals(that.toString(mask, maskForPath));
-		}
-
-		return false;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -425,6 +473,13 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
+		if(m_exclusion)
+		{
+			result.append("!");
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		List<String> parts = new ArrayList<>();
 
 		if((mask & MASK_CATALOG) != 0 && m_catalog != null) {
@@ -437,13 +492,6 @@ public class QId
 
 		if((mask & MASK_FIELD) != 0 && m_field != null) {
 			parts.add(Utility.textToSqlId(m_field));
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(m_exclusion)
-		{
-			result.append("!");
 		}
 
 		result.append(String.join(".", parts));

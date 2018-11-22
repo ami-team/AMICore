@@ -41,7 +41,7 @@ public class InsertObj
 		return this;
 	}
 
-	public InsertObj addFieldValuePart(List<?> fieldPart, List<?> valuePart) throws Exception
+	public InsertObj addFieldValuePart(Collection<?> fieldPart, Collection<?> valuePart) throws Exception
 	{
 		if(fieldPart.size() != valuePart.size())
 		{

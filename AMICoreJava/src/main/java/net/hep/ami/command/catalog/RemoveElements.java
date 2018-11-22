@@ -54,7 +54,7 @@ public class RemoveElements extends AbstractCommand
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add(new QId(keyFields[i]).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
+			whereList.add(QId.parseQId(keyFields[i], QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
 
 		query.addWherePart(whereList);

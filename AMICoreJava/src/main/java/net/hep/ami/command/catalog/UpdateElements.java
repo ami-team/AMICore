@@ -57,24 +57,27 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		UpdateObj query = new UpdateObj().addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
-		                                 .addFieldValuePart(
-												Arrays.stream(fields).map(x -> {
-													try {
-														return new QId(x).toString(QId.MASK_CATALOG_ENTITY_FIELD);
-													} catch (Exception e) {
-														return /*-------------------*/ x /*--------------------*/;
-													}
-												}).collect(Collectors.toList()),
-												Arrays.stream(values).map(x -> x.replace("'", "''")).collect(Collectors.toList())
-		                                  )
-		;
+		UpdateObj query;
+
+		try
+		{
+			query = new UpdateObj().addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
+			                       .addFieldValuePart(
+										Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
+										Arrays.stream(values).map(  x -> x.replace("'", "''")  ).collect(Collectors.toList())
+			                        )
+			;
+		}
+		catch(RuntimeException e)
+		{
+			throw new Exception(e);
+		}
 
 		List<String> whereList = new ArrayList<>();
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add(new QId(keyFields[i]).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
+			whereList.add(QId.parseQId(keyFields[i], QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
 
 		query.addWherePart(whereList);
