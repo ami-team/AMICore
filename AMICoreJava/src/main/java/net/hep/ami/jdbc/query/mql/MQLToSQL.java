@@ -9,6 +9,8 @@ import org.antlr.v4.runtime.tree.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
+
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 public class MQLToSQL
@@ -172,11 +174,15 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.addInsertPart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_CATALOG_ENTITY))
-		      .addFieldValuePart(
-					(List<String>) null,
-					(List<String>) null
-		       )
+		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
+			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
+			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
+		);
+
+		/*-----------------------------------------------------------------*/
+
+		result.addInsertPart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_ENTITY))
+		      .addFieldValuePart(tuple.x, tuple.y)
 		;
 
 		/*-----------------------------------------------------------------*/
@@ -192,12 +198,15 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.addUpdatePart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_CATALOG_ENTITY)) // VOIR
-		      .addFieldValuePart(
-					   visitQIdTuple    (   context.m_qIds    , null, IN_UPDATE_PART)
-						.stream().map(x -> x.getQId().toString(QId.MASK_ENTITY)).collect(Collectors.toList()),
-					visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
-		       )
+		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
+			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
+			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
+		);
+
+		/*-----------------------------------------------------------------*/
+
+		result.addUpdatePart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_ENTITY))
+		      .addFieldValuePart(tuple.x, tuple.y)
 		;
 
 		/*-----------------------------------------------------------------*/
@@ -222,7 +231,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.addDeletePart(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_CATALOG_ENTITY)); // VOIR
+		result.addDeletePart(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_ENTITY));
 
 		/*-----------------------------------------------------------------*/
 
@@ -288,13 +297,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<String> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
+	private List<StringBuilder> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
-		List<String> result = new ArrayList<>();
+		List<StringBuilder> result = new ArrayList<>();
 
 		for(MQLParser.ExpressionOrContext child: context.m_expressions)
 		{
-			result.add(visitExpressionOr(child, resolutionList, mask).toString());
+			result.add(visitExpressionOr(child, resolutionList, mask));
 		}
 
 		return result;
@@ -401,7 +410,7 @@ public class MQLToSQL
 
 		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0 && (mask & IN_ISO_GROUP) == 0)
 		{
-			result = Isolation.isolate(
+			result = Helper.isolate(
 				m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
@@ -552,7 +561,7 @@ public class MQLToSQL
 
 		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0)
 		{
-			result = Isolation.isolate(
+			result = Helper.isolate(
 				m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
@@ -598,19 +607,11 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionQId(MQLParser.ExpressionQIdContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
-		/*----------------------------------------------------------------*/
+		List<Resolution> list;
 
-		List<Resolution> list = visitQId(context.m_qId, resolutionList, mask);
-
-		/*----------------------------------------------------------------*/
-
-		resolutionList.addAll(list);
-
-		/*----------------------------------------------------------------*/
+		resolutionList.addAll(list = visitQId(context.m_qId, resolutionList, mask));
 
 		return new StringBuilder(list.stream().map(x -> x.getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", ")));
-
-		/*----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

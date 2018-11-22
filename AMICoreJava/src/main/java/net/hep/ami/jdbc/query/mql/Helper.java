@@ -6,8 +6,9 @@ import java.util.stream.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.utility.*;
 
-public class Isolation
+public class Helper
 {
 	/*---------------------------------------------------------------------*/
 
@@ -15,7 +16,7 @@ public class Isolation
 
 	/*---------------------------------------------------------------------*/
 
-	private Isolation() {}
+	private Helper() {}
 
 	/*---------------------------------------------------------------------*/
 
@@ -168,6 +169,16 @@ public class Isolation
 		/*-----------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(List<Resolution> resolutionList, List<StringBuilder> expressionList)
+	{
+		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(
+			resolutionList.stream().map(x -> x.getQId().toStringBuilder(QId.MASK_ENTITY)).collect(Collectors.toList()),
+			expressionList
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
