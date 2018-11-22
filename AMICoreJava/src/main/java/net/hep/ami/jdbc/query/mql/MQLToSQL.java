@@ -175,6 +175,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
+			m_internalCatalog, m_entity, m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
 		);
@@ -199,6 +200,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
+			m_internalCatalog, m_entity, m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
 		);

@@ -173,7 +173,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(List<Resolution> resolutionList, List<StringBuilder> expressionList)
+	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList)
 	{
 		/* TODO */
 		/* TODO */
