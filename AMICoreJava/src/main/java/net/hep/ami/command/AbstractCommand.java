@@ -138,7 +138,7 @@ public abstract class AbstractCommand
 			Object value = CacheSingleton.get(key);
 
 			result = (value instanceof StringBuilder) ? (StringBuilder) value
-			                                          : (StringBuilder) execute()
+			                                          : (StringBuilder) _execute()
 			;
 
 			CacheSingleton.put(key, result); /* PAS BON !!! */
