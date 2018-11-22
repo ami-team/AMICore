@@ -9,6 +9,18 @@ public class UpdateObj
 {
 	/*---------------------------------------------------------------------*/
 
+	public enum Mode
+	{
+		SQL,
+		MQL
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private Mode m_mode = Mode.SQL;
+
+	/*---------------------------------------------------------------------*/
+
 	private final Set<String> m_updateSet = new LinkedHashSet<>();
 
 	private final List<String> m_fieldList = new ArrayList<>();
@@ -16,6 +28,15 @@ public class UpdateObj
 	private final List<String> m_valueList = new ArrayList<>();
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
+
+	/*---------------------------------------------------------------------*/
+
+	public UpdateObj setMode(Mode mode)
+	{
+		m_mode = mode;
+
+		return this;
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -126,22 +147,43 @@ public class UpdateObj
 
 	public String getSetPart()
 	{
-		StringBuilder stringBuilder = new StringBuilder();
-
-		final int length = Math.min(
-			m_fieldList.size(),
-			m_valueList.size()
-		);
-
-		for(int i = 0; i < length; i++)
+		if(m_mode != Mode.MQL)
 		{
-			stringBuilder.append(m_fieldList.get(i).toString())
-			             .append( " = ")
-			             .append(m_valueList.get(i).toString())
-			;
-		}
+			/*-------------------------------------------------------------*/
 
-		return stringBuilder.toString();
+			StringBuilder stringBuilder = new StringBuilder();
+
+			final int length = Math.min(
+				m_fieldList.size(),
+				m_valueList.size()
+			);
+
+			for(int i = 0; i < length; i++)
+			{
+				stringBuilder.append(m_fieldList.get(i).toString())
+				             .append( " = ")
+				             .append(m_valueList.get(i).toString())
+				;
+			}
+
+			return stringBuilder.toString();
+
+			/*-------------------------------------------------------------*/
+		}
+		else
+		{
+			/*-------------------------------------------------------------*/
+
+			return new StringBuilder().append("(")
+			                          .append(String.join(", ", m_fieldList))
+			                          .append(") VALUES (")
+			                          .append(String.join(", ", m_valueList))
+			                          .append(")")
+			                          .toString()
+			;
+
+			/*-------------------------------------------------------------*/
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
