@@ -125,14 +125,14 @@ public class MQLToSQL
 		{
 			result.setDistinct(context.m_distinct != null);
 
-			result.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT_PART).toString());
+			result.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT_PART));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, null, 0).toString());
+			result.addWherePart(visitExpressionOr(context.m_expression, null, 0));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -215,7 +215,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
+			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -239,7 +239,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM).toString());
+			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM));
 		}
 
 		/*-----------------------------------------------------------------*/

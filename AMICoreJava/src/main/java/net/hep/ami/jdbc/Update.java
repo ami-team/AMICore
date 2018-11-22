@@ -65,7 +65,7 @@ public class Update
 		return new StringBuilder().append("<sql><![CDATA[").append(m_sql).append("]]></sql>")
 		                          .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
 		                          .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
-		                          .append("<info><![CDATA[" + m_nbOfUpdatedRows + " element(s) updated with success]]></info>")
+		                          .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
 		;
 	}
 

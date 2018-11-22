@@ -307,6 +307,8 @@ public class RowSet
 		}
 		catch(Exception e)
 		{
+			/* IGNORE */
+
 			return;
 		}
 
@@ -329,6 +331,8 @@ public class RowSet
 				catch(Exception e)
 				{
 					/* IGNORE */
+
+					return;
 				}
 			}
 		}
