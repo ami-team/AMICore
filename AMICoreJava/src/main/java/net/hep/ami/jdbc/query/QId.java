@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc.reflexion;
+package net.hep.ami.jdbc.query;
 
 import java.util.*;
 import java.util.stream.*;

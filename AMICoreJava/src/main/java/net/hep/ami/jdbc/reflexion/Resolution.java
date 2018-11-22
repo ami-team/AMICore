@@ -2,6 +2,8 @@ package net.hep.ami.jdbc.reflexion;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.query.*;
+
 public class Resolution
 {
 	/*---------------------------------------------------------------------*/

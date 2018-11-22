@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.jdbc.obj.*;
+import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
