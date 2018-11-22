@@ -6,8 +6,8 @@ import java.util.regex.*;
 import java.util.stream.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.obj.*;
 import net.hep.ami.jdbc.query.*;
+import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)

@@ -1,44 +1,66 @@
-package net.hep.ami.jdbc.obj;
+package net.hep.ami.jdbc.query.obj;
 
 import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.utility.*;
 
-public class DeleteObj
+public class SelectObj
 {
 	/*---------------------------------------------------------------------*/
 
-	private final Set<String> m_deleteSet = new LinkedHashSet<>();
+	private final List<String> m_selectList = new ArrayList<>();
+
+	private final Set<String> m_fromSet = new LinkedHashSet<>();
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
 
 	/*---------------------------------------------------------------------*/
 
-	public DeleteObj addDeletePart(CharSequence selecPart)
+	private boolean m_isDistinct = false;
+
+	/*---------------------------------------------------------------------*/
+
+	public SelectObj addSelectPart(CharSequence selectPart)
 	{
-		m_deleteSet.add(selecPart.toString());
+		m_selectList.add(selectPart.toString());
 
 		return this;
 	}
 
-	public DeleteObj addDeletePart(Collection<?> selecPart)
+	public SelectObj addSelectPart(Collection<?> selectPart)
 	{
-		m_deleteSet.addAll(selecPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		m_fromSet.addAll(selectPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public DeleteObj addWherePart(CharSequence wherePart)
+	public SelectObj addFromPart(CharSequence fromPart)
+	{
+		m_fromSet.add(fromPart.toString());
+
+		return this;
+	}
+
+	public SelectObj addFromPart(Collection<?> fromPart)
+	{
+		m_fromSet.addAll(fromPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public SelectObj addWherePart(CharSequence wherePart)
 	{
 		m_whereSet.add(wherePart.toString());
 
 		return this;
 	}
 
-	public DeleteObj addWherePart(Collection<?> wherePart)
+	public SelectObj addWherePart(Collection<?> wherePart)
 	{
 		m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 
@@ -47,9 +69,11 @@ public class DeleteObj
 
 	/*---------------------------------------------------------------------*/
 
-	public DeleteObj addWholeQuery(DeleteObj query)
+	public SelectObj addWholeQuery(SelectObj query)
 	{
-		m_deleteSet.addAll(query.m_deleteSet);
+		m_selectList.addAll(query.m_selectList);
+
+		m_fromSet.addAll(query.m_fromSet);
 
 		m_whereSet.addAll(query.m_whereSet);
 
@@ -58,9 +82,23 @@ public class DeleteObj
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> getDeleteCollection()
+	public void setDistinct(boolean isDistinct)
 	{
-		return m_deleteSet;
+		m_isDistinct = isDistinct;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public List<String> getSelectCollection()
+	{
+		return m_selectList;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Set<String> getFromCollection()
+	{
+		return m_fromSet;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -72,9 +110,16 @@ public class DeleteObj
 
 	/*---------------------------------------------------------------------*/
 
-	public String getDeletePart()
+	public String getSelectPart()
 	{
-		return String.join(", ", m_deleteSet);
+		return String.join(", ", m_selectList);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getFromPart()
+	{
+		return String.join(", ",  m_fromSet);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -113,10 +158,13 @@ public class DeleteObj
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("DELETE FROM ").append(getDeletePart());
+		result.append(m_isDistinct ? "SELECT DISTINCT " : "SELECT ").append(getSelectPart());
 
-		if(m_whereSet.isEmpty() == false)
-		{
+		if(m_fromSet.isEmpty() == false) {
+			result.append(" FROM ").append(getFromPart());
+		}
+
+		if(m_whereSet.isEmpty() == false) {
 			result.append(" WHERE ").append(getWherePart());
 		}
 

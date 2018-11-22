@@ -6,8 +6,8 @@ import java.util.stream.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.jdbc.obj.*;
 import net.hep.ami.jdbc.query.*;
+import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.parser.*;
 
