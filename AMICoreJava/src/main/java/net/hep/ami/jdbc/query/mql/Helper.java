@@ -175,6 +175,10 @@ public class Helper
 
 	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(List<Resolution> resolutionList, List<StringBuilder> expressionList)
 	{
+		/* TODO */
+		/* TODO */
+		/* TODO */
+
 		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(
 			resolutionList.stream().map(x -> x.getQId().toStringBuilder(QId.MASK_ENTITY)).collect(Collectors.toList()),
 			expressionList
