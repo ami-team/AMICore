@@ -354,11 +354,11 @@ public class Setup extends HttpServlet
 		;
 
 		/*-----------------------------------------------------------------*/
-		/* PATCH ROOT SERVLET                                              */
-		/*-----------------------------------------------------------------*/
 
 		try
 		{
+			/*-------------------------------------------------------------*/
+			/* PATCH ROOT SERVLET                                          */
 			/*-------------------------------------------------------------*/
 
 			try(InputStream inputStream = new FileInputStream(getRootPath() + File.separator + "index.html"))
@@ -381,7 +381,7 @@ public class Setup extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			logger.info(e.getMessage(), e);
 		}
 
 		/*-----------------------------------------------------------------*/
