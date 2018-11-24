@@ -113,7 +113,7 @@ public class Setup extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	static String getConfigPath()
+	private static String getConfigPath()
 	{
 		String result;
 
@@ -134,6 +134,13 @@ public class Setup extends HttpServlet
 		/*-----------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static String getRootPath()
+	{
+		return System.getProperty("catalina.base", "/fake1357") + File.separator + "webapps" + File.separator + "ROOT";
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -267,6 +274,7 @@ public class Setup extends HttpServlet
 	{
 		StringBuilder stringBuilder1 = new StringBuilder();
 		StringBuilder stringBuilder2 = new StringBuilder();
+		StringBuilder stringBuilder3 = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (SERVER)                                     */
@@ -393,17 +401,48 @@ public class Setup extends HttpServlet
 			Router.reload();
 
 			/*-------------------------------------------------------------*/
+			/* PATCH ROOT SERVLET                                          */
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				/*---------------------------------------------------------*/
+
+				try(InputStream inputStream = new FileInputStream(getRootPath() + File.separator + "index.html"))
+				{
+					TextFile.read(stringBuilder2, inputStream);
+				}
+
+				/*---------------------------------------------------------*/
+
+				String stringContent2 = stringBuilder2.toString().replaceAll("endpoint_url\\s*:\\s*[\'\"][^\'\"]*[\'\"]", "endpoint_url: '" + host + "/AMI/FrontEnd'");
+
+				/*---------------------------------------------------------*/
+
+				try(OutputStream outputStream = new FileOutputStream(getRootPath() + File.separator + "index.html"))
+				{
+					TextFile.write(outputStream, stringContent2);
+				}
+
+				/*---------------------------------------------------------*/
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
+
+			/*-------------------------------------------------------------*/
 			/* BUILD HTML                                                  */
 			/*-------------------------------------------------------------*/
 
 			try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level3_success.twig"))
 			{
-				TextFile.read(stringBuilder2, inputStream);
+				TextFile.read(stringBuilder3, inputStream);
 			}
 
 			/*-------------------------------------------------------------*/
 
-			return stringBuilder2.toString()
+			return stringBuilder3.toString()
 			                     .replace("{{YEAR}}", year)
 			                     /**/
 			                     .replace("{{HOST}}", host)
@@ -437,12 +476,12 @@ public class Setup extends HttpServlet
 
 			try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level3_error.twig"))
 			{
-				TextFile.read(stringBuilder2, inputStream);
+				TextFile.read(stringBuilder3, inputStream);
 			}
 
 			/*-------------------------------------------------------------*/
 
-			return stringBuilder2.toString()
+			return stringBuilder3.toString()
 			                     .replace("{{YEAR}}", year)
 			                     /**/
 			                     .replace("{{HOST}}", host)

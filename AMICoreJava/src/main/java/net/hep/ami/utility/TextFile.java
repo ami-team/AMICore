@@ -24,9 +24,9 @@ public class TextFile
 
 	/*---------------------------------------------------------------------*/
 
-	public static void write(File file, StringBuilder stringBuilder) throws Exception
+	public static void write(File file, CharSequence charSequence) throws Exception
 	{
-		write(new FileOutputStream(file), stringBuilder);
+		write(new FileOutputStream(file), charSequence);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -51,21 +51,24 @@ public class TextFile
 	{
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		String s = bufferedReader.readLine();
+		String line;
 
-		if(s != null)
+		if((line = bufferedReader.readLine()) != null)
 		{
-			stringBuilder.append(s);
+			stringBuilder.append(line)
+		//	             .append('\n')
+
+			;
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void write(OutputStream outputStream, StringBuilder stringBuilder) throws Exception
+	public static void write(OutputStream outputStream, CharSequence charSequence) throws Exception
 	{
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 
-		outputStreamWriter.write(stringBuilder.toString());
+		outputStreamWriter.write(charSequence.toString());
 
 		outputStreamWriter.flush();
 	}
