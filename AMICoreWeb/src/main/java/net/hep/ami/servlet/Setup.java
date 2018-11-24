@@ -354,6 +354,37 @@ public class Setup extends HttpServlet
 		;
 
 		/*-----------------------------------------------------------------*/
+		/* PATCH ROOT SERVLET                                              */
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			/*-------------------------------------------------------------*/
+
+			try(InputStream inputStream = new FileInputStream(getRootPath() + File.separator + "index.html"))
+			{
+				TextFile.read(stringBuilder2, inputStream);
+			}
+
+			/*-------------------------------------------------------------*/
+
+			String stringContent2 = stringBuilder2.toString().replaceAll("endpoint_url\\s*:\\s*[\'\"][^\'\"]*[\'\"]", "endpoint_url: '" + host + "/AMI/FrontEnd'");
+
+			/*-------------------------------------------------------------*/
+
+			try(OutputStream outputStream = new FileOutputStream(getRootPath() + File.separator + "index.html"))
+			{
+				TextFile.write(outputStream, stringContent2);
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			/* IGNORE */
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		try
 		{
@@ -399,37 +430,6 @@ public class Setup extends HttpServlet
 			/*-------------------------------------------------------------*/
 
 			Router.reload();
-
-			/*-------------------------------------------------------------*/
-			/* PATCH ROOT SERVLET                                          */
-			/*-------------------------------------------------------------*/
-
-			try
-			{
-				/*---------------------------------------------------------*/
-
-				try(InputStream inputStream = new FileInputStream(getRootPath() + File.separator + "index.html"))
-				{
-					TextFile.read(stringBuilder2, inputStream);
-				}
-
-				/*---------------------------------------------------------*/
-
-				String stringContent2 = stringBuilder2.toString().replaceAll("endpoint_url\\s*:\\s*[\'\"][^\'\"]*[\'\"]", "endpoint_url: '" + host + "/AMI/FrontEnd'");
-
-				/*---------------------------------------------------------*/
-
-				try(OutputStream outputStream = new FileOutputStream(getRootPath() + File.separator + "index.html"))
-				{
-					TextFile.write(outputStream, stringContent2);
-				}
-
-				/*---------------------------------------------------------*/
-			}
-			catch(Exception e)
-			{
-				/* IGNORE */
-			}
 
 			/*-------------------------------------------------------------*/
 			/* BUILD HTML                                                  */
