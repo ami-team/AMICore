@@ -24,21 +24,21 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-//		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
 //		arguments.put("catalog", "self");
 //		arguments.put("entity", "router_command");
 //		arguments.put("mql", "SELECT `id`, `command`, `class`, `visible`, `secured`, `roleValidatorClass` WHERE `command` LIKE '%%' ORDER BY `command`");
 		//System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
 
-		Router router = new Router("self");
+		//Router router = new Router("self");
 //		RowSet rowSet = router.executeMQLQuery("router_locations", "SELECT continentCode, countryCode WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')");
 //		System.out.println(rowSet.getMQL());
 //		System.out.println(rowSet.getSQL());
 
 		//System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode, router_ipv4_blocks.network WHERE router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24'").replace("WHERE", "WHERE\n"));
 		//System.out.println();
-		System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode, router_ipv4_blocks.network WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')").replace("WHERE", "WHERE\n"));
+		//System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode, router_ipv4_blocks.network WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')").replace("WHERE", "WHERE\n"));
 		//System.out.println();
 		//System.out.println(router.mqlToSQL("router_locations", "SELECT continentCode, countryCode, router_ipv4_blocks.network WHERE [router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24']").replace("WHERE", "WHERE\n"));
 

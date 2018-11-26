@@ -855,7 +855,7 @@ public class SecuritySingleton
 
 	public static String encrypt(String s) throws Exception
 	{
-		return s.isEmpty() == false ? new String(
+		return s != null && s.isEmpty() == false ? new String(
 			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes(StandardCharsets.UTF_8)))
 		, StandardCharsets.UTF_8) : "";
 	}
@@ -864,7 +864,7 @@ public class SecuritySingleton
 
 	public static String decrypt(String s) throws Exception
 	{
-		return s.isEmpty() == false ? new String(
+		return s != null && s.isEmpty() == false ? new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString(/*------------------*/)))
 		, StandardCharsets.UTF_8) : "";
 	}
@@ -907,6 +907,44 @@ public class SecuritySingleton
 	public static String sha256Sum(String s) throws Exception
 	{
 		return sha256Sum(s.getBytes(StandardCharsets.UTF_8));
+	}
+
+	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
+	/* TOKEN                                                               */
+	/*---------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------*/
+
+	public static String buildTmpPassword(String user, String pass) throws Exception
+	{
+		Calendar rightNow = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+
+		int h = rightNow.get(Calendar. HOUR );
+		int m = rightNow.get(Calendar.MINUTE);
+
+		if(m >= 30)
+		{
+			h++;
+		}
+
+		return sha256Sum(h + "|" + user + "|" + pass);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Tuple2<String, String> checkPassword(String user, String pass_from_user, String pass_from_db) throws Exception
+	{
+		if(pass_from_user.equals(/*-------*/ pass_from_db /*-------*/) == false
+		   &&
+		   pass_from_user.equals(buildTmpPassword(user, pass_from_db)) == false
+		 ) {
+			throw new Exception("invalid password " + pass_from_user + " <> " + buildTmpPassword(user, pass_from_db) + " <-> " + user + ":" + pass_from_db);
+		}
+
+		return new Tuple2<String, String>(
+			/**/user/**/,
+			pass_from_db
+		);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -170,8 +170,12 @@ public class FrontEnd extends HttpServlet
 			}
 			catch(Exception e)
 			{
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+				e.printStackTrace(pw);
+				String sStackTrace = sw.toString();
 				data = XMLTemplates.error(
-					e.getMessage()
+					sStackTrace//e.getMessage()
 				);
 			}
 		}
@@ -287,8 +291,6 @@ public class FrontEnd extends HttpServlet
 
 		/*-----------------------------------------------------------------*/
 
-		Row row;
-
 		try
 		{
 			/*-------------------------------------------------------------*/
@@ -306,7 +308,14 @@ public class FrontEnd extends HttpServlet
 				throw new Exception("could not resolve link `" + linkId + "`");
 			}
 
-			row = rowList.get(0);
+			Row row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
+
+			return new Tuple2<>(
+				row.getValue(0),
+				row.getValue(1)
+			);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -314,15 +323,6 @@ public class FrontEnd extends HttpServlet
 		{
 			basicQuerier.rollbackAndRelease();
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* RETURN LINK                                                     */
-		/*-----------------------------------------------------------------*/
-
-		return new Tuple2<>(
-			row.getValue( "command" ),
-			row.getValue("converter")
-		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -345,8 +345,6 @@ public class FrontEnd extends HttpServlet
 
 		/*-----------------------------------------------------------------*/
 
-		Row row;
-
 		try
 		{
 			/*-------------------------------------------------------------*/
@@ -367,7 +365,14 @@ public class FrontEnd extends HttpServlet
 				);
 			}
 
-			row = rowList.get(0);
+			Row row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
+
+			return new Tuple2<>(
+				/*---------------------*/(row.getValue(0)),
+				SecuritySingleton.decrypt(row.getValue(1))
+			);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -375,15 +380,6 @@ public class FrontEnd extends HttpServlet
 		{
 			basicQuerier.rollbackAndRelease();
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* RETURN CREDENTIALS                                              */
-		/*-----------------------------------------------------------------*/
-
-		return new Tuple2<>(
-			/*---------------------*/(row.getValue("AMIUser")),
-			SecuritySingleton.decrypt(row.getValue("AMIPass"))
-		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -406,15 +402,13 @@ public class FrontEnd extends HttpServlet
 
 		/*-----------------------------------------------------------------*/
 
-		Row row;
-
 		try
 		{
 			/*-------------------------------------------------------------*/
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", AMIUser, SecuritySingleton.encrypt(AMIPass)).getAll();
+			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIPass` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -428,7 +422,21 @@ public class FrontEnd extends HttpServlet
 				);
 			}
 
-			row = rowList.get(0);
+			Row row = rowList.get(0);
+
+			/*-------------------------------------------------------------*/
+
+			try
+			{
+				return SecuritySingleton.checkPassword(AMIUser, AMIPass, SecuritySingleton.decrypt(row.getValue(0)));
+			}
+			catch(Exception e)
+			{
+				return new Tuple2<>(
+					s_guest_user,
+					s_guest_pass
+				);
+			}
 
 			/*-------------------------------------------------------------*/
 		}
@@ -436,15 +444,6 @@ public class FrontEnd extends HttpServlet
 		{
 			basicQuerier.rollbackAndRelease();
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* RETURN CREDENTIALS                                              */
-		/*-----------------------------------------------------------------*/
-
-		return new Tuple2<>(
-			/*---------------------*/(row.getValue("AMIUser")),
-			SecuritySingleton.decrypt(row.getValue("AMIPass"))
-		);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -502,9 +501,9 @@ public class FrontEnd extends HttpServlet
 			String tmpAMIUser = (String) session.getAttribute("AMIUser_certificate");
 			String tmpAMIPass = (String) session.getAttribute("AMIPass_certificate");
 
-			if(tmpAMIUser == null || tmpAMIUser.isEmpty()
+			if(tmpAMIUser == null
 			   ||
-			   tmpAMIPass == null || tmpAMIPass.isEmpty()
+			   tmpAMIPass == null
 			 ) {
 				Tuple2<String, String> result = resolveUserByCertificate(clientDN, issuerDN);
 
@@ -516,6 +515,8 @@ public class FrontEnd extends HttpServlet
 				AMIUser = tmpAMIUser;
 				AMIPass = tmpAMIPass;
 			}
+
+			/*-------------------------------------------------------------*/
 
 			if(AMIUser.equals(s_guest_user) == false)
 			{
@@ -549,9 +550,9 @@ public class FrontEnd extends HttpServlet
 			String tmpAMIUser = (String) session.getAttribute("AMIUser_credential");
 			String tmpAMIPass = (String) session.getAttribute("AMIPass_credential");
 
-			if(tmpAMIUser == null || tmpAMIUser.isEmpty() || (AMIUser != null && tmpAMIUser != null && AMIUser.equals(tmpAMIUser) == false)
+			if(tmpAMIUser == null || (AMIUser != null && AMIUser.equals(tmpAMIUser) == false)
 			   ||
-			   tmpAMIPass == null || tmpAMIPass.isEmpty() || (AMIPass != null && tmpAMIPass != null && AMIPass.equals(tmpAMIPass) == false)
+			   tmpAMIPass == null || (AMIPass != null && AMIPass.equals(tmpAMIPass) == false)
 			 ) {
 				Tuple2<String, String> result = resolveUserByUserPass(AMIUser, AMIPass);
 
@@ -563,6 +564,8 @@ public class FrontEnd extends HttpServlet
 				AMIUser = tmpAMIUser;
 				AMIPass = tmpAMIPass;
 			}
+
+			/*-------------------------------------------------------------*/
 
 			if(AMIUser.equals(s_guest_user) == false)
 			{
@@ -610,17 +613,21 @@ public class FrontEnd extends HttpServlet
 
 		String agent = request.getHeader("User-Agent");
 
-		if(agent.startsWith("cami")
-		   ||
-		   agent.startsWith("jami")
-		   ||
-		   agent.startsWith("pami")
-		   ||
-		   agent.startsWith("pyAMI")
-		 ) {
-			arguments.put("userAgent", agent);
+		if(agent != null)
+		{
+			if(agent.startsWith("cami")
+			   ||
+			   agent.startsWith("jami")
+			   ||
+			   agent.startsWith("pami")
+			   ||
+			   agent.startsWith("pyAMI")
+			 ) {
+				arguments.put("userAgent", agent);
+			}
 		}
-		else {
+		else
+		{
 			arguments.put("userAgent", "web");
 		}
 

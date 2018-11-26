@@ -377,6 +377,12 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_role` (`role`) VALUES" +
+			" ('AMI_SSO')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_role` (`role`) VALUES" +
 			" ('AMI_ADMIN')" +
 			";"
 		);
