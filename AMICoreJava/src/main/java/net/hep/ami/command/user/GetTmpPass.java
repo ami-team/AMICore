@@ -62,7 +62,7 @@ public class GetTmpPass extends AbstractCommand
 		}
 		else 
 		{
-			throw new Exception("invalid role usage");
+			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
