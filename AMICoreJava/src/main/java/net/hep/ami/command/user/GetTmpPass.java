@@ -125,7 +125,7 @@ public class GetTmpPass extends AbstractCommand
 
 	public static String usage()
 	{
-		return "(-ssoLogin=\"\" ^ -amiLogin=\\\"\\\")?";
+		return "(-ssoLogin=\"\" ^ -amiLogin=\"\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
