@@ -55,6 +55,7 @@ public class Setup extends HttpServlet
 		try
 		{
 			req.setCharacterEncoding("UTF-8");
+			res.setContentType("text/html; charset=UTF-8");
 			res.setCharacterEncoding("UTF-8");
 		}
 		catch(UnsupportedEncodingException e)
@@ -94,8 +95,6 @@ public class Setup extends HttpServlet
 			{
 				res.setStatus(HttpServletResponse.SC_OK);
 
-				res.setContentType("text/html");
-
 				writer.write(data);
 			}
 
@@ -103,7 +102,7 @@ public class Setup extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
 
 			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
