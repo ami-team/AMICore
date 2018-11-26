@@ -6,7 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
+@CommandMetadata(role = "AMI_USER", visible = true, secured = true)
 public class GetTmpPass extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
@@ -29,7 +29,7 @@ public class GetTmpPass extends AbstractCommand
 		                                                    : m_AMIUser
 		;
 
-		if(m_AMIUser.equals(amiLogin) == false && m_userRoles.contains("AMI_SSO") == false && m_userRoles.contains("AMI_ADMIN"))
+		if(m_AMIUser.equals(amiLogin) == false && m_userRoles.contains("AMI_SSO") == false && m_userRoles.contains("AMI_ADMIN") == false)
 		{
 			throw new Exception("wrong role for user `" + m_AMIUser + "`");
 		}
