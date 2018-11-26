@@ -25,20 +25,63 @@ public class GetTmpPass extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		String amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
-		                                                    : m_AMIUser
-		;
+		String ssoLogin = arguments.get("ssoLogin");
+		String amiLogin = arguments.get("amiLogin");
 
-		if(m_AMIUser.equals(amiLogin) == false && m_userRoles.contains("AMI_SSO") == false && m_userRoles.contains("AMI_ADMIN") == false)
+		int mode;
+
+		/**/ if(ssoLogin != null
+		        &&
+		        amiLogin == null
+		 ) {
+			if(/*-----------*/ true /*-----------*/ && m_userRoles.contains("AMI_SSO") == false && m_userRoles.contains("AMI_ADMIN") == false)
+			{
+				throw new Exception("wrong role for user `" + m_AMIUser + "`");
+			}
+
+			mode = 0;
+		}
+		else if(ssoLogin == null
+		        &&
+		        amiLogin != null
+		 ) {
+			if(m_AMIUser.equals(amiLogin) == false && m_userRoles.contains("AMI_SSO") == false && m_userRoles.contains("AMI_ADMIN") == false)
+			{
+				throw new Exception("wrong role for user `" + m_AMIUser + "`");
+			}
+
+			mode = 1;
+		}
+		else if(ssoLogin == null
+		        &&
+		        amiLogin == null
+		 ) {
+			amiLogin = m_AMIUser;
+
+			mode = 1;
+		}
+		else 
 		{
-			throw new Exception("wrong role for user `" + m_AMIUser + "`");
+			throw new Exception("invalid role usage");
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* GET USER INFO                                                   */
-		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `custom` LIKE ?", amiLogin).getAll(10, 0);
+		List<Row> rowList;
+
+		switch(mode)
+		{
+			case 0:
+				rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `ssoUser` = ?", ssoLogin).getAll(10, 0);
+				break;
+
+			case 1:
+				rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
+				break;
+
+			default:
+				throw new Exception("internal error");
+		}
 
 		if(rowList.size() != 1)
 		{
@@ -76,7 +119,7 @@ public class GetTmpPass extends AbstractCommand
 
 	public static String usage()
 	{
-		return "(-amiLogin=\"\")?";
+		return "(-ssoLogin=\"\" ^ -amiLogin=\\\"\\\")?";
 	}
 
 	/*---------------------------------------------------------------------*/
