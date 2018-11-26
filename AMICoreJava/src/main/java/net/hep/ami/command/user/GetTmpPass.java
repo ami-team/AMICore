@@ -83,25 +83,31 @@ public class GetTmpPass extends AbstractCommand
 				throw new Exception("internal error");
 		}
 
-		if(rowList.size() != 1)
-		{
-			throw new Exception("invalid user `" + amiLogin + "`");
-		}
-
-		Row row = rowList.get(0);
-
 		/*-----------------------------------------------------------------*/
 
-		String password = SecuritySingleton.buildTmpPassword(
-			/*---------------------*/(row.getValue(0)),
-			SecuritySingleton.decrypt(row.getValue(1))
-		);
+		String tmpUser;
+		String tmpPass;
+
+		if(rowList.size() == 1)
+		{
+			Row row = rowList.get(0);
+
+			tmpUser = /*---------------------*/(row.getValue(0));
+			tmpPass = SecuritySingleton.decrypt(row.getValue(1));
+
+			tmpPass = SecuritySingleton.buildTmpPassword(tmpUser, tmpPass);
+		}
+		else
+		{
+			tmpUser = ConfigSingleton.getProperty("guest_user");
+			tmpPass = ConfigSingleton.getProperty("guest_user");
+		}
 
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder().append("<rowset>").append("<row>")
-		                          .append("<field name=\"tmpUser\"><![CDATA[").append(amiLogin).append("]]></field>")
-		                          .append("<field name=\"tmpPass\"><![CDATA[").append(password).append("]]></field>")
+		                          .append("<field name=\"tmpUser\"><![CDATA[").append(tmpUser).append("]]></field>")
+		                          .append("<field name=\"tmpPass\"><![CDATA[").append(tmpPass).append("]]></field>")
 		                          .append("</row>").append("</rowset>")
 		;
 
