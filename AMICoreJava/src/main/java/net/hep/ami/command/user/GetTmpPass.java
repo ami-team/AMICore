@@ -38,7 +38,7 @@ public class GetTmpPass extends AbstractCommand
 		/* GET USER INFO                                                   */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = getQuerier("self").executeSQLQuery("SELECT `AMIPass` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
+		List<Row> rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `custom` LIKE ?", amiLogin).getAll(10, 0);
 
 		if(rowList.size() != 1)
 		{
@@ -49,7 +49,10 @@ public class GetTmpPass extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String password = SecuritySingleton.buildTmpPassword(amiLogin, SecuritySingleton.decrypt(row.getValue(0)));
+		String password = SecuritySingleton.buildTmpPassword(
+			/*---------------------*/(row.getValue(0)),
+			SecuritySingleton.decrypt(row.getValue(1))
+		);
 
 		/*-----------------------------------------------------------------*/
 
