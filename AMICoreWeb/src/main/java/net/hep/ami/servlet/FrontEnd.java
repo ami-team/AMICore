@@ -517,8 +517,8 @@ e.printStackTrace(pw);
 			/* CERTIFICATE LOGIN                                           */
 			/*-------------------------------------------------------------*/
 
-			String tmpAMIUser = (String) session.getAttribute("AMIUser_certificate");
-			String tmpAMIPass = (String) session.getAttribute("AMIPass_certificate");
+			String tmpAMIUser = (String) session.getAttribute("AMIUser");
+			String tmpAMIPass = (String) session.getAttribute("AMIPass");
 
 			if(tmpAMIUser == null
 			   ||
@@ -539,21 +539,15 @@ e.printStackTrace(pw);
 
 			if(AMIUser.equals(s_guest_user) == false)
 			{
-				session.setAttribute("AMIUser_certificate", AMIUser);
-				session.setAttribute("AMIPass_certificate", AMIPass);
-
-				session.removeAttribute("AMIUser_credential");
-				session.removeAttribute("AMIPass_credential");
+				session.setAttribute("AMIUser", AMIUser);
+				session.setAttribute("AMIPass", AMIPass);
 
 				session.removeAttribute("NoCert");
 			}
 			else
 			{
-				session.setAttribute("AMIUser_credential", s_guest_user);
-				session.setAttribute("AMIPass_credential", s_guest_pass);
-
-				session.removeAttribute("AMIUser_certificate");
-				session.removeAttribute("AMIPass_certificate");
+				session.setAttribute("AMIUser", s_guest_user);
+				session.setAttribute("AMIPass", s_guest_pass);
 
 				session.removeAttribute("NoCert");
 			}
@@ -566,8 +560,8 @@ e.printStackTrace(pw);
 			/* CREDENTIAL LOGIN                                            */
 			/*-------------------------------------------------------------*/
 
-			String tmpAMIUser = (String) session.getAttribute("AMIUser_credential");
-			String tmpAMIPass = (String) session.getAttribute("AMIPass_credential");
+			String tmpAMIUser = (String) session.getAttribute("AMIUser");
+			String tmpAMIPass = (String) session.getAttribute("AMIPass");
 
 			if(tmpAMIUser == null || (tmpAMIUser != null && AMIUser != null && tmpAMIUser.equals(AMIUser) == false)
 			   ||
@@ -588,21 +582,15 @@ e.printStackTrace(pw);
 
 			if(AMIUser.equals(s_guest_user) == false)
 			{
-				session.setAttribute("AMIUser_credential", AMIUser);
-				session.setAttribute("AMIPass_credential", AMIPass);
-
-				session.removeAttribute("AMIUser_certificate");
-				session.removeAttribute("AMIPass_certificate");
+				session.setAttribute("AMIUser", AMIUser);
+				session.setAttribute("AMIPass", AMIPass);
 
 				session.setAttribute("NoCert", "1");
 			}
 			else
 			{
-				session.setAttribute("AMIUser_credential", s_guest_user);
-				session.setAttribute("AMIPass_credential", s_guest_pass);
-
-				session.removeAttribute("AMIUser_certificate");
-				session.removeAttribute("AMIPass_certificate");
+				session.setAttribute("AMIUser", s_guest_user);
+				session.setAttribute("AMIPass", s_guest_pass);
 
 				session.removeAttribute("NoCert");
 			}
