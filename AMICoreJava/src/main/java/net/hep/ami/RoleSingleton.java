@@ -168,7 +168,7 @@ public class RoleSingleton
 			}
 			else
 			{
-				throw new Exception("wrong role for command `" + command + "`, command's role(s) " + commandRoles + ", user's role(s) " + userRoles);
+				throw new Exception("wrong role for command `" + command + "`, expected role(s) " + commandRoles + ", found role(s) " + userRoles + ", for user `" + amiUser + "`");
 			}
 		}
 
