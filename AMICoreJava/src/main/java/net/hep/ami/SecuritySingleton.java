@@ -917,17 +917,19 @@ public class SecuritySingleton
 
 	public static String buildTmpPassword(String user, String pass) throws Exception
 	{
-		Calendar rightNow = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 
-		int h = rightNow.get(Calendar. HOUR );
-		int m = rightNow.get(Calendar.MINUTE);
-
-		if(m >= 30)
-		{
-			h++;
-		}
-
-		return sha256Sum(encrypt(h + "|" + user + "|" + pass));
+		return sha256Sum(encrypt(
+			calendar.get(Calendar.   YEAR    )
+			+ "|" +
+			calendar.get(Calendar.DAY_OF_YEAR)
+			+ "|" +
+			calendar.get(Calendar.HOUR_OF_DAY)
+			+ "|" +
+			user
+			+ "|" +
+			pass
+		));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -938,7 +940,7 @@ public class SecuritySingleton
 		   &&
 		   pass_from_user.equals(buildTmpPassword(user, pass_from_db)) == false
 		 ) {
-			throw new Exception("invalid password " + pass_from_user + " <> " + buildTmpPassword(user, pass_from_db) + " <-> " + user + ":" + pass_from_db);
+			throw new Exception("invalid password");
 		}
 
 		return new Tuple2<String, String>(
