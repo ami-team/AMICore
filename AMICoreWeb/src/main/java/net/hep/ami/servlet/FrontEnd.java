@@ -500,7 +500,7 @@ e.printStackTrace(pw);
 			String tmpAMIUser = (String) session.getAttribute("AMIUser_certificate");
 			String tmpAMIPass = (String) session.getAttribute("AMIPass_certificate");
 
-			if(clientDN != null && clientDN.isEmpty() == false && issuerDN != null && issuerDN.isEmpty() == false || (
+			if(clientDN != null && clientDN.isEmpty() == false && issuerDN != null && issuerDN.isEmpty() == false && (
 			   tmpAMIUser == null
 			   ||
 			   tmpAMIPass == null
