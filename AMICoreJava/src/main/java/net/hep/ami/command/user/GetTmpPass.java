@@ -72,11 +72,11 @@ public class GetTmpPass extends AbstractCommand
 		switch(mode)
 		{
 			case 0:
-				rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `ssoUser` = ?", ssoLogin).getAll(10, 0);
+				rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `ssoUser` = ? AND `valid` != 0", ssoLogin).getAll(10, 0);
 				break;
 
 			case 1:
-				rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
+				rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ? AND `valid` != 0", amiLogin).getAll(10, 0);
 				break;
 
 			default:
@@ -88,7 +88,7 @@ public class GetTmpPass extends AbstractCommand
 		String tmpUser;
 		String tmpPass;
 
-		if(rowList.size() == 1)
+		if(rowList.size() > 0)
 		{
 			Row row = rowList.get(0);
 
