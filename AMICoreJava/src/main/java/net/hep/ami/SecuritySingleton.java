@@ -917,9 +917,20 @@ public class SecuritySingleton
 
 	public static String buildTmpPassword(String user, String pass) throws Exception
 	{
+		return buildTmpPassword(user, pass, true);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String buildTmpPassword(String user, String pass, boolean full) throws Exception
+	{
+		String result;
+
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 
-		return sha256Sum(encrypt(
+		/*-----------------------------------------------------------------*/
+
+		result = sha256Sum(encrypt(
 			calendar.get(Calendar.   YEAR    )
 			+ "|" +
 			calendar.get(Calendar.DAY_OF_YEAR)
@@ -929,18 +940,57 @@ public class SecuritySingleton
 			user
 			+ "|" +
 			pass
-		));
+		)).substring(0, 16);
+
+		/*-----------------------------------------------------------------*/
+
+		if(full)
+		{
+			calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
+
+			/*-------------------------------------------------------------*/
+
+			result += sha256Sum(encrypt(
+				calendar.get(Calendar.   YEAR    )
+				+ "|" +
+				calendar.get(Calendar.DAY_OF_YEAR)
+				+ "|" +
+				calendar.get(Calendar.HOUR_OF_DAY)
+				+ "|" +
+				user
+				+ "|" +
+				pass
+			)).substring(0, 16);
+
+			/*-------------------------------------------------------------*/
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static Tuple2<String, String> checkPassword(String user, String pass_from_user, String pass_from_db) throws Exception
 	{
-		if(pass_from_user.equals(/*-------*/ pass_from_db /*-------*/) == false
-		   &&
-		   pass_from_user.equals(buildTmpPassword(user, pass_from_db)) == false
-		 ) {
-			throw new Exception("invalid password");
+		if(pass_from_user.equals(pass_from_db) == false)
+		{
+			if(pass_from_user.length() == 32)
+			{
+				String a = /**/ pass_from_user /**/.substring(0, 16);
+				String b = /**/ pass_from_user /**/.substring(16, 32);
+				String c = buildTmpPassword(user, pass_from_db, false);
+
+				if(a.equals(c) == false
+				   &&
+				   b.equals(c) == false
+				 ) {
+					throw new Exception("invalid password");
+				}
+			}
+			else
+			{
+				throw new Exception("invalid password");
+			}
 		}
 
 		return new Tuple2<String, String>(
