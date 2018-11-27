@@ -173,12 +173,10 @@ public class FrontEnd extends HttpServlet
 StringWriter sw = new StringWriter();
 PrintWriter pw = new PrintWriter(sw);
 e.printStackTrace(pw);
-data = sw.toString();
-/*
 				data = XMLTemplates.error(
-					e.getMessage()
+						sw.toString()//e.getMessage()
 				);
-*/			}
+			}
 		}
 		else
 		{
