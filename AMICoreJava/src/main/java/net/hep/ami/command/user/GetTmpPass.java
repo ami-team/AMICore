@@ -60,7 +60,7 @@ public class GetTmpPass extends AbstractCommand
 
 			mode = 1;
 		}
-		else 
+		else
 		{
 			throw new Exception("invalid usage");
 		}
