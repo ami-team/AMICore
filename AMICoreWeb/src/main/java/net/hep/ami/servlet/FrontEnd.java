@@ -497,9 +497,9 @@ public class FrontEnd extends HttpServlet
 			String tmpAMIUser = (String) session.getAttribute("AMIUser_certificate");
 			String tmpAMIPass = (String) session.getAttribute("AMIPass_certificate");
 
-			if(tmpAMIUser == null
+			if(clientDN != null && clientDN.isEmpty() == false && tmpAMIUser == null
 			   ||
-			   tmpAMIPass == null
+			   issuerDN != null && issuerDN.isEmpty() == false && tmpAMIPass == null
 			 ) {
 				Tuple2<String, String> result = resolveUserByCertificate(clientDN, issuerDN);
 
@@ -546,9 +546,9 @@ public class FrontEnd extends HttpServlet
 			String tmpAMIUser = (String) session.getAttribute("AMIUser_credential");
 			String tmpAMIPass = (String) session.getAttribute("AMIPass_credential");
 
-			if(tmpAMIUser == null || (AMIUser != null && AMIUser.equals(tmpAMIUser) == false)
+			if(AMIUser != null && AMIUser.isEmpty() == false && (tmpAMIUser == null || tmpAMIUser.equals(AMIUser) == false)
 			   ||
-			   tmpAMIPass == null || (AMIPass != null && AMIPass.equals(tmpAMIPass) == false)
+			   AMIPass != null && AMIPass.isEmpty() == false && (tmpAMIPass == null || tmpAMIPass.equals(AMIPass) == false)
 			 ) {
 				Tuple2<String, String> result = resolveUserByUserPass(AMIUser, AMIPass);
 
