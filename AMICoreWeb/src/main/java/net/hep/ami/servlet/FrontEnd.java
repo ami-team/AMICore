@@ -569,9 +569,9 @@ e.printStackTrace(pw);
 			String tmpAMIUser = (String) session.getAttribute("AMIUser_credential");
 			String tmpAMIPass = (String) session.getAttribute("AMIPass_credential");
 
-			if(tmpAMIUser == null || tmpAMIUser.equals(AMIUser) == false
+			if(tmpAMIUser == null || (tmpAMIUser != null && tmpAMIUser.equals(AMIUser) == false)
 			   ||
-			   tmpAMIPass == null || tmpAMIPass.equals(AMIPass) == false
+			   tmpAMIPass == null || (tmpAMIPass != null && tmpAMIPass.equals(AMIPass) == false)
 			 ) {
 				Tuple2<String, String> result = resolveUserByUserPass(AMIUser, AMIPass);
 
