@@ -198,6 +198,9 @@ public class ConfigSingleton
 		s_properties.put("guest_user", "guest");
 		s_properties.put("guest_pass", "guest");
 
+		s_properties.put("sso_user", "sso");
+		s_properties.put("sso_pass", "sso");
+
 		/*-----------------------------------------------------------------*/
 		/* CHECK CONFIG                                                    */
 		/*-----------------------------------------------------------------*/
@@ -256,11 +259,7 @@ public class ConfigSingleton
 
 				if(s_reserved.contains(name) == false)
 				{
-					s_properties.put(
-						name
-						,
-						value
-					);
+					s_properties.put(name, value);
 				}
 			}
 
