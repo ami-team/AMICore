@@ -927,7 +927,7 @@ public class SecuritySingleton
 			h++;
 		}
 
-		return sha256Sum(h + "|" + user + "|" + pass);
+		return sha256Sum(encrypt(h + "|" + user + "|" + pass));
 	}
 
 	/*---------------------------------------------------------------------*/
