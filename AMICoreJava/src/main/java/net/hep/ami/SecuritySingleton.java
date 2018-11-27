@@ -853,7 +853,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String encrypt(String s) throws Exception
+	public static String encrypt(@Nullable String s) throws Exception
 	{
 		return s != null && s.isEmpty() == false ? new String(
 			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes(StandardCharsets.UTF_8)))
@@ -862,7 +862,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String decrypt(String s) throws Exception
+	public static String decrypt(@Nullable String s) throws Exception
 	{
 		return s != null && s.isEmpty() == false ? new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString(/*------------------*/)))
@@ -911,7 +911,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
-	/* TOKEN                                                               */
+	/* TEMPORARY PASSWORD                                                  */
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
