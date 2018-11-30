@@ -219,17 +219,19 @@ public class FrontEnd extends HttpServlet
 
 		try(PrintWriter writer = res.getWriter())
 		{
-			res.setStatus(HttpServletResponse.SC_OK);
+			writer.print(data);
 
 			res.setContentType(mime);
 
-			writer.print(data);
+			res.setStatus(200);
 		}
 		catch(Exception e)
 		{
 			LogSingleton.root.error(e.getMessage(), e);
 
-			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			res.setContentType("text/plain");
+
+			res.setStatus(500);
 		}
 
 		/*-----------------------------------------------------------------*/
