@@ -27,10 +27,18 @@ public class CommandSingletonTest
 		//System.out.println(((Boolean) null) != false);
 		//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
+
 		arguments.put("catalog", "mc16_001:production");
 		arguments.put("entity", "dataset");
-		arguments.put("mql", "SELECT COUNT(identifier) AS nb WHERE `mc16_001:production`.`dataset`.`AMIStatus` = 'VALID'");
-		System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
+		arguments.put("mql", "SELECT * WHERE ((`mc16_001:production`.`dataset`.`AMIStatus` = 'VALID') and (`mc16_001:production`.`dataset_keywords`.`keyword` = 'bsmhiggs')) and (`mc16_001:production`.`dataset_keywords`.`keyword` = '2tau')");
+		arguments.put("limit", "10");
+		arguments.put("offset", "0");
+		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
+
+//		arguments.put("catalog", "mc16_001:production");
+//		arguments.put("entity", "dataset");
+//		arguments.put("mql", "SELECT COUNT(identifier) AS nb WHERE `mc16_001:production`.`dataset`.`AMIStatus` = 'VALID'");
+//		System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
 
 		//Router router = new Router("self");
 //		RowSet rowSet = router.executeMQLQuery("router_locations", "SELECT continentCode, countryCode WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')");
