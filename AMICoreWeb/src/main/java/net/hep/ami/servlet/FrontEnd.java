@@ -536,7 +536,7 @@ public class FrontEnd extends HttpServlet
 
 			/*-------------------------------------------------------------*/
 
-			session.setAttribute("NoCert", /*-----------*/ false /*-----------*/);
+			noCert = /*-----------*/ false /*-----------*/;
 
 			/*-------------------------------------------------------------*/
 		}
@@ -566,7 +566,7 @@ public class FrontEnd extends HttpServlet
 
 			/*-------------------------------------------------------------*/
 
-			session.setAttribute("NoCert", s_guest_user.equals(AMIUser) == false);
+			noCert = s_guest_user.equals(AMIUser) == false;
 
 			/*-------------------------------------------------------------*/
 		}
@@ -577,6 +577,8 @@ public class FrontEnd extends HttpServlet
 
 		session.setAttribute("AMIUser", AMIUser);
 		session.setAttribute("AMIPass", AMIPass);
+
+		session.setAttribute("NoCert", noCert);
 
 		/*-----------------------------------------------------------------*/
 		/* UPDATE ARGUMENTS                                                */
