@@ -490,11 +490,7 @@ public class FrontEnd extends HttpServlet
 
 		boolean noCert;
 
-		if(request.getParameter("NoCert") != null)
-		{
-			noCert = "0".equals(request.getParameter("NoCert")) == false;
-		}
-		else
+		if(request.getParameter("NoCert") == null)
 		{
 			Boolean attr = (Boolean) session.getAttribute("NoCert");
 
@@ -502,6 +498,10 @@ public class FrontEnd extends HttpServlet
 			         &&
 			         attr != false
 			;
+		}
+		else
+		{
+			noCert = true;
 		}
 
 		/*-----------------------------------------------------------------*/
