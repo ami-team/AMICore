@@ -170,11 +170,8 @@ public class FrontEnd extends HttpServlet
 			}
 			catch(Exception e)
 			{
-StringWriter sw = new StringWriter();
-PrintWriter pw = new PrintWriter(sw);
-e.printStackTrace(pw);
 				data = XMLTemplates.error(
-						sw.toString()//e.getMessage()
+					e.getMessage()
 				);
 			}
 		}
@@ -478,10 +475,7 @@ e.printStackTrace(pw);
 		Tuple4<String, String, String, String> dns = getDNs(request);
 
 		String clientDN = dns.x;
-		session.setAttribute("clientDN", clientDN);
 		String issuerDN = dns.y;
-		session.setAttribute("issuerDN", issuerDN);
-
 		String notBefore = dns.z;
 		String notAfter = dns.t;
 
@@ -498,13 +492,16 @@ e.printStackTrace(pw);
 
 		if(request.getParameter("NoCert") != null)
 		{
-			session.setAttribute("NoCert", "1");
-
-			noCert = /*------------*/ true /*------------*/;
+			noCert = "0".equals(request.getParameter("NoCert")) == false;
 		}
 		else
 		{
-			noCert = session.getAttribute("NoCert") != null;
+			Boolean attr = (Boolean) session.getAttribute("NoCert");
+
+			noCert = attr != null
+			         &&
+			         attr != false
+			;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -522,6 +519,8 @@ e.printStackTrace(pw);
 
 			if(tmpAMIUser == null
 			   ||
+			   s_guest_user.equals(tmpAMIUser)
+			   ||
 			   tmpAMIPass == null
 			 ) {
 				Tuple2<String, String> result = resolveUserByCertificate(clientDN, issuerDN);
@@ -537,20 +536,7 @@ e.printStackTrace(pw);
 
 			/*-------------------------------------------------------------*/
 
-			if(AMIUser.equals(s_guest_user) == false)
-			{
-				session.setAttribute("AMIUser", AMIUser);
-				session.setAttribute("AMIPass", AMIPass);
-
-				session.removeAttribute("NoCert");
-			}
-			else
-			{
-				session.setAttribute("AMIUser", s_guest_user);
-				session.setAttribute("AMIPass", s_guest_pass);
-
-				session.removeAttribute("NoCert");
-			}
+			session.setAttribute("NoCert", /*-----------*/ false /*-----------*/);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -580,23 +566,17 @@ e.printStackTrace(pw);
 
 			/*-------------------------------------------------------------*/
 
-			if(AMIUser.equals(s_guest_user) == false)
-			{
-				session.setAttribute("AMIUser", AMIUser);
-				session.setAttribute("AMIPass", AMIPass);
-
-				session.setAttribute("NoCert", "1");
-			}
-			else
-			{
-				session.setAttribute("AMIUser", s_guest_user);
-				session.setAttribute("AMIPass", s_guest_pass);
-
-				session.removeAttribute("NoCert");
-			}
+			session.setAttribute("NoCert", s_guest_user.equals(AMIUser) == false);
 
 			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
+		/* UPDATE SESSION                                                  */
+		/*-----------------------------------------------------------------*/
+
+		session.setAttribute("AMIUser", AMIUser);
+		session.setAttribute("AMIPass", AMIPass);
 
 		/*-----------------------------------------------------------------*/
 		/* UPDATE ARGUMENTS                                                */

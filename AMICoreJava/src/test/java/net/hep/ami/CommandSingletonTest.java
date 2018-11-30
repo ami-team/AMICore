@@ -24,7 +24,8 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
+		System.out.println(((Boolean) null) != false);
+		//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
 //		arguments.put("catalog", "self");
 //		arguments.put("entity", "router_command");
