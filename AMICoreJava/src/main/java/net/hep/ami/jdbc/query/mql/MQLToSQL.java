@@ -275,7 +275,7 @@ public class MQLToSQL
 
 		if(context.m_alias != null)
 		{
-			result.append(" AS ").append(Utility.sqlIdToText(context.m_alias.getText()));
+			result.append(" AS ").append(Utility.textToSqlId(context.m_alias.getText()));
 		}
 
 		/*-----------------------------------------------------------------*/
