@@ -225,7 +225,7 @@ public class RowSet
 
 			try
 			{
-				SchemaSingleton.Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
+				SchemaSingleton.Column column = SchemaSingleton.getColumn(SchemaSingleton.internalCatalogToExternalCatalog(m_fieldCatalogs[i]), m_fieldEntities[i], m_fieldNames[i]);
 
 				m_fieldRank[i] = column.rank;
 				m_fieldHidden[i] = column.hidden;
@@ -551,7 +551,8 @@ public class RowSet
 
 				if(timestamp != null)
 				{
-					result[i] = m_dateFormat.format(timestamp);
+					//result[i] = m_dateFormat.format(timestamp);
+					result[i] = timestamp.toString();
 
 					if(result[i] == null)
 					{
