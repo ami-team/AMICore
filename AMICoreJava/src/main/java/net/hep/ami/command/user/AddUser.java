@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.utility.parser.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
@@ -99,6 +100,10 @@ public class AddUser extends AbstractCommand
 			lastName,
 			email
 		);
+
+		/*-----------------------------------------------------------------*/
+
+		executeCommand("AddUserRole -user=\"" + Utility.escapeJavaString(amiLogin) + "\" -role=\"AMI_USER\"", false);
 
 		/*-----------------------------------------------------------------*/
 
