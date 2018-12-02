@@ -11,6 +11,12 @@ public class AddUser extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
+	static final String SHORT_EMAIL = "%s";
+
+	static final String LONG_EMAIL = "%s %s";
+
+	/*---------------------------------------------------------------------*/
+
 	public AddUser(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
@@ -27,17 +33,30 @@ public class AddUser extends AbstractCommand
 		String lastName = arguments.get("lastName");
 		String email = arguments.get("email");
 
-		if(amiLogin == null
+		if(amiLogin == null || (amiLogin = amiLogin.trim()).isEmpty()
 		   ||
-		   amiPassword == null
+		   firstName == null || (firstName = firstName.trim()).isEmpty()
 		   ||
-		   firstName == null
+		   lastName == null || (lastName = lastName.trim()).isEmpty()
 		   ||
-		   lastName == null
-		   ||
-		   email == null
+		   email == null || (email = email.trim()).isEmpty()
 		 ) {
 			throw new Exception("invalid usage");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		boolean generatedPassword;
+
+		if(amiPassword == null || (amiPassword = amiPassword.trim()).isEmpty())
+		{
+			amiPassword = SecuritySingleton.generatePassword();
+
+			generatedPassword = true;
+		}
+		else
+		{
+			generatedPassword = false;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -52,8 +71,8 @@ public class AddUser extends AbstractCommand
 		}
 		else
 		{
-			clientDN = "";
-			issuerDN = "";
+			clientDN = null;
+			issuerDN = null;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -74,12 +93,30 @@ public class AddUser extends AbstractCommand
 		Update update = getQuerier("self").executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			amiLogin,
 			SecuritySingleton.encrypt(amiPassword),
-			clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,
-			issuerDN.isEmpty() == false ? SecuritySingleton.encrypt(issuerDN) : null,
+			clientDN != null && clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,
+			issuerDN != null && issuerDN.isEmpty() == false ? SecuritySingleton.encrypt(issuerDN) : null,
 			firstName,
 			lastName,
 			email
 		);
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			MailSingleton.sendMessage(
+				ConfigSingleton.getProperty("admin_email"),
+				email,
+				null,
+				"New AMI account",
+				generatedPassword == false ? String.format(SHORT_EMAIL, /*--*/ amiLogin /*--*/)
+				                           : String.format(LONG_EMAIL, amiLogin, amiPassword)
+			);
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.error(e.getMessage(), e);
+		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -100,7 +137,7 @@ public class AddUser extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-amiLogin=\"\" -amiPassword=\"\" (-clientDN=\"\")? (-issuerDN=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\"";
+		return "-amiLogin=\"\" (-amiPassword=\"\")? (-clientDN=\"\")? (-issuerDN=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

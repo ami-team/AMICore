@@ -1000,4 +1000,34 @@ public class SecuritySingleton
 	}
 
 	/*---------------------------------------------------------------------*/
+
+	final static String PASSWORD_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_=+-/";
+
+	/*---------------------------------------------------------------------*/
+
+	public static String generatePassword()
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		final Random random = new Random();
+
+		final int max = PASSWORD_CHARACTERS.length();
+
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+
+		/*-----------------------------------------------------------------*/
+
+		return result.toString();
+	}
+
+	/*---------------------------------------------------------------------*/
 }

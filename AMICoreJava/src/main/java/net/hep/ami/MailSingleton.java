@@ -15,14 +15,14 @@ public class MailSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, String to, String cc, String subject, String text) throws Exception
+	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, String subject, String text) throws Exception
 	{
 		sendMessage(from, to, cc, subject, text, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, String to, String cc, String subject, String text, @Nullable BodyPart[] bodyParts) throws Exception
+	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, String subject, String text, @Nullable BodyPart[] bodyParts) throws Exception
 	{
 		String host = ConfigSingleton.getProperty("email_host");
 		String port = ConfigSingleton.getProperty("email_port");
@@ -72,8 +72,15 @@ public class MailSingleton
 		MimeMessage mimeMessage = new MimeMessage(session);
 
 		mimeMessage.setFrom(new InternetAddress(from));
-		mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-		mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+
+		if(to != null) {
+			mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+		}
+
+		if(cc != null) {
+			mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+		}
+
 		mimeMessage.setSubject(subject);
 
 		/*-----------------------------------------------------------------*/
