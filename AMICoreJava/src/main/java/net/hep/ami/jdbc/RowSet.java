@@ -225,7 +225,7 @@ public class RowSet
 
 			try
 			{
-				SchemaSingleton.Column column = SchemaSingleton.getColumn(SchemaSingleton.internalCatalogToExternalCatalog(m_fieldCatalogs[i]), m_fieldEntities[i], m_fieldNames[i]);
+				SchemaSingleton.Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
 				m_fieldRank[i] = column.rank;
 				m_fieldHidden[i] = column.hidden;
@@ -322,7 +322,7 @@ public class RowSet
 				{
 					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getQId();
 
-					m_fieldCatalogs[idx] = resolvedQId.getCatalog();
+					m_fieldCatalogs[idx] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resolvedQId.getCatalog(), "N/A");
 					m_fieldEntities[idx] = resolvedQId.getEntity();
 					m_fieldNames[idx] = resolvedQId.getField();
 
@@ -338,7 +338,7 @@ public class RowSet
 		}
 		else
 		{
-			m_fieldCatalogs[idx] = qId.getCatalog();
+			m_fieldCatalogs[idx] = SchemaSingleton.internalCatalogToExternalCatalog_noException(qId.getCatalog(), "N/A");
 			m_fieldEntities[idx] = qId.getEntity();
 			m_fieldNames[idx] = qId.getField();
 		}
