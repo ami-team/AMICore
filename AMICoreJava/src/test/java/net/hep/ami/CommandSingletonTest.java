@@ -24,16 +24,17 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		System.out.println(SecuritySingleton.generatePassword());
-
 		//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
-		arguments.put("catalog", "mc16_001:production");
-		arguments.put("entity", "dataset");
-		arguments.put("mql", "SELECT * WHERE ((`mc16_001:production`.`dataset`.`AMIStatus` = 'VALID') and (`mc16_001:production`.`dataset_keywords`.`keyword` = 'bsmhiggs')) and (`mc16_001:production`.`dataset_keywords`.`keyword` = '2tau')");
-		arguments.put("limit", "10");
-		arguments.put("offset", "0");
-		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
+//		arguments.put("catalog", "mc16_001:production");
+//		arguments.put("entity", "dataset");
+//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		//arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		arguments.put("limit", "10");
+//		arguments.put("offset", "0");
+//		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
 
 //		arguments.put("catalog", "mc16_001:production");
 //		arguments.put("entity", "dataset");
