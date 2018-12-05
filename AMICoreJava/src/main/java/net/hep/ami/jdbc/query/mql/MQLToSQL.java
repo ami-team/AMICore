@@ -651,7 +651,7 @@ public class MQLToSQL
 			{
 				SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(catalogName, entityName);
 
-				list = Arrays.asList(qid.setCatalog(primaryKey.internalCatalog).setEntity(primaryKey.table).setField(primaryKey.name));
+				list = Arrays.asList(qid.setCatalog(primaryKey.externalCatalog).setEntity(primaryKey.table).setField(primaryKey.name));
 			}
 			else
 			{
