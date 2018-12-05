@@ -85,6 +85,9 @@ public class CommandSingletonTest
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"tasks\" -entity=\"router_task\" -fields=\"name,command,description,oneShot,priority,timeStep,serverName\" -values=\"example,echo 'Hello World!',Example,0,0,1000,test\"").replace(">", ">\n"));
 
+//			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -sql=\"SELECT (SELECT COUNT(*) FROM `router_config`) AS `nb1`, (SELECT COUNT(*) FROM `router_role`) AS `nb2`, (SELECT COUNT(*) FROM `router_command`) AS `nb3`, (SELECT COUNT(*) FROM `router_user`) AS `nb4`, (SELECT COUNT(*) FROM `router_catalog`) AS `nb5`\"", false).replace(">", ">\n"));
+
+
 //			System.out.println(CommandSingleton.executeCommand("FindNewCommands").replace(">", ">\n"));
 
 //			System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -fields=\"jsonSerialization\" -values=\"{}\" -keyFields=\"externalCatalog\" -keyValues=\"self\"").replace(">", ">\n"));
@@ -184,7 +187,7 @@ public class CommandSingletonTest
 */
 //			System.out.println(Pattern.compile(".*(?:INT|FLOAT|DOUBLE|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE).matcher("INTEGER").matches());
 
-//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_user\" -primaryFieldName=\"id\" -primaryFieldValue=\"2\""));
+//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"mc16_001:production\" -entity=\"dataset\" -primaryFieldName=\"identifier\" -primaryFieldValue=\"286894\"", false));
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument;ROSETTA\""));
 
