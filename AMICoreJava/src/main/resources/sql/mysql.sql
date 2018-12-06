@@ -67,7 +67,6 @@ ALTER TABLE `router_catalog`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
-
 -----------------------------------------------------------------------------
 
 CREATE TABLE `router_catalog_extra` (
