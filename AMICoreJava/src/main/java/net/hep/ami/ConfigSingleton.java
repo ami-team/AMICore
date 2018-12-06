@@ -292,13 +292,16 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------*/
 
-		if(rows.size() > 0 && rows.get(0).getValue(0).equals(value) == false)
+		if(rows.size() == 0)
 		{
 			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, user, user);
 		}
 		else
 		{
-			querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, user, name);
+			if(rows.get(0).getValue(0).equals(value) == false)
+			{
+				querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, user, name);
+			}
 		}
 
 		/*------------------------------------------------------------------*/
