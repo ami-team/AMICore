@@ -13,10 +13,6 @@ public class Router implements Querier
 {
 	/*---------------------------------------------------------------------*/
 
-	private final String GUEST_USER = "guest";
-
-	/*---------------------------------------------------------------------*/
-
 	private final AbstractDriver m_driver;
 
 	/*---------------------------------------------------------------------*/
@@ -311,6 +307,10 @@ public class Router implements Querier
 		String admin_user = ConfigSingleton.getProperty("admin_user");
 		String admin_pass = ConfigSingleton.getProperty("admin_pass");
 		String admin_email = ConfigSingleton.getProperty("admin_email");
+		String sso_user = ConfigSingleton.getProperty("sso_user");
+		String sso_pass = ConfigSingleton.getProperty("sso_pass");
+		String guest_user = ConfigSingleton.getProperty("guest_user");
+		String guest_pass = ConfigSingleton.getProperty("guest_pass");
 
 		/*-----------------------------------------------------------------*/
 		/* CATALOGS                                                        */
@@ -403,9 +403,16 @@ public class Router implements Querier
 		);
 
 		executeSQLUpdate(
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'sso', 'sso', ?, 'N/A', '1');",
+			sso_user,
+			SecuritySingleton.encrypt(sso_pass),
+			admin_email
+		);
+
+		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'guest', 'guest', ?, 'N/A', '1');",
-			GUEST_USER,
-			SecuritySingleton.encrypt(GUEST_USER),
+			guest_user,
+			SecuritySingleton.encrypt(guest_pass),
 			admin_email
 		);
 
@@ -419,7 +426,19 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
-			GUEST_USER,
+			sso_user,
+			"AMI_USER"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+			sso_user,
+			"AMI_SSO"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+			guest_user,
 			"AMI_GUEST"
 		);
 

@@ -24,12 +24,22 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
+		//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
-//		arguments.put("catalog", "self");
-//		arguments.put("entity", "router_command");
-//		arguments.put("mql", "SELECT `id`, `command`, `class`, `visible`, `secured`, `roleValidatorClass` WHERE `command` LIKE '%%' ORDER BY `command`");
-		//System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
+//		arguments.put("catalog", "mc16_001:production");
+//		arguments.put("entity", "dataset");
+//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		//arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
+//		arguments.put("limit", "10");
+//		arguments.put("offset", "0");
+//		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
+
+//		arguments.put("catalog", "mc16_001:production");
+//		arguments.put("entity", "dataset");
+//		arguments.put("mql", "SELECT COUNT(identifier) AS nb WHERE `mc16_001:production`.`dataset`.`AMIStatus` = 'VALID'");
+//		System.out.println(CommandSingleton.executeCommand("SearchQuery", arguments, false).replace(">", ">\n"));
 
 		//Router router = new Router("self");
 //		RowSet rowSet = router.executeMQLQuery("router_locations", "SELECT continentCode, countryCode WHERE (router_ipv4_blocks.network = '1.0.0.0/24' AND router_ipv4_blocks.network = '1.0.1.0/24')");
@@ -74,6 +84,9 @@ public class CommandSingletonTest
 //			router.commitAndRelease();
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"tasks\" -entity=\"router_task\" -fields=\"name,command,description,oneShot,priority,timeStep,serverName\" -values=\"example,echo 'Hello World!',Example,0,0,1000,test\"").replace(">", ">\n"));
+
+//			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -sql=\"SELECT (SELECT COUNT(*) FROM `router_config`) AS `nb1`, (SELECT COUNT(*) FROM `router_role`) AS `nb2`, (SELECT COUNT(*) FROM `router_command`) AS `nb3`, (SELECT COUNT(*) FROM `router_user`) AS `nb4`, (SELECT COUNT(*) FROM `router_catalog`) AS `nb5`\"", false).replace(">", ">\n"));
+
 
 //			System.out.println(CommandSingleton.executeCommand("FindNewCommands").replace(">", ">\n"));
 
@@ -174,7 +187,7 @@ public class CommandSingletonTest
 */
 //			System.out.println(Pattern.compile(".*(?:INT|FLOAT|DOUBLE|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE).matcher("INTEGER").matches());
 
-//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_user\" -primaryFieldName=\"id\" -primaryFieldValue=\"2\""));
+//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"mc16_001:production\" -entity=\"dataset\" -primaryFieldName=\"identifier\" -primaryFieldValue=\"286894\"", false));
 
 //			System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"radardb\" -entity=\"UNIT\" -separator=\";\" -fields=\"NAME;FULLNAME;INSTRUMENT.NAME;EXPERIMENT.NAME\" -values=\"testUnitForExperiment;test unit;testInstrument;ROSETTA\""));
 

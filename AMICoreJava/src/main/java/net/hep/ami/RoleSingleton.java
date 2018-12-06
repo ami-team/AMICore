@@ -168,7 +168,7 @@ public class RoleSingleton
 			}
 			else
 			{
-				throw new Exception("wrong role for command `" + command + "`, command's role(s) " + commandRoles + ", user's role(s) " + userRoles);
+				throw new Exception("wrong role for command `" + command + "`, expected role(s) " + commandRoles + ", found role(s) " + userRoles + ", for user `" + amiUser + "`");
 			}
 		}
 
@@ -229,7 +229,7 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void checkNewUser(String validatorClass, String amiLogin, String amiPassword, String clientDN, String issuerDN, String firstName, String lastName, String email) throws Exception
+	public static void checkNewUser(String validatorClass, String amiLogin, String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, String firstName, String lastName, String email) throws Exception
 	{
 		if(validatorClass == null || validatorClass.isEmpty())
 		{

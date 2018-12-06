@@ -322,7 +322,7 @@ public class RowSet
 				{
 					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getQId();
 
-					m_fieldCatalogs[idx] = resolvedQId.getCatalog();
+					m_fieldCatalogs[idx] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resolvedQId.getCatalog(), "N/A");
 					m_fieldEntities[idx] = resolvedQId.getEntity();
 					m_fieldNames[idx] = resolvedQId.getField();
 
@@ -338,7 +338,7 @@ public class RowSet
 		}
 		else
 		{
-			m_fieldCatalogs[idx] = qId.getCatalog();
+			m_fieldCatalogs[idx] = SchemaSingleton.internalCatalogToExternalCatalog_noException(qId.getCatalog(), "N/A");
 			m_fieldEntities[idx] = qId.getEntity();
 			m_fieldNames[idx] = qId.getField();
 		}
@@ -551,7 +551,8 @@ public class RowSet
 
 				if(timestamp != null)
 				{
-					result[i] = m_dateFormat.format(timestamp);
+					//result[i] = m_dateFormat.format(timestamp);
+					result[i] = timestamp.toString();
 
 					if(result[i] == null)
 					{

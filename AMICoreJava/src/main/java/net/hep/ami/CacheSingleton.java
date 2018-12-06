@@ -8,7 +8,7 @@ public class CacheSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final MemcachedClient s_memcachedClient = newMemcachedClient();
+	static private final MemcachedClient s_memcachedClient = newMemcachedClient();
 
 	/*---------------------------------------------------------------------*/
 

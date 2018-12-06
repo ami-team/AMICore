@@ -853,7 +853,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String encrypt(String s) throws Exception
+	public static String encrypt(@Nullable String s) throws Exception
 	{
 		return s != null && s.isEmpty() == false ? new String(
 			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes(StandardCharsets.UTF_8)))
@@ -862,7 +862,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String decrypt(String s) throws Exception
+	public static String decrypt(@Nullable String s) throws Exception
 	{
 		return s != null && s.isEmpty() == false ? new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString(/*------------------*/)))
@@ -911,18 +911,48 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
-	/* TOKEN                                                               */
+	/* TEMPORARY PASSWORD                                                  */
 	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
-	public static String buildTmpPassword(String user, String pass) throws Exception
+	static private final String PASSWORD_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_=+-/";
+
+	/*---------------------------------------------------------------------*/
+
+	public static String generatePassword()
 	{
-		return buildTmpPassword(user, pass, true);
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		final Random random = new Random();
+
+		final int max = PASSWORD_CHARACTERS.length();
+
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
+
+		/*-----------------------------------------------------------------*/
+
+		return result.toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String buildTmpPassword(String user, String pass, boolean full) throws Exception
+	public static String buildTmpPassword(String user, String pass) throws Exception
+	{
+		return generateTmpPassword(user, pass, true);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String generateTmpPassword(String user, String pass, boolean full) throws Exception
 	{
 		String result;
 
@@ -978,7 +1008,7 @@ public class SecuritySingleton
 			{
 				String a = /**/ pass_from_user /**/.substring(0, 16);
 				String b = /**/ pass_from_user /**/.substring(16, 32);
-				String c = buildTmpPassword(user, pass_from_db, false);
+				String c = generateTmpPassword(user, pass_from_db, false);
 
 				if(a.equals(c) == false
 				   &&
