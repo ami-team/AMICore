@@ -106,9 +106,9 @@ public class GetElementInfo extends AbstractCommand
 						return;
 				}
 
-				try
+				try /* A REFORMULER */
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + constraint + " = '" + primaryFieldValue.replace("'", "''") + "'");
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + constraint + " = ?", primaryFieldValue);
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
@@ -127,6 +127,7 @@ public class GetElementInfo extends AbstractCommand
 				      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
 				      .append("<field name=\"constraint\"><![CDATA[").append(frgnKey.fkColumn).append("]]></field>")
+				      .append("<field name=\"multiple\"><![CDATA[").append(frgnKeys.size() > 1).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
 				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")

@@ -138,7 +138,7 @@ public class InsertObj
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("INSERT INTO ").append(getInsertPart()).append(getFieldValuePart());
+		result.append("INSERT INTO ").append(getInsertPart()).append(" ").append(getFieldValuePart());
 
 		/*-----------------------------------------------------------------*/
 
