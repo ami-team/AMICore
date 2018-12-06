@@ -291,7 +291,6 @@ public class MQLToSQL
 
 		for(MQLParser.QIdContext child: context.m_qIds)
 		{
-			System.out.println(child.getText());
 			result.addAll(visitQId(child, resolutionList, mask));
 		}
 
