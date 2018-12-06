@@ -24,7 +24,9 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		//System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
+
+		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_search_interface\" -fields=\"interface,json,archived,createdBy,modifiedBy\" -values=\"A,{},0,jodier,jodier\"", false).replace(">", ">\n"));
 
 //		arguments.put("catalog", "mc16_001:production");
 //		arguments.put("entity", "dataset");

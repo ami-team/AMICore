@@ -63,8 +63,8 @@ public class UpdateElements extends AbstractCommand
 		{
 			query = new UpdateObj().addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                       .addFieldValuePart(
-										Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-										Arrays.stream(values).map(  x -> x.replace("'", "''")  ).collect(Collectors.toList())
+										Arrays.stream(fields).map(      QId::parseQId_RuntimeException ).collect(Collectors.toList()),
+										Arrays.stream(values).map(x -> "'" + x.replace("'", "''") + "'").collect(Collectors.toList())
 			                        )
 			;
 		}

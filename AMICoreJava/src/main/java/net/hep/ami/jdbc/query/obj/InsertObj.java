@@ -9,11 +9,32 @@ public class InsertObj
 {
 	/*---------------------------------------------------------------------*/
 
+	public enum Mode
+	{
+		SQL,
+		MQL
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private Mode m_mode = Mode.SQL;
+
+	/*---------------------------------------------------------------------*/
+
 	private final Set<String> m_insertSet = new LinkedHashSet<>();
 
 	private final List<String> m_fieldList = new ArrayList<>();
 
 	private final List<String> m_valueList = new ArrayList<>();
+
+	/*---------------------------------------------------------------------*/
+
+	public InsertObj setMode(Mode mode)
+	{
+		m_mode = mode;
+
+		return this;
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -138,7 +159,14 @@ public class InsertObj
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("INSERT INTO ").append(getInsertPart()).append(" ").append(getFieldValuePart());
+		if(m_mode == Mode.MQL)
+		{
+			result.append("INSERT ").append(getFieldValuePart());
+		}
+		else
+		{
+			result.append("INSERT INTO ").append(getInsertPart()).append(" ").append(getFieldValuePart());
+		}
 
 		/*-----------------------------------------------------------------*/
 

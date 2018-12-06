@@ -176,8 +176,8 @@ public class MQLToSQL
 
 		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
 			m_internalCatalog, m_entity, m_primaryKey,
-			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
-			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART)
+			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
+			visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART)
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -291,6 +291,7 @@ public class MQLToSQL
 
 		for(MQLParser.QIdContext child: context.m_qIds)
 		{
+			System.out.println(child.getText());
 			result.addAll(visitQId(child, resolutionList, mask));
 		}
 
