@@ -283,7 +283,8 @@ public class ConfigSingleton
 
 	public static void setPropertyInDataBase(Querier querier, String name, String value, String user) throws Exception
 	{
-		try
+		RowSet rowSet = querier.executeSQLQuery("SELECT * FROM `router_config` WHERE `paramName` = '" + SecuritySingleton.encrypt(name) + "'");
+		if(rowSet.getAll().size() == 0)
 		{
 			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)",
 				SecuritySingleton.encrypt(name),
@@ -292,7 +293,7 @@ public class ConfigSingleton
 				user
 			);
 		}
-		catch(Exception e)
+		else
 		{
 			querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?",
 				SecuritySingleton.encrypt(value),
