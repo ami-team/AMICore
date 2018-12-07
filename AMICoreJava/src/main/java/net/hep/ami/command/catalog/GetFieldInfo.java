@@ -57,6 +57,7 @@ public class GetFieldInfo extends AbstractCommand
 			      .append("<field name=\"statable\">").append(column.statable).append("</field>")
 			      .append("<field name=\"groupable\">").append(column.groupable).append("</field>")
 			      .append("<field name=\"description\">").append(column.description).append("</field>")
+			      .append("<field name=\"webLinkScript\">").append(column.webLinkScript).append("</field>")
 			      .append("</row>")
 			;
 		}
