@@ -24,7 +24,7 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_drivers = new AMIMap<>();
+	private static final Map<String, Tuple> s_drivers = new AMIMap<>(AMIMap.Type.HASH_MAP, true, true);
 
 	/*---------------------------------------------------------------------*/
 

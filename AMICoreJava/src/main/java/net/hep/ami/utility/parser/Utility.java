@@ -184,25 +184,37 @@ public class Utility
 			return null;
 		}
 
-		s = s.trim();
+		String tmp = s.trim();
 
 		/*-----------------------------------------------------------------*/
 
-		final int l = s.length();
+		final int l = tmp.length();
 
 		if(l >= 2)
 		{
-			if((s.charAt(0 + 0) == '\"' && s.charAt(l - 1) == '\"')
+			if((tmp.charAt(0 + 0) == '\"' && tmp.charAt(l - 1) == '\"')
 			   ||
-			   (s.charAt(0 + 0) == '\'' && s.charAt(l - 1) == '\'')
+			   (tmp.charAt(0 + 0) == '\'' && tmp.charAt(l - 1) == '\'')
 			 ) {
-				s = unescapeJavaString(s.substring(0 + 1, l - 1));
+				s = unescapeJavaString(tmp.substring(0 + 1, l - 1));
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String textToJavaString(@Nullable String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		return "'" + escapeJavaString(s) + "'"; /* DON'T CHECK IF ALREADY A STRING */
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -216,25 +228,25 @@ public class Utility
 			return null;
 		}
 
-		s = s.trim();
+		String tmp = s.trim();
 
 		/*-----------------------------------------------------------------*/
 
-		final int l = s.length();
+		final int l = tmp.length();
 
 		if(l >= 2)
 		{
-			/**/ if(s.charAt(0 + 0) == '`'
+			/**/ if(tmp.charAt(0 + 0) == '`'
 			        &&
-			        s.charAt(l - 1) == '`'
+			        tmp.charAt(l - 1) == '`'
 			 ) {
-				s = s.substring(0 + 1, l - 1).trim().replace("``", "`");
+				s = tmp.substring(0 + 1, l - 1).trim().replace("``", "`");
 			}
-			else if(s.charAt(0 + 0) == '"'
+			else if(tmp.charAt(0 + 0) == '"'
 			        &&
-			        s.charAt(l - 1) == '"'
+			        tmp.charAt(l - 1) == '"'
 			 ) {
-				s = s.substring(0 + 1, l - 1).trim().replace("\"\"", "\"");
+				s = tmp.substring(0 + 1, l - 1).trim().replace("\"\"", "\"");
 			}
 		}
 
@@ -252,25 +264,67 @@ public class Utility
 			return null;
 		}
 
-		s = s.trim();
+		String tmp = s.trim();
 
 		/*-----------------------------------------------------------------*/
 
-		final int l = s.length();
+		final int l = tmp.length();
 
 		if(l >= 1)
 		{
-			if((s.charAt(0 + 0) != '`' && s.charAt(0 + 0) != '"')
+			if((tmp.charAt(0 + 0) != '`' && tmp.charAt(l - 1) != '`')
 			   ||
-			   (s.charAt(l - 1) != '`' && s.charAt(l - 1) != '"')
+			   (tmp.charAt(0 + 0) != '"' && tmp.charAt(l - 1) != '"')
 			 ) {
-				s = '`' + s.replace("`", "``") + '`';
+				s = "`" + tmp.replace("`", "``") + "`";
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String sqlValToText(@Nullable String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		String tmp = s.trim();
+
+		/*-----------------------------------------------------------------*/
+
+		final int l = tmp.length();
+
+		if(l >= 2)
+		{
+			/**/ if(tmp.charAt(0 + 0) == '\''
+			        &&
+			        tmp.charAt(l - 1) == '\''
+			 ) {
+				s = tmp.substring(0 + 1, l - 1).trim().replace("''", "'");
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return s;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String textToSqlVal(@Nullable String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		return "'" + s.replace("'", "''") + "'"; /* DON'T CHECK IF ALREADY A STRING */
 	}
 
 	/*---------------------------------------------------------------------*/

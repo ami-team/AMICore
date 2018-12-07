@@ -45,6 +45,7 @@ public class SchemaSingleton
 		public boolean statable = false;
 		public boolean groupable = false;
 		public String description = "N/A";
+		public String webLinkScript = null;
 
 		/**/
 

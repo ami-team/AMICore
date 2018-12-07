@@ -26,7 +26,7 @@ public class ConverterSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_converters = new AMIMap<>();
+	private static final Map<String, Tuple> s_converters = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*---------------------------------------------------------------------*/
 

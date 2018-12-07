@@ -8,6 +8,7 @@ import java.util.stream.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
+import net.hep.ami.utility.parser.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
@@ -53,8 +54,8 @@ public class AddElement extends AbstractCommand
 		{
 			query = new InsertObj().addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                       .addFieldValuePart(
-										Arrays.stream(fields).map(      QId::parseQId_RuntimeException ).collect(Collectors.toList()),
-										Arrays.stream(values).map(x -> "'" + x.replace("'", "''") + "'").collect(Collectors.toList())
+										Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
+										Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())
 			                        )
 			;
 		}

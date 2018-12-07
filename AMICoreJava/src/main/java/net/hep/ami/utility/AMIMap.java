@@ -58,13 +58,6 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 
 	/*---------------------------------------------------------------------*/
 
-	public AMIMap()
-	{
-		this(Type.CONCURENT_HASH_MAP, true, false);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public AMIMap(Type type, boolean isOrdered, boolean isCaseInsensitive)
 	{
 		m_isOrdered = isOrdered;

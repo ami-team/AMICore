@@ -11,7 +11,7 @@ public class ConfigSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_properties = new AMIMap<>();
+	private static final Map<String, String> s_properties = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*---------------------------------------------------------------------*/
 

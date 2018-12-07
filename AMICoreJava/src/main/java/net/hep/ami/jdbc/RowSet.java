@@ -45,6 +45,7 @@ public class RowSet
 	protected final boolean[] m_fieldStatable;
 	protected final boolean[] m_fieldGroupable;
 	protected final String[] m_fieldDescription;
+	protected final String[] m_fieldWebLinkScript;
 
 	/*---------------------------------------------------------------------*/
 
@@ -112,6 +113,7 @@ public class RowSet
 		m_fieldStatable = new boolean[m_numberOfFields];
 		m_fieldGroupable = new boolean[m_numberOfFields];
 		m_fieldDescription = new String[m_numberOfFields];
+		m_fieldWebLinkScript = new String[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
 		/* FILL DATA STRUCTURES                                            */
@@ -238,6 +240,7 @@ public class RowSet
 				m_fieldStatable[i] = column.statable;
 				m_fieldGroupable[i] = column.groupable;
 				m_fieldDescription[i] = column.description;
+				m_fieldWebLinkScript[i] = column.webLinkScript;
 			}
 			catch(Exception e)
 			{
@@ -252,6 +255,7 @@ public class RowSet
 				m_fieldStatable[i] = false;
 				m_fieldGroupable[i] = false;
 				m_fieldDescription[i] = "N/A";
+				m_fieldWebLinkScript[i] = null;
 			}
 
 			/*-------------------------------------------------------------*/

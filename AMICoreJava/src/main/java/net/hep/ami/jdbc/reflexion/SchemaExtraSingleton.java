@@ -37,7 +37,7 @@ public class SchemaExtraSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `description` FROM `router_catalog_extra`");
+			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `description`, `webLinkScript` FROM `router_catalog_extra`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMN                                               */
@@ -59,7 +59,8 @@ public class SchemaExtraSingleton
 					Integer.parseInt(row.getValue(10)) != 0,
 					Integer.parseInt(row.getValue(11)) != 0,
 					Integer.parseInt(row.getValue(12)) != 0,
-					row.getValue(13)
+					row.getValue(13),
+					row.getValue(14)
 				);
 			}
 
@@ -98,7 +99,7 @@ public class SchemaExtraSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, String description)
+	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, String description, String webLinkScript)
 	{
 		try
 		{
@@ -115,6 +116,7 @@ public class SchemaExtraSingleton
 			column.statable = statable;
 			column.groupable = groupable;
 			column.description = description;
+			column.webLinkScript = webLinkScript;
 		}
 		catch(Exception e)
 		{

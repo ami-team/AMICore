@@ -26,7 +26,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_commands = new AMIMap<>();
+	private static final Map<String, Tuple> s_commands = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	private static final Set<String> s_reserved = new HashSet<>();
 
