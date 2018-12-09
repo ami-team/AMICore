@@ -34,7 +34,7 @@ public class WebLinkScripts
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* EXECUTE GROOVY SCRIPT                                           */
+		/* RUN GROOVY SCRIPT                                               */
 		/*-----------------------------------------------------------------*/
 
 		Binding binding = new Binding();
