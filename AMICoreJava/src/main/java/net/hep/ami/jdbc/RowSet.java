@@ -57,6 +57,8 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	private WebLinkScripts m_webLinkScripts = null;
+
 	private boolean m_incomplete = false;
 
 	private boolean m_lock = false;
@@ -604,6 +606,28 @@ public class RowSet
 		/*-----------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected String processWebLink(@Nullable String code, String catalog, String entity, String field, String value)
+	{
+		if(code == null
+		   ||
+		   code.isEmpty()
+		 )
+		{
+			return "";
+		}
+		else
+		{
+			if(m_webLinkScripts == null)
+			{
+				m_webLinkScripts = new WebLinkScripts();
+			}
+
+			return m_webLinkScripts.processWebLink(code, catalog, entity, field, value);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
