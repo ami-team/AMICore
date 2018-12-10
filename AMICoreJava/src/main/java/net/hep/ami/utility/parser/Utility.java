@@ -302,9 +302,9 @@ public class Utility
 
 		if(l >= 2)
 		{
-			/**/ if(tmp.charAt(0 + 0) == '\''
-			        &&
-			        tmp.charAt(l - 1) == '\''
+			if(tmp.charAt(0 + 0) == '\''
+			   &&
+			   tmp.charAt(l - 1) == '\''
 			 ) {
 				s = tmp.substring(0 + 1, l - 1).trim().replace("''", "'");
 			}
@@ -326,6 +326,8 @@ public class Utility
 
 		String tmp = s.trim();
 
+		/*-----------------------------------------------------------------*/
+
 		/**/ if("NULL".equalsIgnoreCase(tmp))
 		{
 			return "NULL";
@@ -335,7 +337,11 @@ public class Utility
 			return "CURRENT_TIMESTAMP";
 		}
 
+		/*-----------------------------------------------------------------*/
+
 		return "'" + s.replace("'", "''") + "'"; /* DON'T CHECK IF ALREADY A STRING */
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
