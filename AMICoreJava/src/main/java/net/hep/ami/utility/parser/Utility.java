@@ -273,7 +273,7 @@ public class Utility
 		if(l >= 1)
 		{
 			if((tmp.charAt(0 + 0) != '`' && tmp.charAt(l - 1) != '`')
-			   ||
+			   &&
 			   (tmp.charAt(0 + 0) != '"' && tmp.charAt(l - 1) != '"')
 			 ) {
 				s = "`" + tmp.replace("`", "``") + "`";
