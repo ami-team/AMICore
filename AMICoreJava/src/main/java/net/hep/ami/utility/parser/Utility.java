@@ -328,11 +328,11 @@ public class Utility
 
 		/*-----------------------------------------------------------------*/
 
-		/**/ if("NULL".equalsIgnoreCase(tmp))
+		/**/ if("@NULL".equalsIgnoreCase(tmp))
 		{
 			return "NULL";
 		}
-		else if("CURRENT_TIMESTAMP".equalsIgnoreCase(tmp))
+		else if("@CURRENT_TIMESTAMP".equalsIgnoreCase(tmp))
 		{
 			return "CURRENT_TIMESTAMP";
 		}
