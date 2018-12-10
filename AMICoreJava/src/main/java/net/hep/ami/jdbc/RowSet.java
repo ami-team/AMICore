@@ -53,7 +53,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US); // yyyy-mm-dd hh:mm:ss.fffffffff
 
 	/*---------------------------------------------------------------------*/
 
@@ -101,6 +101,8 @@ public class RowSet
 		m_fieldNames = new String[m_numberOfFields];
 		m_fieldLabels = new String[m_numberOfFields];
 		m_fieldTypes = new String[m_numberOfFields];
+
+		/*-----------------------------------------------------------------*/
 
 		/* From AMI */
 
@@ -557,7 +559,6 @@ public class RowSet
 
 				if(timestamp != null)
 				{
-					//result[i] = m_dateFormat.format(timestamp);
 					result[i] = timestamp.toString();
 
 					if(result[i] == null)

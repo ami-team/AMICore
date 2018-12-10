@@ -362,14 +362,4 @@ public class Tokenizer
 	}
 
 	/*---------------------------------------------------------------------*/
-
-	public static void main(String[] args) throws Exception
-	{
-		System.out.println(buildLabelToFieldMap("SELECT DISTINCT 1"));
-		System.out.println(buildLabelToFieldMap("SELECT `c`.x AS yy, b AS \"toto\" FROM `AA`, ZZ.BB c WHERE titi"));
-
-		System.exit(0);
-	}
-
-	/*---------------------------------------------------------------------*/
 }
