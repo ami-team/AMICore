@@ -216,8 +216,6 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(rowSet.m_fieldStatable[i] ? "true" : "false")
 			      .append("\" groupable=\"")
 			      .append(rowSet.m_fieldStatable[i] ? "true" : "false")
-			      .append("\" webLinkScript=\"")
-			      .append(Utility.escapeHTML(rowSet.m_fieldWebLinkScript[i]))
 			      .append("\"><![CDATA[")
 			      .append(rowSet.m_fieldDescription[i])
 			      .append("]]></fieldDescription>")

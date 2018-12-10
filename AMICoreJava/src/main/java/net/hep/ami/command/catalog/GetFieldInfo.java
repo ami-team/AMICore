@@ -45,7 +45,7 @@ public class GetFieldInfo extends AbstractCommand
 			      .append("<field name=\"type\">").append(column.type).append("</field>")
 			      .append("<field name=\"size\">").append(column.size).append("</field>")
 			      .append("<field name=\"digits\">").append(column.digits).append("</field>")
-			      .append("<field name=\"def\">").append(column.def).append("</field>")
+			      .append("<field name=\"def\">").append(column.def != null ? column.def : "@NULL").append("</field>")
 			      .append("<field name=\"rank\">").append(column.rank).append("</field>")
 			      .append("<field name=\"hidden\">").append(column.hidden).append("</field>")
 			      .append("<field name=\"crypted\">").append(column.crypted).append("</field>")
@@ -57,7 +57,7 @@ public class GetFieldInfo extends AbstractCommand
 			      .append("<field name=\"statable\">").append(column.statable).append("</field>")
 			      .append("<field name=\"groupable\">").append(column.groupable).append("</field>")
 			      .append("<field name=\"description\">").append(column.description).append("</field>")
-			      .append("<field name=\"webLinkScript\">").append(column.webLinkScript).append("</field>")
+			      .append("<field name=\"webLinkScript\">").append(column.webLinkScript != null ? column.webLinkScript : "@NULL").append("</field>")
 			      .append("</row>")
 			;
 		}

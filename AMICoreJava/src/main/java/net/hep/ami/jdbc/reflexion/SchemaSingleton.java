@@ -495,7 +495,8 @@ public class SchemaSingleton
 								type,
 								size,
 								digits,
-								def != null ? def : ""
+								(def != null && def.toUpperCase().contains("CURRENT_TIMESTAMP")) ? "@CURRENT_TIMESTAMP"
+								                                                                 : /*---*/ def /*---*/
 							));
 						}
 					}
