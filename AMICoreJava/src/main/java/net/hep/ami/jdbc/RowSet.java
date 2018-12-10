@@ -593,13 +593,13 @@ public class RowSet
 					}
 					catch(Exception e)
 					{
-						result[i] = "";
+						result[i] = /*------------*/ "" /*------------*/;
 					}
 				}
 			}
 			else
 			{
-				result[i] = "";
+				result[i] = /*------------*/ "" /*------------*/;
 			}
 		}
 
