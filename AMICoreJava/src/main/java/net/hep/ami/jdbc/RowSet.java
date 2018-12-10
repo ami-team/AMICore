@@ -57,7 +57,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private WebLinkScripts m_webLinkScripts = null;
+	private WebLinkCache m_webLinkScripts = null;
 
 	private boolean m_incomplete = false;
 
@@ -623,7 +623,7 @@ public class RowSet
 		{
 			if(m_webLinkScripts == null)
 			{
-				m_webLinkScripts = new WebLinkScripts();
+				m_webLinkScripts = new WebLinkCache();
 			}
 
 			return m_webLinkScripts.processWebLink(

@@ -2,7 +2,7 @@ package net.hep.ami.jdbc;
 
 import groovy.lang.*;
 
-public class WebLinkScripts
+public class WebLinkCache
 {
 	/*---------------------------------------------------------------------*/
 
