@@ -324,6 +324,17 @@ public class Utility
 			return null;
 		}
 
+		String tmp = s.trim();
+
+		/**/ if("NULL".equalsIgnoreCase(tmp))
+		{
+			return "NULL";
+		}
+		else if("CURRENT_TIMESTAMP".equalsIgnoreCase(tmp))
+		{
+			return "CURRENT_TIMESTAMP";
+		}
+
 		return "'" + s.replace("'", "''") + "'"; /* DON'T CHECK IF ALREADY A STRING */
 	}
 

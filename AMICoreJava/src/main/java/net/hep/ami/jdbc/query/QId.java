@@ -40,6 +40,8 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	private boolean m_keyword = false;
+
 	private boolean m_exclusion = false;
 
 	/*---------------------------------------------------------------------*/
@@ -310,6 +312,20 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public QId setKeyword(boolean keyword)
+	{
+		m_keyword = keyword;
+
+		return this;
+	}
+
+	public boolean getKeyword()
+	{
+		return m_keyword;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public QId setExclusion(boolean exclusion)
 	{
 		m_exclusion = exclusion;
@@ -473,37 +489,48 @@ public class QId
 
 		/*-----------------------------------------------------------------*/
 
-		if(m_exclusion)
+		if(m_keyword)
 		{
-			result.append("!");
+			result.append(m_field);
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		List<String> parts = new ArrayList<>();
-
-		if((mask & MASK_CATALOG) != 0 && m_catalog != null) {
-			parts.add(Utility.textToSqlId(m_catalog));
-		}
-
-		if((mask & MASK_ENTITY) != 0 && m_entity != null) {
-			parts.add(Utility.textToSqlId(m_entity));
-		}
-
-		if((mask & MASK_FIELD) != 0 && m_field != null) {
-			parts.add(Utility.textToSqlId(m_field));
-		}
-
-		result.append(String.join(".", parts));
-
-		/*-----------------------------------------------------------------*/
-
-		if(maskForPath != MASK_NONE && m_constraints.isEmpty() == false)
+		else
 		{
-			result.append("{")
-			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(", ")))
-			      .append("}")
-			;
+			/*-------------------------------------------------------------*/
+
+			if(m_exclusion)
+			{
+				result.append("!");
+			}
+
+			/*-------------------------------------------------------------*/
+
+			List<String> parts = new ArrayList<>();
+
+			if((mask & MASK_CATALOG) != 0 && m_catalog != null) {
+				parts.add(Utility.textToSqlId(m_catalog));
+			}
+
+			if((mask & MASK_ENTITY) != 0 && m_entity != null) {
+				parts.add(Utility.textToSqlId(m_entity));
+			}
+
+			if((mask & MASK_FIELD) != 0 && m_field != null) {
+				parts.add(Utility.textToSqlId(m_field));
+			}
+
+			result.append(String.join(".", parts));
+
+			/*-------------------------------------------------------------*/
+
+			if(maskForPath != MASK_NONE && m_constraints.isEmpty() == false)
+			{
+				result.append("{")
+				      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(", ")))
+				      .append("}")
+				;
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/

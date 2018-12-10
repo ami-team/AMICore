@@ -72,7 +72,7 @@ public class AddElement extends AbstractCommand
 
 		String sql = querier.mqlToSQL(entity, mql);
 		String ast = querier.mqlToAST(entity, mql);
-
+System.out.println(sql);
 		/*-----------------------------------------------------------------*/
 
 		PreparedStatement statement = querier.prepareStatement(sql, true, null);

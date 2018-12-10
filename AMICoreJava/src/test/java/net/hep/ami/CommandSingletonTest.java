@@ -26,7 +26,9 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_search_interface\" -fields=\"interface,json,archived,createdBy,modifiedBy\" -values=\"A,{},0,jodier,jodier\"", false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\"§\" -fields=\"catalog§entity§field§rank§ishidden§iscrypted§isprimary§iscreated§iscreatedby§ismodified§ismodifiedby§isstatable§isgroupable§description§weblinkscript§created§createdby§modified§modifiedby\" -values=\"mc16_001:production§dataset§logicalDatasetName§0§0§0§0§0§0§0§0§0§0§Logical Dataset Name§import net.hep.ami.jdbc.WebLink;  def webLink = new WebLink();  webLink.newLinkProperties().setLabel(\\\"Rucio\\\");  return webLink;§current_timestamp§§current_timestamp§\"", false).replace(">", ">\n"));
+
+//		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_search_interface\" -fields=\"interface,json,archived,createdBy,modifiedBy\" -values=\"A,{},0,jodier,jodier\"", false).replace(">", ">\n"));
 
 //		arguments.put("catalog", "mc16_001:production");
 //		arguments.put("entity", "dataset");
