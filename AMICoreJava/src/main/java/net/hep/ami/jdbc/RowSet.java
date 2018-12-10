@@ -222,7 +222,7 @@ public class RowSet
 					labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
 				}
 
-				resolveLabel(labelToFieldMap, defaultCatalog, sql, i);
+				resolveLabel(labelToFieldMap, defaultCatalog, i, sql);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -291,7 +291,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private void resolveLabel(Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap, String defaultCatalog, String sql, int idx)
+	private void resolveLabel(Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap, String defaultCatalog, int fieldIndex, String sql)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -299,7 +299,7 @@ public class RowSet
 
 		try
 		{
-			qId = QId.parseQId(m_fieldLabels[idx], QId.Type.FIELD);
+			qId = QId.parseQId(m_fieldLabels[fieldIndex], QId.Type.FIELD);
 
 			for(Map.Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
 			{
@@ -328,9 +328,9 @@ public class RowSet
 				{
 					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getQId();
 
-					m_fieldCatalogs[idx] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resolvedQId.getCatalog(), "N/A");
-					m_fieldEntities[idx] = resolvedQId.getEntity();
-					m_fieldNames[idx] = resolvedQId.getField();
+					m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resolvedQId.getCatalog(), "N/A");
+					m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
+					m_fieldNames[fieldIndex] = resolvedQId.getField();
 
 					break;
 				}
@@ -344,9 +344,9 @@ public class RowSet
 		}
 		else
 		{
-			m_fieldCatalogs[idx] = SchemaSingleton.internalCatalogToExternalCatalog_noException(qId.getCatalog(), "N/A");
-			m_fieldEntities[idx] = qId.getEntity();
-			m_fieldNames[idx] = qId.getField();
+			m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog_noException(qId.getCatalog(), "N/A");
+			m_fieldEntities[fieldIndex] = qId.getEntity();
+			m_fieldNames[fieldIndex] = qId.getField();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -610,12 +610,11 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected String processWebLink(@Nullable String code, String catalog, String entity, String field, String value)
+	protected String processWebLink(int fieldIndex, String value)
 	{
-		if(code == null
-		   ||
-		   code.isEmpty()
-		 )
+		String webLinkScript = m_fieldWebLinkScript[fieldIndex];
+
+		if(webLinkScript == null || (webLinkScript = webLinkScript.trim()).isEmpty())
 		{
 			return "";
 		}
@@ -626,7 +625,13 @@ public class RowSet
 				m_webLinkScripts = new WebLinkScripts();
 			}
 
-			return m_webLinkScripts.processWebLink(code, catalog, entity, field, value);
+			return m_webLinkScripts.processWebLink(
+				webLinkScript,
+				m_fieldCatalogs[fieldIndex],
+				m_fieldEntities[fieldIndex],
+				m_fieldNames[fieldIndex],
+				value
+			);
 		}
 	}
 

@@ -1,10 +1,6 @@
 package net.hep.ami.jdbc;
 
-import java.util.*;
-
 import groovy.lang.*;
-
-import net.hep.ami.utility.*;
 
 public class WebLinkScripts
 {
@@ -14,23 +10,21 @@ public class WebLinkScripts
 
 	/*---------------------------------------------------------------------*/
 
-	private final Map<String, Script> m_groovyScripts = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, false);
-
-	/*---------------------------------------------------------------------*/
-
 	public String processWebLink(String code, String catalog, String entity, String field, String value)
 	{
 		/*-----------------------------------------------------------------*/
 		/* COMPILE GROOVY SCRIPT                                           */
 		/*-----------------------------------------------------------------*/
 
-		Script script = m_groovyScripts.get(code);
+		Script script;
 
-		if(script == null)
+		try
 		{
 			script = m_groovyShell.parse(code);
-
-			m_groovyScripts.put(code, script);
+		}
+		catch(Exception e)
+		{
+			return "";
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -52,7 +46,7 @@ public class WebLinkScripts
 		{
 			return ((WebLink) script.run()).toString();
 		}
-		catch(ClassCastException e)
+		catch(Exception e)
 		{
 			return "";
 		}
