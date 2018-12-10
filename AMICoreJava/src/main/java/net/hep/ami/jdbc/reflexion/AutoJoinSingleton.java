@@ -13,34 +13,6 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static boolean resolveKeywords(Resolution pathList, QId givenQId) throws Exception
-	{
-		/**/ if("NULL".equalsIgnoreCase(givenQId.getField()))
-		{
-			pathList.addPath(
-				new QId(null, null, "NULL"),
-				new QId(null, null, "NULL").setKeyword(true),
-				new Vector<>()
-			);
-
-			return true;
-		}
-		else if("CURRENT_TIMESTAMP".equalsIgnoreCase(givenQId.getField()))
-		{
-			pathList.addPath(
-				new QId(null, null, "CURRENT_TIMESTAMP"),
-				new QId(null, null, "CURRENT_TIMESTAMP").setKeyword(true),
-				new Vector<>()
-			);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	private static void resolve(
 		Resolution pathList,
 		Stack<SchemaSingleton.FrgnKey> path,
@@ -176,10 +148,7 @@ public class AutoJoinSingleton
 	{
 		Resolution result = new Resolution();
 
-		if(resolveKeywords(result, givenQId) == false)
-		{
-			resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultCatalog, defaultTable, givenQId);
-		}
+		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultCatalog, defaultTable, givenQId);
 
 		return result.check(givenQId);
 	}
@@ -190,10 +159,7 @@ public class AutoJoinSingleton
 	{
 		Resolution result = new Resolution();
 
-		if(resolveKeywords(result, givenQId) == false)
-		{
-			resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultCatalog, defaultTable, givenQId);
-		}
+		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultCatalog, defaultTable, givenQId);
 
 		return result.check(givenQId);
 	}

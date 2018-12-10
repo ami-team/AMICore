@@ -131,7 +131,7 @@ literalTuple
 /*---------------------------*/
 
 literal
-	: STRING | NUMBER | NULL | '?'
+	: STRING | NUMBER | NULL | CURRENT_TIMESTAMP | '?'
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -260,6 +260,10 @@ FUNCTION
 
 NULL
 	: N U L L
+	;
+
+CURRENT_TIMESTAMP
+	: C U R R E N T '_' T I M E S T A M P
 	;
 
 STRING
