@@ -278,7 +278,7 @@ public class Router implements Querier
 						}
 						catch(SQLException e)
 						{
-							throw new SQLException("for query " + query.replace(";;", "") + ", " + e.getMessage(), e);
+							throw new SQLException(e.getMessage() + " for SQL query: " + query.replace(";;", ""), e);
 						}
 
 						query = "";

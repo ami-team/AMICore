@@ -77,8 +77,14 @@ public class AddElement extends AbstractCommand
 
 		PreparedStatement statement = querier.prepareStatement(sql, true, null);
 
-		statement.execute();
-
+		try
+		{
+			statement.execute();
+		}
+		catch(SQLException e)
+		{
+			throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
+		}
 		/*-----------------------------------------------------------------*/
 
 		ResultSet resultSet = statement.getGeneratedKeys();
