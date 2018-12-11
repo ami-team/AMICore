@@ -135,12 +135,12 @@ public class WebLink
 			                          .append(" target=\"").append(Utility.escapeHTML(m_target)).append("\"")
 			                          .append(" label=\"").append(Utility.escapeHTML(m_label)).append("\"")
 			                           /**/
-			                          .append(" ctrl=\"").append(Utility.escapeHTML(m_ctrl)).append("\"")
-			                          .append(" location=\"").append(m_location.toString()).append("\"")
-			                          .append(" params=\"").append(Utility.escapeHTML(m_params)).append("\"")
-			                          .append(" settings=\"").append(Utility.escapeHTML(m_settings)).append("\"")
-			                          .append(" icon=\"").append(Utility.escapeHTML(m_icon)).append("\"")
-			                          .append(" title=\"").append(Utility.escapeHTML(m_title)).append("\"")
+			                          .append(" data-ctrl=\"").append(Utility.escapeHTML(m_ctrl)).append("\"")
+			                          .append(" data-ctrl-location=\"").append(m_location.toString()).append("\"")
+			                          .append(" data-params=\"").append(Utility.escapeHTML(m_params)).append("\"")
+			                          .append(" data-settings=\"").append(Utility.escapeHTML(m_settings)).append("\"")
+			                          .append(" data-icon=\"").append(Utility.escapeHTML(m_icon)).append("\"")
+			                          .append(" data-title=\"").append(Utility.escapeHTML(m_title)).append("\"")
 			                          .append(" />")
 			                          .toString()
 			;
