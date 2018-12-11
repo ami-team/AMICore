@@ -262,6 +262,7 @@
 		</xsl:for-each>
 
 		<xsl:text>}</xsl:text>
+		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
 	<!-- **************************************************************** -->
@@ -284,6 +285,7 @@
 		</xsl:for-each>
 
 		<xsl:text>}</xsl:text>
+		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
 	<!-- **************************************************************** -->
