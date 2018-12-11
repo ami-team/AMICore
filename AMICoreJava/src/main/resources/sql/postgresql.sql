@@ -136,8 +136,8 @@ CREATE TABLE "router_foreign_key" (
 );;
 
 ALTER TABLE "router_foreign_key"
-  ADD CONSTRAINT "pk1_router_catalog_extra" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "uk1_router_catalog_extra" UNIQUE KEY ("name")
+  ADD CONSTRAINT "pk1_router_foreign_key" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_foreign_key" UNIQUE ("name")
 ;;
 
 CREATE TRIGGER "trig1_router_foreign_key"
