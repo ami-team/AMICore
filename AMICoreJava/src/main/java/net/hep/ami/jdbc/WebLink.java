@@ -92,7 +92,7 @@ public class WebLink
 
 		/*-----------------------------------------------------------------*/
 
-		public LinkProperties setctrl(String ctrl) {
+		public LinkProperties setCtrl(String ctrl) {
 			m_ctrl = ctrl;
 			return this;
 		}

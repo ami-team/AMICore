@@ -10,7 +10,7 @@ public class WebLinkCache
 
 	/*---------------------------------------------------------------------*/
 
-	public String processWebLink(String code, String catalog, String entity, String field, String value)
+	public String processWebLink(String code, String catalog, String entity, String field, Row row)
 	{
 		/*-----------------------------------------------------------------*/
 		/* COMPILE GROOVY SCRIPT                                           */
@@ -36,7 +36,7 @@ public class WebLinkCache
 		binding.setVariable("catalog", catalog);
 		binding.setVariable("entity", entity);
 		binding.setVariable("field", field);
-		binding.setVariable("value", value);
+		binding.setVariable("row", row);
 
 		script.setBinding(binding);
 

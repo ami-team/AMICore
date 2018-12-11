@@ -110,7 +110,7 @@ public class Row
 		for(int i = 0; i < m_rowSet.m_numberOfFields; i++)
 		{
 			result.append("<field name=\"").append(Utility.escapeHTML(m_rowSet.m_fieldLabels[i])).append("\"><![CDATA[").append(m_values[i]).append("]]>")
-			      .append(m_rowSet.processWebLink(i, m_values[i]))
+			      .append(m_rowSet.processWebLink(i, this))
 			      .append("</field>")
 			;
 		}

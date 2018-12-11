@@ -611,7 +611,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected String processWebLink(int fieldIndex, String value)
+	protected String processWebLink(int fieldIndex, Row row)
 	{
 		String webLinkScript = m_fieldWebLinkScript[fieldIndex];
 
@@ -631,7 +631,7 @@ public class RowSet
 				m_fieldCatalogs[fieldIndex],
 				m_fieldEntities[fieldIndex],
 				m_fieldNames[fieldIndex],
-				value
+				row
 			);
 		}
 	}
