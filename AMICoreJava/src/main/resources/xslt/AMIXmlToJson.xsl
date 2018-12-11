@@ -207,7 +207,7 @@
 		<xsl:text>"</xsl:text>
 
 		<xsl:if test="link">
-			<xsl:text>",link":[</xsl:text>
+			<xsl:text>,"link":[</xsl:text>
 			<xsl:apply-templates select="link" />
 			<xsl:text>]</xsl:text>
 		</xsl:if>
