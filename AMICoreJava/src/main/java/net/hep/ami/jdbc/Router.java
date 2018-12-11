@@ -272,7 +272,14 @@ public class Router implements Querier
 					{
 						LogSingleton.root.info(query);
 
-						m_driver.getStatement().executeUpdate(query.replace(";;", ""));
+						try
+						{
+							m_driver.getStatement().executeUpdate(query.replace(";;", ""));
+						}
+						catch(SQLException e)
+						{
+							throw new SQLException("for query " + query.replace(";;", "") + ", " + e.getMessage(), e);
+						}
 
 						query = "";
 					}
