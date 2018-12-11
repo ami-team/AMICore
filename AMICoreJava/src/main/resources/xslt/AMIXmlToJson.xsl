@@ -2,7 +2,11 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 
+	<!-- **************************************************************** -->
+
 	<xsl:output method="text" encoding="UTF-8"></xsl:output>
+
+	<!-- **************************************************************** -->
 
 	<xsl:template match="/AMIMessage">
 		<xsl:text>{"AMIMessage":{</xsl:text>
@@ -51,6 +55,8 @@
 		<xsl:text>}}</xsl:text>
 	</xsl:template>
 
+	<!-- **************************************************************** -->
+
 	<xsl:template match="help|usage">
 		<xsl:variable name="s1" select="." />
 		<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
@@ -63,6 +69,8 @@
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
+
+	<!-- **************************************************************** -->
 
 	<xsl:template match="error|info">
 		<xsl:variable name="s1" select="." />
@@ -77,6 +85,8 @@
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
+	<!-- **************************************************************** -->
+
 	<xsl:template match="fieldDescriptions">
 		<xsl:text>{</xsl:text>
 
@@ -87,6 +97,8 @@
 		<xsl:text>}</xsl:text>
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
+
+	<!-- **************************************************************** -->
 
 	<xsl:template match="fieldDescription">
 		<xsl:text>{</xsl:text>
@@ -116,6 +128,8 @@
 		<xsl:text>}</xsl:text>
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
+
+	<!-- **************************************************************** -->
 
 	<xsl:template match="rowset">
 		<xsl:text>{</xsl:text>
@@ -170,6 +184,8 @@
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
+	<!-- **************************************************************** -->
+
 	<xsl:template match="row">
 		<xsl:text>{</xsl:text>
 
@@ -180,6 +196,8 @@
 		<xsl:text>}</xsl:text>
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
+
+	<!-- **************************************************************** -->
 
 	<xsl:template match="field">
 		<xsl:text>{</xsl:text>
@@ -205,9 +223,69 @@
 		<xsl:text>"$":"</xsl:text>
 		<xsl:value-of select="$s8" />
 		<xsl:text>"</xsl:text>
+		<xsl:if test="properties|link">,</xsl:if>
+
+		<xsl:if test="properties">
+			<xsl:text>"properties":[</xsl:text>
+			<xsl:apply-templates select="properties" />
+			<xsl:text>]</xsl:text>
+			<xsl:if test="link">,</xsl:if>
+		</xsl:if>
+
+		<xsl:if test="link">
+			<xsl:text>"link":[</xsl:text>
+			<xsl:apply-templates select="link" />
+			<xsl:text>]</xsl:text>
+		</xsl:if>
 
 		<xsl:text>}</xsl:text>
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
+
+	<!-- **************************************************************** -->
+
+	<xsl:template match="properties">
+		<xsl:text>{</xsl:text>
+
+		<xsl:for-each select="@*">
+			<xsl:variable name="s1" select="." />
+			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+			<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
+
+			<xsl:text>"@</xsl:text>
+			<xsl:value-of select="name()" />
+			<xsl:text>":"</xsl:text>
+			<xsl:value-of select="$s4" />
+			<xsl:text>"</xsl:text>
+			<xsl:if test="not (position() = last())">,</xsl:if>
+		</xsl:for-each>
+
+		<xsl:text>}</xsl:text>
+	</xsl:template>
+
+	<!-- **************************************************************** -->
+
+	<xsl:template match="link">
+		<xsl:text>{</xsl:text>
+
+		<xsl:for-each select="@*">
+			<xsl:variable name="s1" select="." />
+			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
+			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
+			<xsl:variable name="s4" select="replace($s3, '&quot;', '\\&quot;')" />
+
+			<xsl:text>"@</xsl:text>
+			<xsl:value-of select="name()" />
+			<xsl:text>":"</xsl:text>
+			<xsl:value-of select="$s4" />
+			<xsl:text>"</xsl:text>
+			<xsl:if test="not (position() = last())">,</xsl:if>
+		</xsl:for-each>
+
+		<xsl:text>}</xsl:text>
+	</xsl:template>
+
+	<!-- **************************************************************** -->
 
 </xsl:stylesheet>
