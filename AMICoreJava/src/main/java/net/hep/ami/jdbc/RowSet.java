@@ -259,7 +259,7 @@ public class RowSet
 				m_fieldStatable[i] = false;
 				m_fieldGroupable[i] = false;
 				m_fieldDescription[i] = "N/A";
-				m_fieldWebLinkScript[i] = null;
+				m_fieldWebLinkScript[i] = "@NULL";
 			}
 
 			/*-------------------------------------------------------------*/
@@ -615,7 +615,7 @@ public class RowSet
 	{
 		String webLinkScript = m_fieldWebLinkScript[fieldIndex];
 
-		if(webLinkScript == null || (webLinkScript = webLinkScript.trim()).isEmpty())
+		if(webLinkScript == null || webLinkScript.isEmpty() || "@NULL".equalsIgnoreCase(webLinkScript))
 		{
 			return "";
 		}

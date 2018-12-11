@@ -115,8 +115,8 @@ public class SchemaExtraSingleton
 			column.modifiedBy = modifiedBy;
 			column.statable = statable;
 			column.groupable = groupable;
-			column.description = description;
-			column.webLinkScript = webLinkScript;
+			column.description = description != null ? description.trim() : "N∕A";
+			column.webLinkScript = webLinkScript != null ? webLinkScript.trim() : "@NULL";
 		}
 		catch(Exception e)
 		{

@@ -45,7 +45,7 @@ public class SchemaSingleton
 		public boolean statable = false;
 		public boolean groupable = false;
 		public String description = "N/A";
-		public String webLinkScript = null;
+		public String webLinkScript = "@NULL";
 
 		/**/
 
@@ -495,8 +495,10 @@ public class SchemaSingleton
 								type,
 								size,
 								digits,
-								(def != null && def.toUpperCase().contains("CURRENT_TIMESTAMP")) ? "@CURRENT_TIMESTAMP"
-								                                                                 : /*---*/ def /*---*/
+								def == null ? "@NULL" : def.toUpperCase().contains("CURRENT_TIMESTAMP") ? "@CURRENT_TIMESTAMP"
+								                                                                        : /*---*/ def /*---*/
+//								(def != null && def.toUpperCase().contains("CURRENT_TIMESTAMP")) ? "@CURRENT_TIMESTAMP"
+//								                                                                 : /*---*/ def /*---*/
 							));
 						}
 					}
