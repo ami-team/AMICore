@@ -206,9 +206,16 @@
 		<xsl:value-of select="$s8" />
 		<xsl:text>"</xsl:text>
 
+		<xsl:if test="properties">
+			<xsl:text>,"properties":[</xsl:text>
+			<xsl:apply-templates select="properties_or_link" />
+			<xsl:text>]</xsl:text>
+			<xsl:if test="link">,</xsl:if>
+		</xsl:if>
+
 		<xsl:if test="link">
 			<xsl:text>,"link":[</xsl:text>
-			<xsl:apply-templates select="link" />
+			<xsl:apply-templates select="properties_or_link" />
 			<xsl:text>]</xsl:text>
 		</xsl:if>
 
@@ -216,7 +223,7 @@
 		<xsl:if test="not (position() = last())">,</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="link">
+	<xsl:template match="properties_or_link">
 		<xsl:text>{</xsl:text>
 
 		<xsl:for-each select="@*">
