@@ -229,6 +229,7 @@
 			<xsl:value-of select="name()" />
 			<xsl:text>":"</xsl:text>
 			<xsl:value-of select="$s4" />
+			<xsl:text>"</xsl:text>
 			<xsl:if test="not (position() = last())">,</xsl:if>
 		</xsl:for-each>
 
