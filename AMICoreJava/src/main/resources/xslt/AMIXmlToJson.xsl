@@ -205,16 +205,17 @@
 		<xsl:text>"$":"</xsl:text>
 		<xsl:value-of select="$s8" />
 		<xsl:text>"</xsl:text>
+		<xsl:if test="properties|link">,</xsl:if>
 
 		<xsl:if test="properties">
-			<xsl:text>,"properties":[</xsl:text>
+			<xsl:text>"properties":[</xsl:text>
 			<xsl:apply-templates select="properties_or_link" />
 			<xsl:text>]</xsl:text>
 			<xsl:if test="link">,</xsl:if>
 		</xsl:if>
 
 		<xsl:if test="link">
-			<xsl:text>,"link":[</xsl:text>
+			<xsl:text>"link":[</xsl:text>
 			<xsl:apply-templates select="properties_or_link" />
 			<xsl:text>]</xsl:text>
 		</xsl:if>
