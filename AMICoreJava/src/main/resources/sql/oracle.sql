@@ -970,7 +970,7 @@ CREATE TRIGGER "trig1_router_user_role"
 CREATE TABLE "router_short_url" (
   "id" NUMBER(*, 0),
   "hash" VARCHAR2(16),
-  "name" VARCHAR2(64),
+  "name" VARCHAR2(128),
   "rank" NUMBER(*, 0) DEFAULT '0',
   "json" CLOB,
   "shared" NUMBER(1, 0) DEFAULT '0',

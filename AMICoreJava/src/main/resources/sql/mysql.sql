@@ -95,7 +95,7 @@ CREATE TABLE `router_catalog_extra` (
 
 ALTER TABLE `router_catalog_extra`
   ADD CONSTRAINT `pk1_router_catalog_extra` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_catalog_extra` UNIQUE KEY (`catalog`, `entity`, `field`)
+  ADD CONSTRAINT `uk1_router_catalog_extra` UNIQUE KEY (`catalog`(64), `entity`(64), `field`)
 ;;
 
 ALTER TABLE `router_catalog_extra`
@@ -260,7 +260,7 @@ ALTER TABLE `router_user_role`
 CREATE TABLE `router_short_url` (
   `id` INT NOT NULL,
   `hash` VARCHAR(16) NOT NULL,
-  `name` VARCHAR(64) NOT NULL,
+  `name` VARCHAR(128) NOT NULL,
   `rank` INT NOT NULL DEFAULT '0',
   `json` TEXT NOT NULL,
   `owner` VARCHAR(128) NOT NULL,

@@ -253,7 +253,7 @@ ALTER TABLE "router_user_role"
 CREATE TABLE "router_short_url" (
   "id" SERIAL,
   "hash" VARCHAR(16) NOT NULL,
-  "name" VARCHAR(64) NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
   "rank" INT NOT NULL DEFAULT '0',
   "json" TEXT NOT NULL,
   "shared" SMALLINT NOT NULL DEFAULT '0',
