@@ -8,6 +8,7 @@ import java.util.regex.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.Utility;
 
 public class SchemaSingleton
 {
@@ -472,6 +473,8 @@ public class SchemaSingleton
 
 			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_tuple.z, _table, "%"))
 			{
+				boolean isOracle = resultSet.getClass().getName().startsWith("oracle");
+
 				while(resultSet.next())
 				{
 					String table = resultSet.getString("TABLE_NAME");
@@ -480,6 +483,7 @@ public class SchemaSingleton
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
+					boolean nullable = resultSet.getBoolean("NULLABLE");
 
 					if(table != null && name != null && type != null)
 					{
@@ -495,8 +499,9 @@ public class SchemaSingleton
 								type,
 								size,
 								digits,
-								def == null ? "@NULL" : def.toUpperCase().contains("CURRENT_TIMESTAMP") ? "@CURRENT_TIMESTAMP"
-								                                                                        : /*---*/ def /*---*/
+								def == null ? (nullable ? "@NULL" : "")
+								            : (def.toUpperCase().contains("CURRENT_TIMESTAMP") ? "@CURRENT_TIMESTAMP"
+								                                                               : (isOracle ? Utility.sqlValToText(def) : def))
 							));
 						}
 					}
@@ -539,28 +544,28 @@ public class SchemaSingleton
 					String fkExternalCatalog;
 					String pkExternalCatalog;
 
-					if(fkInternalCatalog == null)
-					{
-						fkExternalCatalog = m_externalCatalog;
-						fkInternalCatalog = m_internalCatalog;
-					}
-					else
+					if(fkInternalCatalog != null)
 					{
 						fkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(fkInternalCatalog)
 						                                                                                      : m_externalCatalog
 						;
 					}
-
-					if(pkInternalCatalog == null)
-					{
-						pkExternalCatalog = m_externalCatalog;
-						pkInternalCatalog = m_internalCatalog;
-					}
 					else
+					{
+						fkExternalCatalog = m_externalCatalog; /* BERK BUT NO OTHER SOLUTION */
+						fkInternalCatalog = m_internalCatalog;
+					}
+
+					if(pkInternalCatalog != null)
 					{
 						pkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(pkInternalCatalog)
 						                                                                                      : m_externalCatalog
 						;
+					}
+					else
+					{
+						pkExternalCatalog = m_externalCatalog; /* BERK BUT NO OTHER SOLUTION */
+						pkInternalCatalog = m_internalCatalog;
 					}
 
 					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
