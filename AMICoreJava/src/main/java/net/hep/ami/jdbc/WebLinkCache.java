@@ -6,7 +6,7 @@ public class WebLinkCache
 {
 	/*---------------------------------------------------------------------*/
 
-	private final GroovyShell m_groovyShell = new GroovyShell(Row.class.getClassLoader());
+	private final GroovyShell m_groovyShell = new GroovyShell(WebLinkCache.class.getClassLoader());
 
 	/*---------------------------------------------------------------------*/
 
