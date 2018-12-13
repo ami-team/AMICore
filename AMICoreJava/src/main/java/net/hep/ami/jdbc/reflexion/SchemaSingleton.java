@@ -483,7 +483,11 @@ public class SchemaSingleton
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
-					boolean nullable = resultSet.getBoolean("NULLABLE");
+
+					boolean nullable = resultSet.getBoolean("NULLABLE")
+					                   ||
+					                   resultSet.getBoolean("IS_NULLABLE")
+					;
 
 					if(table != null && name != null && type != null)
 					{
