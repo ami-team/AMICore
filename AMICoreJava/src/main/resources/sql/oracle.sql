@@ -301,7 +301,8 @@ CREATE TABLE "router_config" (
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_config"
   ADD CONSTRAINT "pk1_router_config" PRIMARY KEY ("id")
@@ -371,7 +372,8 @@ CREATE TABLE "router_catalog" (
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_catalog"
   ADD CONSTRAINT "pk1_router_catalog" PRIMARY KEY ("id")
@@ -468,7 +470,8 @@ CREATE TABLE "router_catalog_extra" (
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_catalog_extra"
   ADD CONSTRAINT "pk1_router_catalog_extra" PRIMARY KEY ("id")
@@ -585,7 +588,8 @@ CREATE TABLE "router_foreign_key" (
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_foreign_key"
   ADD CONSTRAINT "pk1_router_foreign_key" PRIMARY KEY ("id")
@@ -665,7 +669,8 @@ CREATE TABLE "router_converter" (
   "id" NUMBER(*, 0),
   "xslt" VARCHAR2(128),
   "mime" VARCHAR2(128)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_converter"
   ADD CONSTRAINT "pk1_router_converter" PRIMARY KEY ("id")
@@ -705,7 +710,8 @@ CREATE TABLE "router_role" (
   "id" NUMBER(*, 0),
   "role" VARCHAR2(128),
   "description" VARCHAR2(512)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_role"
   ADD CONSTRAINT "pk1_router_role" PRIMARY KEY ("id")
@@ -744,7 +750,8 @@ CREATE TABLE "router_command" (
   "visible" NUMBER(1, 0) DEFAULT 1,
   "secured" NUMBER(1, 0) DEFAULT 0,
   "roleValidatorClass" VARCHAR2(256)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_command"
   ADD CONSTRAINT "pk1_router_command" PRIMARY KEY ("id")
@@ -792,7 +799,8 @@ CREATE TABLE "router_command_role" (
   "id" NUMBER(*, 0),
   "commandFK" NUMBER(*, 0),
   "roleFK" NUMBER(*, 0)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_command_role"
   ADD CONSTRAINT "pk1_router_command_role" PRIMARY KEY ("id")
@@ -851,7 +859,8 @@ CREATE TABLE "router_user" (
   "valid" NUMBER(1, 0) DEFAULT 1,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_user"
   ADD CONSTRAINT "pk1_router_user" PRIMARY KEY ("id")
@@ -923,7 +932,8 @@ CREATE TABLE "router_user_role" (
   "id" NUMBER(*, 0),
   "userFK" NUMBER(*, 0),
   "roleFK" NUMBER(*, 0)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_user_role"
   ADD CONSTRAINT "pk1_router_user_role" PRIMARY KEY ("id")
@@ -979,7 +989,8 @@ CREATE TABLE "router_short_url" (
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
- );;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_short_url"
   ADD CONSTRAINT "pk1_router_short_url" PRIMARY KEY ("id")
@@ -1069,7 +1080,8 @@ CREATE TABLE "router_authority" (
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_authority"
   ADD CONSTRAINT "pk1_router_authority" PRIMARY KEY ("id")
@@ -1142,7 +1154,8 @@ CREATE TABLE "router_search_interface" (
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_search_interface"
   ADD CONSTRAINT "pk1_router_search_interface" PRIMARY KEY ("id")
@@ -1210,7 +1223,8 @@ CREATE TABLE "router_locations" (
   "id" NUMBER(*, 0),
   "continentCode" VARCHAR2(3) DEFAULT 'N/A',
   "countryCode" VARCHAR2(3) DEFAULT 'N/A'
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_locations"
   ADD CONSTRAINT "pk1_router_locations" PRIMARY KEY ("id")
@@ -1252,7 +1266,8 @@ CREATE TABLE "router_ipv4_blocks" (
   "rangeBegin" NUMBER(10, 0),
   "rangeEnd" NUMBER(10, 0),
   "geoFK" NUMBER(*, 0)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_ipv4_blocks"
   ADD CONSTRAINT "pk1_router_ipv4_blocks" PRIMARY KEY ("id")
@@ -1306,7 +1321,8 @@ CREATE TABLE "router_ipv6_blocks" (
   "rangeBegin" NUMBER(38, 0),
   "rangeEnd" NUMBER(38, 0),
   "geoFK" NUMBER(*, 0)
-);;
+
+) CHARACTER SET utf8 COLLATE utf8_bin;;
 
 ALTER TABLE "router_ipv6_blocks"
   ADD CONSTRAINT "pk1_router_ipv6_blocks" PRIMARY KEY ("id")
