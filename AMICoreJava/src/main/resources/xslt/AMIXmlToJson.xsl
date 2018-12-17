@@ -59,7 +59,7 @@
 
 	<xsl:template match="help|usage">
 		<xsl:variable name="s1" select="." />
-		<xsl:variable name="s2" select="replace($s1, '&#x5c;', '\\\\')" />
+		<xsl:variable name="s2" select="replace($s1, '\\', '\\\\')" />
 		<xsl:variable name="s3" select="replace($s2, '&#xa;', '\\n')" />
 		<xsl:variable name="s4" select="replace($s3, '&#x9;', '\\t')" />
 		<xsl:variable name="s5" select="replace($s4, '&quot;', '\\&quot;')" />
@@ -75,7 +75,7 @@
 
 	<xsl:template match="error|info">
 		<xsl:variable name="s1" select="." />
-		<xsl:variable name="s2" select="replace($s1, '&#x5c;', '\\\\')" />
+		<xsl:variable name="s2" select="replace($s1, '\\', '\\\\')" />
 		<xsl:variable name="s3" select="replace($s2, '&#xa;', '\\n')" />
 		<xsl:variable name="s4" select="replace($s3, '&#x9;', '\\t')" />
 		<xsl:variable name="s5" select="replace($s4, '&quot;', '\\&quot;')" />
@@ -107,7 +107,7 @@
 
 		<xsl:for-each select="@*">
 			<xsl:variable name="s1" select="." />
-			<xsl:variable name="s2" select="replace($s1, '&#x5c;', '\\\\')" />
+			<xsl:variable name="s2" select="replace($s1, '\\', '\\\\')" />
 			<xsl:variable name="s3" select="replace($s2, '&#xa;', '\\n')" />
 			<xsl:variable name="s4" select="replace($s3, '&#x9;', '\\t')" />
 			<xsl:variable name="s5" select="replace($s4, '&quot;', '\\&quot;')" />
@@ -120,7 +120,7 @@
 		</xsl:for-each>
 
 		<xsl:variable name="s6" select="." />
-		<xsl:variable name="s7" select="replace($s6, '&#x5c;', '\\\\')" />
+		<xsl:variable name="s7" select="replace($s6, '\\', '\\\\')" />
 		<xsl:variable name="s8" select="replace($s7, '&#xa;', '\\n')" />
 		<xsl:variable name="s9" select="replace($s8, '&#x9;', '\\t')" />
 		<xsl:variable name="sA" select="replace($s9, '&quot;', '\\&quot;')" />
@@ -139,7 +139,7 @@
 		<xsl:text>{</xsl:text>
 
 		<xsl:variable name="s1" select="sql" />
-		<xsl:variable name="s2" select="replace($s1, '&#x5c;', '\\\\')" />
+		<xsl:variable name="s2" select="replace($s1, '\\', '\\\\')" />
 		<xsl:variable name="s3" select="replace($s2, '&#xa;', '\\n')" />
 		<xsl:variable name="s4" select="replace($s3, '&#x9;', '\\t')" />
 		<xsl:variable name="s5" select="replace($s4, '&quot;', '\\&quot;')" />
@@ -149,7 +149,7 @@
 		<xsl:text>",</xsl:text>
 
 		<xsl:variable name="s6" select="mql" />
-		<xsl:variable name="s7" select="replace($s6, '&#x5c;', '\\\\')" />
+		<xsl:variable name="s7" select="replace($s6, '\\', '\\\\')" />
 		<xsl:variable name="s8" select="replace($s7, '&#xa;', '\\n')" />
 		<xsl:variable name="s9" select="replace($s8, '&#x9;', '\\t')" />
 		<xsl:variable name="sA" select="replace($s9, '&quot;', '\\&quot;')" />
@@ -159,7 +159,7 @@
 		<xsl:text>",</xsl:text>
 
 		<xsl:variable name="sB" select="ast" />
-		<xsl:variable name="sC" select="replace($sB, '&#x5c;', '\\\\')" />
+		<xsl:variable name="sC" select="replace($sB, '\\', '\\\\')" />
 		<xsl:variable name="sD" select="replace($sC, '&#xa;', '\\n')" />
 		<xsl:variable name="sE" select="replace($sD, '&#x9;', '\\t')" />
 		<xsl:variable name="sF" select="replace($sE, '&quot;', '\\&quot;')" />
@@ -211,7 +211,7 @@
 
 		<xsl:for-each select="@*">
 			<xsl:variable name="s1" select="." />
-			<xsl:variable name="s2" select="replace($s1, '&#x5c;', '\\\\')" />
+			<xsl:variable name="s2" select="replace($s1, '\\', '\\\\')" />
 			<xsl:variable name="s3" select="replace($s2, '&#xa;', '\\n')" />
 			<xsl:variable name="s4" select="replace($s3, '&#x9;', '\\t')" />
 			<xsl:variable name="s5" select="replace($s4, '&quot;', '\\&quot;')" />
@@ -224,7 +224,7 @@
 		</xsl:for-each>
 
 		<xsl:variable name="s6" select="." />
-		<xsl:variable name="s7" select="replace($s6, '&#x5c;', '\\\\')" />
+		<xsl:variable name="s7" select="replace($s6, '\\', '\\\\')" />
 		<xsl:variable name="s8" select="replace($s7, '&#xa;', '\\n')" />
 		<xsl:variable name="s9" select="replace($s8, '&#x9;', '\\t')" />
 		<xsl:variable name="sA" select="replace($s9, '&quot;', '\\&quot;')" />
@@ -258,7 +258,7 @@
 
 		<xsl:for-each select="@*">
 			<xsl:variable name="s1" select="." />
-			<xsl:variable name="s2" select="replace($s1, '&#x5c;', '\\\\')" />
+			<xsl:variable name="s2" select="replace($s1, '\\', '\\\\')" />
 			<xsl:variable name="s3" select="replace($s2, '&#xa;', '\\n')" />
 			<xsl:variable name="s4" select="replace($s3, '&#x9;', '\\t')" />
 			<xsl:variable name="s5" select="replace($s4, '&quot;', '\\&quot;')" />
@@ -282,7 +282,7 @@
 
 		<xsl:for-each select="@*">
 			<xsl:variable name="s1" select="." />
-			<xsl:variable name="s2" select="replace($s1, '&#x5c;', '\\\\')" />
+			<xsl:variable name="s2" select="replace($s1, '\\', '\\\\')" />
 			<xsl:variable name="s3" select="replace($s2, '&#xa;', '\\n')" />
 			<xsl:variable name="s4" select="replace($s3, '&#x9;', '\\t')" />
 			<xsl:variable name="s5" select="replace($s4, '&quot;', '\\&quot;')" />
