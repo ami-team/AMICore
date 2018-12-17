@@ -482,7 +482,9 @@ public class SchemaSingleton
 					String type = resultSet.getString("TYPE_NAME");
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
-					String def = new String(resultSet.getBytes("COLUMN_DEF"));
+					byte[] DEF = resultSet.getBytes("COLUMN_DEF");
+
+					String def = (DEF != null) ? new String(DEF) : null;
 
 					boolean nullable = resultSet.getBoolean("NULLABLE")
 					                   ||
