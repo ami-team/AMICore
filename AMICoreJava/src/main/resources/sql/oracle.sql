@@ -462,7 +462,7 @@ CREATE TABLE "router_catalog_extra" (
   "isModifiedBy" NUMBER(1, 0) DEFAULT 0,
   "isStatable" NUMBER(1, 0) DEFAULT 0,
   "isGroupable" NUMBER(1, 0) DEFAULT 0,
-  "description" VARCHAR2(512) DEFAULT 'N/A',
+  "description" VARCHAR2(512) DEFAULT UPPER('N/A'),
   "webLinkScript" CLOB,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR2(128),
