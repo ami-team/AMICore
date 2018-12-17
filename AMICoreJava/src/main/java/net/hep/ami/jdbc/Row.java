@@ -63,7 +63,7 @@ public class Row
 		}
 
 		return m_values[
-			fieldIndex
+			/*---------*/ fieldIndex /*---------*/
 		];
 	}
 
@@ -73,7 +73,7 @@ public class Row
 	{
 		if(m_rowSet.m_labelIndices.containsKey(labelName) == false)
 		{
-			throw new Exception("label not in row");
+			throw new Exception("field label not in row");
 		}
 
 		return m_values[
