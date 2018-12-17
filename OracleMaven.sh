@@ -2,7 +2,7 @@
 
 DRIVER=ojdbc8
 
-curl -o $DRIVER.jar http://ami.in2p3.fr/B681507E_E232_5951_BBBB_0DAC2BAEC223
+curl -o $DRIVER.jar http://ami.in2p3.fr/CED08B8F_B440_C42E_82DF_DFD6B6664F45
 
 mvn install:install-file \
 	-DgeneratePom=true \
