@@ -28,7 +28,7 @@ CREATE TABLE `router_config` (
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modifiedBy` VARCHAR(128) NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_config`
   ADD CONSTRAINT `pk1_router_config` PRIMARY KEY (`id`),
@@ -56,7 +56,7 @@ CREATE TABLE `router_catalog` (
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modifiedBy` VARCHAR(128) NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_catalog`
   ADD CONSTRAINT `pk1_router_catalog` PRIMARY KEY (`id`),
@@ -91,7 +91,7 @@ CREATE TABLE `router_catalog_extra` (
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modifiedBy` VARCHAR(128) NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_catalog_extra`
   ADD CONSTRAINT `pk1_router_catalog_extra` PRIMARY KEY (`id`),
@@ -118,7 +118,7 @@ CREATE TABLE `router_foreign_key` (
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modifiedBy` VARCHAR(128) NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_foreign_key`
   ADD CONSTRAINT `pk1_router_frgn_key` PRIMARY KEY (`id`),
@@ -136,7 +136,7 @@ CREATE TABLE `router_converter` (
   `xslt` VARCHAR(128) NOT NULL,
   `mime` VARCHAR(128) NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_converter`
   ADD CONSTRAINT `pk1_router_converter` PRIMARY KEY (`id`),
@@ -154,7 +154,7 @@ CREATE TABLE `router_role` (
   `role` VARCHAR(128) NOT NULL,
   `description` VARCHAR(512)
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_role`
   ADD CONSTRAINT `pk1_router_role` PRIMARY KEY (`id`),
@@ -175,7 +175,7 @@ CREATE TABLE `router_command` (
   `secured` TINYINT(1) NOT NULL DEFAULT 0,
   `roleValidatorClass` VARCHAR(256)
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_command`
   ADD CONSTRAINT `pk1_router_command` PRIMARY KEY (`id`),
@@ -193,7 +193,7 @@ CREATE TABLE `router_command_role` (
   `commandFK` INT NOT NULL,
   `roleFK` INT NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_command_role`
   ADD CONSTRAINT `pk1_router_command_role` PRIMARY KEY (`id`),
@@ -224,7 +224,7 @@ CREATE TABLE `router_user` (
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_user`
   ADD CONSTRAINT `pk1_router_user` PRIMARY KEY (`id`),
@@ -242,7 +242,7 @@ CREATE TABLE `router_user_role` (
   `userFK` INT NOT NULL,
   `roleFK` INT NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_user_role`
   ADD CONSTRAINT `pk1_router_user_role` PRIMARY KEY (`id`),
@@ -269,7 +269,7 @@ CREATE TABLE `router_short_url` (
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_short_url`
   ADD CONSTRAINT `pk1_router_short_url` PRIMARY KEY (`id`),
@@ -297,7 +297,7 @@ CREATE TABLE `router_authority` (
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modifiedBy` VARCHAR(128) NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_authority`
   ADD CONSTRAINT `pk1_router_authority` PRIMARY KEY (`id`),
@@ -320,7 +320,7 @@ CREATE TABLE `router_search_interface` (
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modifiedBy` VARCHAR(128) NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_search_interface`
   ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
@@ -338,7 +338,7 @@ CREATE TABLE `router_locations` (
   `continentCode` VARCHAR(3) NOT NULL DEFAULT 'N/A',
   `countryCode` VARCHAR(3) NOT NULL DEFAULT 'N/A'
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_locations`
   ADD CONSTRAINT `pk1_router_locations` PRIMARY KEY (`id`),
@@ -358,7 +358,7 @@ CREATE TABLE `router_ipv4_blocks` (
   `rangeEnd` DECIMAL(10, 0) NOT NULL,
   `geoFK` INT NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_ipv4_blocks`
   ADD CONSTRAINT `pk1_router_ipv4_blocks` PRIMARY KEY (`id`),
@@ -379,7 +379,7 @@ CREATE TABLE `router_ipv6_blocks` (
   `rangeEnd` DECIMAL(38, 0) NOT NULL,
   `geoFK` INT NOT NULL
 
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`InnoDB`;;
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=INNODB;;
 
 ALTER TABLE `router_ipv6_blocks`
   ADD CONSTRAINT `pk1_router_ipv6_blocks` PRIMARY KEY (`id`),
