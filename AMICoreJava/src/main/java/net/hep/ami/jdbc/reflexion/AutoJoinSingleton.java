@@ -38,9 +38,9 @@ public class AutoJoinSingleton
 		                   (givenTable == null || defaultTable.equalsIgnoreCase(givenTable))
 		;
 
-		SchemaSingleton.Column column = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;
+		SchemaSingleton.Column resolvedColumn = checkNow ? SchemaSingleton.getColumns(defaultCatalog, defaultTable).get(givenColumn) : null;
 
-		if(column == null)
+		if(resolvedColumn == null)
 		{
 			String key;
 
@@ -103,7 +103,7 @@ public class AutoJoinSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			QId resolvedQId = new QId(column.internalCatalog, column.table, column.name, givenQId.getConstraints());
+			QId resolvedQId = new QId(resolvedColumn.internalCatalog, resolvedColumn.table, resolvedColumn.name, givenQId.getConstraints());
 
 			/*-------------------------------------------------------------*/
 
@@ -136,7 +136,7 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			pathList.addPath(givenQId, resolvedQId, path);
+			pathList.addPath(givenQId, resolvedQId, resolvedColumn, path);
 
 			/*-------------------------------------------------------------*/
 		}

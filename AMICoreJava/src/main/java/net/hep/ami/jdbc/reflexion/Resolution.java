@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 
 import net.hep.ami.jdbc.query.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
 public class Resolution
 {
@@ -10,9 +11,11 @@ public class Resolution
 
 	private QId m_resolvedQId = null;
 
+	private Column m_resolvedColumn = null;
+
 	/*---------------------------------------------------------------------*/
 
-	private List<SchemaSingleton.FrgnKeys> m_resolvedPaths = new ArrayList<>();
+	private List<FrgnKeys> m_resolvedPaths = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -43,13 +46,17 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public Resolution addPath(QId givenQId, QId resolvedQId, Vector<SchemaSingleton.FrgnKey> path) throws Exception
+	public Resolution addPath(QId givenQId, QId resolvedQId, Column resolvedColumn, Vector<FrgnKey> path) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		if(m_resolvedQId == null)
-		{
+		if(m_resolvedQId == null
+		   ||
+		   m_resolvedColumn == null
+		 ) {
 			m_resolvedQId = resolvedQId;
+
+			m_resolvedColumn = resolvedColumn;
 		}
 		else
 		{
@@ -61,7 +68,7 @@ public class Resolution
 
 		/*-----------------------------------------------------------------*/
 
-		m_resolvedPaths.add(new SchemaSingleton.FrgnKeys(path));
+		m_resolvedPaths.add(new FrgnKeys(path));
 
 		/*-----------------------------------------------------------------*/
 
@@ -77,7 +84,14 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public List<SchemaSingleton.FrgnKeys> getPaths()
+	public Column getColumn()
+	{
+		return m_resolvedColumn;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public List<FrgnKeys> getPaths()
 	{
 		return m_resolvedPaths;
 	}

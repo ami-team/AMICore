@@ -8,7 +8,7 @@ import java.util.regex.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.Utility;
+import net.hep.ami.utility.parser.*;
 
 public class SchemaSingleton
 {
@@ -483,11 +483,7 @@ public class SchemaSingleton
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
-
-					boolean nullable = resultSet.getBoolean("NULLABLE")
-					                   ||
-					                   resultSet.getBoolean("IS_NULLABLE")
-					;
+					boolean nullable = resultSet.getBoolean("NULLABLE");
 
 					if(table != null && name != null && type != null)
 					{

@@ -21,6 +21,7 @@ public interface Querier
 	/**
 	 * Converts a MQL query to a SQL query.
 	 *
+	 * @param entity The current user.
 	 * @param entity The default entity.
 	 * @param mql The MQL query.
 	 *
