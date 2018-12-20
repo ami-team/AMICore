@@ -233,7 +233,7 @@ public class Helper
 
 			else
 			{
-				Y.add(new StringBuilder(expression));
+				Y.add(expression);
 			}
 
 			/*-------------------------------------------------------------*/
