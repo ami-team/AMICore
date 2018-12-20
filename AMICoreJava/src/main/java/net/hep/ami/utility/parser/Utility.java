@@ -298,6 +298,17 @@ public class Utility
 
 		/*-----------------------------------------------------------------*/
 
+		/**/ if("NULL".equalsIgnoreCase(tmp))
+		{
+			return "@NULL";
+		}
+		else if("CURRENT_TIMESTAMP".equalsIgnoreCase(tmp))
+		{
+			return "@CURRENT_TIMESTAMP";
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		final int l = tmp.length();
 
 		if(l >= 2)

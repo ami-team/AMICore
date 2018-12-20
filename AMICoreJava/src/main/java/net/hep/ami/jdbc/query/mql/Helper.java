@@ -3,10 +3,12 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 import java.util.stream.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.Utility;
 
 public class Helper
 {
@@ -173,16 +175,71 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList, String amiUser)
+	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser) throws Exception
 	{
-		/* TODO */
-		/* TODO */
-		/* TODO */
+		final int nb1 = resolutionList.size();
+		final int nb2 = expressionList.size();
 
-		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(
-			resolutionList.stream().map(x -> x.getQId().toStringBuilder(QId.MASK_FIELD)).collect(Collectors.toList()),
-			expressionList
-		);
+		if(nb1 != nb2)
+		{
+			throw new Exception("internal error");
+		}
+
+		Resolution resolution;
+		StringBuilder expression;
+
+		List<StringBuilder> X = new ArrayList<>();
+		List<StringBuilder> Y = new ArrayList<>();
+
+		for(int i = 0; i < nb1; i++)
+		{
+			resolution = resolutionList.get(i);
+			expression = expressionList.get(i);
+
+			/*-------------------------------------------------------------*/
+
+			X.add(resolution.getQId().toStringBuilder(QId.MASK_FIELD));
+
+			/*-------------------------------------------------------------*/
+
+			/**/ if(resolution.getColumn().crypted)
+			{
+				Y.add(new StringBuilder(Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))));
+			}
+
+			/**/
+
+			else if(resolution.getColumn().created)
+			{
+				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+			}
+			else if(resolution.getColumn().createdBy)
+			{
+				Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
+			}
+
+			/**/
+
+			else if(resolution.getColumn().modified)
+			{
+				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+			}
+			else if(resolution.getColumn().modifiedBy)
+			{
+				Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
+			}
+
+			/**/
+
+			else
+			{
+				Y.add(new StringBuilder(expression));
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
 	}
 
 	/*---------------------------------------------------------------------*/
