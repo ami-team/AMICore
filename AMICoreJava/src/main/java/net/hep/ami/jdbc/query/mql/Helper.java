@@ -175,7 +175,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser) throws Exception
+	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -184,6 +184,34 @@ public class Helper
 		{
 			throw new Exception("internal error");
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		String createdName = null;
+		String createdByName = null;
+		String modifiedName = null;
+		String modifiedByName = null;
+
+		for(SchemaSingleton.Column column: SchemaSingleton.getColumns(stdCatalog, stdEntity).values())
+		{
+			if(column.created) {
+				createdName = column.name;
+			}
+
+			if(column.createdBy) {
+				createdByName = column.name;
+			}
+
+			if(column.modified) {
+				modifiedName = column.name;
+			}
+
+			if(column.modifiedBy) {
+				modifiedByName = column.name;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		Resolution resolution;
 		StringBuilder expression;
@@ -231,35 +259,42 @@ public class Helper
 
 			/**/
 
-			else if(column.created || "self".equals(column.externalCatalog) && "created".equals(column.name))
-			{
-				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
-			}
-			else if(column.createdBy || "self".equals(column.externalCatalog) && "createdBy".equals(column.name))
-			{
-				Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
-			}
-
-			/**/
-
-			else if(column.modified || "self".equals(column.externalCatalog) && "modified".equals(column.name))
-			{
-				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
-			}
-			else if(column.modifiedBy || "self".equals(column.externalCatalog) && "modifiedBy".equals(column.name))
-			{
-				Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
-			}
-
-			/**/
-
-			else
-			{
+			else if(column.created == false && ("self".equals(column.externalCatalog) == false || "created".equals(column.name) == false)
+			        &&
+			        column.createdBy == false && ("self".equals(column.externalCatalog) == false || "createdBy".equals(column.name) == false)
+			        &&
+			        column.modified == false && ("self".equals(column.externalCatalog) == false || "modified".equals(column.name) == false)
+			        &&
+			        column.modifiedBy == false && ("self".equals(column.externalCatalog) == false || "modifiedBy".equals(column.name) == false)
+			 ) {
 				Y.add(expression);
 			}
 
 			/*-------------------------------------------------------------*/
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(insert)
+		{
+			if(createdName != null) {
+				X.add(new StringBuilder(createdName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+			}
+
+			if(createdByName != null) {
+				X.add(new StringBuilder(createdByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+			}
+		}
+
+		if(modifiedName != null) {
+			X.add(new StringBuilder(modifiedName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+		}
+
+		if(modifiedByName != null) {
+			X.add(new StringBuilder(modifiedByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
 	}

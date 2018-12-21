@@ -178,7 +178,8 @@ public class MQLToSQL
 			m_internalCatalog, m_entity, m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART),
-			"admin"
+			"admin",
+			true
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -204,7 +205,8 @@ public class MQLToSQL
 			m_internalCatalog, m_entity, m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART),
-			"admin"
+			"admin",
+			false
 		);
 
 		/*-----------------------------------------------------------------*/
