@@ -230,10 +230,6 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			X.add(resolution.getQId().toStringBuilder(QId.MASK_FIELD));
-
-			/*-------------------------------------------------------------*/
-
 			/**/ if(column.crypted
 			        ||
 			        "self".equals(column.externalCatalog) && (
@@ -254,7 +250,15 @@ public class Helper
 						"issuerDN".equals(column.name)
 			        )
 			 ) {
-				Y.add(new StringBuilder(Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))));
+				expression = new StringBuilder(
+					Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
+				);
+
+				/**/
+
+				X.add(resolution.getQId().toStringBuilder(QId.MASK_FIELD));
+
+				Y.add(expression);
 			}
 
 			/**/
@@ -267,6 +271,8 @@ public class Helper
 			        &&
 			        column.modifiedBy == false && ("self".equals(column.externalCatalog) == false || "modifiedBy".equals(column.name) == false)
 			 ) {
+				X.add(resolution.getQId().toStringBuilder(QId.MASK_FIELD));
+
 				Y.add(expression);
 			}
 
