@@ -251,7 +251,9 @@ public class Helper
 			        )
 			 ) {
 				expression = new StringBuilder(
+					/* NOT FOR SQL EXPRESSION */
 					Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
+					/* NOT FOR SQL EXPRESSION */
 				);
 
 				/**/
