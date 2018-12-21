@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.Utility;
+import net.hep.ami.utility.parser.*;
 
 public class Helper
 {
@@ -188,6 +188,8 @@ public class Helper
 		Resolution resolution;
 		StringBuilder expression;
 
+		SchemaSingleton.Column column;
+
 		List<StringBuilder> X = new ArrayList<>();
 		List<StringBuilder> Y = new ArrayList<>();
 
@@ -196,35 +198,55 @@ public class Helper
 			resolution = resolutionList.get(i);
 			expression = expressionList.get(i);
 
+			column = resolution.getColumn();
+
 			/*-------------------------------------------------------------*/
 
 			X.add(resolution.getQId().toStringBuilder(QId.MASK_FIELD));
 
 			/*-------------------------------------------------------------*/
 
-			/**/ if(resolution.getColumn().crypted)
-			{
+			/**/ if(column.crypted
+			        ||
+			        "self".equals(column.externalCatalog) && (
+						"paramName".equals(column.name)
+						||
+						"paramValue".equals(column.name)
+						||
+						"user".equals(column.name)
+						||
+						"pass".equals(column.name)
+						||
+						"AMIUser".equals(column.name)
+						||
+						"AMIPass".equals(column.name)
+						||
+						"clientDN".equals(column.name)
+						||
+						"issuerDN".equals(column.name)
+			        )
+			 ) {
 				Y.add(new StringBuilder(Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))));
 			}
 
 			/**/
 
-			else if(resolution.getColumn().created)
+			else if(column.created || "self".equals(column.externalCatalog) && "created".equals(column.name))
 			{
 				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
-			else if(resolution.getColumn().createdBy)
+			else if(column.createdBy || "self".equals(column.externalCatalog) && "createdBy".equals(column.name))
 			{
 				Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
 			}
 
 			/**/
 
-			else if(resolution.getColumn().modified)
+			else if(column.modified || "self".equals(column.externalCatalog) && "modified".equals(column.name))
 			{
 				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
-			else if(resolution.getColumn().modifiedBy)
+			else if(column.modifiedBy || "self".equals(column.externalCatalog) && "modifiedBy".equals(column.name))
 			{
 				Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
 			}
