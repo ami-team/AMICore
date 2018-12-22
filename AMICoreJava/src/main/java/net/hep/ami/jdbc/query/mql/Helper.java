@@ -250,11 +250,9 @@ public class Helper
 						"issuerDN".equals(column.name)
 			        )
 			 ) {
-				expression = new StringBuilder(
-					/* NOT FOR SQL EXPRESSION */
-					Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
-					/* NOT FOR SQL EXPRESSION */
-				);
+				/* ONLY FOR SQL LITERALS */
+				expression = new StringBuilder(Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString()))));
+				/* ONLY FOR SQL LITERALS */
 
 				/**/
 
@@ -286,20 +284,27 @@ public class Helper
 		if(insert)
 		{
 			if(createdName != null) {
-				X.add(new StringBuilder(createdName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+				X.add(new StringBuilder(createdName));
+				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
 
 			if(createdByName != null) {
-				X.add(new StringBuilder(createdByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+				X.add(new StringBuilder(createdByName));
+				Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
 			}
 		}
 
-		if(modifiedName != null) {
-			X.add(new StringBuilder(modifiedName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
-		}
+		if((true))
+		{
+			if(modifiedName != null) {
+				X.add(new StringBuilder(modifiedName));
+				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+			}
 
-		if(modifiedByName != null) {
-			X.add(new StringBuilder(modifiedByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+			if(modifiedByName != null) {
+				X.add(new StringBuilder(modifiedByName));
+				Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
