@@ -9,14 +9,14 @@ public class Resolution
 {
 	/*---------------------------------------------------------------------*/
 
-	private int m_pathLen = 0;
-
 	private Column m_resolvedColumn = null;
 
 	private QId m_resolvedInternalQId = null;
 	private QId m_resolvedExternalQId = null;
 
 	/*---------------------------------------------------------------------*/
+
+	private int m_maxPathLen = 0;
 
 	private List<FrgnKeys> m_resolvedPaths = new ArrayList<>();
 
@@ -72,9 +72,9 @@ public class Resolution
 
 		m_resolvedPaths.add(new FrgnKeys(path));
 
-		if(m_pathLen < path.size())
+		if(m_maxPathLen < path.size())
 		{
-			m_pathLen = path.size();
+			m_maxPathLen = path.size();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -105,16 +105,16 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public List<FrgnKeys> getPaths()
+	public int getMaxPathLen()
 	{
-		return m_resolvedPaths;
+		return m_maxPathLen;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public int getPathLen()
+	public List<FrgnKeys> getPaths()
 	{
-		return m_pathLen;
+		return m_resolvedPaths;
 	}
 
 	/*---------------------------------------------------------------------*/

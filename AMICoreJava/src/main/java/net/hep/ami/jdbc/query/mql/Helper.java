@@ -186,10 +186,6 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> map = SchemaSingleton.getColumns(stdCatalog, stdEntity);
-
-		/*-----------------------------------------------------------------*/
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
@@ -262,7 +258,7 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			if(resolution.getPathLen() > 0)
+			if(resolution.getMaxPathLen() > 0)
 			{
 				/*---------------------------------------------------------*/
 
@@ -309,7 +305,7 @@ public class Helper
 		String modifiedName = null;
 		String modifiedByName = null;
 
-		for(SchemaSingleton.Column tmp: map.values())
+		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdCatalog, stdEntity).values())
 		{
 			if(tmp.created) {
 				createdName = tmp.name;
