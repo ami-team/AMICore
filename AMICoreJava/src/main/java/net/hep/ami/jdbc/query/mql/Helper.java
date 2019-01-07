@@ -305,8 +305,6 @@ public class Helper
 				                                .append(")")
 				;
 
-				System.out.println(expression);
-
 				/*---------------------------------------------------------*/
 
 				X.add(foreignKey.toStringBuilder(QId.MASK_FIELD));
