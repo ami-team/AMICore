@@ -22,7 +22,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder isolate(String stdCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isolationNeeded, boolean isSelectPart, boolean isModifStm) throws Exception
+	public static StringBuilder isolate(String stdCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 

@@ -421,7 +421,6 @@ public class MQLToSQL
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,
-				nb > 1,
 				(mask & IN_SELECT_PART) != 0,
 				(mask &  IS_MODIF_STM ) != 0
 			);
@@ -572,7 +571,6 @@ public class MQLToSQL
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,
-				true,
 				(mask & IN_SELECT_PART) != 0,
 				(mask &  IS_MODIF_STM ) != 0
 			);
