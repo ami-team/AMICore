@@ -14,7 +14,7 @@ public class AutoJoinSingleton
 	/*---------------------------------------------------------------------*/
 
 	private static void resolve(
-		Resolution pathList,
+		Resolution resolution,
 		Stack<SchemaSingleton.FrgnKey> path,
 		Set<String> done,
 		int cnt,
@@ -65,7 +65,7 @@ public class AutoJoinSingleton
 					{
 						done.add(key);
 						path.add(frgnKey);
-						resolve(pathList, path, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
+						resolve(resolution, path, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
 						path.pop();
 						done.remove(key);
 					}
@@ -90,7 +90,7 @@ public class AutoJoinSingleton
 					{
 						done.add(key);
 						path.add(frgnKey);
-						resolve(pathList, path, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
+						resolve(resolution, path, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
 						path.pop();
 						done.remove(key);
 					}
@@ -132,7 +132,7 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			pathList.addPath(givenQId, resolvedColumn, path);
+			resolution.addPath(givenQId, resolvedColumn, path);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -140,38 +140,38 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultCatalog, String defaultTable, QId givenQId, int max) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, QId givenQId, int max) throws Exception
 	{
 		Resolution result = new Resolution();
 
-		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultCatalog, defaultTable, givenQId);
+		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultExternalCatalog, defaultTable, givenQId);
 
 		return result.check(givenQId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultCatalog, String defaultTable, QId givenQId) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, QId givenQId) throws Exception
 	{
 		Resolution result = new Resolution();
 
-		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultCatalog, defaultTable, givenQId);
+		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultExternalCatalog, defaultTable, givenQId);
 
 		return result.check(givenQId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultCatalog, String defaultTable, String givenQId, int max) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, String givenQId, int max) throws Exception
 	{
-		return resolve(defaultCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), max);
+		return resolve(defaultExternalCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), max);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultCatalog, String defaultTable, String givenQId) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, String givenQId) throws Exception
 	{
-		return resolve(defaultCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), 999);
+		return resolve(defaultExternalCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), 999);
 	}
 
 	/*---------------------------------------------------------------------*/

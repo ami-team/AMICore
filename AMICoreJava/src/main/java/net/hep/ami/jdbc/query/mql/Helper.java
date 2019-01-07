@@ -22,11 +22,11 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder isolate(String stdCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
+	public static StringBuilder isolate(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, Set<String> globalJoinSet, List<Resolution> resolutionList, int skip, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		QId mainPrimarykeyQId = new QId(stdCatalog, stdEntity, stdPrimaryKey);
+		QId mainPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
 
 		/*-----------------------------------------------------------------*/
 
@@ -37,16 +37,17 @@ public class Helper
 		Set<QId> localFromSet = new LinkedHashSet<>();
 		for(Resolution resolution: resolutionList) 
 		{
-			String tmpCatalog = resolution.getExternalQId().getCatalog();
+			String tmpExternalCatalog = resolution.getExternalQId().getCatalog();
+			String tmpInternalCatalog = resolution.getInternalQId().getCatalog();
 			String tmpEntity = resolution.getExternalQId().getEntity();
 
-			if(tmpCatalog.equalsIgnoreCase(stdCatalog) == false
+			if(tmpInternalCatalog.equalsIgnoreCase(stdInternalCatalog) == false
 			   ||
 			   tmpEntity.equalsIgnoreCase(stdEntity) == false
 			 ) {
 				/*---------------------------------------------------------*/
 
-				QId tmpCatalogEntity = new QId(tmpCatalog, tmpEntity, null);
+				QId tmpCatalogEntity = new QId(tmpInternalCatalog, tmpEntity, null);
 
 				localFromSet.add(tmpCatalogEntity);
 
@@ -56,6 +57,8 @@ public class Helper
 				}
 
 				/*---------------------------------------------------------*/
+
+				int cnt = 0;
 
 				Set<String> tmpJoinList = new LinkedHashSet<>();
 
@@ -69,6 +72,11 @@ public class Helper
 					Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();
 					for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
 					{
+						if(cnt++ < skip)
+						{
+							continue;
+						}
+
 						tmpFromList.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null));
 
 						tmpFromList.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null));
@@ -81,7 +89,7 @@ public class Helper
 					if(tmpWhereList.isEmpty() == false)
 					{
 						SchemaSingleton.Column localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
-							SchemaSingleton.internalCatalogToExternalCatalog(tmpCatalog),
+							tmpExternalCatalog,
 							tmpEntity
 						);
 
@@ -175,7 +183,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser, boolean insert) throws Exception
+	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -264,21 +272,40 @@ public class Helper
 
 				SchemaSingleton.FrgnKey frgnKey = resolution.getPaths().get(0).get(0);
 
-				QId foreignKey = new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
-				QId primaryKey = new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
+				QId foreignKey = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
+				QId primaryKey = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
 
-				StringBuilder comparison = new StringBuilder().append(resolution.getExternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
+				StringBuilder comparison = new StringBuilder().append(resolution.getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                              .append(" = ")
 				                                              .append(expression)
 				;
 
-				SelectObj query = new SelectObj().addSelectPart(primaryKey.toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
-				                                 .addWherePart(comparison)
-				;
+				/*---------------------------------------------------------*/
+
+				List<Resolution> resolutionTemp = new ArrayList<>(); resolutionTemp.add(resolution);
 
 				/*---------------------------------------------------------*/
 
-				expression = new StringBuilder().append("(").append(MQLToSQL.parse(frgnKey.pkExternalCatalog, frgnKey.pkInternalCatalog, frgnKey.pkTable, query.toString())).append(")");
+				StringBuilder where = Helper.isolate(
+					frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn,
+					null, null,
+					resolutionTemp,
+					1,
+					comparison,
+					false, false
+				);
+
+				SelectObj query = new SelectObj().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+				                                 .addFromPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY))
+				                                 .addWherePart(where)
+				;
+
+				expression = new StringBuilder().append("(")
+				                                .append(query)
+				                                .append(")")
+				;
+
+				System.out.println(expression);
 
 				/*---------------------------------------------------------*/
 
@@ -305,7 +332,7 @@ public class Helper
 		String modifiedName = null;
 		String modifiedByName = null;
 
-		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdCatalog, stdEntity).values())
+		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
 		{
 			if(tmp.created) {
 				createdName = tmp.name;
@@ -348,8 +375,9 @@ public class Helper
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*-----------------------------------------------------------------*/;
 
+System.exit(0);
 		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
 	}
 

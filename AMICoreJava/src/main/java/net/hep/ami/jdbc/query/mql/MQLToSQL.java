@@ -420,6 +420,7 @@ public class MQLToSQL
 				m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
+				0, /* skip 0 join */
 				result,
 				(mask & IN_SELECT_PART) != 0,
 				(mask &  IS_MODIF_STM ) != 0
@@ -570,6 +571,7 @@ public class MQLToSQL
 				m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
+				0, /* skip 0 join */
 				result,
 				(mask & IN_SELECT_PART) != 0,
 				(mask &  IS_MODIF_STM ) != 0

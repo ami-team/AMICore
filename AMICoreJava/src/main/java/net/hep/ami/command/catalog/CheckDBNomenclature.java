@@ -42,7 +42,7 @@ public class CheckDBNomenclature extends AbstractCommand
 
 		result.append("<field name=\"report\"><![CDATA[");
 
-		for(String catalog: SchemaSingleton.getCatalogNames())
+		for(String catalog: SchemaSingleton.getExternalCatalogNames())
 		{
 			for(String table: SchemaSingleton.getTableNames(catalog))
 			{
@@ -85,7 +85,7 @@ public class CheckDBNomenclature extends AbstractCommand
 
 		result.append("<field name=\"report\"><![CDATA[");
 
-		for(String catalog: SchemaSingleton.getCatalogNames())
+		for(String catalog: SchemaSingleton.getExternalCatalogNames())
 		{
 			for(String table: SchemaSingleton.getTableNames(catalog))
 			{

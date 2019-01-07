@@ -781,29 +781,29 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog_noException(String catalog, String value)
+	public static String internalCatalogToExternalCatalog_noException(String internalCatalog, String value)
 	{
-		String result = s_internalCatalogToExternalCatalog.get(catalog);
+		String result = s_internalCatalogToExternalCatalog.get(internalCatalog);
 
 		return result != null ? result : value;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog_noException(String catalog, String value)
+	public static String externalCatalogToInternalCatalog_noException(String externalCatalog, String value)
 	{
-		String result =  s_externalCatalogToInternalCatalog.get(catalog);
+		String result =  s_externalCatalogToInternalCatalog.get(externalCatalog);
 
 		return result != null ? result : value;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog(String catalog) throws Exception
+	public static String internalCatalogToExternalCatalog(String internalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		String result = s_internalCatalogToExternalCatalog.get(catalog);
+		String result = s_internalCatalogToExternalCatalog.get(internalCatalog);
 
 		if(result != null)
 		{
@@ -812,18 +812,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("internal catalog not found `" + catalog + "`");
+		throw new Exception("internal catalog not found `" + internalCatalog + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog(String catalog) throws Exception
+	public static String externalCatalogToInternalCatalog(String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		String result = s_externalCatalogToInternalCatalog.get(catalog);
+		String result = s_externalCatalogToInternalCatalog.get(externalCatalog);
 
 		if(result != null)
 		{
@@ -832,18 +832,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("external catalog not found `" + catalog + "`");
+		throw new Exception("external catalog not found `" + externalCatalog + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Map<String, Column>> getTables(String catalog) throws Exception
+	public static Map<String, Map<String, Column>> getTables(String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, Column>> map = s_columns.get(catalog);
+		Map<String, Map<String, Column>> map = s_columns.get(externalCatalog);
 
 		if(map != null)
 		{
@@ -852,18 +852,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("catalog not found `" + catalog + "`");
+		throw new Exception("catalog not found `" + externalCatalog + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Column> getColumns(String catalog, String table) throws Exception
+	public static Map<String, Column> getColumns(String externalCatalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Column> map = getTables(catalog).get(table);
+		Map<String, Column> map = getTables(externalCatalog).get(table);
 
 		if(map != null)
 		{
@@ -872,18 +872,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+		throw new Exception("table not found `" + externalCatalog + "`.`" + table + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKeys> getForwardFKs(String catalog, String table) throws Exception
+	public static Map<String, FrgnKeys> getForwardFKs(String externalCatalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, FrgnKeys>> map1 = s_forwardFKs.get(catalog);
+		Map<String, Map<String, FrgnKeys>> map1 = s_forwardFKs.get(externalCatalog);
 
 		if(map1 != null)
 		{
@@ -897,18 +897,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+		throw new Exception("table not found `" + externalCatalog + "`.`" + table + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKeys> getBackwardFKs(String catalog, String table) throws Exception
+	public static Map<String, FrgnKeys> getBackwardFKs(String externalCatalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, FrgnKeys>> map1 = s_backwardFKs.get(catalog);
+		Map<String, Map<String, FrgnKeys>> map1 = s_backwardFKs.get(externalCatalog);
 
 		if(map1 != null)
 		{
@@ -921,14 +921,14 @@ public class SchemaSingleton
 		}
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("table not found `" + catalog + "`.`" + table + "`");
+		throw new Exception("table not found `" + externalCatalog + "`.`" + table + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getCatalogNames()
+	public static List<String> getExternalCatalogNames()
 	{
 		return new ArrayList<>(
 			s_columns.keySet()
@@ -937,47 +937,47 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getTableNames(String catalog) throws Exception
+	public static List<String> getTableNames(String externalCatalog) throws Exception
 	{
 		return new ArrayList<>(
-			getTables(catalog).keySet()
+			getTables(externalCatalog).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getColumnNames(String catalog, String table) throws Exception
+	public static List<String> getColumnNames(String externalCatalog, String table) throws Exception
 	{
 		return new ArrayList<>(
-			getColumns(catalog, table).keySet()
+			getColumns(externalCatalog, table).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getForwardFKNames(String catalog, String table) throws Exception
+	public static Set<String> getForwardFKNames(String externalCatalog, String table) throws Exception
 	{
 		return new LinkedHashSet<>(
-			getForwardFKs(catalog, table).keySet()
+			getForwardFKs(externalCatalog, table).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getBackwardFKNames(String catalog, String table) throws Exception
+	public static Set<String> getBackwardFKNames(String externalCatalog, String table) throws Exception
 	{
 		return new LinkedHashSet<>(
-			getBackwardFKs(catalog, table).keySet()
+			getBackwardFKs(externalCatalog, table).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Column getColumn(String catalog, String table, String field) throws Exception
+	public static Column getColumn(String externalCatalog, String table, String field) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Column column = getColumns(catalog, table).get(field);
+		Column column = getColumns(externalCatalog, table).get(field);
 
 		if(column != null)
 		{
@@ -986,18 +986,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("field not found for `" + catalog + "`.`" + table + "`.`" + field + "`");
+		throw new Exception("field not found for `" + externalCatalog + "`.`" + table + "`.`" + field + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Column getPrimaryKey(String catalog, String table) throws Exception
+	public static Column getPrimaryKey(String externalCatalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		for(Column column: getColumns(catalog, table).values())
+		for(Column column: getColumns(externalCatalog, table).values())
 		{
 			if(column.primary)
 			{
@@ -1007,7 +1007,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("primary key not found for `" + catalog + "`.`" + table + "`");
+		throw new Exception("primary key not found for `" + externalCatalog + "`.`" + table + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
