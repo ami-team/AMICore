@@ -377,7 +377,6 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/;
 
-System.exit(0);
 		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
 	}
 
