@@ -26,7 +26,7 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\"§\" -fields=\"externalcatalog§internalcatalog§internalschema§jdbcurl§user§pass§custom§archived§created§createdby§modified§modifiedby\" -values=\"a§b§@NULL§c§d§e§@NULL§0§@CURRENT_TIMESTAMP§f§@CURRENT_TIMESTAMP§g\"", false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_user_role\" -separator=\"§\" -fields=\"id§AMIUser§role\" -values=\"-99§jodier§admin\"", false).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\"§\" -fields=\"catalog§entity§field§rank§ishidden§iscrypted§isprimary§iscreated§iscreatedby§ismodified§ismodifiedby§isstatable§isgroupable§description§weblinkscript§created§createdby§modified§modifiedby\" -values=\"mc16_001:production§dataset§logicalDatasetName§0§0§0§0§0§0§0§0§0§0§Logical Dataset Name§import net.hep.ami.jdbc.WebLink;  def webLink = new WebLink();  webLink.newLinkProperties().setLabel(\\\"Rucio\\\");  return webLink;§current_timestamp§§current_timestamp§\"", false).replace(">", ">\n"));
 

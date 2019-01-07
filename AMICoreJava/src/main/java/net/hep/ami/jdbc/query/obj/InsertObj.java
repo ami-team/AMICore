@@ -38,52 +38,71 @@ public class InsertObj
 
 	/*---------------------------------------------------------------------*/
 
-	public InsertObj addInsertPart(CharSequence updatePart)
+	public InsertObj addInsertPart(@Nullable CharSequence updatePart)
 	{
-		m_insertSet.add(updatePart.toString());
-
-		return this;
-	}
-
-	public InsertObj addInsertPart(Collection<?> updatePart)
-	{
-		m_insertSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
-
-		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public InsertObj addFieldValuePart(CharSequence fieldPart, CharSequence valuePart)
-	{
-		m_fieldList.add(fieldPart.toString());
-		m_valueList.add(valuePart.toString());
-
-		return this;
-	}
-
-	public InsertObj addFieldValuePart(Collection<?> fieldPart, Collection<?> valuePart) throws Exception
-	{
-		if(fieldPart.size() != valuePart.size())
+		if(updatePart != null)
 		{
-			throw new Exception("bad number of values");
+			m_insertSet.add(updatePart.toString());
 		}
 
-		m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
-		m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		return this;
+	}
+
+	public InsertObj addInsertPart(@Nullable Collection<?> updatePart)
+	{
+		if(updatePart != null)
+		{
+			m_insertSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public InsertObj addWholeQuery(InsertObj query)
+	public InsertObj addFieldValuePart(@Nullable CharSequence fieldPart, @Nullable CharSequence valuePart)
 	{
-		m_insertSet.addAll(query.m_insertSet);
+		if(fieldPart != null
+		   &&
+		   valuePart != null
+		 ) {
+			m_fieldList.add(fieldPart.toString());
+			m_valueList.add(valuePart.toString());
+		}
 
-		m_fieldList.addAll(query.m_fieldList);
+		return this;
+	}
 
-		m_valueList.addAll(query.m_valueList);
+	public InsertObj addFieldValuePart(@Nullable Collection<?> fieldPart, @Nullable Collection<?> valuePart) throws Exception
+	{
+		if(fieldPart != null
+		   &&
+		   valuePart != null
+		 ) {
+			if(fieldPart.size() != valuePart.size())
+			{
+				throw new Exception("bad number of values");
+			}
+
+			m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+			m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		}
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public InsertObj addWholeQuery(@Nullable InsertObj query)
+	{
+		if(query != null)
+		{
+			m_insertSet.addAll(query.m_insertSet);
+
+			m_fieldList.addAll(query.m_fieldList);
+
+			m_valueList.addAll(query.m_valueList);
+		}
 
 		return this;
 	}

@@ -139,7 +139,7 @@ public class MQLToSQL
 
 		if(context.m_orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, context.m_orderBy.getText()).getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD));
+			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, context.m_orderBy.getText()).getExternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
 			if(context.m_orderWay != null)
 			{
@@ -175,7 +175,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
-			m_internalCatalog, m_entity, m_primaryKey,
+			m_externalCatalog, m_entity, m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART),
 			"admin",
@@ -202,7 +202,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
-			m_internalCatalog, m_entity, m_primaryKey,
+			m_externalCatalog, m_entity, m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART),
 			"admin",
@@ -617,7 +617,7 @@ public class MQLToSQL
 
 		resolutionList.addAll(list = visitQId(context.m_qId, resolutionList, mask));
 
-		return new StringBuilder(list.stream().map(x -> x.getQId().toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+		return new StringBuilder(list.stream().map(x -> x.getExternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", ")));
 	}
 
 	/*---------------------------------------------------------------------*/

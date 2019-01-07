@@ -15,43 +15,58 @@ public class DeleteObj
 
 	/*---------------------------------------------------------------------*/
 
-	public DeleteObj addDeletePart(CharSequence selecPart)
+	public DeleteObj addDeletePart(@Nullable CharSequence selecPart)
 	{
-		m_deleteSet.add(selecPart.toString());
+		if(selecPart != null)
+		{
+			m_deleteSet.add(selecPart.toString());
+		}
 
 		return this;
 	}
 
-	public DeleteObj addDeletePart(Collection<?> selecPart)
+	public DeleteObj addDeletePart(@Nullable Collection<?> selecPart)
 	{
-		m_deleteSet.addAll(selecPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
-
-		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public DeleteObj addWherePart(CharSequence wherePart)
-	{
-		m_whereSet.add(wherePart.toString());
-
-		return this;
-	}
-
-	public DeleteObj addWherePart(Collection<?> wherePart)
-	{
-		m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		if(selecPart != null)
+		{
+			m_deleteSet.addAll(selecPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public DeleteObj addWholeQuery(DeleteObj query)
+	public DeleteObj addWherePart(@Nullable CharSequence wherePart)
 	{
-		m_deleteSet.addAll(query.m_deleteSet);
+		if(wherePart != null)
+		{
+			m_whereSet.add(wherePart.toString());
+		}
 
-		m_whereSet.addAll(query.m_whereSet);
+		return this;
+	}
+
+	public DeleteObj addWherePart(@Nullable Collection<?> wherePart)
+	{
+		if(wherePart != null)
+		{
+			m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public DeleteObj addWholeQuery(@Nullable DeleteObj query)
+	{
+		if(query != null)
+		{
+			m_deleteSet.addAll(query.m_deleteSet);
+
+			m_whereSet.addAll(query.m_whereSet);
+		}
 
 		return this;
 	}

@@ -40,70 +40,95 @@ public class UpdateObj
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addUpdatePart(CharSequence updatePart)
+	public UpdateObj addUpdatePart(@Nullable CharSequence updatePart)
 	{
-		m_updateSet.add(updatePart.toString());
-
-		return this;
-	}
-
-	public UpdateObj addUpdatePart(Collection<?> updatePart)
-	{
-		m_updateSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
-
-		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public UpdateObj addFieldValuePart(CharSequence fieldPart, CharSequence valuePart)
-	{
-		m_fieldList.add(fieldPart.toString());
-		m_valueList.add(valuePart.toString());
-
-		return this;
-	}
-
-	public UpdateObj addFieldValuePart(Collection<?> fieldPart, Collection<?> valuePart) throws Exception
-	{
-		if(fieldPart.size() != valuePart.size())
+		if(updatePart != null)
 		{
-			throw new Exception("bad number of values");
+			m_updateSet.add(updatePart.toString());
 		}
 
-		m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
-		m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		return this;
+	}
+
+	public UpdateObj addUpdatePart(@Nullable Collection<?> updatePart)
+	{
+		if(updatePart != null)
+		{
+			m_updateSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addWherePart(CharSequence wherePart)
+	public UpdateObj addFieldValuePart(@Nullable CharSequence fieldPart, @Nullable CharSequence valuePart)
 	{
-		m_whereSet.add(wherePart.toString());
+		if(fieldPart != null
+		   &&
+		   valuePart != null
+		 ) {
+			m_fieldList.add(fieldPart.toString());
+			m_valueList.add(valuePart.toString());
+		}
 
 		return this;
 	}
 
-	public UpdateObj addWherePart(Collection<?> wherePart)
+	public UpdateObj addFieldValuePart(@Nullable Collection<?> fieldPart, @Nullable Collection<?> valuePart) throws Exception
 	{
-		m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		if(fieldPart != null
+		   &&
+		   valuePart != null
+		 ) {
+			if(fieldPart.size() != valuePart.size())
+			{
+				throw new Exception("bad number of values");
+			}
+
+			m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+			m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		}
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addWholeQuery(UpdateObj query)
+	public UpdateObj addWherePart(@Nullable CharSequence wherePart)
 	{
-		m_updateSet.addAll(query.m_updateSet);
+		if(wherePart != null)
+		{
+			m_whereSet.add(wherePart.toString());
+		}
 
-		m_fieldList.addAll(query.m_fieldList);
+		return this;
+	}
 
-		m_valueList.addAll(query.m_valueList);
+	public UpdateObj addWherePart(@Nullable Collection<?> wherePart)
+	{
+		if(wherePart != null)
+		{
+			m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
 
-		m_whereSet.addAll(query.m_whereSet);
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public UpdateObj addWholeQuery(@Nullable UpdateObj query)
+	{
+		if(query != null)
+		{
+			m_updateSet.addAll(query.m_updateSet);
+
+			m_fieldList.addAll(query.m_fieldList);
+
+			m_valueList.addAll(query.m_valueList);
+
+			m_whereSet.addAll(query.m_whereSet);
+		}
 
 		return this;
 	}

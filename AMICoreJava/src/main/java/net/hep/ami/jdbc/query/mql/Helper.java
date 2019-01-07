@@ -22,7 +22,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder isolate(String stdCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, Set<String> globalJoinSet, List<Resolution> resolutionList, StringBuilder expression, boolean isolationNeeded, boolean isSelectPart, boolean isModifStm) throws Exception
+	public static StringBuilder isolate(String stdCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isolationNeeded, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -37,8 +37,8 @@ public class Helper
 		Set<QId> localFromSet = new LinkedHashSet<>();
 		for(Resolution resolution: resolutionList) 
 		{
-			String tmpCatalog = resolution.getQId().getCatalog();
-			String tmpEntity = resolution.getQId().getEntity();
+			String tmpCatalog = resolution.getExternalQId().getCatalog();
+			String tmpEntity = resolution.getExternalQId().getEntity();
 
 			if(tmpCatalog.equalsIgnoreCase(stdCatalog) == false
 			   ||
@@ -110,7 +110,10 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				localJoinList.add("(" + String.join(" OR ", tmpJoinList) + ")");
+				if(tmpJoinList.isEmpty() == false)
+				{
+					localJoinList.add("(" + String.join(" OR ", tmpJoinList) + ")");
+				}
 
 				/*---------------------------------------------------------*/
 			}
@@ -122,16 +125,13 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		if(isSelectPart)
+		if(localJoinList.isEmpty() == false)
 		{
-			if(localJoinList.isEmpty() == false)
+			if(isSelectPart)
 			{
 				globalJoinSet.add(String.join(" AND ", localJoinList));
 			}
-		}
-		else
-		{
-			if(localJoinList.isEmpty() == false)
+			else
 			{
 				result = new StringBuilder();
 
@@ -187,30 +187,10 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		String createdName = null;
-		String createdByName = null;
-		String modifiedName = null;
-		String modifiedByName = null;
+		Map<String, SchemaSingleton.Column> map = SchemaSingleton.getColumns(stdCatalog, stdEntity);
 
-		for(SchemaSingleton.Column column: SchemaSingleton.getColumns(stdCatalog, stdEntity).values())
-		{
-			if(column.created) {
-				createdName = column.name;
-			}
-
-			if(column.createdBy) {
-				createdByName = column.name;
-			}
-
-			if(column.modified) {
-				modifiedName = column.name;
-			}
-
-			if(column.modifiedBy) {
-				modifiedByName = column.name;
-			}
-		}
-
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
 		Resolution resolution;
@@ -233,45 +213,86 @@ public class Helper
 			/**/ if(column.crypted
 			        ||
 			        "self".equals(column.externalCatalog) && (
-						"paramName".equals(column.name)
-						||
-						"paramValue".equals(column.name)
-						||
-						"user".equals(column.name)
-						||
-						"pass".equals(column.name)
-						||
-						"AMIUser".equals(column.name)
-						||
-						"AMIPass".equals(column.name)
-						||
-						"clientDN".equals(column.name)
-						||
-						"issuerDN".equals(column.name)
+			        	"paramName".equals(column.name)
+			        	||
+			        	"paramValue".equals(column.name)
+			        	||
+			        	"user".equals(column.name)
+			        	||
+			        	"pass".equals(column.name)
+			        	||
+			        	"AMIUser".equals(column.name)
+			        	||
+			        	"AMIPass".equals(column.name)
+			        	||
+			        	"clientDN".equals(column.name)
+			        	||
+			        	"issuerDN".equals(column.name)
 			        )
 			 ) {
-				/* ONLY FOR SQL LITERALS */
-				expression = new StringBuilder(Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString()))));
-				/* ONLY FOR SQL LITERALS */
-
-				/**/
-
-				X.add(resolution.getQId().toStringBuilder(QId.MASK_FIELD));
-
-				Y.add(expression);
+				expression = new StringBuilder(
+					/* NOT FOR SQL EXPRESSION */
+					Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
+					/* NOT FOR SQL EXPRESSION */
+				);
 			}
 
 			/**/
 
-			else if(column.created == false && ("self".equals(column.externalCatalog) == false || "created".equals(column.name) == false)
-			        &&
-			        column.createdBy == false && ("self".equals(column.externalCatalog) == false || "createdBy".equals(column.name) == false)
-			        &&
-			        column.modified == false && ("self".equals(column.externalCatalog) == false || "modified".equals(column.name) == false)
-			        &&
-			        column.modifiedBy == false && ("self".equals(column.externalCatalog) == false || "modifiedBy".equals(column.name) == false)
+			else if(column.created
+			        ||
+			        column.createdBy
+			        ||
+			        column.modified
+			        ||
+			        column.modifiedBy
+			        ||
+			        "self".equals(column.externalCatalog) && (
+			        	"created".equals(column.name)
+			        	||
+			        	"createdBy".equals(column.name)
+			        	||
+			        	"modified".equals(column.name)
+			        	||
+			        	"modifiedBy".equals(column.name)
+			        )
 			 ) {
-				X.add(resolution.getQId().toStringBuilder(QId.MASK_FIELD));
+				continue;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			if(resolution.getPathLen() > 0)
+			{
+				/*---------------------------------------------------------*/
+
+				SchemaSingleton.FrgnKey frgnKey = resolution.getPaths().get(0).get(0);
+
+				QId foreignKey = new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
+				QId primaryKey = new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
+
+				StringBuilder comparison = new StringBuilder().append(resolution.getExternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
+				                                              .append(" = ")
+				                                              .append(expression)
+				;
+
+				SelectObj query = new SelectObj().addSelectPart(primaryKey.toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
+				                                 .addWherePart(comparison)
+				;
+
+				/*---------------------------------------------------------*/
+
+				expression = new StringBuilder().append("(").append(MQLToSQL.parse(frgnKey.pkExternalCatalog, frgnKey.pkInternalCatalog, frgnKey.pkTable, query.toString())).append(")");
+
+				/*---------------------------------------------------------*/
+
+				X.add(foreignKey.toStringBuilder(QId.MASK_FIELD));
+
+				Y.add(expression);
+			}
+			else
+			{
+				X.add(resolution.getExternalQId().toStringBuilder(QId.MASK_FIELD));
 
 				Y.add(expression);
 			}
@@ -280,30 +301,54 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		String createdName = null;
+		String createdByName = null;
+		String modifiedName = null;
+		String modifiedByName = null;
+
+		for(SchemaSingleton.Column tmp: map.values())
+		{
+			if(tmp.created) {
+				createdName = tmp.name;
+			}
+
+			if(tmp.createdBy) {
+				createdByName = tmp.name;
+			}
+
+			if(tmp.modified) {
+				modifiedName = tmp.name;
+			}
+
+			if(tmp.modifiedBy) {
+				modifiedByName = tmp.name;
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		if(insert)
 		{
 			if(createdName != null) {
-				X.add(new StringBuilder(createdName));
-				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+				X.add(new StringBuilder(createdName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
 
 			if(createdByName != null) {
-				X.add(new StringBuilder(createdByName));
-				Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+				X.add(new StringBuilder(createdByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
 			}
 		}
 
-		if((true))
+		if(true)
 		{
 			if(modifiedName != null) {
-				X.add(new StringBuilder(modifiedName));
-				Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+				X.add(new StringBuilder(modifiedName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
 
 			if(modifiedByName != null) {
-				X.add(new StringBuilder(modifiedByName));
-				Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+				X.add(new StringBuilder(modifiedByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
 			}
 		}
 

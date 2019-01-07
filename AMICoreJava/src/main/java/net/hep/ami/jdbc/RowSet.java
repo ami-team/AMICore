@@ -328,7 +328,7 @@ public class RowSet
 			{
 				try
 				{
-					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getQId();
+					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getExternalQId();
 
 					m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resolvedQId.getCatalog(), "N/A");
 					m_fieldEntities[fieldIndex] = resolvedQId.getEntity();

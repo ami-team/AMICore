@@ -103,10 +103,6 @@ public class AutoJoinSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			QId resolvedQId = new QId(resolvedColumn.internalCatalog, resolvedColumn.table, resolvedColumn.name, givenQId.getConstraints());
-
-			/*-------------------------------------------------------------*/
-
 			Map<QId, Boolean> map = givenQId.getConstraints().stream().collect(Collectors.toMap(qId -> qId, qId -> qId.getExclusion()));
 
 			/**/
@@ -136,7 +132,7 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			pathList.addPath(givenQId, resolvedQId, resolvedColumn, path);
+			pathList.addPath(givenQId, resolvedColumn, path);
 
 			/*-------------------------------------------------------------*/
 		}

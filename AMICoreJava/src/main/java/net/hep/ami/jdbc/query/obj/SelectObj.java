@@ -21,61 +21,82 @@ public class SelectObj
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectObj addSelectPart(CharSequence selectPart)
+	public SelectObj addSelectPart(@Nullable CharSequence selectPart)
 	{
-		m_selectList.add(selectPart.toString());
+		if(selectPart != null)
+		{
+			m_selectList.add(selectPart.toString());
+		}
 
 		return this;
 	}
 
-	public SelectObj addSelectPart(Collection<?> selectPart)
+	public SelectObj addSelectPart(@Nullable Collection<?> selectPart)
 	{
-		m_fromSet.addAll(selectPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
-
-		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public SelectObj addFromPart(CharSequence fromPart)
-	{
-		m_fromSet.add(fromPart.toString());
-
-		return this;
-	}
-
-	public SelectObj addFromPart(Collection<?> fromPart)
-	{
-		m_fromSet.addAll(fromPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		if(selectPart != null)
+		{
+			m_fromSet.addAll(selectPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+		}
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectObj addWherePart(CharSequence wherePart)
+	public SelectObj addFromPart(@Nullable CharSequence fromPart)
 	{
-		m_whereSet.add(wherePart.toString());
+		if(fromPart != null)
+		{
+			m_fromSet.add(fromPart.toString());
+		}
 
 		return this;
 	}
 
-	public SelectObj addWherePart(Collection<?> wherePart)
+	public SelectObj addFromPart(@Nullable Collection<?> fromPart)
 	{
-		m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		if(fromPart != null)
+		{
+			m_fromSet.addAll(fromPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectObj addWholeQuery(SelectObj query)
+	public SelectObj addWherePart(@Nullable CharSequence wherePart)
 	{
-		m_selectList.addAll(query.m_selectList);
+		if(wherePart != null)
+		{
+			m_whereSet.add(wherePart.toString());
+		}
 
-		m_fromSet.addAll(query.m_fromSet);
+		return this;
+	}
 
-		m_whereSet.addAll(query.m_whereSet);
+	public SelectObj addWherePart(@Nullable Collection<?> wherePart)
+	{
+		if(wherePart != null)
+		{
+			m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public SelectObj addWholeQuery(@Nullable SelectObj query)
+	{
+		if(query != null)
+		{
+			m_selectList.addAll(query.m_selectList);
+
+			m_fromSet.addAll(query.m_fromSet);
+
+			m_whereSet.addAll(query.m_whereSet);
+		}
 
 		return this;
 	}

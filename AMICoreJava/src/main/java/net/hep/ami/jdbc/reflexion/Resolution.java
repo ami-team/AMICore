@@ -9,9 +9,12 @@ public class Resolution
 {
 	/*---------------------------------------------------------------------*/
 
-	private QId m_resolvedQId = null;
+	private int m_pathLen = 0;
 
 	private Column m_resolvedColumn = null;
+
+	private QId m_resolvedInternalQId = null;
+	private QId m_resolvedExternalQId = null;
 
 	/*---------------------------------------------------------------------*/
 
@@ -23,7 +26,7 @@ public class Resolution
 	{
 		/*-----------------------------------------------------------------*/
 
-		if(m_resolvedQId == null)
+		if(m_resolvedInternalQId == null)
 		{
 			throw new Exception("could not resolve column name " + givenQId + ": not found");
 		}
@@ -46,21 +49,20 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public Resolution addPath(QId givenQId, QId resolvedQId, Column resolvedColumn, Vector<FrgnKey> path) throws Exception
+	public Resolution addPath(QId givenQId, Column resolvedColumn, Vector<FrgnKey> path) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		if(m_resolvedQId == null
-		   ||
-		   m_resolvedColumn == null
-		 ) {
-			m_resolvedQId = resolvedQId;
-
+		if(m_resolvedColumn == null)
+		{
 			m_resolvedColumn = resolvedColumn;
+
+			m_resolvedInternalQId = new QId(resolvedColumn.internalCatalog, resolvedColumn.table, resolvedColumn.name);
+			m_resolvedExternalQId = new QId(resolvedColumn.externalCatalog, resolvedColumn.table, resolvedColumn.name);
 		}
 		else
 		{
-			if(m_resolvedQId.equals(resolvedQId) == false)
+			if(m_resolvedColumn.equals(resolvedColumn) == false)
 			{
 				throw new Exception("could not resolve column name " + givenQId + ": ambiguous resolution");
 			}
@@ -70,16 +72,14 @@ public class Resolution
 
 		m_resolvedPaths.add(new FrgnKeys(path));
 
+		if(m_pathLen < path.size())
+		{
+			m_pathLen = path.size();
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public QId getQId()
-	{
-		return m_resolvedQId;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -91,6 +91,20 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
+	public QId getInternalQId()
+	{
+		return m_resolvedInternalQId;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public QId getExternalQId()
+	{
+		return m_resolvedExternalQId;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public List<FrgnKeys> getPaths()
 	{
 		return m_resolvedPaths;
@@ -98,10 +112,17 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
+	public int getPathLen()
+	{
+		return m_pathLen;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(m_resolvedQId, "@", m_resolvedPaths);
+		return Objects.hash(m_resolvedInternalQId, "@", m_resolvedPaths);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -109,7 +130,7 @@ public class Resolution
 	@Override
 	public String toString()
 	{
-		return m_resolvedQId.toString() + "@" + m_resolvedPaths.toString();
+		return m_resolvedInternalQId.toString() + "@" + m_resolvedPaths.toString();
 	}
 
 	/*---------------------------------------------------------------------*/
