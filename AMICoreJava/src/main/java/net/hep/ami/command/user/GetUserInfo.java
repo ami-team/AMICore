@@ -223,8 +223,10 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("<rowset type=\"sso\">");
 
-		if("N/A".equals(ssoURL) == false)
-		{
+		if(ssoURL.isEmpty() == false
+		   &&
+		   "N/A".equals(ssoURL) == false
+		 ) {
 			result.append("<row>")
 			      .append("<field name=\"label\"><![CDATA[").append(ssoLabel).append("]]></field>")
 			      .append("<field name=\"url\"><![CDATA[").append(ssoURL).append("]]></field>")
