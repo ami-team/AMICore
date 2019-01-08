@@ -33,12 +33,12 @@ public class CatalogSingleton
 
 	static
 	{
-		reload();
+		reload(false);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void reload()
+	public static void reload(boolean force)
 	{
 		s_catalogs.clear();
 
@@ -48,9 +48,9 @@ public class CatalogSingleton
 		{
 			CatalogSingleton.addCatalogs();
 
-			SchemaSingleton.rebuildSchemas();
+			SchemaSingleton.rebuildSchemas(force);
 
-			SchemaExtraSingleton.updateSchemas();
+			SchemaExtraInfoSingleton.updateSchemas();
 		}
 		catch(Exception e)
 		{

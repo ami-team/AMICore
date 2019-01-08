@@ -7,11 +7,11 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 
-public class SchemaExtraSingleton
+public class SchemaExtraInfoSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	private SchemaExtraSingleton() {}
+	private SchemaExtraInfoSingleton() {}
 
 	/*---------------------------------------------------------------------*/
 

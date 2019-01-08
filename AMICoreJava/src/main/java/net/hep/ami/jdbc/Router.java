@@ -535,16 +535,16 @@ public class Router implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public static void reload() throws Exception
+	public static void reload(boolean full) throws Exception
 	{
-		ClassSingleton.reload();
-		ConfigSingleton.reload();
+		ClassSingleton.reload(/**/);
+		ConfigSingleton.reload(/**/);
 
-		DriverSingleton.reload();
-		CatalogSingleton.reload();
+		DriverSingleton.reload(/**/);
+		CatalogSingleton.reload(full);
 
-		CommandSingleton.reload();
-		ConverterSingleton.reload();
+		CommandSingleton.reload(/**/);
+		ConverterSingleton.reload(/**/);
 	}
 
 	/*---------------------------------------------------------------------*/

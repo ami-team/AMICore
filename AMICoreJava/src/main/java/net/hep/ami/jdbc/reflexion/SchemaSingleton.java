@@ -718,11 +718,11 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void rebuildSchemas() throws Exception
+	public static void rebuildSchemas(boolean force) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		boolean isOk = ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
+		boolean isOk = force || ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
 
 		/*-----------------------------------------------------------------*/
 		/* FAST METHOD                                                     */
