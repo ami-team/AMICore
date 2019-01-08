@@ -385,6 +385,8 @@ public class MQLToSQL
 
 		List<Resolution> tmpResolutionList = (mask & IN_ISO_GROUP) != 0 ? resolutionList : new ArrayList<>();
 
+		boolean isolateExpression = (mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0 && (mask & IN_ISO_GROUP) == 0;
+
 		/*-----------------------------------------------------------------*/
 
 		ParseTree child;
@@ -397,11 +399,11 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, mask));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, isolateExpression ? mask & ~IS_MODIF_STM : mask));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
-				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, mask));
+				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, isolateExpression ? mask & ~IS_MODIF_STM : mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -414,7 +416,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0 && (mask & IN_ISO_GROUP) == 0)
+		if(isolateExpression)
 		{
 			result = Helper.isolate(
 				m_internalCatalog, m_entity, m_primaryKey,
@@ -559,13 +561,15 @@ public class MQLToSQL
 	{
 		List<Resolution> tmpResolutionList = new ArrayList<>();
 
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask | IN_ISO_GROUP & ~IS_MODIF_STM);
+		boolean isolateExpression = (mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0;
 
 		/*-----------------------------------------------------------------*/
 
-		if((mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0)
+		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, isolateExpression ? mask | IN_ISO_GROUP & ~IS_MODIF_STM : mask | IN_ISO_GROUP);
+
+		/*-----------------------------------------------------------------*/
+
+		if(isolateExpression)
 		{
 			result = Helper.isolate(
 				m_internalCatalog, m_entity, m_primaryKey,
