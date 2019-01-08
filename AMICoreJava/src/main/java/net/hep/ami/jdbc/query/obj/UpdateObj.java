@@ -172,7 +172,21 @@ public class UpdateObj
 
 	public String getSetPart()
 	{
-		if(m_mode != Mode.MQL)
+		if(m_mode == Mode.MQL)
+		{
+			/*-------------------------------------------------------------*/
+
+			return new StringBuilder().append("(")
+			                          .append(String.join(", ", m_fieldList))
+			                          .append(") VALUES (")
+			                          .append(String.join(", ", m_valueList))
+			                          .append(")")
+			                          .toString()
+			;
+
+			/*-------------------------------------------------------------*/
+		}
+		else
 		{
 			/*-------------------------------------------------------------*/
 
@@ -192,20 +206,6 @@ public class UpdateObj
 			}
 
 			return stringBuilder.toString();
-
-			/*-------------------------------------------------------------*/
-		}
-		else
-		{
-			/*-------------------------------------------------------------*/
-
-			return new StringBuilder().append("(")
-			                          .append(String.join(", ", m_fieldList))
-			                          .append(") VALUES (")
-			                          .append(String.join(", ", m_valueList))
-			                          .append(")")
-			                          .toString()
-			;
 
 			/*-------------------------------------------------------------*/
 		}
@@ -247,7 +247,16 @@ public class UpdateObj
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("UPDATE ").append(getUpdatePart()).append(" SET ").append(getSetPart());
+		if(m_mode == Mode.MQL)
+		{
+			result.append("UPDATE ").append(getSetPart());
+		}
+		else
+		{
+			result.append("UPDATE ").append(getUpdatePart()).append(" SET ").append(getSetPart());
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		if(m_whereSet.isEmpty() == false)
 		{
