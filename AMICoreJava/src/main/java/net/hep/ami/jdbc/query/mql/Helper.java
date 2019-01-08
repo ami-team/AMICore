@@ -7,6 +7,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
+
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -325,51 +326,22 @@ public class Helper
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		String createdName = null;
-		String createdByName = null;
-		String modifiedName = null;
-		String modifiedByName = null;
-
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
 		{
-			if(tmp.created) {
-				createdName = tmp.name;
+			if(tmp.created && insert) {
+				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
 
-			if(tmp.createdBy) {
-				createdByName = tmp.name;
+			if(tmp.createdBy && insert) {
+				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
 			}
 
 			if(tmp.modified) {
-				modifiedName = tmp.name;
+				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
 
 			if(tmp.modifiedBy) {
-				modifiedByName = tmp.name;
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(insert)
-		{
-			if(createdName != null) {
-				X.add(new StringBuilder(createdName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
-			}
-
-			if(createdByName != null) {
-				X.add(new StringBuilder(createdByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
-			}
-		}
-
-		if(true)
-		{
-			if(modifiedName != null) {
-				X.add(new StringBuilder(modifiedName)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
-			}
-
-			if(modifiedByName != null) {
-				X.add(new StringBuilder(modifiedByName)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
 			}
 		}
 

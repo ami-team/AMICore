@@ -617,7 +617,7 @@ public class MQLToSQL
 
 		resolutionList.addAll(list = visitQId(context.m_qId, resolutionList, mask));
 
-		return new StringBuilder(list.stream().map(x -> x.getExternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+		return new StringBuilder(list.stream().map(x -> x.getInternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", ")));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -631,8 +631,6 @@ public class MQLToSQL
 
 	private List<Resolution> visitQId(MQLParser.QIdContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
-		List<Resolution> result = new ArrayList<>();
-
 		/*-----------------------------------------------------------------*/
 
 		QId qid = QId.visitQId(context, QId.Type.FIELD, QId.Type.FIELD);
@@ -655,7 +653,7 @@ public class MQLToSQL
 			{
 				SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(catalogName, entityName);
 
-				list = Arrays.asList(qid.setCatalog(primaryKey.externalCatalog).setEntity(primaryKey.table).setField(primaryKey.name));
+				list = Collections.singletonList(qid.setCatalog(primaryKey.externalCatalog).setEntity(primaryKey.table).setField(primaryKey.name));
 			}
 			else
 			{
@@ -673,6 +671,8 @@ public class MQLToSQL
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		List<Resolution> result = new ArrayList<>();
 
 		for(QId qId: list)
 		{
