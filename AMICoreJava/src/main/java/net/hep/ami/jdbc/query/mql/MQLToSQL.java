@@ -397,11 +397,11 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, mask & ~IS_MODIF_STM));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, mask));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
-				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, mask & ~IS_MODIF_STM));
+				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -561,7 +561,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask | IN_ISO_GROUP);
+		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask | IN_ISO_GROUP & ~IS_MODIF_STM);
 
 		/*-----------------------------------------------------------------*/
 
@@ -617,7 +617,10 @@ public class MQLToSQL
 
 		resolutionList.addAll(list = visitQId(context.m_qId, resolutionList, mask));
 
-		return new StringBuilder(list.stream().map(x -> x.getInternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+		StringBuilder s = new StringBuilder(list.stream().map(x -> x.getInternalQId().toString((mask & IS_MODIF_STM) == 0 ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+
+		System.out.println("yokyokyok>>> " + mask + " " + s);
+		return s;
 	}
 
 	/*---------------------------------------------------------------------*/

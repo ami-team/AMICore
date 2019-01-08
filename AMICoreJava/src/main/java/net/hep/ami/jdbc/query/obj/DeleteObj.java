@@ -9,9 +9,30 @@ public class DeleteObj
 {
 	/*---------------------------------------------------------------------*/
 
+	public enum Mode
+	{
+		SQL,
+		MQL
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private Mode m_mode = Mode.SQL;
+
+	/*---------------------------------------------------------------------*/
+
 	private final Set<String> m_deleteSet = new LinkedHashSet<>();
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
+
+	/*---------------------------------------------------------------------*/
+
+	public DeleteObj setMode(Mode mode)
+	{
+		m_mode = mode;
+
+		return this;
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -128,7 +149,16 @@ public class DeleteObj
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("DELETE FROM ").append(getDeletePart());
+		if(m_mode == Mode.MQL)
+		{
+			result.append("DELETE");
+		}
+		else
+		{
+			result.append("DELETE FROM ").append(getDeletePart());
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		if(m_whereSet.isEmpty() == false)
 		{

@@ -48,7 +48,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		DeleteObj query = new DeleteObj().addDeletePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY));
+		DeleteObj query = new DeleteObj();
 
 		List<String> whereList = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.toString(where)).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(DeleteObj.Mode.MQL).toString(where)).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
