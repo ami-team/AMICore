@@ -21,7 +21,14 @@ public class SchemaExtraInfoSingleton
 		/* DEFAULT INFO                                                    */
 		/*-----------------------------------------------------------------*/
 
-		defaultInfo();
+		try
+		{
+			defaultInfo();
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.error(LogSingleton.FATAL, "the AMI database is not properly setup", e);
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */

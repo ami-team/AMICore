@@ -27,8 +27,12 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static final String s_guest_user = ConfigSingleton.getProperty("guest_user");
-	private static final String s_guest_pass = ConfigSingleton.getProperty("guest_pass");
+	private static final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
+	private static final String GUEST_PASS = ConfigSingleton.getProperty("guest_pass");
+
+	/*---------------------------------------------------------------------*/
+
+	private static final String CONFIG_ERROR = "the AMI database is not properly setup";
 
 	/*---------------------------------------------------------------------*/
 
@@ -178,7 +182,7 @@ public class FrontEnd extends HttpServlet
 		else
 		{
 			data = XMLTemplates.error(
-				"config error"
+				CONFIG_ERROR
 			);
 		}
 
@@ -334,8 +338,8 @@ public class FrontEnd extends HttpServlet
 		   issuerDN == null || issuerDN.isEmpty()
 		 ) {
 			return new Tuple2<>(
-				s_guest_user,
-				s_guest_pass
+				GUEST_USER,
+				GUEST_PASS
 			);
 		}
 
@@ -368,8 +372,8 @@ public class FrontEnd extends HttpServlet
 			if(rowList.isEmpty())
 			{
 				return new Tuple2<>(
-					s_guest_user,
-					s_guest_pass
+					GUEST_USER,
+					GUEST_PASS
 				);
 			}
 
@@ -421,8 +425,8 @@ public class FrontEnd extends HttpServlet
 		   AMIPass == null || AMIPass.isEmpty()
 		 ) {
 			return new Tuple2<>(
-				s_guest_user,
-				s_guest_pass
+				GUEST_USER,
+				GUEST_PASS
 			);
 		}
 
@@ -455,8 +459,8 @@ public class FrontEnd extends HttpServlet
 			if(rowList.isEmpty())
 			{
 				return new Tuple2<>(
-					s_guest_user,
-					s_guest_pass
+					GUEST_USER,
+					GUEST_PASS
 				);
 			}
 
@@ -473,8 +477,8 @@ public class FrontEnd extends HttpServlet
 			catch(Exception e)
 			{
 				result = new Tuple2<>(
-					s_guest_user,
-					s_guest_pass
+					GUEST_USER,
+					GUEST_PASS
 				);
 			}
 
@@ -569,7 +573,7 @@ public class FrontEnd extends HttpServlet
 
 			if(tmpAMIUser == null
 			   ||
-			   s_guest_user.equals(tmpAMIUser)
+			   GUEST_USER.equals(tmpAMIUser)
 			   ||
 			   tmpAMIPass == null
 			 ) {
@@ -616,7 +620,7 @@ public class FrontEnd extends HttpServlet
 
 			/*-------------------------------------------------------------*/
 
-			noCert = s_guest_user.equals(AMIUser) == false;
+			noCert = GUEST_USER.equals(AMIUser) == false;
 
 			/*-------------------------------------------------------------*/
 		}
