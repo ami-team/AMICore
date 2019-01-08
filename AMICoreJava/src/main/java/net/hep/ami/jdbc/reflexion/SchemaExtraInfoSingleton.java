@@ -18,19 +18,6 @@ public class SchemaExtraInfoSingleton
 	public static void updateSchemas() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* DEFAULT INFO                                                    */
-		/*-----------------------------------------------------------------*/
-
-		try
-		{
-			defaultInfo();
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.error(LogSingleton.FATAL, "the AMI database is not properly setup", e);
-		}
-
-		/*-----------------------------------------------------------------*/
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
@@ -108,89 +95,17 @@ public class SchemaExtraInfoSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void defaultInfo() throws Exception
-	{
+		/* DEFAULT INFO                                                    */
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_config = SchemaSingleton.getColumns("self", "router_config");
-
-		router_config.get("paramName").crypted = true;
-		router_config.get("paramValue").crypted = true;
-
-		router_config.get("created").created = true;
-		router_config.get("createdBy").createdBy = true;
-		router_config.get("modified").modified = true;
-		router_config.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getColumns("self", "router_catalog");
-
-		router_catalog.get("user").crypted = true;
-		router_catalog.get("pass").crypted = true;
-
-		router_catalog.get("created").created = true;
-		router_catalog.get("createdBy").createdBy = true;
-		router_catalog.get("modified").modified = true;
-		router_catalog.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_catalog_extra = SchemaSingleton.getColumns("self", "router_catalog_extra");
-
-		router_catalog_extra.get("created").created = true;
-		router_catalog_extra.get("createdBy").createdBy = true;
-		router_catalog_extra.get("modified").modified = true;
-		router_catalog_extra.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_foreign_key = SchemaSingleton.getColumns("self", "router_foreign_key");
-
-		router_foreign_key.get("created").created = true;
-		router_foreign_key.get("createdBy").createdBy = true;
-		router_foreign_key.get("modified").modified = true;
-		router_foreign_key.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getColumns("self", "router_user");
-
-		router_user.get("AMIPass").crypted = true;
-		router_user.get("clientDN").crypted = true;
-		router_user.get("issuerDN").crypted = true;
-
-		router_user.get("created").created = true;
-		router_user.get("modified").modified = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_short_url = SchemaSingleton.getColumns("self", "router_short_url");
-
-		router_short_url.get("created").created = true;
-		router_short_url.get("modified").modified = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getColumns("self", "router_authority");
-
-		router_authority.get("created").created = true;
-		router_authority.get("createdBy").createdBy = true;
-		router_authority.get("modified").modified = true;
-		router_authority.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getColumns("self", "router_search_interface");
-
-		router_search_interface.get("created").created = true;
-		router_search_interface.get("createdBy").createdBy = true;
-		router_search_interface.get("modified").modified = true;
-		router_search_interface.get("modifiedBy").modifiedBy = true;
+		try
+		{
+			defaultInfo();
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.error(LogSingleton.FATAL, "the AMI database is not properly setup", e);
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -298,6 +213,91 @@ public class SchemaExtraInfoSingleton
 		{
 			LogSingleton.root.error(e.getMessage(), e);
 		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void defaultInfo() throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_config = SchemaSingleton.getColumns("self", "router_config");
+
+		router_config.get("paramName").crypted = true;
+		router_config.get("paramValue").crypted = true;
+
+		router_config.get("created").created = true;
+		router_config.get("createdBy").createdBy = true;
+		router_config.get("modified").modified = true;
+		router_config.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getColumns("self", "router_catalog");
+
+		router_catalog.get("user").crypted = true;
+		router_catalog.get("pass").crypted = true;
+
+		router_catalog.get("created").created = true;
+		router_catalog.get("createdBy").createdBy = true;
+		router_catalog.get("modified").modified = true;
+		router_catalog.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_catalog_extra = SchemaSingleton.getColumns("self", "router_catalog_extra");
+
+		router_catalog_extra.get("created").created = true;
+		router_catalog_extra.get("createdBy").createdBy = true;
+		router_catalog_extra.get("modified").modified = true;
+		router_catalog_extra.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_foreign_key = SchemaSingleton.getColumns("self", "router_foreign_key");
+
+		router_foreign_key.get("created").created = true;
+		router_foreign_key.get("createdBy").createdBy = true;
+		router_foreign_key.get("modified").modified = true;
+		router_foreign_key.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getColumns("self", "router_user");
+
+		router_user.get("AMIPass").crypted = true;
+		router_user.get("clientDN").crypted = true;
+		router_user.get("issuerDN").crypted = true;
+
+		router_user.get("created").created = true;
+		router_user.get("modified").modified = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_short_url = SchemaSingleton.getColumns("self", "router_short_url");
+
+		router_short_url.get("created").created = true;
+		router_short_url.get("modified").modified = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getColumns("self", "router_authority");
+
+		router_authority.get("created").created = true;
+		router_authority.get("createdBy").createdBy = true;
+		router_authority.get("modified").modified = true;
+		router_authority.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getColumns("self", "router_search_interface");
+
+		router_search_interface.get("created").created = true;
+		router_search_interface.get("createdBy").createdBy = true;
+		router_search_interface.get("modified").modified = true;
+		router_search_interface.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
