@@ -617,10 +617,7 @@ public class MQLToSQL
 
 		resolutionList.addAll(list = visitQId(context.m_qId, resolutionList, mask));
 
-		StringBuilder s = new StringBuilder(list.stream().map(x -> x.getInternalQId().toString((mask & IS_MODIF_STM) == 0 ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
-
-		System.out.println("yokyokyok>>> " + mask + " " + s);
-		return s;
+		return new StringBuilder(list.stream().map(x -> x.getInternalQId().toString((mask & IS_MODIF_STM) == 0 ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
 	}
 
 	/*---------------------------------------------------------------------*/
