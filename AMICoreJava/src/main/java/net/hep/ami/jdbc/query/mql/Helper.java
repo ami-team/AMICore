@@ -282,15 +282,15 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				List<Resolution> resolutionTemp = new ArrayList<>(); resolutionTemp.add(resolution);
+				List<Resolution> singletonList = Collections.singletonList(resolution);
 
 				/*---------------------------------------------------------*/
 
 				StringBuilder where = Helper.isolate(
 					frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn,
 					null, null,
-					resolutionTemp,
-					1,
+					singletonList,
+					1, /* skip 1 join */
 					comparison,
 					false, false
 				);

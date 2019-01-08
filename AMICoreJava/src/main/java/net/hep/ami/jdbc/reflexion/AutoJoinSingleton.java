@@ -15,7 +15,7 @@ public class AutoJoinSingleton
 
 	private static void resolve(
 		Resolution resolution,
-		Stack<SchemaSingleton.FrgnKey> path,
+		Stack<SchemaSingleton.FrgnKey> resolvedPath,
 		Set<String> done,
 		int cnt,
 		int max,
@@ -64,9 +64,9 @@ public class AutoJoinSingleton
 					if(done.contains(key) == false)
 					{
 						done.add(key);
-						path.add(frgnKey);
-						resolve(resolution, path, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
-						path.pop();
+						resolvedPath.add(frgnKey);
+						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
+						resolvedPath.pop();
 						done.remove(key);
 					}
 				}
@@ -89,9 +89,9 @@ public class AutoJoinSingleton
 					if(done.contains(key) == false)
 					{
 						done.add(key);
-						path.add(frgnKey);
-						resolve(resolution, path, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
-						path.pop();
+						resolvedPath.add(frgnKey);
+						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
+						resolvedPath.pop();
 						done.remove(key);
 					}
 				}
@@ -109,7 +109,7 @@ public class AutoJoinSingleton
 
 			for(QId qId: map.keySet())
 			{
-				for(SchemaSingleton.FrgnKey frgnKey: path)
+				for(SchemaSingleton.FrgnKey frgnKey: resolvedPath)
 				{
 					if(qId.matches(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn))
 					   ||
@@ -132,7 +132,7 @@ public class AutoJoinSingleton
 
 			/*-------------------------------------------------------------*/
 
-			resolution.addPath(givenQId, resolvedColumn, path);
+			resolution.addPath(givenQId, resolvedColumn, resolvedPath);
 
 			/*-------------------------------------------------------------*/
 		}
