@@ -428,7 +428,7 @@ public class Setup extends HttpServlet
 			/* LOAD SERVER CONFIG                                          */
 			/*-------------------------------------------------------------*/
 
-			Router.reload();
+			Router.reload(true);
 
 			/*-------------------------------------------------------------*/
 			/* BUILD HTML                                                  */
