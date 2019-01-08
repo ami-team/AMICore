@@ -26,7 +26,9 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"test\" -entity=\"C\" -keyFields=\"id\" -keyValues=\"99\"", false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\"§\" -fields=\"externalcatalog§internalcatalog§internalschema§jdbcurl§user§pass§custom§archived§created§createdby§modified§modifiedby\" -values=\"a§a§@NULL§a§a§a§{}§0§@CURRENT_TIMESTAMP§a§@CURRENT_TIMESTAMP§a\"", false).replace(">", ">\n"));
+
+		//System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"test\" -entity=\"C\" -keyFields=\"id\" -keyValues=\"99\"", false).replace(">", ">\n"));
 
 		//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"test\" -entity=\"C\" -mql=\"SELECT `*`\"", false).replace(">", ">\n"));
 

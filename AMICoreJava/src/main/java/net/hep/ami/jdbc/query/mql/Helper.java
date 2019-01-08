@@ -215,26 +215,8 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			/**/ if(column.crypted
-			        ||
-			        "self".equals(column.externalCatalog) && (
-			        	"paramName".equals(column.name)
-			        	||
-			        	"paramValue".equals(column.name)
-			        	||
-			        	"user".equals(column.name)
-			        	||
-			        	"pass".equals(column.name)
-			        	||
-			        	"AMIUser".equals(column.name)
-			        	||
-			        	"AMIPass".equals(column.name)
-			        	||
-			        	"clientDN".equals(column.name)
-			        	||
-			        	"issuerDN".equals(column.name)
-			        )
-			 ) {
+			/**/ if(column.crypted)
+			{
 				expression = new StringBuilder(
 					/* NOT FOR SQL EXPRESSION */
 					Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
@@ -251,16 +233,6 @@ public class Helper
 			        column.modified
 			        ||
 			        column.modifiedBy
-			        ||
-			        "self".equals(column.externalCatalog) && (
-			        	"created".equals(column.name)
-			        	||
-			        	"createdBy".equals(column.name)
-			        	||
-			        	"modified".equals(column.name)
-			        	||
-			        	"modifiedBy".equals(column.name)
-			        )
 			 ) {
 				continue;
 			}
@@ -333,7 +305,7 @@ public class Helper
 			}
 
 			if(tmp.createdBy && insert) {
-				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
 			}
 
 			if(tmp.modified) {
@@ -341,12 +313,13 @@ public class Helper
 			}
 
 			if(tmp.modifiedBy) {
-				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(/*-*/ AMIUser /*-*/));
+				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
 			}
 		}
 
 		/*-----------------------------------------------------------------*/;
-
+		System.out.println(X);
+		System.out.println(Y);
 		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
 	}
 
