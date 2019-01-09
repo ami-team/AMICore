@@ -3,8 +3,10 @@ package net.hep.ami.command.server;
 import java.io.*;
 import java.util.*;
 
+import net.hep.ami.ConfigSingleton;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
+import net.hep.ami.utility.shell.SimpleShell;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class GetServerStatus extends AbstractCommand
@@ -25,6 +27,16 @@ public class GetServerStatus extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		SimpleShell simpleShell = new SimpleShell();
+
+		simpleShell.connect();
+		SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname"});
+		simpleShell.disconnect();
+
+		String hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim() : "N/A";
+
+		/*-----------------------------------------------------------------*/
+
 		Runtime runtime = java.lang.Runtime.getRuntime();
 
 		File file = new File(System.getProperty("catalina.base", GetServerStatus.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
@@ -33,6 +45,7 @@ public class GetServerStatus extends AbstractCommand
 
 		result.append("<rowset type=\"system\">")
 		      .append("<row>")
+		      .append("<field name=\"hostName\"><![CDATA[").append(hostName).append("]]></field>")
 		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
 		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")
 		      .append("<field name=\"freeMem\"><![CDATA[").append(runtime.freeMemory()).append("]]></field>")
