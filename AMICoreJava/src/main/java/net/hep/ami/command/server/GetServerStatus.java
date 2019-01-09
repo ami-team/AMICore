@@ -3,10 +3,9 @@ package net.hep.ami.command.server;
 import java.io.*;
 import java.util.*;
 
-import net.hep.ami.ConfigSingleton;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
-import net.hep.ami.utility.shell.SimpleShell;
+import net.hep.ami.utility.shell.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class GetServerStatus extends AbstractCommand
