@@ -26,36 +26,6 @@ public class GetServerStatus extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SimpleShell simpleShell = new SimpleShell();
-
-		simpleShell.connect();
-		SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname"});
-		simpleShell.disconnect();
-
-		String hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim() : "N/A";
-
-		/*-----------------------------------------------------------------*/
-
-		Runtime runtime = java.lang.Runtime.getRuntime();
-
-		File file = new File(System.getProperty("catalina.base", GetServerStatus.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<rowset type=\"hardware\">")
-		      .append("<row>")
-		      .append("<field name=\"hostName\"><![CDATA[").append(hostName).append("]]></field>")
-		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
-		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")
-		      .append("<field name=\"freeMem\"><![CDATA[").append(runtime.freeMemory()).append("]]></field>")
-		      .append("<field name=\"totalMem\"><![CDATA[").append(runtime.totalMemory()).append("]]></field>")
-		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
-		      .append("</row>")
-		      .append("</rowset>")
-		;
-
-		/*-----------------------------------------------------------------*/
-
 		String tags;
 		String buildVersion;
 		String branch;
@@ -63,10 +33,10 @@ public class GetServerStatus extends AbstractCommand
 		String commitIdAbbrev;
 		String remoteOriginURL;
 
-		Properties properties = new Properties();
-
 		try(final InputStream inputStream = GetServerStatus.class.getClassLoader().getResourceAsStream("/git.properties"))
 		{
+			Properties properties = new Properties();
+
 			properties.load(inputStream);
 
 			tags = properties.getProperty("git.tags");
@@ -96,6 +66,36 @@ public class GetServerStatus extends AbstractCommand
 		      .append("<field name=\"commitId\"><![CDATA[").append(commitId).append("]]></field>")
 		      .append("<field name=\"commitIdAbbrev\"><![CDATA[").append(commitIdAbbrev).append("]]></field>")
 		      .append("<field name=\"remoteOriginURL\"><![CDATA[").append(remoteOriginURL).append("]]></field>")
+		      .append("</row>")
+		      .append("</rowset>")
+		;
+
+		/*-----------------------------------------------------------------*/
+
+		SimpleShell simpleShell = new SimpleShell();
+
+		simpleShell.connect();
+		SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname"});
+		simpleShell.disconnect();
+
+		String hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim() : "N/A";
+
+		/*-----------------------------------------------------------------*/
+
+		Runtime runtime = java.lang.Runtime.getRuntime();
+
+		File file = new File(System.getProperty("catalina.base", GetServerStatus.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"hardware\">")
+		      .append("<row>")
+		      .append("<field name=\"hostName\"><![CDATA[").append(hostName).append("]]></field>")
+		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
+		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")
+		      .append("<field name=\"freeMem\"><![CDATA[").append(runtime.freeMemory()).append("]]></field>")
+		      .append("<field name=\"totalMem\"><![CDATA[").append(runtime.totalMemory()).append("]]></field>")
+		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")
 		;
