@@ -1,4 +1,4 @@
-#-----------------------------------------------------------------------------
+
 
 DROP TABLE IF EXISTS `DATASET_FILE_BRIDGE`;;
 DROP TABLE IF EXISTS `DATASET_PARAM`;;
@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `FILE_TYPE`;;
 DROP TABLE IF EXISTS `DATASET_TYPE`;;
 DROP TABLE IF EXISTS `PROJECT`;;
 
-#-----------------------------------------------------------------------------
+
 
 CREATE TABLE `PROJECT` (
   `id` INT NOT NULL,
@@ -30,7 +30,7 @@ ALTER TABLE `PROJECT`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
-#-----------------------------------------------------------------------------
+
 
 CREATE TABLE `DATASET_TYPE` (
   `id` INT NOT NULL,
@@ -54,7 +54,7 @@ ALTER TABLE `DATASET_TYPE`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
-#-----------------------------------------------------------------------------
+
 
 CREATE TABLE `FILE_TYPE` (
   `id` INT NOT NULL,
@@ -76,7 +76,7 @@ ALTER TABLE `FILE_TYPE`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
-#-----------------------------------------------------------------------------
+
 
 CREATE TABLE `DATASET` (
   `id` INT NOT NULL,
@@ -99,7 +99,7 @@ ALTER TABLE `DATASET`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
-#-----------------------------------------------------------------------------
+
 
 CREATE TABLE `FILE` (
   `id` INT NOT NULL,
@@ -122,7 +122,7 @@ ALTER TABLE `FILE`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
-#-----------------------------------------------------------------------------
+
 
 CREATE TABLE `DATASET_FILE_BRIDGE` (
   `id` INT NOT NULL,
@@ -146,7 +146,7 @@ ALTER TABLE `DATASET_FILE_BRIDGE`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
-#-----------------------------------------------------------------------------
+
 
 CREATE TABLE `DATASET_PARAM` (
   `id` INT NOT NULL,

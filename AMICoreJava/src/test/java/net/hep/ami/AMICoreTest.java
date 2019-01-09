@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.*;
 
@@ -199,7 +200,75 @@ public class AMICoreTest
 		SimpleQuerier testDB = new SimpleQuerier("test");
 
 		// execute sql create test database
+		/*-----------------------------------------------------------------*/
+		/* SELECT PROFILE                                                  */
+		/*-----------------------------------------------------------------*/
 
+		String path;
+
+		String jdbcUrl = test_url;
+
+		/**/ if(jdbcUrl.contains("jdbc:mysql")) {
+			path = "/sql/testDB-mysql.sql";
+		}
+		else if(jdbcUrl.contains("jdbc:mariadb")) {
+			path = "/sql/testDB-mysql.sql";
+		}
+		else if(jdbcUrl.contains("jdbc:oracle")) {
+			path = "/sql/testDB-oracle.sql";
+		}
+		else if(jdbcUrl.contains("jdbc:postgresql")) {
+			path = "/sql/testDB-postgresql.sql";
+		}
+		else {
+			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
+		}
+		/*-----------------------------------------------------------------*/
+		/* GET INPUT STREAM                                                */
+		/*-----------------------------------------------------------------*/
+
+		InputStream inputStream = Router.class.getResourceAsStream(path);
+
+		/*-----------------------------------------------------------------*/
+		/* EXECUTE SQL QUERIES                                             */
+		/*-----------------------------------------------------------------*/
+
+		try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
+		{
+			String line = "";
+			String query = "";
+
+			while((line = bufferedReader.readLine()) != null)
+			{
+				line = line.trim();
+
+				if(line.isEmpty() == false
+				   &&
+				   line.startsWith("-") == false
+				 ) {
+					query += line + " ";
+
+					if(line.endsWith(";;"))
+					{
+						LogSingleton.root.info(query);
+
+						try
+						{
+							System.out.println("Query " + query.replace(";;", ""));
+							testDB.executeSQLUpdate(query.replace(";;", ""));
+						}
+						catch(SQLException e)
+						{
+							throw new SQLException(e.getMessage() + " for SQL query: " + query.replace(";;", ""), e);
+						}
+
+						query = "";
+					}
+				}
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		/*
 		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog\"";
