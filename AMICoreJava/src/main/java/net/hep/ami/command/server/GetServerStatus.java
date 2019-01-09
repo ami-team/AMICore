@@ -42,14 +42,60 @@ public class GetServerStatus extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"system\">")
+		result.append("<rowset type=\"hardware\">")
 		      .append("<row>")
 		      .append("<field name=\"hostName\"><![CDATA[").append(hostName).append("]]></field>")
 		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
 		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")
 		      .append("<field name=\"freeMem\"><![CDATA[").append(runtime.freeMemory()).append("]]></field>")
 		      .append("<field name=\"totalMem\"><![CDATA[").append(runtime.totalMemory()).append("]]></field>")
-		      .append("<field name=\"nbOfCPUs\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
+		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
+		      .append("</row>")
+		      .append("</rowset>")
+		;
+
+		/*-----------------------------------------------------------------*/
+
+		String tags;
+		String buildVersion;
+		String branch;
+		String commitId;
+		String commitIdAbbrev;
+		String remoteOriginURL;
+
+		Properties properties = new Properties();
+
+		try(final InputStream inputStream = GetServerStatus.class.getClassLoader().getResourceAsStream("/git.properties"))
+		{
+			properties.load(inputStream);
+
+			tags = properties.getProperty("git.tags");
+			buildVersion = properties.getProperty("git.build.version");
+			branch = properties.getProperty("git.branch");
+			commitId = properties.getProperty("git.commit.id");
+			commitIdAbbrev = properties.getProperty("git.commit.id.abbrev");
+			remoteOriginURL = properties.getProperty("git.remote.origin.url");
+		}
+		catch(Exception e)
+		{
+			tags = "N/A";
+			buildVersion = "N/A";
+			branch = "N/A";
+			commitId = "N/A";
+			commitIdAbbrev = "N/A";
+			remoteOriginURL = "N/A";
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"software\">")
+		      .append("<row>")
+		      .append("<field name=\"tags\"><![CDATA[").append(tags).append("]]></field>")
+		      .append("<field name=\"buildVersion\"><![CDATA[").append(buildVersion).append("]]></field>")
+		      .append("<field name=\"branch\"><![CDATA[").append(branch).append("]]></field>")
+		      .append("<field name=\"commitId\"><![CDATA[").append(commitId).append("]]></field>")
+		      .append("<field name=\"commitIdAbbrev\"><![CDATA[").append(commitIdAbbrev).append("]]></field>")
+		      .append("<field name=\"remoteOriginURL\"><![CDATA[").append(remoteOriginURL).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")
 		;
