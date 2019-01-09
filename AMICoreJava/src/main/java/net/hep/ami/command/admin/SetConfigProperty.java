@@ -34,11 +34,14 @@ public class SetConfigProperty extends AbstractCommand
 
 		ConfigSingleton.setProperty(name, value);
 
-		ConfigSingleton.setPropertyInDataBase(getQuerier("self"), name, value, m_AMIUser);
+		int nb = ConfigSingleton.setPropertyInDataBase(getQuerier("self"), name, value, m_AMIUser);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder(
+			nb > 0 ? "<info><![CDATA[done with success]]></info>"
+			       : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/

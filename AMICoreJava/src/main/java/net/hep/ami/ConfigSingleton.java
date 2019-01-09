@@ -281,8 +281,10 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void setPropertyInDataBase(Querier querier, String name, String value, String user) throws Exception
+	public static int setPropertyInDataBase(Querier querier, String name, String value, String user) throws Exception
 	{
+		int result;
+
 		name = SecuritySingleton.encrypt(name);
 		value = SecuritySingleton.encrypt(value);
 
@@ -294,26 +296,34 @@ public class ConfigSingleton
 
 		if(rows.size() == 0)
 		{
-			querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, user, user);
+			result = querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, user, user).getNbOfUpdatedRows();
 		}
 		else
 		{
 			if(rows.get(0).getValue(0).equals(value) == false)
 			{
-				querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, user, name);
+				result = querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, user, name).getNbOfUpdatedRows();
+			}
+			else
+			{
+				result = 0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
 			}
 		}
 
 		/*------------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void removePropertyInDataBase(Querier querier, String name) throws Exception
+	public static int removePropertyInDataBase(Querier querier, String name) throws Exception
 	{
-		querier.executeSQLUpdate("DELETE FROM `router_config` WHERE `paramName` = ?",
+		Update update = querier.executeSQLUpdate("DELETE FROM `router_config` WHERE `paramName` = ?",
 			SecuritySingleton.encrypt(name)
 		);
+
+		return update.getNbOfUpdatedRows();
 	}
 
 	/*---------------------------------------------------------------------*/

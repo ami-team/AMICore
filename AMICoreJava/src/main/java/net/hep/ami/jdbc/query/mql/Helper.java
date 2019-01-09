@@ -318,8 +318,6 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/;
-		System.out.println(X);
-		System.out.println(Y);
 		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
 	}
 

@@ -3,7 +3,6 @@ package net.hep.ami.command.admin;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
@@ -30,17 +29,16 @@ public class RemoveConfigProperty extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*-----------------------------------------------------------------*/
-
 		ConfigSingleton.removeProperty(name);
 
-		ConfigSingleton.removePropertyInDataBase(querier, name);
+		int nb = ConfigSingleton.removePropertyInDataBase(getQuerier("self"), name);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder(
+			nb > 0 ? "<info><![CDATA[done with success]]></info>"
+			       : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
