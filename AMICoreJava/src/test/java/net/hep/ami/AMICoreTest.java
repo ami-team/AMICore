@@ -21,7 +21,7 @@ public class AMICoreTest
 
 		if(args.length != 18)
 		{
-			throw new Exception("Wrong number of arguments (expected 13):" + args.length);
+			throw new Exception("Wrong number of arguments (expected 18):" + args.length);
 		}
 
 		// mysql args
