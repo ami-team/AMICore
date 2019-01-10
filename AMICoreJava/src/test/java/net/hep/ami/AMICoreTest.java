@@ -269,9 +269,11 @@ public class AMICoreTest
 			}
 		}
 
+		// catalog singleton reload (true)
+		CatalogSingleton.reload(true);
 		/*-----------------------------------------------------------------*/
 
-		
+
 		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl\"";
 		try
 		{
