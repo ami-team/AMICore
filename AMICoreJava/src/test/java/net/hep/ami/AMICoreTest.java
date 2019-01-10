@@ -34,7 +34,7 @@ public class AMICoreTest
 		// oracle args
 		// "/Users/jfulach/.ami" "/" "https://ccami006.in2p3.fr:445" "admin" "insider" "ami@lpsc.in2p3.fr" "mPe1JQxaZiAfFaws" "AMI_TEST_ROUTER" "AMI_TEST_ROUTER" "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v2.in2p3.fr)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v3.in2p3.fr)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = ccdev11g.in2p3.fr)))" "ami_test_database" "notthisone" "" "AMI_TEST_DATABASE" "AMI_TEST_DATABASE" "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v2.in2p3.fr)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v3.in2p3.fr)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = ccdev11g.in2p3.fr)))" "ami_test_database" "notthisone"
 
-		String router_reset = "off"; //on
+		String router_reset = "on"; //on
 
 		String configPath = args[0];
 		String servletPath = args[1];
