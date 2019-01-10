@@ -114,6 +114,24 @@ public interface Querier
 	/*---------------------------------------------------------------------*/
 
 	/**
+	 * @deprecated (for internal use only)
+	 */
+
+	@Deprecated
+	public Connection getConnection();
+
+	/*---------------------------------------------------------------------*/
+
+	/**
+	 * @deprecated (for internal use only)
+	 */
+
+	@Deprecated
+	public Statement getStatement();
+
+	/*---------------------------------------------------------------------*/
+
+	/**
 	 * Retrieves the internal catalog name of this querier.
 	 *
 	 * @return The internal catalog name.

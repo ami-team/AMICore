@@ -117,6 +117,24 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	@Deprecated
+	public Connection getConnection()
+	{
+		return m_driver.getConnection();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	@Deprecated
+	public Statement getStatement()
+	{
+		return m_driver.getStatement();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String getInternalCatalog()
 	{
 		return m_driver.getInternalCatalog();
