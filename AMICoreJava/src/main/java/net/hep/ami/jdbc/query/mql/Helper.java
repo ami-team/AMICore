@@ -280,13 +280,13 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				X.add(foreignKey.toStringBuilder(QId.MASK_FIELD));
+				X.add(new StringBuilder(Utility.textToSqlId(foreignKey.toString(QId.MASK_FIELD))));
 
 				Y.add(expression);
 			}
 			else
 			{
-				X.add(resolution.getExternalQId().toStringBuilder(QId.MASK_FIELD));
+				X.add(new StringBuilder(Utility.textToSqlId(resolution.getExternalQId().toString(QId.MASK_FIELD))));
 
 				Y.add(expression);
 			}
@@ -301,23 +301,24 @@ public class Helper
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
 		{
 			if(tmp.created && insert) {
-				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
 
 			if(tmp.createdBy && insert) {
-				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
+				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
 			}
 
 			if(tmp.modified) {
-				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
 			}
 
 			if(tmp.modifiedBy) {
-				X.add(new StringBuilder(tmp.name)); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
+				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
 			}
 		}
 
-		/*-----------------------------------------------------------------*/;
+		/*-----------------------------------------------------------------*/
+
 		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
 	}
 
