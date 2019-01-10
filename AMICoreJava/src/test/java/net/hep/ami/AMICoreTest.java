@@ -26,13 +26,13 @@ public class AMICoreTest
 		}
 
 		// mysql args
-		// "/Users/jfulach/.ami" "/" "https://ccami006.in2p3.fr:447" "admin" "insider" "ami@lpsc.in2p3.fr" "mPe1JQxaZiAfFaws" "ami_test_router" "" "jdbc:mysql://ccmysql.in2p3.fr:3306" "ami_test_router" "notthisone" "" "ami_test_router" "" "jdbc:mysql://ccmysql.in2p3.fr:3306" "ami_test_router" "notthisone"
+		// "/Users/jfulach/.ami" "/" "https://ccami006.in2p3.fr:447" "admin" "insider" "ami@lpsc.in2p3.fr" "mPe1JQxaZiAfFaws" "ami_test_router" "" "jdbc:mysql://ccmysql.in2p3.fr:3306" "ami_test_router" "notthisone" "" "ami_test_database" "" "jdbc:mysql://ccmysql.in2p3.fr:3306" "ami_test_db" "notthisone"
 
 		// postgres args
 		// "/Users/jfulach/.ami" "/" "https://ccami006.in2p3.fr:446" "admin" "insider" "ami@lpsc.in2p3.fr" "mPe1JQxaZiAfFaws" "ami_test_router" "public" "jdbc:postgresql://ccpgsql.in2p3.fr:5432/ami_test_router" "ami_test_router" "notthisone" "" "ami_test_database" "public" "jdbc:postgresql://ccpgsql.in2p3.fr:5432/ami_test_database" "ami_test_database" "notthisone"
 
 		// oracle args
-		// "/Users/jfulach/.ami" "/" "https://ccami006.in2p3.fr:445" "admin" "insider" "ami@lpsc.in2p3.fr" "mPe1JQxaZiAfFaws" "AMI_TEST_ROUTER" "AMI_TEST_ROUTER" "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v2.in2p3.fr)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v3.in2p3.fr)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = ccdev11g.in2p3.fr)))" "ami_test_database" "notthisone" "" "AMI_TEST_DATABASE" "AMI_TEST_DATABASE" "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v2.in2p3.fr)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v3.in2p3.fr)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = ccdev11g.in2p3.fr)))" "ami_test_database" "notthisone"
+		// "/Users/jfulach/.ami" "/" "https://ccami006.in2p3.fr:445" "admin" "insider" "ami@lpsc.in2p3.fr" "mPe1JQxaZiAfFaws" "AMI_TEST_ROUTER" "AMI_TEST_ROUTER" "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v2.in2p3.fr)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v3.in2p3.fr)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = ccdev11g.in2p3.fr)))" "ami_test_router" "notthisone" "" "AMI_TEST_DATABASE" "AMI_TEST_DATABASE" "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v2.in2p3.fr)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP)(HOST = ccdbora5v3.in2p3.fr)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = ccdev11g.in2p3.fr)))" "ami_test_database" "notthisone"
 
 		String router_reset = "on"; //on
 
@@ -255,7 +255,8 @@ public class AMICoreTest
 						try
 						{
 							System.out.println("Query " + query.replace(";;", ""));
-							testDB.executeSQLUpdate(query.replace(";;", ""));
+							testDB.getStatement().execute(query.replace(";;", ""));
+							//testDB.commit();
 						}
 						catch(SQLException e)
 						{
@@ -270,8 +271,8 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		/*
-		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog\"";
+		
+		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl\"";
 		try
 		{
 			System.out.println(CommandSingleton.executeCommand(command).replace(">", ">\n"));
@@ -280,7 +281,7 @@ public class AMICoreTest
 		{
 			System.out.println(e.getMessage());
 		}
-		*/
+		
 
 		System.out.println("done");
 		System.exit(0);
