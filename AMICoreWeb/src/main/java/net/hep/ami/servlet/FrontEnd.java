@@ -174,16 +174,23 @@ public class FrontEnd extends HttpServlet
 			}
 			catch(Exception e)
 			{
-				//data = XMLTemplates.error(
-				//	e.getMessage()
-				//);
+				if(ConfigSingleton.getProperty("dev_mode", false))
+				{
+					StringWriter sw = new StringWriter();
+					PrintWriter pw = new PrintWriter(sw);
 
-				StringWriter sw = new StringWriter();
-				PrintWriter pw = new PrintWriter(sw);
+					e.printStackTrace(pw);
 
-				e.printStackTrace(pw);
-
-				data = XMLTemplates.error(sw.toString());
+					data = XMLTemplates.error(
+						sw.toString()
+					);
+				}
+				else
+				{
+					data = XMLTemplates.error(
+						e.getMessage()
+					);
+				}
 			}
 		}
 		else

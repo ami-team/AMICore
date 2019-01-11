@@ -405,7 +405,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static byte[] s_key;
+	private static KeyParameter s_keyParameter;
 
 	/*---------------------------------------------------------------------*/
 
@@ -422,16 +422,14 @@ public class SecuritySingleton
 
 	public static void init(String password) throws Exception
 	{
-		byte[] key;
-
 		final int length = password.length();
 
 		/****/ if(length <= 16) {
-			s_key = String.format("%1$-16s", password).getBytes(StandardCharsets.UTF_8);
+			s_keyParameter = new KeyParameter(String.format("%1$-16s", password).getBytes(StandardCharsets.UTF_8));
 		} else if(length <= 24) {
-			s_key = String.format("%1$-24s", password).getBytes(StandardCharsets.UTF_8);
+			s_keyParameter = new KeyParameter(String.format("%1$-24s", password).getBytes(StandardCharsets.UTF_8));
 		} else if(length <= 32) {
-			s_key = String.format("%1$-32s", password).getBytes(StandardCharsets.UTF_8);
+			s_keyParameter = new KeyParameter(String.format("%1$-32s", password).getBytes(StandardCharsets.UTF_8));
 		} else {
 			throw new Exception("too long password (max 32)");
 		}
@@ -796,7 +794,7 @@ public class SecuritySingleton
 
 		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine());
 
-		cipher.init(true, new KeyParameter(s_key));
+		cipher.init(true, s_keyParameter);
 
 		/*-----------------------------------------------------------------*/
 
@@ -826,7 +824,7 @@ public class SecuritySingleton
 
 		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine());
 
-		cipher.init(false, new KeyParameter(s_key));
+		cipher.init(false, s_keyParameter);
 
 		/*-----------------------------------------------------------------*/
 
