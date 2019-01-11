@@ -37,6 +37,7 @@ public class AMICoreTest
 		String router_reset = "on"; //on
 
 		String configPath = args[0];
+		System.out.println("configPath:" + configPath);
 		String servletPath = args[1];
 
 		String host = args[2];
