@@ -27,7 +27,7 @@ done
 
   cd $AMI_HOME
 
-  $JAVA_HOME/bin/java -Dfile.encoding=UTF-8 -Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom -Dami.conffile=-$1/AMI.xml -classpath $AMICLASSPATH net.hep.ami.AMICoreTest $@
+  $JAVA_HOME/bin/java -Dfile.encoding=UTF-8 -Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom -Dami.configfile=$1/AMI.xml -classpath $AMICLASSPATH net.hep.ami.AMICoreTest $@
 
   if [[ $? == "0" ]]
   then
