@@ -63,7 +63,7 @@ public class AMICoreTest
 		String test_user = args[16];
 		String test_pass = args[17];
 
-		System.setProperty("ami.configfile", configPath + File.separator + "AMI.xml");
+		System.setProperty("ami.conffile", configPath + File.separator + "AMI.xml");
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD CONFIG FILE                                               */
