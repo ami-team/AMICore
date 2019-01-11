@@ -1,0 +1,76 @@
+package net.hep.ami.command.user;
+
+import java.util.*;
+
+import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
+import net.hep.ami.command.*;
+
+@CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
+public class ResetPassword extends AbstractCommand
+{
+	/*---------------------------------------------------------------------*/
+
+	static final String EMAIL = "%s";
+
+	/*---------------------------------------------------------------------*/
+
+	public ResetPassword(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	{
+		super(userRoles, arguments, transactionId);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public StringBuilder main(Map<String, String> arguments) throws Exception
+	{
+		String amiLogin = arguments.get("amiLogin");
+
+		if(amiLogin == null)
+		{
+			throw new Exception("invalid usage");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		List<Row> rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass`, `email` FROM `router_user` WHERE `AMIUser` = ? AND `valid` != 0", amiLogin).getAll(10, 0);
+
+		if(rowList.size() > 0)
+		{
+			Row row = rowList.get(0);
+
+			String tmpUser = /*---------------------*/(row.getValue(0));
+			String tmpPass = SecuritySingleton.decrypt(row.getValue(1));
+			String  email  = /*---------------------*/(row.getValue(2));
+
+			MailSingleton.sendMessage(
+				ConfigSingleton.getProperty("admin_email"),
+				email,
+				null,
+				"Reset AMI password",
+				String.format(EMAIL, SecuritySingleton.buildTmpPassword(tmpUser, tmpPass))
+			);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String help()
+	{
+		return "Reset password.";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String usage()
+	{
+		return "-amiLogin=\"\"";
+	}
+
+	/*---------------------------------------------------------------------*/
+}

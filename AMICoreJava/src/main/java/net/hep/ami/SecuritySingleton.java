@@ -405,8 +405,7 @@ public class SecuritySingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static final PaddedBufferedBlockCipher s_encryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
-	private static final PaddedBufferedBlockCipher s_decryptCipher = new PaddedBufferedBlockCipher(new AESEngine());
+	private static byte[] s_key;
 
 	/*---------------------------------------------------------------------*/
 
@@ -428,18 +427,14 @@ public class SecuritySingleton
 		final int length = password.length();
 
 		/****/ if(length <= 16) {
-			key = String.format("%1$-16s", password).getBytes(StandardCharsets.UTF_8);
+			s_key = String.format("%1$-16s", password).getBytes(StandardCharsets.UTF_8);
 		} else if(length <= 24) {
-			key = String.format("%1$-24s", password).getBytes(StandardCharsets.UTF_8);
+			s_key = String.format("%1$-24s", password).getBytes(StandardCharsets.UTF_8);
 		} else if(length <= 32) {
-			key = String.format("%1$-32s", password).getBytes(StandardCharsets.UTF_8);
+			s_key = String.format("%1$-32s", password).getBytes(StandardCharsets.UTF_8);
 		} else {
 			throw new Exception("too long password (max 32)");
 		}
-
-		s_encryptCipher.init(true, new KeyParameter(key));
-
-		s_decryptCipher.init(false, new KeyParameter(key));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -797,14 +792,24 @@ public class SecuritySingleton
 		byte[] ibuff = new byte[16];
 		byte[] obuff = new byte[512];
 
+		/*-----------------------------------------------------------------*/
+
+		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine());
+
+		cipher.init(true, new KeyParameter(s_key));
+
+		/*-----------------------------------------------------------------*/
+
 		while((noBytesRead = inputStream.read(ibuff)) >= 0)
 		{
-			noBytesProcessed = s_encryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
+			noBytesProcessed = cipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
 			outputStreamut.write(obuff, 0, noBytesProcessed);
 		}
 
-		noBytesProcessed = s_encryptCipher.doFinal(obuff, 0);
+		noBytesProcessed = cipher.doFinal(obuff, 0);
 		outputStreamut.write(obuff, 0, noBytesProcessed);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -817,14 +822,24 @@ public class SecuritySingleton
 		byte[] ibuff = new byte[16];
 		byte[] obuff = new byte[512];
 
+		/*-----------------------------------------------------------------*/
+
+		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine());
+
+		cipher.init(false, new KeyParameter(s_key));
+
+		/*-----------------------------------------------------------------*/
+
 		while((noBytesRead = inputStream.read(ibuff)) >= 0)
 		{
-			noBytesProcessed = s_decryptCipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
+			noBytesProcessed = cipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
 			outputStream.write(obuff, 0, noBytesProcessed);
 		}
 
-		noBytesProcessed = s_decryptCipher.doFinal(obuff, 0);
+		noBytesProcessed = cipher.doFinal(obuff, 0);
 		outputStream.write(obuff, 0, noBytesProcessed);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -865,7 +880,7 @@ public class SecuritySingleton
 	public static String decrypt(@Nullable String s) throws Exception
 	{
 		return s != null && s.isEmpty() == false ? new String(
-			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.toString(/*------------------*/)))
+			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8)))
 		, StandardCharsets.UTF_8) : "";
 	}
 
