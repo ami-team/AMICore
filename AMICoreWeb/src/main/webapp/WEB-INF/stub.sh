@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#JAVA_HOME=/opt/java/latest
+JAVA_HOME=/opt/java/latest
 
 #############################################################################
 
