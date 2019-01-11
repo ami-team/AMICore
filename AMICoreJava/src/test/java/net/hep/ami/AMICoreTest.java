@@ -47,17 +47,17 @@ public class AMICoreTest
 		String encryption_key = args[6];
 		String router_catalog = args[7];
 		String router_schema = args[8];
-		if("N/A".equals(router_schema))
+		if("NA".equals(router_schema))
 			router_schema = "";
 		String router_url = args[9];
 		String router_user = args[10];
 		String router_pass = args[11];
 		String class_path = args[12];
-		if("N/A".equals(class_path))
+		if("NA".equals(class_path))
 			class_path = "";
 		String test_catalog = args[13];
 		String test_schema = args[14];
-		if("N/A".equals(test_schema))
+		if("NA".equals(test_schema))
 			test_schema = "";
 		String test_url = args[15];
 		String test_user = args[16];
