@@ -176,13 +176,8 @@ public class FrontEnd extends HttpServlet
 			{
 				if(ConfigSingleton.getProperty("dev_mode", false))
 				{
-					StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw);
-
-					e.printStackTrace(pw);
-
 					data = XMLTemplates.error(
-						sw.toString()
+						Arrays.toString(e.getStackTrace())
 					);
 				}
 				else
