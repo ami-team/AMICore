@@ -280,7 +280,8 @@ public class AMICoreTest
 		/*-----------------------------------------------------------------*/
 
 
-		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl\"";
+		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl WHERE 1=1 \" ";
+		
 		try
 		{
 			System.out.println(CommandSingleton.executeCommand(command).replace(">", ">\n"));
