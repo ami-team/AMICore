@@ -52,7 +52,8 @@ public class AMICoreTest
 		String router_user = args[10];
 		String router_pass = args[11];
 		String class_path = args[12];
-
+		if("N/A".equals(class_path))
+			class_path = "";
 		String test_catalog = args[13];
 		String test_schema = args[14];
 		if("N/A".equals(test_schema))
