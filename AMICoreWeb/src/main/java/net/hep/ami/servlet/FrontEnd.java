@@ -177,7 +177,7 @@ public class FrontEnd extends HttpServlet
 				if(ConfigSingleton.getProperty("dev_mode", false))
 				{
 					data = XMLTemplates.error(
-						Arrays.toString(e.getStackTrace())
+						e.getStackTrace()
 					);
 				}
 				else
