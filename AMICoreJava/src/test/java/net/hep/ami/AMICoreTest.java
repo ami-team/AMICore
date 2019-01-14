@@ -96,7 +96,7 @@ public class AMICoreTest
 			String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
 			String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom;
 			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-
+			System.out.println(command);
 			System.out.println(CommandSingleton.executeCommand(command, false).replace(">", ">\n"));
 		}
 		catch (Exception e) 
