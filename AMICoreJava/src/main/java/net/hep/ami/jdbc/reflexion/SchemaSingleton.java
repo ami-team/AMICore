@@ -1049,7 +1049,29 @@ public class SchemaSingleton
 				+
 				"<field name=\"def\"><![CDATA[" + column.def + "]]></field>"
 				+
+				"<field name=\"rank\"><![CDATA[" + column.rank + "]]></field>"
+				+
+				"<field name=\"hidden\"><![CDATA[" + column.hidden + "]]></field>"
+				+
+				"<field name=\"crypted\"><![CDATA[" + column.crypted + "]]></field>"
+				+
 				"<field name=\"primary\"><![CDATA[" + column.primary + "]]></field>"
+				+
+				"<field name=\"created\"><![CDATA[" + column.created + "]]></field>"
+				+
+				"<field name=\"createdBy\"><![CDATA[" + column.createdBy + "]]></field>"
+				+
+				"<field name=\"modified\"><![CDATA[" + column.modified + "]]></field>"
+				+
+				"<field name=\"modifiedBy\"><![CDATA[" + column.modifiedBy + "]]></field>"
+				+
+				"<field name=\"statable\"><![CDATA[" + column.statable + "]]></field>"
+				+
+				"<field name=\"groupable\"><![CDATA[" + column.groupable + "]]></field>"
+				+
+				"<field name=\"description\"><![CDATA[" + column.description + "]]></field>"
+				+
+				"<field name=\"webLinkScript\"><![CDATA[" + column.webLinkScript + "]]></field>"
 				+
 				"</row>"
 			);
