@@ -43,7 +43,7 @@ public class ListFields extends AbstractCommand
 			result.append(
 				"<row>"
 				+
-				"<field name=\"field\">" + field + "</field>"
+				"<field name=\"field\"><![CDATA[" + field + "]]></field>"
 				+
 				"</row>"
 			);

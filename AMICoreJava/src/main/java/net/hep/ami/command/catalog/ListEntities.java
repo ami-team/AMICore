@@ -40,7 +40,7 @@ public class ListEntities extends AbstractCommand
 			result.append(
 				"<row>"
 				+
-				"<field name=\"entity\">" + entity + "</field>"
+				"<field name=\"entity\"><![CDATA[" + entity + "]]></field>"
 				+
 				"</row>"
 			);
