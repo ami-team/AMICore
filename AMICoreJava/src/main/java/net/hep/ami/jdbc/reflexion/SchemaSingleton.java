@@ -1030,51 +1030,29 @@ public class SchemaSingleton
 		{
 			column = entry3.getValue();
 
-			result.append(
-				"<row>"
-				+
-				"<field name=\"externalCatalog\"><![CDATA[" + column.externalCatalog + "]]></field>"
-				+
-				"<field name=\"internalCatalog\"><![CDATA[" + column.internalCatalog + "]]></field>"
-				+
-				"<field name=\"table\"><![CDATA[" + column.table + "]]></field>"
-				+
-				"<field name=\"name\"><![CDATA[" + column.name + "]]></field>"
-				+
-				"<field name=\"type\"><![CDATA[" + column.type + "]]></field>"
-				+
-				"<field name=\"size\"><![CDATA[" + column.size + "]]></field>"
-				+
-				"<field name=\"digits\"><![CDATA[" + column.digits + "]]></field>"
-				+
-				"<field name=\"def\"><![CDATA[" + column.def + "]]></field>"
-				+
-				"<field name=\"rank\"><![CDATA[" + column.rank + "]]></field>"
-				+
-				"<field name=\"hidden\"><![CDATA[" + column.hidden + "]]></field>"
-				+
-				"<field name=\"crypted\"><![CDATA[" + column.crypted + "]]></field>"
-				+
-				"<field name=\"primary\"><![CDATA[" + column.primary + "]]></field>"
-				+
-				"<field name=\"created\"><![CDATA[" + column.created + "]]></field>"
-				+
-				"<field name=\"createdBy\"><![CDATA[" + column.createdBy + "]]></field>"
-				+
-				"<field name=\"modified\"><![CDATA[" + column.modified + "]]></field>"
-				+
-				"<field name=\"modifiedBy\"><![CDATA[" + column.modifiedBy + "]]></field>"
-				+
-				"<field name=\"statable\"><![CDATA[" + column.statable + "]]></field>"
-				+
-				"<field name=\"groupable\"><![CDATA[" + column.groupable + "]]></field>"
-				+
-				"<field name=\"description\"><![CDATA[" + column.description + "]]></field>"
-				+
-				"<field name=\"webLinkScript\"><![CDATA[" + column.webLinkScript + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"externalCatalog\"><![CDATA[").append(column.externalCatalog).append("]]></field>")
+			      .append("<field name=\"internalCatalog\"><![CDATA[").append(column.internalCatalog).append("]]></field>")
+			      .append("<field name=\"table\"><![CDATA[").append(column.table).append("]]></field>")
+			      .append("<field name=\"name\"><![CDATA[").append(column.name).append("]]></field>")
+			      .append("<field name=\"type\"><![CDATA[").append(column.type).append("]]></field>")
+			      .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
+			      .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
+			      .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
+			      .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
+			      .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
+			      .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
+			      .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
+			      .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
+			      .append("<field name=\"createdBy\"><![CDATA[").append(column.createdBy).append("]]></field>")
+			      .append("<field name=\"modified\"><![CDATA[").append(column.modified).append("]]></field>")
+			      .append("<field name=\"modifiedBy\"><![CDATA[").append(column.modifiedBy).append("]]></field>")
+			      .append("<field name=\"statable\"><![CDATA[").append(column.statable).append("]]></field>")
+			      .append("<field name=\"groupable\"><![CDATA[").append(column.groupable).append("]]></field>")
+			      .append("<field name=\"description\"><![CDATA[").append(column.description).append("]]></field>")
+			      .append("<field name=\"webLinkScript\"><![CDATA[").append(column.webLinkScript).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
 		result.append("</rowset>");
@@ -1091,29 +1069,18 @@ public class SchemaSingleton
 		{
 			frgnKey = entry3.getValue().get(0);
 
-			result.append(
-				"<row>"
-				+
-				"<field name=\"name\"><![CDATA[" + frgnKey.name + "]]></field>"
-				+
-				"<field name=\"fkExternalCatalog\"><![CDATA[" + frgnKey.fkExternalCatalog + "]]></field>"
-				+
-				"<field name=\"fkInternalCatalog\"><![CDATA[" + frgnKey.fkInternalCatalog + "]]></field>"
-				+
-				"<field name=\"fkTable\"><![CDATA[" + frgnKey.fkTable + "]]></field>"
-				+
-				"<field name=\"fkColumn\"><![CDATA[" + frgnKey.fkColumn + "]]></field>"
-				+
-				"<field name=\"pkExternalCatalog\"><![CDATA[" + frgnKey.pkExternalCatalog + "]]></field>"
-				+
-				"<field name=\"pkInternalCatalog\"><![CDATA[" + frgnKey.pkInternalCatalog + "]]></field>"
-				+
-				"<field name=\"pkTable\"><![CDATA[" + frgnKey.pkTable + "]]></field>"
-				+
-				"<field name=\"pkColumn\"><![CDATA[" + frgnKey.pkColumn + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row>")
+			      .append("<field name=\"name\"><![CDATA[").append(frgnKey.name).append("]]></field>")
+			      .append("<field name=\"fkExternalCatalog\"><![CDATA[").append(frgnKey.fkExternalCatalog).append("]]></field>")
+			      .append("<field name=\"fkInternalCatalog\"><![CDATA[").append(frgnKey.fkInternalCatalog).append("]]></field>")
+			      .append("<field name=\"fkTable\"><![CDATA[").append(frgnKey.fkTable).append("]]></field>")
+			      .append("<field name=\"fkColumn\"><![CDATA[").append(frgnKey.fkColumn).append("]]></field>")
+			      .append("<field name=\"pkExternalCatalog\"><![CDATA[").append(frgnKey.pkExternalCatalog).append("]]></field>")
+			      .append("<field name=\"pkInternalCatalog\"><![CDATA[").append(frgnKey.pkInternalCatalog).append("]]></field>")
+			      .append("<field name=\"pkTable\"><![CDATA[").append(frgnKey.pkTable).append("]]></field>")
+			      .append("<field name=\"pkColumn\"><![CDATA[").append(frgnKey.pkColumn).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
 		result.append("</rowset>");
