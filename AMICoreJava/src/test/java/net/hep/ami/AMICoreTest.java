@@ -1,14 +1,17 @@
 package net.hep.ami;
 
 import java.io.*;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
+
+import org.junit.jupiter.api.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
+
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -17,8 +20,16 @@ public class AMICoreTest
 {
 	/*---------------------------------------------------------------------*/
 
-	public static void main(String[] args) throws Exception
+	@Test
+	public void databaseTest() throws Exception
 	{
+		if(System.getProperty("ami.integration") == null)
+		{
+			System.out.println("skipping integration");
+
+			return;
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		try
@@ -185,9 +196,6 @@ public class AMICoreTest
 		{
 			System.out.println(e.getMessage());
 		}
-
-		System.out.println("done");
-		System.exit(0);
 	}
 
 	/*---------------------------------------------------------------------*/
