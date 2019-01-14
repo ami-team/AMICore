@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
+import org.junit.jupiter.api.*;
+
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.jdbc.query.sql.*;
@@ -16,6 +18,14 @@ public class CommandSingletonTest
 {
 	/*---------------------------------------------------------------------*/
 
+	@Test
+	public void testMultiply()
+	{
+		System.out.println("Bonjour");
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void main(String[] args) throws Exception
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
@@ -24,9 +34,9 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-//		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\"§\" -fields=\"externalcatalog§internalcatalog§internalschema§jdbcurl§user§pass§custom§archived§created§createdby§modified§modifiedby\" -values=\"a§a§@NULL§a§a§a§{}§0§@CURRENT_TIMESTAMP§a§@CURRENT_TIMESTAMP§a\"", false).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\"§\" -fields=\"externalcatalog§internalcatalog§internalschema§jdbcurl§user§pass§custom§archived§created§createdby§modified§modifiedby\" -values=\"a§a§@NULL§a§a§a§{}§0§@CURRENT_TIMESTAMP§a§@CURRENT_TIMESTAMP§a\"", false).replace(">", ">\n"));
 
 		//System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"test\" -entity=\"C\" -keyFields=\"id\" -keyValues=\"99\"", false).replace(">", ">\n"));
 
