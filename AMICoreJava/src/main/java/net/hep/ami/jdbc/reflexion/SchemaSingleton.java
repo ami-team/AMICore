@@ -722,7 +722,38 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		boolean isOk = force || ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
+		boolean slow = ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
+
+		/*-----------------------------------------------------------------*/
+		/* FORCE                                                      */
+		/*-----------------------------------------------------------------*/
+
+		if(force)
+		{
+			try
+			{
+				File[] files = new File(ConfigSingleton.getConfigPathName() + File.separator + "cache").listFiles();
+
+				if(files != null)
+				{
+					for(File file: files)
+					{
+						try
+						{
+							file.delete();
+						}
+						catch(SecurityException e)
+						{
+							LogSingleton.root.error(e.getMessage(), e);
+						}
+					}
+				}
+			}
+			catch(SecurityException e)
+			{
+				LogSingleton.root.error(e.getMessage(), e);
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* FAST METHOD                                                     */
@@ -754,7 +785,7 @@ public class SchemaSingleton
 		/* SLOW METHOD                                                     */
 		/*-----------------------------------------------------------------*/
 
-		if(isOk)
+		if(slow)
 		{
 			List<Thread> threads = new ArrayList<>();
 
