@@ -70,20 +70,6 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		try 
-		{
-			String selfCustom = "{\\\"router_authority\\\":{\\\"x\\\":790,\\\"y\\\":460,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_catalog\\\":{\\\"x\\\":270,\\\"y\\\":10,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_catalog_extra\\\":{\\\"x\\\":530,\\\"y\\\":10,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_command\\\":{\\\"x\\\":10,\\\"y\\\":480,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_command_role\\\":{\\\"x\\\":10,\\\"y\\\":360,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_config\\\":{\\\"x\\\":10,\\\"y\\\":10,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_converter\\\":{\\\"x\\\":10,\\\"y\\\":180,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_foreign_key\\\":{\\\"x\\\":790,\\\"y\\\":10,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_ipv4_blocks\\\":{\\\"x\\\":10,\\\"y\\\":740,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_ipv6_blocks\\\":{\\\"x\\\":530,\\\"y\\\":740,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_locations\\\":{\\\"x\\\":270,\\\"y\\\":755,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_role\\\":{\\\"x\\\":270,\\\"y\\\":360,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_search_interface\\\":{\\\"x\\\":270,\\\"y\\\":480,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_short_url\\\":{\\\"x\\\":790,\\\"y\\\":250,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_user\\\":{\\\"x\\\":530,\\\"y\\\":480,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"router_user_role\\\":{\\\"x\\\":530,\\\"y\\\":360,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"}}";
-			String command = "UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -where=\"externalCatalog='self'\" -separator=\";\" -fields=\"custom\" -values=\"" + selfCustom + "\"";
-
-			System.out.println(CommandSingleton.executeCommand(command, false).replace(">", ">\n"));
-		}
-		catch (Exception e) 
-		{
-			System.out.println(e.getMessage());
-		}
-
-		/*-----------------------------------------------------------------*/
-
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
 		String test_url = ConfigSingleton.getProperty("test_url");
@@ -92,11 +78,13 @@ public class AMICoreTest
 
 		try 
 		{
-			String testCustom = "{\\\"DATASET\\\":{\\\"x\\\":260,\\\"y\\\":45,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"DATASET_FILE_BRIDGE\\\":{\\\"x\\\":260,\\\"y\\\":255,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"DATASET_PARAM\\\":{\\\"x\\\":5,\\\"y\\\":0,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"DATASET_TYPE\\\":{\\\"x\\\":605,\\\"y\\\":225,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"FILE\\\":{\\\"x\\\":260,\\\"y\\\":450,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"FILE_TYPE\\\":{\\\"x\\\":610,\\\"y\\\":450,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"},\\\"PROJECT\\\":{\\\"x\\\":600,\\\"y\\\":50,\\\"topColor\\\":\\\"#0066CC\\\",\\\"bodyColor\\\":\\\"#FFFFFF\\\",\\\"strokeColor\\\":\\\"#0057AD\\\"}}";
+			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_TYPE\":{\"x\":540,\"y\":230,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE\":{\"x\":280,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"PROJECT\":{\"x\":540,\"y\":65,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"}}";
+
 			String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
-			String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom;
+			String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
+
 			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-			System.out.println(command);
+
 			System.out.println(CommandSingleton.executeCommand(command, false).replace(">", ">\n"));
 		}
 		catch (Exception e) 
@@ -181,10 +169,11 @@ public class AMICoreTest
 			}
 		}
 
-		// catalog singleton reload (true)
-		CatalogSingleton.reload(true);
 		/*-----------------------------------------------------------------*/
 
+		CatalogSingleton.reload(true);
+
+		/*-----------------------------------------------------------------*/
 
 		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl WHERE externalCatalog LIKE '%%' \" ";
 
@@ -196,6 +185,8 @@ public class AMICoreTest
 		{
 			System.out.println(e.getMessage());
 		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
