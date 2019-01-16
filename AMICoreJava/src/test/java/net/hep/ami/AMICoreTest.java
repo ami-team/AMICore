@@ -254,7 +254,7 @@ public class AMICoreTest
 		}
 
 		/*-----------------------------------------------------------------*/
-	
+
 		try
 		{
 			arguments.clear();
@@ -288,7 +288,10 @@ public class AMICoreTest
 		}
 
 		/*-----------------------------------------------------------------*/
-		for (int i = 0; i < 100; i++) {
+
+		int cptMax = 100;
+
+		for (int i = 0; i < cptMax; i++) {
 			try
 			{
 				arguments.clear();
@@ -296,16 +299,87 @@ public class AMICoreTest
 				arguments.put("entity", "DATASET");
 				arguments.put("separator", ";");
 				arguments.put("fields", "name;DATASET_TYPE.name;PROJECT.name");
-				arguments.put("values", "dataset" + i + ";A;AMI");
+				arguments.put("values", "dataset_" + i + ";A;AMI");
 				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-	
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 			}
 		}
+
 		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "FILE_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description");
+			arguments.put("values", "TEXT;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "FILE_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description");
+			arguments.put("values", "BINARY;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		for (int i = 0; i < cptMax; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "FILE");
+				arguments.put("separator", ";");
+				arguments.put("fields", "name;FILE_TYPE.name");
+				arguments.put("values", "file_" + i + ";BINARY");
+				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+		}
+
+		for (int i = 0; i < cptMax; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET_FILE_BRIDGE");
+				arguments.put("separator", ";");
+				arguments.put("fields", "FILE.name;DATASET.name;PROJECT.name");
+				arguments.put("values", "file_" + i + ";dataset_" + i +";AMI");
+				//System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
 	}
 
 	/*---------------------------------------------------------------------*/
