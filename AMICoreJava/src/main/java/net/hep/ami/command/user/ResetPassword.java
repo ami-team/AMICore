@@ -61,7 +61,7 @@ public class ResetPassword extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<info><![CDATA[email sent with success]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
