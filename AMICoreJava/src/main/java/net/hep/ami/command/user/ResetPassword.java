@@ -13,7 +13,7 @@ public class ResetPassword extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	static final String EMAIL = "%s?subapp=resetPassword&userdata=%s";
+	static final String EMAIL = "%s?subapp=resetPassword&userdata=%s %s";
 
 	/*---------------------------------------------------------------------*/
 
@@ -55,7 +55,7 @@ public class ResetPassword extends AbstractCommand
 				email,
 				null,
 				"Reset AMI password",
-				String.format(EMAIL, ConfigSingleton.getProperty("host"), userdata)
+				String.format(EMAIL, ConfigSingleton.getProperty("host"), userdata, tmpPass)
 			);
 		}
 
