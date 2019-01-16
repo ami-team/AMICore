@@ -289,7 +289,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		int cptMax = 100;
+		int cptMax = 10;
 
 		for (int i = 0; i < cptMax; i++) {
 			try
@@ -368,9 +368,11 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "FILE.name;DATASET.name;PROJECT.name");
-				arguments.put("values", "file_" + i + ";dataset_" + i +";AMI");
-				//System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+				//arguments.put("fields", "FILE.name;DATASET.name;PROJECT.name");
+				//arguments.put("values", "file_" + i + ";dataset_" + i +";AMI");
+				arguments.put("fields", "FILE.name;DATASET.name");
+				arguments.put("values", "file_" + i + ";dataset_" + i +"");
+				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
 			}
 			catch(Exception e)
 			{
