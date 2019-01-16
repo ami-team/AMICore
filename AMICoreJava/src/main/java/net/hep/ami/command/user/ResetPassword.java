@@ -46,14 +46,16 @@ public class ResetPassword extends AbstractCommand
 			String tmpPass = SecuritySingleton.decrypt(row.getValue(1));
 			String  email  = /*---------------------*/(row.getValue(2));
 
-			String data = "{\"login\": \"" + Utility.textToJavaString(tmpUser) + "\", \"old_pass\": \"" + SecuritySingleton.buildTmpPassword(tmpUser, tmpPass) + "\"}";
+			String userdata = "{\"login\": \"" + Utility.textToJavaString(tmpUser) + "\", \"old_pass\": \"" + SecuritySingleton.buildTmpPassword(tmpUser, tmpPass) + "\"}";
+
+			userdata = new String(org.bouncycastle.util.encoders.Base64.encode(userdata.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
 			MailSingleton.sendMessage(
 				ConfigSingleton.getProperty("admin_email"),
 				email,
 				null,
 				"Reset AMI password",
-				String.format(EMAIL, ConfigSingleton.getProperty("host"), org.bouncycastle.util.encoders.Base64.encode(data.getBytes(StandardCharsets.UTF_8)))
+				String.format(EMAIL, ConfigSingleton.getProperty("host"), userdata)
 			);
 		}
 
