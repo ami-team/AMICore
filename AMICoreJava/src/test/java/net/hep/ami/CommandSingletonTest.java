@@ -34,7 +34,11 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
+		CommandSingleton.executeCommand("GetSessionInfo", arguments, true);
+
+		Thread.sleep(2000);
+
+//		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", arguments, true).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass\" -values=\"test2;ami_test_database;;jdbc:mysql://ccmysql.in2p3.fr:3306;ami_test_db;olivet556_saumon\"", false).replace(">", ">\n"));
 

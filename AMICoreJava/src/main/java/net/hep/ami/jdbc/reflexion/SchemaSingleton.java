@@ -222,6 +222,10 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
+		public static final org.slf4j.Logger m_logger = LogSingleton.getLogger(Extractor.class.getSimpleName(), "INFO");
+
+		/*-----------------------------------------------------------------*/
+
 		private final Map<String, String> m_externalCatalogToInternalCatalog;
 		private final Map<String, String> m_internalCatalogToExternalCatalog;
 
@@ -308,7 +312,7 @@ public class SchemaSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "could not extract catalog schemas", e);
+				m_logger.error(LogSingleton.FATAL, "could not extract catalog schemas", e);
 			}
 		}
 
@@ -324,7 +328,7 @@ public class SchemaSingleton
 
 		private void saveSchemaToFiles() throws Exception
 		{
-			LogSingleton.root.info("saving to file schema of catalog '{}'", m_externalCatalog);
+			m_logger.info("saving to file schema of catalog '{}'", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 
@@ -360,7 +364,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromFiles() throws Exception
 		{
-			LogSingleton.root.info("loading from file schema of catalog '{}'", m_externalCatalog);
+			m_logger.info("loading from file schema of catalog '{}'", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 
@@ -398,7 +402,7 @@ public class SchemaSingleton
 		{
 			Set<String> tables = new HashSet<>();
 
-			LogSingleton.root.info("loading from database schema of catalog '{}'", m_externalCatalog);
+			m_logger.info("loading from database schema of catalog '{}'", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 			/* CREATE CONNECTION                                           */
@@ -602,6 +606,10 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
+		public static final org.slf4j.Logger m_logger = LogSingleton.getLogger(Extractor.class.getSimpleName(), "INFO");
+
+		/*-----------------------------------------------------------------*/
+
 		private final Map<String, Map<String, Map<String, Column>>> m_columns;
 		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_forwardFKs;
 		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_backwardFKs;
@@ -648,7 +656,7 @@ public class SchemaSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, "could not start thread", e);
+					m_logger.error(LogSingleton.FATAL, "could not start thread", e);
 				}
 			}
 
@@ -664,7 +672,7 @@ public class SchemaSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, "could not join thread", e);
+					m_logger.error(LogSingleton.FATAL, "could not join thread", e);
 				}
 			}
 
@@ -722,17 +730,17 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		boolean slow = ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
+		boolean slow = false || ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
 
 		/*-----------------------------------------------------------------*/
 		/* FORCE                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(force)
+		if(true || force)
 		{
 			try
 			{
-				File[] files = new File(ConfigSingleton.getConfigPathName() + File.separator + "cache").listFiles();
+				File[] files = new File(ConfigSingleton.getConfigPathName() + File.separator + "cache").listFiles((dir, name) -> name.toLowerCase().endsWith(".ser"));
 
 				if(files != null)
 				{

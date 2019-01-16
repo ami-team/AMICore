@@ -56,11 +56,11 @@ public class LogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void reset()
+	public static void reset(String defaultLogLevel)
 	{
 		/*-----------------------------------------------------------------*/
 
-		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level", "WARN"));
+		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level", defaultLogLevel));
 
 		/*-----------------------------------------------------------------*/
 
@@ -90,9 +90,16 @@ public class LogSingleton
 
 	public static org.slf4j.Logger getLogger(String name)
 	{
+		return getLogger(name, "WARN");
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static org.slf4j.Logger getLogger(String name, String defaultLogLevel)
+	{
 		/*-----------------------------------------------------------------*/
 
-		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level", "WARN"));
+		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level", defaultLogLevel));
 
 		/*-----------------------------------------------------------------*/
 
