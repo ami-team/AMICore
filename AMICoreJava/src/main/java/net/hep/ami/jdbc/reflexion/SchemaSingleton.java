@@ -426,7 +426,7 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                             */
 				/*---------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z.isEmpty() == false ? m_tuple.z : null, "%", null))
+				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z.isEmpty() == false ? m_tuple.z : null, "%", new String[] {"TABLE", "VIEW"}))
 				{
 					String temp;
 
