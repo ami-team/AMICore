@@ -182,6 +182,35 @@ public class AMICoreTest
 				}
 			}
 		}
+		String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_TYPE","FILE","FILE_TYPE"};
+		for (int i = 0; i < testTables.length; i++) {
+			try 
+			{
+				String fields = "catalog;entity;field;isCreatedBy";
+				String values = "test;" + testTables[i] +";createdBy;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+			}
+
+			try 
+			{
+				String fields = "catalog;entity;field;isModifiedBy";
+				String values = "test;" + testTables[i] +";modifiedBy;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+			}
+
+		}
 
 		testDB.commitAndRelease();
 
