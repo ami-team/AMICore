@@ -187,9 +187,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("DONE 1");
 		CatalogSingleton.reload(true);
-		System.out.println("DONE 2");
 
 		/*-----------------------------------------------------------------*/
 
@@ -205,66 +203,30 @@ public class AMICoreTest
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		Map<String, String> arguments = new HashMap<String, String>();
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "PROJECT");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description");
+			arguments.put("values", "AMI;This an AMI demonstration project");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+
 	}
 
 	/*---------------------------------------------------------------------*/
 }
-
-
-/*
-
-Map<String, String> arguments = new HashMap<String, String>();
-
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "PROJECT");
-arguments.put("name", "AMI");
-arguments.put("description", "This an AMI demonstration project");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "PROJECT");
-arguments.put("name", "AMI_2");
-arguments.put("description", "This an other AMI demonstration project");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
-arguments.put("catalog", "test");
-arguments.put("entity", "PROJECT");
-arguments.put("name", "AMI_2");
-System.out.println(CommandSingleton.executeCommand("RemoveElement", arguments, false).replace(">", ">\n"));
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "FILE_TYPE");
-arguments.put("name", "TEXT");
-arguments.put("description", "This is a file type");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
-arguments.put("catalog", "test");
-arguments.put("entity", "FILE_TYPE");
-arguments.put("name", "BINARY");
-arguments.put("description", "This is an other file type");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "DATASET_TYPE");
-arguments.put("name", "A");
-arguments.put("project.name", "AMI");
-arguments.put("description", "This is a dataset type for project AMI");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
-arguments.put("catalog", "test");
-arguments.put("entity", "DATASET_TYPE");
-arguments.put("name", "B");
-arguments.put("project.name", "AMI");
-arguments.put("description", "This is an other dataset type for project AMI");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
------------------------------------------------------------------------------
-
-*/
