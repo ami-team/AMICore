@@ -20,6 +20,21 @@ public class AMICoreTest
 {
 	/*---------------------------------------------------------------------*/
 
+	public static void main(String[] args) throws Exception
+	{
+		System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
+
+		System.setProperty("ami.integration", "");
+
+		AMICoreTest test = new AMICoreTest();
+
+		test.databaseTest();
+
+		System.exit(0);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@Test
 	public void databaseTest() throws Exception
 	{
@@ -156,7 +171,6 @@ public class AMICoreTest
 						{
 							System.out.println("Query " + query.replace(";;", ""));
 							testDB.getStatement().execute(query.replace(";;", ""));
-							//testDB.commit();
 						}
 						catch(SQLException e)
 						{
@@ -169,9 +183,13 @@ public class AMICoreTest
 			}
 		}
 
+		testDB.commitAndRelease();
+
 		/*-----------------------------------------------------------------*/
 
+		System.out.println("DONE 1");
 		CatalogSingleton.reload(true);
+		System.out.println("DONE 2");
 
 		/*-----------------------------------------------------------------*/
 
