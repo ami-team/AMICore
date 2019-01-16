@@ -254,7 +254,58 @@ public class AMICoreTest
 		}
 
 		/*-----------------------------------------------------------------*/
+	
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "DATASET_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;PROJECT.name;description");
+			arguments.put("values", "A;AMI;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
 
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "DATASET_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;PROJECT.name;description");
+			arguments.put("values", "B;AMI;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+		for (int i = 0; i < 100; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET");
+				arguments.put("separator", ";");
+				arguments.put("fields", "name;DATASET_TYPE.name;PROJECT.name");
+				arguments.put("values", "dataset" + i + ";A;AMI");
+				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+	
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+		}
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
