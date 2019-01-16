@@ -1,11 +1,11 @@
 package net.hep.ami.command.user;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.nio.charset.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.parser.Utility;
+import net.hep.ami.utility.parser.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
@@ -13,7 +13,7 @@ public class ResetPassword extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	static final String EMAIL = "%s?subapp=resetPassword&userdata=%s %s";
+	static final String EMAIL = "%s?subapp=resetPassword&userdata=%s";
 
 	/*---------------------------------------------------------------------*/
 
@@ -46,16 +46,16 @@ public class ResetPassword extends AbstractCommand
 			String tmpPass = SecuritySingleton.decrypt(row.getValue(1));
 			String  email  = /*---------------------*/(row.getValue(2));
 
-			String userdata = "{\"user\": \"" + Utility.textToJavaString(tmpUser) + "\", \"old_pass\": \"" + SecuritySingleton.buildTmpPassword(tmpUser, tmpPass) + "\"}";
+			String userdata = "{\"user\": \"" + Utility.escapeJavaString(tmpUser) + "\", \"old_pass\": \"" + SecuritySingleton.buildTmpPassword(tmpUser, tmpPass) + "\"}";
 
-			//userdata = new String(org.bouncycastle.util.encoders.Base64.encode(userdata.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+			userdata = new String(org.bouncycastle.util.encoders.Base64.encode(userdata.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
 			MailSingleton.sendMessage(
 				ConfigSingleton.getProperty("admin_email"),
 				email,
 				null,
 				"Reset AMI password",
-				String.format(EMAIL, ConfigSingleton.getProperty("host"), userdata, tmpPass)
+				String.format(EMAIL, ConfigSingleton.getProperty("host"), userdata)
 			);
 		}
 
