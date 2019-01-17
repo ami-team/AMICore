@@ -332,6 +332,8 @@ public class Router implements Querier
 		String admin_user = ConfigSingleton.getProperty("admin_user");
 		String admin_pass = ConfigSingleton.getProperty("admin_pass");
 		String admin_email = ConfigSingleton.getProperty("admin_email");
+		String sudoer_user = ConfigSingleton.getProperty("sudoer_user");
+		String sudoer_pass = ConfigSingleton.getProperty("sudoer_pass");
 		String sso_user = ConfigSingleton.getProperty("sso_user");
 		String sso_pass = ConfigSingleton.getProperty("sso_pass");
 		String guest_user = ConfigSingleton.getProperty("guest_user");
@@ -385,19 +387,13 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_GUEST')" +
+			" ('AMI_ADMIN')" +
 			";"
 		);
 
 		executeSQLUpdate(
 			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_USER')" +
-			";"
-		);
-
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_CERT')" +
+			" ('AMI_SUDOER')" +
 			";"
 		);
 
@@ -409,7 +405,19 @@ public class Router implements Querier
 
 		executeSQLUpdate(
 			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_ADMIN')" +
+			" ('AMI_CERT')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_role` (`role`) VALUES" +
+			" ('AMI_USER')" +
+			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_role` (`role`) VALUES" +
+			" ('AMI_GUEST')" +
 			";"
 		);
 
@@ -422,24 +430,39 @@ public class Router implements Querier
 		/**/
 
 		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'admin', 'admin', ?, 'N/A', '1');",
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
 			admin_user,
 			SecuritySingleton.encrypt(admin_pass),
-			admin_email
+			admin_email,
+			admin_user,
+			admin_user
 		);
 
 		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'sso', 'sso', ?, 'N/A', '1');",
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
+			sudoer_user,
+			SecuritySingleton.encrypt(sudoer_pass),
+			admin_email,
+			admin_user,
+			admin_user
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
 			sso_user,
 			SecuritySingleton.encrypt(sso_pass),
-			admin_email
+			admin_email,
+			admin_user,
+			admin_user
 		);
 
 		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, 'guest', 'guest', ?, 'N/A', '1');",
+			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
 			guest_user,
 			SecuritySingleton.encrypt(guest_pass),
-			admin_email
+			admin_email,
+			admin_user,
+			admin_user
 		);
 
 		/**/
@@ -448,6 +471,18 @@ public class Router implements Querier
 			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			admin_user,
 			"AMI_ADMIN"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+			sudoer_user,
+			"AMI_USER"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+			sudoer_user,
+			"AMI_SUDOER"
 		);
 
 		executeSQLUpdate(

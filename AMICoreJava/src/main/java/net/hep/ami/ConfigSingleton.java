@@ -192,14 +192,17 @@ public class ConfigSingleton
 		}
 
 		/*-----------------------------------------------------------------*/
-		/* GUEST USER                                                      */
+		/* DEFAULT USERS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		s_properties.put("guest_user", "guest");
 		s_properties.put("guest_pass", "guest");
 
 		s_properties.put("sso_user", "sso");
-		s_properties.put("sso_pass", "sso");
+		s_properties.put("sso_pass", s_properties.get("admin_user"));
+
+		s_properties.put("sudoer_user", "sudoer");
+		s_properties.put("sudoer_pass", s_properties.get("admin_user"));
 
 		/*-----------------------------------------------------------------*/
 		/* CHECK CONFIG                                                    */
