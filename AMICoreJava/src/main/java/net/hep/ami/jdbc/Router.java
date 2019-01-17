@@ -343,13 +343,14 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, NULL, '0', 'admin', 'admin');",
+		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, '0', 'admin', 'admin');",
 			getExternalCatalog(),
 			getInternalCatalog(),
 			(schema != null) ? schema : "",
 			getJdbcUrl(),
 			SecuritySingleton.encrypt(getUser()),
-			SecuritySingleton.encrypt(getPass())
+			SecuritySingleton.encrypt(getPass()),
+			"{\"router_authority\":{\"x\":790,\"y\":460,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_catalog\":{\"x\":270,\"y\":10,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_catalog_extra\":{\"x\":530,\"y\":10,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_command\":{\"x\":10,\"y\":480,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_command_role\":{\"x\":10,\"y\":360,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_config\":{\"x\":10,\"y\":10,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_converter\":{\"x\":10,\"y\":180,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_foreign_key\":{\"x\":790,\"y\":10,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_ipv4_blocks\":{\"x\":10,\"y\":740,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_ipv6_blocks\":{\"x\":530,\"y\":740,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_locations\":{\"x\":270,\"y\":755,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_role\":{\"x\":270,\"y\":360,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_search_interface\":{\"x\":270,\"y\":480,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_short_url\":{\"x\":790,\"y\":250,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_user\":{\"x\":530,\"y\":480,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"router_user_role\":{\"x\":530,\"y\":360,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"}}"
 		);
 
 		/*-----------------------------------------------------------------*/
