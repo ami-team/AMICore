@@ -172,16 +172,24 @@
 		<xsl:value-of select="@type" />
 		<xsl:text>",</xsl:text>
 
-		<xsl:text>"@truncated":</xsl:text>
-		<xsl:choose>
-			<xsl:when test="@truncated = 'true' or @truncated = 'false'">
-				<xsl:value-of select="@truncated" />
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:text>false</xsl:text>
-			</xsl:otherwise>
-		</xsl:choose>
-		<xsl:text>,</xsl:text>
+		<xsl:if test="@truncated">
+			<xsl:text>"@truncated":</xsl:text>
+			<xsl:choose>
+				<xsl:when test="@truncated = 'true' or @truncated = 'false'">
+					<xsl:value-of select="@truncated" />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>false</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:text>,</xsl:text>
+		</xsl:if>
+
+		<xsl:if test="@maxNumberOfRows">
+			<xsl:text>"@maxNumberOfRows":</xsl:text>
+				<xsl:value-of select="@maxNumberOfRows" />
+			<xsl:text>,</xsl:text>
+		</xsl:if>
 
 		<xsl:text>"row":[</xsl:text>
 		<xsl:apply-templates select="row" />

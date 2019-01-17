@@ -133,7 +133,9 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*-----------------------------------------------------------------*/
 
-		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
+		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
+
+		int nb = maxNumberOfRows;
 
 		/*-----------------------------------------------------------------*/
 
@@ -141,14 +143,14 @@ public final class RowSetIterable implements Iterable<Row>
 		{ /* DO NOTHING */ }
 		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
 		{
-			if(maxNumberOfRows == 0)
+			if(nb == 0)
 			{
 				rowSet.setIncomplete();
 
 				break;
 			}
 
-			maxNumberOfRows--;
+			nb--;
 
 			result.add(new Row(rowSet));
 		}
@@ -226,7 +228,9 @@ public final class RowSetIterable implements Iterable<Row>
 		/* ROWSET                                                          */
 		/*-----------------------------------------------------------------*/
 
-		int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
+		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
+
+		int nb = maxNumberOfRows;
 
 		/*-----------------------------------------------------------------*/
 
@@ -239,14 +243,14 @@ public final class RowSetIterable implements Iterable<Row>
 		{ /* DO NOTHING */ }
 		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
 		{
-			if(maxNumberOfRows == 0)
+			if(nb == 0)
 			{
 				rowSet.setIncomplete();
 
 				break;
 			}
 
-			maxNumberOfRows--;
+			nb--;
 
 			rows.append(new Row(rowSet).toStringBuilder());
 		}
@@ -276,11 +280,11 @@ public final class RowSetIterable implements Iterable<Row>
 
 		if(type == null)
 		{
-			result.append("<rowset truncated=\"").append(rowSet.isTruncated()).append("\">");
+			result.append("<rowset truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">");
 		}
 		else
 		{
-			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isTruncated()).append("\">");
+			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">");
 		}
 
 		result.append(rows)
