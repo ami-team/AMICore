@@ -364,7 +364,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromFiles() throws Exception
 		{
-			m_logger.info("loading from file schema of catalog '{}'", m_externalCatalog);
+			m_logger.info("for catalog '{}', loading from schema from file...", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 
@@ -402,7 +402,7 @@ public class SchemaSingleton
 		{
 			Set<String> tables = new HashSet<>();
 
-			m_logger.info("loading from database schema of catalog '{}'", m_externalCatalog);
+			m_logger.info("for catalog '{}', loading from schema from database...", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
 			/* CREATE CONNECTION                                           */
@@ -426,7 +426,7 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                             */
 				/*---------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z.isEmpty() == false ? m_tuple.z : null, "%", null))
+				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z.isEmpty() == false ? m_tuple.z : null, "%", new String[] {"TABLE", "VIEW"}))
 				{
 					String temp;
 
