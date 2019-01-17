@@ -91,11 +91,11 @@ public class GetServerStatus extends AbstractCommand
 		result.append("<rowset type=\"hardware\">")
 		      .append("<row>")
 		      .append("<field name=\"hostName\"><![CDATA[").append(hostName).append("]]></field>")
+		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
 		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
 		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")
 		      .append("<field name=\"freeMem\"><![CDATA[").append(runtime.freeMemory()).append("]]></field>")
 		      .append("<field name=\"totalMem\"><![CDATA[").append(runtime.totalMemory()).append("]]></field>")
-		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")
 		;
