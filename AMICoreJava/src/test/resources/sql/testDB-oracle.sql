@@ -1,6 +1,15 @@
 -----------------------------------------------------------------------------
 
 BEGIN
+   EXECUTE IMMEDIATE 'DROP VIEW "FILE_VIEW"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE "DATASET_FILE_BRIDGE"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -625,3 +634,15 @@ CREATE TRIGGER "trig2_DATASET_PARAM"
     :NEW."modified" := SYSDATE;
   END;
 ;;
+
+-----------------------------------------------------------------------------
+
+CREATE VIEW "FILE_VIEW" AS 
+  SELECT "DATASET_FILE_BRIDGE"."id" AS "id", "PROJECT"."name" AS "PROJECT_NAME", "DATASET"."name" AS "DATASET_NAME",  "FILE"."name" AS "FILE_NAME"
+  FROM "PROJECT", "DATASET", "FILE", "DATASET_FILE_BRIDGE"
+  WHERE "DATASET"."projectFK" = "PROJECT"."id"
+  AND "DATASET_FILE_BRIDGE"."datasetFK" = "DATASET"."id"
+  AND "DATASET_FILE_BRIDGE"."fileFK" = "FILE"."id"
+;;
+
+-----------------------------------------------------------------------------

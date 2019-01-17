@@ -20,6 +20,21 @@ public class AMICoreTest
 {
 	/*---------------------------------------------------------------------*/
 
+	public static void main(String[] args) throws Exception
+	{
+		System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
+
+		System.setProperty("ami.integration", "");
+
+		AMICoreTest test = new AMICoreTest();
+
+		test.databaseTest();
+
+		System.exit(0);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@Test
 	public void databaseTest() throws Exception
 	{
@@ -78,7 +93,7 @@ public class AMICoreTest
 
 		try 
 		{
-			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_TYPE\":{\"x\":540,\"y\":230,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE\":{\"x\":280,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"PROJECT\":{\"x\":540,\"y\":65,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"}}";
+			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_TYPE\":{\"x\":540,\"y\":230,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE\":{\"x\":280,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"PROJECT\":{\"x\":540,\"y\":65,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"}}";
 
 			String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
 			String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
@@ -156,7 +171,6 @@ public class AMICoreTest
 						{
 							System.out.println("Query " + query.replace(";;", ""));
 							testDB.getStatement().execute(query.replace(";;", ""));
-							//testDB.commit();
 						}
 						catch(SQLException e)
 						{
@@ -168,6 +182,50 @@ public class AMICoreTest
 				}
 			}
 		}
+		String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_TYPE","FILE","FILE_TYPE"};
+		for (int i = 0; i < testTables.length; i++) {
+			try 
+			{
+				String fields = "catalog;entity;field;isCreatedBy";
+				String values = "test;" + testTables[i] +";createdBy;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+			}
+
+			try 
+			{
+				String fields = "catalog;entity;field;isModifiedBy";
+				String values = "test;" + testTables[i] +";modifiedBy;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+			}
+
+		}
+
+		try 
+		{
+			String fields = "catalog;entity;field;isPrimary";
+			String values = "test;FILE_VIEW;id;1";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+		}
+
+		testDB.commitAndRelease();
 
 		/*-----------------------------------------------------------------*/
 
@@ -187,66 +245,169 @@ public class AMICoreTest
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		Map<String, String> arguments = new HashMap<String, String>();
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "PROJECT");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description");
+			arguments.put("values", "AMI;This an AMI demonstration project");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "DATASET_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;PROJECT.name;description");
+			arguments.put("values", "A;AMI;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "DATASET_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;PROJECT.name;description");
+			arguments.put("values", "B;AMI;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		int cptMax = 10;
+
+		for (int i = 0; i < cptMax; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET");
+				arguments.put("separator", ";");
+				arguments.put("fields", "name;DATASET_TYPE.name;PROJECT.name");
+				arguments.put("values", "dataset_" + i + ";A;AMI");
+				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "FILE_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description");
+			arguments.put("values", "TEXT;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "FILE_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description");
+			arguments.put("values", "BINARY;This is a test");
+			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		for (int i = 0; i < cptMax; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "FILE");
+				arguments.put("separator", ";");
+				arguments.put("fields", "name;FILE_TYPE.name");
+				arguments.put("values", "file_" + i + ";BINARY");
+				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+		}
+
+		for (int i = 0; i < cptMax; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET_FILE_BRIDGE");
+				arguments.put("separator", ";");
+				//arguments.put("fields", "FILE.name;DATASET.name;PROJECT.name");
+				//arguments.put("values", "file_" + i + ";dataset_" + i +";AMI");
+				arguments.put("fields", "FILE.name;DATASET.name");
+				arguments.put("values", "file_" + i + ";dataset_" + i +"");
+				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		String commandTest = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
+
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 }
-
-
-/*
-
-Map<String, String> arguments = new HashMap<String, String>();
-
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "PROJECT");
-arguments.put("name", "AMI");
-arguments.put("description", "This an AMI demonstration project");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "PROJECT");
-arguments.put("name", "AMI_2");
-arguments.put("description", "This an other AMI demonstration project");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
-arguments.put("catalog", "test");
-arguments.put("entity", "PROJECT");
-arguments.put("name", "AMI_2");
-System.out.println(CommandSingleton.executeCommand("RemoveElement", arguments, false).replace(">", ">\n"));
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "FILE_TYPE");
-arguments.put("name", "TEXT");
-arguments.put("description", "This is a file type");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
-arguments.put("catalog", "test");
-arguments.put("entity", "FILE_TYPE");
-arguments.put("name", "BINARY");
-arguments.put("description", "This is an other file type");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
------------------------------------------------------------------------------
-
-arguments.put("catalog", "test");
-arguments.put("entity", "DATASET_TYPE");
-arguments.put("name", "A");
-arguments.put("project.name", "AMI");
-arguments.put("description", "This is a dataset type for project AMI");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
-arguments.put("catalog", "test");
-arguments.put("entity", "DATASET_TYPE");
-arguments.put("name", "B");
-arguments.put("project.name", "AMI");
-arguments.put("description", "This is an other dataset type for project AMI");
-System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
-
------------------------------------------------------------------------------
-
-*/

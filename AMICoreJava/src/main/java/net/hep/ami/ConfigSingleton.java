@@ -214,7 +214,7 @@ public class ConfigSingleton
 		/* RESET LOGGERS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.reset();
+		LogSingleton.reset("WARN");
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -274,7 +274,7 @@ public class ConfigSingleton
 		/* RESET LOGGERS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		LogSingleton.reset();
+		LogSingleton.reset("WARN");
 
 		/*-----------------------------------------------------------------*/
 	}
