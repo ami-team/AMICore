@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 
+DROP VIEW IF EXISTS "FILE_VIEW";;
 DROP TABLE IF EXISTS "DATASET_FILE_BRIDGE";;
 DROP TABLE IF EXISTS "DATASET_PARAM";;
 DROP TABLE IF EXISTS "FILE";;
@@ -7,6 +8,7 @@ DROP TABLE IF EXISTS "DATASET";;
 DROP TABLE IF EXISTS "FILE_TYPE";;
 DROP TABLE IF EXISTS "DATASET_TYPE";;
 DROP TABLE IF EXISTS "PROJECT";;
+
 
 -----------------------------------------------------------------------------
 
@@ -195,6 +197,16 @@ CREATE TRIGGER "trig1_DATASET_PARAM"
   BEFORE UPDATE ON "DATASET_PARAM"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE VIEW "FILE_VIEW" AS 
+  SELECT "DATASET_FILE_BRIDGE"."id" AS "id", "PROJECT"."name" AS "PROJECT_NAME", "DATASET"."name" AS "DATASET_NAME",  "FILE"."name" AS "FILE_NAME"
+  FROM "PROJECT", "DATASET", "FILE", "DATASET_FILE_BRIDGE"
+  WHERE "DATASET"."projectFK" = "PROJECT"."id"
+  AND "DATASET_FILE_BRIDGE"."datasetFK" = "DATASET"."id"
+  AND "DATASET_FILE_BRIDGE"."fileFK" = "FILE"."id"
 ;;
 
 -----------------------------------------------------------------------------

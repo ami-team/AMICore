@@ -93,7 +93,7 @@ public class AMICoreTest
 
 		try 
 		{
-			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_TYPE\":{\"x\":540,\"y\":230,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE\":{\"x\":280,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"PROJECT\":{\"x\":540,\"y\":65,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"}}";
+			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_TYPE\":{\"x\":540,\"y\":230,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE\":{\"x\":280,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"PROJECT\":{\"x\":540,\"y\":65,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"}}";
 
 			String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
 			String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
@@ -210,6 +210,19 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 			}
 
+		}
+
+		try 
+		{
+			String fields = "catalog;entity;field;isPrimary";
+			String values = "test;FILE_VIEW;id;1";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
 		}
 
 		testDB.commitAndRelease();
@@ -382,6 +395,18 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
+		String commandTest = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
+
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
