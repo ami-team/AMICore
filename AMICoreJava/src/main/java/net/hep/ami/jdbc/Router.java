@@ -433,36 +433,36 @@ public class Router implements Querier
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
 			admin_user,
 			SecuritySingleton.encrypt(admin_pass),
-			admin_email,
 			admin_user,
-			admin_user
+			admin_user,
+			admin_email
 		);
 
 		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
 			sudoer_user,
 			SecuritySingleton.encrypt(sudoer_pass),
-			admin_email,
-			admin_user,
-			admin_user
+			sudoer_user,
+			sudoer_user,
+			admin_email
 		);
 
 		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
 			sso_user,
 			SecuritySingleton.encrypt(sso_pass),
-			admin_email,
-			admin_user,
-			admin_user
+			sso_user,
+			sso_user,
+			admin_email
 		);
 
 		executeSQLUpdate(
 			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
 			guest_user,
 			SecuritySingleton.encrypt(guest_pass),
-			admin_email,
-			admin_user,
-			admin_user
+			guest_user,
+			guest_user,
+			admin_email
 		);
 
 		/**/
