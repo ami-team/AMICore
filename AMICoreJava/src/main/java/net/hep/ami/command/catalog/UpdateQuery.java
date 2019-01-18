@@ -45,7 +45,7 @@ public class UpdateQuery extends AbstractCommand
 		}
 		else
 		{
-			result = querier.executeMQLUpdate(entity, sql);
+			result = querier.executeMQLUpdate(entity, mql);
 		}
 
 		/*-----------------------------------------------------------------*/

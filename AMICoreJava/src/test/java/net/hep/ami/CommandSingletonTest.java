@@ -18,14 +18,6 @@ public class CommandSingletonTest
 {
 	/*---------------------------------------------------------------------*/
 
-	@Test
-	public void testMultiply()
-	{
-		System.out.println("Bonjour");
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static void main(String[] args) throws Exception
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
@@ -34,7 +26,9 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("ResetPassword -amiLogin=\"jodier\"", true);
+		System.out.println(CommandSingleton.executeCommand("UpdateQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"DELETE WHERE `id` = '100'\"", false));
+
+//		CommandSingleton.executeCommand("ResetPassword -amiLogin=\"jodier\"", true);
 
 //		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", true).replace(">", ">\n"));
 
