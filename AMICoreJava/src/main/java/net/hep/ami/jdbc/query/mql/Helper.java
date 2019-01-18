@@ -165,7 +165,7 @@ public class Helper
 					   url.toLowerCase().startsWith("jdbc:mariadb")
 					 ) {
 						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
-						      .append(" IN (SELECT * FROM (")
+						      .append(" IN (SELECT ").append(mainPrimarykeyQId.toString(QId.MASK_FIELD)).append(" FROM (")
 						      .append(query)
 						      .append(") AS T").append(s_cnt++).append(")");
 						;
