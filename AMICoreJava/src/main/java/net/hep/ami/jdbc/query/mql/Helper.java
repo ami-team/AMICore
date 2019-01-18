@@ -154,10 +154,17 @@ public class Helper
 				if(isModifStm)
 				{
 					result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
+					      .append(" IN (")
+					      .append(query)
+					      .append(")")
+					;
+/*
+					result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
 					      .append(" IN (SELECT * FROM (")
 					      .append(query)
 					      .append(") AS T").append(s_cnt++).append(")");
 					;
+*/
 				}
 				else
 				{
