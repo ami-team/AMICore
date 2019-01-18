@@ -157,7 +157,7 @@ public class Helper
 
 				if(isModifStm)
 				{
-					String url = CatalogSingleton.getTuple(SchemaSingleton.internalCatalogToExternalCatalog(stdInternalCatalog)).t;
+/*					String url = CatalogSingleton.getTuple(SchemaSingleton.internalCatalogToExternalCatalog(stdInternalCatalog)).t;
 
 					boolean berk = url.toLowerCase().startsWith( "jdbc:mysql" )
 					               ||
@@ -166,12 +166,19 @@ public class Helper
 
 					if(berk)
 					{
+*/						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
+						      .append(" IN (SELECT ").append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" FROM (")
+						      .append(query)
+						      .append("))");
+						;
+/*
 						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
 						      .append(" IN (SELECT * FROM (")
 						      .append(query)
 						      .append(") AS T").append(s_cnt++).append(")");
 						;
-					}
+*/
+/*					}
 					else
 					{
 						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
@@ -180,7 +187,7 @@ public class Helper
 						      .append(")")
 						;
 					}
-				}
+*/				}
 				else
 				{
 					result.append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
