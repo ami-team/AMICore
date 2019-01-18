@@ -182,6 +182,33 @@ public class AMICoreTest
 				}
 			}
 		}
+
+		try 
+		{
+			String fields = "catalog;entity;field;isPrimary";
+			String values = "test;PROJECT;name;1";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+		}
+
+		try 
+		{
+			String fields = "catalog;entity;field;isPrimary";
+			String values = "test;PROJECT;name;1";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+		}
+
 		String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_TYPE","FILE","FILE_TYPE"};
 		for (int i = 0; i < testTables.length; i++) {
 			try 
@@ -209,6 +236,31 @@ public class AMICoreTest
 			{
 				System.out.println(e.getMessage());
 			}
+			try 
+			{
+				String fields = "catalog;entity;field;isCreated";
+				String values = "test;" + testTables[i] +";created;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+			}
+
+			try 
+			{
+				String fields = "catalog;entity;field;isModified";
+				String values = "test;" + testTables[i] +";modified;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+			}
 
 		}
 
@@ -223,6 +275,20 @@ public class AMICoreTest
 		catch (Exception e) 
 		{
 			System.out.println(e.getMessage());
+		}
+
+		try 
+		{
+			String fields = "name;fkCatalog;fkTable;fkColumn;pkCatalog;pkTable;pkColumn";
+			String values = "fk1_FILE_VIEW;test;FILE_VIEW;id;test;DATASET_FILE_BRIDGE;id";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_foreign_key\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			//CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+			System.exit(0);
 		}
 
 		testDB.commitAndRelease();
@@ -381,8 +447,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
-				//arguments.put("fields", "FILE.name;DATASET.name;PROJECT.name");
-				//arguments.put("values", "file_" + i + ";dataset_" + i +";AMI");
+				//arguments.put("fields", "FILE.name;FILE.id;DATASET.name;PROJECT.name");
+				//arguments.put("values", "file_" + i + ";" + i + ";dataset_" + i +";AMI");
 				arguments.put("fields", "FILE.name;DATASET.name");
 				arguments.put("values", "file_" + i + ";dataset_" + i +"");
 				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
@@ -390,6 +456,7 @@ public class AMICoreTest
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
+				System.exit(1);
 			}
 		}
 

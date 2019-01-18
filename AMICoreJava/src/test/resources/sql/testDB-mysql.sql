@@ -178,7 +178,7 @@ ALTER TABLE `DATASET_PARAM`
 ;;
 
 CREATE VIEW `FILE_VIEW` AS 
-  SELECT `DATASET_FILE_BRIDGE`.`id` AS `id`, `PROJECT`.`name` AS `PROJECT_NAME`, `DATASET`.`name` AS `DATASET_NAME`,  `FILE`.`name` AS `FILE_NAME`
+  SELECT `DATASET_FILE_BRIDGE`.`id` AS `id`, `PROJECT`.`name` AS `projectName`, `DATASET`.`name` AS `datasetName`,  `FILE`.`name` AS `fileName`
   FROM `PROJECT`, `DATASET`, `FILE`, `DATASET_FILE_BRIDGE`
   WHERE `DATASET`.`projectFK` = `PROJECT`.`id`
   AND `DATASET_FILE_BRIDGE`.`datasetFK` = `DATASET`.`id`
