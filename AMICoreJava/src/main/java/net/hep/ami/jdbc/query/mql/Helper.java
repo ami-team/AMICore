@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.CatalogSingleton;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -134,13 +135,16 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		if(localJoinList.isEmpty() == false || isModifStm)
+		if(isSelectPart)
 		{
-			if(isSelectPart)
+			if(/*---------*/ localJoinList.isEmpty() == false)
 			{
 				globalJoinSet.add(String.join(" AND ", localJoinList));
 			}
-			else
+		}
+		else
+		{
+			if(isModifStm || localJoinList.isEmpty() == false)
 			{
 				result = new StringBuilder();
 
@@ -153,18 +157,29 @@ public class Helper
 
 				if(isModifStm)
 				{
-					result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
-					      .append(" IN (")
-					      .append(query)
-					      .append(")")
+					String url = CatalogSingleton.getTuple(stdInternalCatalog).t;
+
+					boolean berk = url.toLowerCase().startsWith( "jdbc:mysql" )
+					               ||
+					               url.toLowerCase().startsWith("jdbc:mariadb")
 					;
-/*
-					result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
-					      .append(" IN (SELECT * FROM (")
-					      .append(query)
-					      .append(") AS T").append(s_cnt++).append(")");
-					;
-*/
+
+					if(berk)
+					{
+						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
+						      .append(" IN (SELECT * FROM (")
+						      .append(query)
+						      .append(") AS T").append(s_cnt++).append(")");
+						;
+					}
+					else
+					{
+						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
+						      .append(" IN (")
+						      .append(query)
+						      .append(")")
+						;
+					}
 				}
 				else
 				{
