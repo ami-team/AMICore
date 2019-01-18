@@ -227,10 +227,10 @@ public class GetUserInfo extends AbstractCommand
 		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
-		/* RGPD                                                            */
+		/* UDP                                                             */
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"rgpd\">");
+		result.append("<rowset type=\"udp\">");
 
 		if(termsAndConditions.isEmpty() == false
 		   &&
