@@ -1,10 +1,11 @@
 package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.CatalogSingleton;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -210,13 +211,19 @@ public class Helper
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
+		String field;
+
+		QId foreignKey;
+		QId primaryKey;
+
 		Resolution resolution;
 		StringBuilder expression;
 
 		SchemaSingleton.Column column;
 
-		List<StringBuilder> X = new ArrayList<>();
-		List<StringBuilder> Y = new ArrayList<>();
+		Tuple2<StringBuilder, List<Resolution>> tuple;
+
+		Map<String, Tuple2<StringBuilder, List<Resolution>>> entries = new LinkedHashMap<>();
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -251,32 +258,74 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			if(resolution.getMaxPathLen() > 0)
+			if(resolution.getMaxPathLen() == 0)
+			{
+				field = resolution.getExternalQId().toString(QId.MASK_FIELD);
+			}
+			else
+			{
+				SchemaSingleton.FrgnKey frgnKey = resolution.getPaths().get(0).get(0);
+
+				foreignKey = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
+				primaryKey = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
+
+				expression = new StringBuilder().append(resolution.getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
+				                                .append(" = ")
+				                                .append(expression)
+				;
+
+				field = foreignKey.toString(QId.MASK_FIELD);
+			}
+
+			/*-------------------------------------------------------------*/
+
+			tuple = entries.get(field);
+
+			if(entries.containsKey(field) == false)
+			{
+				entries.put(field, tuple = new Tuple2<>(new StringBuilder(), new ArrayList<>()));
+
+				tuple.x.append(((("")))).append(expression);
+			}
+			else
+			{
+				tuple.x.append(" AND ").append(expression);
+			}
+
+			tuple.y.add(resolution);
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+		/*                                                                 */
+		/*-----------------------------------------------------------------*/
+
+		List<StringBuilder> X = new ArrayList<>();
+		List<StringBuilder> Y = new ArrayList<>();
+
+		for(Entry<String, Tuple2<StringBuilder, List<Resolution>>> entry: entries.entrySet())
+		{
+			field = entry.getKey();
+			tuple = entry.getValue();
+
+			if(tuple.y.get(0).getMaxPathLen() > 0)
 			{
 				/*---------------------------------------------------------*/
 
-				SchemaSingleton.FrgnKey frgnKey = resolution.getPaths().get(0).get(0);
+				SchemaSingleton.FrgnKey frgnKey = tuple.y.get(0).getPaths().get(0).get(0);
 
-				QId foreignKey = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
-				QId primaryKey = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
-
-				StringBuilder comparison = new StringBuilder().append(resolution.getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
-				                                              .append(" = ")
-				                                              .append(expression)
-				;
-
-				/*---------------------------------------------------------*/
-
-				List<Resolution> singletonList = Collections.singletonList(resolution);
+				foreignKey = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
+				primaryKey = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
 
 				/*---------------------------------------------------------*/
 
 				StringBuilder where = Helper.isolate(
 					frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn,
 					null, null,
-					singletonList,
+					tuple.y,
 					1, /* skip 1 join */
-					comparison,
+					tuple.x,
 					false, false
 				);
 
@@ -292,18 +341,16 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				X.add(new StringBuilder(Utility.textToSqlId(foreignKey.toString(QId.MASK_FIELD))));
+				X.add(new StringBuilder(Utility.textToSqlId(field)));
 
 				Y.add(expression);
 			}
 			else
 			{
-				X.add(new StringBuilder(Utility.textToSqlId(resolution.getExternalQId().toString(QId.MASK_FIELD))));
+				X.add(new StringBuilder(Utility.textToSqlId(field)));
 
-				Y.add(expression);
+				Y.add(tuple.x);
 			}
-
-			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/

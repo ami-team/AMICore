@@ -28,9 +28,11 @@ public class CommandSingletonTest
 
 		Querier querier = new SimpleQuerier("test");
 
-		System.out.println(querier.mqlToSQL("A", "DELETE WHERE `name` = 'foo' AND `kux` = 'bar'"));
+//		System.out.println(querier.mqlToSQL("A", "DELETE WHERE `name` = 'foo' AND `kux` = 'bar'"));
 
-		System.out.println(querier.mqlToSQL("A", "SELECT `kux` WHERE `name` = 'foo' AND `kux` = 'bar'"));
+//		System.out.println(querier.mqlToSQL("A", "SELECT `kux` WHERE `name` = 'foo' AND `kux` = 'bar'"));
+
+		System.out.println(querier.mqlToSQL("A", "INSERT (`name`, `label`) VALUES ('foo', 'bar')"));
 
 //		CommandSingleton.executeCommand("ResetPassword -amiLogin=\"jodier\"", true);
 
