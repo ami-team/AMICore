@@ -46,6 +46,13 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		if(arguments.containsKey("agree") == false)
+		{
+			throw new Exception("you must agree with the terms and conditions");
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		boolean generatedPassword;
 
 		if(amiPassword == null || (amiPassword = amiPassword.trim()).isEmpty())
