@@ -37,7 +37,7 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `description`, `webLinkScript` FROM `router_catalog_extra`");
+			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `description`, `webLinkScript` FROM `router_catalog_extra`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMN                                               */
@@ -59,8 +59,9 @@ public class SchemaExtraInfoSingleton
 					Integer.parseInt(row.getValue(10)) != 0,
 					Integer.parseInt(row.getValue(11)) != 0,
 					Integer.parseInt(row.getValue(12)) != 0,
-					row.getValue(13),
-					row.getValue(14)
+					Integer.parseInt(row.getValue(13)) != 0,
+					row.getValue(14),
+					row.getValue(15)
 				);
 			}
 
@@ -112,7 +113,7 @@ public class SchemaExtraInfoSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, String description, String webLinkScript)
+	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, String description, String webLinkScript)
 	{
 		try
 		{
@@ -121,6 +122,7 @@ public class SchemaExtraInfoSingleton
 			column.rank = rank;
 			column.hidden = hidden;
 			column.crypted = crypted;
+			column.adminOnly = adminOnly;
 			column.primary = primary;
 			column.created = created;
 			column.createdBy = createdBy;
@@ -225,7 +227,6 @@ public class SchemaExtraInfoSingleton
 
 		router_config.get("paramName").crypted = true;
 		router_config.get("paramValue").crypted = true;
-
 		router_config.get("created").created = true;
 		router_config.get("createdBy").createdBy = true;
 		router_config.get("modified").modified = true;
@@ -235,9 +236,11 @@ public class SchemaExtraInfoSingleton
 
 		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getColumns("self", "router_catalog");
 
+		router_catalog.get("internalCatalog").hidden = true;
+		router_catalog.get("internalSchema").hidden = true;
+		router_catalog.get("jdbcUrl").adminOnly = true;
 		router_catalog.get("user").crypted = true;
 		router_catalog.get("pass").crypted = true;
-
 		router_catalog.get("created").created = true;
 		router_catalog.get("createdBy").createdBy = true;
 		router_catalog.get("modified").modified = true;
@@ -283,6 +286,14 @@ public class SchemaExtraInfoSingleton
 
 		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getColumns("self", "router_authority");
 
+		router_authority.get("vo").adminOnly = true;
+		router_authority.get("clientDN").adminOnly = true;
+		router_authority.get("issuerDN").adminOnly = true;
+		router_authority.get("notBefore").adminOnly = true;
+		router_authority.get("notAfter").adminOnly = true;
+		router_authority.get("serial").adminOnly = true;
+		router_authority.get("email").adminOnly = true;
+		router_authority.get("reason").adminOnly = true;
 		router_authority.get("created").created = true;
 		router_authority.get("createdBy").createdBy = true;
 		router_authority.get("modified").modified = true;

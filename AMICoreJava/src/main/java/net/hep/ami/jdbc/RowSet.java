@@ -36,6 +36,7 @@ public class RowSet
 
 	protected final int[] m_fieldRank;
 	protected final boolean[] m_fieldHidden;
+	protected final boolean[] m_fieldAdminOnly;
 	protected final boolean[] m_fieldCrypted;
 	protected final boolean[] m_fieldPrimary;
 	protected final boolean[] m_fieldCreated;
@@ -108,6 +109,7 @@ public class RowSet
 
 		m_fieldRank = new int[m_numberOfFields];
 		m_fieldHidden = new boolean[m_numberOfFields];
+		m_fieldAdminOnly = new boolean[m_numberOfFields];
 		m_fieldCrypted = new boolean[m_numberOfFields];
 		m_fieldPrimary = new boolean[m_numberOfFields];
 		m_fieldCreated = new boolean[m_numberOfFields];
@@ -235,6 +237,7 @@ public class RowSet
 
 				m_fieldRank[i] = column.rank;
 				m_fieldHidden[i] = column.hidden;
+				m_fieldAdminOnly[i] = column.adminOnly;
 				m_fieldCrypted[i] = column.crypted;
 				m_fieldPrimary[i] = column.primary;
 				m_fieldCreated[i] = column.created;
@@ -250,6 +253,7 @@ public class RowSet
 			{
 				m_fieldRank[i] = 0;
 				m_fieldHidden[i] = false;
+				m_fieldAdminOnly[i] = false;
 				m_fieldCrypted[i] = false;
 				m_fieldPrimary[i] = false;
 				m_fieldCreated[i] = false;

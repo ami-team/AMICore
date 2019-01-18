@@ -37,6 +37,7 @@ public class SchemaSingleton
 
 		public int rank = 0;
 		public boolean hidden = false;
+		public boolean adminOnly = false;
 		public boolean crypted = false;
 		public boolean primary = false;
 		public boolean created = false;
@@ -1080,6 +1081,7 @@ public class SchemaSingleton
 			      .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
 			      .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
 			      .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
+			      .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
 			      .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 			      .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
 			      .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
