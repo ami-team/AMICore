@@ -144,16 +144,16 @@ public class Helper
 			{
 				result = new StringBuilder();
 
+				SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+				                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
+				                                 .addFromPart(localFromSet)
+				                                 .addWherePart(expression)
+				                                 .addWherePart(localJoinList)
+				;
+
 				if(isModifStm)
 				{
-					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY_FIELD))
-					                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_ENTITY))
-					                                 .addFromPart(localFromSet)
-					                                 .addWherePart(expression)
-					                                 .addWherePart(localJoinList)
-					;
-
-					result.append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+					result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
 					      .append(" IN (SELECT * FROM (")
 					      .append(query)
 					      .append(") AS T").append(s_cnt++).append(")");
@@ -161,13 +161,6 @@ public class Helper
 				}
 				else
 				{
-					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-					                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
-					                                 .addFromPart(localFromSet)
-					                                 .addWherePart(expression)
-					                                 .addWherePart(localJoinList)
-					;
-
 					result.append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 					      .append(" IN (")
 					      .append(query)

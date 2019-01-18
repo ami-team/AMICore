@@ -26,7 +26,11 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		System.out.println(CommandSingleton.executeCommand("UpdateQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"DELETE WHERE `id` = '100'\"", false));
+		Querier querier = new SimpleQuerier("test");
+
+		System.out.println(querier.mqlToSQL("A", "DELETE WHERE `name` = 'foo' AND `kux` = 'bar'"));
+
+		System.out.println(querier.mqlToSQL("A", "SELECT `kux` WHERE `name` = 'foo' AND `kux` = 'bar'"));
 
 //		CommandSingleton.executeCommand("ResetPassword -amiLogin=\"jodier\"", true);
 
