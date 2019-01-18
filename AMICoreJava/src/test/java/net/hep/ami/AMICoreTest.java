@@ -196,18 +196,6 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 		}
 
-		try 
-		{
-			String fields = "catalog;entity;field;isPrimary";
-			String values = "test;PROJECT;name;1";
-			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-
-			CommandSingleton.executeCommand(command, false);
-		}
-		catch (Exception e) 
-		{
-			System.out.println(e.getMessage());
-		}
 
 		String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_TYPE","FILE","FILE_TYPE"};
 		for (int i = 0; i < testTables.length; i++) {
@@ -274,7 +262,7 @@ public class AMICoreTest
 		}
 		catch (Exception e) 
 		{
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
 		}
 
 		try 
