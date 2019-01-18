@@ -501,7 +501,7 @@ ALTER TABLE "router_catalog_extra"
 
 ALTER TABLE "router_catalog_extra"
   ADD CONSTRAINT "ck6_router_catalog_extra" CHECK("isAdminOnly" IS NOT NULL)
-
+;;
 
 ALTER TABLE "router_catalog_extra"
   ADD CONSTRAINT "ck7_router_catalog_extra" CHECK("isCrypted" IS NOT NULL)
