@@ -165,8 +165,14 @@ public class GetUserInfo extends AbstractCommand
 		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
 
 		/*-----------------------------------------------------------------*/
-		/* GET SSO INFO                                                    */
+		/* GET OTHER INFO                                                  */
 		/*-----------------------------------------------------------------*/
+
+		String termsAndConditions = ConfigSingleton.getProperty("terms_and_conditions", null);
+
+		if(termsAndConditions == null || termsAndConditions.isEmpty()) {
+			termsAndConditions = "N/A";
+		}
 
 		String ssoLabel = ConfigSingleton.getProperty("sso_label", null);
 
@@ -220,6 +226,23 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("</rowset>");
 
+		/*-----------------------------------------------------------------*/
+		/* RGPD                                                            */
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"rgpd\">");
+
+		if(termsAndConditions.isEmpty() == false
+		   &&
+		   "N/A".equals(termsAndConditions) == false
+		 ) {
+			result.append("<row>")
+			      .append("<field name=\"termsAndConditions\"><![CDATA[").append(termsAndConditions).append("]]></field>")
+			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
 		/* SSO                                                            */
