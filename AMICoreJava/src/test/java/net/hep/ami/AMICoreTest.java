@@ -283,7 +283,7 @@ public class AMICoreTest
 			String values = "fk1_FILE_VIEW;test;FILE_VIEW;id;test;DATASET_FILE_BRIDGE;id";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_foreign_key\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
-			//CommandSingleton.executeCommand(command, false);
+			CommandSingleton.executeCommand(command, false);
 		}
 		catch (Exception e) 
 		{
