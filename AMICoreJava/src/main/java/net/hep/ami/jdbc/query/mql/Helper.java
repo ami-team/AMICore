@@ -134,7 +134,7 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		if(localJoinList.isEmpty() == false)
+		if(localJoinList.isEmpty() == false || isModifStm)
 		{
 			if(isSelectPart)
 			{
