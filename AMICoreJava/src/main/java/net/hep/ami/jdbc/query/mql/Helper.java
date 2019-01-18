@@ -137,7 +137,7 @@ public class Helper
 
 		if(isSelectPart)
 		{
-			if(/*---------*/ localJoinList.isEmpty() == false)
+			if(false || localJoinList.isEmpty() == false)
 			{
 				globalJoinSet.add(String.join(" AND ", localJoinList));
 			}
@@ -157,7 +157,7 @@ public class Helper
 
 				if(isModifStm)
 				{
-					String url = CatalogSingleton.getTuple(stdInternalCatalog).t;
+					String url = CatalogSingleton.getTuple(SchemaSingleton.internalCatalogToExternalCatalog(stdInternalCatalog)).t;
 
 					boolean berk = url.toLowerCase().startsWith( "jdbc:mysql" )
 					               ||
