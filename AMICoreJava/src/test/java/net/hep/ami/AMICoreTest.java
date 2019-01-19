@@ -47,6 +47,10 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
+		System.out.println("Setting up router database");
+
+		/*-----------------------------------------------------------------*/
+
 		try
 		{
 			/*-------------------------------------------------------------*/
@@ -85,6 +89,10 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
+		System.out.println("Setting up test database");
+
+		/*-----------------------------------------------------------------*/
+
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
 		String test_url = ConfigSingleton.getProperty("test_url");
@@ -100,7 +108,7 @@ public class AMICoreTest
 
 			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
-			System.out.println(CommandSingleton.executeCommand(command, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(command, false);
 		}
 		catch (Exception e) 
 		{
@@ -169,7 +177,7 @@ public class AMICoreTest
 
 						try
 						{
-							System.out.println("Query " + query.replace(";;", ""));
+							//System.out.println("Query " + query.replace(";;", ""));
 							testDB.getStatement().execute(query.replace(";;", ""));
 						}
 						catch(SQLException e)
@@ -283,6 +291,12 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
+		System.out.println("Filling test database");
+
+		/*-----------------------------------------------------------------*/
+
+		/*-----------------------------------------------------------------*/
+
 		CatalogSingleton.reload(true);
 
 		/*-----------------------------------------------------------------*/
@@ -291,7 +305,7 @@ public class AMICoreTest
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(command, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(command, false);
 		}
 		catch(Exception e)
 		{
@@ -312,7 +326,7 @@ public class AMICoreTest
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;description");
 			arguments.put("values", "AMI;This an AMI demonstration project");
-			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
 		catch(Exception e)
@@ -330,7 +344,7 @@ public class AMICoreTest
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;PROJECT.name;description");
 			arguments.put("values", "A;AMI;This is a test");
-			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
 		catch(Exception e)
@@ -346,7 +360,7 @@ public class AMICoreTest
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;PROJECT.name;description");
 			arguments.put("values", "B;AMI;This is a test");
-			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
 		catch(Exception e)
@@ -367,7 +381,7 @@ public class AMICoreTest
 				arguments.put("separator", ";");
 				arguments.put("fields", "name;DATASET_TYPE.name;PROJECT.name");
 				arguments.put("values", "dataset_" + i + ";A;AMI");
-				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+				CommandSingleton.executeCommand("AddElement", arguments, false);
 			}
 			catch(Exception e)
 			{
@@ -385,7 +399,7 @@ public class AMICoreTest
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;description");
 			arguments.put("values", "TEXT;This is a test");
-			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
 		catch(Exception e)
@@ -401,7 +415,7 @@ public class AMICoreTest
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;description");
 			arguments.put("values", "BINARY;This is a test");
-			System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
 		catch(Exception e)
@@ -420,7 +434,7 @@ public class AMICoreTest
 				arguments.put("separator", ";");
 				arguments.put("fields", "name;FILE_TYPE.name");
 				arguments.put("values", "file_" + i + ";BINARY");
-				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+				CommandSingleton.executeCommand("AddElement", arguments, false);
 			}
 			catch(Exception e)
 			{
@@ -435,18 +449,20 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
-				//arguments.put("fields", "FILE.name;FILE.id;DATASET.name;PROJECT.name");
-				//arguments.put("values", "file_" + i + ";" + i + ";dataset_" + i +";AMI");
-				arguments.put("fields", "FILE.name;DATASET.name");
-				arguments.put("values", "file_" + i + ";dataset_" + i +"");
-				System.out.println(CommandSingleton.executeCommand("AddElement", arguments, false).replace(">", ">\n"));
+				arguments.put("fields", "FILE.name;DATASET.name;PROJECT.name");
+				arguments.put("values", "file_" + i + ";dataset_" + i +";AMI");
+				//arguments.put("fields", "FILE.name;DATASET.name");
+				//arguments.put("values", "file_" + i + ";dataset_" + i +"");
+				CommandSingleton.executeCommand("AddElement", arguments, false);
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
-				System.exit(1);
 			}
 		}
+		/*-----------------------------------------------------------------*/
+
+		System.out.println("Testing select queries");
 
 		/*-----------------------------------------------------------------*/
 
@@ -454,12 +470,16 @@ public class AMICoreTest
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		System.out.println("End of tests");
 
 		/*-----------------------------------------------------------------*/
 	}
