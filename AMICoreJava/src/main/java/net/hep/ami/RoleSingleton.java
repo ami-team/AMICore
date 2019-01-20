@@ -150,6 +150,21 @@ public class RoleSingleton
 		);
 
 		/*-----------------------------------------------------------------*/
+
+		String changeUser = arguments.remove("changeUser");
+
+		if(changeUser != null && userRoles.contains("AMI_SUDOER"))
+		{
+			arguments.put("AMIUser", amiUser = changeUser);
+
+			userRoles = _getUserRoles(
+				querier,
+				amiUser,
+				amiPass
+			);
+		}
+
+		/*-----------------------------------------------------------------*/
 		/* CHECK ROLE                                                      */
 		/*-----------------------------------------------------------------*/
 
