@@ -121,7 +121,7 @@ public class RoleSingleton
 
 			if(resultSet.next())
 			{
-				result = SecuritySingleton.encrypt(resultSet.getString(1));
+				result = SecuritySingleton.decrypt(resultSet.getString(1));
 			}
 			else
 			{
@@ -142,11 +142,15 @@ public class RoleSingleton
 	{
 		/*---------------------------------*/
 
-		if("GetSessionInfo".equals(command)
-		   ||
-		   "ResetPassword".equals(command)
-		   ||
-		   "AddUser".equals(command)
+		String changeUser = arguments.remove("changeUser");
+
+		if(changeUser == null && (
+				"GetSessionInfo".equals(command)
+				||
+				"ResetPassword".equals(command)
+				||
+				"AddUser".equals(command)
+		   )
 		 ) {
 			return new HashSet<>();
 		}
@@ -185,8 +189,6 @@ public class RoleSingleton
 		);
 
 		/*-----------------------------------------------------------------*/
-
-		String changeUser = arguments.remove("changeUser");
 
 		if(changeUser != null && userRoles.contains("AMI_SUDOER"))
 		{
