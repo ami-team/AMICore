@@ -7,7 +7,7 @@ import java.util.stream.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
-import net.hep.ami.utility.parser.Utility;
+import net.hep.ami.utility.parser.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
