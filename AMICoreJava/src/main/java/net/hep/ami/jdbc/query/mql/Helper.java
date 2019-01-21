@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.*;
 
 import net.hep.ami.*;
@@ -158,7 +157,7 @@ public class Helper
 
 				if(isModifStm)
 				{
-					String url = CatalogSingleton.getTuple(SchemaSingleton.internalCatalogToExternalCatalog(stdInternalCatalog)).t;
+/*					String url = CatalogSingleton.getTuple(SchemaSingleton.internalCatalogToExternalCatalog(stdInternalCatalog)).t;
 
 					if(url.toLowerCase().startsWith( "jdbc:mysql" )
 					   ||
@@ -171,7 +170,7 @@ public class Helper
 						;
 					}
 					else
-					{
+*/					{
 						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
 						      .append(" IN (")
 						      .append(query)
@@ -304,7 +303,7 @@ public class Helper
 		List<StringBuilder> X = new ArrayList<>();
 		List<StringBuilder> Y = new ArrayList<>();
 
-		for(Entry<String, Tuple2<StringBuilder, List<Resolution>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple2<StringBuilder, List<Resolution>>> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
