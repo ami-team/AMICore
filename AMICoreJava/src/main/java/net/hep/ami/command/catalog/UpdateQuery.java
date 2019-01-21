@@ -62,14 +62,14 @@ public class UpdateQuery extends AbstractCommand
 
 	public static String help()
 	{
-		return "Execute a simple SQL or MQL query (update mode).";
+		return "Execute a simple raw, SQL or MQL query (update mode).";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -mql=\"\"))";
+		return "-catalog=\"\" (-raw\"\" | -sql=\"\" | (-entity=\"\" -mql=\"\"))";
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -98,14 +98,14 @@ public class SearchQuery extends AbstractCommand
 
 	public static String help()
 	{
-		return "Execute a simple SQL or MQL query (select mode).";
+		return "Execute a simple raw, SQL or MQL query (select mode).";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -mql=\"\")) (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
+		return "-catalog=\"\" (-raw=\"\" | -sql=\"\" | (-entity=\"\" -mql=\"\")) (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
 	}
 
 	/*---------------------------------------------------------------------*/
