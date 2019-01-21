@@ -47,7 +47,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("Setting up router database");
+		System.out.println("Setting up router database: " +  ConfigSingleton.getProperty("router_url"));
 
 		/*-----------------------------------------------------------------*/
 
@@ -89,7 +89,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("Setting up test database");
+		System.out.println("Setting up test database: " + ConfigSingleton.getProperty("test_url"));
 
 		/*-----------------------------------------------------------------*/
 
@@ -145,6 +145,7 @@ public class AMICoreTest
 		else {
 			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
 		}
+	
 		/*-----------------------------------------------------------------*/
 		/* GET INPUT STREAM                                                */
 		/*-----------------------------------------------------------------*/
@@ -290,7 +291,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("Filling test database");
+		System.out.println("Testing add commands");
 
 		/*-----------------------------------------------------------------*/
 
@@ -460,7 +461,7 @@ public class AMICoreTest
 		}
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("Testing select queries");
+		System.out.println("Testing select commands");
 
 		/*-----------------------------------------------------------------*/
 
@@ -473,6 +474,29 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		System.out.println("Testing remove commands");
+
+		/*-----------------------------------------------------------------*/
+
+		for (int i = 0; i < cptMax/2; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET_FILE_BRIDGE");
+				arguments.put("separator", ";");
+				arguments.put("keyFields", "FILE.name;DATASET.name;PROJECT.name");
+				arguments.put("keyValues", "file_" + i + ";dataset_" + i +";AMI");
+				CommandSingleton.executeCommand("RemoveElements", arguments, false);
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
