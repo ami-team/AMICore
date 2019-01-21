@@ -24,6 +24,7 @@ public class SearchQuery extends AbstractCommand
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
+		String raw = arguments.get("sql");
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
@@ -33,7 +34,7 @@ public class SearchQuery extends AbstractCommand
 		String limit = arguments.get("limit");
 		String offset = arguments.get("offset");
 
-		if(catalog == null || (sql == null && (mql == null || entity == null)))
+		if(catalog == null || (raw == null && sql == null && (mql == null || entity == null)))
 		{
 			throw new Exception("invalid usage");
 		}
@@ -75,7 +76,11 @@ public class SearchQuery extends AbstractCommand
 
 		RowSet result;
 
-		if(sql != null)
+		/**/ if(raw != null)
+		{
+			result = querier.executeRawQuery(raw + extra);
+		}
+		else if(sql != null)
 		{
 			result = querier.executeSQLQuery(sql + extra);
 		}

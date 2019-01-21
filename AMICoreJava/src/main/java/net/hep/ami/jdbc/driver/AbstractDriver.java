@@ -232,6 +232,23 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public RowSet executeRawQuery(String raw, Object... args) throws Exception
+	{
+		try
+		{
+			raw = Tokenizer.format(raw, args);
+
+			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog,raw, null, null);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for RAW query: " + raw, e);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
 	{
 		String sql = "";
@@ -266,6 +283,23 @@ public abstract class AbstractDriver implements Querier
 		catch(Exception e)
 		{
 			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public Update executeRawUpdate(String raw, Object... args) throws Exception
+	{
+		try
+		{
+			raw = Tokenizer.format(raw, args);
+
+			return new Update(m_statement.executeUpdate(raw), raw, null, null);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for SQL query: " + raw, e);
 		}
 	}
 

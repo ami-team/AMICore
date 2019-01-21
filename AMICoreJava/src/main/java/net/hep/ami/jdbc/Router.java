@@ -97,6 +97,14 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public RowSet executeRawQuery(String raw, Object... args) throws Exception
+	{
+		return m_driver.executeRawQuery(raw, args);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
 	{
 		return m_driver.executeMQLUpdate(entity, mql, args);
@@ -108,6 +116,14 @@ public class Router implements Querier
 	public Update executeSQLUpdate(String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLUpdate(sql, args);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public Update executeRawUpdate(String raw, Object... args) throws Exception
+	{
+		return m_driver.executeRawUpdate(raw, args);
 	}
 
 	/*---------------------------------------------------------------------*/

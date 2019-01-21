@@ -73,6 +73,19 @@ public interface Querier
 	/*---------------------------------------------------------------------*/
 
 	/**
+	 * Executes a raw query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
+	 *
+	 * @param sql The raw query.
+	 * @param args... The arguments referenced by the format specifiers (character '?') in the raw query.
+	 *
+	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
+	 */
+
+	public RowSet executeRawQuery(String raw, Object... args) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	/**
 	 * Executes a MQL query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
 	 *
 	 * @param entity The default entity.
@@ -96,6 +109,19 @@ public interface Querier
 	 */
 
 	public Update executeSQLUpdate(String sql, Object... args) throws Exception;
+
+	/*---------------------------------------------------------------------*/
+
+	/**
+	 * Executes a raw query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
+	 *
+	 * @param sql The raw query.
+	 * @param args... The arguments referenced by the format specifiers (character '?') in the raw query.
+	 *
+	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
+	 */
+
+	public Update executeRawUpdate(String sql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

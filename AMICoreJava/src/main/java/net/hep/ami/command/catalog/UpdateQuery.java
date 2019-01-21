@@ -23,10 +23,11 @@ public class UpdateQuery extends AbstractCommand
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
+		String raw = arguments.get("raw");
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
-		if(catalog == null || (sql == null && (mql == null || entity == null)))
+		if(catalog == null || (raw == null && sql == null && (mql == null || entity == null)))
 		{
 			throw new Exception("invalid usage");
 		}
@@ -39,7 +40,11 @@ public class UpdateQuery extends AbstractCommand
 
 		Update result;
 
-		if(sql != null)
+		/**/ if(raw != null)
+		{
+			result = querier.executeRawUpdate(raw);
+		}
+		else if(sql != null)
 		{
 			result = querier.executeSQLUpdate(sql);
 		}
