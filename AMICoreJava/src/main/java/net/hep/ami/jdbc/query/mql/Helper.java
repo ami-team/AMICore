@@ -157,26 +157,11 @@ public class Helper
 
 				if(isModifStm)
 				{
-/*					String url = CatalogSingleton.getTuple(SchemaSingleton.internalCatalogToExternalCatalog(stdInternalCatalog)).t;
-
-					if(url.toLowerCase().startsWith( "jdbc:mysql" )
-					   ||
-					   url.toLowerCase().startsWith("jdbc:mariadb")
-					 ) {
-						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
-						      .append(" IN (SELECT ").append(mainPrimarykeyQId.toString(QId.MASK_FIELD)).append(" FROM (")
-						      .append(query)
-						      .append(") AS T").append(s_cnt++).append(")");
-						;
-					}
-					else
-*/					{
-						result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
-						      .append(" IN (")
-						      .append(query)
-						      .append(")")
-						;
-					}
+					result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
+					      .append(" IN (")
+					      .append(query)
+					      .append(")")
+					;
 				}
 				else
 				{
