@@ -61,15 +61,15 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				int cnt = 0;
-
 				Set<String> tmpJoinList = new LinkedHashSet<>();
 
 				/*---------------------------------------------------------*/
 
 				Set<QId> tmpFromList = new LinkedHashSet<>();
-				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths()) 
+				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
+					int cnt = 0;
+
 					/*-----------------------------------------------------*/
 
 					Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();

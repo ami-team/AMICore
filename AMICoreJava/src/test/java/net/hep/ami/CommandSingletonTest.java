@@ -26,14 +26,22 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		Querier querier = new SimpleQuerier("test");
+		Querier querier1 = new SimpleQuerier("test2");
 
-		System.out.println(querier.mqlToSQL("A", "DELETE WHERE `name` = 'foo' AND `kux` = 'bar'"));
+		//System.out.println(querier1.mqlToSQL("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')"));
 
-		System.out.println(querier.mqlToSQL("A", "SELECT `kux` WHERE `name` = 'foo' AND `kux` = 'bar'"));
+//		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')");
 
-		System.out.println(querier.mqlToSQL("A", "INSERT (`name`, `label`) VALUES ('foo', 'bar')"));
-		System.out.println(querier.mqlToSQL("A", "INSERT (`bFK`) VALUES (0)"));
+		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "INSERT (`PROJECT`.`name`) VALUES ('AMI')");
+
+//		Querier querier2 = new SimpleQuerier("test");
+
+//		System.out.println(querier2.mqlToSQL("A", "DELETE WHERE `name` = 'foo' AND `kux` = 'bar'"));
+
+//		System.out.println(querier2.mqlToSQL("A", "SELECT `kux` WHERE `name` = 'foo' AND `kux` = 'bar'"));
+
+//		System.out.println(querier2.mqlToSQL("A", "INSERT (`name`, `label`) VALUES ('foo', 'bar')"));
+//		System.out.println(querier2.mqlToSQL("A", "INSERT (`bFK`) VALUES (0)"));
 
 //		CommandSingleton.executeCommand("ResetPassword -amiLogin=\"jodier\"", true);
 
