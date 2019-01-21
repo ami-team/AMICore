@@ -1065,7 +1065,7 @@ CREATE TABLE "router_authority" (
   "vo" VARCHAR2(128) DEFAULT 'ami',
   "clientDN" VARCHAR2(512),
   "issuerDN" VARCHAR2(512),
-  "not  BEFORE" DATE,
+  "notBefore" DATE,
   "notAfter" DATE,
   "serial" VARCHAR2(128),
   "email" VARCHAR2(128),
@@ -1101,7 +1101,7 @@ ALTER TABLE "router_authority"
 ;;
 
 ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck5_router_authority" CHECK("not  BEFORE" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_authority" CHECK("notBefore" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_authority"
