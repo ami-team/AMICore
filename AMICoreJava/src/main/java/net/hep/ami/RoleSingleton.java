@@ -103,6 +103,41 @@ public class RoleSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static String _getPassFromUser(Querier querier, String amiUser) throws Exception
+	{
+		String result;
+
+		PreparedStatement statement = querier.prepareStatement(
+			"SELECT `AMIPass` FROM `router_user` WHERE `router_user`.`AMIUser` = ?",
+			false,
+			null
+		);
+
+		statement.setString(1, amiUser);
+
+		try
+		{
+			ResultSet resultSet = statement.executeQuery();
+
+			if(resultSet.next())
+			{
+				result = SecuritySingleton.encrypt(resultSet.getString(1));
+			}
+			else
+			{
+				throw new Exception("user `" + amiUser + "` is not registered in AMI");
+			}
+		}
+		finally
+		{
+			statement.close();
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Set<String> checkRoles(Querier querier, String command, Map<String, String> arguments, String validatorClass, boolean check) throws Exception
 	{
 		/*---------------------------------*/
@@ -155,7 +190,10 @@ public class RoleSingleton
 
 		if(changeUser != null && userRoles.contains("AMI_SUDOER"))
 		{
-			arguments.put("AMIUser", amiUser = changeUser);
+			amiPass = _getPassFromUser(querier, amiUser = changeUser);
+
+			arguments.put("AMIUser", amiUser);
+			arguments.put("AMIPass", amiPass);
 
 			userRoles = _getUserRoles(
 				querier,
