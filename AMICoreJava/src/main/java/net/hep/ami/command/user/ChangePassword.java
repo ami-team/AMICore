@@ -2,6 +2,7 @@ package net.hep.ami.command.user;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
@@ -31,16 +32,18 @@ public class ChangePassword extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `AMIPass`, `email` FROM `router_user` WHERE `AMIUser` = ? AND `valid` != 0", amiLogin).getAll(10, 0);
-
-		if(rowList.size() > 0)
-		{
-
-		}
+		Update update = getQuerier("self").executeSQLUpdate("UPDATE `router_user` SET `AMIPass` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?",
+			SecuritySingleton.encrypt(amiPasswordOld),
+			/*---------------------*/(   amiLogin   ),
+			SecuritySingleton.encrypt(amiPasswordOld)
+		);
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[email sent with success]]></info>");
+		return new StringBuilder(
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[bad user or password]]></error>"
+		);
 	}
 
 	/*---------------------------------------------------------------------*/
