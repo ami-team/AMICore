@@ -58,9 +58,9 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				Set<QId> tmpFromList = new LinkedHashSet<>();
+				Set<QId> tmpFromSet = new LinkedHashSet<>();
 
-				Set<String> tmpJoinList = new LinkedHashSet<>();
+				Set<String> tmpJoinSet = new LinkedHashSet<>();
 
 				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
@@ -76,9 +76,9 @@ public class Helper
 							continue;
 						}
 
-						tmpFromList.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null));
+						tmpFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null));
 
-						tmpFromList.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null));
+						tmpFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null));
 
 						tmpWhereList.add(frgnKey);
 					}
@@ -96,11 +96,11 @@ public class Helper
 
 						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                  .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-						                                  .addFromPart(tmpFromList.stream().map(x -> x.toString()).collect(Collectors.toList()))
+						                                  .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
 						                                  .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 						;
 
-						tmpJoinList.add(
+						tmpJoinSet.add(
 							new StringBuilder().append("(")
 							                   .append(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 							                   .append(", ")
@@ -117,9 +117,9 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				if(tmpJoinList.isEmpty() == false)
+				if(tmpJoinSet.isEmpty() == false)
 				{
-					localJoinList.add("(" + String.join(" OR ", tmpJoinList) + ")");
+					localJoinList.add("(" + String.join(" OR ", tmpJoinSet) + ")");
 				}
 
 				/*---------------------------------------------------------*/

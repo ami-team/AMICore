@@ -397,14 +397,46 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean matches(QId qId)
+	public boolean matches(Object object)
 	{
-		return (m_catalog == null || qId.m_catalog == null || WILDCARD.equals(m_catalog) || WILDCARD.equals(qId.m_catalog) || m_catalog.equalsIgnoreCase(qId.m_catalog))
+		if(object instanceof QId == false)
+		{
+			return false;
+		}
+
+		return (((QId) this).m_catalog == null || ((QId) object).m_catalog == null || WILDCARD.equals(((QId) this).m_catalog) || WILDCARD.equals(((QId) object).m_catalog) || ((QId) this).m_catalog.equalsIgnoreCase(((QId) object).m_catalog))
 		       &&
-		       (m_entity == null || qId.m_entity == null || WILDCARD.equals(m_entity) || WILDCARD.equals(qId.m_entity) || m_entity.equalsIgnoreCase(qId.m_entity))
+		       (((QId) this).m_entity == null || ((QId) object).m_entity == null || WILDCARD.equals(((QId) this).m_entity) || WILDCARD.equals(((QId) object).m_entity) || ((QId) this).m_entity.equalsIgnoreCase(((QId) object).m_entity))
 		       &&
-		       (m_field == null || qId.m_field == null || WILDCARD.equals(m_field) || WILDCARD.equals(qId.m_field) || m_field.equalsIgnoreCase(qId.m_field))
+		       (((QId) this).m_field == null || ((QId) object).m_field == null || WILDCARD.equals(((QId) this).m_field) || WILDCARD.equals(((QId) object).m_field) ||((QId) this). m_field.equalsIgnoreCase(((QId) object).m_field))
 		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public boolean equals(Object object)
+	{
+		return equals(object, MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean equals(Object object, int mask)
+	{
+		return equals(object, mask, MASK_NONE);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public boolean equals(Object object, int mask, int maskForPath)
+	{
+		if(object instanceof QId == false)
+		{
+			return false;
+		}
+
+		return ((QId) this).toString(mask, maskForPath).equals(((QId) object).toString(mask, maskForPath));
 	}
 
 	/*---------------------------------------------------------------------*/
