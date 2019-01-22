@@ -286,7 +286,10 @@ public class Helper
 
 			if(tuple == null)
 			{
-				entries.put(field, tuple = new Tuple2<>(new ArrayList<>(), new ArrayList<>()));
+				entries.put(field, tuple = new Tuple2<>(
+					new ArrayList<>(),
+					new ArrayList<>()
+				));
 			}
 
 			tuple.x.add(expression);
