@@ -144,7 +144,7 @@ public class CatalogSingleton
 		/* ADD SCHEMA                                                      */
 		/*-----------------------------------------------------------------*/
 
-		if(DriverSingleton.isTypeOf(jdbcUrl, DriverMetadata.Type.SQL))
+		if(DriverSingleton.getType(jdbcUrl) == DriverMetadata.Type.SQL)
 		{
 			SchemaSingleton.addSchema(externalCatalog, internalCatalog);
 		}
@@ -177,20 +177,20 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isTypeOf(String catalog, DriverMetadata.Type jdbcType) throws Exception
+	public static DriverMetadata.Type getType(String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.isTypeOf(tuple.t, jdbcType);
+		return DriverSingleton.getType(tuple.t);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isProto(String catalog, String jdbcProto) throws Exception
+	public static String getProto(String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.isProto(tuple.t, jdbcProto);
+		return DriverSingleton.getProto(tuple.t);
 	}
 
 	/*---------------------------------------------------------------------*/

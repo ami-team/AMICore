@@ -177,16 +177,16 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isTypeOf(String jdbcUrl, DriverMetadata.Type jdbcType) throws Exception
+	public static DriverMetadata.Type getType(String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).x == jdbcType;
+		return getTuple(jdbcUrl).x;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isProto(String jdbcUrl, String jdbcProto) throws Exception
+	public static String getProto(String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).y.equals(jdbcProto);
+		return getTuple(jdbcUrl).y;
 	}
 
 	/*---------------------------------------------------------------------*/

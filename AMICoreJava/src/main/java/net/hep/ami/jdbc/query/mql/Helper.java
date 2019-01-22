@@ -26,10 +26,9 @@ public class Helper
 	{
 		/*-----------------------------------------------------------------*/
 
-		boolean isOracle = CatalogSingleton.isProto(
-			stdExternalCatalog,
-			"jdbc:oracle"
-		);
+		boolean isOracle = "jdbc:oracle".equals(CatalogSingleton.getProto(
+			stdExternalCatalog
+		));
 
 		/*-----------------------------------------------------------------*/
 
