@@ -38,6 +38,8 @@ public class AMICoreTest
 	@Test
 	public void databaseTest() throws Exception
 	{
+		boolean testFail = false;
+
 		if(System.getProperty("ami.integration") == null)
 		{
 			System.out.println("skipping integration");
@@ -85,6 +87,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -112,6 +115,7 @@ public class AMICoreTest
 		catch (Exception e) 
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -202,6 +206,7 @@ public class AMICoreTest
 		catch (Exception e) 
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 
@@ -231,6 +236,7 @@ public class AMICoreTest
 			catch (Exception e) 
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 			try 
 			{
@@ -243,6 +249,7 @@ public class AMICoreTest
 			catch (Exception e) 
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 
 			try 
@@ -256,6 +263,7 @@ public class AMICoreTest
 			catch (Exception e) 
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 
 		}
@@ -270,7 +278,8 @@ public class AMICoreTest
 		}
 		catch (Exception e) 
 		{
-			//System.out.println(e.getMessage());
+			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		try 
@@ -284,7 +293,7 @@ public class AMICoreTest
 		catch (Exception e) 
 		{
 			System.out.println(e.getMessage());
-			System.exit(0);
+			testFail = true;
 		}
 
 		testDB.commitAndRelease();
@@ -309,6 +318,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -331,6 +341,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -349,6 +360,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		try
@@ -365,6 +377,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -385,6 +398,7 @@ public class AMICoreTest
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 		}
 
@@ -404,6 +418,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		try
@@ -420,6 +435,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -438,6 +454,7 @@ public class AMICoreTest
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 		}
 
@@ -457,6 +474,7 @@ public class AMICoreTest
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 		}
 		/*-----------------------------------------------------------------*/
@@ -474,6 +492,7 @@ public class AMICoreTest
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			testFail = true;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -496,12 +515,19 @@ public class AMICoreTest
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		System.out.println("End of tests");
+
+		if (testFail)
+		{
+			System.out.println("Some tests failed");
+			System.exit(1);
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
