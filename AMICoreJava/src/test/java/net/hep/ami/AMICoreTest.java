@@ -523,6 +523,7 @@ public class AMICoreTest
 		/*-----------------------------------------------------------------*/
 
 		System.out.println("End of tests");
+		System.out.println(CommandSingleton.executeCommand("GetServerStatus").replace(">", ">\n"));
 
 		if (testFail)
 		{
