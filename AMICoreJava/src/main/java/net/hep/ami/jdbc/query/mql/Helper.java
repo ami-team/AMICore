@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.CatalogSingleton;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -24,6 +24,8 @@ public class Helper
 
 	public static StringBuilder isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		boolean isOracle = CatalogSingleton.isProto(
 			stdExternalCatalog,
 			"jdbc:oracle"
@@ -100,12 +102,10 @@ public class Helper
 							tmpFromSet.removeAll(globalFromSet);
 						}
 
-						SchemaSingleton.Column localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
+						QId localPrimarykeyQId = new QId(SchemaSingleton.getPrimaryKey(
 							tmpExternalCatalog,
 							tmpEntity
-						);
-
-						QId localPrimarykeyQId = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
+						), true);
 
 						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                  .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
@@ -221,7 +221,6 @@ public class Helper
 
 		String field;
 
-		QId foreignKey;
 		QId primaryKey;
 
 		Resolution resolution;
@@ -272,17 +271,12 @@ public class Helper
 			}
 			else
 			{
-				SchemaSingleton.FrgnKey frgnKey = resolution.getPaths().get(0).get(0);
-
-				foreignKey = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
-				primaryKey = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
-
 				expression = new StringBuilder().append(resolution.getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                .append(" = ")
 				                                .append(expression)
 				;
 
-				field = foreignKey.toString(QId.MASK_FIELD);
+				field = resolution.getPaths().get(0).get(0).fkColumn;
 			}
 
 			/*-------------------------------------------------------------*/
@@ -323,7 +317,6 @@ public class Helper
 
 				SchemaSingleton.FrgnKey frgnKey = tuple.y.get(0).getPaths().get(0).get(0);
 
-				foreignKey = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
 				primaryKey = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
 
 				/*---------------------------------------------------------*/

@@ -5,7 +5,7 @@ import java.util.stream.*;
 
 import org.antlr.v4.runtime.*;
 import net.hep.ami.jdbc.query.mql.*;
-
+import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -57,6 +57,15 @@ public class QId
 	public QId()
 	{
 		/* DO NOTHING */
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public QId(SchemaSingleton.Column column, boolean isInternal)
+	{
+		setCatalog(isInternal ? column.internalCatalog : column.externalCatalog);
+		setEntity(column.table);
+		setField(column.name);
 	}
 
 	/*---------------------------------------------------------------------*/
