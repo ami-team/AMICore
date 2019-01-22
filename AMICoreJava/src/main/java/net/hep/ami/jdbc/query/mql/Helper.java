@@ -29,11 +29,12 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
+		Set<QId> localFromSet = new LinkedHashSet<>();
+
 		Set<String> localJoinList = new LinkedHashSet<>();
 
-		/*-----------------------------------------------------------------*/
+		localFromSet.add(mainPrimarykeyQId.as(QId.MASK_CATALOG_ENTITY));
 
-		Set<QId> localFromSet = new LinkedHashSet<>();
 		for(Resolution resolution: resolutionList) 
 		{
 			String tmpExternalCatalog = resolution.getExternalQId().getCatalog();
@@ -57,11 +58,10 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
+				Set<QId> tmpFromList = new LinkedHashSet<>();
+
 				Set<String> tmpJoinList = new LinkedHashSet<>();
 
-				/*---------------------------------------------------------*/
-
-				Set<QId> tmpFromList = new LinkedHashSet<>();
 				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
 					int cnt = 0;
@@ -148,7 +148,6 @@ public class Helper
 				localFromSet.removeAll(globalFromSet);
 
 				SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-				                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
 				                                 .addFromPart(localFromSet)
 				                                 .addWherePart(expression)
 				                                 .addWherePart(localJoinList)
