@@ -101,6 +101,7 @@ public class AMICoreTest
 		String test_url = ConfigSingleton.getProperty("test_url");
 		String test_user = ConfigSingleton.getProperty("test_user");
 		String test_pass = ConfigSingleton.getProperty("test_pass");
+		int cptMax = 10;
 
 		try 
 		{
@@ -310,7 +311,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		String command = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl WHERE externalCatalog LIKE '%%' \" ";
+		String command = "SearchQuery -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl WHERE externalCatalog LIKE '%%' \" ";
 
 		try
 		{
@@ -382,8 +383,6 @@ public class AMICoreTest
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		int cptMax = 10;
 
 		for (int i = 0; i < cptMax; i++) {
 			try
@@ -484,7 +483,19 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		String commandTest = "SearchQuery -AMIPass=\"insider\" -AMIUser=\"admin\" -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
+
+		try
+		{
+			CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * \" ";
 
 		try
 		{
@@ -519,6 +530,14 @@ public class AMICoreTest
 				testFail = true;
 			}
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		System.out.println("Testing GetServerStatus command");
+
+		/*-----------------------------------------------------------------*/
+
+		System.out.println(CommandSingleton.executeCommand("GetServerStatus",false).replace(">", ">\n"));
 
 		/*-----------------------------------------------------------------*/
 
