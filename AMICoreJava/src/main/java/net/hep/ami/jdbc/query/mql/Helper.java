@@ -92,6 +92,8 @@ public class Helper
 							tmpEntity
 						);
 
+						tmpFromSet.removeAll(globalFromSet);
+
 						QId localPrimarykeyQId = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
 
 						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
