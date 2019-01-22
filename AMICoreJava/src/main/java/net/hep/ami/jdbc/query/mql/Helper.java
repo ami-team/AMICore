@@ -19,7 +19,9 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder isolate(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, Set<String> globalJoinSet, List<Resolution> resolutionList, int skip, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
+	/* globalJoinSet MUST be null for insert or update parts */
+
+	public static StringBuilder isolate(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -69,7 +71,7 @@ public class Helper
 					Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();
 					for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
 					{
-						if(cnt++ < skip)
+						if(globalJoinSet == null && cnt++ == 0)
 						{
 							continue;
 						}
@@ -132,7 +134,7 @@ public class Helper
 
 		if(isSelectPart)
 		{
-			if(false || localJoinList.isEmpty() == false)
+			if(((false)) || localJoinList.isEmpty() == false)
 			{
 				globalJoinSet.add(String.join(" AND ", localJoinList));
 			}
@@ -142,6 +144,8 @@ public class Helper
 			if(isModifStm || localJoinList.isEmpty() == false)
 			{
 				result = new StringBuilder();
+
+				localFromSet.removeAll(globalFromSet);
 
 				SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
@@ -176,7 +180,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser, boolean insert) throws Exception
+	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -301,9 +305,9 @@ public class Helper
 
 				StringBuilder where = Helper.isolate(
 					frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn,
-					null, null,
+					globalFromSet,
+					null,
 					tuple.y,
-					1, /* skip 1 join */
 					tuple.x,
 					false, false
 				);

@@ -32,7 +32,9 @@ public class CommandSingletonTest
 
 //		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')");
 
-		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "INSERT (`PROJECT`.`name`) VALUES ('AMI')");
+//		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "INSERT (`PROJECT`.`name`) VALUES ('AMI')");
+
+		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "DELETE WHERE `PROJECT`.`name` = 'AMI' AND `DATASET`.`name` = 'dataset_0' AND `FILE`.`name` = 'file_0'");
 
 //		Querier querier2 = new SimpleQuerier("test");
 
