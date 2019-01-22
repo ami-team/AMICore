@@ -421,7 +421,7 @@ public class MQLToSQL
 		if(isolateExpression)
 		{
 			result = Helper.isolate(
-				m_internalCatalog, m_entity, m_primaryKey,
+				m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,
@@ -573,7 +573,7 @@ public class MQLToSQL
 		if(isolateExpression)
 		{
 			result = Helper.isolate(
-				m_internalCatalog, m_entity, m_primaryKey,
+				m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,

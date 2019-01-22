@@ -186,11 +186,20 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static boolean isProto(String catalog, String jdbcProto) throws Exception
+	{
+		Tuple tuple = getTuple(catalog);
+
+		return DriverSingleton.isProto(tuple.t, jdbcProto);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String getKey(String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getKey(tuple.y, tuple.t, tuple.u, tuple.v);
+		return tuple.y + "%" + tuple.t + "%" + tuple.u + "%" + tuple.v;
 	}
 
 	/*---------------------------------------------------------------------*/

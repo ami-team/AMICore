@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.CatalogSingleton;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -21,8 +22,13 @@ public class Helper
 
 	/* globalJoinSet MUST be null for insert or update parts */
 
-	public static StringBuilder isolate(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
+	public static StringBuilder isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
+		boolean isOracle = CatalogSingleton.isProto(
+			stdExternalCatalog,
+			"jdbc:oracle"
+		);
+
 		/*-----------------------------------------------------------------*/
 
 		QId mainPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
@@ -89,7 +95,10 @@ public class Helper
 					{
 						/*-------------------------------------------------*/
 
-						tmpFromSet.removeAll(globalFromSet);
+						if(isOracle == false)
+						{
+							tmpFromSet.removeAll(globalFromSet);
+						}
 
 						SchemaSingleton.Column localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
 							tmpExternalCatalog,
@@ -98,13 +107,13 @@ public class Helper
 
 						QId localPrimarykeyQId = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
 
-						/*-------------------------------------------------*/
-
 						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                  .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                  .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
 						                                  .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 						;
+
+						/*-------------------------------------------------*/
 
 						tmpJoinSet.add(
 							new StringBuilder().append("(")
@@ -153,7 +162,10 @@ public class Helper
 			{
 				/*---------------------------------------------------------*/
 
-				localFromSet.removeAll(globalFromSet);
+				if(isOracle == false)
+				{
+					localFromSet.removeAll(globalFromSet);
+				}
 
 				SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                 .addFromPart(localFromSet)
@@ -317,7 +329,7 @@ public class Helper
 				/*---------------------------------------------------------*/
 
 				StringBuilder where = Helper.isolate(
-					frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn,
+					frgnKey.pkExternalCatalog, frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn,
 					globalFromSet,
 					null,
 					tuple.y,

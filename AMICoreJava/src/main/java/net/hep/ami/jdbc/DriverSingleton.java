@@ -184,9 +184,9 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getKey(String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public static boolean isProto(String jdbcUrl, String jdbcProto) throws Exception
 	{
-		return internalCatalog + "%" + jdbcUrl + "%" + user + "%" + pass;
+		return getTuple(jdbcUrl).y.equals(jdbcProto);
 	}
 
 	/*---------------------------------------------------------------------*/
