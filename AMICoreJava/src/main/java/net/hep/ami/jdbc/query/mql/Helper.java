@@ -87,14 +87,18 @@ public class Helper
 
 					if(tmpWhereList.isEmpty() == false)
 					{
+						/*-------------------------------------------------*/
+
+						tmpFromSet.removeAll(globalFromSet);
+
 						SchemaSingleton.Column localTablePrimaryKey = SchemaSingleton.getPrimaryKey(
 							tmpExternalCatalog,
 							tmpEntity
 						);
 
-						tmpFromSet.removeAll(globalFromSet);
-
 						QId localPrimarykeyQId = new QId(localTablePrimaryKey.internalCatalog, localTablePrimaryKey.table, localTablePrimaryKey.name);
+
+						/*-------------------------------------------------*/
 
 						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                  .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
@@ -112,6 +116,8 @@ public class Helper
 							                   .append(")")
 							                   .toString()
 						);
+
+						/*-------------------------------------------------*/
 					}
 
 					/*-----------------------------------------------------*/
@@ -145,7 +151,7 @@ public class Helper
 		{
 			if(isModifStm || localJoinList.isEmpty() == false)
 			{
-				result = new StringBuilder();
+				/*---------------------------------------------------------*/
 
 				localFromSet.removeAll(globalFromSet);
 
@@ -154,6 +160,10 @@ public class Helper
 				                                 .addWherePart(expression)
 				                                 .addWherePart(localJoinList)
 				;
+
+				/*---------------------------------------------------------*/
+
+				result = new StringBuilder();
 
 				if(isModifStm)
 				{
@@ -171,6 +181,8 @@ public class Helper
 					      .append(")")
 					;
 				}
+
+				/*---------------------------------------------------------*/
 			}
 		}
 
