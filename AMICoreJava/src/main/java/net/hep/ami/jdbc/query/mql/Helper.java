@@ -22,7 +22,7 @@ public class Helper
 
 	/* globalJoinSet MUST be null for insert or update parts */
 
-	public static String isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable CharSequence expression, boolean isSelectPart, boolean isModifStm) throws Exception
+	public static String isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, CharSequence expression, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -201,6 +201,8 @@ public class Helper
 		/*-----------------------------------------------------------------*/
 
 		return expression.toString();
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
