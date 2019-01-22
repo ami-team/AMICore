@@ -174,7 +174,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
+		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_externalCatalog, m_entity, m_primaryKey,
 			m_globalFromSet,
 			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
@@ -202,7 +202,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple2<List<StringBuilder>, List<StringBuilder>> tuple = Helper.resolve(
+		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_externalCatalog, m_entity, m_primaryKey,
 			m_globalFromSet,
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
@@ -420,14 +420,14 @@ public class MQLToSQL
 
 		if(isolateExpression)
 		{
-			result = Helper.isolate(
+			result = new StringBuilder(Helper.isolate(
 				m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,
 				(mask & IN_SELECT_PART) != 0,
 				(mask &  IS_MODIF_STM ) != 0
-			);
+			));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -572,14 +572,14 @@ public class MQLToSQL
 
 		if(isolateExpression)
 		{
-			result = Helper.isolate(
+			result = new StringBuilder(Helper.isolate(
 				m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
 				m_globalFromSet, m_globalJoinSet,
 				tmpResolutionList,
 				result,
 				(mask & IN_SELECT_PART) != 0,
 				(mask &  IS_MODIF_STM ) != 0
-			);
+			));
 		}
 
 		/*-----------------------------------------------------------------*/

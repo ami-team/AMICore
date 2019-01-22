@@ -22,7 +22,7 @@ public class Helper
 
 	/* globalJoinSet MUST be null for insert or update parts */
 
-	public static StringBuilder isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable StringBuilder expression, boolean isSelectPart, boolean isModifStm) throws Exception
+	public static String isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, @Nullable CharSequence expression, boolean isSelectPart, boolean isModifStm) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -145,10 +145,6 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = expression;
-
-		/*-----------------------------------------------------------------*/
-
 		if(isSelectPart)
 		{
 			if(((false)) || localJoinList.isEmpty() == false)
@@ -175,7 +171,7 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				result = new StringBuilder();
+				StringBuilder result = new StringBuilder();
 
 				if(isModifStm)
 				{
@@ -195,17 +191,21 @@ public class Helper
 				}
 
 				/*---------------------------------------------------------*/
+
+				expression = result;
+
+				/*---------------------------------------------------------*/
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		return expression.toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<StringBuilder>, List<StringBuilder>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, List<Resolution> resolutionList, List<StringBuilder> expressionList, String AMIUser, boolean insert) throws Exception
+	public static Tuple2<List<String>, List<String>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -224,13 +224,13 @@ public class Helper
 		QId primaryKey;
 
 		Resolution resolution;
-		StringBuilder expression;
+		CharSequence expression;
 
 		SchemaSingleton.Column column;
 
-		Tuple2<StringBuilder, List<Resolution>> tuple;
+		Tuple2<List<CharSequence>, List<Resolution>> tuple;
 
-		Map<String, Tuple2<StringBuilder, List<Resolution>>> entries = new LinkedHashMap<>();
+		Map<String, Tuple2<List<CharSequence>, List<Resolution>>> entries = new LinkedHashMap<>();
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -243,11 +243,10 @@ public class Helper
 
 			/**/ if(column.crypted)
 			{
-				expression = new StringBuilder(
-					/* NOT FOR SQL EXPRESSION */
-					Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
-					/* NOT FOR SQL EXPRESSION */
-				);
+				expression = /* NOT FOR SQL EXPRESSION */
+				             Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
+				             /* NOT FOR SQL EXPRESSION */
+				;
 			}
 
 			/**/
@@ -271,29 +270,24 @@ public class Helper
 			}
 			else
 			{
+				field = resolution.getPaths().get(0).get(0).fkColumn;
+
 				expression = new StringBuilder().append(resolution.getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                .append(" = ")
 				                                .append(expression)
 				;
-
-				field = resolution.getPaths().get(0).get(0).fkColumn;
 			}
 
 			/*-------------------------------------------------------------*/
 
 			tuple = entries.get(field);
 
-			if(entries.containsKey(field) == false)
+			if(tuple == null)
 			{
-				entries.put(field, tuple = new Tuple2<>(new StringBuilder(), new ArrayList<>()));
-
-				tuple.x.append(((("")))).append(expression);
-			}
-			else
-			{
-				tuple.x.append(" AND ").append(expression);
+				entries.put(field, tuple = new Tuple2<>(new ArrayList<>(), new ArrayList<>()));
 			}
 
+			tuple.x.add(expression);
 			tuple.y.add(resolution);
 
 			/*-------------------------------------------------------------*/
@@ -303,13 +297,15 @@ public class Helper
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		List<StringBuilder> X = new ArrayList<>();
-		List<StringBuilder> Y = new ArrayList<>();
+		List<String> X = new ArrayList<>();
+		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple2<StringBuilder, List<Resolution>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple2<List<CharSequence>, List<Resolution>>> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
+
+			expression = String.join(" AND ", tuple.x);
 
 			if(tuple.y.get(0).getMaxPathLen() > 0)
 			{
@@ -321,12 +317,12 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				StringBuilder where = Helper.isolate(
+				String where = Helper.isolate(
 					frgnKey.pkExternalCatalog, frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn,
 					globalFromSet,
 					null,
 					tuple.y,
-					tuple.x,
+					expression,
 					false, false
 				);
 
@@ -342,15 +338,15 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				X.add(new StringBuilder(Utility.textToSqlId(field)));
+				X.add(Utility.textToSqlId(field));
 
-				Y.add(expression);
+				Y.add(expression.toString());
 			}
 			else
 			{
-				X.add(new StringBuilder(Utility.textToSqlId(field)));
+				X.add(Utility.textToSqlId(field));
 
-				Y.add(tuple.x);
+				Y.add(expression.toString());
 			}
 		}
 
@@ -361,25 +357,25 @@ public class Helper
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
 		{
 			if(tmp.created && insert) {
-				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");
 			}
 
 			if(tmp.createdBy && insert) {
-				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
+				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
 			}
 
 			if(tmp.modified) {
-				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder("CURRENT_TIMESTAMP"));
+				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");
 			}
 
 			if(tmp.modifiedBy) {
-				X.add(new StringBuilder(Utility.textToSqlId(tmp.name))); Y.add(new StringBuilder(Utility.textToSqlVal(AMIUser)));
+				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple2<List<StringBuilder>, List<StringBuilder>>(X, Y);
+		return new Tuple2<List<String>, List<String>>(X, Y);
 	}
 
 	/*---------------------------------------------------------------------*/
