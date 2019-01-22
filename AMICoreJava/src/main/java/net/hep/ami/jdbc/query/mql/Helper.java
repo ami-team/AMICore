@@ -72,9 +72,9 @@ public class Helper
 
 				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
-					int cnt = 0;
-
 					/*-----------------------------------------------------*/
+
+					int cnt = 0;
 
 					Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();
 					for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
