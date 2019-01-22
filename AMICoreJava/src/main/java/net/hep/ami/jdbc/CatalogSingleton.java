@@ -199,7 +199,7 @@ public class CatalogSingleton
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return tuple.y + "%" + tuple.t + "%" + tuple.u + "%" + tuple.v;
+		return DriverSingleton.getKey(tuple.y, tuple.t, tuple.u , tuple.v);
 	}
 
 	/*---------------------------------------------------------------------*/

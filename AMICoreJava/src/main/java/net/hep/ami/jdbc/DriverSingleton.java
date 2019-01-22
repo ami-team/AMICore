@@ -191,6 +191,13 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String getKey(String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	{
+		return internalCatalog + "%" + jdbcUrl + "%" + user + "%" + pass;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static StringBuilder listDrivers()
 	{
 		StringBuilder result = new StringBuilder();
