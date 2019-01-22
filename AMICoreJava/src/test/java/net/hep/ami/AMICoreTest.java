@@ -96,7 +96,6 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		
 		String AMIAdminUser =  ConfigSingleton.getProperty("admin_user");
 		String AMIAdminPass =  ConfigSingleton.getProperty("admin_pass");
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
@@ -104,6 +103,7 @@ public class AMICoreTest
 		String test_url = ConfigSingleton.getProperty("test_url");
 		String test_user = ConfigSingleton.getProperty("test_user");
 		String test_pass = ConfigSingleton.getProperty("test_pass");
+		int cptMax = 10;
 
 		try 
 		{
@@ -385,8 +385,6 @@ public class AMICoreTest
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		int cptMax = 10;
 
 		for (int i = 0; i < cptMax; i++) {
 			try
