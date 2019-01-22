@@ -495,6 +495,18 @@ public class AMICoreTest
 			testFail = true;
 		}
 
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * \" ";
+
+		try
+		{
+			CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		System.out.println("Testing remove commands");
