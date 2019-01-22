@@ -96,8 +96,6 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		String AMIAdminUser =  ConfigSingleton.getProperty("admin_user");
-		String AMIAdminPass =  ConfigSingleton.getProperty("admin_pass");
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
 		String test_url = ConfigSingleton.getProperty("test_url");
@@ -313,7 +311,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		String command = "SearchQuery  -AMIPass=\"" + AMIAdminPass + "\" -AMIUser=\"" + AMIAdminUser + "\" -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl WHERE externalCatalog LIKE '%%' \" ";
+		String command = "SearchQuery -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl WHERE externalCatalog LIKE '%%' \" ";
 
 		try
 		{
@@ -485,7 +483,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		String commandTest = "SearchQuery  -AMIPass=\"" + AMIAdminPass + "\" -AMIUser=\"" + AMIAdminUser + "\" -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
 
 		try
 		{
@@ -527,7 +525,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println(CommandSingleton.executeCommand("GetServerStatus -AMIPass=\"" + AMIAdminPass + "\" -AMIUser=\"" + AMIAdminUser + "\"").replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetServerStatus",false).replace(">", ">\n"));
 
 		/*-----------------------------------------------------------------*/
 
