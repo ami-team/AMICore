@@ -223,6 +223,7 @@ public class AMICoreTest
 			catch (Exception e) 
 			{
 				System.out.println(e.getMessage());
+				testFail = true;
 			}
 
 			try 
