@@ -4,9 +4,11 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.query.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -968,10 +970,19 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static List<String> getInternalCatalogNames()
+	{
+		return new ArrayList<>(
+			s_internalCatalogToExternalCatalog.keySet()
+		);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static List<String> getExternalCatalogNames()
 	{
 		return new ArrayList<>(
-			s_columns.keySet()
+			s_externalCatalogToInternalCatalog.keySet()
 		);
 	}
 
@@ -1050,6 +1061,17 @@ public class SchemaSingleton
 		throw new Exception("primary key not found for `" + externalCatalog + "`.`" + table + "`");
 
 		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<QId> getSortedColumnQId(String externalCatalog, String table, @Nullable List<QId> constraints, boolean isAdmin) throws Exception
+	{
+		return getColumns(externalCatalog, table).values().stream()
+		                                                  .filter(x -> x.adminOnly == false || isAdmin).sorted((x, y) -> x.rank - y.rank)
+		                                                  .map(x -> new QId(externalCatalog, table, x.name, constraints))
+		                                                  .collect(Collectors.toList())
+		;
 	}
 
 	/*---------------------------------------------------------------------*/

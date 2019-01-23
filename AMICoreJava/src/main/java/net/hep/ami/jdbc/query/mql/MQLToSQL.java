@@ -6,6 +6,7 @@ import java.util.stream.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import net.hep.ami.ConfigSingleton;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -33,7 +34,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private int m_maxPathLength = 4;
+	private boolean m_isAdmin = true;
 
 	/*---------------------------------------------------------------------*/
 
@@ -655,23 +656,16 @@ public class MQLToSQL
 		{
 			if((mask & IN_FUNCTION) != 0)
 			{
-				SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(catalogName, entityName);
-
-				list = Collections.singletonList(qid.setCatalog(primaryKey.externalCatalog).setEntity(primaryKey.table).setField(primaryKey.name));
+				list = Collections.singletonList(new QId(SchemaSingleton.getPrimaryKey(catalogName, entityName), false));
 			}
 			else
 			{
-				list = new ArrayList<>();
-
-				for(String fieldNAME: SchemaSingleton.getColumnNames(catalogName, entityName))
-				{
-					list.add(new QId(catalogName, entityName, fieldNAME, qid.getConstraints()));
-				}
+				list = SchemaSingleton.getSortedColumnQId(catalogName, entityName, qid.getConstraints(), m_isAdmin);
 			}
 		}
 		else
 		{
-			list = Arrays.asList(qid);
+			list = Collections.singletonList(qid);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -680,7 +674,7 @@ public class MQLToSQL
 
 		for(QId qId: list)
 		{
-			result.add(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, m_maxPathLength));
+			result.add(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, qId, ConfigSingleton.getProperty("maxPathLength", 4)));
 		}
 
 		/*-----------------------------------------------------------------*/
