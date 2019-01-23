@@ -26,7 +26,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		Querier querier1 = new SimpleQuerier("test2");
+		Querier querier1 = new SimpleQuerier("test");
 
 		//System.out.println(querier1.mqlToSQL("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')"));
 
@@ -34,7 +34,7 @@ public class CommandSingletonTest
 
 //		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "INSERT (`PROJECT`.`name`) VALUES ('AMI')");
 
-		System.out.println(querier1.mqlToSQL("DATASET_FILE_BRIDGE", "DELETE WHERE `PROJECT`.`name` = 'AMI' AND `DATASET`.`name` = 'dataset_0' AND `FILE`.`name` = 'file_0'"));
+//		System.out.println(querier1.mqlToSQL("DATASET_FILE_BRIDGE", "DELETE WHERE `PROJECT`.`name` = 'AMI' AND `DATASET`.`name` = 'dataset_0' AND `FILE`.`name` = 'file_0'"));
 
 //		Querier querier2 = new SimpleQuerier("test");
 

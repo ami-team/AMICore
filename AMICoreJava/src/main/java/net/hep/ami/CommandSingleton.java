@@ -103,7 +103,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
+			RowSet rowSet = driver.executeSQLQuery(true, "SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */

@@ -33,14 +33,14 @@ public class MQLToAST
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String catalog, String entity, String query) throws Exception
+	public static String parse(String catalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
 	{
-		return parse(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+		return parse(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, AMIUser, isAdmin, query);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	public static String parse(String externalCatalog, String internalCatalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 

@@ -34,7 +34,8 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean m_isAdmin = true;
+	private String m_AMIUser = "guest";
+	private boolean m_isAdmin = false;
 
 	/*---------------------------------------------------------------------*/
 
@@ -43,8 +44,10 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private MQLToSQL(String externalCatalog, String internalCatalog, String entity) throws Exception
+	private MQLToSQL(String externalCatalog, String internalCatalog, String entity, String AMIUser, boolean isAdmin) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(externalCatalog, entity);
 
 		m_externalCatalog = primaryKey.externalCatalog;
@@ -54,19 +57,28 @@ public class MQLToSQL
 
 		m_primaryKey = primaryKey.name;
 
+		/*-----------------------------------------------------------------*/
+
+		m_AMIUser = AMIUser;
+		m_isAdmin = isAdmin;
+
+		/*-----------------------------------------------------------------*/
+
 		m_globalFromSet.add(new QId(m_internalCatalog, m_entity, null));
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String catalog, String entity, String query) throws Exception
+	public static String parse(String externalCatalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
 	{
-		return parse(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, query);
+		return parse(externalCatalog, SchemaSingleton.externalCatalogToInternalCatalog(externalCatalog), entity, AMIUser, isAdmin, query);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String externalCatalog, String internalCatalog, String entity, String query) throws Exception
+	public static String parse(String externalCatalog, String internalCatalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -85,16 +97,16 @@ public class MQLToSQL
 		MQLParser.MqlQueryContext mqlQueryContext = parser.mqlQuery();
 
 		/**/ if(mqlQueryContext.m_select != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitSelectStatement(mqlQueryContext.m_select).toString();
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity, AMIUser, isAdmin).visitSelectStatement(mqlQueryContext.m_select).toString();
 		}
 		else if(mqlQueryContext.m_insert != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitInsertStatement(mqlQueryContext.m_insert).toString();
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity, AMIUser, isAdmin).visitInsertStatement(mqlQueryContext.m_insert).toString();
 		}
 		else if(mqlQueryContext.m_update != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitUpdateStatement(mqlQueryContext.m_update).toString();
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity, AMIUser, isAdmin).visitUpdateStatement(mqlQueryContext.m_update).toString();
 		}
 		else if(mqlQueryContext.m_delete != null) {
-			result = new MQLToSQL(externalCatalog, internalCatalog, entity).visitDeleteStatement(mqlQueryContext.m_delete).toString();
+			result = new MQLToSQL(externalCatalog, internalCatalog, entity, AMIUser, isAdmin).visitDeleteStatement(mqlQueryContext.m_delete).toString();
 		}
 		else {
 			throw new Exception(listener.toString());
@@ -180,7 +192,7 @@ public class MQLToSQL
 			m_globalFromSet,
 			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART),
-			context.m_user != null ? Utility.sqlValToText(context.m_user.getText()) : "admin",
+			m_AMIUser,
 			true
 		);
 
@@ -208,7 +220,7 @@ public class MQLToSQL
 			m_globalFromSet,
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART),
-			context.m_user != null ? Utility.sqlValToText(context.m_user.getText()) : "admin",
+			m_AMIUser,
 			false
 		);
 

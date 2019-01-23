@@ -39,10 +39,7 @@ public class SearchQuery extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		if("self".equals(catalog) && m_userRoles.contains("AMI_ADMIN") == false)
-		{
-			throw new Exception("wrong role for catalog `self`");
-		}
+		boolean isAdmin = m_userRoles.contains("AMI_ADMIN");
 
 		/*-----------------------------------------------------------------*/
 
@@ -78,15 +75,15 @@ public class SearchQuery extends AbstractCommand
 
 		/**/ if(raw != null)
 		{
-			result = querier.executeRawQuery(raw + extra);
+			result = querier.executeRawQuery(isAdmin, raw + extra);
 		}
 		else if(sql != null)
 		{
-			result = querier.executeSQLQuery(sql + extra);
+			result = querier.executeSQLQuery(isAdmin, sql + extra);
 		}
 		else
 		{
-			result = querier.executeMQLQuery(entity, mql + extra);
+			result = querier.executeMQLQuery(entity, m_AMIUser, isAdmin, mql + extra);
 		}
 
 		/*-----------------------------------------------------------------*/

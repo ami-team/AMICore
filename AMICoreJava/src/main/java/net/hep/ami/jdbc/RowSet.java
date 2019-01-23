@@ -68,12 +68,12 @@ public class RowSet
 
 	public RowSet(ResultSet resultSet) throws Exception
 	{
-		this(resultSet, null, null, null, null);
+		this(resultSet, null, false, null, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, boolean isAdmin, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
 

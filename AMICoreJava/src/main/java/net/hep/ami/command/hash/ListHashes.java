@@ -26,7 +26,7 @@ public class ListHashes extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = querier.executeSQLQuery("SELECT `hash`, `name`, `rank` FROM `router_short_url` WHERE `createdBy` = ?", m_AMIUser);
+		RowSet rowSet = querier.executeSQLQuery(true, "SELECT `hash`, `name`, `rank` FROM `router_short_url` WHERE `createdBy` = ?", m_AMIUser);
 
 		/*-----------------------------------------------------------------*/
 

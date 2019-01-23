@@ -32,6 +32,8 @@ public class GetElementInfo extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
+		boolean isAdmin = m_userRoles.contains("AMI_ADMIN");
+
 		/*-----------------------------------------------------------------*/
 
 		Querier querier = getQuerier(catalog);
@@ -40,7 +42,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = querier.executeMQLQuery(entity, "SELECT `*` WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'").toStringBuilder("element");
+		StringBuilder result = querier.executeMQLQuery(entity, m_AMIUser, isAdmin, "SELECT `*` WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'").toStringBuilder("element");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -108,7 +110,7 @@ public class GetElementInfo extends AbstractCommand
 
 				try /* A REFORMULER */
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, "SELECT COUNT(*) WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + constraint + " = ?", primaryFieldValue);
+					RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery(true, "SELECT COUNT(*) FROM `" + linkedEntity + "` WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + constraint + " = ?", primaryFieldValue);
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();

@@ -46,6 +46,8 @@ public class RemoveElements extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
+		boolean isAdmin = m_userRoles.contains("AMI_ADMIN");
+
 		/*-----------------------------------------------------------------*/
 
 		DeleteObj query = new DeleteObj();
@@ -61,7 +63,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(DeleteObj.Mode.MQL).toString(where)).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, m_AMIUser, isAdmin, query.setMode(DeleteObj.Mode.MQL).toString(where)).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

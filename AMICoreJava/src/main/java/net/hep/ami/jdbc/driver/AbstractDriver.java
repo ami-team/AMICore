@@ -162,11 +162,11 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String entity, String mql) throws Exception
+	public String mqlToSQL(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, m_internalCatalog, entity, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, m_internalCatalog, entity, AMIUser, isAdmin, mql);
 		}
 		else
 		{
@@ -177,11 +177,11 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String entity, String mql) throws Exception
+	public String mqlToAST(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, m_internalCatalog, entity, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, m_internalCatalog, entity, AMIUser, isAdmin, mql);
 		}
 		else
 		{
@@ -192,7 +192,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
 	{
 		String SQL = "";
 		String AST = "";
@@ -201,10 +201,10 @@ public abstract class AbstractDriver implements Querier
 		{
 			mql = Tokenizer.format(mql, args);
 
-			SQL = mqlToSQL(entity, mql);
-			AST = mqlToAST(entity, mql);
+			SQL = mqlToSQL(entity, AMIUser, isAdmin, mql);
+			AST = mqlToAST(entity, AMIUser, isAdmin, mql);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, SQL, mql, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, isAdmin, SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -215,13 +215,13 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(boolean isAdmin, String sql, Object... args) throws Exception
 	{
 		try
 		{
 			sql = Tokenizer.format(sql, args);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, sql, null, null);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, isAdmin, sql, null, null);
 		}
 		catch(Exception e)
 		{
@@ -232,13 +232,13 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(boolean isAdmin, String raw, Object... args) throws Exception
 	{
 		try
 		{
 			raw = Tokenizer.format(raw, args);
 
-			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog,raw, null, null);
+			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog, isAdmin, raw, null, null);
 		}
 		catch(Exception e)
 		{
@@ -249,7 +249,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
 	{
 		String sql = "";
 		String ast = "";
@@ -258,8 +258,8 @@ public abstract class AbstractDriver implements Querier
 		{
 			mql = Tokenizer.format(mql, args);
 
-			sql = mqlToSQL(entity, mql);
-			ast = mqlToAST(entity, mql);
+			sql = mqlToSQL(entity, AMIUser, isAdmin, mql);
+			ast = mqlToAST(entity, AMIUser, isAdmin, mql);
 
 			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, mql, ast);
 		}

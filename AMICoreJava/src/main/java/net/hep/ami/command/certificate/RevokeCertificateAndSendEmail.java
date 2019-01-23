@@ -40,7 +40,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rows = getQuerier("self").executeSQLQuery("SELECT `clientDN`, `serial` FROM `router_authority` WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", virtOrg, email).getAll();
+		List<Row> rows = getQuerier("self").executeSQLQuery(true, "SELECT `clientDN`, `serial` FROM `router_authority` WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", virtOrg, email).getAll();
 
 		if(rows.size() == 0)
 		{

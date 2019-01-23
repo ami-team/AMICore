@@ -37,7 +37,7 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = driver.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `description`, `webLinkScript` FROM `router_catalog_extra`");
+			RowSet rowSet1 = driver.executeSQLQuery(true, "SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `description`, `webLinkScript` FROM `router_catalog_extra`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMN                                               */
@@ -69,7 +69,7 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet2 = driver.executeSQLQuery("SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
+			RowSet rowSet2 = driver.executeSQLQuery(true, "SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE FOREIGN KEYS                                         */

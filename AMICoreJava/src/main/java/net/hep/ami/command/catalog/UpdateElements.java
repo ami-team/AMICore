@@ -56,6 +56,8 @@ public class UpdateElements extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
+		boolean isAdmin = m_userRoles.contains("AMI_ADMIN");
+
 		/*-----------------------------------------------------------------*/
 
 		UpdateObj query;
@@ -85,7 +87,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(UpdateObj.Mode.MQL).toString(where + " @ " + Utility.textToSqlVal(m_AMIUser))).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, m_AMIUser, isAdmin, query.setMode(UpdateObj.Mode.MQL).toString(where + " @ " + Utility.textToSqlVal(m_AMIUser))).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

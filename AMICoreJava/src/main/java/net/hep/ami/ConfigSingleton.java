@@ -246,7 +246,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
+			RowSet rowSet = driver.executeSQLQuery(true, "SELECT `paramName`, `paramValue` FROM `router_config`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
@@ -293,7 +293,7 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------*/
 
-		List<Row> rows = querier.executeSQLQuery("SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?", name).getAll();
+		List<Row> rows = querier.executeSQLQuery(true, "SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?", name).getAll();
 
 		/*------------------------------------------------------------------*/
 

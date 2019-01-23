@@ -51,49 +51,49 @@ public class SimpleQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String entity, String mql) throws Exception
+	public String mqlToSQL(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
 	{
-		return m_driver.mqlToSQL(entity, mql);
+		return m_driver.mqlToSQL(entity, AMIUser, isAdmin, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String entity, String mql) throws Exception
+	public String mqlToAST(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
 	{
-		return m_driver.mqlToAST(entity, mql);
+		return m_driver.mqlToAST(entity, AMIUser, isAdmin, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
 	{
-		return m_driver.executeMQLQuery(entity, mql, args);
+		return m_driver.executeMQLQuery(entity, AMIUser, isAdmin, mql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(boolean isAdmin, String sql, Object... args) throws Exception
 	{
-		return m_driver.executeSQLQuery(sql, args);
+		return m_driver.executeSQLQuery(isAdmin, sql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(boolean isAdmin, String raw, Object... args) throws Exception
 	{
-		return m_driver.executeRawQuery(raw, args);
+		return m_driver.executeRawQuery(isAdmin, raw, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
 	{
-		return m_driver.executeMQLUpdate(entity, mql, args);
+		return m_driver.executeMQLUpdate(entity, AMIUser, isAdmin, mql, args);
 	}
 
 	/*---------------------------------------------------------------------*/

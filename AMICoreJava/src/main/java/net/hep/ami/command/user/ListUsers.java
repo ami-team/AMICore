@@ -19,7 +19,7 @@ public class ListUsers extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		return getQuerier("self").executeSQLQuery("SELECT `AMIUser`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user`").toStringBuilder();
+		return getQuerier("self").executeSQLQuery(true, "SELECT `AMIUser`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user`").toStringBuilder();
 	}
 
 	/*---------------------------------------------------------------------*/
