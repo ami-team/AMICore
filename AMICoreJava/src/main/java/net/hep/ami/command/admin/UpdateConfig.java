@@ -48,6 +48,8 @@ public class UpdateConfig extends AbstractCommand
 		String name;
 		String value;
 
+		List<String> updatedParamNames = new ArrayList<>();
+
 		for(int i = 0; i < _names.length; i++)
 		{
 			name = _names[i].trim();
@@ -59,20 +61,26 @@ public class UpdateConfig extends AbstractCommand
 				{
 					ConfigSingleton.removeProperty(name);
 
-					ConfigSingleton.removePropertyInDataBase(querier, name);
+					if(ConfigSingleton.removePropertyInDataBase(querier, name) > 0)
+					{
+						updatedParamNames.add(name);
+					}
 				}
 				else
 				{
 					ConfigSingleton.setProperty(name, value);
 
-					ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser);
+					if(ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser) > 0)
+					{
+						updatedParamNames.add(name);
+					}
 				}
 			}
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success, updated parameter(s): " + updatedParamNames + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

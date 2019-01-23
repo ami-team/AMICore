@@ -112,7 +112,7 @@ public class FindNewCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[added with success: " + foundCommandNames + "]]></info>");
+		return new StringBuilder("<info><![CDATA[added with success, added command(s): " + foundCommandNames + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/
