@@ -32,8 +32,6 @@ public class UpdateQuery extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		boolean isAdmin = m_userRoles.contains("AMI_ADMIN");
-
 		/*-----------------------------------------------------------------*/
 
 		Querier querier = getQuerier(catalog);
@@ -52,7 +50,7 @@ public class UpdateQuery extends AbstractCommand
 		}
 		else
 		{
-			result = querier.executeMQLUpdate(entity, m_AMIUser, isAdmin, mql);
+			result = querier.executeMQLUpdate(entity, m_AMIUser, m_userRoles.contains("AMI_ADMIN"), mql);
 		}
 
 		/*-----------------------------------------------------------------*/

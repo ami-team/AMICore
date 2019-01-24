@@ -23,11 +23,11 @@ selectStatement
 	;
 
 insertStatement
-	: INSERT m_qIds=qIdTuple VALUES m_expressions=expressionTuple /*------------------------------*/ ('@' m_user=STRING)?
+	: INSERT m_qIds=qIdTuple VALUES m_expressions=expressionTuple /*------------------------------*/
 	;
 
 updateStatement
-	: UPDATE m_qIds=qIdTuple VALUES m_expressions=expressionTuple (WHERE m_expression=expressionOr)? ('@' m_user=STRING)?
+	: UPDATE m_qIds=qIdTuple VALUES m_expressions=expressionTuple (WHERE m_expression=expressionOr)?
 	;
 
 deleteStatement

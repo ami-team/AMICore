@@ -87,7 +87,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, m_AMIUser, isAdmin, query.setMode(UpdateObj.Mode.MQL).toString(where + " @ " + Utility.textToSqlVal(m_AMIUser))).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, m_AMIUser, isAdmin, query.setMode(UpdateObj.Mode.MQL).toString(where)).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
