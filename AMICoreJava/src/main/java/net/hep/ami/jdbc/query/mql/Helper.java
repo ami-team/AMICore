@@ -153,7 +153,7 @@ public class Helper
 		}
 		else
 		{
-			if(isModifStm || localJoinList.isEmpty() == false)
+			if(/*isModifStm || */localJoinList.isEmpty() == false)
 			{
 				/*---------------------------------------------------------*/
 
