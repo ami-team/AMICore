@@ -16,6 +16,8 @@ public class RowSet
 
 	protected final ResultSet m_resultSet;
 
+	protected final boolean m_isAdmin;
+
 	protected final String m_sql;
 	protected final String m_mql;
 	protected final String m_ast;
@@ -76,6 +78,8 @@ public class RowSet
 	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, boolean isAdmin, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
+
+		m_isAdmin = isAdmin;
 
 		m_sql = sql != null ? sql : "";
 		m_mql = mql != null ? mql : "";
@@ -590,15 +594,22 @@ public class RowSet
 
 			if(result[i] != null)
 			{
-				if(m_fieldCrypted[i])
+				if((m_fieldAdminOnly[i] || m_fieldCrypted[i]) && m_isAdmin == false)
 				{
-					try
+					result[i] = /*-----------*/ "" /*-----------*/;
+				}
+				else
+				{
+					if(m_fieldCrypted[i])
 					{
-						result[i] = SecuritySingleton.decrypt(result[i]);
-					}
-					catch(Exception e)
-					{
-						result[i] = /*-----------*/ "" /*-----------*/;
+						try
+						{
+							result[i] = SecuritySingleton.decrypt(result[i]);
+						}
+						catch(Exception e)
+						{
+							result[i] = /*-----------*/ "" /*-----------*/;
+						}
 					}
 				}
 			}
