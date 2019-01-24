@@ -70,6 +70,20 @@ public class QId
 
 	/*---------------------------------------------------------------------*/
 
+	public QId(SchemaSingleton.Column column, boolean isInternal, @Nullable Collection<QId> constraints)
+	{
+		setCatalog(isInternal ? column.internalCatalog : column.externalCatalog);
+		setEntity(column.table);
+		setField(column.name);
+
+		if(constraints != null)
+		{
+			m_constraints.addAll(constraints);
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field)
 	{
 		setCatalog(catalog);

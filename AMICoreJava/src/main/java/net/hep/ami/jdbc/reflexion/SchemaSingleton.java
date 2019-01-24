@@ -1069,7 +1069,7 @@ public class SchemaSingleton
 	{
 		return getColumns(externalCatalog, table).values().stream()
 		                                                  .filter(x -> (x.adminOnly == false && x.crypted == false) || isAdmin).sorted((x, y) -> x.rank - y.rank)
-		                                                  .map(x -> new QId(externalCatalog, table, x.name, constraints))
+		                                                  .map(x -> new QId(x, false, constraints))
 		                                                  .collect(Collectors.toList())
 		;
 	}
