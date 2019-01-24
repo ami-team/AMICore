@@ -1068,7 +1068,7 @@ public class SchemaSingleton
 	public static List<QId> getSortedColumnQId(String externalCatalog, String table, @Nullable List<QId> constraints, boolean isAdmin) throws Exception
 	{
 		return getColumns(externalCatalog, table).values().stream()
-		                                                  .filter(x -> (x.adminOnly == false && x.crypted == false) || isAdmin).sorted((x, y) -> x.rank - y.rank)
+		                                                  .filter(x -> isAdmin || (x.adminOnly == false && x.crypted == false)).sorted((x, y) -> x.rank - y.rank)
 		                                                  .map(x -> new QId(x, false, constraints))
 		                                                  .collect(Collectors.toList())
 		;
