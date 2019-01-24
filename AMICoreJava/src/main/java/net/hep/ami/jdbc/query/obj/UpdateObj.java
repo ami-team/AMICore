@@ -201,7 +201,7 @@ public class UpdateObj
 			{
 				if(i > 0)
 				{
-					stringBuilder.append(",");
+					stringBuilder.append(", ");
 				}
 
 				stringBuilder.append(m_fieldList.get(i).toString())
