@@ -28,16 +28,16 @@ public class SimpleQuerier implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public SimpleQuerier(String catalog) throws Exception
+	public SimpleQuerier(String catalog, String AMIUser, boolean isAdmin) throws Exception
 	{
-		m_driver = CatalogSingleton.getConnection(catalog);
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, isAdmin);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin) throws Exception
 	{
-		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass);
+		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -51,49 +51,49 @@ public class SimpleQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
+	public String mqlToSQL(String entity, String mql) throws Exception
 	{
-		return m_driver.mqlToSQL(entity, AMIUser, isAdmin, mql);
+		return m_driver.mqlToSQL(entity, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
+	public String mqlToAST(String entity, String mql) throws Exception
 	{
-		return m_driver.mqlToAST(entity, AMIUser, isAdmin, mql);
+		return m_driver.mqlToAST(entity, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
 	{
-		return m_driver.executeMQLQuery(entity, AMIUser, isAdmin, mql, args);
+		return m_driver.executeMQLQuery(entity, mql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(boolean isAdmin, String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
-		return m_driver.executeSQLQuery(isAdmin, sql, args);
+		return m_driver.executeSQLQuery(sql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(boolean isAdmin, String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(String raw, Object... args) throws Exception
 	{
-		return m_driver.executeRawQuery(isAdmin, raw, args);
+		return m_driver.executeRawQuery(raw, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Update executeMQLUpdate(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
 	{
-		return m_driver.executeMQLUpdate(entity, AMIUser, isAdmin, mql, args);
+		return m_driver.executeMQLUpdate(entity, mql, args);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -125,7 +125,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		SimpleQuerier testDB = new SimpleQuerier("test");
+		SimpleQuerier testDB = new SimpleQuerier("test", "admin", true);
 
 		/*-----------------------------------------------------------------*/
 		/* SELECT PROFILE                                                  */

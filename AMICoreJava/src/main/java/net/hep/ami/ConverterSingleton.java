@@ -7,7 +7,6 @@ import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 
 public class ConverterSingleton
@@ -63,7 +62,7 @@ public class ConverterSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver driver = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
@@ -79,7 +78,7 @@ public class ConverterSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery(true, "SELECT `xslt`, `mime` FROM `router_converter`");
+			RowSet rowSet = router.executeSQLQuery("SELECT `xslt`, `mime` FROM `router_converter`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTERS                                              */
@@ -104,7 +103,7 @@ public class ConverterSingleton
 		}
 		finally
 		{
-			driver.rollbackAndRelease();
+			router.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -46,8 +46,6 @@ public class AddElement extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		boolean isAdmin = m_userRoles.contains("AMI_ADMIN");
-
 		/*-----------------------------------------------------------------*/
 
 		InsertObj query;
@@ -72,8 +70,8 @@ public class AddElement extends AbstractCommand
 
 		Querier querier = getQuerier(catalog);
 
-		String sql = querier.mqlToSQL(entity, m_AMIUser, isAdmin, mql);
-		String ast = querier.mqlToAST(entity, m_AMIUser, isAdmin, mql);
+		String sql = querier.mqlToSQL(entity, mql);
+		String ast = querier.mqlToAST(entity, mql);
 
 		/*-----------------------------------------------------------------*/
 

@@ -53,7 +53,7 @@ public class GenerateRevocationList extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		java.sql.ResultSet resultSet = getQuerier("self").executeSQLQuery(true, "SELECT `serial`, `reason`, `modified` FROM `router_authority` WHERE `reason` IS NOT NULL").getResultSet();
+		java.sql.ResultSet resultSet = getQuerier("self").executeSQLQuery("SELECT `serial`, `reason`, `modified` FROM `router_authority` WHERE `reason` IS NOT NULL").getResultSet();
 
 		/*-----------------------------------------------------------------*/
 

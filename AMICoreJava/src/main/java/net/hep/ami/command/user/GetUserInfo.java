@@ -54,7 +54,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER INFO                                                   */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery(true, "SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
+		List<Row> rowList = querier.executeSQLQuery("SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
 
 		String AMIUser;
 		String clientDNInAMI;
@@ -162,7 +162,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER ROLES                                                  */
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet2 = querier.executeSQLQuery(true, "SELECT `router_role`.`role` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
+		RowSet rowSet2 = querier.executeSQLQuery("SELECT `router_role`.`role` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
 
 		/*-----------------------------------------------------------------*/
 		/* GET OTHER INFO                                                  */

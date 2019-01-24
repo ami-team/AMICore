@@ -39,8 +39,6 @@ public class SearchQuery extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		boolean isAdmin = m_userRoles.contains("AMI_ADMIN");
-
 		/*-----------------------------------------------------------------*/
 
 		String extra = "";
@@ -75,15 +73,15 @@ public class SearchQuery extends AbstractCommand
 
 		/**/ if(raw != null)
 		{
-			result = querier.executeRawQuery(isAdmin, raw + extra);
+			result = querier.executeRawQuery(raw + extra);
 		}
 		else if(sql != null)
 		{
-			result = querier.executeSQLQuery(isAdmin, sql + extra);
+			result = querier.executeSQLQuery(sql + extra);
 		}
 		else
 		{
-			result = querier.executeMQLQuery(entity, m_AMIUser, isAdmin, mql + extra);
+			result = querier.executeMQLQuery(entity, mql + extra);
 		}
 
 		/*-----------------------------------------------------------------*/

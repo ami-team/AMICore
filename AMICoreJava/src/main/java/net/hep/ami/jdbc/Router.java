@@ -45,12 +45,16 @@ public class Router implements Querier
 
 	public Router(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
+		String AMIUser = ConfigSingleton.getProperty("admin_user");
+
 		m_driver = DriverSingleton.getConnection(
 			externalCatalog,
 			internalCatalog,
 			jdbcUrl,
 			user,
-			pass
+			pass,
+			AMIUser,
+			true
 		);
 	}
 
@@ -65,49 +69,49 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
+	public String mqlToSQL(String entity, String mql) throws Exception
 	{
-		return m_driver.mqlToSQL(entity, AMIUser, isAdmin, mql);
+		return m_driver.mqlToSQL(entity, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
+	public String mqlToAST(String entity, String mql) throws Exception
 	{
-		return m_driver.mqlToAST(entity, AMIUser, isAdmin, mql);
+		return m_driver.mqlToAST(entity, mql);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
 	{
-		return m_driver.executeMQLQuery(entity, AMIUser, isAdmin, mql, args);
+		return m_driver.executeMQLQuery(entity, mql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(boolean isAdmin, String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
-		return m_driver.executeSQLQuery(isAdmin, sql, args);
+		return m_driver.executeSQLQuery(sql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(boolean isAdmin, String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(String raw, Object... args) throws Exception
 	{
-		return m_driver.executeRawQuery(isAdmin, raw, args);
+		return m_driver.executeRawQuery(raw, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Update executeMQLUpdate(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
 	{
-		return m_driver.executeMQLUpdate(entity, AMIUser, isAdmin, mql, args);
+		return m_driver.executeMQLUpdate(entity, mql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -247,7 +251,7 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	/**
-	 * Create the AMI routeur tables.
+	 * Create the AMI router tables.
 	 */
 
 	@SuppressWarnings("deprecation")

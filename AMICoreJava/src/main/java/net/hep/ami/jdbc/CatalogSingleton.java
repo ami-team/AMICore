@@ -66,7 +66,7 @@ public class CatalogSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver driver = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
@@ -82,7 +82,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery(true, "SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
+			RowSet rowSet = router.executeSQLQuery("SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CATALOGS                                                */
@@ -112,7 +112,7 @@ public class CatalogSingleton
 		}
 		finally
 		{
-			driver.rollbackAndRelease();
+			router.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -168,11 +168,11 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(String catalog) throws Exception
+	public static AbstractDriver getConnection(String catalog, String AMIUser, boolean isAdmin) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v);
+		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, isAdmin);
 	}
 
 	/*---------------------------------------------------------------------*/

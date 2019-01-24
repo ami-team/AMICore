@@ -38,7 +38,7 @@ public class AddCommandRole extends AbstractCommand
 		/* GET COMMAND ID                                                  */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList1 = querier.executeSQLQuery(true, "SELECT `id` FROM `router_command` WHERE `command` = ?", command).getAll();
+		List<Row> rowList1 = querier.executeSQLQuery("SELECT `id` FROM `router_command` WHERE `command` = ?", command).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -51,7 +51,7 @@ public class AddCommandRole extends AbstractCommand
 		/* GET ROLE ID                                                     */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList2 = querier.executeSQLQuery(true, "SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
+		List<Row> rowList2 = querier.executeSQLQuery("SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
 
 		if(rowList2.size() != 1)
 		{

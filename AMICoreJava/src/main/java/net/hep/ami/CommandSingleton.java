@@ -4,9 +4,8 @@ import java.util.*;
 import java.util.regex.*;
 import java.lang.reflect.*;
 
-import net.hep.ami.command.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -87,7 +86,7 @@ public class CommandSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver driver = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
@@ -103,7 +102,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery(true, "SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
+			RowSet rowSet = router.executeSQLQuery("SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */
@@ -131,7 +130,7 @@ public class CommandSingleton
 		}
 		finally
 		{
-			driver.rollbackAndRelease();
+			router.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -264,7 +263,7 @@ public class CommandSingleton
 
 		Set<String> userRoles;
 
-		AbstractDriver driver = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
@@ -274,11 +273,11 @@ public class CommandSingleton
 
 		try
 		{
-			userRoles = RoleSingleton.checkRoles(driver, command, arguments, tuple.w, checkRoles);
+			userRoles = RoleSingleton.checkRoles(router, command, arguments, tuple.w, checkRoles);
 		}
 		finally
 		{
-			driver.commitAndRelease();
+			router.commitAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/

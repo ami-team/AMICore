@@ -22,14 +22,12 @@ public interface Querier
 	 * Converts a MQL query to a SQL query.
 	 *
 	 * @param entity The default entity.
-	 * @param AMIUser The current user.
-	 * @param isAdmin ???????????????.
 	 * @param mql The MQL query.
 	 *
 	 * @return The generated SQL query.
 	 */
 
-	public String mqlToSQL(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception;
+	public String mqlToSQL(String entity, String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -37,14 +35,12 @@ public interface Querier
 	 * Converts a MQL query to an Abstract Syntax Tree (AST).
 	 *
 	 * @param entity The default entity.
-	 * @param AMIUser The current user.
-	 * @param isAdmin ???????????????.
 	 * @param mql The MQL query.
 	 *
 	 * @return The generated AST.
 	 */
 
-	public String mqlToAST(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception;
+	public String mqlToAST(String entity, String mql) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -52,43 +48,39 @@ public interface Querier
 	 * Executes a MQL query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
 	 *
 	 * @param entity The default entity.
-	 * @param AMIUser The current user.
-	 * @param isAdmin ???????????????.
 	 * @param mql The MQL query.
 	 * @param args... The arguments referenced by the format specifiers (character '?') in the MQL query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	public RowSet executeMQLQuery(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception;
+	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
 	/**
 	 * Executes a SQL query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
 	 *
-	 * @param isAdmin ???????????????.
 	 * @param sql The SQL query.
 	 * @param args... The arguments referenced by the format specifiers (character '?') in the SQL query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	public RowSet executeSQLQuery(boolean isAdmin, String sql, Object... args) throws Exception;
+	public RowSet executeSQLQuery(String sql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
 	/**
 	 * Executes a raw query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
 	 *
-	 * @param isAdmin ???????????????.
 	 * @param sql The raw query.
 	 * @param args... The arguments referenced by the format specifiers (character '?') in the raw query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	public RowSet executeRawQuery(boolean isAdmin, String raw, Object... args) throws Exception;
+	public RowSet executeRawQuery(String raw, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -96,15 +88,13 @@ public interface Querier
 	 * Executes a MQL query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
 	 *
 	 * @param entity The default entity.
-	 * @param AMIUser The current user.
-	 * @param isAdmin ???????????????.
 	 * @param mql The MQL query.
 	 * @param args... The arguments referenced by the format specifiers (character '?') in the MQL query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	public Update executeMQLUpdate(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception;
+	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -130,7 +120,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	public Update executeRawUpdate(String sql, Object... args) throws Exception;
+	public Update executeRawUpdate(String raw, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

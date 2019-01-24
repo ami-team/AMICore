@@ -26,7 +26,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		Querier querier1 = new SimpleQuerier("test");
+		Querier querier1 = new SimpleQuerier("test", "admin", true);
 
 		//System.out.println(querier1.mqlToSQL("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')"));
 

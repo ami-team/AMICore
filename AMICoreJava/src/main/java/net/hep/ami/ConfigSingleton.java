@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 
 public class ConfigSingleton
@@ -230,7 +229,7 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver driver = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			getProperty("router_catalog"),
 			getProperty("router_url"),
@@ -246,7 +245,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = driver.executeSQLQuery(true, "SELECT `paramName`, `paramValue` FROM `router_config`");
+			RowSet rowSet = router.executeSQLQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
@@ -270,7 +269,7 @@ public class ConfigSingleton
 		}
 		finally
 		{
-			driver.rollbackAndRelease();
+			router.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -291,21 +290,23 @@ public class ConfigSingleton
 		name = SecuritySingleton.encrypt(name);
 		value = SecuritySingleton.encrypt(value);
 
+		String AMIUSer = ConfigSingleton.getProperty("admin_user");
+
 		/*------------------------------------------------------------------*/
 
-		List<Row> rows = querier.executeSQLQuery(true, "SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?", name).getAll();
+		List<Row> rows = querier.executeSQLQuery(AMIUSer, true, "SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?", name).getAll();
 
 		/*------------------------------------------------------------------*/
 
 		if(rows.size() == 0)
 		{
-			result = querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, user, user).getNbOfUpdatedRows();
+			result = querier.executeSQLUpdate(AMIUSer, true, "INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, user, user).getNbOfUpdatedRows();
 		}
 		else
 		{
 			if(rows.get(0).getValue(0).equals(value) == false)
 			{
-				result = querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, user, name).getNbOfUpdatedRows();
+				result = querier.executeSQLUpdate(AMIUSer, true, "UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, user, name).getNbOfUpdatedRows();
 			}
 			else
 			{
@@ -322,7 +323,7 @@ public class ConfigSingleton
 
 	public static int removePropertyInDataBase(Querier querier, String name) throws Exception
 	{
-		Update update = querier.executeSQLUpdate("DELETE FROM `router_config` WHERE `paramName` = ?",
+		Update update = querier.executeSQLUpdate(ConfigSingleton.getProperty("admin_user"), true, "DELETE FROM `router_config` WHERE `paramName` = ?",
 			SecuritySingleton.encrypt(name)
 		);
 

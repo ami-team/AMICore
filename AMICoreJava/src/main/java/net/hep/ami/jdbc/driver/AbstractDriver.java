@@ -32,6 +32,11 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	protected final String m_AMIUser;
+	protected final boolean m_isAdmin;
+
+	/*---------------------------------------------------------------------*/
+
 	private final Connection m_connection;
 
 	private final Statement m_statement;
@@ -52,7 +57,7 @@ public abstract class AbstractDriver implements Querier
 	 * @param pass The database password.
 	 */
 
-	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET JDBC ANNOTATION                                             */
@@ -87,6 +92,9 @@ public abstract class AbstractDriver implements Querier
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
+
+		m_AMIUser = AMIUser;
+		m_isAdmin = isAdmin;
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE CONNECTION                                               */
@@ -162,11 +170,11 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
+	public String mqlToSQL(String entity, String mql) throws Exception
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, m_internalCatalog, entity, AMIUser, isAdmin, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, m_internalCatalog, entity, m_AMIUser, m_isAdmin, mql);
 		}
 		else
 		{
@@ -177,11 +185,11 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String entity, String AMIUser, boolean isAdmin, String mql) throws Exception
+	public String mqlToAST(String entity, String mql) throws Exception
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, m_internalCatalog, entity, AMIUser, isAdmin, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, m_internalCatalog, entity, m_AMIUser, m_isAdmin, mql);
 		}
 		else
 		{
@@ -192,7 +200,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
 	{
 		String SQL = "";
 		String AST = "";
@@ -201,10 +209,10 @@ public abstract class AbstractDriver implements Querier
 		{
 			mql = Tokenizer.format(mql, args);
 
-			SQL = mqlToSQL(entity, AMIUser, isAdmin, mql);
-			AST = mqlToAST(entity, AMIUser, isAdmin, mql);
+			SQL = mqlToSQL(entity, mql);
+			AST = mqlToAST(entity, mql);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, isAdmin, SQL, mql, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, m_isAdmin, SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -215,13 +223,13 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(boolean isAdmin, String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
 	{
 		try
 		{
 			sql = Tokenizer.format(sql, args);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, isAdmin, sql, null, null);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, m_isAdmin, sql, null, null);
 		}
 		catch(Exception e)
 		{
@@ -232,13 +240,13 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(boolean isAdmin, String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(String raw, Object... args) throws Exception
 	{
 		try
 		{
 			raw = Tokenizer.format(raw, args);
 
-			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog, isAdmin, raw, null, null);
+			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog, m_isAdmin, raw, null, null);
 		}
 		catch(Exception e)
 		{
@@ -249,7 +257,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public Update executeMQLUpdate(String entity, String AMIUser, boolean isAdmin, String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
 	{
 		String sql = "";
 		String ast = "";
@@ -258,8 +266,8 @@ public abstract class AbstractDriver implements Querier
 		{
 			mql = Tokenizer.format(mql, args);
 
-			sql = mqlToSQL(entity, AMIUser, isAdmin, mql);
-			ast = mqlToAST(entity, AMIUser, isAdmin, mql);
+			sql = mqlToSQL(entity, mql);
+			ast = mqlToAST(entity, mql);
 
 			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, mql, ast);
 		}
