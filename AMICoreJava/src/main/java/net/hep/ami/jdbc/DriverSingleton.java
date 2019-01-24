@@ -126,7 +126,9 @@ public class DriverSingleton
 					String.class,
 					String.class,
 					String.class,
-					String.class
+					String.class,
+					String.class,
+					boolean.class
 				)
 			)
 		);

@@ -102,7 +102,7 @@ public class Token
 
 		try
 		{
-			SimpleQuerier basicQuerier = new SimpleQuerier("self");
+			Router router = new Router();
 
 			try
 			{
@@ -112,13 +112,13 @@ public class Token
 				        &&
 				        issuerDN != null
 				 ) {
-					rows = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+					rows = router.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
 				}
 				else if(AMIUser != null
 				        &&
 				        AMIPass != null
 				 ) {
-					rows = basicQuerier.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
+					rows = router.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
 				}
 				else
 				{
@@ -135,7 +135,7 @@ public class Token
 			}
 			finally
 			{
-				basicQuerier.rollbackAndRelease();
+				router.rollbackAndRelease();
 			}
 		}
 		catch(Exception e)

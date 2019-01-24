@@ -45,7 +45,7 @@ public class Router implements Querier
 
 	public Router(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		String AMIUser = ConfigSingleton.getProperty("admin_user");
+		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
 
 		m_driver = DriverSingleton.getConnection(
 			externalCatalog,

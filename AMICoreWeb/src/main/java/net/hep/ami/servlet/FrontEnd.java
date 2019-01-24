@@ -10,7 +10,6 @@ import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -292,7 +291,7 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver basicQuerier = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
@@ -308,7 +307,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `command`, `converter` FROM `router_link` WHERE `id` = ?", linkId).getAll();
+			List<Row> rowList = router.executeSQLQuery("SELECT `command`, `converter` FROM `router_link` WHERE `id` = ?", linkId).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET LINK                                                    */
@@ -332,7 +331,7 @@ public class FrontEnd extends HttpServlet
 		}
 		finally
 		{
-			basicQuerier.rollbackAndRelease();
+			router.rollbackAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -356,7 +355,7 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver basicQuerier = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
@@ -372,7 +371,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+			List<Row> rowList = router.executeSQLQuery("SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -401,11 +400,11 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				String countryCode = LocalizationSingleton.localizeIP(basicQuerier, clientIP).countryCode;
+				String countryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
 
 				if(countryCode.equals(row.getValue(2)) == false)
 				{
-					basicQuerier.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
+					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
 				}
 			}
 			catch(Exception e)
@@ -419,7 +418,7 @@ public class FrontEnd extends HttpServlet
 		}
 		finally
 		{
-			basicQuerier.commitAndRelease();
+			router.commitAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -443,7 +442,7 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		AbstractDriver basicQuerier = DriverSingleton.getConnection(
+		Router router = new Router(
 			"self",
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
@@ -459,7 +458,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = basicQuerier.executeSQLQuery("SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
+			List<Row> rowList = router.executeSQLQuery("SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -497,11 +496,11 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				String countryCode = LocalizationSingleton.localizeIP(basicQuerier, clientIP).countryCode;
+				String countryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
 
 				if(countryCode.equals(row.getValue(1)) == false)
 				{
-					basicQuerier.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
+					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
 				}
 			}
 			catch(Exception e)
@@ -515,7 +514,7 @@ public class FrontEnd extends HttpServlet
 		}
 		finally
 		{
-			basicQuerier.commitAndRelease();
+			router.commitAndRelease();
 		}
 
 		/*-----------------------------------------------------------------*/
