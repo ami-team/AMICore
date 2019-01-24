@@ -144,16 +144,13 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		if(isSelectPart)
+		if(localJoinList.isEmpty() == false)
 		{
-			if(((false)) || localJoinList.isEmpty() == false)
+			if(isSelectPart)
 			{
 				globalJoinSet.add(String.join(" AND ", localJoinList));
 			}
-		}
-		else
-		{
-			if(/*isModifStm || */localJoinList.isEmpty() == false)
+			else
 			{
 				/*---------------------------------------------------------*/
 
