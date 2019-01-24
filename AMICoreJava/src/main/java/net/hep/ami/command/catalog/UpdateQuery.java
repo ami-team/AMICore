@@ -50,7 +50,7 @@ public class UpdateQuery extends AbstractCommand
 		}
 		else
 		{
-			result = querier.executeMQLUpdate(entity, m_AMIUser, m_userRoles.contains("AMI_ADMIN"), mql);
+			result = querier.executeMQLUpdate(entity, mql);
 		}
 
 		/*-----------------------------------------------------------------*/
