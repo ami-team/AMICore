@@ -133,9 +133,9 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
-		return m_driver.prepareStatement(sql, returnGeneratedKeys, columnNames);
+		return m_driver.prepareStatement(sql, isRawQuery, returnGeneratedKeys, columnNames);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -531,9 +531,9 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement1 = prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null);
+		PreparedStatement statement1 = prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, false, null);
 
-		PreparedStatement statement2 = prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null);
+		PreparedStatement statement2 = prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, false, null);
 
 		try
 		{

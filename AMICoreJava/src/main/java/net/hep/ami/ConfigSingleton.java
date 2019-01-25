@@ -654,18 +654,17 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"params\">")
-		      .append("<row>")
-		;
+		result.append("<rowset type=\"params\">");
 
 		for(Map.Entry<String, String> entry: s_properties.entrySet())
 		{
-			result.append("<field name=\"").append(entry.getKey()).append("\"><![CDATA[").append(entry.getValue()).append("]]></field>");
+			result.append("<row>")
+			      .append("<field name=\"").append(entry.getKey()).append("\"><![CDATA[").append(entry.getValue()).append("]]></field>")
+			      .append("</row>")
+			;
 		}
 
-		result.append("</row>")
-		      .append("</rowset>")
-		;
+		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
 

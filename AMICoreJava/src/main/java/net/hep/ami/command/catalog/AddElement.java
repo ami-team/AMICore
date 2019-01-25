@@ -75,7 +75,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = querier.prepareStatement(sql, true, null);
+		PreparedStatement statement = querier.prepareStatement(sql, false, true, null);
 
 		try
 		{

@@ -206,9 +206,7 @@ public class DriverSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
-
-		/*-----------------------------------------------------------------*/
+		result.append("<rowset type=\"drivers\">");
 
 		for(Tuple tuple: s_drivers.values())
 		{
@@ -220,8 +218,6 @@ public class DriverSingleton
 			      .append("</row>")
 			;
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		result.append("</rowset>");
 

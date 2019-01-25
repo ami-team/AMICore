@@ -394,8 +394,6 @@ public class CommandSingleton
 
 		result.append("<rowset type=\"commands\">");
 
-		/*-----------------------------------------------------------------*/
-
 		for(Tuple tuple: s_commands.values())
 		{
 			if(tuple.x.equals("GetConfig"))
@@ -414,8 +412,6 @@ public class CommandSingleton
 			      .append("</row>")
 			;
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		result.append("</rowset>");
 

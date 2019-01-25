@@ -31,22 +31,12 @@ public class ListEntities extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
-
-		/*-----------------------------------------------------------------*/
+		result.append("<rowset type=\"entities\">");
 
 		for(String entity: SchemaSingleton.getTableNames(catalog))
 		{
-			result.append(
-				"<row>"
-				+
-				"<field name=\"entity\"><![CDATA[" + entity + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row><field name=\"entity\"><![CDATA[").append(entity).append("]]></field></row>");
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		result.append("</rowset>");
 

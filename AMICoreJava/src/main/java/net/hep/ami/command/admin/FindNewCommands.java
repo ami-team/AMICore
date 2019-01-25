@@ -43,9 +43,9 @@ public class FindNewCommands extends AbstractCommand
 
 		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
-		PreparedStatement statement1 = querier.prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null);
+		PreparedStatement statement1 = querier.prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, false, null);
 
-		PreparedStatement statement2 = querier.prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null);
+		PreparedStatement statement2 = querier.prepareStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, false, null);
 
 		for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{

@@ -1084,7 +1084,7 @@ public class SchemaSingleton
 
 		Column column;
 
-		result.append("<rowset type=\"columns\">");
+		result.append("<rowset type=\"fields\">");
 
 		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: s_columns.entrySet())
 		for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())

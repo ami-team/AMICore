@@ -128,13 +128,14 @@ public interface Querier
 	 * Creates a PreparedStatement object for sending parameterized SQL statements to the database.
 	 *
 	 * @param sql The SQL query.
+	 * @param isRawQuery Indicates whether sql is a raw query or not.
 	 * @param returnGeneratedKeys Indicates whether auto-generated keys should be returned.
 	 * @param columnNames The list of auto-generated key names or <code>null</code> for getting them all.
 	 *
 	 * @return The new PreparedStatement object.
 	 */
 
-	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception;
+	public PreparedStatement prepareStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

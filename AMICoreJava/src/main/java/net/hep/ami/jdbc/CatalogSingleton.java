@@ -210,9 +210,7 @@ public class CatalogSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
-
-		/*-----------------------------------------------------------------*/
+		result.append("<rowset type=\"catalogs\">");
 
 		for(Tuple tuple: s_catalogs.values())
 		{
@@ -224,8 +222,6 @@ public class CatalogSingleton
 			      .append("</row>")
 			;
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		result.append("</rowset>");
 

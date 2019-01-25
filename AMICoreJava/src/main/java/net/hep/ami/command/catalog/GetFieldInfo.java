@@ -34,9 +34,7 @@ public class GetFieldInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
-
-		/*-----------------------------------------------------------------*/
+		result.append("<rowset type=\"fields\">");
 
 		for(SchemaSingleton.Column column: SchemaSingleton.getColumns(catalog, entity).values())
 		{
@@ -62,7 +60,29 @@ public class GetFieldInfo extends AbstractCommand
 			;
 		}
 
+		result.append("</rowset>");
+
 		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"foreignKeys\">");
+
+		for(SchemaSingleton.FrgnKeys frgnKeys: SchemaSingleton.getForwardFKs(catalog, entity).values())
+		{
+			SchemaSingleton.FrgnKey frgnKey = frgnKeys.get(0);
+
+			result.append("<row>")
+			      .append("<field name=\"name\"><![CDATA[").append(frgnKey.name).append("]]></field>")
+			      .append("<field name=\"fkExternalCatalog\"><![CDATA[").append(frgnKey.fkExternalCatalog).append("]]></field>")
+			      .append("<field name=\"fkInternalCatalog\"><![CDATA[").append(frgnKey.fkInternalCatalog).append("]]></field>")
+			      .append("<field name=\"fkTable\"><![CDATA[").append(frgnKey.fkTable).append("]]></field>")
+			      .append("<field name=\"fkColumn\"><![CDATA[").append(frgnKey.fkColumn).append("]]></field>")
+			      .append("<field name=\"pkExternalCatalog\"><![CDATA[").append(frgnKey.pkExternalCatalog).append("]]></field>")
+			      .append("<field name=\"pkInternalCatalog\"><![CDATA[").append(frgnKey.pkInternalCatalog).append("]]></field>")
+			      .append("<field name=\"pkTable\"><![CDATA[").append(frgnKey.pkTable).append("]]></field>")
+			      .append("<field name=\"pkColumn\"><![CDATA[").append(frgnKey.pkColumn).append("]]></field>")
+			      .append("</row>")
+			;
+		}
 
 		result.append("</rowset>");
 

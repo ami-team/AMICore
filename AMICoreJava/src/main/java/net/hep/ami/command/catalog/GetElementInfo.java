@@ -3,6 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.query.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
@@ -40,7 +41,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = querier.executeMQLQuery(entity, "SELECT `*` WHERE `" + primaryFieldName.replace("`", "``") + "` = '" + primaryFieldValue.replace("'", "''") + "'").toStringBuilder("element");
+		StringBuilder result = querier.executeMQLQuery(entity, "SELECT `*` WHERE " + new QId(catalog, entity, primaryFieldName).toString() + " = ?", primaryFieldValue).toStringBuilder("element");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -76,7 +77,6 @@ public class GetElementInfo extends AbstractCommand
 	{
 		String linkedCatalog;
 		String linkedEntity;
-		String constraint;
 		String sql;
 		String mql;
 		String count;
@@ -86,8 +86,6 @@ public class GetElementInfo extends AbstractCommand
 		{
 			for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 			{
-				constraint = "{`" + frgnKey.fkExternalCatalog + "`.`" + frgnKey.fkTable +  "`.`" + frgnKey.fkColumn + "`}";
-
 				switch(mode)
 				{
 					case FORWARD:
@@ -106,9 +104,9 @@ public class GetElementInfo extends AbstractCommand
 						return;
 				}
 
-				try /* A REFORMULER */
+				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery("SELECT COUNT(*) FROM `" + linkedEntity + "` WHERE `" + catalog + "`.`" + entity + "`.`" + primaryFieldName + "`" + constraint + " = ?", primaryFieldValue);
+					RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery("SELECT COUNT(*) FROM " + new QId(linkedCatalog, linkedEntity, null).toString() + " WHERE `" + new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString() + " = ?", primaryFieldValue);
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();

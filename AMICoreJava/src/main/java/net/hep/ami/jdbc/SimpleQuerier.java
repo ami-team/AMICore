@@ -115,9 +115,9 @@ public class SimpleQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
-		return m_driver.prepareStatement(sql, returnGeneratedKeys, columnNames);
+		return m_driver.prepareStatement(sql, isRawQuery, returnGeneratedKeys, columnNames);
 	}
 
 	/*---------------------------------------------------------------------*/

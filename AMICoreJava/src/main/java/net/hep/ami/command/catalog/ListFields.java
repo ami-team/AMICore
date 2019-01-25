@@ -34,22 +34,12 @@ public class ListFields extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
-
-		/*-----------------------------------------------------------------*/
+		result.append("<rowset type=\"fields\">");
 
 		for(String field: SchemaSingleton.getColumnNames(catalog, entity))
 		{
-			result.append(
-				"<row>"
-				+
-				"<field name=\"field\"><![CDATA[" + field + "]]></field>"
-				+
-				"</row>"
-			);
+			result.append("<row><field name=\"field\"><![CDATA[").append(field).append("]]></field></row>");
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		result.append("</rowset>");
 

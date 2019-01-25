@@ -307,18 +307,18 @@ public abstract class AbstractDriver implements Querier
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + raw, e);
+			throw new Exception(e.getMessage() + " for RAW query: " + raw, e);
 		}
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement prepareStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		try
 		{
-			String SQL = patchSQL(sql);
+			String SQL = (isRawQuery == false) ? patchSQL(sql) : sql;
 
 			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 
@@ -340,7 +340,7 @@ public abstract class AbstractDriver implements Querier
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
+			throw new Exception(e.getMessage() + " for " + (isRawQuery == false ? "SQL" : "RAW") + " query: " + sql, e);
 		}
 	}
 

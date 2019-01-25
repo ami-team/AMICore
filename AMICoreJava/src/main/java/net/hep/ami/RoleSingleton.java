@@ -37,6 +37,7 @@ public class RoleSingleton
 			" AND `router_command_role`.`roleFK` = `router_role`.`id`",
 			/*-------------------------------------------------------------*/
 			false,
+			false,
 			null
 		);
 
@@ -78,6 +79,7 @@ public class RoleSingleton
 			" AND `router_user_role`.`roleFK` = `router_role`.`id`",
 			/*-------------------------------------------------------------*/
 			false,
+			false,
 			null
 		);
 
@@ -109,6 +111,7 @@ public class RoleSingleton
 
 		PreparedStatement statement = querier.prepareStatement(
 			"SELECT `AMIPass` FROM `router_user` WHERE `router_user`.`AMIUser` = ?",
+			false,
 			false,
 			null
 		);

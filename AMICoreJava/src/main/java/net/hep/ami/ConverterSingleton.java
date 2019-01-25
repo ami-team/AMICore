@@ -188,8 +188,6 @@ public class ConverterSingleton
 
 		result.append("<rowset type=\"converters\">");
 
-		/*-----------------------------------------------------------------*/
-
 		for(Tuple tuple: s_converters.values())
 		{
 			result.append("<row>")
@@ -198,8 +196,6 @@ public class ConverterSingleton
 			      .append("</row>")
 			;
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		result.append("</rowset>");
 

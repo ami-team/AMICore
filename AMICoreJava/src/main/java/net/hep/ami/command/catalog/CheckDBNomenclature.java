@@ -54,7 +54,7 @@ public class CheckDBNomenclature extends AbstractCommand
 				{
 					if(s_regex.matcher(column.name).matches() == false)
 					{
-						result.append("Column name `").append(column.table).append("`.`" + column.name).append("` should match with regular expression " + s_regex.toString() + ".\\n");
+						result.append("Column name ").append(column.toString()).append(" should match with regular expression " + s_regex.toString() + ".\\n");
 					}
 					else
 					{
