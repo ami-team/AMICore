@@ -6,7 +6,7 @@ import java.util.stream.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.ConfigSingleton;
+import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -34,13 +34,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private String m_AMIUser = "guest";
-	private boolean m_isAdmin = false;
+	private final String m_AMIUser;
+	private final boolean m_isAdmin;
 
 	/*---------------------------------------------------------------------*/
 
-	private Set<QId> m_globalFromSet = new LinkedHashSet<QId>();
-	private Set<String> m_globalJoinSet = new LinkedHashSet<String>();
+	private final Set<QId> m_globalFromSet = new LinkedHashSet<QId>();
+	private final Set<String> m_globalJoinSet = new LinkedHashSet<String>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -174,7 +174,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder(result.addFromPart(m_globalFromSet).addWherePart(m_globalJoinSet).toString(extra));
+		return result.addFromPart(m_globalFromSet).addWherePart(m_globalJoinSet).toStringBuilder(extra);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -193,6 +193,7 @@ public class MQLToSQL
 			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART),
 			m_AMIUser,
+			m_isAdmin,
 			true
 		);
 
@@ -221,6 +222,7 @@ public class MQLToSQL
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART),
 			m_AMIUser,
+			m_isAdmin,
 			false
 		);
 

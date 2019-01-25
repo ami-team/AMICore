@@ -31,6 +31,8 @@ public class Helper
 		));
 
 		/*-----------------------------------------------------------------*/
+		/* BUILD JOINS                                                     */
+		/*-----------------------------------------------------------------*/
 
 		QId mainPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
 
@@ -143,6 +145,8 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
+		/* ISOLATE EXPRESSION                                              */
+		/*-----------------------------------------------------------------*/
 
 		if(localJoinList.isEmpty() == false)
 		{
@@ -203,7 +207,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<String>, List<String>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean insert) throws Exception
+	public static Tuple2<List<String>, List<String>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -214,7 +218,7 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* GROUP FIELDS                                                    */
 		/*-----------------------------------------------------------------*/
 
 		String field;
@@ -239,8 +243,20 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			/**/ if(column.crypted)
+			/**/ if(column.adminOnly)
 			{
+				if(isAdmin == false)
+				{
+					throw new Exception("user `" + AMIUser + "` not allow to modify field " + new QId(column, false).toString());
+				}
+			}
+			else if(column.crypted)
+			{
+				if(isAdmin == false)
+				{
+					throw new Exception("user `" + AMIUser + "` not allow to modify field " + new QId(column, false).toString());
+				}
+
 				expression = /* NOT FOR SQL EXPRESSION */
 				             Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
 				             /* NOT FOR SQL EXPRESSION */
@@ -295,7 +311,7 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* ISOLATE EXPRESSIONS                                             */
 		/*-----------------------------------------------------------------*/
 
 		List<String> X = new ArrayList<>();
@@ -352,7 +368,7 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* FILL RESERVED FIELDS                                            */
 		/*-----------------------------------------------------------------*/
 
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
