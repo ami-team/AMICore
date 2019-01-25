@@ -24,7 +24,7 @@ public class SearchQuery extends AbstractCommand
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
-		String raw = arguments.get("sql");
+		String raw = arguments.get("raw");
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
