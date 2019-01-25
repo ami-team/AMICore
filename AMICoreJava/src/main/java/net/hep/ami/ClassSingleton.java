@@ -65,11 +65,11 @@ public class ClassSingleton
 
 		Set<URL> jars = new HashSet<>();
 
-		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":")) {
+		for(String PATH: ConfigSingleton.getSystemProperty("java.class.path").split(":", -1)) {
 			walk(PATH, null);
 		}
 
-		for(String PATH: ConfigSingleton.getProperty("class_path").split(":")) {
+		for(String PATH: ConfigSingleton.getProperty("class_path").split(":", -1)) {
 			walk(PATH, jars);
 		}
 
