@@ -379,7 +379,7 @@ public class CommandSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getCommands()
+	public static Set<String> getCommandNames()
 	{
 		return s_commands.keySet();
 	}
@@ -392,7 +392,7 @@ public class CommandSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
+		result.append("<rowset type=\"commands\">");
 
 		/*-----------------------------------------------------------------*/
 

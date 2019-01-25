@@ -283,7 +283,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static int setPropertyInDataBase(Querier querier, String name, String value, String user) throws Exception
+	public static int setPropertyInDataBase(Querier querier, String name, String value, String AMIUser) throws Exception
 	{
 		int result;
 
@@ -298,13 +298,13 @@ public class ConfigSingleton
 
 		if(rows.size() == 0)
 		{
-			result = querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, user, user).getNbOfUpdatedRows();
+			result = querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, AMIUser, AMIUser).getNbOfUpdatedRows();
 		}
 		else
 		{
 			if(rows.get(0).getValue(0).equals(value) == false)
 			{
-				result = querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, user, name).getNbOfUpdatedRows();
+				result = querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, AMIUser, name).getNbOfUpdatedRows();
 			}
 			else
 			{
@@ -654,7 +654,7 @@ public class ConfigSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"config\">")
+		result.append("<rowset type=\"params\">")
 		      .append("<row>")
 		;
 

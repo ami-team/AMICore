@@ -41,7 +41,7 @@ public class FindNewCommands extends AbstractCommand
 
 		Set<String> foundCommandNames = new HashSet<>();
 
-		Set<String> existingCommandNames = CommandSingleton.getCommands();
+		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
 		PreparedStatement statement1 = querier.prepareStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null);
 
@@ -112,7 +112,7 @@ public class FindNewCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[added with success, added command(s): " + foundCommandNames + "]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success, added command(s): " + foundCommandNames + "]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

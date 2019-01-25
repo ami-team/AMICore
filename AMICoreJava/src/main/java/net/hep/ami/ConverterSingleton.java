@@ -186,7 +186,7 @@ public class ConverterSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset>");
+		result.append("<rowset type=\"converters\">");
 
 		/*-----------------------------------------------------------------*/
 
