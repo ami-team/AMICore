@@ -78,23 +78,15 @@ public class GenerateAuthority extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset><row>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<field name=\"client_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
+		result.append("<rowset type=\"certificates\">")
+		      .append("<row>")
+		      .append("<field name=\"client_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
 		      .append("<field name=\"issuer_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal())).append("]]></field>")
 		      .append("<field name=\"serial\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field>")
+		      .append("<field name=\"pem\">").append(pem.toString()).append("</field>")
+		      .append("</row>")
+		      .append("</rowset>")
 		;
-
-		result.append("<field name=\"pem\">")
-		      .append(pem.toString())
-		      .append("</field>")
-		;
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</row></rowset>");
 
 		/*-----------------------------------------------------------------*/
 

@@ -131,41 +131,27 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset><row>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<field name=\"client_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
-		      .append("<field name=\"issuer_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal())).append("]]></field>")
-		      .append("<field name=\"serial\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field>")
-		;
-
-		result.append("<field name=\"pem\">")
-		      .append(pem.toString())
-		      .append("</field>")
-		;
-
-		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
+		try(ByteArrayOutputStream output1 = new ByteArrayOutputStream())
 		{
-			keyStore_JKS.store(output, password.toCharArray());
+			keyStore_JKS.store(output1, password.toCharArray());
 
-			result.append("<field name=\"keystore_jks\">");
-			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
-			result.append("</field>");
+			try(ByteArrayOutputStream output2 = new ByteArrayOutputStream())
+			{
+				keyStore_PKCS12.store(output2, password.toCharArray());
+
+				result.append("<rowset type=\"certificates\">")
+				      .append("<row>")
+				      .append("<field name=\"client_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
+				      .append("<field name=\"issuer_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal())).append("]]></field>")
+				      .append("<field name=\"serial\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field>")
+				      .append("<field name=\"pem\">").append(pem.toString()).append("</field>")
+				      .append("<field name=\"keystore_jks\">").append(SecuritySingleton.byteArrayToBase64String(output1.toByteArray())).append("</field>")
+				      .append("<field name=\"keystore_p12\">").append(SecuritySingleton.byteArrayToBase64String(output2.toByteArray())).append("</field>")
+				      .append("</row>")
+				      .append("</rowset>")
+				;
+			}
 		}
-
-		try(ByteArrayOutputStream output = new ByteArrayOutputStream())
-		{
-			keyStore_PKCS12.store(output, password.toCharArray());
-
-			result.append("<field name=\"keystore_p12\">");
-			result.append(SecuritySingleton.byteArrayToBase64String(output.toByteArray()));
-			result.append("</field>");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</row></rowset>");
 
 		/*-----------------------------------------------------------------*/
 

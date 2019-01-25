@@ -74,18 +74,12 @@ public class GenerateRevocationList extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset><row>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<field name=\"pem\">")
-		      .append(pem.toString())
-		      .append("</field>")
+		result.append("<rowset type=\"revocation_lists\">")
+		      .append("<row>")
+		      .append("<field name=\"pem\">").append(pem.toString()).append("</field>")
+		      .append("</row>")
+		      .append("</rowset>")
 		;
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("</row></rowset>");
 
 		/*-----------------------------------------------------------------*/
 

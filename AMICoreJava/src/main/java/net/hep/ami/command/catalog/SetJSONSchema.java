@@ -37,7 +37,7 @@ public class SetJSONSchema extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
-			update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
 			                                 : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
