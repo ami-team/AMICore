@@ -52,9 +52,7 @@ public class MQLToSQL
 
 		m_externalCatalog = primaryKey.externalCatalog;
 		m_internalCatalog = primaryKey.internalCatalog;
-
 		m_entity = primaryKey.table;
-
 		m_primaryKey = primaryKey.name;
 
 		/*-----------------------------------------------------------------*/
