@@ -286,6 +286,47 @@ public class AMICoreTest
 
 		try 
 		{
+			String fields = "catalog;entity;field;rank";
+			String values = "test;FILE_VIEW;fileName;1";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		try 
+		{
+			String fields = "catalog;entity;field;rank";
+			String values = "test;FILE_VIEW;datasetName;2";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		try 
+		{
+			String fields = "catalog;entity;field;rank";
+			String values = "test;FILE_VIEW;projectName;3";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+	
+		try 
+		{
 			String fields = "name;fkCatalog;fkTable;fkColumn;pkCatalog;pkTable;pkColumn";
 			String values = "fk1_FILE_VIEW;test;FILE_VIEW;id;test;DATASET_FILE_BRIDGE;id";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_foreign_key\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
@@ -532,6 +573,26 @@ public class AMICoreTest
 				testFail = true;
 			}
 		}
+
+			try
+			{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "DATASET");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name");
+			arguments.put("values", "dataset_test_" + (cptMax-1) +"");
+			arguments.put("keyFields", "id");
+			arguments.put("keyValues", "" + cptMax);
+			CommandSingleton.executeCommand("UpdateElements", arguments, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+
 
 		/*-----------------------------------------------------------------*/
 
