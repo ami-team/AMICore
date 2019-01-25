@@ -247,14 +247,14 @@ public class Helper
 			{
 				if(isAdmin == false)
 				{
-					throw new Exception("user `" + AMIUser + "` not allow to modify field " + new QId(column, false).toString());
+					throw new Exception("user `" + AMIUser + "` not allow to modify admin-only field " + new QId(column, false).toString());
 				}
 			}
 			else if(column.crypted)
 			{
 				if(isAdmin == false)
 				{
-					throw new Exception("user `" + AMIUser + "` not allow to modify field " + new QId(column, false).toString());
+					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
 				}
 
 				expression = /* NOT FOR SQL EXPRESSION */
