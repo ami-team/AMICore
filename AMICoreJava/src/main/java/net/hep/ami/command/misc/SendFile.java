@@ -48,13 +48,13 @@ public class SendFile extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String rootPath = ConfigSingleton.getProperty("server_storage_root").trim();
+		String rootPath = ConfigSingleton.getProperty("storage_root_path").trim();
 
 		if(rootPath.isEmpty()
 		   ||
 		   rootPath.equals("/")
 		 ) {
-			throw new Exception("wrong server storage configuration");
+			throw new Exception("wrong storage root path");
 		}
 
 		/*-----------------------------------------------------------------*/
