@@ -26,11 +26,15 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		Querier querier1 = new SimpleQuerier("self", "admin", true);
+		Querier querier1 = new SimpleQuerier("test", "admin", true);
 
-		System.out.println(querier1.executeMQLUpdate("router_catalog", "UPDATE (`pass`) VALUES ('root') WHERE `id` = '4'").getNbOfUpdatedRows());
+		System.out.println(querier1.mqlToSQL("A", "SELECT id WHERE [`foo`{bFK} = 'FOO' AND `bar`{dFK} = 'BAR'] AND `qux` = 'QUX'"));
 
-		//System.out.println(querier1.mqlToSQL("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')"));
+		System.out.println(querier1.mqlToSQL("A", "INSERT (`foo`{bFK}, `bar`{dFK}, `qux`) VALUES ('FOO', 'BAR', 'QUX')"));
+
+//		System.out.println(querier1.executeMQLUpdate("router_catalog", "UPDATE (`pass`) VALUES ('root') WHERE `id` = '4'").getNbOfUpdatedRows());
+
+//		System.out.println(querier1.mqlToSQL("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')"));
 
 //		querier1.executeMQLUpdate("DATASET_FILE_BRIDGE", "INSERT (`FILE`.`name`, `DATASET`.`name`, `PROJECT`.`name`) VALUES ('file_9', 'dataset_9', 'AMI')");
 

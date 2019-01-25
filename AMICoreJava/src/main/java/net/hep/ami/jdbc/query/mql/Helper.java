@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
-
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -111,7 +111,9 @@ public class Helper
 						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                  .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                  .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
+						                                  .addWherePart(expression)
 						                                  .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
+
 						;
 
 						/*-------------------------------------------------*/
@@ -165,7 +167,6 @@ public class Helper
 
 				SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                 .addFromPart(localFromSet)
-				                                 .addWherePart(expression)
 				                                 .addWherePart(localJoinList)
 				;
 
@@ -278,34 +279,59 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			if(resolution.getMaxPathLen() == 0)
+			if(resolution.getMaxPathLen() > 0)
 			{
-				field = resolution.getExternalQId().toString(QId.MASK_FIELD);
-			}
-			else
-			{
-				field = resolution.getPaths().get(0).get(0).fkColumn;
-
 				expression = new StringBuilder().append(resolution.getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                .append(" = ")
 				                                .append(expression)
 				;
+
+				for(FrgnKeys path: resolution.getPaths())
+				{
+					/*-----------------------------------------------------*/
+
+					field = path.get(0).fkColumn;
+
+					/*-----------------------------------------------------*/
+					tuple = entries.get(field);
+
+					if(tuple == null)
+					{
+						entries.put(field, tuple = new Tuple2<>(
+							new ArrayList<>(),
+							new ArrayList<>()
+						));
+					}
+
+					tuple.x.add(expression);
+					tuple.y.add(resolution);
+
+					/*-----------------------------------------------------*/
+				}
 			}
-
-			/*-------------------------------------------------------------*/
-
-			tuple = entries.get(field);
-
-			if(tuple == null)
+			else
 			{
-				entries.put(field, tuple = new Tuple2<>(
-					new ArrayList<>(),
-					new ArrayList<>()
-				));
-			}
+				/*---------------------------------------------------------*/
 
-			tuple.x.add(expression);
-			tuple.y.add(resolution);
+				field = resolution.getColumn().name;
+
+				/*---------------------------------------------------------*/
+
+				tuple = entries.get(field);
+
+				if(tuple == null)
+				{
+					entries.put(field, tuple = new Tuple2<>(
+						new ArrayList<>(),
+						new ArrayList<>()
+					));
+				}
+
+				tuple.x.add(expression);
+				tuple.y.add(resolution);
+
+				/*---------------------------------------------------------*/
+			}
 
 			/*-------------------------------------------------------------*/
 		}
