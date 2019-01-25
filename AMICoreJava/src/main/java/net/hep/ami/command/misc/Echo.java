@@ -3,6 +3,7 @@ package net.hep.ami.command.misc;
 import java.util.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.utility.parser.Utility;
 
 @CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
 public class Echo extends AbstractCommand
@@ -21,14 +22,18 @@ public class Echo extends AbstractCommand
 	{
 		StringBuilder result = new StringBuilder();
 
-		result.append("<rowset><row>");
+		result.append("<rowset>")
+		      .append("<row>")
+		;
 
 		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
-			result.append("<field name=\"" + entry.getKey().replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") + "\"><![CDATA[" + entry.getValue() + "]]></field>");
+			result.append("<field name=\"").append(Utility.escapeHTML(entry.getKey())).append("\"><![CDATA[").append(entry.getValue()).append("]]></field>");
 		}
 
-		result.append("</row></rowset>");
+		result.append("</row>")
+		      .append("</rowset>")
+		;
 
 		return result;
 	}

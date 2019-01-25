@@ -74,13 +74,13 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		if(code == null)
 		{
-			MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Dear user,\n\nYou are about to revoke the following AMI certificate(s):\n\n" + dns + "\n\nConfirmation code: " + CODE + "\n\nBest regards.");
+			MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, null, "AMI certificate revocation", "Dear user,\n\nYou are about to revoke the following AMI certificate(s):\n\n" + dns + "\n\nConfirmation code: " + CODE + "\n\nBest regards.");
 		}
 		else
 		{
 			if(CODE.equals(code))
 			{
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "AMI certificate revocation", "Dear user,\n\nThe following certificate(s) is(are) revoked:\n\n" + dns + "\n\nBest regards.");
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, null, "AMI certificate revocation", "Dear user,\n\nThe following certificate(s) is(are) revoked:\n\n" + dns + "\n\nBest regards.");
 
 				getQuerier("self").executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
 					reason,

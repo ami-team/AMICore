@@ -43,7 +43,7 @@ public class SendFile extends AbstractCommand
 		   ||
 		   filePath.contains("..")
 		 ) {
-			throw new Exception("invalid usage");
+			throw new Exception("unauthorized path");
 		}
 
 		/*-----------------------------------------------------------------*/
