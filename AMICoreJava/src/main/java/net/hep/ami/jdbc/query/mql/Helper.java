@@ -21,7 +21,7 @@ public class Helper
 
 	/* globalJoinSet MUST be null for insert or update parts */
 
-	public static String isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, CharSequence expression, boolean isSelectPart, boolean isModifStm) throws Exception
+	public static String isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, CharSequence expression, boolean isSelectPart, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -69,8 +69,6 @@ public class Helper
 				Set<QId> tmpFromSet = new LinkedHashSet<>();
 
 				Set<String> tmpJoinSet = new LinkedHashSet<>();
-
-				localFromSet.add(mainPrimarykeyQId.as(QId.MASK_CATALOG_ENTITY));
 
 				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
@@ -174,7 +172,7 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				expression = new StringBuilder().append(mainPrimarykeyQId.toString(isModifStm == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
+				expression = new StringBuilder().append(mainPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
 				                                .append(" IN (")
 				                                .append(query)
 				                                .append(")")
