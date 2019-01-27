@@ -48,7 +48,7 @@ public class Helper
 		{
 			String tmpExternalCatalog = resolution.getExternalQId().getCatalog();
 			String tmpInternalCatalog = resolution.getInternalQId().getCatalog();
-			String tmpEntity = resolution.getExternalQId().getEntity();
+			String tmpEntity          = resolution.getExternalQId().getEntity ();
 
 			if(tmpInternalCatalog.equalsIgnoreCase(stdInternalCatalog) == false
 			   ||
@@ -78,6 +78,7 @@ public class Helper
 					int cnt = 0;
 
 					Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();
+
 					for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
 					{
 						if(globalJoinSet == null && cnt++ == 0)
@@ -108,11 +109,11 @@ public class Helper
 							tmpEntity
 						), true);
 
-						SelectObj query2 = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-						                                  .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-						                                  .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
-						                                  .addWherePart(expression)
-						                                  .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
+						SelectObj query = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+						                                 .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+						                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
+						                                 .addWherePart(isSelectPart == false ? expression : null)
+						                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 
 						;
 
@@ -124,7 +125,7 @@ public class Helper
 							                   .append(", ")
 							                   .append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 							                   .append(") IN (")
-							                   .append(query2.toString())
+							                   .append(query)
 							                   .append(")")
 							                   .toString()
 						);
@@ -172,28 +173,11 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				StringBuilder result = new StringBuilder();
-
-				if(isModifStm)
-				{
-					result.append(mainPrimarykeyQId.toString(QId.MASK_FIELD))
-					      .append(" IN (")
-					      .append(query)
-					      .append(")")
-					;
-				}
-				else
-				{
-					result.append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-					      .append(" IN (")
-					      .append(query)
-					      .append(")")
-					;
-				}
-
-				/*---------------------------------------------------------*/
-
-				expression = result;
+				expression = new StringBuilder().append(mainPrimarykeyQId.toString(isModifStm == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
+				                                .append(" IN (")
+				                                .append(query)
+				                                .append(")")
+				;
 
 				/*---------------------------------------------------------*/
 			}
@@ -293,6 +277,7 @@ public class Helper
 					field = path.get(0).fkColumn;
 
 					/*-----------------------------------------------------*/
+
 					tuple = entries.get(field);
 
 					if(tuple == null)
