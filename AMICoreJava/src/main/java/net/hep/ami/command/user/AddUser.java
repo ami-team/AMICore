@@ -101,7 +101,7 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate(m_AMIUser, true, "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		Update update = querier.executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			amiLogin,
 			SecuritySingleton.encrypt(amiPassword),
 			clientDN != null && clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,
@@ -113,7 +113,7 @@ public class AddUser extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		querier.executeSQLUpdate(m_AMIUser, true, "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", amiLogin, "AMI_USER");
+		querier.executeSQLUpdate("INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", amiLogin, "AMI_USER");
 
 		/*-----------------------------------------------------------------*/
 

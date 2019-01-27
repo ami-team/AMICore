@@ -55,7 +55,7 @@ public class ResetPassword extends AbstractCommand
 				email,
 				null,
 				"Reset AMI password",
-				String.format(EMAIL, ConfigSingleton.getProperty("host"), userdata)
+				String.format(EMAIL, ConfigSingleton.getProperty("base_url"), userdata)
 			);
 		}
 

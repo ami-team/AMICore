@@ -130,8 +130,6 @@ public class ConnectionPoolSingleton
 
 		result.append("<rowset type=\"connectionPool\">");
 
-		/*-----------------------------------------------------------------*/
-
 		for(Tuple value: s_pools.values())
 		{
 			result.append("<row>")
@@ -144,8 +142,6 @@ public class ConnectionPoolSingleton
 			      .append("</row>")
 			;
 		}
-
-		/*-----------------------------------------------------------------*/
 
 		result.append("</rowset>");
 

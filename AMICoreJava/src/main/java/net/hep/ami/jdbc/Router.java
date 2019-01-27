@@ -30,19 +30,6 @@ public class Router implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public Router(String externalCatalog) throws Exception
-	{
-		this(
-			externalCatalog,
-			ConfigSingleton.getProperty("router_catalog"),
-			ConfigSingleton.getProperty("router_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
-		);
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public Router(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");

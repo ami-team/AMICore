@@ -172,9 +172,9 @@ public class Setup extends HttpServlet
 		/* GET/POST VARIABLES (SERVER)                                     */
 		/*-----------------------------------------------------------------*/
 
-		String host = req.getParameter("host");
-		host = (host != null) ? host.trim()
-		                      : ConfigSingleton.getProperty("host")
+		String base_url = req.getParameter("base_url");
+		base_url = (base_url != null) ? base_url.trim()
+		                              : ConfigSingleton.getProperty("base_url")
 		;
 
 		String admin_user = req.getParameter("admin_user");
@@ -249,7 +249,7 @@ public class Setup extends HttpServlet
 		return stringBuilder.toString()
 		                    .replace("{{YEAR}}", year)
 		                    /**/
-		                    .replace("{{HOST}}", host)
+		                    .replace("{{BASE_URL}}", base_url)
 		                    .replace("{{ADMIN_USER}}", admin_user)
 		                    .replace("{{ADMIN_PASS}}", admin_pass)
 		                    .replace("{{ADMIN_EMAIL}}", admin_email)
@@ -279,8 +279,8 @@ public class Setup extends HttpServlet
 		/* GET/POST VARIABLES (SERVER)                                     */
 		/*-----------------------------------------------------------------*/
 
-		String host = req.getParameter("host");
-		host = (host != null) ? host.trim() : "";
+		String base_url = req.getParameter("base_url");
+		base_url = (base_url != null) ? base_url.trim() : "";
 
 		String admin_user = req.getParameter("admin_user");
 		admin_user = (admin_user != null) ? admin_user.trim() : "";
@@ -324,9 +324,9 @@ public class Setup extends HttpServlet
 
 		/*-----------------------------------------------------------------*/
 
-		while(host.endsWith("/"))
+		while(base_url.endsWith("/"))
 		{
-			host = host.substring(0, host.length() - 1);
+			base_url = base_url.substring(0, base_url.length() - 1);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -336,10 +336,12 @@ public class Setup extends HttpServlet
 		stringBuilder1.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n")
 		              .append("\n")
 		              .append("<properties>\n")
-		              .append("  <property name=\"host\"><![CDATA[" + host + "]]></property>\n")
+		              .append("  <property name=\"base_url\"><![CDATA[" + base_url + "]]></property>\n")
+		              .append("\n")
 		              .append("  <property name=\"admin_user\"><![CDATA[" + admin_user + "]]></property>\n")
 		              .append("  <property name=\"admin_pass\"><![CDATA[" + admin_pass + "]]></property>\n")
 		              .append("  <property name=\"admin_email\"><![CDATA[" + admin_email + "]]></property>\n")
+		              .append("\n")
 		              .append("  <property name=\"encryption_key\"><![CDATA[" + encryption_key + "]]></property>\n")
 		              .append("\n")
 		              .append("  <property name=\"router_catalog\"><![CDATA[" + router_catalog + "]]></property>\n")
@@ -367,7 +369,7 @@ public class Setup extends HttpServlet
 
 			/*-------------------------------------------------------------*/
 
-			String stringContent2 = stringBuilder2.toString().replaceAll("endpoint_url\\s*:\\s*[\'\"][^\'\"]*[\'\"]", "endpoint_url: '" + host + "/AMI/FrontEnd'");
+			String stringContent2 = stringBuilder2.toString().replaceAll("endpoint_url\\s*:\\s*[\'\"][^\'\"]*[\'\"]", "endpoint_url: '" + base_url + "/AMI/FrontEnd'");
 
 			/*-------------------------------------------------------------*/
 
@@ -444,10 +446,12 @@ public class Setup extends HttpServlet
 			return stringBuilder3.toString()
 			                     .replace("{{YEAR}}", year)
 			                     /**/
-			                     .replace("{{HOST}}", host)
+			                     .replace("{{BASE_URL}}", base_url)
+			                     /**/
 			                     .replace("{{ADMIN_USER}}", admin_user)
 			                     .replace("{{ADMIN_PASS}}", admin_pass)
 			                     .replace("{{ADMIN_EMAIL}}", admin_email)
+			                     /**/
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
 			                     /**/
 			                     .replace("{{ROUTER_CATALOG}}", router_catalog)
@@ -483,10 +487,12 @@ public class Setup extends HttpServlet
 			return stringBuilder3.toString()
 			                     .replace("{{YEAR}}", year)
 			                     /**/
-			                     .replace("{{HOST}}", host)
+			                     .replace("{{BASE_URL}}", base_url)
+			                     /**/
 			                     .replace("{{ADMIN_USER}}", admin_user)
 			                     .replace("{{ADMIN_PASS}}", admin_pass)
 			                     .replace("{{ADMIN_EMAIL}}", admin_email)
+			                     /**/
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
 			                     /**/
 			                     .replace("{{ROUTER_CATALOG}}", router_catalog)

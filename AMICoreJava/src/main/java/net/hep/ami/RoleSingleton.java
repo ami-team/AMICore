@@ -148,13 +148,12 @@ public class RoleSingleton
 		String changeUser = arguments.remove("changeUser");
 
 		if(changeUser == null && (
-				"GetSessionInfo".equals(command)
-				||
-				"ResetPassword".equals(command)
-				||
-				"AddUser".equals(command)
-		   )
-		 ) {
+			"GetSessionInfo".equals(command)
+			||
+			"ResetPassword".equals(command)
+			||
+			"AddUser".equals(command)
+		 )) {
 			return new HashSet<>();
 		}
 

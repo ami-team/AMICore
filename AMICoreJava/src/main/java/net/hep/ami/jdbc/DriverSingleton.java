@@ -49,14 +49,7 @@ public class DriverSingleton
 	{
 		s_drivers.clear();
 
-		try
-		{
-			DriverSingleton.addDrivers();
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add drivers", e);
-		}
+		DriverSingleton.addDrivers();
 
 		try
 		{
@@ -66,6 +59,8 @@ public class DriverSingleton
 		{
 			LogSingleton.root.error(LogSingleton.FATAL, "could not read config", e);
 		}
+
+		CacheSingleton.reload();
 	}
 
 	/*---------------------------------------------------------------------*/

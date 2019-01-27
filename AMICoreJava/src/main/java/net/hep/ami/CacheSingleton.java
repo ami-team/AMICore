@@ -1,35 +1,17 @@
 package net.hep.ami;
 
 import java.net.*;
+import java.util.*;
 
 import net.spy.memcached.*;
+
+import net.hep.ami.utility.parser.*;
 
 public class CacheSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	static private final MemcachedClient s_memcachedClient = newMemcachedClient();
-
-	/*---------------------------------------------------------------------*/
-
-	static private MemcachedClient newMemcachedClient()
-	{
-		try
-		{
-			System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
-
-			return new MemcachedClient(new InetSocketAddress(
-				ConfigSingleton.getProperty("memcached_host", "localhost"),
-				ConfigSingleton.getProperty("memcached_port", 11211))
-			);
-		}
-		catch(Exception e)
-		{
-			LogSingleton.root.error(e.getMessage(), e);
-		}
-
-		return null;
-	}
+	static private MemcachedClient s_memcachedClient = null;
 
 	/*---------------------------------------------------------------------*/
 
@@ -37,13 +19,53 @@ public class CacheSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Object put(String key, Object value)
+	static
+	{
+		reload();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		if(s_memcachedClient != null)
+		{
+			s_memcachedClient.shutdown();
+		}
+
+		if(ConfigSingleton.getProperty("memcached_enabled", false))
+		{
+			try
+			{
+				System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
+
+				s_memcachedClient = new MemcachedClient(new InetSocketAddress(
+					ConfigSingleton.getProperty("memcached_host", "localhost"),
+					ConfigSingleton.getProperty("memcached_port", 11211))
+				);
+			}
+			catch(Exception e)
+			{
+				LogSingleton.root.error(e.getMessage(), e);
+
+				s_memcachedClient = null;
+			}
+		}
+		else
+		{
+			s_memcachedClient = null;
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void put(String key, Object value)
 	{
 		if(s_memcachedClient != null)
 		{
 			try
 			{
-				s_memcachedClient.add(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value); return value;
+				s_memcachedClient.set(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value);
 			}
 			catch(Exception e)
 			{
@@ -51,7 +73,7 @@ public class CacheSingleton
 			}
 		}
 
-		return null;
+		return /**/;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -75,21 +97,19 @@ public class CacheSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String remove(String key)
+	public static void flush()
 	{
 		if(s_memcachedClient != null)
 		{
 			try
 			{
-				s_memcachedClient.delete(key).getKey();
+				s_memcachedClient.flush();
 			}
 			catch(Exception e)
 			{
 				LogSingleton.root.error(e.getMessage(), e);
 			}
 		}
-
-		return null;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -111,19 +131,39 @@ public class CacheSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void flush()
+	public static StringBuilder getStatus()
 	{
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"memcached\">");
+
 		if(s_memcachedClient != null)
 		{
-			try
+			for(Map.Entry<SocketAddress, Map<String, String>> entry1: s_memcachedClient.getStats().entrySet())
 			{
-				s_memcachedClient.flush();
-			}
-			catch(Exception e)
-			{
-				LogSingleton.root.error(e.getMessage(), e);
+				result.append("<row>");
+
+				/*---------------------------------------------------------*/
+
+				result.append("<field name=\"addr\"><![CDATA[").append(entry1.getKey()).append("]]></field>");
+
+				/*---------------------------------------------------------*/
+
+				entry1.getValue().entrySet().stream().forEach(x -> result.append("<field name=\"").append(Utility.escapeHTML(x.getKey())).append("\"><![CDATA[").append(x.getValue()).append("]]></field>"));
+
+				/*---------------------------------------------------------*/
+
+				result.append("</row>");
 			}
 		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

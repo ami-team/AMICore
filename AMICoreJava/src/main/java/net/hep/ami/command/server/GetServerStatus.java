@@ -3,6 +3,7 @@ package net.hep.ami.command.server;
 import java.io.*;
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
 import net.hep.ami.utility.shell.*;
@@ -103,6 +104,10 @@ public class GetServerStatus extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		result.append(ConnectionPoolSingleton.getStatus());
+
+		/*-----------------------------------------------------------------*/
+
+		result.append(CacheSingleton.getStatus());
 
 		/*-----------------------------------------------------------------*/
 

@@ -69,12 +69,10 @@ public class CommandSingleton
 		try
 		{
 			addCommands();
-
-			CacheSingleton.flush();
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add commands: " + e.getMessage(), e);
+			LogSingleton.root.error(LogSingleton.FATAL, "could not add commands: {}", e.getMessage(), e);
 		}
 	}
 

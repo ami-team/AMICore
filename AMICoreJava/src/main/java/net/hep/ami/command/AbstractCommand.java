@@ -29,7 +29,7 @@ public abstract class AbstractCommand
 
 	protected final Set<String> m_userRoles;
 
-	 private  final Map<String, String> m_arguments;
+	protected final Map<String, String> m_arguments;
 
 	/*---------------------------------------------------------------------*/
 
@@ -133,22 +133,29 @@ public abstract class AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String key = new StringBuilder().append(getClass().getSimpleName().toString())
-		                                .append(m_arguments.toString())
-		                                .toString()
-		;
-
-		/*-----------------------------------------------------------------*/
-
 		if(m_isCached)
 		{
-			Object value = CacheSingleton.get(key);
+			/*-------------------------------------------------------------*/
 
-			result = (value instanceof StringBuilder) ? (StringBuilder) value
-			                                          : (StringBuilder) _execute()
+			String key = new StringBuilder().append(getClass().getSimpleName().toString())
+			                                .append(m_arguments.toString())
+			                                .toString()
 			;
 
-			CacheSingleton.put(key, result); /* PAS BON !!! */
+			/*-------------------------------------------------------------*/
+
+			Object object = CacheSingleton.get(key);
+
+			if(object instanceof StringBuilder)
+			{
+				result = (StringBuilder)   object  ;
+				//////////////.put(key, result);
+			}
+			else
+			{
+				result = (StringBuilder) _execute();
+				CacheSingleton.put(key, result);
+			}
 		}
 		else
 		{

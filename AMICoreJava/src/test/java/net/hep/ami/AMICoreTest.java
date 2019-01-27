@@ -59,7 +59,7 @@ public class AMICoreTest
 			/* SETUP SERVER CONFIG                                         */
 			/*-------------------------------------------------------------*/
 
-			Router db = new Router("self");
+			Router db = new Router();
 
 			try
 			{

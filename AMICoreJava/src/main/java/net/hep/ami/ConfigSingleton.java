@@ -33,7 +33,7 @@ public class ConfigSingleton
 
 	static
 	{
-		s_reserved.add("host");
+		s_reserved.add("base_url");
 		s_reserved.add("admin_user");
 		s_reserved.add("admin_pass");
 		s_reserved.add("admin_email");
@@ -73,7 +73,7 @@ public class ConfigSingleton
 
 	private static boolean isValid()
 	{
-		return getProperty("host").isEmpty() == false
+		return getProperty("base_url").isEmpty() == false
 		       &&
 		       getProperty("admin_user").isEmpty() == false
 		       &&
@@ -308,7 +308,7 @@ public class ConfigSingleton
 			}
 			else
 			{
-				result = 0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+				result = 0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
 			}
 		}
 

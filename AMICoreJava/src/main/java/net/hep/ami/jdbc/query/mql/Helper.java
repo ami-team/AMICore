@@ -111,7 +111,7 @@ public class Helper
 						SelectObj query = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                 .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
-						                                 .addWherePart(expression)
+						//                                 .addWherePart(expression)
 						                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 
 						;
@@ -167,7 +167,7 @@ public class Helper
 
 				SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 				                                 .addFromPart(localFromSet)
-				                                 .addWherePart(localJoinList)
+				                                 .addWherePart(localJoinList).addFromPart(expression)
 				;
 
 				/*---------------------------------------------------------*/
