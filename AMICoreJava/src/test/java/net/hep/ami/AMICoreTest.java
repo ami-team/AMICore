@@ -387,6 +387,23 @@ public class AMICoreTest
 			testFail = true;
 		}
 
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "PROJECT");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description");
+			arguments.put("values", "AMI2;This an other AMI demonstration project");
+			CommandSingleton.executeCommand("AddElement", arguments, false);
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		try
