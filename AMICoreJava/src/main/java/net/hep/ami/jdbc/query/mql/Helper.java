@@ -70,6 +70,8 @@ public class Helper
 
 				Set<String> tmpJoinSet = new LinkedHashSet<>();
 
+				localFromSet.add(mainPrimarykeyQId.as(QId.MASK_CATALOG_ENTITY));
+
 				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
 					/*-----------------------------------------------------*/
@@ -111,7 +113,7 @@ public class Helper
 						SelectObj query = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                 .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
-						                                 .addWherePart(isSelectPart == false ? expression : null)
+						                                 .addWherePart(expression)
 						                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 
 						;
@@ -154,7 +156,7 @@ public class Helper
 		{
 			if(isSelectPart)
 			{
-				globalJoinSet.add(String.join(" AND ", localJoinList));
+				globalJoinSet.addAll(localJoinList);
 			}
 			else
 			{
