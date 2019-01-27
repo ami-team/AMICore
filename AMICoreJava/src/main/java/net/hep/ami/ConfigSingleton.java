@@ -394,14 +394,30 @@ public class ConfigSingleton
 		{
 			tmpValue = tmpValue.trim().toLowerCase();
 
-			result = "1".equals(tmpValue)
-			         ||
-			         "on".equals(tmpValue)
-			         ||
-			         "yes".equals(tmpValue)
-			         ||
-			         "true".equals(tmpValue)
-			;
+			/**/ if("1".equals(tmpValue)
+			        ||
+			        "on".equals(tmpValue)
+			        ||
+			        "yes".equals(tmpValue)
+			        ||
+			        "true".equals(tmpValue)
+			 ) {
+				result = true;
+			}
+			else if("0".equals(tmpValue)
+			        ||
+			        "off".equals(tmpValue)
+			        ||
+			        "no".equals(tmpValue)
+			        ||
+			        "false".equals(tmpValue)
+			 ) {
+				result = false;
+			}
+			else
+			{
+				result = defaultValue;
+			}
 		}
 		else
 		{
@@ -538,14 +554,30 @@ public class ConfigSingleton
 		{
 			tmpValue = tmpValue.trim().toLowerCase();
 
-			result = "1".equals(tmpValue)
-			         ||
-			         "on".equals(tmpValue)
-			         ||
-			         "yes".equals(tmpValue)
-			         ||
-			         "true".equals(tmpValue)
-			;
+			/**/ if("1".equals(tmpValue)
+			        ||
+			        "on".equals(tmpValue)
+			        ||
+			        "yes".equals(tmpValue)
+			        ||
+			        "true".equals(tmpValue)
+			 ) {
+				result = true;
+			}
+			else if("0".equals(tmpValue)
+			        ||
+			        "off".equals(tmpValue)
+			        ||
+			        "no".equals(tmpValue)
+			        ||
+			        "false".equals(tmpValue)
+			 ) {
+				result = false;
+			}
+			else
+			{
+				result = defaultValue;
+			}
 		}
 		else
 		{
