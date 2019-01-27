@@ -38,20 +38,15 @@ public class ConnectionPoolSingleton
 
 	public static Connection getConnection(@Nullable String catalog, String jdbcDriver, String jdbcUrl, String user, String pass) throws Exception
 	{
-		return getDataSource(catalog, jdbcDriver, jdbcUrl, user, pass, null).getConnection();
-	}
+		/*-----------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------*/
+		if(ConfigSingleton.getProperty("pool_enabled", true) == false)
+		{
+			return DriverManager.getConnection(jdbcUrl, user, pass);
+		}
 
-	public static Connection getConnection(@Nullable String catalog, String jdbcDriver, String jdbcUrl, String user, String pass, @Nullable Properties properties) throws Exception
-	{
-		return getDataSource(catalog, jdbcDriver, jdbcUrl, user, pass, properties).getConnection();
-	}
+		/*-----------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------*/
-
-	private static HikariDataSource getDataSource(@Nullable String catalog, String jdbcDriver, String jdbcUrl, String user, String pass, @Nullable Properties properties) throws Exception
-	{
 		Tuple tuple;
 
 		String key = user + "@" + jdbcUrl;
@@ -66,9 +61,7 @@ public class ConnectionPoolSingleton
 		/**/		/* CREATE POOL PROPERTIES                              */
 		/**/		/*-----------------------------------------------------*/
 		/**/
-		/**/		HikariConfig config = (properties == null) ? new HikariConfig(/*------*/)
-		/**/		                                           : new HikariConfig(properties)
-		/**/		;
+		/**/		HikariConfig config = new HikariConfig();
 		/**/
 		/**/		/*---------------------------*/
 		/**/		/* POOL - DATABASE           */
@@ -92,17 +85,11 @@ public class ConnectionPoolSingleton
 		/**/			config.setPoolName(catalog.replace(":", "|"));
 		/**/		}
 		/**/
-		/**/		if(properties == null || properties.containsKey("maximumPoolSize") == false) {
-		/**/			config.setMaximumPoolSize(ConfigSingleton.getProperty("pool_size", 10));
-		/**/		}
+		/**/		config.setMaximumPoolSize(ConfigSingleton.getProperty("pool_size", 10));
 		/**/
-		/**/		if(properties == null || properties.containsKey("connectionTimeout") == false) {
-		/**/			config.setConnectionTimeout(ConfigSingleton.getProperty("conn_timeout", 30000));
-		/**/		}
+		/**/		config.setConnectionTimeout(ConfigSingleton.getProperty("pool_conn_timeout", 30000));
 		/**/
-		/**/		if(properties == null || properties.containsKey("idleTimeout") == false) {
-		/**/			config.setIdleTimeout(ConfigSingleton.getProperty("idle_timeout", 600000));
-		/**/		}
+		/**/		config./**/setIdleTimeout/**/(ConfigSingleton.getProperty("pool_idle_timeout", 600000));
 		/**/
 		/**/		/*---------------------------*/
 		/**/		/* POOL - MONITORING         */
@@ -126,7 +113,11 @@ public class ConnectionPoolSingleton
 		/**/	}
 		}
 
-		return tuple.x;
+		/*-----------------------------------------------------------------*/
+
+		return tuple.x.getConnection();
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
