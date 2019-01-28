@@ -784,6 +784,13 @@ public class SecuritySingleton
 
 	private static void encrypt(OutputStream outputStreamut, InputStream inputStream) throws Exception
 	{
+		if(s_keyParameter == null)
+		{
+			LogSingleton.root.error(LogSingleton.FATAL, "SecuritySingleton not initialized");
+
+			return;
+		}
+
 		int noBytesRead;
 		int noBytesProcessed;
 
@@ -814,6 +821,13 @@ public class SecuritySingleton
 
 	private static void decrypt(OutputStream outputStream, InputStream inputStream) throws Exception
 	{
+		if(s_keyParameter == null)
+		{
+			LogSingleton.root.error(LogSingleton.FATAL, "SecuritySingleton not initialized");
+
+			return;
+		}
+
 		int noBytesRead;
 		int noBytesProcessed;
 
