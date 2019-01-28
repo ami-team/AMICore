@@ -26,11 +26,15 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
+		CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"SELECT `router_user`.`id`, `router_role`.`role` WHERE `router_user`.`AMIUser` LIKE '%'\"", false);
+
+/* CYCLE
 		Querier querier1 = new SimpleQuerier("test", "admin", true);
 
 		System.out.println(querier1.mqlToSQL("A", "SELECT id WHERE [`foo`{bFK} = 'FOO' AND `bar`{dFK} = 'BAR'] AND `qux` = 'QUX'"));
 
 		System.out.println(querier1.mqlToSQL("A", "INSERT (`foo`{bFK}, `bar`{dFK}, `qux`) VALUES ('FOO', 'BAR', 'QUX')"));
+*/
 
 //		System.out.println(querier1.executeMQLUpdate("router_catalog", "UPDATE (`pass`) VALUES ('root') WHERE `id` = '4'").getNbOfUpdatedRows());
 

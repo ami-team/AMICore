@@ -23,6 +23,7 @@ public class Helper
 
 	public static String isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, Set<QId> globalFromSet, @Nullable Set<String> globalJoinSet, List<Resolution> resolutionList, CharSequence expression, boolean isSelectPart, boolean isFieldNameOnly) throws Exception
 	{
+		System.out.println(expression + " :: isSelectPart: " + isSelectPart + ", isFieldNameOnly: " + isFieldNameOnly);
 		/*-----------------------------------------------------------------*/
 
 		boolean isOracle = "jdbc:oracle".equals(CatalogSingleton.getProto(
@@ -111,7 +112,7 @@ public class Helper
 						SelectObj query = new SelectObj().addSelectPart(localPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                 .addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
-						//                                 .addWherePart(expression)
+						                                 //.addWherePart(expression)
 						                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
 
 						;
@@ -183,6 +184,10 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		System.out.println("=> " + localJoinList);
+		System.out.println("-> " + expression.toString());
+		System.out.println();
 
 		return expression.toString();
 
