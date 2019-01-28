@@ -1,8 +1,5 @@
 package net.hep.ami;
 
-import java.util.*;
-import java.util.stream.*;
-
 import net.hep.ami.utility.*;
 
 public class XMLTemplates
@@ -13,27 +10,32 @@ public class XMLTemplates
 
 	/*---------------------------------------------------------------------*/
 
-	private static String format(String tag, String message)
+	private static void format(StringBuilder result, String tag, @Nullable String message)
 	{
-		return new StringBuilder().append("<").append(tag).append(">")
-		                          .append("<![CDATA[").append(message.replace("]]>", "))>")).append("]]>")
-		                          .append("</").append(tag).append(">")
-		                          .toString()
+		if(message == null)
+		{
+			message = "null";
+		}
+
+		result.append("<").append(tag).append(">")
+		      .append("<![CDATA[").append(message.replace("]]>", "))>")).append("]]>")
+		      .append("</").append(tag).append(">")
 		;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static String info(@Nullable Object object)
+	public static String info(Object... args)
 	{
-		if(object == null)
-		{
-			object = "null";
-		}
+		StringBuilder xml = new StringBuilder();
 
-		String xml = object.getClass().isArray() ? Arrays.stream((Object[]) object).map(OBJECT -> format("info", OBJECT.toString())).collect(Collectors.joining(""))
-		                                         : /*------------------------------------------*/ format("info", object.toString()) /*----------------------------*/
-		;
+		for(Object arg: args)
+		{
+			for(Object ARG: arg.getClass().isArray() == false ? new Object[] {arg} : (Object[]) arg)
+			{
+				format(xml, "info", ARG.toString());
+			}
+		}
 
 		return new StringBuilder().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		                          .append("<AMIMessage>").append(xml).append("<executionTime>0.0</executionTime></AMIMessage>")
@@ -43,16 +45,17 @@ public class XMLTemplates
 
 	/*---------------------------------------------------------------------*/
 
-	public static String error(@Nullable Object object)
+	public static String error(Object... args)
 	{
-		if(object == null)
-		{
-			object = "null";
-		}
+		StringBuilder xml = new StringBuilder();
 
-		String xml = object.getClass().isArray() ? Arrays.stream((Object[]) object).map(OBJECT -> format("error", OBJECT.toString())).collect(Collectors.joining(""))
-		                                         : /*------------------------------------------*/ format("error", object.toString()) /*----------------------------*/
-		;
+		for(Object arg: args)
+		{
+			for(Object ARG: arg.getClass().isArray() == false ? new Object[] {arg} : (Object[]) arg)
+			{
+				format(xml, "error", ARG.toString());
+			}
+		}
 
 		return new StringBuilder().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		                          .append("<AMIMessage>").append(xml).append("<executionTime>0.0</executionTime></AMIMessage>")
