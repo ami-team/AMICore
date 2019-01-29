@@ -786,9 +786,7 @@ public class SecuritySingleton
 	{
 		if(s_keyParameter == null)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "SecuritySingleton not initialized");
-
-			return;
+			throw new Exception("SecuritySingleton not initialized");
 		}
 
 		int noBytesRead;
@@ -823,9 +821,7 @@ public class SecuritySingleton
 	{
 		if(s_keyParameter == null)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "SecuritySingleton not initialized");
-
-			return;
+			throw new Exception("SecuritySingleton not initialized");
 		}
 
 		int noBytesRead;

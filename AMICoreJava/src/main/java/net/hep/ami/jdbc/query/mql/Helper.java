@@ -16,7 +16,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String isolatePath(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
+	public static Set<String> isolatePath(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
@@ -31,7 +31,7 @@ public class Helper
 		QId qId;
 		String tmp;
 
-		Set<String> localJoinList = new LinkedHashSet<>();
+		Set<String> result = new LinkedHashSet<>();
 
 		for(Resolution resolution: resolutionList) 
 		{
@@ -105,7 +105,7 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			localJoinList.add(new StringBuilder().append("(")
+			result.add(new StringBuilder().append("(")
 			                                     .append(String.join(", ", idSet))
 			                                     .append(") IN (")
 			                                     .append(String.join(" UNION ", joinSet))
@@ -118,7 +118,7 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		return String.join(" AND ", localJoinList);
+		return result;
 
 		/*-----------------------------------------------------------------*/
 	}
