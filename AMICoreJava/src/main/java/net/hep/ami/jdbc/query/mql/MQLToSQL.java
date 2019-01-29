@@ -10,7 +10,6 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
-
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -21,9 +20,8 @@ public class MQLToSQL
 	private static final int IN_SELECT_PART = (1 << 0);
 	private static final int IN_INSERT_PART = (1 << 1);
 	private static final int IN_UPDATE_PART = (1 << 2);
-	private static final int IN_ISO_GROUP = (1 << 3);
-	private static final int IN_FUNCTION = (1 << 4);
-	private static final int IS_MODIF_STM = (1 << 5);
+	private static final int IN_FUNCTION = (1 << 3);
+	private static final int IS_MODIF_STM = (1 << 4);
 
 	/*---------------------------------------------------------------------*/
 
@@ -39,8 +37,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private final Set<QId> m_globalFromSet = new LinkedHashSet<QId>();
-	private final Set<String> m_globalJoinSet = new LinkedHashSet<String>();
+	private final List<Resolution> m_globalResolutionList = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -59,10 +56,6 @@ public class MQLToSQL
 
 		m_AMIUser = AMIUser;
 		m_isAdmin = isAdmin;
-
-		/*-----------------------------------------------------------------*/
-
-		m_globalFromSet.add(new QId(m_internalCatalog, m_entity, null));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -136,14 +129,14 @@ public class MQLToSQL
 		{
 			result.setDistinct(context.m_distinct != null);
 
-			result.addSelectPart(visitColumnList(context.m_columns, null, IN_SELECT_PART));
+			result.addSelectPart(visitColumnList(context.m_columns, m_globalResolutionList, IN_SELECT_PART));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, null, 0));
+			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, 0));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -172,7 +165,17 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addFromPart(m_globalFromSet).addWherePart(m_globalJoinSet).toStringBuilder(extra);
+		for(Resolution resolution: m_globalResolutionList)
+		{
+			result.addFromPart(resolution.getInternalQId().toString(QId.MASK_CATALOG_ENTITY));
+
+			if(resolution.getMaxPathLen() > 0)
+			{
+				result.addWherePart("(" + resolution.getPaths().stream().map(x -> "(" + x.stream().map(y -> y.toString()).collect(Collectors.joining(" AND ")) + ")" ).collect(Collectors.joining(" OR ")) + ")");
+			}
+		}
+
+		return result.toStringBuilder(extra);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -187,7 +190,6 @@ public class MQLToSQL
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_externalCatalog, m_entity, m_primaryKey,
-			m_globalFromSet,
 			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART),
 			m_AMIUser,
@@ -216,7 +218,6 @@ public class MQLToSQL
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_externalCatalog, m_entity, m_primaryKey,
-			m_globalFromSet,
 			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
 			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART),
 			m_AMIUser,
@@ -239,7 +240,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(m_globalJoinSet).toStringBuilder();
+		return null; //result.addWherePart(m_globalJoinSet).toStringBuilder(); TODO
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -263,7 +264,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(m_globalJoinSet).toStringBuilder();
+		return null; //result.addWherePart(m_globalJoinSet).toStringBuilder(); TODO
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -398,10 +399,6 @@ public class MQLToSQL
 	{
 		StringBuilder result = new StringBuilder();
 
-		List<Resolution> tmpResolutionList = (mask & IN_ISO_GROUP) != 0 ? resolutionList : new ArrayList<>();
-
-		boolean isolateExpression = (mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0 && (mask & IN_ISO_GROUP) == 0;
-
 		/*-----------------------------------------------------------------*/
 
 		ParseTree child;
@@ -414,11 +411,11 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, tmpResolutionList, isolateExpression ? mask & ~IS_MODIF_STM : mask));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, resolutionList, mask));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
-				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, tmpResolutionList, isolateExpression ? mask & ~IS_MODIF_STM : mask));
+				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -427,20 +424,6 @@ public class MQLToSQL
 				      .append(" ")
 				;
 			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(isolateExpression)
-		{
-			result = new StringBuilder(Helper.isolate(
-				m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
-				m_globalFromSet, m_globalJoinSet,
-				tmpResolutionList,
-				result,
-				(mask & IN_SELECT_PART) != 0,
-				(mask &  IS_MODIF_STM ) != 0
-			));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -575,25 +558,18 @@ public class MQLToSQL
 	{
 		List<Resolution> tmpResolutionList = new ArrayList<>();
 
-		boolean isolateExpression = (mask & IN_INSERT_PART) == 0 && (mask & IN_UPDATE_PART) == 0;
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask & ~IS_MODIF_STM);
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, isolateExpression ? mask | IN_ISO_GROUP & ~IS_MODIF_STM : mask | IN_ISO_GROUP);
-
-		/*-----------------------------------------------------------------*/
-
-		if(isolateExpression)
-		{
-			result = new StringBuilder(Helper.isolate(
-				m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
-				m_globalFromSet, m_globalJoinSet,
-				tmpResolutionList,
-				result,
-				(mask & IN_SELECT_PART) != 0,
-				(mask &  IS_MODIF_STM ) != 0
-			));
-		}
+		result = new StringBuilder(Helper.isolate(
+			m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
+			tmpResolutionList,
+			result,
+			(mask & IS_MODIF_STM) != 0
+		));
 
 		/*-----------------------------------------------------------------*/
 

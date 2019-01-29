@@ -26,7 +26,13 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"SELECT `router_user`.`id`, `router_role`.`role` WHERE `router_user`.`AMIUser` LIKE '%'\"", false);
+		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", true);
+
+		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'"));
+
+		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN']"));
+
+		querier1.rollbackAndRelease();
 
 /* CYCLE
 		Querier querier1 = new SimpleQuerier("test", "admin", true);
