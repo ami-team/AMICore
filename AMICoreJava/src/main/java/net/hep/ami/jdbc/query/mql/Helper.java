@@ -28,7 +28,12 @@ public class Helper
 		/* BUILD JOINS                                                     */
 		/*-----------------------------------------------------------------*/
 
+		QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
+
+		/*-----------------------------------------------------------------*/
+
 		QId qId;
+
 		String tmp;
 
 		Set<String> result = new LinkedHashSet<>();
@@ -47,7 +52,7 @@ public class Helper
 
 			Set<String> joinSet = new LinkedHashSet<>();
 
-			idSet.add(new QId(stdInternalCatalog, stdEntity, stdPrimaryKey).toString(QId.MASK_CATALOG_ENTITY_FIELD));
+			idSet.add(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
 			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 			{
@@ -106,11 +111,11 @@ public class Helper
 			/*-------------------------------------------------------------*/
 
 			result.add(new StringBuilder().append("(")
-			                                     .append(String.join(", ", idSet))
-			                                     .append(") IN (")
-			                                     .append(String.join(" UNION ", joinSet))
-			                                     .append(")")
-			                                     .toString()
+			                              .append(String.join(", ", idSet))
+			                              .append(") IN (")
+			                              .append(String.join(" UNION ", joinSet))
+			                              .append(")")
+			                              .toString()
 			);
 
 			/*-------------------------------------------------------------*/
@@ -125,7 +130,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String isolateExpression(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, boolean isFieldNameOnly) throws Exception
+	public static String isolateExpression(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD JOINS                                                     */
@@ -139,72 +144,69 @@ public class Helper
 
 		for(Resolution resolution: resolutionList) 
 		{
-			String tmpInternalCatalog = resolution.getInternalQId().getCatalog();
-			String tmpEntity          = resolution.getExternalQId().getEntity ();
+			if(resolution.getMaxPathLen() == 0)
+			{
+				continue;
+			}
 
-			if(tmpInternalCatalog.equalsIgnoreCase(stdInternalCatalog) == false
-			   ||
-			   tmpEntity.equalsIgnoreCase(stdEntity) == false
-			 ) {
+			/*-------------------------------------------------------------*/
+
+			Set<QId> tmpFromSet = new LinkedHashSet<>();
+
+			Set<String> tmpJoinSet = new LinkedHashSet<>();
+
+			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
+			{
 				/*---------------------------------------------------------*/
 
-				Set<QId> tmpFromSet = new LinkedHashSet<>();
+				Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();
 
-				Set<String> tmpJoinSet = new LinkedHashSet<>();
-
-				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
+				for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
 				{
-					/*-----------------------------------------------------*/
+					tmpFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null));
 
-					Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();
+					tmpFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null));
 
-					for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
-					{
-						tmpFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null));
-
-						tmpFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null));
-
-						tmpWhereList.add(frgnKey);
-					}
-
-					/*-----------------------------------------------------*/
-
-					if(tmpWhereList.isEmpty() == false)
-					{
-						/*-------------------------------------------------*/
-
-						SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-						                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
-						                                 .addWherePart(expression)
-						                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
-
-						;
-
-						/*-------------------------------------------------*/
-
-						tmpJoinSet.add(
-							new StringBuilder().append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-							                   .append(" IN (")
-							                   .append(query)
-							                   .append(")")
-							                   .toString()
-						);
-
-						/*-------------------------------------------------*/
-					}
-
-					/*-----------------------------------------------------*/
+					tmpWhereList.add(frgnKey);
 				}
 
 				/*---------------------------------------------------------*/
 
-				if(tmpJoinSet.isEmpty() == false)
+				if(tmpWhereList.isEmpty() == false)
 				{
-					localJoinList.add("(" + String.join(" OR ", tmpJoinSet) + ")");
+					/*-----------------------------------------------------*/
+
+					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+					                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
+					                                 .addWherePart(expression)
+					                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
+
+					;
+
+					/*-----------------------------------------------------*/
+
+					tmpJoinSet.add(
+						new StringBuilder().append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+						                   .append(" IN (")
+						                   .append(query)
+						                   .append(")")
+						                   .toString()
+					);
+
+					/*-----------------------------------------------------*/
 				}
 
 				/*---------------------------------------------------------*/
 			}
+
+			/*-------------------------------------------------------------*/
+
+			if(tmpJoinSet.isEmpty() == false)
+			{
+				localJoinList.add("(" + String.join(" OR ", tmpJoinSet) + ")");
+			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/

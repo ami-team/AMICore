@@ -558,7 +558,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		result = new StringBuilder(Helper.isolateExpression(
-			m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
+			m_internalCatalog, m_entity, m_primaryKey,
 			tmpResolutionList,
 			result,
 			(mask & IS_MODIF_STM) != 0
