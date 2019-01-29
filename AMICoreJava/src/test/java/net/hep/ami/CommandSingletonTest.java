@@ -30,7 +30,11 @@ public class CommandSingletonTest
 
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'"));
 
-		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN']"));
+		System.out.println(querier1.mqlToSQL("router_role", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'"));
+
+		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE (`router_role`.`role` = 'AMI_ADMIN') AND (`router_role`.`role` = 'AMI_USER')"));
+
+		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN'] AND [`router_role`.`role` = 'AMI_USER']"));
 
 		querier1.rollbackAndRelease();
 

@@ -35,7 +35,7 @@ public class SelectObj
 	{
 		if(selectPart != null)
 		{
-			m_fromSet.addAll(selectPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+			m_selectList.addAll(selectPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
 		}
 
 		return this;

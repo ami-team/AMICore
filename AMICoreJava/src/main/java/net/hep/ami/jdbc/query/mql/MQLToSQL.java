@@ -165,17 +165,10 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		for(Resolution resolution: m_globalResolutionList)
-		{
-			result.addFromPart(resolution.getInternalQId().toString(QId.MASK_CATALOG_ENTITY));
-
-			if(resolution.getMaxPathLen() > 0)
-			{
-				result.addWherePart("(" + resolution.getPaths().stream().map(x -> "(" + x.stream().map(y -> y.toString()).collect(Collectors.joining(" AND ")) + ")" ).collect(Collectors.joining(" OR ")) + ")");
-			}
-		}
-
-		return result.toStringBuilder(extra);
+		return result.addFromPart(m_globalResolutionList.stream().map(x -> x.getInternalQId().toString(QId.MASK_CATALOG_ENTITY)).collect(Collectors.toList()))
+		             .addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey,m_globalResolutionList, false))
+		             .toStringBuilder(extra)
+		;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -564,7 +557,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result = new StringBuilder(Helper.isolate(
+		result = new StringBuilder(Helper.isolateExpression(
 			m_externalCatalog, m_internalCatalog, m_entity, m_primaryKey,
 			tmpResolutionList,
 			result,

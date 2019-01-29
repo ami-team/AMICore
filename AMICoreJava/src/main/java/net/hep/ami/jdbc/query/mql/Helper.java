@@ -16,7 +16,116 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String isolate(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, boolean isFieldNameOnly) throws Exception
+	public static String isolatePath(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* BUILD GLOBAL FROM SET                                           */
+		/*-----------------------------------------------------------------*/
+
+		Set<String> globalFromSet = resolutionList.stream().map(x -> x.getInternalQId().toString(QId.MASK_CATALOG_ENTITY)).collect(Collectors.toSet());
+
+		/*-----------------------------------------------------------------*/
+		/* BUILD JOINS                                                     */
+		/*-----------------------------------------------------------------*/
+
+		QId qId;
+		String tmp;
+
+		Set<String> localJoinList = new LinkedHashSet<>();
+
+		for(Resolution resolution: resolutionList) 
+		{
+			if(resolution.getMaxPathLen() == 0)
+			{
+				continue;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			Set<String> fkSet = new LinkedHashSet<>();
+			Set<String> idSet = new LinkedHashSet<>();
+
+			Set<String> joinSet = new LinkedHashSet<>();
+
+			idSet.add(new QId(stdInternalCatalog, stdEntity, stdPrimaryKey).toString(QId.MASK_CATALOG_ENTITY_FIELD));
+
+			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
+			{
+				/*---------------------------------------------------------*/
+
+				Set<String> tmpFromSet = new LinkedHashSet<>();
+
+				Set<String> tmpWhereSet = new LinkedHashSet<>();
+
+				for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
+				{
+					/*-----------------------------------------------------*/
+
+					qId = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
+
+					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
+
+					if(globalFromSet.contains(tmp)) {
+						fkSet.add(qId.toString(QId.MASK_CATALOG_ENTITY_FIELD));
+					}
+					else {
+						tmpFromSet.add(tmp);
+					}
+
+					/*-----------------------------------------------------*/
+
+					qId = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
+
+					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
+
+					if(globalFromSet.contains(tmp)) {
+						idSet.add(qId.toString(QId.MASK_CATALOG_ENTITY_FIELD));
+					}
+					else {
+						tmpFromSet.add(tmp);
+					}
+
+					/*-----------------------------------------------------*/
+
+					tmpWhereSet.add(frgnKey.toString());
+
+					/*-----------------------------------------------------*/
+				}
+
+				/*---------------------------------------------------------*/
+
+				joinSet.add(new SelectObj().addSelectPart(idSet)
+				                           .addFromPart(tmpFromSet)
+				                           .addWherePart(tmpWhereSet)
+				                           .toString()
+				);
+
+				/*---------------------------------------------------------*/
+			}
+
+			/*-------------------------------------------------------------*/
+
+			localJoinList.add(new StringBuilder().append("(")
+			                                     .append(String.join(", ", idSet))
+			                                     .append(") IN (")
+			                                     .append(String.join(" UNION ", joinSet))
+			                                     .append(")")
+			                                     .toString()
+			);
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return String.join(" AND ", localJoinList);
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String isolateExpression(String stdExternalCatalog, String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD JOINS                                                     */
@@ -37,8 +146,6 @@ public class Helper
 			   ||
 			   tmpEntity.equalsIgnoreCase(stdEntity) == false
 			 ) {
-				/*---------------------------------------------------------*/
-
 				/*---------------------------------------------------------*/
 
 				Set<QId> tmpFromSet = new LinkedHashSet<>();
