@@ -52,7 +52,7 @@ public class Helper
 
 			Set<String> joinSet = new LinkedHashSet<>();
 
-			idSet.add(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD));
+			idSet.add(stdPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
 
 			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 			{
@@ -71,7 +71,7 @@ public class Helper
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
 					if(globalFromSet.contains(tmp)) {
-						fkSet.add(qId.toString(QId.MASK_CATALOG_ENTITY_FIELD));
+						fkSet.add(qId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
 					}
 					else {
 						tmpFromSet.add(tmp);
@@ -84,7 +84,7 @@ public class Helper
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
 					if(globalFromSet.contains(tmp)) {
-						idSet.add(qId.toString(QId.MASK_CATALOG_ENTITY_FIELD));
+						idSet.add(qId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
 					}
 					else {
 						tmpFromSet.add(tmp);
@@ -136,7 +136,7 @@ public class Helper
 		/* BUILD JOINS                                                     */
 		/*-----------------------------------------------------------------*/
 
-		QId mainPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
+		QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
 
 		/*-----------------------------------------------------------------*/
 
@@ -176,7 +176,7 @@ public class Helper
 				{
 					/*-----------------------------------------------------*/
 
-					SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+					SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 					                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
 					                                 .addWherePart(expression)
 					                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
@@ -186,7 +186,7 @@ public class Helper
 					/*-----------------------------------------------------*/
 
 					tmpJoinSet.add(
-						new StringBuilder().append(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+						new StringBuilder().append(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 						                   .append(" IN (")
 						                   .append(query)
 						                   .append(")")
@@ -217,14 +217,14 @@ public class Helper
 		{
 			/*-------------------------------------------------------------*/
 
-			SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-			                                 .addFromPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
+			SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+			                                 .addFromPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
 			                                 .addWherePart(localJoinList)
 			;
 
 			/*-------------------------------------------------------------*/
 
-			expression = new StringBuilder().append(mainPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
+			expression = new StringBuilder().append(stdPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
 			                                .append(" IN (")
 			                                .append(query)
 			                                .append(")")
