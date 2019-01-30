@@ -151,7 +151,7 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			Set<QId> tmpFromSet = new LinkedHashSet<>();
+			Set<String> tmpFromSet = new LinkedHashSet<>();
 
 			Set<String> tmpJoinSet = new LinkedHashSet<>();
 
@@ -159,42 +159,35 @@ public class Helper
 			{
 				/*---------------------------------------------------------*/
 
-				Set<SchemaSingleton.FrgnKey> tmpWhereList = new LinkedHashSet<>();
+				Set<String> tmpWhereList = new LinkedHashSet<>();
 
 				for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
 				{
-					tmpFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null));
+					tmpFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
-					tmpFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null));
+					tmpFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
-					tmpWhereList.add(frgnKey);
+					tmpWhereList.add(frgnKey.toString());
 				}
 
 				/*---------------------------------------------------------*/
 
-				if(tmpWhereList.isEmpty() == false)
-				{
-					/*-----------------------------------------------------*/
+				SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+				                                 .addFromPart(tmpFromSet)
+				                                 .addWherePart(expression)
+				                                 .addWherePart(tmpWhereList)
 
-					SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-					                                 .addFromPart(tmpFromSet.stream().map(x -> x.toString()).collect(Collectors.toList()))
-					                                 .addWherePart(expression)
-					                                 .addWherePart(tmpWhereList.stream().map(x -> x.toString()).collect(Collectors.toList()))
+				;
 
-					;
+				/*---------------------------------------------------------*/
 
-					/*-----------------------------------------------------*/
-
-					tmpJoinSet.add(
-						new StringBuilder().append(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-						                   .append(" IN (")
-						                   .append(query)
-						                   .append(")")
-						                   .toString()
-					);
-
-					/*-----------------------------------------------------*/
-				}
+				tmpJoinSet.add(
+					new StringBuilder().append(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+					                   .append(" IN (")
+					                   .append(query)
+					                   .append(")")
+					                   .toString()
+				);
 
 				/*---------------------------------------------------------*/
 			}
@@ -244,7 +237,35 @@ public class Helper
 
 	public static Tuple2<List<String>, List<String>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
-		return new Tuple2<List<String>, List<String>>(null, null);
+		final int nb1 = resolutionList.size();
+		final int nb2 = expressionList.size();
+
+		if(nb1 != nb2)
+		{
+			throw new Exception("internal error");
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* GROUP FIELDS                                                    */
+		/*-----------------------------------------------------------------*/
+
+
+
+		/*-----------------------------------------------------------------*/
+		/* ISOLATE EXPRESSIONS                                             */
+		/*-----------------------------------------------------------------*/
+
+		List<String> X = new ArrayList<>();
+		List<String> Y = new ArrayList<>();
+
+
+
+
+		/*-----------------------------------------------------------------*/
+
+		return new Tuple2<List<String>, List<String>>(X, Y);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
