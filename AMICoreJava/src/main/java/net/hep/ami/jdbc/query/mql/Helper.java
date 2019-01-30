@@ -140,93 +140,28 @@ public class Helper
 	public static String isolateExpression(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* BUILD JOINS                                                     */
-		/*-----------------------------------------------------------------*/
 
-		QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
-
-		/*-----------------------------------------------------------------*/
-
-		Set<String> localJoinList = new LinkedHashSet<>();
-
-		for(Resolution resolution: resolutionList) 
-		{
-			if(resolution.getMaxPathLen() == 0)
-			{
-				continue;
-			}
-
-			/*-------------------------------------------------------------*/
-
-			Set<String> tmpFromSet = new LinkedHashSet<>();
-
-			Set<String> tmpJoinSet = new LinkedHashSet<>();
-
-			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
-			{
-				/*---------------------------------------------------------*/
-
-				int cnt = 0;
-
-				Set<String> tmpWhereList = new LinkedHashSet<>();
-
-				for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
-				{
-					if(cnt++ < skip)
-					{
-						continue;
-					}
-
-					tmpFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY_FIELD));
-
-					tmpFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY_FIELD));
-
-					tmpWhereList.add(frgnKey.toString());
-				}
-
-				/*---------------------------------------------------------*/
-
-				SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-				                                 .addFromPart(tmpFromSet)
-				                                 .addWherePart(expression)
-				                                 .addWherePart(tmpWhereList)
-
-				;
-
-				/*---------------------------------------------------------*/
-
-				tmpJoinSet.add(
-					new StringBuilder().append(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-					                   .append(" IN (")
-					                   .append(query)
-					                   .append(")")
-					                   .toString()
-				);
-
-				/*---------------------------------------------------------*/
-			}
-
-			/*-------------------------------------------------------------*/
-
-			if(tmpJoinSet.isEmpty() == false)
-			{
-				localJoinList.add("(" + String.join(" OR ", tmpJoinSet) + ")");
-			}
-
-			/*-------------------------------------------------------------*/
-		}
+		Set<String> hh = isolatePath(
+			stdInternalCatalog, stdEntity, stdPrimaryKey,
+			resolutionList,
+			isFieldNameOnly
+		);
 
 		/*-----------------------------------------------------------------*/
-		/* ISOLATE EXPRESSION                                              */
-		/*-----------------------------------------------------------------*/
 
-		if(localJoinList.isEmpty() == false)
+		if(hh.isEmpty() == false)
 		{
 			/*-------------------------------------------------------------*/
+
+			QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
+
+			/*-------------------------------------------------------------*/
+
 
 			SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 			                                 .addFromPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
-			                                 .addWherePart(localJoinList)
+			                                 .addWherePart(expression)
+			                                 .addWherePart(hh)
 			;
 
 			/*-------------------------------------------------------------*/

@@ -28,6 +28,15 @@ public class SimpleQuerier implements Querier
 
 	/*---------------------------------------------------------------------*/
 
+	public SimpleQuerier(String catalog) throws Exception
+	{
+		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
+
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, true);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public SimpleQuerier(String catalog, String AMIUser, boolean isAdmin) throws Exception
 	{
 		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, isAdmin);
