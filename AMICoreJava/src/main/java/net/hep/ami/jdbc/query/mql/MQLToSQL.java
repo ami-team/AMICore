@@ -17,11 +17,8 @@ public class MQLToSQL
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final int IN_SELECT_PART = (1 << 0);
-	private static final int IN_INSERT_PART = (1 << 1);
-	private static final int IN_UPDATE_PART = (1 << 2);
-	private static final int IN_FUNCTION = (1 << 3);
-	private static final int IS_MODIF_STM = (1 << 4);
+	private static final int IN_FUNCTION = (1 << 0);
+	private static final int IS_MODIF_STM = (1 << 1);
 
 	/*---------------------------------------------------------------------*/
 
@@ -129,7 +126,7 @@ public class MQLToSQL
 		{
 			result.setDistinct(context.m_distinct != null);
 
-			result.addSelectPart(visitColumnList(context.m_columns, m_globalResolutionList, IN_SELECT_PART));
+			result.addSelectPart(visitColumnList(context.m_columns, m_globalResolutionList, 0));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -166,7 +163,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return result.addFromPart(m_globalResolutionList.stream().map(x -> x.getInternalQId().toString(QId.MASK_CATALOG_ENTITY)).collect(Collectors.toList()))
-		             .addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey,m_globalResolutionList, false))
+		             .addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, false))
 		             .toStringBuilder(extra)
 		;
 
@@ -183,8 +180,8 @@ public class MQLToSQL
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_externalCatalog, m_entity, m_primaryKey,
-			visitQIdTuple       (context.m_qIds       , null, IN_INSERT_PART),
-			visitExpressionTuple(context.m_expressions, null, IN_INSERT_PART),
+			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
+			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
 			m_AMIUser,
 			m_isAdmin,
 			true
@@ -211,8 +208,8 @@ public class MQLToSQL
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_externalCatalog, m_entity, m_primaryKey,
-			visitQIdTuple       (context.m_qIds       , null, IN_UPDATE_PART),
-			visitExpressionTuple(context.m_expressions, null, IN_UPDATE_PART),
+			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
+			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
 			m_AMIUser,
 			m_isAdmin,
 			false
@@ -233,7 +230,9 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return null; //result.addWherePart(m_globalJoinSet).toStringBuilder(); TODO
+		return result.addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
+		             .toStringBuilder()
+		;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -257,7 +256,9 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return null; //result.addWherePart(m_globalJoinSet).toStringBuilder(); TODO
+		return result.addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
+		             .toStringBuilder()
+		;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -561,6 +562,7 @@ public class MQLToSQL
 			m_internalCatalog, m_entity, m_primaryKey,
 			tmpResolutionList,
 			result,
+			0,
 			(mask & IS_MODIF_STM) != 0
 		));
 

@@ -7,6 +7,7 @@ import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
 
 public class Helper
 {
@@ -130,7 +131,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String isolateExpression(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, boolean isFieldNameOnly) throws Exception
+	public static String isolateExpression(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD JOINS                                                     */
@@ -159,10 +160,17 @@ public class Helper
 			{
 				/*---------------------------------------------------------*/
 
+				int cnt = 0;
+
 				Set<String> tmpWhereList = new LinkedHashSet<>();
 
 				for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
 				{
+					if(cnt++ < skip)
+					{
+						continue;
+					}
+
 					tmpFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
 					tmpFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY_FIELD));
@@ -260,6 +268,28 @@ public class Helper
 
 
 
+		/*-----------------------------------------------------------------*/
+		/* FILL RESERVED FIELDS                                            */
+		/*-----------------------------------------------------------------*/
+
+		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
+		{
+			if(tmp.created && insert) {
+				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");
+			}
+
+			if(tmp.createdBy && insert) {
+				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
+			}
+
+			if(tmp.modified) {
+				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");
+			}
+
+			if(tmp.modifiedBy) {
+				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
 
