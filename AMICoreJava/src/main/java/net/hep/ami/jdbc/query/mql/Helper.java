@@ -48,7 +48,8 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			Set<String> fkSet = new LinkedHashSet<>();
+			int cnt = 0;
+
 			Set<String> idSet = new LinkedHashSet<>();
 
 			Set<String> joinSet = new LinkedHashSet<>();
@@ -71,10 +72,7 @@ public class Helper
 
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
-					if(globalFromSet.contains(tmp)) {
-						fkSet.add(qId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
-					}
-					else {
+					if(globalFromSet.contains(tmp) == false) {
 						tmpFromSet.add(tmp);
 					}
 
@@ -84,11 +82,15 @@ public class Helper
 
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
-					if(globalFromSet.contains(tmp)) {
-						idSet.add(qId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
-					}
-					else {
+					if(globalFromSet.contains(tmp) == false) {
 						tmpFromSet.add(tmp);
+					}
+
+					/*--*/ else /*-----------------------------------------*/
+
+					if(idSet.add(qId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD)) == false && cnt > 0)
+					{
+						throw new Exception("to many paths for " + resolution.getExternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD));
 					}
 
 					/*-----------------------------------------------------*/
@@ -105,6 +107,10 @@ public class Helper
 				                           .addWherePart(tmpWhereSet)
 				                           .toString()
 				);
+
+				/*---------------------------------------------------------*/
+
+				cnt++;
 
 				/*---------------------------------------------------------*/
 			}
