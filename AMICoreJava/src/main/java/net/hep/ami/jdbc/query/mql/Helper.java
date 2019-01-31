@@ -51,7 +51,7 @@ public class Helper
 
 		String tmp;
 
-		SelectObj selectObj;
+		SelectObj query;
 
 		Set<String> result = new LinkedHashSet<>();
 
@@ -138,15 +138,15 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				selectObj = new SelectObj().addSelectPart(tmpIdSet)
-				                           .addFromPart(tmpFromSet)
-				                           .addWherePart(tmpWhereSet)
+				query = new SelectObj().addSelectPart(tmpIdSet)
+				                       .addFromPart(tmpFromSet)
+				                       .addWherePart(tmpWhereSet)
 				;
 
 				whereSet.add(new StringBuilder().append("(")
-				                                .append(String.join(", ", selectObj.getSelectPart()))
+				                                .append(String.join(", ", query.getSelectPart()))
 				                                .append(") IN (")
-				                                .append(selectObj)
+				                                .append(query)
 				                                .append(")")
 				                                .toString()
 				);
@@ -156,15 +156,15 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			selectObj = new SelectObj().addSelectPart(idSet)
-			                           .addFromPart(fromSet)
-			                           .addWherePart(String.join(" OR ", whereSet))
+			query = new SelectObj().addSelectPart(idSet)
+			                       .addFromPart(fromSet)
+			                       .addWherePart(String.join(" OR ", whereSet))
 			;
 
 			result.add(new StringBuilder().append("(")
 			                              .append(String.join(", ", idSet))
 			                              .append(") IN (")
-			                              .append(selectObj)
+			                              .append(query)
 			                              .append(")")
 			                              .toString()
 			);
@@ -183,9 +183,6 @@ public class Helper
 
 	public static String getIsolatedExpression(QId mainPrimarykeyQId, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
 	{
-		System.out.println("====================");
-
-		System.out.println(expression);
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
 		/*-----------------------------------------------------------------*/
