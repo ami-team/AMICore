@@ -37,6 +37,19 @@ public class Helper
 
 	public static Set<String> getIsolatedPath(QId stdPrimaryKeyQId, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
+		Set<String> result = new LinkedHashSet<>();
+
+		final int nb = resolutionList.size();
+
+		/**/ if(nb == 0)
+		{
+			return result;
+		}
+		else if(nb == 1)
+		{
+
+		}
+
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
 		/*-----------------------------------------------------------------*/
@@ -51,9 +64,7 @@ public class Helper
 
 		String tmp;
 
-		SelectObj query;
-
-		Set<String> result = new LinkedHashSet<>();
+		String query;
 
 		for(Resolution resolution: resolutionList) 
 		{
@@ -64,9 +75,14 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
+			int cnt = 0;
+
+			boolean q = true;
+
 			Set<String> idSet = new LinkedHashSet<>();
 
-			Set<String> whereSet = new LinkedHashSet<>();
+			Set<String> whereSet1 = new LinkedHashSet<>();
+			Set<String> whereSet2 = new LinkedHashSet<>();
 
 			idSet.add(stdPrimaryKeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
 
@@ -97,7 +113,11 @@ public class Helper
 						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.fkExternalCatalog, frgnKey.fkTable), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
-						idSet.add(tmp);
+
+						if(idSet.add(tmp) && cnt > 0)
+						{
+							q = false;
+						}
 					}
 
 					/*-----------------------------------------------------*/
@@ -115,7 +135,11 @@ public class Helper
 						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.pkExternalCatalog, frgnKey.pkTable), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
-						idSet.add(tmp);
+
+						if(idSet.add(tmp) && cnt > 0)
+						{
+							q = false;
+						}
 					}
 
 					/*-----------------------------------------------------*/
@@ -137,25 +161,44 @@ public class Helper
 				query = new SelectObj().addSelectPart(tmpIdSet)
 				                       .addFromPart(tmpFromSet)
 				                       .addWherePart(tmpWhereSet)
+				                       .toString()
 				;
 
-				whereSet.add(new StringBuilder().append("(")
-				                                .append(String.join(", ", query.getSelectPart()))
-				                                .append(") IN (")
-				                                .append(query)
-				                                .append(")")
-				                                .toString()
+				/*---------------------------------------------------------*/
+
+				whereSet1.add(query);
+
+				whereSet2.add(new StringBuilder().append("(")
+				                                 .append(String.join(", ", tmpIdSet))
+				                                 .append(") IN (")
+				                                 .append(query)
+				                                 .append(")")
+				                                 .toString()
 				);
+
+				/*---------------------------------------------------------*/
+
+				cnt++;
 
 				/*---------------------------------------------------------*/
 			}
 
 			/*-------------------------------------------------------------*/
 
-			query = new SelectObj().addSelectPart(idSet)
-			                       .addFromPart("DUAL")
-			                       .addWherePart(String.join(" OR ", whereSet))
-			;
+			if(q)
+			{
+				query = String.join(" UNION ", whereSet1);
+			}
+			else
+			{
+				query = new SelectObj().addSelectPart(idSet)
+				                       .addFromPart("DUAL")
+				                       .addWherePart(String.join(" OR ", whereSet2))
+				                       .toString()
+				;
+			}
+
+			/*-------------------------------------------------------------*/
 
 			result.add(new StringBuilder().append("(")
 			                              .append(String.join(", ", idSet))
