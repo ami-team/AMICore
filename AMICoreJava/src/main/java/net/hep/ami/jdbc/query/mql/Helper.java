@@ -163,7 +163,7 @@ public class Helper
 		Set<String> whereSet = getIsolatedPath(
 			stdInternalCatalog, stdEntity, stdPrimaryKey,
 			resolutionList,
-			isFieldNameOnly
+			false
 		);
 
 		/*-----------------------------------------------------------------*/
