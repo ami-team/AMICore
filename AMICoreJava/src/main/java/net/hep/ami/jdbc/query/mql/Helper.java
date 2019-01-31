@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
-import java.util.stream.*;
 
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
@@ -17,20 +16,40 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
+	public static Set<String> getFromSetFromResolutionList(QId primarykey, List<Resolution> resolutionList)
+	{
+		Set<String> result = new LinkedHashSet<>();
+
+		/*-----------------------------------------------------------------*/
+
+		result.add(primarykey.toString(QId.MASK_CATALOG_ENTITY));
+
+		for(Resolution resolution: resolutionList)
+		{
+			result.add(resolution.getInternalQId().toString(QId.MASK_CATALOG_ENTITY));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Set<String> isolatePath(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
 		/*-----------------------------------------------------------------*/
 
-		Set<String> globalFromSet = resolutionList.stream().map(x -> x.getInternalQId().toString(QId.MASK_CATALOG_ENTITY)).collect(Collectors.toSet());
+		QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
+
+		/*-----------------------------------------------------------------*/
+
+		Set<String> globalFromSet = getFromSetFromResolutionList(stdPrimarykeyQId, resolutionList);
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD JOINS                                                     */
-		/*-----------------------------------------------------------------*/
-
-		QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
-
 		/*-----------------------------------------------------------------*/
 
 		QId qId;
@@ -141,7 +160,7 @@ public class Helper
 	{
 		/*-----------------------------------------------------------------*/
 
-		Set<String> hh = isolatePath(
+		Set<String> whereSet = isolatePath(
 			stdInternalCatalog, stdEntity, stdPrimaryKey,
 			resolutionList,
 			isFieldNameOnly
@@ -149,7 +168,7 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		if(hh.isEmpty() == false)
+		if(whereSet.isEmpty() == false)
 		{
 			/*-------------------------------------------------------------*/
 
@@ -157,11 +176,14 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
+			Set<String> fromSet = getFromSetFromResolutionList(stdPrimarykeyQId, resolutionList);
+
+			/*-------------------------------------------------------------*/
 
 			SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-			                                 .addFromPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY))
+			                                 .addFromPart(fromSet)
 			                                 .addWherePart(expression)
-			                                 .addWherePart(hh)
+			                                 .addWherePart(whereSet)
 			;
 
 			/*-------------------------------------------------------------*/
@@ -172,6 +194,9 @@ public class Helper
 			                                .append(")")
 			;
 
+			System.out.println("-------------------");
+			System.out.println(expression);
+			System.out.println("-------------------");
 			/*-------------------------------------------------------------*/
 		}
 

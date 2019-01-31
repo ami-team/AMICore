@@ -162,7 +162,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addFromPart(m_globalResolutionList.stream().map(x -> x.getInternalQId().toString(QId.MASK_CATALOG_ENTITY)).collect(Collectors.toList()))
+		return result.addFromPart(Helper.getFromSetFromResolutionList(new QId(m_internalCatalog, m_entity, m_primaryKey), m_globalResolutionList))
 		             .addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, false))
 		             .toStringBuilder(extra)
 		;
