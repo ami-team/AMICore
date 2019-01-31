@@ -37,7 +37,7 @@ public class SchemaSingleton
 
 		/**/
 
-		public int rank = 0;
+		public int rank = 999;
 		public boolean hidden = false;
 		public boolean adminOnly = false;
 		public boolean crypted = false;
