@@ -26,7 +26,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", true);
+		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
 
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT *"));
 

@@ -6,7 +6,6 @@ import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.*;
 
 public class Helper
 {
@@ -16,13 +15,13 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getFromSetFromResolutionList(QId primarykey, List<Resolution> resolutionList)
+	public static Set<String> getFromSetFromResolutionList(QId mainEntityQId, List<Resolution> resolutionList)
 	{
 		Set<String> result = new LinkedHashSet<>();
 
 		/*-----------------------------------------------------------------*/
 
-		result.add(primarykey.toString(QId.MASK_CATALOG_ENTITY));
+		result.add(mainEntityQId.toString(QId.MASK_CATALOG_ENTITY));
 
 		for(Resolution resolution: resolutionList)
 		{
@@ -36,17 +35,13 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getIsolatedPath(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
+	public static Set<String> getIsolatedPath(QId stdPrimaryKeyQId, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
 		/*-----------------------------------------------------------------*/
 
-		QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
-
-		/*-----------------------------------------------------------------*/
-
-		Set<String> globalFromSet = getFromSetFromResolutionList(stdPrimarykeyQId, resolutionList);
+		Set<String> globalFromSet = getFromSetFromResolutionList(stdPrimaryKeyQId, resolutionList);
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD JOINS                                                     */
@@ -73,7 +68,7 @@ public class Helper
 
 			Set<String> joinSet = new LinkedHashSet<>();
 
-			idSet.add(stdPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
+			idSet.add(stdPrimaryKeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
 
 			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 			{
@@ -156,12 +151,12 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String isolateExpression(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
+	public static String isolateExpression(QId mainPrimarykeyQId, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
 		Set<String> whereSet = getIsolatedPath(
-			stdInternalCatalog, stdEntity, stdPrimaryKey,
+			mainPrimarykeyQId,
 			resolutionList,
 			false
 		);
@@ -172,15 +167,11 @@ public class Helper
 		{
 			/*-------------------------------------------------------------*/
 
-			QId stdPrimarykeyQId = new QId(stdInternalCatalog, stdEntity, stdPrimaryKey);
+			Set<String> fromSet = getFromSetFromResolutionList(mainPrimarykeyQId, resolutionList);
 
 			/*-------------------------------------------------------------*/
 
-			Set<String> fromSet = getFromSetFromResolutionList(stdPrimarykeyQId, resolutionList);
-
-			/*-------------------------------------------------------------*/
-
-			SelectObj query = new SelectObj().addSelectPart(stdPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+			SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 			                                 .addFromPart(fromSet)
 			                                 .addWherePart(expression)
 			                                 .addWherePart(whereSet)
@@ -188,7 +179,7 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			expression = new StringBuilder().append(stdPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
+			expression = new StringBuilder().append(mainPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
 			                                .append(" IN (")
 			                                .append(query)
 			                                .append(")")
@@ -206,7 +197,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<String>, List<String>> resolve(String stdExternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
+	public static Tuple2<List<String>, List<String>> resolve(QId stdPrimaryKeyQId, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -234,7 +225,7 @@ public class Helper
 		/*-----------------------------------------------------------------*/
 		/* FILL RESERVED FIELDS                                            */
 		/*-----------------------------------------------------------------*/
-
+/*
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
 		{
 			if(tmp.created && insert) {
@@ -253,7 +244,7 @@ public class Helper
 				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
 			}
 		}
-
+*/
 		/*-----------------------------------------------------------------*/
 
 		return new Tuple2<List<String>, List<String>>(X, Y);

@@ -23,9 +23,9 @@ public class MQLToSQL
 	/*---------------------------------------------------------------------*/
 
 	private final String m_externalCatalog;
-	private final String m_internalCatalog;
 	private final String m_entity;
-	private final String m_primaryKey;
+
+	private final QId m_primaryKeyQId;
 
 	/*---------------------------------------------------------------------*/
 
@@ -38,16 +38,14 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private MQLToSQL(String externalCatalog, String internalCatalog, String entity, String AMIUser, boolean isAdmin) throws Exception
+	private MQLToSQL(String externalCatalog, String internalCatalog /* BERK */, String entity, String AMIUser, boolean isAdmin) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column primaryKey = SchemaSingleton.getPrimaryKey(externalCatalog, entity);
+		m_primaryKeyQId = new QId(SchemaSingleton.getPrimaryKey(externalCatalog, entity), true);
 
-		m_externalCatalog = primaryKey.externalCatalog;
-		m_internalCatalog = primaryKey.internalCatalog;
-		m_entity = primaryKey.table;
-		m_primaryKey = primaryKey.name;
+		m_externalCatalog = externalCatalog;
+		m_entity = entity;
 
 		/*-----------------------------------------------------------------*/
 
@@ -162,8 +160,8 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addFromPart(Helper.getFromSetFromResolutionList(new QId(m_internalCatalog, m_entity, m_primaryKey), m_globalResolutionList))
-		             .addWherePart(Helper.getIsolatedPath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, false))
+		return result.addFromPart(Helper.getFromSetFromResolutionList(m_primaryKeyQId, m_globalResolutionList))
+		             .addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, false))
 		             .toStringBuilder(extra)
 		;
 
@@ -179,7 +177,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
-			m_externalCatalog, m_entity, m_primaryKey,
+			m_primaryKeyQId,
 			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
 			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
 			m_AMIUser,
@@ -189,7 +187,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.addInsertPart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_ENTITY))
+		result.addInsertPart(m_primaryKeyQId.toStringBuilder(QId.MASK_ENTITY))
 		      .addFieldValuePart(tuple.x, tuple.y)
 		;
 
@@ -207,7 +205,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
-			m_externalCatalog, m_entity, m_primaryKey,
+			m_primaryKeyQId,
 			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
 			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
 			m_AMIUser,
@@ -217,7 +215,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.addUpdatePart(new QId(m_internalCatalog, m_entity, null).toStringBuilder(QId.MASK_ENTITY))
+		result.addUpdatePart(m_primaryKeyQId.toStringBuilder(QId.MASK_ENTITY))
 		      .addFieldValuePart(tuple.x, tuple.y)
 		;
 
@@ -230,7 +228,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true))
 		             .toStringBuilder()
 		;
 
@@ -245,7 +243,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result.addDeletePart(new QId(m_internalCatalog, m_entity, null).toString(QId.MASK_ENTITY));
+		result.addDeletePart(m_primaryKeyQId.toString(QId.MASK_ENTITY));
 
 		/*-----------------------------------------------------------------*/
 
@@ -256,7 +254,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true))
 		             .toStringBuilder()
 		;
 
@@ -559,7 +557,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		result = new StringBuilder(Helper.isolateExpression(
-			m_internalCatalog, m_entity, m_primaryKey,
+			m_primaryKeyQId,
 			tmpResolutionList,
 			result,
 			0,
