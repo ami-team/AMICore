@@ -556,7 +556,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		result = new StringBuilder(Helper.isolateExpression(
+		result = new StringBuilder(Helper.getIsolatedExpression(
 			m_primaryKeyQId,
 			tmpResolutionList,
 			result,

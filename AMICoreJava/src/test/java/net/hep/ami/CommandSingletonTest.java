@@ -27,7 +27,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.info("Hello World!");
 
 		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
-
+/*
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT *"));
 
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'"));
@@ -37,8 +37,8 @@ public class CommandSingletonTest
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE (`router_role`.`role` = 'AMI_ADMIN') AND (`router_role`.`role` = 'AMI_USER')"));
 
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_role`.`role` WHERE `router_role`.`role` = 'AMI_USER'"));
-
-		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN'] AND [`router_role`.`role` = 'AMI_USER']"));
+*/
+		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `self`.`router_user_role2`.`userFK` WHERE `router_role`.`role` = 'AMI_ADMIN' AND [`router_role`.`role` = 'AMI_USER']"));
 
 		querier1.rollbackAndRelease();
 

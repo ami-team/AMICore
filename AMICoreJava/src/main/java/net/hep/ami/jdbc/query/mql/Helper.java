@@ -44,7 +44,7 @@ public class Helper
 		Set<String> globalFromSet = getFromSetFromResolutionList(stdPrimaryKeyQId, resolutionList);
 
 		/*-----------------------------------------------------------------*/
-		/* BUILD JOINS                                                     */
+		/* ISOLATE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		QId qId;
@@ -62,8 +62,6 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			int cnt = 0;
-
 			Set<String> idSet = new LinkedHashSet<>();
 
 			Set<String> joinSet = new LinkedHashSet<>();
@@ -73,6 +71,8 @@ public class Helper
 			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 			{
 				/*---------------------------------------------------------*/
+
+				Set<String> tmpIdSet = new LinkedHashSet<>();
 
 				Set<String> tmpFromSet = new LinkedHashSet<>();
 
@@ -102,9 +102,11 @@ public class Helper
 
 					/*--*/ else /*-----------------------------------------*/
 
-					if(idSet.add(qId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD)) == false && cnt > 0)
 					{
-						throw new Exception("to many paths for " + resolution.getExternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD));
+						tmp = qId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
+
+						tmpIdSet.add(tmp);
+						idSet.add(tmp);
 					}
 
 					/*-----------------------------------------------------*/
@@ -116,15 +118,18 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				joinSet.add(new SelectObj().addSelectPart(idSet)
+				if(tmpFromSet.isEmpty())
+				{
+					tmpFromSet.add("DUAL");
+				}
+
+				/*---------------------------------------------------------*/
+
+				joinSet.add(new SelectObj().addSelectPart(tmpIdSet)
 				                           .addFromPart(tmpFromSet)
 				                           .addWherePart(tmpWhereSet)
 				                           .toString()
 				);
-
-				/*---------------------------------------------------------*/
-
-				cnt++;
 
 				/*---------------------------------------------------------*/
 			}
@@ -151,8 +156,16 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String isolateExpression(QId mainPrimarykeyQId, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
+	public static String getIsolatedExpression(QId mainPrimarykeyQId, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+		/* BUILD GLOBAL FROM SET                                           */
+		/*-----------------------------------------------------------------*/
+
+		Set<String> fromSet = getFromSetFromResolutionList(mainPrimarykeyQId, resolutionList);
+
+		/*-----------------------------------------------------------------*/
+		/* ISOLATE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		Set<String> whereSet = getIsolatedPath(
@@ -162,31 +175,22 @@ public class Helper
 		);
 
 		/*-----------------------------------------------------------------*/
+		/* ISOLATE EXPRESSION                                              */
+		/*-----------------------------------------------------------------*/
 
-		if(whereSet.isEmpty() == false)
-		{
-			/*-------------------------------------------------------------*/
+		SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+		                                 .addFromPart(fromSet)
+		                                 .addWherePart(expression)
+		                                 .addWherePart(whereSet)
+		;
 
-			Set<String> fromSet = getFromSetFromResolutionList(mainPrimarykeyQId, resolutionList);
+		/*-----------------------------------------------------------------*/
 
-			/*-------------------------------------------------------------*/
-
-			SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-			                                 .addFromPart(fromSet)
-			                                 .addWherePart(expression)
-			                                 .addWherePart(whereSet)
-			;
-
-			/*-------------------------------------------------------------*/
-
-			expression = new StringBuilder().append(mainPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
-			                                .append(" IN (")
-			                                .append(query)
-			                                .append(")")
-			;
-
-			/*-------------------------------------------------------------*/
-		}
+		expression = new StringBuilder().append(mainPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
+		                                .append(" IN (")
+		                                .append(query)
+		                                .append(")")
+		;
 
 		/*-----------------------------------------------------------------*/
 
