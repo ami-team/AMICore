@@ -29,7 +29,9 @@ public class CommandSingletonTest
 		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
 /*
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT *"));
-
+*/
+		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'"));
+/*
 		System.out.println(querier1.mqlToSQL("router_user", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'"));
 
 		System.out.println(querier1.mqlToSQL("router_role", "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'"));

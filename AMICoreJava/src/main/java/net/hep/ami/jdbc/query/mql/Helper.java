@@ -66,8 +66,6 @@ public class Helper
 
 			Set<String> idSet = new LinkedHashSet<>();
 
-			Set<String> fromSet = new LinkedHashSet<>();
-
 			Set<String> whereSet = new LinkedHashSet<>();
 
 			idSet.add(stdPrimaryKeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
@@ -93,7 +91,6 @@ public class Helper
 					if(globalFromSet.contains(tmp) == false)
 					{
 						tmpFromSet.add(tmp);
-						fromSet.add(tmp);
 					}
 					else
 					{
@@ -112,7 +109,6 @@ public class Helper
 					if(globalFromSet.contains(tmp) == false)
 					{
 						tmpFromSet.add(tmp);
-						fromSet.add(tmp);
 					}
 					else
 					{
@@ -157,7 +153,7 @@ public class Helper
 			/*-------------------------------------------------------------*/
 
 			query = new SelectObj().addSelectPart(idSet)
-			                       .addFromPart(fromSet)
+			                       .addFromPart("DUAL")
 			                       .addWherePart(String.join(" OR ", whereSet))
 			;
 
