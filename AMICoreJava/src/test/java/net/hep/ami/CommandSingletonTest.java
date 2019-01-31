@@ -34,11 +34,11 @@ public class CommandSingletonTest
 		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
 		System.out.println();
 
-		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'";
-		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command", mql));
 		System.out.println();
 
-		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'";
+		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
 		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
 		System.out.println();
 

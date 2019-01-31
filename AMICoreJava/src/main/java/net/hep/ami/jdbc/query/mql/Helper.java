@@ -35,19 +35,69 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
+	private static boolean isTrivialQuery(List<Resolution> resolutionList)
+	{
+		if(resolutionList.isEmpty() == false)
+		{
+			int oldPathHashCode = 0;
+			int newPathHashCode = 0;
+
+			for(Resolution resolution: resolutionList)
+			{
+				/*---------------------------------------------------------*/
+
+				if(resolution.getPaths().size() > 1)
+				{
+					return false;
+				}
+
+				/*---------------------------------------------------------*/
+
+				newPathHashCode = resolution.getPathHashCode();
+
+				/*---------------------------------------------------------*/
+
+				if(newPathHashCode > 0)
+				{
+					if(oldPathHashCode == 0)
+					{
+						oldPathHashCode = newPathHashCode;
+					}
+					else
+					{
+						if(oldPathHashCode != newPathHashCode)
+						{
+							return false;
+						}
+					}
+				}
+
+				/*---------------------------------------------------------*/
+			}
+		}
+
+		return true;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Set<String> getIsolatedPath(QId stdPrimaryKeyQId, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
 		Set<String> result = new LinkedHashSet<>();
 
-		final int nb = resolutionList.size();
+		/*-----------------------------------------------------------------*/
 
-		/**/ if(nb == 0)
+		if(isTrivialQuery(resolutionList))
 		{
+			for(Resolution resolution: resolutionList)
+			{
+				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
+				{
+					frgnKeys.stream().map(x -> x.toString()).forEach(y -> result.add(y));
+				}
+			}
+
 			return result;
-		}
-		else if(nb == 1)
-		{
-
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -77,7 +127,7 @@ public class Helper
 
 			int cnt = 0;
 
-			boolean q = true;
+			boolean trivialCase = true;
 
 			Set<String> idSet = new LinkedHashSet<>();
 
@@ -116,7 +166,7 @@ public class Helper
 
 						if(idSet.add(tmp) && cnt > 0)
 						{
-							q = false;
+							trivialCase = false;
 						}
 					}
 
@@ -138,7 +188,7 @@ public class Helper
 
 						if(idSet.add(tmp) && cnt > 0)
 						{
-							q = false;
+							trivialCase = false;
 						}
 					}
 
@@ -164,17 +214,19 @@ public class Helper
 				                       .toString()
 				;
 
-				/*---------------------------------------------------------*/
-
 				whereSet1.add(query);
 
-				whereSet2.add(new StringBuilder().append("(")
-				                                 .append(String.join(", ", tmpIdSet))
-				                                 .append(") IN (")
-				                                 .append(query)
-				                                 .append(")")
-				                                 .toString()
-				);
+				/*---------------------------------------------------------*/
+
+				query = new StringBuilder().append("(")
+				                           .append(String.join(", ", tmpIdSet))
+				                           .append(") IN (")
+				                           .append(query)
+				                           .append(")")
+				                           .toString()
+				;
+
+				whereSet2.add(query);
 
 				/*---------------------------------------------------------*/
 
@@ -185,15 +237,17 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			if(q)
+			if(trivialCase)
 			{
 				query = String.join(" UNION ", whereSet1);
 			}
 			else
 			{
+				query = String.join(((" OR ")), whereSet2);
+
 				query = new SelectObj().addSelectPart(idSet)
 				                       .addFromPart("DUAL")
-				                       .addWherePart(String.join(" OR ", whereSet2))
+				                       .addWherePart(query)
 				                       .toString()
 				;
 			}

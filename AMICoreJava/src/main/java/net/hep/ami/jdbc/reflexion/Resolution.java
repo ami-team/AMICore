@@ -16,7 +16,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	private int m_maxPathLen = 0;
+	private int m_maxResolvedPathLen = 0;
 
 	private List<FrgnKeys> m_resolvedPaths = new ArrayList<>();
 
@@ -72,9 +72,9 @@ public class Resolution
 
 		m_resolvedPaths.add(new FrgnKeys(path));
 
-		if(m_maxPathLen < path.size())
+		if(m_maxResolvedPathLen < path.size())
 		{
-			m_maxPathLen = path.size();
+			m_maxResolvedPathLen = path.size();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -107,7 +107,7 @@ public class Resolution
 
 	public int getMaxPathLen()
 	{
-		return m_maxPathLen;
+		return m_maxResolvedPathLen;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -119,10 +119,19 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	@Override
-	public int hashCode()
+	public int getPathHashCode()
 	{
-		return Objects.hash(m_resolvedInternalQId, "@", m_resolvedPaths);
+		int result = 0;
+
+		for(FrgnKeys frgnKeys: m_resolvedPaths)
+		{
+			for(FrgnKey frgnKey: /**/ frgnKeys /**/)
+			{
+				result += frgnKey.hashCode();
+			}
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
