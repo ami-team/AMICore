@@ -163,7 +163,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return result.addFromPart(Helper.getFromSetFromResolutionList(new QId(m_internalCatalog, m_entity, m_primaryKey), m_globalResolutionList))
-		             .addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, false))
+		             .addWherePart(Helper.getIsolatedPath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, false))
 		             .toStringBuilder(extra)
 		;
 
@@ -230,7 +230,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
+		return result.addWherePart(Helper.getIsolatedPath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
 		             .toStringBuilder()
 		;
 
@@ -256,7 +256,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.isolatePath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
+		return result.addWherePart(Helper.getIsolatedPath(m_internalCatalog, m_entity, m_primaryKey, m_globalResolutionList, true))
 		             .toStringBuilder()
 		;
 

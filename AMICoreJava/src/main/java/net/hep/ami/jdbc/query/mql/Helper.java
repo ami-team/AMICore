@@ -36,7 +36,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> isolatePath(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
+	public static Set<String> getIsolatedPath(String stdInternalCatalog, String stdEntity, String stdPrimaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
@@ -160,7 +160,7 @@ public class Helper
 	{
 		/*-----------------------------------------------------------------*/
 
-		Set<String> whereSet = isolatePath(
+		Set<String> whereSet = getIsolatedPath(
 			stdInternalCatalog, stdEntity, stdPrimaryKey,
 			resolutionList,
 			isFieldNameOnly
@@ -194,9 +194,6 @@ public class Helper
 			                                .append(")")
 			;
 
-			System.out.println("-------------------");
-			System.out.println(expression);
-			System.out.println("-------------------");
 			/*-------------------------------------------------------------*/
 		}
 
