@@ -78,7 +78,6 @@ public class GetElementInfo extends AbstractCommand
 	{
 		String linkedCatalog;
 		String linkedEntity;
-		String linkedPrimaryKey;
 		String sql;
 		String mql;
 		String count;
@@ -93,14 +92,12 @@ public class GetElementInfo extends AbstractCommand
 					case FORWARD:
 						linkedCatalog = frgnKey.pkExternalCatalog;
 						linkedEntity = frgnKey.pkTable;
-						linkedPrimaryKey = frgnKey.fkColumn;
 						direction = "forward";
 						break;
 
 					case BACKWARD:
 						linkedCatalog = frgnKey.fkExternalCatalog;
 						linkedEntity = frgnKey.fkTable;
-						linkedPrimaryKey = frgnKey.pkColumn;
 						direction = "backward";
 						break;
 
@@ -111,7 +108,7 @@ public class GetElementInfo extends AbstractCommand
 				try
 				{
 					//RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery(new SelectObj().addSelectPart("COUNT(*)").addFromPart(new QId(linkedCatalog, linkedEntity, null).toString(QId.MASK_CATALOG_ENTITY)).addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity,new SelectObj().addSelectPart(new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD)).addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity,new SelectObj().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")").addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
 					
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
@@ -131,8 +128,10 @@ public class GetElementInfo extends AbstractCommand
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
 				      .append("<field name=\"constraint\"><![CDATA[").append(frgnKey.fkColumn).append("]]></field>")
 				      .append("<field name=\"multiple\"><![CDATA[").append(frgnKeys.size() > 1).append("]]></field>")
-				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
-				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
+//				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(*)", "*")).append("]]></field>")
+//				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(*)", "*")).append("]]></field>")
+				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
+				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
 				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
 				      .append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
 				      .append("</row>")
