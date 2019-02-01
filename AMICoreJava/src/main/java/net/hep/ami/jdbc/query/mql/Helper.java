@@ -154,7 +154,7 @@ public class Helper
 
 				Set<String> tmpWhereSet = new LinkedHashSet<>();
 
-				for(SchemaSingleton.FrgnKey frgnKey: /*-------*/ frgnKeys /*-------*/)
+				for(SchemaSingleton.FrgnKey frgnKey: /*----*/ frgnKeys /*----*/)
 				{
 					/*-----------------------------------------------------*/
 
