@@ -160,8 +160,10 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addFromPart(Helper.getFromSetFromResolutionList(m_primaryKeyQId, m_globalResolutionList))
-		             .addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, false))
+		Tuple2<Set<String>, Set<String>> tuple = Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, false);
+
+		return result.addFromPart(tuple.x)
+		             .addWherePart(tuple.y)
 		             .toStringBuilder(extra)
 		;
 
@@ -228,7 +230,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true))
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true).x)
 		             .toStringBuilder()
 		;
 
@@ -254,7 +256,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true))
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true).x)
 		             .toStringBuilder()
 		;
 

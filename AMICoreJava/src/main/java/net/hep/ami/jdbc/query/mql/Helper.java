@@ -81,24 +81,9 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getIsolatedPath(QId stdPrimaryKeyQId, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
+	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId stdPrimaryKeyQId, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
-		Set<String> result = new LinkedHashSet<>();
-
-		/*-----------------------------------------------------------------*/
-
-		if(isTrivialQuery(resolutionList))
-		{
-			for(Resolution resolution: resolutionList)
-			{
-				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
-				{
-					frgnKeys.stream().map(x -> x.toString()).forEach(y -> result.add(y));
-				}
-			}
-
-			return result;
-		}
+		Set<String> globalWherSet = new LinkedHashSet<>();
 
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
@@ -108,6 +93,27 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
+		/*-----------------------------------------------------------------*/
+
+		if(isTrivialQuery(resolutionList))
+		{
+			for(Resolution resolution: resolutionList)
+			{
+				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
+				{
+					for(SchemaSingleton.FrgnKey frgnKey: /*----*/ frgnKeys /*----*/)
+					{
+						globalFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY));
+						globalFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY));
+
+						globalWherSet.add(frgnKey.toString());
+					}
+				}
+			}
+
+			return new Tuple2<>(globalFromSet, globalWherSet);
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		QId qId;
@@ -254,12 +260,12 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			result.add(new StringBuilder().append("(")
-			                              .append(String.join(", ", idSet))
-			                              .append(") IN (")
-			                              .append(query)
-			                              .append(")")
-			                              .toString()
+			globalWherSet.add(new StringBuilder().append("(")
+			                                     .append(String.join(", ", idSet))
+			                                     .append(") IN (")
+			                                     .append(query)
+			                                     .append(")")
+			                                     .toString()
 			);
 
 			/*-------------------------------------------------------------*/
@@ -267,7 +273,7 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		return result;
+		return new Tuple2<>(globalFromSet, globalWherSet);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -277,16 +283,10 @@ public class Helper
 	public static String getIsolatedExpression(QId mainPrimarykeyQId, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/* BUILD GLOBAL FROM SET                                           */
-		/*-----------------------------------------------------------------*/
-
-		Set<String> fromSet = getFromSetFromResolutionList(mainPrimarykeyQId, resolutionList);
-
-		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
-		Set<String> whereSet = getIsolatedPath(
+		Tuple2<Set<String>, Set<String>> tuple = getIsolatedPath(
 			mainPrimarykeyQId,
 			resolutionList,
 			false
@@ -297,9 +297,9 @@ public class Helper
 		/*-----------------------------------------------------------------*/
 
 		SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-		                                 .addFromPart(fromSet)
+		                                 .addFromPart(tuple.x)
 		                                 .addWherePart(expression)
-		                                 .addWherePart(whereSet)
+		                                 .addWherePart(tuple.y)
 		;
 
 		/*-----------------------------------------------------------------*/
