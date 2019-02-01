@@ -42,7 +42,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = querier.executeMQLQuery(entity, new SelectObj().addFromPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?").toString(), primaryFieldValue).toStringBuilder("element");
+		StringBuilder result = querier.executeMQLQuery(entity, new SelectObj().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?").toString(), primaryFieldValue).toStringBuilder("element");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
