@@ -2,9 +2,10 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
+import net.hep.ami.command.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.command.*;
+import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -41,7 +42,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = querier.executeMQLQuery(entity, "SELECT `*` WHERE " + new QId(catalog, entity, primaryFieldName).toString() + " = ?", primaryFieldValue).toStringBuilder("element");
+		StringBuilder result = querier.executeMQLQuery(entity, new SelectObj().addFromPart("`*`").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?").toString(), primaryFieldValue).toStringBuilder("element");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -106,7 +107,7 @@ public class GetElementInfo extends AbstractCommand
 
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery("SELECT COUNT(*) FROM " + new QId(linkedCatalog, linkedEntity, null).toString() + " WHERE `" + new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString() + " = ?", primaryFieldValue);
+					RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery(new SelectObj().addSelectPart("COUNT(*)").addFromPart(new QId(linkedCatalog, linkedEntity, null).toString(QId.MASK_CATALOG_ENTITY)).addFromPart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();

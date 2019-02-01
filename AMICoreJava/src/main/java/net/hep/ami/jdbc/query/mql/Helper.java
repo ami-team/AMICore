@@ -15,13 +15,13 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getFromSetFromResolutionList(QId mainEntityQId, List<Resolution> resolutionList)
+	public static Set<String> getFromSetFromResolutionList(QId mainPrimaryField, List<Resolution> resolutionList)
 	{
 		Set<String> result = new LinkedHashSet<>();
 
 		/*-----------------------------------------------------------------*/
 
-		result.add(mainEntityQId.toString(QId.MASK_CATALOG_ENTITY));
+		result.add(mainPrimaryField.toString(QId.MASK_CATALOG_ENTITY));
 
 		for(Resolution resolution: resolutionList)
 		{
@@ -81,13 +81,13 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId stdPrimaryKeyQId, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
+	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId mainPrimaryField, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
 		/*-----------------------------------------------------------------*/
 
-		Set<String> globalFromSet = getFromSetFromResolutionList(stdPrimaryKeyQId, resolutionList);
+		Set<String> globalFromSet = getFromSetFromResolutionList(mainPrimaryField, resolutionList);
 
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
@@ -101,6 +101,8 @@ public class Helper
 		{
 			for(Resolution resolution: resolutionList)
 			{
+				globalFromSet.add(resolution.getInternalQId().toString(QId.MASK_CATALOG_ENTITY));
+
 				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
 					for(SchemaSingleton.FrgnKey frgnKey: /*----*/ frgnKeys /*----*/)
@@ -137,20 +139,20 @@ public class Helper
 
 			boolean trivialCase = true;
 
-			Set<String> idSet = new LinkedHashSet<>();
+			Set<String> idSet = new TreeSet<>();
 
 			Set<String> whereSet1 = new LinkedHashSet<>();
 			Set<String> whereSet2 = new LinkedHashSet<>();
 
-			idSet.add(stdPrimaryKeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
+			idSet.add(mainPrimaryField.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
 
 			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 			{
 				/*---------------------------------------------------------*/
 
-				Set<String> tmpIdSet = new LinkedHashSet<>();
+				Set<String> tmpIdSet = new TreeSet<>();
 
-				Set<String> tmpFromSet = new LinkedHashSet<>();
+				Set<String> tmpFromSet = new TreeSet<>();
 
 				Set<String> tmpWhereSet = new LinkedHashSet<>();
 
@@ -282,14 +284,14 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getIsolatedExpression(QId mainPrimarykeyQId, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
+	public static String getIsolatedExpression(QId mainPrimaryField, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<Set<String>, Set<String>> tuple = getIsolatedPath(
-			mainPrimarykeyQId,
+			mainPrimaryField,
 			resolutionList,
 			false
 		);
@@ -298,7 +300,7 @@ public class Helper
 		/* ISOLATE EXPRESSION                                              */
 		/*-----------------------------------------------------------------*/
 
-		SelectObj query = new SelectObj().addSelectPart(mainPrimarykeyQId.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+		SelectObj query = new SelectObj().addSelectPart(mainPrimaryField.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 		                                 .addFromPart(tuple.x)
 		                                 .addWherePart(expression)
 		                                 .addWherePart(tuple.y)
@@ -306,7 +308,7 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		expression = new StringBuilder().append(mainPrimarykeyQId.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
+		expression = new StringBuilder().append(mainPrimaryField.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
 		                                .append(" IN (")
 		                                .append(query)
 		                                .append(")")
@@ -321,7 +323,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<String>, List<String>> resolve(QId stdPrimaryKeyQId, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
+	public static Tuple2<List<String>, List<String>> resolve(QId mainPrimaryField, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
