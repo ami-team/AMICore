@@ -78,7 +78,7 @@ public class GetElementInfo extends AbstractCommand
 	{
 		String linkedCatalog;
 		String linkedEntity;
-		String linkedPrimaryFieldName;
+		String linkedPrimaryKey;
 		String sql;
 		String mql;
 		String count;
@@ -93,14 +93,14 @@ public class GetElementInfo extends AbstractCommand
 					case FORWARD:
 						linkedCatalog = frgnKey.pkExternalCatalog;
 						linkedEntity = frgnKey.pkTable;
-						linkedPrimaryFieldName = frgnKey.fkColumn;
+						linkedPrimaryKey = frgnKey.fkColumn;
 						direction = "forward";
 						break;
 
 					case BACKWARD:
 						linkedCatalog = frgnKey.fkExternalCatalog;
 						linkedEntity = frgnKey.fkTable;
-						linkedPrimaryFieldName = frgnKey.pkColumn;
+						linkedPrimaryKey = frgnKey.pkColumn;
 						direction = "backward";
 						break;
 
@@ -110,7 +110,8 @@ public class GetElementInfo extends AbstractCommand
 
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity,new SelectObj().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, linkedPrimaryFieldName).toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")").addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
+					//RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery(new SelectObj().addSelectPart("COUNT(*)").addFromPart(new QId(linkedCatalog, linkedEntity, null).toString(QId.MASK_CATALOG_ENTITY)).addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity,new SelectObj().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")").addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
 					
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
