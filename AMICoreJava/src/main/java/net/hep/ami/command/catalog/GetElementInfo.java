@@ -107,7 +107,7 @@ public class GetElementInfo extends AbstractCommand
 
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery(new SelectObj().addSelectPart("COUNT(*)").addFromPart(new QId(linkedCatalog, linkedEntity, null).toString(QId.MASK_CATALOG_ENTITY)).addFromPart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
+					RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery(new SelectObj().addSelectPart("COUNT(*)").addFromPart(new QId(linkedCatalog, linkedEntity, null).toString(QId.MASK_CATALOG_ENTITY)).addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
 
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
