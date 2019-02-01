@@ -83,8 +83,6 @@ public class Helper
 
 	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId stdPrimaryKeyQId, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
 	{
-		Set<String> globalWherSet = new LinkedHashSet<>();
-
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
 		/*-----------------------------------------------------------------*/
@@ -93,6 +91,10 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
+		/*-----------------------------------------------------------------*/
+
+		Set<String> globalWherSet = new LinkedHashSet<>();
+
 		/*-----------------------------------------------------------------*/
 
 		if(isTrivialQuery(resolutionList))
