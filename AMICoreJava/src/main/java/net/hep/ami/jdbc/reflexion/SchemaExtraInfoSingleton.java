@@ -290,7 +290,6 @@ public class SchemaExtraInfoSingleton
 		router_authority.get("issuerDN").adminOnly = true;
 		router_authority.get("notBefore").adminOnly = true;
 		router_authority.get("notAfter").adminOnly = true;
-		router_authority.get("serial").adminOnly = true;
 		router_authority.get("email").adminOnly = true;
 		router_authority.get("reason").adminOnly = true;
 		router_authority.get("created").created = true;
