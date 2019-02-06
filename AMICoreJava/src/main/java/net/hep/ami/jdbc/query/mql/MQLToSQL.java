@@ -225,7 +225,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM));
+			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, IS_MODIF_STM));
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -251,7 +251,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, null, IS_MODIF_STM));
+			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, IS_MODIF_STM));
 		}
 
 		/*-----------------------------------------------------------------*/
