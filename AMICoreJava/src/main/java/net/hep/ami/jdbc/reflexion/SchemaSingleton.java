@@ -914,7 +914,27 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("table not found `" + externalCatalog + "`.`" + table + "`");
+		throw new Exception("entity not found `" + externalCatalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Column getColumns(String externalCatalog, String table, String field) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Column column = getColumns(externalCatalog, table).get(field);
+
+		if(column != null)
+		{
+			return column;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("field not found `" + externalCatalog + "`.`" + table + "`.`" + field + "`");
 
 		/*-----------------------------------------------------------------*/
 	}

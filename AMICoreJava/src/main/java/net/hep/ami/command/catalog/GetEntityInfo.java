@@ -6,11 +6,11 @@ import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
-public class GetFieldInfo extends AbstractCommand
+public class GetEntityInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetFieldInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetEntityInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
