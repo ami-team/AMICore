@@ -74,7 +74,7 @@ public class GetFieldInfo extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get the field info of the given field.";
+		return "Get the info of the given field.";
 	}
 
 	/*---------------------------------------------------------------------*/

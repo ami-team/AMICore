@@ -96,7 +96,7 @@ public class GetEntityInfo extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get the field info of the given catalog and entity.";
+		return "Get the info of the given centity.";
 	}
 
 	/*---------------------------------------------------------------------*/
