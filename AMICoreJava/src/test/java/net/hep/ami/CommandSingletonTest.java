@@ -117,15 +117,12 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_search_interface\" -fields=\"interface,json,archived,createdBy,modifiedBy\" -values=\"A,{},0,jodier,jodier\"", false).replace(">", ">\n"));
 
-//		arguments.put("catalog", "mc16_001:production");
-//		arguments.put("entity", "dataset");
-//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		//arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		arguments.put("limit", "10");
-//		arguments.put("offset", "0");
-//		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
+		arguments.put("catalog", "mc15_001:production");
+		arguments.put("entity", "dataset");
+		arguments.put("mql", "SELECT * WHERE `mc15_001:production`.`dataset`.`logicalDatasetName` =  'mc15_13TeV.428001.ParticleGun_single_piplus_logE0p2to2000.evgen.EVNT.e3501'");
+		arguments.put("limit", "10");
+		arguments.put("offset", "0");
+		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
 
 //		arguments.put("catalog", "mc16_001:production");
 //		arguments.put("entity", "dataset");
@@ -153,16 +150,6 @@ public class CommandSingletonTest
 
 		//System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
 
-/*
-		arguments.put("country", "FR");
-		arguments.put("locality", "Grenoble");
-		arguments.put("organization", "CNRS");
-		arguments.put("organizationalUnit", "LPSC-AMI");
-		arguments.put("commonName", "Fabian Lambert");
-		arguments.put("password", "fofi1972");
-		arguments.put("validity", "10");
-		System.out.println(CommandSingleton.executeCommand("GenerateCertificate", arguments).replace(">", ">\n"));
-*/
 		try
 		{
 //			Router router = new Router("test", "ami_router", "jdbc:postgresql://localhost:2432/ami_router", "radardb-ami-lpsc", "Pci62Emxt65zcZY84UO7");
@@ -319,7 +306,7 @@ public class CommandSingletonTest
 
 			System.out.println(pathQId.getConstraints().get(0).matches(qId) != pathQId.getConstraints().get(0).getExclusion());
 */
-			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"mc16_001:production\" -entity=\"DATASET\" -primaryFieldName=\"IDENTIFIER\" -primaryFieldValue=\"257898\"", false).replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"mc16_001:production\" -entity=\"DATASET\" -primaryFieldName=\"IDENTIFIER\" -primaryFieldValue=\"257898\"", false).replace(">", ">\n"));
 
 //			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user_role\" -mql=\"SELECT COUNT(*) WHERE `self`.`router_role`.`id` = '1'\"").replace(">", ">\n"));
 
