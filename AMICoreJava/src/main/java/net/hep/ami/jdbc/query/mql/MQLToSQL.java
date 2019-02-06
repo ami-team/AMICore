@@ -230,7 +230,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true).x)
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true).y)
 		             .toStringBuilder()
 		;
 
@@ -256,7 +256,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true).x)
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKeyQId, m_globalResolutionList, true).y)
 		             .toStringBuilder()
 		;
 
