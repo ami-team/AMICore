@@ -36,7 +36,7 @@ public class GetEntityInfo extends AbstractCommand
 
 		result.append("<rowset type=\"fields\">");
 
-		for(SchemaSingleton.Column column: SchemaSingleton.getColumns(catalog, entity).values())
+		for(SchemaSingleton.Column column: SchemaSingleton.getEntityInfo(catalog, entity).values())
 		{
 			result.append("<row>")
 			      .append("<field name=\"name\"><![CDATA[").append(column.name).append("]]></field>")
@@ -45,6 +45,7 @@ public class GetEntityInfo extends AbstractCommand
 			      .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
 			      .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
 			      .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
+			      .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
 			      .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
 			      .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 			      .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
