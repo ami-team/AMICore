@@ -22,7 +22,9 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		CommandSingleton.executeCommand("RemoveElements -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -keyFields=\"catalog|entity|field\" -keyValues=\"self|router_catalog|custom\"", false);
+//		CommandSingleton.executeCommand("RemoveElements -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -keyFields=\"catalog|entity|field\" -keyValues=\"self|router_catalog|custom\"", false);
+
+		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isAdminOnly|isHidden|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"tasks|router_task|command|N/A|N/A|@NULL|0|1|0|0|0|0|0|0|0|0\"", false);
 
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");
