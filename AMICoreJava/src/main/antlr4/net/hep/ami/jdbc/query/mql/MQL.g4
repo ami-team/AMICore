@@ -255,7 +255,7 @@ NOT
 FUNCTION
 	: A B S | C O S | L O G | M O D | P O W | R N D | S I N | S Q R T
 	| C O N C A T | L O W E R | L E N G T H | S U B S T R | U P P E R
-	| A V G | C O U N T | M I N | M A X | S U M
+	| A V G | C O U N T | M I N | M A X | S T D D E V | S U M
 	;
 
 /*---------------------------*/
