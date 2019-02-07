@@ -2,10 +2,14 @@ package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
 
+import net.hep.ami.*;
+
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
+
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
 
 public class Helper
 {
@@ -337,7 +341,95 @@ public class Helper
 		/* GROUP FIELDS                                                    */
 		/*-----------------------------------------------------------------*/
 
+		String field;
 
+		Resolution resolution;
+		CharSequence expression;
+
+		SchemaSingleton.Column column;
+
+		Tuple2<List<CharSequence>, List<Resolution>> tuple;
+
+		Map<String, Tuple2<List<CharSequence>, List<Resolution>>> entries = new LinkedHashMap<>();
+
+		for(int i = 0; i < nb1; i++)
+		{
+			resolution = resolutionList.get(i);
+			expression = expressionList.get(i);
+
+			column = resolution.getColumn();
+
+			/*-------------------------------------------------------------*/
+
+			/**/ if(column.adminOnly)
+			{
+				if(isAdmin == false)
+				{
+					throw new Exception("user `" + AMIUser + "` not allow to modify admin-only field " + new QId(column, false).toString());
+				}
+			}
+			else if(column.crypted)
+			{
+				if(isAdmin == false)
+				{
+					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
+				}
+
+				expression = /* NOT FOR SQL EXPRESSION */
+				             Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
+				             /* NOT FOR SQL EXPRESSION */
+				;
+			}
+
+			/**/
+
+			else if(column.created
+			        ||
+			        column.createdBy
+			        ||
+			        column.modified
+			        ||
+			        column.modifiedBy
+			 ) {
+				continue;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			if(resolution.getMaxPathLen() > 0)
+			{
+				/* TODO */
+				/* TODO */
+				/* TODO */
+
+				throw new Exception("foreign fields not implemented yet");
+			}
+			else
+			{
+				/*---------------------------------------------------------*/
+
+				field = resolution.getColumn().name;
+
+				/*---------------------------------------------------------*/
+
+				tuple = entries.get(field);
+
+				if(tuple == null)
+				{
+					entries.put(field, tuple = new Tuple2<>(
+						new ArrayList<>(),
+						new ArrayList<>()
+					));
+				}
+
+				tuple.x.add(expression);
+				tuple.y.add(resolution);
+
+				/*---------------------------------------------------------*/
+			}
+
+			/*-------------------------------------------------------------*/
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE EXPRESSIONS                                             */
@@ -346,13 +438,32 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
+		for(Map.Entry<String, Tuple2<List<CharSequence>, List<Resolution>>> entry: entries.entrySet())
+		{
+			field = entry.getKey();
+			tuple = entry.getValue();
 
+			expression = String.join(" AND ", tuple.x);
+
+			if(tuple.y.get(0).getMaxPathLen() > 0)
+			{
+				/* TODO */
+				/* TODO */
+				/* TODO */
+			}
+			else
+			{
+				X.add(Utility.textToSqlId(field));
+
+				Y.add(expression.toString());
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* FILL RESERVED FIELDS                                            */
 		/*-----------------------------------------------------------------*/
-/*
-		for(SchemaSingleton.Column tmp: SchemaSingleton.getColumns(stdExternalCatalog, stdEntity).values())
+
+		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(SchemaSingleton.internalCatalogToExternalCatalog_noException(mainPrimaryField.getCatalog(), null), mainPrimaryField.getEntity()).values())
 		{
 			if(tmp.created && insert) {
 				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");
@@ -370,7 +481,7 @@ public class Helper
 				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
 			}
 		}
-*/
+
 		/*-----------------------------------------------------------------*/
 
 		return new Tuple2<List<String>, List<String>>(X, Y);

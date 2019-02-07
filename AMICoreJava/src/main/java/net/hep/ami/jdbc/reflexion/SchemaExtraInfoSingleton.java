@@ -116,7 +116,7 @@ public class SchemaExtraInfoSingleton
 	{
 		try
 		{
-			SchemaSingleton.Column column = SchemaSingleton.getColumn(catalog, entity, field);
+			SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(catalog, entity, field);
 
 			column.rank = rank;
 			column.hidden = hidden;
@@ -149,8 +149,8 @@ public class SchemaExtraInfoSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			SchemaSingleton.Column column1 = SchemaSingleton.getColumn(fkCatalog, fkTable, fkColumn);
-			SchemaSingleton.Column column2 = SchemaSingleton.getColumn(pkCatalog, pkTable, pkColumn);
+			SchemaSingleton.Column column1 = SchemaSingleton.getFieldInfo(fkCatalog, fkTable, fkColumn);
+			SchemaSingleton.Column column2 = SchemaSingleton.getFieldInfo(pkCatalog, pkTable, pkColumn);
 
 			/*-------------------------------------------------------------*/
 
@@ -222,7 +222,7 @@ public class SchemaExtraInfoSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_config = SchemaSingleton.getColumns("self", "router_config");
+		Map<String, SchemaSingleton.Column> router_config = SchemaSingleton.getEntityInfo("self", "router_config");
 
 		router_config.get("paramName").crypted = true;
 		router_config.get("paramValue").crypted = true;
@@ -233,7 +233,7 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getColumns("self", "router_catalog");
+		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getEntityInfo("self", "router_catalog");
 
 		router_catalog.get("internalCatalog").hidden = true;
 		router_catalog.get("internalSchema").hidden = true;
@@ -247,7 +247,7 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_catalog_extra = SchemaSingleton.getColumns("self", "router_catalog_extra");
+		Map<String, SchemaSingleton.Column> router_catalog_extra = SchemaSingleton.getEntityInfo("self", "router_catalog_extra");
 
 		router_catalog_extra.get("created").created = true;
 		router_catalog_extra.get("createdBy").createdBy = true;
@@ -256,7 +256,7 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_foreign_key = SchemaSingleton.getColumns("self", "router_foreign_key");
+		Map<String, SchemaSingleton.Column> router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key");
 
 		router_foreign_key.get("created").created = true;
 		router_foreign_key.get("createdBy").createdBy = true;
@@ -265,7 +265,7 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getColumns("self", "router_user");
+		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getEntityInfo("self", "router_user");
 
 		router_user.get("AMIPass").crypted = true;
 		router_user.get("clientDN").crypted = true;
@@ -276,14 +276,14 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_short_url = SchemaSingleton.getColumns("self", "router_short_url");
+		Map<String, SchemaSingleton.Column> router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
 
 		router_short_url.get("created").created = true;
 		router_short_url.get("modified").modified = true;
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getColumns("self", "router_authority");
+		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getEntityInfo("self", "router_authority");
 
 		router_authority.get("vo").adminOnly = true;
 		router_authority.get("clientDN").adminOnly = true;
@@ -299,7 +299,7 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getColumns("self", "router_search_interface");
+		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface");
 
 		router_search_interface.get("created").created = true;
 		router_search_interface.get("createdBy").createdBy = true;
