@@ -133,6 +133,13 @@ public class MQLToSQL
 		{
 			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, 0));
 		}
+		
+		/*-----------------------------------------------------------------*/
+		
+		if(context.m_groupBy != null)
+		{
+			extra.append(" GROUP BY ").append(visitColumnList(context.m_groupBy, m_globalResolutionList, 0));
+		}
 
 		/*-----------------------------------------------------------------*/
 

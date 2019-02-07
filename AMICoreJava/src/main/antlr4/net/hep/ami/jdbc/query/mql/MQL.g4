@@ -19,7 +19,7 @@ mqlQuery
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE m_expression=expressionOr)? (ORDER BY m_orderBy=qId (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
+	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE m_expression=expressionOr)? (GROUP BY m_groupBy=columnList)? (ORDER BY m_orderBy=qId (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
 	;
 
 insertStatement
@@ -156,6 +156,10 @@ AS
 
 WHERE
 	: W H E R E
+	;
+	
+GROUP
+	: G R O U P
 	;
 
 ORDER
