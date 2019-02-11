@@ -17,8 +17,9 @@ public class MQLToSQL
 {
 	/*---------------------------------------------------------------------*/
 
-	private static final int IN_FUNCTION = (1 << 0);
-	private static final int IS_MODIF_STM = (1 << 1);
+	private static final int NO_STAR = (1 << 0);
+	private static final int STAR_TO_ID = (1 << 1);
+	private static final int IS_MODIF_STM = (1 << 2);
 
 	/*---------------------------------------------------------------------*/
 
@@ -120,10 +121,12 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
+		result.setDistinct(context.m_distinct != null);
+
+		/*-----------------------------------------------------------------*/
+
 		if(context.m_columns != null)
 		{
-			result.setDistinct(context.m_distinct != null);
-
 			result.addSelectPart(visitColumnList(context.m_columns, m_globalResolutionList, 0));
 		}
 
@@ -133,19 +136,19 @@ public class MQLToSQL
 		{
 			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, 0));
 		}
-		
+
 		/*-----------------------------------------------------------------*/
-		
+
 		if(context.m_groupBy != null)
 		{
-			extra.append(" GROUP BY ").append(visitColumnList(context.m_groupBy, m_globalResolutionList, 0));
+			extra.append(" GROUP BY ").append(visitQIdList(context.m_groupBy, m_globalResolutionList, 0));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(AutoJoinSingleton.resolve(m_externalCatalog, m_entity, context.m_orderBy.getText()).getInternalQId().toString(QId.MASK_CATALOG_ENTITY_FIELD));
+			extra.append(" ORDER BY ").append(visitQIdList(context.m_orderBy, m_globalResolutionList, 0));
 
 			if(context.m_orderWay != null)
 			{
@@ -302,6 +305,27 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitQIdList(MQLParser.QIdListContext context, List<Resolution> resolutionList, int mask) throws Exception
+	{
+		List<String> result = new ArrayList<>();
+
+		for(MQLParser.AQIdContext child: context.m_aQIds)
+		{
+			result.add(visitAQId(child, resolutionList, mask).toString());
+		}
+
+		return new StringBuilder(String.join(",", result));
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private StringBuilder visitAQId(MQLParser.AQIdContext context, List<Resolution> resolutionList, int mask) throws Exception
+	{
+		return visitQId(context.m_qId, resolutionList, mask | NO_STAR).get(0).getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -591,11 +615,11 @@ public class MQLToSQL
 
 		if(context.m_param1 != null)
 		{
-			result.append( "" ).append(visitExpressionOr(context.m_param1, resolutionList, mask | IN_FUNCTION));
+			result.append( "" ).append(visitExpressionOr(context.m_param1, resolutionList, mask | STAR_TO_ID));
 
 			if(context.m_param2 != null)
 			{
-				result.append(", ").append(visitExpressionOr(context.m_param2, resolutionList, mask | IN_FUNCTION));
+				result.append(", ").append(visitExpressionOr(context.m_param2, resolutionList, mask | STAR_TO_ID));
 			}
 		}
 
@@ -644,7 +668,11 @@ public class MQLToSQL
 
 		if("*".equals(fieldName))
 		{
-			if((mask & IN_FUNCTION) != 0)
+			/**/ if((mask & NO_STAR) != 0)
+			{
+				throw new Exception("star identifier is not authorized here");
+			}
+			else if((mask & STAR_TO_ID) != 0)
 			{
 				list = Collections.singletonList(new QId(SchemaSingleton.getPrimaryKey(catalogName, entityName), false));
 			}
