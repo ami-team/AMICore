@@ -670,7 +670,7 @@ public class MQLToSQL
 		{
 			/**/ if((mask & NO_STAR) != 0)
 			{
-				throw new Exception("star identifier is not authorized here");
+				throw new Exception("star identifier is not authorized");
 			}
 			else if((mask & STAR_TO_ID) != 0)
 			{
