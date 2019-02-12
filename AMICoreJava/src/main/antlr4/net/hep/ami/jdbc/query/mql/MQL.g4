@@ -13,7 +13,8 @@ options {
 /*-------------------------------------------------------------------------*/
 
 mqlQuery
-	: (m_select=selectStatement | m_insert=insertStatement | m_update=updateStatement | m_delete=deleteStatement) ';'?
+	: ';'
+	| (m_select=selectStatement | m_insert=insertStatement | m_update=updateStatement | m_delete=deleteStatement) ';'?
 	;
 
 /*-------------------------------------------------------------------------*/

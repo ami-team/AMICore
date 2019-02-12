@@ -96,7 +96,7 @@ public class MQLToSQL
 			result = new MQLToSQL(externalCatalog, internalCatalog, entity, AMIUser, isAdmin).visitDeleteStatement(mqlQueryContext.m_delete).toString();
 		}
 		else {
-			throw new Exception(listener.toString());
+			result = ";";
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -585,14 +585,14 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask & ~IS_MODIF_STM);
+		StringBuilder expression = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask & ~IS_MODIF_STM);
 
 		/*-----------------------------------------------------------------*/
 
-		result = new StringBuilder(Helper.getIsolatedExpression(
+		expression = new StringBuilder(Helper.getIsolatedExpression(
 			m_primaryKeyQId,
 			tmpResolutionList,
-			result,
+			expression,
 			0,
 			(mask & IS_MODIF_STM) != 0
 		));
@@ -600,7 +600,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder().append("(")
-		                          .append(result)
+		                          .append(expression)
 		                          .append(")")
 		;
 	}
