@@ -61,7 +61,7 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				if(newPathHashCode > 0)
+				if(newPathHashCode != 1)
 				{
 					if(oldPathHashCode == 0)
 					{
@@ -160,7 +160,7 @@ public class Helper
 
 				Set<String> tmpWhereSet = new LinkedHashSet<>();
 
-				for(SchemaSingleton.FrgnKey frgnKey: /*----*/ frgnKeys /*----*/)
+				for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 				{
 					/*-----------------------------------------------------*/
 

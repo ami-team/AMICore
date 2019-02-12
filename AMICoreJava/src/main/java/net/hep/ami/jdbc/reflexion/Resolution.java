@@ -121,13 +121,13 @@ public class Resolution
 
 	public int getPathHashCode()
 	{
-		int result = 0;
+		int result = 1;
 
 		for(FrgnKeys frgnKeys: m_resolvedPaths)
 		{
 			for(FrgnKey frgnKey: /**/ frgnKeys /**/)
 			{
-				result += frgnKey.hashCode();
+				result = 31 * result + frgnKey.hashCode();
 			}
 		}
 
