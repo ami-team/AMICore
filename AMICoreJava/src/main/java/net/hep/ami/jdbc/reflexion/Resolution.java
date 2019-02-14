@@ -22,34 +22,7 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public Resolution check(QId givenQId) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		if(m_resolvedInternalQId == null)
-		{
-			throw new Exception("could not resolve column name " + givenQId + ": not found");
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		Collections.sort(m_resolvedPaths, new Comparator<List<?>>() {
-
-			@Override
-			public int compare(List<?> o1, List<?> o2)
-			{
-				return o1.size() - o2.size();
-			}
-		});
-
-		/*-----------------------------------------------------------------*/
-
-		return this;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public Resolution addPath(QId givenQId, Column resolvedColumn, Vector<FrgnKey> path) throws Exception
+	public Resolution addPath(QId unresolvedQId, Column resolvedColumn, List<FrgnKey> path) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -64,7 +37,7 @@ public class Resolution
 		{
 			if(m_resolvedColumn.equals(resolvedColumn) == false)
 			{
-				throw new Exception("could not resolve column name " + givenQId + ": ambiguous resolution");
+				throw new Exception("could not resolve column name " + unresolvedQId + ": ambiguous resolution");
 			}
 		}
 
@@ -76,6 +49,33 @@ public class Resolution
 		{
 			m_maxResolvedPathLen = path.size();
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Resolution finalize(QId unresolvedQId) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		if(m_resolvedInternalQId == null)
+		{
+			throw new Exception("could not resolve field " + unresolvedQId + ": not found");
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		Collections.sort(m_resolvedPaths, new Comparator<List<?>>() {
+
+			@Override
+			public int compare(List<?> o1, List<?> o2)
+			{
+				return o1.size() - o2.size();
+			}
+		});
 
 		/*-----------------------------------------------------------------*/
 
@@ -130,6 +130,58 @@ public class Resolution
 				result = 31 * result + frgnKey.hashCode();
 			}
 		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Resolution skip(int nr)
+	{
+		Resolution result = new Resolution();
+
+		/*-----------------------------------------------------------------*/
+
+		int maxResolvedPathLen = 0;
+
+		for(SchemaSingleton.FrgnKeys frgnKeys: m_resolvedPaths)
+		{
+			/*-------------------------------------------------------------*/
+
+			int cnt = 0;
+
+			SchemaSingleton.FrgnKeys path = new SchemaSingleton.FrgnKeys();
+
+			for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
+			{
+				if(cnt++ >= nr)
+				{
+					path.add(frgnKey);
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+
+			result.m_resolvedPaths.add(path);
+
+			if(maxResolvedPathLen < path.size())
+			{
+				maxResolvedPathLen = path.size();
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		result.m_resolvedColumn = m_resolvedColumn;
+
+		result.m_resolvedInternalQId = m_resolvedInternalQId;
+		result.m_resolvedExternalQId = m_resolvedExternalQId;
+
+		result.m_maxResolvedPathLen = maxResolvedPathLen;
+
+		/*-----------------------------------------------------------------*/
 
 		return result;
 	}

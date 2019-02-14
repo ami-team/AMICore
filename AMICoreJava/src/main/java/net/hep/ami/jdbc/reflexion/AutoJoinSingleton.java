@@ -103,7 +103,7 @@ public class AutoJoinSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			Map<QId, Boolean> map = givenQId.getConstraints().stream().collect(Collectors.toMap(qId -> qId, qId -> qId.getExclusion()));
+			Map<QId, Boolean> map = givenQId.getConstraints().stream().collect(Collectors.toMap(x -> x, x -> x.getExclusion()));
 
 			/**/
 
@@ -146,7 +146,7 @@ public class AutoJoinSingleton
 
 		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultExternalCatalog, defaultTable, givenQId);
 
-		return result.check(givenQId);
+		return result.finalize(givenQId);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -157,7 +157,7 @@ public class AutoJoinSingleton
 
 		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultExternalCatalog, defaultTable, givenQId);
 
-		return result.check(givenQId);
+		return result.finalize(givenQId);
 	}
 
 	/*---------------------------------------------------------------------*/
