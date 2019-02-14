@@ -22,55 +22,59 @@ public class CommandSingletonTest
 	{
 		Map<String, String> arguments = new HashMap<String, String>();
 
+//		CommandSingleton.executeCommand("RemoveElements -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -keyFields=\"catalog|entity|field\" -keyValues=\"self|router_catalog|custom\"", false);
+
+//		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isAdminOnly|isHidden|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"tasks|router_task|command|N/A|N/A|@NULL|0|1|0|0|0|0|0|0|0|0\"", false);
+
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-//		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
-//
-//		String mql;
-//
-//		mql = "SELECT *";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_role`.`role` WHERE `router_role`.`role` = 'AMI_USER'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE (`router_role`.`role` = 'AMI_ADMIN') AND (`router_role`.`role` = 'AMI_USER')";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN'] AND [`router_role`.`role` = 'AMI_USER']";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
+		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
+
+		String mql;
+
+		mql = "SELECT *";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command", mql));
+		System.out.println();
+
+		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "SELECT `router_role`.`role` WHERE `router_role`.`role` = 'AMI_USER'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE (`router_role`.`role` = 'AMI_ADMIN') AND (`router_role`.`role` = 'AMI_USER')";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN'] AND [`router_role`.`role` = 'AMI_USER']";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
 //		mql = "SELECT `router_user`.`AMIUser`, `self`.`router_user_role2`.`userFK`, `router_role`.`role`";
 //		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
 //		System.out.println();
-//
-//		querier1.rollbackAndRelease();
+
+		querier1.rollbackAndRelease();
 
 /* CYCLE
 		Querier querier1 = new SimpleQuerier("test", "admin", true);
@@ -117,16 +121,13 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_search_interface\" -fields=\"interface,json,archived,createdBy,modifiedBy\" -values=\"A,{},0,jodier,jodier\"", false).replace(">", ">\n"));
 
-//		arguments.put("catalog", "mc16_001:production");
-//		arguments.put("entity", "dataset");
-//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		//arguments.put("mql", "SELECT \"mc16_001:production\".\"DATASET\".\"GENFILTEFF\" AS \"field\", MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", STDDEV(\"DATASET\".\"GENFILTEFF\") AS \"stddev\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		//arguments.put("mql", "SELECT MIN(\"DATASET\".\"GENFILTEFF\") AS \"min\", MAX(\"DATASET\".\"GENFILTEFF\") AS \"max\", AVG(\"DATASET\".\"GENFILTEFF\") AS \"avg\", COUNT(\"DATASET\".\"GENFILTEFF\") AS \"count\" WHERE \"mc16_001:production\".\"dataset\".\"AMIStatus\" = 'VALID'");
-//		arguments.put("limit", "10");
-//		arguments.put("offset", "0");
-//		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
-
+/*		arguments.put("catalog", "mc15_001:production");
+		arguments.put("entity", "dataset");
+		arguments.put("mql", "SELECT * WHERE `mc15_001:production`.`dataset`.`logicalDatasetName` =  'mc15_13TeV.428001.ParticleGun_single_piplus_logE0p2to2000.evgen.EVNT.e3501'");
+		arguments.put("limit", "10");
+		arguments.put("offset", "0");
+		System.out.println(CommandSingleton.executeCommand("BrowseQuery", arguments, false).replace(">", ">\n"));
+*/
 //		arguments.put("catalog", "mc16_001:production");
 //		arguments.put("entity", "dataset");
 //		arguments.put("mql", "SELECT COUNT(identifier) AS nb WHERE `mc16_001:production`.`dataset`.`AMIStatus` = 'VALID'");
@@ -153,16 +154,6 @@ public class CommandSingletonTest
 
 		//System.out.println(CommandSingleton.executeCommand("ListDrivers", arguments).replace(">", ">\n"));
 
-/*
-		arguments.put("country", "FR");
-		arguments.put("locality", "Grenoble");
-		arguments.put("organization", "CNRS");
-		arguments.put("organizationalUnit", "LPSC-AMI");
-		arguments.put("commonName", "Fabian Lambert");
-		arguments.put("password", "fofi1972");
-		arguments.put("validity", "10");
-		System.out.println(CommandSingleton.executeCommand("GenerateCertificate", arguments).replace(">", ">\n"));
-*/
 		try
 		{
 //			Router router = new Router("test", "ami_router", "jdbc:postgresql://localhost:2432/ami_router", "radardb-ami-lpsc", "Pci62Emxt65zcZY84UO7");
@@ -319,7 +310,7 @@ public class CommandSingletonTest
 
 			System.out.println(pathQId.getConstraints().get(0).matches(qId) != pathQId.getConstraints().get(0).getExclusion());
 */
-			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"mc16_001:production\" -entity=\"DATASET\" -primaryFieldName=\"IDENTIFIER\" -primaryFieldValue=\"257898\"", false).replace(">", ">\n"));
+//			System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"mc16_001:production\" -entity=\"DATASET\" -primaryFieldName=\"IDENTIFIER\" -primaryFieldValue=\"257898\"", false).replace(">", ">\n"));
 
 //			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user_role\" -mql=\"SELECT COUNT(*) WHERE `self`.`router_role`.`id` = '1'\"").replace(">", ">\n"));
 

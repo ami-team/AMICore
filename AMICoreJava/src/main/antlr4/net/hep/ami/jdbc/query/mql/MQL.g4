@@ -13,13 +13,14 @@ options {
 /*-------------------------------------------------------------------------*/
 
 mqlQuery
-	: (m_select=selectStatement | m_insert=insertStatement | m_update=updateStatement | m_delete=deleteStatement) ';'?
+	: ';'
+	| (m_select=selectStatement | m_insert=insertStatement | m_update=updateStatement | m_delete=deleteStatement) ';'?
 	;
 
 /*-------------------------------------------------------------------------*/
 
 selectStatement
-	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE m_expression=expressionOr)? (ORDER BY m_orderBy=qId (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
+	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE m_expression=expressionOr)? (GROUP BY m_groupBy=qIdList)? (ORDER BY m_orderBy=qIdList (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
 	;
 
 insertStatement
@@ -44,6 +45,18 @@ columnList
 
 aColumn
 	: m_expression=expressionOr (AS m_alias=ID)?
+	;
+
+/*---------------------------*/
+/* QID_LIST                  */
+/*---------------------------*/
+
+qIdList
+	: m_aQIds+=aQId (',' m_aQIds+=aQId)*
+	;
+
+aQId
+	: m_qId=qId
 	;
 
 /*---------------------------*/
@@ -158,6 +171,10 @@ WHERE
 	: W H E R E
 	;
 
+GROUP
+	: G R O U P
+	;
+
 ORDER
 	: O R D E R
 	;
@@ -251,7 +268,7 @@ NOT
 FUNCTION
 	: A B S | C O S | L O G | M O D | P O W | R N D | S I N | S Q R T
 	| C O N C A T | L O W E R | L E N G T H | S U B S T R | U P P E R
-	| A V G | C O U N T | M I N | M A X | S U M
+	| A V G | C O U N T | M I N | M A X | S T D D E V | S U M
 	;
 
 /*---------------------------*/

@@ -70,7 +70,7 @@ public class SchemaSingleton
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(internalCatalog, ".", table, "." + name);
+			return Objects.hash(internalCatalog, table, name);
 		}
 
 		@Override
@@ -116,7 +116,7 @@ public class SchemaSingleton
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(fkInternalCatalog, ".", fkTable, ".", fkColumn, "=", pkInternalCatalog, ".", pkTable, ".", pkColumn);
+			return Objects.hash(fkInternalCatalog, fkTable, fkColumn, pkInternalCatalog, pkTable, pkColumn);
 		}
 
 		@Override
@@ -901,7 +901,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Column> getColumns(String externalCatalog, String table) throws Exception
+	public static Map<String, Column> getEntityInfo(String externalCatalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -914,7 +914,27 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("table not found `" + externalCatalog + "`.`" + table + "`");
+		throw new Exception("entity not found `" + externalCatalog + "`.`" + table + "`");
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Column getFieldInfo(String externalCatalog, String table, String field) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Column column = getEntityInfo(externalCatalog, table).get(field);
+
+		if(column != null)
+		{
+			return column;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		throw new Exception("field not found `" + externalCatalog + "`.`" + table + "`.`" + field + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -1000,7 +1020,7 @@ public class SchemaSingleton
 	public static List<String> getColumnNames(String externalCatalog, String table) throws Exception
 	{
 		return new ArrayList<>(
-			getColumns(externalCatalog, table).keySet()
+			getEntityInfo(externalCatalog, table).keySet()
 		);
 	}
 
@@ -1024,31 +1044,11 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Column getColumn(String externalCatalog, String table, String field) throws Exception
-	{
-		/*-----------------------------------------------------------------*/
-
-		Column column = getColumns(externalCatalog, table).get(field);
-
-		if(column != null)
-		{
-			return column;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		throw new Exception("field not found for `" + externalCatalog + "`.`" + table + "`.`" + field + "`");
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static Column getPrimaryKey(String externalCatalog, String table) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		for(Column column: getColumns(externalCatalog, table).values())
+		for(Column column: getEntityInfo(externalCatalog, table).values())
 		{
 			if(column.primary)
 			{
@@ -1067,10 +1067,10 @@ public class SchemaSingleton
 
 	public static List<QId> getSortedColumnQId(String externalCatalog, String table, @Nullable List<QId> constraints, boolean isAdmin) throws Exception
 	{
-		return getColumns(externalCatalog, table).values().stream()
-		                                                  .filter(x -> isAdmin || (x.adminOnly == false && x.crypted == false)).sorted((x, y) -> x.rank - y.rank)
-		                                                  .map(x -> new QId(x, false, constraints))
-		                                                  .collect(Collectors.toList())
+		return getEntityInfo(externalCatalog, table).values().stream()
+		                                                     .filter(x -> isAdmin || (x.adminOnly == false && x.crypted == false)).sorted((x, y) -> x.rank - y.rank)
+		                                                     .map(x -> new QId(x, false, constraints))
+		                                                     .collect(Collectors.toList())
 		;
 	}
 

@@ -219,7 +219,7 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append("\" statable=\"")
 			      .append(rowSet.m_fieldStatable[i] ? "true" : "false")
 			      .append("\" groupable=\"")
-			      .append(rowSet.m_fieldStatable[i] ? "true" : "false")
+			      .append(rowSet.m_fieldGroupable[i] ? "true" : "false")
 			      .append("\"><![CDATA[")
 			      .append(rowSet.m_fieldDescription[i])
 			      .append("]]></fieldDescription>")

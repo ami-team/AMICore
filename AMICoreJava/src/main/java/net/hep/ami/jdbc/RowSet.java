@@ -237,7 +237,7 @@ public class RowSet
 
 			try
 			{
-				SchemaSingleton.Column column = SchemaSingleton.getColumn(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
+				SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
 				m_fieldRank[i] = column.rank;
 				m_fieldHidden[i] = column.hidden;
