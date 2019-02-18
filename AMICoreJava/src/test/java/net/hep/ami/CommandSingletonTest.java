@@ -40,11 +40,14 @@ INSERT INTO `router_catalog_extra` (`catalog`, `entity`, `field`, `rank`, `descr
 
 //		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
 
-		
 
 		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
 
 		String mql;
+
+		mql = "INSERT (`catalog`, `entity`, `field`, `rank`, `description`, `webLinkScript`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES ('self', 'router_short_url', 'hash', '0', 'N/A', '(\"\\\"\");', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', CURRENT_TIMESTAMP, 'guest', CURRENT_TIMESTAMP, 'guest')";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_catalog_extra", mql));
+		System.out.println();
 
 		mql = "SELECT *";
 		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));

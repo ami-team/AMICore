@@ -347,9 +347,9 @@ public class Helper
 
 		SchemaSingleton.Column column;
 
-		Tuple2<List<CharSequence>, List<Resolution>> tuple;
+		Tuple3<Value<Boolean>, List<CharSequence>, List<Resolution>> tuple;
 
-		Map<String, Tuple2<List<CharSequence>, List<Resolution>>> entries = new LinkedHashMap<>();
+		Map<String, Tuple3<Value<Boolean>, List<CharSequence>, List<Resolution>>> entries = new LinkedHashMap<>();
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -409,14 +409,16 @@ public class Helper
 
 					if(tuple == null)
 					{
-						entries.put(field, tuple = new Tuple2<>(
+						entries.put(field, tuple = new Tuple3<>(
+							new Value<>(true),
 							new ArrayList<>(),
 							new ArrayList<>()
 						));
 					}
 
-					tuple.x.add(expression);
-					tuple.y.add(resolution);
+					tuple.x.value = true;
+					tuple.y.add(expression);
+					tuple.z.add(resolution);
 
 					/*-----------------------------------------------------*/
 				}
@@ -433,14 +435,16 @@ public class Helper
 
 				if(tuple == null)
 				{
-					entries.put(field, tuple = new Tuple2<>(
+					entries.put(field, tuple = new Tuple3<>(
+						new Value<>(false),
 						new ArrayList<>(),
 						new ArrayList<>()
 					));
 				}
 
-				tuple.x.add(expression);
-				tuple.y.add(resolution);
+				/////.x.value = false;
+				tuple.y.add(expression);
+				tuple.z.add(resolution);
 
 				/*---------------------------------------------------------*/
 			}
@@ -457,14 +461,14 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple2<List<CharSequence>, List<Resolution>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple3<Value<Boolean>, List<CharSequence>, List<Resolution>>> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
 
-			expression = String.join(" AND ", tuple.x);
+			expression = String.join(" AND ", tuple.y);
 
-			if(tuple.y.get(0).getMaxPathLen() > 0)
+			if(tuple.x.value)
 			{
 				/* TODO */
 				/* TODO */
