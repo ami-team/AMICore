@@ -287,7 +287,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getIsolatedExpression(QId mainPrimaryField, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isFieldNameOnly) throws Exception
+	public static String getIsolatedExpression(QId mainPrimaryField, List<Resolution> resolutionList, CharSequence expression, boolean isNoField, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
@@ -311,11 +311,21 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		expression = new StringBuilder().append(mainPrimaryField.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
-		                                .append(" IN (")
-		                                .append(query)
-		                                .append(")")
-		;
+		if(isNoField == false)
+		{
+			expression = new StringBuilder().append(mainPrimaryField.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
+			                                .append(" IN (")
+			                                .append(query)
+			                                .append(")")
+			;
+		}
+		else
+		{
+			expression = new StringBuilder().append("(")
+			                                .append(query)
+			                                .append(")")
+			;
+		}
 
 		/*-----------------------------------------------------------------*/
 
@@ -347,9 +357,9 @@ public class Helper
 
 		SchemaSingleton.Column column;
 
-		Tuple3<Value<Boolean>, List<CharSequence>, List<Resolution>> tuple;
+		Tuple3<QId, List<Resolution>, List<CharSequence>> tuple;
 
-		Map<String, Tuple3<Value<Boolean>, List<CharSequence>, List<Resolution>>> entries = new LinkedHashMap<>();
+		Map<String, Tuple3<QId, List<Resolution>, List<CharSequence>>> entries = new LinkedHashMap<>();
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -410,15 +420,14 @@ public class Helper
 					if(tuple == null)
 					{
 						entries.put(field, tuple = new Tuple3<>(
-							new Value<>(true),
+							new QId(path.get(0).pkInternalCatalog, path.get(0).pkTable, path.get(0).pkColumn),
 							new ArrayList<>(),
 							new ArrayList<>()
 						));
 					}
 
-					tuple.x.value = true;
-					tuple.y.add(expression);
-					tuple.z.add(resolution);
+					tuple.y.add(resolution.skip(1));
+					tuple.z.add(resolution.getInternalQId().toString() + " = " + expression.toString());
 
 					/*-----------------------------------------------------*/
 				}
@@ -436,23 +445,20 @@ public class Helper
 				if(tuple == null)
 				{
 					entries.put(field, tuple = new Tuple3<>(
-						new Value<>(false),
+						/*----------------------------------*/ null /*----------------------------------*/,
 						new ArrayList<>(),
 						new ArrayList<>()
 					));
 				}
 
-				/////.x.value = false;
-				tuple.y.add(expression);
-				tuple.z.add(resolution);
+				tuple.y.add(resolution.skip(0));
+				tuple.z.add(/*-------------------------*/ expression /*-------------------------*/);
 
 				/*---------------------------------------------------------*/
 			}
 
 			/*-------------------------------------------------------------*/
 		}
-
-		System.out.println(entries);
 
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE EXPRESSIONS                                             */
@@ -461,24 +467,20 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple3<Value<Boolean>, List<CharSequence>, List<Resolution>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple3<QId, List<Resolution>, List<CharSequence>>> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
 
-			expression = String.join(" AND ", tuple.y);
+			X.add(Utility.textToSqlId(field));
 
-			if(tuple.x.value)
+			if(tuple.x != null)
 			{
-				/* TODO */
-				/* TODO */
-				/* TODO */
+				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), true, true));
 			}
 			else
 			{
-				X.add(Utility.textToSqlId(field));
-
-				Y.add(expression.toString());
+				Y.add(tuple.z.get(0).toString());
 			}
 		}
 

@@ -138,6 +138,11 @@ public class Resolution
 
 	public Resolution skip(int nr)
 	{
+		if(nr == 0)
+		{
+			return this;
+		}
+
 		Resolution result = new Resolution();
 
 		/*-----------------------------------------------------------------*/
@@ -162,11 +167,14 @@ public class Resolution
 
 			/*-------------------------------------------------------------*/
 
-			result.m_resolvedPaths.add(path);
-
-			if(maxResolvedPathLen < path.size())
+			if(path.isEmpty() == false)
 			{
-				maxResolvedPathLen = path.size();
+				result.m_resolvedPaths.add(path);
+
+				if(maxResolvedPathLen < path.size())
+				{
+					maxResolvedPathLen = path.size();
+				}
 			}
 
 			/*-------------------------------------------------------------*/

@@ -45,10 +45,18 @@ INSERT INTO `router_catalog_extra` (`catalog`, `entity`, `field`, `rank`, `descr
 
 		String mql;
 
-		mql = "INSERT (`catalog`, `entity`, `field`, `rank`, `description`, `webLinkScript`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES ('self', 'router_short_url', 'hash', '0', 'N/A', '(\"\\\"\");', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', CURRENT_TIMESTAMP, 'guest', CURRENT_TIMESTAMP, 'guest')";
-		System.out.println(mql + "\n" + querier1.mqlToSQL("router_catalog_extra", mql));
+		mql = "INSERT (`roleFK`, `commandFK`) VALUES (1, 1)";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command_role", mql));
 		System.out.println();
 
+		mql = "INSERT (`role`, `command`) VALUES ('AMI_ADMIN', 'GetUserInfo')";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command_role", mql));
+		System.out.println();
+
+		mql = "INSERT (`role`, `AMIUser`) VALUES ('AMI_ADMIN', 'jodier')";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user_role", mql));
+		System.out.println();
+/*
 		mql = "SELECT *";
 		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
 		System.out.println();
@@ -84,7 +92,7 @@ INSERT INTO `router_catalog_extra` (`catalog`, `entity`, `field`, `rank`, `descr
 		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN'] AND [`router_role`.`role` = 'AMI_USER']";
 		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
 		System.out.println();
-
+*/
 //		mql = "SELECT `router_user`.`AMIUser`, `self`.`router_user_role2`.`userFK`, `router_role`.`role`";
 //		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
 //		System.out.println();
