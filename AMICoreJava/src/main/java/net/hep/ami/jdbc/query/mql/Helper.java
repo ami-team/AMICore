@@ -7,8 +7,6 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKey;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -399,7 +397,7 @@ public class Helper
 
 			if(resolution.getMaxPathLen() > 0)
 			{
-				for(FrgnKeys path: resolution.getPaths())
+				for(SchemaSingleton.FrgnKeys path: resolution.getPaths())
 				{
 					/*-----------------------------------------------------*/
 
