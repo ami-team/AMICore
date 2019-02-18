@@ -311,21 +311,24 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
+		StringBuilder stringBuilder = new StringBuilder();
+
 		if(isNoField == false)
 		{
-			expression = new StringBuilder().append(mainPrimaryField.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
-			                                .append(" IN (")
-			                                .append(query)
-			                                .append(")")
-			;
+			if(isFieldNameOnly == false)
+			{
+				stringBuilder.append(mainPrimaryField.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
+			}
+			else
+			{
+				stringBuilder.append(mainPrimaryField.toString(QId.MASK_FIELD)).append(" IN ");
+			}
 		}
-		else
-		{
-			expression = new StringBuilder().append("(")
-			                                .append(query)
-			                                .append(")")
-			;
-		}
+
+		expression = stringBuilder.append("(")
+		                          .append(query)
+		                          .append(")")
+		;
 
 		/*-----------------------------------------------------------------*/
 
