@@ -7,6 +7,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
+
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -311,28 +312,28 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder stringBuilder = new StringBuilder();
+		StringBuilder result = new StringBuilder();
 
 		if(isNoField == false)
 		{
 			if(isFieldNameOnly == false)
 			{
-				stringBuilder.append(mainPrimaryField.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
+				result.append(mainPrimaryField.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
 			}
 			else
 			{
-				stringBuilder.append(mainPrimaryField.toString(QId.MASK_FIELD)).append(" IN ");
+				result.append(mainPrimaryField.toString(QId.MASK_FIELD)).append(" IN ");
 			}
 		}
 
-		expression = stringBuilder.append("(")
-		                          .append(query)
-		                          .append(")")
+		result.append("(")
+		      .append(query)
+		      .append(")")
 		;
 
 		/*-----------------------------------------------------------------*/
 
-		return expression.toString();
+		return result.toString();
 
 		/*-----------------------------------------------------------------*/
 	}
