@@ -33,7 +33,7 @@ deploy:
 #############################################################################
 
 stop:
-	./tomcat/bin/shutdown.sh &> /dev/null
+	./tomcat/bin/catalina.sh stop &> /dev/null
 
 	rm -fr tomcat/logs/*
 
