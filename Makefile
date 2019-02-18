@@ -26,7 +26,7 @@ update-versions:
 #############################################################################
 
 deploy:
-	rm -fr tomcat/webapps/*
+	rm -fr tomcat/webapps/AMI/
 
 	unzip AMICoreWeb/target/AMICoreWeb-*.war -d tomcat/webapps/AMI/
 
