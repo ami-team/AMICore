@@ -42,16 +42,16 @@ stop:
 start:
 	rm -fr tomcat/logs/*
 
-	./tomcat/bin/startup.sh
+	./tomcat/bin/catalina.sh start
 
 #############################################################################
 
 restart:
-	./tomcat/bin/shutdown.sh &> /dev/null
+	./tomcat/bin/catalina.sh stop &> /dev/null
 
 	rm -fr tomcat/logs/* ; sleep 2
 
-	./tomcat/bin/startup.sh
+	./tomcat/bin/catalina.sh start
 
 #############################################################################
 
