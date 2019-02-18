@@ -38,8 +38,9 @@ INSERT INTO `router_catalog_extra` (`catalog`, `entity`, `field`, `rank`, `descr
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
+//		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
 
+		
 
 		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
 
