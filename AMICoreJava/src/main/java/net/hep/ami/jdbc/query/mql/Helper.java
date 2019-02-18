@@ -480,7 +480,7 @@ public class Helper
 			}
 			else
 			{
-				Y.add(tuple.z.get(0).toString());
+				Y.add(tuple.z.get(tuple.z.size() - 1).toString()); /* LAST ONE */
 			}
 		}
 
