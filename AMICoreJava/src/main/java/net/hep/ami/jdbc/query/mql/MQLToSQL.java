@@ -593,7 +593,7 @@ public class MQLToSQL
 			m_primaryKeyQId,
 			tmpResolutionList,
 			expression,
-			0,
+			false,
 			(mask & IS_MODIF_STM) != 0
 		));
 
