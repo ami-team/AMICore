@@ -20,14 +20,6 @@ public class CommandSingletonTest
 
 	public static void main(String[] args) throws Exception
 	{
-		/*
-("\"");
-
-AddElement -separator="|" -catalog="self" -entity="router_catalog_extra" -fields="catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable" -values="self|router_short_url|hash|0|N/A|(\"\\\"\");|0|0|0|0|0|0|0|0|0|0"
-
-
-INSERT INTO `router_catalog_extra` (`catalog`, `entity`, `field`, `rank`, `description`, `webLinkScript`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES ('self', 'router_short_url', 'hash', '0', 'N/A', '("\"");', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', CURRENT_TIMESTAMP, 'guest', CURRENT_TIMESTAMP, 'guest')
-		*/
 		Map<String, String> arguments = new HashMap<String, String>();
 
 //		CommandSingleton.executeCommand("RemoveElements -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -keyFields=\"catalog|entity|field\" -keyValues=\"self|router_catalog|custom\"", false);
@@ -38,7 +30,7 @@ INSERT INTO `router_catalog_extra` (`catalog`, `entity`, `field`, `rank`, `descr
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-//		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
+		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
 
 
 		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
@@ -138,9 +130,9 @@ INSERT INTO `router_catalog_extra` (`catalog`, `entity`, `field`, `rank`, `descr
 
 //		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\"§\" -fields=\"externalcatalog§internalcatalog§internalschema§jdbcurl§user§pass§custom§archived§created§createdby§modified§modifiedby\" -values=\"a§a§@NULL§a§a§a§{}§0§@CURRENT_TIMESTAMP§a§@CURRENT_TIMESTAMP§a\"", false).replace(">", ">\n"));
 
-		//System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"test\" -entity=\"C\" -keyFields=\"id\" -keyValues=\"99\"", false).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("RemoveElements -catalog=\"test\" -entity=\"C\" -keyFields=\"id\" -keyValues=\"99\"", false).replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:demo\" -entity=\"cluster\" -mql=\"SELECT DISTINCT `nika2:demo`.`campaign`.`name` WHERE `nika2:demo`.`cluster`.`Done` = '1' ORDER BY `nika2:demo`.`campaign`.`name` ASC\"", false).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:demo\" -entity=\"cluster\" -mql=\"SELECT DISTINCT `nika2:demo`.`campaign`.`name` WHERE `nika2:demo`.`cluster`.`Done` = '1' ORDER BY `nika2:demo`.`campaign`.`name` ASC\"", false).replace(">", ">\n"));
 
 		//System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"A\" -separator=\"§\" -fields=\"id§name§kux\" -values=\"-99§foo§bar\"", false).replace(">", ">\n"));
 
