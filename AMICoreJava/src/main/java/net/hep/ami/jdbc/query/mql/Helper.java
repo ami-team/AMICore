@@ -7,6 +7,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
+
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -311,25 +312,28 @@ public class Helper
 
 		/*-----------------------------------------------------------------*/
 
+		StringBuilder result = new StringBuilder();
+
 		if(isNoField == false)
 		{
-			expression = new StringBuilder().append(mainPrimaryField.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD))
-			                                .append(" IN (")
-			                                .append(query)
-			                                .append(")")
-			;
+			if(isFieldNameOnly == false)
+			{
+				result.append(mainPrimaryField.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
+			}
+			else
+			{
+				result.append(mainPrimaryField.toString(QId.MASK_FIELD)).append(" IN ");
+			}
 		}
-		else
-		{
-			expression = new StringBuilder().append("(")
-			                                .append(query)
-			                                .append(")")
-			;
-		}
+
+		result.append("(")
+		      .append(query)
+		      .append(")")
+		;
 
 		/*-----------------------------------------------------------------*/
 
-		return expression.toString();
+		return result.toString();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -480,7 +484,7 @@ public class Helper
 			}
 			else
 			{
-				Y.add(tuple.z.get(tuple.z.size() - 1).toString()); /* LAST ONE */
+				Y.add(tuple.z.get(tuple.z.size() - 1).toString()); /* GET THE LAST VALUE */
 			}
 		}
 
