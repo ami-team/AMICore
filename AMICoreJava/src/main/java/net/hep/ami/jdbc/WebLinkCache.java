@@ -48,7 +48,7 @@ public class WebLinkCache
 		}
 		catch(Exception e)
 		{
-			return new StringBuilder().append("<properties><![CDATA[").append(e.getMessage()).append("</properties>").toString();
+			return new StringBuilder().append("<properties><![CDATA[").append(e.getMessage()).append("]]></properties>").toString();
 		}
 
 		/*-----------------------------------------------------------------*/
