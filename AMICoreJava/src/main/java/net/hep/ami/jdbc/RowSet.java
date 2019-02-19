@@ -52,6 +52,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	protected final Map<String, Integer> m_nameIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
 	protected final Map<String, Integer> m_labelIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
@@ -291,6 +292,7 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
+			m_nameIndices.put(m_fieldNames[i], i);
 			m_labelIndices.put(m_fieldLabels[i], i);
 
 			/*-------------------------------------------------------------*/

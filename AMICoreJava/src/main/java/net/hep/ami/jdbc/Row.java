@@ -62,23 +62,28 @@ public class Row
 			throw new Exception("field index out of range");
 		}
 
-		return m_values[
-			/*---------*/ fieldIndex /*---------*/
-		];
+		return m_values[fieldIndex];
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getValue(String labelName) throws Exception
+	public String getValue(String name) throws Exception
 	{
-		if(m_rowSet.m_labelIndices.containsKey(labelName) == false)
+		if(m_rowSet.m_labelIndices.containsKey(name) == false)
 		{
-			throw new Exception("field label not in row");
+			if(m_rowSet.m_nameIndices.containsKey(name) == false)
+			{
+				throw new Exception("field label/name `" + name + "` not in row");
+			}
+			else
+			{
+				return m_values[m_rowSet.m_nameIndices.get(name)];
+			}
 		}
-
-		return m_values[
-			m_rowSet.m_labelIndices.get(labelName)
-		];
+		else
+		{
+			return m_values[m_rowSet.m_labelIndices.get(name)];
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
