@@ -270,9 +270,7 @@ FUNCTION
 	| C O N C A T | L O W E R | L E N G T H | S U B S T R | U P P E R
 	| A V G | C O U N T | M I N | M A X | S T D D E V | S U M
 
-	| J S O N '_' C O N T A I N S | J S O N '_' C O N T A I N S '_' P A T H
-	| J S O N '_' E X T R A C T | J S O N '_' U N Q U O T E
-	| J S O N '_' P R E T T Y | J S O N '_' S T O R A G E '_' S I Z E
+	| J S O N '_' [a-zA-Z_]+
 	;
 
 /*---------------------------*/
