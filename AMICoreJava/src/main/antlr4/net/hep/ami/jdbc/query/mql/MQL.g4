@@ -104,11 +104,11 @@ expressionNotPlusMinus
 	;
 
 expressionX
-	: '(' m_expression=expressionOr ')'                                                     # ExpressionGroup
-	| '[' m_isoExpression=expressionOr ']'                                                  # ExpressionIsoGroup
-	| m_functionName=FUNCTION '(' (m_param1=expressionOr (',' m_param2=expressionOr)?)? ')' # ExpressionFunction
-	| m_literal=literal                                                                     # ExpressionLiteral
-	| m_qId=qId                                                                             # ExpressionQId
+	: '(' m_expression=expressionOr ')'                                                                                  # ExpressionGroup
+	| '[' m_isoExpression=expressionOr ']'                                                                               # ExpressionIsoGroup
+	| m_functionName=FUNCTION '(' (m_param1=expressionOr (',' m_param2=expressionOr (',' m_param3=expressionOr)?)?)? ')' # ExpressionFunction
+	| m_literal=literal                                                                                                  # ExpressionLiteral
+	| m_qId=qId                                                                                                          # ExpressionQId
 	;
 
 /*---------------------------*/
@@ -269,6 +269,10 @@ FUNCTION
 	: A B S | C O S | L O G | M O D | P O W | R N D | S I N | S Q R T
 	| C O N C A T | L O W E R | L E N G T H | S U B S T R | U P P E R
 	| A V G | C O U N T | M I N | M A X | S T D D E V | S U M
+
+	| J S O N '_' C O N T A I N S | J S O N '_' C O N T A I N S '_' P A T H
+	| J S O N '_' E X T R A C T | J S O N '_' U N Q U O T E
+	| J S O N '_' P R E T T Y | J S O N '_' S T O R A G E '_' S I Z E
 	;
 
 /*---------------------------*/

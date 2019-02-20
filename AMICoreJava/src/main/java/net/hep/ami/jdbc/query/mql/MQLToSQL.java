@@ -621,6 +621,11 @@ public class MQLToSQL
 			if(context.m_param2 != null)
 			{
 				result.append(", ").append(visitExpressionOr(context.m_param2, resolutionList, mask | STAR_TO_ID));
+
+				if(context.m_param3 != null)
+				{
+					result.append(", ").append(visitExpressionOr(context.m_param3, resolutionList, mask | STAR_TO_ID));
+				}
 			}
 		}
 
