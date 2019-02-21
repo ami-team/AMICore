@@ -60,6 +60,14 @@ aQId
 	;
 
 /*---------------------------*/
+/* EXPRESSION_TUPLE          */
+/*---------------------------*/
+
+expressionTuple
+	: '(' m_expressions+=expressionOr (',' m_expressions+=expressionOr)* ')'
+	;
+
+/*---------------------------*/
 /* QID_TUPLE                 */
 /*---------------------------*/
 
@@ -68,11 +76,11 @@ qIdTuple
 	;
 
 /*---------------------------*/
-/* EXPRESSION_TUPLE          */
+/* LITERAL_TUPLE             */
 /*---------------------------*/
 
-expressionTuple
-	: '(' m_expressions+=expressionOr (',' m_expressions+=expressionOr)* ')'
+literalTuple
+	: '(' m_literals+=literal (',' m_literals+=literal)* ')'
 	;
 
 /*---------------------------*/
@@ -104,11 +112,11 @@ expressionNotPlusMinus
 	;
 
 expressionX
-	: '(' m_expression=expressionOr ')'                                                                                  # ExpressionGroup
-	| '[' m_isoExpression=expressionOr ']'                                                                               # ExpressionIsoGroup
-	| m_functionName=FUNCTION '(' (m_param1=expressionOr (',' m_param2=expressionOr (',' m_param3=expressionOr)?)?)? ')' # ExpressionFunction
-	| m_literal=literal                                                                                                  # ExpressionLiteral
-	| m_qId=qId                                                                                                          # ExpressionQId
+	: '(' m_expression=expressionOr ')'                        # ExpressionGroup
+	| '[' m_expression=expressionOr ']'                        # ExpressionIsoGroup
+	| m_functionName=FUNCTION m_expressions=expressionTuple    # ExpressionFunction
+	| m_qId=qId                                                # ExpressionQId
+	| m_literal=literal                                        # ExpressionLiteral
 	;
 
 /*---------------------------*/
@@ -129,14 +137,6 @@ constraintQId
 
 basicQId
 	: m_ids+=(ID|MUL|'#') ('.' m_ids+=(ID|MUL|'#'))*
-	;
-
-/*---------------------------*/
-/* LITERAL_TUPLE             */
-/*---------------------------*/
-
-literalTuple
-	: '(' m_literals+=literal (',' m_literals+=literal)* ')'
 	;
 
 /*---------------------------*/

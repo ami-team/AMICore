@@ -285,7 +285,7 @@ public class MQLToSQL
 			result.add(visitAColumn(child, resolutionList, mask).toString());
 		}
 
-		return new StringBuilder(String.join(",", result));
+		return new StringBuilder(String.join(", ", result));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -319,7 +319,7 @@ public class MQLToSQL
 			result.add(visitAQId(child, resolutionList, mask).toString());
 		}
 
-		return new StringBuilder(String.join(",", result));
+		return new StringBuilder(String.join(", ", result));
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -327,6 +327,20 @@ public class MQLToSQL
 	private StringBuilder visitAQId(MQLParser.AQIdContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return visitQId(context.m_qId, resolutionList, mask | NO_STAR).get(0).getInternalQId().toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	private List<StringBuilder> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
+	{
+		List<StringBuilder> result = new ArrayList<>();
+
+		for(MQLParser.ExpressionOrContext child: context.m_expressions)
+		{
+			result.add(visitExpressionOr(child, resolutionList, mask));
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -345,13 +359,13 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private List<StringBuilder> visitExpressionTuple(MQLParser.ExpressionTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
+	private List<StringBuilder> visitLiteralTuple(MQLParser.LiteralTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<StringBuilder> result = new ArrayList<>();
 
-		for(MQLParser.ExpressionOrContext child: context.m_expressions)
+		for(MQLParser.LiteralContext child: context.m_literals)
 		{
-			result.add(visitExpressionOr(child, resolutionList, mask));
+			result.add(visitLiteral(child, resolutionList, mask));
 		}
 
 		return result;
@@ -441,12 +455,15 @@ public class MQLToSQL
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
-				result.append(visitLiteralTuple((MQLParser.LiteralTupleContext) child, resolutionList, mask));
+				result.append("(")
+				      .append(String.join(", ", visitLiteralTuple((MQLParser.LiteralTupleContext) child, resolutionList, mask)))
+				      .append(")")
+				;
 			}
 			else if(child instanceof TerminalNode)
 			{
 				result.append(" ")
-				      .append(child.getText(  ))
+				      .append(child.getText())
 				      .append(" ")
 				;
 			}
@@ -582,13 +599,11 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionIsoGroup(MQLParser.ExpressionIsoGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
 		List<Resolution> tmpResolutionList = new ArrayList<>();
 
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder expression = visitExpressionOr(context.m_isoExpression, tmpResolutionList, mask & ~IS_MODIF_STM);
-
-		/*-----------------------------------------------------------------*/
+		StringBuilder expression = visitExpressionOr(context.m_expression, tmpResolutionList, mask & ~IS_MODIF_STM);
 
 		expression = new StringBuilder(Helper.getIsolatedExpression(
 			m_primaryKeyQId,
@@ -604,34 +619,19 @@ public class MQLToSQL
 		                          .append(expression)
 		                          .append(")")
 		;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	private StringBuilder visitExpressionFunction(MQLParser.ExpressionFunctionContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
-		StringBuilder result = new StringBuilder(context.m_functionName.getText());
-
-		result.append("(");
-
-		if(context.m_param1 != null)
-		{
-			result.append( "" ).append(visitExpressionOr(context.m_param1, resolutionList, mask | STAR_TO_ID));
-
-			if(context.m_param2 != null)
-			{
-				result.append(", ").append(visitExpressionOr(context.m_param2, resolutionList, mask | STAR_TO_ID));
-
-				if(context.m_param3 != null)
-				{
-					result.append(", ").append(visitExpressionOr(context.m_param3, resolutionList, mask | STAR_TO_ID));
-				}
-			}
-		}
-
-		result.append(")");
-
-		return result;
+		return new StringBuilder().append(context.m_functionName.getText())
+		                          .append("(")
+		                          .append(String.join(", ", visitExpressionTuple(context.m_expressions, resolutionList, mask | STAR_TO_ID)))
+		                          .append(")")
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -704,16 +704,6 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private StringBuilder visitLiteralTuple(MQLParser.LiteralTupleContext context, List<Resolution> resolutionList, int mask) throws Exception
-	{
-		return new StringBuilder().append("(")
-		                          .append(context.m_literals.stream().map(x -> x.getText()).collect(Collectors.joining(", ")))
-		                          .append(")")
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
