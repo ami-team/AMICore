@@ -173,7 +173,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, m_internalCatalog, entity, m_AMIUser, m_isAdmin, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, entity, m_AMIUser, m_isAdmin, mql);
 		}
 		else
 		{
@@ -188,7 +188,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, m_internalCatalog, entity, m_AMIUser, m_isAdmin, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, entity, m_AMIUser, m_isAdmin, mql);
 		}
 		else
 		{

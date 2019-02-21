@@ -205,14 +205,12 @@ INSERT
 	: I N S E R T
 	;
 
-VALUES
-	: V A L U E S
-	;
-
-/*---------------------------*/
-
 UPDATE
 	: U P D A T E
+	;
+
+VALUES
+	: V A L U E S
 	;
 
 /*---------------------------*/
@@ -266,9 +264,9 @@ NOT
 	;
 
 FUNCTION
-	: A B S | C O S | L O G | M O D | P O W | R N D | S I N | S Q R T
-	| C O N C A T | L O W E R | L E N G T H | S U B S T R | U P P E R
-	| A V G | C O U N T | M I N | M A X | S T D D E V | S U M
+	: A B S | A V G | C O N C A T | C O S | C O U N T | L E N G T H
+	| L O G | L O W E R | M A X | M I N | M O D | P O W | R N D | S I N
+	| S Q R T | S T D D E V | S U B S T R | S U M | U P P E R
 
 	| J S O N '_' [a-zA-Z_]+
 	;

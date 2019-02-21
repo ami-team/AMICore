@@ -30,68 +30,67 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
-
+//		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
 
 		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
 
 		String mql;
 
-//		mql = "SELECT *";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
+		mql = "SELECT *";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
 
-//		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command", mql));
-//		System.out.println();
+		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command", mql));
+		System.out.println();
 
-//		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
-//		System.out.println();
+		mql = "SELECT `router_command`.`command`, `router_role`.`role` WHERE `router_command`.`command` = 'GetUserInfo'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
+		System.out.println();
 
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
-//		System.out.println();
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
 
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_role`.`role` WHERE `router_role`.`role` = 'AMI_USER'";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`, `router_role`.`description` WHERE `router_user`.`AMIUser` = 'jodier'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_role", mql));
+		System.out.println();
 
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE (`router_role`.`role` = 'AMI_ADMIN') AND (`router_role`.`role` = 'AMI_USER')";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
-//
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN'] AND [`router_role`.`role` = 'AMI_USER']";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE `router_user`.`AMIUser` = 'jodier'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
 
-//		mql = "INSERT (`roleFK`, `commandFK`) VALUES (1, 1)";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command_role", mql));
-//		System.out.println();
-//
-//		mql = "INSERT (`role`, `command`) VALUES ('AMI_ADMIN', 'GetUserInfo')";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command_role", mql));
-//		System.out.println();
-//
-//		mql = "INSERT (`role`, `AMIUser`) VALUES ('AMI_ADMIN', 'jodier')";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user_role", mql));
-//		System.out.println();
-		
-//		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
+		mql = "SELECT `router_role`.`role` WHERE `router_role`.`role` = 'AMI_USER'";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
 
-//		mql = "SELECT `router_user`.`AMIUser`, `self`.`router_user_role2`.`userFK`, `router_role`.`role`";
-//		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
-//		System.out.println();
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE (`router_role`.`role` = 'AMI_ADMIN') AND (`router_role`.`role` = 'AMI_USER')";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role` WHERE [`router_role`.`role` = 'AMI_ADMIN'] AND [`router_role`.`role` = 'AMI_USER']";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "INSERT (`roleFK`, `commandFK`) VALUES (1, 1)";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command_role", mql));
+		System.out.println();
+
+		mql = "INSERT (`role`, `command`) VALUES ('AMI_ADMIN', 'GetUserInfo')";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_command_role", mql));
+		System.out.println();
+
+		mql = "INSERT (`role`, `AMIUser`) VALUES ('AMI_ADMIN', 'jodier')";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user_role", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `router_role`.`role`";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
+
+		mql = "SELECT `router_user`.`AMIUser`, `self`.`router_user_role2`.`userFK`, `router_role`.`role`";
+		System.out.println(mql + "\n" + querier1.mqlToSQL("router_user", mql));
+		System.out.println();
 
 		querier1.rollbackAndRelease();
 

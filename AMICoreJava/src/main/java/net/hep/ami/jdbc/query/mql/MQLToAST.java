@@ -5,7 +5,6 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.parser.*;
 
 public class MQLToAST
@@ -33,14 +32,7 @@ public class MQLToAST
 
 	/*---------------------------------------------------------------------*/
 
-	public static String parse(String catalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
-	{
-		return parse(catalog, SchemaSingleton.externalCatalogToInternalCatalog(catalog), entity, AMIUser, isAdmin, query);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String parse(String externalCatalog, String internalCatalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
+	public static String parse(String externalCatalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
