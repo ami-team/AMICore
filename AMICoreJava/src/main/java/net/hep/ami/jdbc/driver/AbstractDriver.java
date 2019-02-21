@@ -37,9 +37,8 @@ public abstract class AbstractDriver implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	private final Connection m_connection;
-
-	private final Statement m_statement;
+	protected final Connection m_connection;
+	protected final Statement m_statement;
 
 	/*---------------------------------------------------------------------*/
 

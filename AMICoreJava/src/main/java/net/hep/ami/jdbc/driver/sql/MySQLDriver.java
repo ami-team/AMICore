@@ -21,12 +21,11 @@ public class MySQLDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public void setDB(String db) throws Exception
 	{
-		getStatement().executeQuery("SET SESSION sql_mode = 'NO_BACKSLASH_ESCAPES';");
+		m_statement.executeQuery("SET SESSION sql_mode = 'NO_BACKSLASH_ESCAPES';");
 
-		getStatement().executeQuery("USE `" + db + "`;");
+		m_statement.executeQuery("USE `" + db + "`;");
 	}
 
 	/*---------------------------------------------------------------------*/
