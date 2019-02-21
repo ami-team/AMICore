@@ -386,6 +386,12 @@ public class Router implements Querier
 			";"
 		);
 
+		executeSQLUpdate(
+			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
+			" ('/xslt/AMIXmlToXml.xsl', 'application/xml')" +
+			";"
+		);
+
 		/*-----------------------------------------------------------------*/
 		/* ROLES                                                           */
 		/*-----------------------------------------------------------------*/
