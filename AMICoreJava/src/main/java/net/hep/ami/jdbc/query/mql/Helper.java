@@ -229,32 +229,37 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				if(tmpFromSet.isEmpty())
+				if(tmpIdSet.isEmpty() == false)
 				{
-					tmpFromSet.add("DUAL");
+					/*-----------------------------------------------------*/
+
+					if(tmpFromSet.isEmpty() == true)
+					{
+						tmpFromSet.add("DUAL");
+					}
+
+					/*-----------------------------------------------------*/
+
+					query = new SelectObj().addSelectPart(tmpIdSet)
+					                       .addFromPart(tmpFromSet)
+					                       .addWherePart(tmpWhereSet)
+					                       .toString()
+					;
+
+					whereSet1.add(query);
+
+					/*-----------------------------------------------------*/
+
+					query = new StringBuilder().append("(")
+					                           .append(String.join(", ", tmpIdSet))
+					                           .append(") IN (")
+					                           .append(query)
+					                           .append(")")
+					                           .toString()
+					;
+
+					whereSet2.add(query);
 				}
-
-				/*---------------------------------------------------------*/
-
-				query = new SelectObj().addSelectPart(tmpIdSet)
-				                       .addFromPart(tmpFromSet)
-				                       .addWherePart(tmpWhereSet)
-				                       .toString()
-				;
-
-				whereSet1.add(query);
-
-				/*---------------------------------------------------------*/
-
-				query = new StringBuilder().append("(")
-				                           .append(String.join(", ", tmpIdSet))
-				                           .append(") IN (")
-				                           .append(query)
-				                           .append(")")
-				                           .toString()
-				;
-
-				whereSet2.add(query);
 
 				/*---------------------------------------------------------*/
 
