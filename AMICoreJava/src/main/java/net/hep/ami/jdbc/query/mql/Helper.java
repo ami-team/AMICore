@@ -270,30 +270,37 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			if(trivialCase)
+			if(whereSet1.isEmpty() == false)
 			{
-				query = String.join(" UNION ", whereSet1);
+				/*---------------------------------------------------------*/
+
+				if(trivialCase)
+				{
+					query = String.join(" UNION ", whereSet1);
+				}
+				else
+				{
+					query = String.join(((" OR ")), whereSet2);
+
+					query = new SelectObj().addSelectPart(idSet)
+					                       .addFromPart("DUAL")
+					                       .addWherePart(query)
+					                       .toString()
+					;
+				}
+
+				/*---------------------------------------------------------*/
+
+				globalWherSet.add(new StringBuilder().append("(")
+				                                     .append(String.join(", ", idSet))
+				                                     .append(") IN (")
+				                                     .append(query)
+				                                     .append(")")
+				                                     .toString()
+				);
+
+				/*---------------------------------------------------------*/
 			}
-			else
-			{
-				query = String.join(((" OR ")), whereSet2);
-
-				query = new SelectObj().addSelectPart(idSet)
-				                       .addFromPart("DUAL")
-				                       .addWherePart(query)
-				                       .toString()
-				;
-			}
-
-			/*-------------------------------------------------------------*/
-
-			globalWherSet.add(new StringBuilder().append("(")
-			                                     .append(String.join(", ", idSet))
-			                                     .append(") IN (")
-			                                     .append(query)
-			                                     .append(")")
-			                                     .toString()
-			);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -552,6 +559,8 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
+System.out.println(X);
+System.out.println(Y);
 
 		return new Tuple2<List<String>, List<String>>(X, Y);
 
