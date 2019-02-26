@@ -316,7 +316,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isFieldNameOnly) throws Exception
+	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean noPrimaryEntity, boolean isNoField, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
@@ -328,6 +328,13 @@ public class Helper
 			skip,
 			false
 		);
+
+		/*-----------------------------------------------------------------*/
+
+		if(noPrimaryEntity)
+		{
+			tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
+		}
 
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE EXPRESSION                                              */
@@ -353,8 +360,6 @@ public class Helper
 			{
 				result.append(primaryKey.toString(QId.MASK_FIELD)).append(" IN ");
 			}
-
-
 		}
 
 		result.append("(")
@@ -529,7 +534,7 @@ public class Helper
 
 			if(tuple.x != null)
 			{
-				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), 1, true, true));
+				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), 1, false, true, true));
 			}
 			else
 			{
