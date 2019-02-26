@@ -24,7 +24,7 @@ public class AMICoreTest
 	{
 		System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
 
-		System.setProperty("ami.integration", "");
+		System.setProperty("ami_integration", "");
 
 		AMICoreTest test = new AMICoreTest();
 
@@ -40,7 +40,7 @@ public class AMICoreTest
 	{
 		boolean testFail = false;
 
-		if(System.getProperty("ami.integration") == null)
+		if(System.getProperty("ami_integration") == null)
 		{
 			System.out.println("skipping integration");
 
