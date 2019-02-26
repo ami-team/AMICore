@@ -316,7 +316,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isFieldNameOnly, boolean noPrimaryEntity) throws Exception
+	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isNoEntity, boolean isNoPrimaryEntity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
@@ -330,46 +330,55 @@ public class Helper
 		);
 
 		/*-----------------------------------------------------------------*/
-
-		if(noPrimaryEntity)
-		{
-			tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
-		}
-
-		/*-----------------------------------------------------------------*/
 		/* ISOLATE EXPRESSION                                              */
 		/*-----------------------------------------------------------------*/
 
-		SelectObj query = new SelectObj().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-		                                 .addFromPart(tuple.x)
-		                                 .addWherePart(expression)
-		                                 .addWherePart(tuple.y)
-		;
-
-		/*-----------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
-
-		if(isNoField == false)
+		if(tuple.y.isEmpty() == false)
 		{
-			if(isFieldNameOnly == false)
+			/*-------------------------------------------------------------*/
+
+			if(isNoPrimaryEntity)
 			{
-				result.append(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
+				tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 			}
-			else
+
+			/*-------------------------------------------------------------*/
+
+			SelectObj query = new SelectObj().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+			                                 .addFromPart(tuple.x)
+			                                 .addWherePart(expression)
+			                                 .addWherePart(tuple.y)
+			;
+
+			/*-------------------------------------------------------------*/
+
+			StringBuilder stringBuilder = new StringBuilder();
+
+			if(isNoField == false)
 			{
-				result.append(primaryKey.toString(QId.MASK_FIELD)).append(" IN ");
+				if(isNoEntity == false)
+				{
+					stringBuilder.append(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
+				}
+				else
+				{
+					stringBuilder.append(primaryKey.toString(QId.MASK_FIELD)).append(" IN ");
+				}
 			}
+
+			stringBuilder.append("(")
+			             .append(query)
+			             .append(")")
+			;
+
+			/*-------------------------------------------------------------*/
+
+			return stringBuilder.toString();
 		}
-
-		result.append("(")
-		      .append(query)
-		      .append(")")
-		;
-
-		/*-----------------------------------------------------------------*/
-
-		return result.toString();
+		else
+		{
+			return expression.toString();
+		}
 
 		/*-----------------------------------------------------------------*/
 	}

@@ -221,6 +221,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
+			System.out.println("------------------------------");
 			result.addWherePart(Helper.getIsolatedExpression(
 				m_primaryKey,
 				m_resolutionList,
