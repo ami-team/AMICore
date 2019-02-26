@@ -559,8 +559,6 @@ public class Helper
 		}
 
 		/*-----------------------------------------------------------------*/
-System.out.println(X);
-System.out.println(Y);
 
 		return new Tuple2<List<String>, List<String>>(X, Y);
 
