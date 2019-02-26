@@ -221,14 +221,19 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM));
+			result.addWherePart(Helper.getIsolatedExpression(
+				m_primaryKey,
+				m_resolutionList,
+				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
+				0,
+				false,
+				true
+			));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKey, m_resolutionList, 0, true).y)
-		             .toStringBuilder()
-		;
+		return result.toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -247,14 +252,19 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM));
+			result.addWherePart(Helper.getIsolatedExpression(
+				m_primaryKey,
+				m_resolutionList,
+				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
+				0,
+				false,
+				true
+			));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKey, m_resolutionList, 0, true).y)
-		             .toStringBuilder()
-		;
+		return result.toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
