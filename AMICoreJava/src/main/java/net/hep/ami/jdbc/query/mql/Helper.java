@@ -333,7 +333,7 @@ public class Helper
 		/* ISOLATE EXPRESSION                                              */
 		/*-----------------------------------------------------------------*/
 
-		if(tuple.y.isEmpty() == false)
+		if(isNoField || tuple.y.isEmpty() == false)
 		{
 			/*-------------------------------------------------------------*/
 
