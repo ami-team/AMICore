@@ -415,6 +415,13 @@ public class Helper
 				{
 					/*-----------------------------------------------------*/
 
+					if(path.get(0).fkTable.equals(primaryKey.getEntity()) == false
+					   ||
+					   path.get(0).fkInternalCatalog.equals(primaryKey.getCatalog()) == false)
+					{
+						continue;
+					}
+
 					field = path.get(0).fkColumn;
 
 					/*-----------------------------------------------------*/
