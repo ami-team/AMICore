@@ -226,14 +226,14 @@ public class MQLToSQL
 				m_resolutionList,
 				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
 				0,
-				true,
 				false,
+				true,
 				true
 			));
 		}
 
 		/*-----------------------------------------------------------------*/
-		System.out.println(result);
+
 		return result.toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
@@ -258,8 +258,8 @@ public class MQLToSQL
 				m_resolutionList,
 				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
 				0,
-				true,
 				false,
+				true,
 				true
 			));
 		}
@@ -608,8 +608,8 @@ public class MQLToSQL
 			expression,
 			0,
 			false,
-			false,
-			(mask & IS_MODIF_STM) != 0
+			(mask & IS_MODIF_STM) != 0,
+			false
 		));
 
 		/*-----------------------------------------------------------------*/

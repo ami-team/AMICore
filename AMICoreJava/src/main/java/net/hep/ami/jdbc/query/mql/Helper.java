@@ -316,7 +316,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean noPrimaryEntity, boolean isNoField, boolean isFieldNameOnly) throws Exception
+	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isFieldNameOnly, boolean noPrimaryEntity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
@@ -534,7 +534,7 @@ public class Helper
 
 			if(tuple.x != null)
 			{
-				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), 1, false, true, true));
+				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), 1, true, true, false));
 			}
 			else
 			{
