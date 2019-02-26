@@ -136,66 +136,6 @@ public class Resolution
 
 	/*---------------------------------------------------------------------*/
 
-	public Resolution skip(int nr)
-	{
-		if(nr == 0)
-		{
-			return this;
-		}
-
-		Resolution result = new Resolution();
-
-		/*-----------------------------------------------------------------*/
-
-		int maxResolvedPathLen = 0;
-
-		for(SchemaSingleton.FrgnKeys frgnKeys: m_resolvedPaths)
-		{
-			/*-------------------------------------------------------------*/
-
-			int cnt = 0;
-
-			SchemaSingleton.FrgnKeys path = new SchemaSingleton.FrgnKeys();
-
-			for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
-			{
-				if(cnt++ >= nr)
-				{
-					path.add(frgnKey);
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-
-			if(path.isEmpty() == false)
-			{
-				result.m_resolvedPaths.add(path);
-
-				if(maxResolvedPathLen < path.size())
-				{
-					maxResolvedPathLen = path.size();
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		result.m_resolvedColumn = m_resolvedColumn;
-
-		result.m_resolvedInternalQId = m_resolvedInternalQId;
-		result.m_resolvedExternalQId = m_resolvedExternalQId;
-
-		result.m_maxResolvedPathLen = maxResolvedPathLen;
-
-		/*-----------------------------------------------------------------*/
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	@Override
 	public String toString()
 	{

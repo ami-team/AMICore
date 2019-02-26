@@ -34,7 +34,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private final List<Resolution> m_globalResolutionList = new ArrayList<>();
+	private final List<Resolution> m_resolutionList = new ArrayList<>();
 
 	/*---------------------------------------------------------------------*/
 
@@ -113,28 +113,28 @@ public class MQLToSQL
 
 		if(context.m_columns != null)
 		{
-			result.addSelectPart(visitColumnList(context.m_columns, m_globalResolutionList, 0));
+			result.addSelectPart(visitColumnList(context.m_columns, m_resolutionList, 0));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, 0));
+			result.addWherePart(visitExpressionOr(context.m_expression, m_resolutionList, 0));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_groupBy != null)
 		{
-			extra.append(" GROUP BY ").append(visitQIdList(context.m_groupBy, m_globalResolutionList, 0));
+			extra.append(" GROUP BY ").append(visitQIdList(context.m_groupBy, m_resolutionList, 0));
 		}
 
 		/*-----------------------------------------------------------------*/
 
 		if(context.m_orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(visitQIdList(context.m_orderBy, m_globalResolutionList, 0));
+			extra.append(" ORDER BY ").append(visitQIdList(context.m_orderBy, m_resolutionList, 0));
 
 			if(context.m_orderWay != null)
 			{
@@ -156,7 +156,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple2<Set<String>, Set<String>> tuple = Helper.getIsolatedPath(m_primaryKey, m_globalResolutionList, false);
+		Tuple2<Set<String>, Set<String>> tuple = Helper.getIsolatedPath(m_primaryKey, m_resolutionList, 0, false);
 
 		return result.addFromPart(tuple.x)
 		             .addWherePart(tuple.y)
@@ -221,12 +221,12 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, IS_MODIF_STM));
+			result.addWherePart(visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKey, m_globalResolutionList, true).y)
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKey, m_resolutionList, 0, true).y)
 		             .toStringBuilder()
 		;
 
@@ -247,12 +247,12 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, m_globalResolutionList, IS_MODIF_STM));
+			result.addWherePart(visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return result.addWherePart(Helper.getIsolatedPath(m_primaryKey, m_globalResolutionList, true).y)
+		return result.addWherePart(Helper.getIsolatedPath(m_primaryKey, m_resolutionList, 0, true).y)
 		             .toStringBuilder()
 		;
 
@@ -594,6 +594,7 @@ public class MQLToSQL
 			m_primaryKey,
 			tmpResolutionList,
 			expression,
+			0,
 			false,
 			(mask & IS_MODIF_STM) != 0
 		));

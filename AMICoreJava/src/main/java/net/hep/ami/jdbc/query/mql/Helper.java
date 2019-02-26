@@ -85,7 +85,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId primaryKey, List<Resolution> resolutionList, boolean isFieldNameOnly) throws Exception
+	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
@@ -109,8 +109,15 @@ public class Helper
 
 				for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 				{
+					int cnt = 0;
+
 					for(SchemaSingleton.FrgnKey frgnKey: /*----*/ frgnKeys /*----*/)
 					{
+						if(cnt++ < skip)
+						{
+							continue;
+						}
+
 						globalFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY));
 						globalFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY));
 
@@ -139,7 +146,7 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			int cnt = 0;
+			int cnt1 = 0;
 
 			boolean trivialCase = true;
 
@@ -154,6 +161,8 @@ public class Helper
 			{
 				/*---------------------------------------------------------*/
 
+				int cnt2 = 0;
+
 				Set<String> tmpIdSet = new TreeSet<>();
 
 				Set<String> tmpFromSet = new TreeSet<>();
@@ -162,6 +171,11 @@ public class Helper
 
 				for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 				{
+					if(cnt2++ < skip)
+					{
+						continue;
+					}
+
 					/*-----------------------------------------------------*/
 
 					qId = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
@@ -178,7 +192,7 @@ public class Helper
 
 						tmpIdSet.add(tmp);
 
-						if(idSet.add(tmp) && cnt > 0)
+						if(idSet.add(tmp) && cnt1 > 0)
 						{
 							trivialCase = false;
 						}
@@ -200,7 +214,7 @@ public class Helper
 
 						tmpIdSet.add(tmp);
 
-						if(idSet.add(tmp) && cnt > 0)
+						if(idSet.add(tmp) && cnt1 > 0)
 						{
 							trivialCase = false;
 						}
@@ -244,7 +258,7 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				cnt++;
+				cnt1++;
 
 				/*---------------------------------------------------------*/
 			}
@@ -288,7 +302,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, boolean isNoField, boolean isFieldNameOnly) throws Exception
+	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isFieldNameOnly) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
@@ -297,6 +311,7 @@ public class Helper
 		Tuple2<Set<String>, Set<String>> tuple = getIsolatedPath(
 			primaryKey,
 			resolutionList,
+			skip,
 			false
 		);
 
@@ -324,6 +339,8 @@ public class Helper
 			{
 				result.append(primaryKey.toString(QId.MASK_FIELD)).append(" IN ");
 			}
+
+
 		}
 
 		result.append("(")
@@ -358,6 +375,9 @@ public class Helper
 
 		Resolution resolution;
 		CharSequence expression;
+
+		Resolution tmpResolution;
+		CharSequence tmpExpression;
 
 		SchemaSingleton.Column column;
 
@@ -411,16 +431,24 @@ public class Helper
 
 			if(resolution.getMaxPathLen() > 0)
 			{
+				tmpResolution = new Resolution();
+
+				tmpExpression = resolution.getInternalQId().toString() + " = " + expression.toString();
+
 				for(SchemaSingleton.FrgnKeys path: resolution.getPaths())
 				{
 					/*-----------------------------------------------------*/
 
 					if(path.get(0).fkTable.equals(primaryKey.getEntity()) == false
 					   ||
-					   path.get(0).fkInternalCatalog.equals(primaryKey.getCatalog()) == false)
-					{
+					   path.get(0).fkInternalCatalog.equals(primaryKey.getCatalog()) == false
+					 ) {
 						continue;
 					}
+
+					tmpResolution.addPath(resolution.getExternalQId(), resolution.getColumn(), path);
+
+					/*-----------------------------------------------------*/
 
 					field = path.get(0).fkColumn;
 
@@ -437,8 +465,8 @@ public class Helper
 						));
 					}
 
-					tuple.y.add(resolution.skip(1));
-					tuple.z.add(resolution.getInternalQId().toString() + " = " + expression.toString());
+					tuple.y.add(tmpResolution);
+					tuple.z.add(tmpExpression);
 
 					/*-----------------------------------------------------*/
 				}
@@ -462,8 +490,8 @@ public class Helper
 					));
 				}
 
-				tuple.y.add(resolution.skip(0));
-				tuple.z.add(/*-------------------------*/ expression /*-------------------------*/);
+				tuple.y.add(resolution);
+				tuple.z.add(expression);
 
 				/*---------------------------------------------------------*/
 			}
@@ -487,7 +515,7 @@ public class Helper
 
 			if(tuple.x != null)
 			{
-				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), true, true));
+				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), 1, true, true));
 			}
 			else
 			{
