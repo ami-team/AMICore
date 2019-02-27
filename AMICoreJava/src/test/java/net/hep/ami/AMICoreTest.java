@@ -564,6 +564,18 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
+		
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE DATASET.name='test' ORDER BY DATASET.name\" ";
+
+		try
+		{
+			CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
 
 		/*-----------------------------------------------------------------*/
 
