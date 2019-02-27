@@ -337,10 +337,6 @@ public class Helper
 
 	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isNoEntity, boolean isNoPrimaryEntity) throws Exception
 	{
-		String proto = getProto(primaryKey);
-
-		boolean isNoPrimaryEntityNeeded = "jdbc:oracle".equals(proto) == false;
-
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
@@ -360,9 +356,14 @@ public class Helper
 		{
 			/*-------------------------------------------------------------*/
 
-			if(isNoPrimaryEntity && isNoPrimaryEntityNeeded == false)
+			if(isNoPrimaryEntity)
 			{
-				tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
+				String proto = getProto(primaryKey);
+
+				if("jdbc:oracle".equals(proto) == false)
+				{
+					tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
+				}
 			}
 
 			/*-------------------------------------------------------------*/
