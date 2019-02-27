@@ -208,7 +208,7 @@ public class Setup extends HttpServlet
 
 		String router_schema = req.getParameter("router_schema");
 		router_schema = (router_schema != null) ? router_schema.trim()
-		                                        : ConfigSingleton.getProperty("router_schema")
+		                                        : ConfigSingleton.getProperty("router_schema", "@NULL")
 		;
 
 		String router_url = req.getParameter("router_url");

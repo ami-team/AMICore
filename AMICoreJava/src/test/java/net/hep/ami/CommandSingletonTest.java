@@ -32,15 +32,15 @@ public class CommandSingletonTest
 
 //		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
 
-//		CommandSingleton.executeCommand("AddElement -catalog=\"test2\" -entity=\"DATASET\" -separator=\";\" -fields=\"name;DATASET_TYPE.name;PROJECT.name\" -values=\"hh;A;AMI\"", false);
+		CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"DATASET\" -separator=\";\" -fields=\"name;DATASET_TYPE.name;PROJECT.name\" -values=\"hh;A;AMI\"", false);
 
-//		CommandSingleton.executeCommand("AddElement -catalog=\"test2\" -entity=\"DATASET_FILE_BRIDGE\" -separator=\";\" -fields=\"FILE.name;DATASET.name;PROJECT.name\" -values=\"file_;dataset_;AMI\"", false);
+		CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -separator=\";\" -fields=\"FILE.name;DATASET.name;PROJECT.name\" -values=\"file_;dataset_;AMI\"", false);
 
-//		CommandSingleton.executeCommand("UpdateElements -catalog=\"test2\" -entity=\"DATASET_FILE_BRIDGE\" -separator=\";\" -fields=\"DATASET.name;PROJECT.name\" -values=\"dataset_;AMI\" -keyFields=\"FILE.name;DATASET.name;PROJECT.name\" -keyValues=\"file_;dataset_;AMI\"", false);
+		CommandSingleton.executeCommand("UpdateElements -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -separator=\";\" -fields=\"DATASET.name;PROJECT.name\" -values=\"dataset_;AMI\" -keyFields=\"FILE.name;DATASET.name;PROJECT.name\" -keyValues=\"file_;dataset_;AMI\"", false);
 
-//		CommandSingleton.executeCommand("UpdateElements -catalog=\"test2\" -entity=\"DATASET\" -separator=\";\" -fields=\"name\" -values=\"dataset_test_9\" -keyFields=\"id\" -keyValues=\"10\"", false);
+		CommandSingleton.executeCommand("UpdateElements -catalog=\"test\" -entity=\"DATASET\" -separator=\";\" -fields=\"name\" -values=\"dataset_test_9\" -keyFields=\"id\" -keyValues=\"10\"", false);
 
-//		CommandSingleton.executeCommand("AddElement -catalog=\"test2\" -entity=\"DATASET_TYPE\" -separator=\";\" -fields=\"name;PROJECT.name;description\" -values=\"A;AMI;This is a test\"", false);
+		CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"DATASET_TYPE\" -separator=\";\" -fields=\"name;PROJECT.name;description\" -values=\"A;AMI;This is a test\"", false);
 
 		SimpleQuerier querier1 = new SimpleQuerier("self", "admin", false);
 

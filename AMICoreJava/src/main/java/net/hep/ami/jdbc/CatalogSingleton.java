@@ -126,6 +126,13 @@ public class CatalogSingleton
 		/* ADD CATALOG                                                     */
 		/*-----------------------------------------------------------------*/
 
+		if("@NULL".equalsIgnoreCase(internalSchema))
+		{
+			internalSchema = null;
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		s_catalogs.put(
 			externalCatalog
 			,

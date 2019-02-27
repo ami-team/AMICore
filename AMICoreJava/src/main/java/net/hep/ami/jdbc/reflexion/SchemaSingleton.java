@@ -429,7 +429,7 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                             */
 				/*---------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z.isEmpty() == false ? m_tuple.z : null, "%", new String[] {"TABLE", "VIEW"}))
+				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z, "%", new String[] {"TABLE", "VIEW"}))
 				{
 					String temp;
 
@@ -538,6 +538,8 @@ public class SchemaSingleton
 
 			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _table))
 			{
+				System.out.println(m_internalCatalog + " " + m_tuple.z + " " + _table);
+
 				while(resultSet.next())
 				{
 					String name = resultSet.getString("FK_NAME");

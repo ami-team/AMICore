@@ -89,7 +89,7 @@ public class Helper
 	{
 		String proto = CatalogSingleton.getProto(SchemaSingleton.internalCatalogToExternalCatalog_noException(primaryKey.getCatalog(), null));
 
-		boolean dualNeeded = "jdbc:oracle".equals(proto);
+		boolean dualNeeded = "jdbc:postgresql".equals(proto) == false;
 
  		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
