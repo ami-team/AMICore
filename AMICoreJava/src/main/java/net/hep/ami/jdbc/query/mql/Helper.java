@@ -339,7 +339,7 @@ public class Helper
 	{
 		String proto = getProto(primaryKey);
 
-		boolean islPrimaryEntityNeeded = "jdbc:oracle".equals(proto);
+		boolean isNoPrimaryEntityNeeded = "jdbc:oracle".equals(proto) == false;
 
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
@@ -360,7 +360,7 @@ public class Helper
 		{
 			/*-------------------------------------------------------------*/
 
-			if(isNoPrimaryEntity || islPrimaryEntityNeeded)
+			if(isNoPrimaryEntity && isNoPrimaryEntityNeeded == false)
 			{
 				tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 			}
