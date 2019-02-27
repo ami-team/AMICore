@@ -538,8 +538,6 @@ public class SchemaSingleton
 
 			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _table))
 			{
-				System.out.println(m_internalCatalog + " " + m_tuple.z + " " + _table);
-
 				while(resultSet.next())
 				{
 					String name = resultSet.getString("FK_NAME");
