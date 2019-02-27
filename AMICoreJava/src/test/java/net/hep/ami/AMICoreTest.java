@@ -22,7 +22,7 @@ public class AMICoreTest
 
 	public static void main(String[] args) throws Exception
 	{
-		//System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
+		System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
 
 		System.setProperty("ami.integration", "");
 

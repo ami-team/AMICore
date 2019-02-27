@@ -19,6 +19,13 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
+	private static String getProto(QId primaryKey) throws Exception
+	{
+		return CatalogSingleton.getProto(SchemaSingleton.internalCatalogToExternalCatalog_noException(primaryKey.getCatalog(), null));
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static Set<String> getFromSetFromResolutionList(QId primaryKey, List<Resolution> resolutionList)
 	{
 		Set<String> result = new LinkedHashSet<>();
@@ -87,7 +94,7 @@ public class Helper
 
 	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
 	{
-		String proto = CatalogSingleton.getProto(SchemaSingleton.internalCatalogToExternalCatalog_noException(primaryKey.getCatalog(), null));
+		String proto = getProto(primaryKey);
 
 		boolean dualNeeded = "jdbc:postgresql".equals(proto) == false;
 
@@ -330,6 +337,10 @@ public class Helper
 
 	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isNoEntity, boolean isNoPrimaryEntity) throws Exception
 	{
+		String proto = getProto(primaryKey);
+
+		boolean islPrimaryEntityNeeded = "jdbc:oracle".equals(proto);
+
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
@@ -349,7 +360,7 @@ public class Helper
 		{
 			/*-------------------------------------------------------------*/
 
-			if(isNoPrimaryEntity)
+			if(isNoPrimaryEntity || islPrimaryEntityNeeded)
 			{
 				tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 			}
