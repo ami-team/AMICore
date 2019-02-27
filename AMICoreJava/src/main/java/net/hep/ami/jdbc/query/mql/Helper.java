@@ -3,7 +3,7 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 
 import net.hep.ami.*;
-
+import net.hep.ami.jdbc.CatalogSingleton;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -87,7 +87,11 @@ public class Helper
 
 	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		String proto = CatalogSingleton.getProto(SchemaSingleton.internalCatalogToExternalCatalog_noException(primaryKey.getCatalog(), null));
+
+		boolean dualNeeded = "jdbc:oracle".equals(proto);
+
+ 		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
 		/*-----------------------------------------------------------------*/
 
@@ -235,7 +239,10 @@ public class Helper
 
 					if(tmpFromSet.isEmpty() == true)
 					{
-						tmpFromSet.add("DUAL");
+						if(dualNeeded)
+						{
+							tmpFromSet.add("DUAL");
+						}
 					}
 
 					/*-----------------------------------------------------*/
@@ -284,11 +291,16 @@ public class Helper
 				{
 					query = String.join(((" OR ")), whereSet2);
 
-					query = new SelectObj().addSelectPart(idSet)
-					                       .addFromPart("DUAL")
-					                       .addWherePart(query)
-					                       .toString()
+					SelectObj selectObj = new SelectObj().addSelectPart(idSet)
+					                                     .addWherePart(query)
 					;
+
+					if(dualNeeded)
+					{
+						selectObj.addFromPart("DUAL");
+					}
+
+					query = selectObj.toString();
 				}
 
 				/*---------------------------------------------------------*/
