@@ -96,7 +96,7 @@ expressionAnd
 	;
 
 expressionComp
-	: NOT? expressionAddSub (COMP expressionAddSub | IN literalTuple | IS NOT? NULL)?
+	: expressionAddSub (COMP expressionAddSub | NOT? (IN literalTuple | IS NOT? NULL))?
 	;
 
 expressionAddSub
@@ -232,7 +232,8 @@ AND
 	;
 
 COMP
-	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | '<' | '>' | '<=' | '>=' | L I K E
+	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | L I K E
+	| '<' | '>' | '<=' | '>='
 	;
 
 NOT
