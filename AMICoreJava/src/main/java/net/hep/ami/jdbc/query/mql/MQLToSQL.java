@@ -442,9 +442,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
+			/**/ if(child instanceof MQLParser.ExpressionNotAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, resolutionList, mask));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionNotAddSubContext) child, resolutionList, mask));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
@@ -469,7 +469,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionAddSubContext context, List<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionAddSub(MQLParser.ExpressionNotAddSubContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 

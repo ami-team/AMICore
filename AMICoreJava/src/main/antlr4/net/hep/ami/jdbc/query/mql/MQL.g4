@@ -96,11 +96,11 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionAddSub (COMP expressionAddSub | NOT? (IN literalTuple | IS NOT? NULL))?
+	: expressionNotAddSub (COMP expressionNotAddSub | NOT? (IN literalTuple | IS NOT? NULL))?
 	;
 
-expressionAddSub
-	: expressionMulDiv ((PLUS | MINUS) expressionMulDiv)*
+expressionNotAddSub
+	: expressionMulDiv ((NOT | PLUS | MINUS) expressionMulDiv)*
 	;
 
 expressionMulDiv
