@@ -552,9 +552,9 @@ public class MQLToSQL
 
 		ParseTree child = context.getChild(0);
 
-		/**/ if(child instanceof MQLParser.ExpressionGroupContext)
+		/**/ if(child instanceof MQLParser.ExpressionStdGroupContext)
 		{
-			result.append(visitExpressionGroup((MQLParser.ExpressionGroupContext) child, resolutionList, mask));
+			result.append(visitExpressionStdGroup((MQLParser.ExpressionStdGroupContext) child, resolutionList, mask));
 		}
 		else if(child instanceof MQLParser.ExpressionIsoGroupContext)
 		{
@@ -580,7 +580,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionGroup(MQLParser.ExpressionGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionStdGroup(MQLParser.ExpressionStdGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return new StringBuilder().append("(")
 		                          .append(visitExpressionOr(context.m_expression, resolutionList, mask))

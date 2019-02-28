@@ -112,7 +112,7 @@ expressionPlusMinus
 	;
 
 expressionX
-	: '(' m_expression=expressionOr ')'                        # ExpressionGroup
+	: '(' m_expression=expressionOr ')'                        # ExpressionStdGroup
 	| '[' m_expression=expressionOr ']'                        # ExpressionIsoGroup
 	| m_functionName=FUNCTION m_expressions=expressionTuple    # ExpressionFunction
 	| m_qId=qId                                                # ExpressionQId
