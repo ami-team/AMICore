@@ -115,6 +115,7 @@ public class AMICoreTest
 		}
 		catch (Exception e) 
 		{
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
@@ -624,7 +625,7 @@ public class AMICoreTest
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
@@ -636,7 +637,7 @@ public class AMICoreTest
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
@@ -648,7 +649,7 @@ public class AMICoreTest
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
@@ -660,7 +661,7 @@ public class AMICoreTest
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
@@ -672,7 +673,19 @@ public class AMICoreTest
 
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		commandTest = "GetElementInfo -catalog=\"test\" -entity=\"DATASET\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\" -GUI=\"yes\" -expandedLinkedElements=\"\"";
+
+		try
+		{
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
