@@ -423,9 +423,9 @@ public class Helper
 
 		SchemaSingleton.Column column;
 
-		Tuple4<String, QId, List<Resolution>, List<CharSequence>> tuple;
+		Tuple4<String, QId, List<Resolution>, Set<CharSequence>> tuple;
 
-		Map<String, Tuple4<String, QId, List<Resolution>, List<CharSequence>>> entries = new LinkedHashMap<>();
+		Map<String, Tuple4<String, QId, List<Resolution>, Set<CharSequence>>> entries = new LinkedHashMap<>();
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -504,7 +504,7 @@ public class Helper
 							path.get(0).pkExternalCatalog,
 							new QId(path.get(0).pkInternalCatalog, path.get(0).pkTable, path.get(0).pkColumn),
 							new ArrayList<>(),
-							new ArrayList<>()
+							new LinkedHashSet<>()
 						));
 					}
 
@@ -524,13 +524,13 @@ public class Helper
 
 				tuple = entries.get(field);
 
-				if(tuple == null)
+				/////////////////
 				{
-					entries.put(field, tuple = new Tuple4<>(
+					entries.put(field, new Tuple4<>(
 						/*--------*/ null /*--------*/,
 						/*----------------------------------*/ null /*----------------------------------*/,
 						new ArrayList<>(),
-						new ArrayList<>()
+						new LinkedHashSet<>()
 					));
 				}
 
@@ -550,7 +550,7 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple4<String, QId, List<Resolution>, List<CharSequence>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple4<String, QId, List<Resolution>, Set<CharSequence>>> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
@@ -563,7 +563,7 @@ public class Helper
 			}
 			else
 			{
-				Y.add(tuple.t.get(tuple.t.size() - 1).toString()); /* GET THE LAST VALUE ONLY */
+				Y.add(tuple.t.iterator().next().toString());
 			}
 		}
 
