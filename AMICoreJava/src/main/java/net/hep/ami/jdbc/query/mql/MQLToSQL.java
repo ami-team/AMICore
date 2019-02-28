@@ -170,7 +170,7 @@ public class MQLToSQL
 
 	private StringBuilder visitInsertStatement(MQLParser.InsertStatementContext context) throws Exception
 	{
-		InsertObj result = new InsertObj();
+		InsertObj result = new InsertObj(InsertObj.Mode.SQL);
 
 		/*-----------------------------------------------------------------*/
 
@@ -192,8 +192,6 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println(result);
-
 		return result.toStringBuilder();
 	}
 
@@ -201,7 +199,7 @@ public class MQLToSQL
 
 	private StringBuilder visitUpdateStatement(MQLParser.UpdateStatementContext context) throws Exception
 	{
-		UpdateObj result = new UpdateObj();
+		UpdateObj result = new UpdateObj(UpdateObj.Mode.SQL);
 
 		/*-----------------------------------------------------------------*/
 
@@ -668,8 +666,6 @@ public class MQLToSQL
 	{
 		/*-----------------------------------------------------------------*/
 
-		System.out.println(context.getText());
-
 		QId qid = QId.visitQId(context, QId.Type.FIELD, QId.Type.FIELD);
 
 		/*-----------------------------------------------------------------*/
@@ -710,13 +706,9 @@ public class MQLToSQL
 
 		for(QId qId: list)
 		{
-			System.out.println(qId.toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD));
-			System.out.println(qId.getConstraints());
-
 			result.add(AutoJoinSingleton.resolve(m_catalog, m_entity, qId, ConfigSingleton.getProperty("maxPathLength", 4)));
 		}
 
-		System.out.println("----------------");
 		/*-----------------------------------------------------------------*/
 
 		return result;

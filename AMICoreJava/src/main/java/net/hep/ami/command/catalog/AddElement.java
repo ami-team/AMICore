@@ -52,11 +52,11 @@ public class AddElement extends AbstractCommand
 
 		try
 		{
-			query = new InsertObj().addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
-			                       .addFieldValuePart(
-										Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-										Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())
-			                        )
+			query = new InsertObj(InsertObj.Mode.MQL).addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
+			                                         .addFieldValuePart(
+															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
+															Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())
+			                                          )
 			;
 		}
 		catch(RuntimeException e)
@@ -66,9 +66,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String mql = query.setMode(InsertObj.Mode.MQL).toString();
-
-		System.out.println(mql);
+		String mql = query.toString();
 
 		Querier querier = getQuerier(catalog);
 

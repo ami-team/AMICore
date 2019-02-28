@@ -18,7 +18,7 @@ public class UpdateObj
 
 	/*---------------------------------------------------------------------*/
 
-	private Mode m_mode = Mode.SQL;
+	private final Mode m_mode;
 
 	/*---------------------------------------------------------------------*/
 
@@ -32,18 +32,16 @@ public class UpdateObj
 
 	/*---------------------------------------------------------------------*/
 
-	private String _toString(Object x)
+	public UpdateObj(Mode mode)
 	{
-		return (m_mode == Mode.MQL && x instanceof QId) ? ((QId) x).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) : x.toString();
+		m_mode = mode;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj setMode(Mode mode)
+	private String _toString(Object x)
 	{
-		m_mode = mode;
-
-		return this;
+		return (m_mode == Mode.MQL && x instanceof QId) ? ((QId) x).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) : x.toString();
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -62,11 +62,11 @@ public class UpdateElements extends AbstractCommand
 
 		try
 		{
-			query = new UpdateObj().addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
-			                       .addFieldValuePart(
-										Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-										Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())
-			                        )
+			query = new UpdateObj(UpdateObj.Mode.MQL).addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
+			                                         .addFieldValuePart(
+															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
+															Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())
+			                                          )
 			;
 		}
 		catch(RuntimeException e)
@@ -85,7 +85,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(UpdateObj.Mode.MQL).toString(where)).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.toString(where)).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
