@@ -19,13 +19,6 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	private static String getProto(QId primaryKey) throws Exception
-	{
-		return CatalogSingleton.getProto(SchemaSingleton.internalCatalogToExternalCatalog_noException(primaryKey.getCatalog(), null));
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static Set<String> getFromSetFromResolutionList(QId primaryKey, List<Resolution> resolutionList)
 	{
 		Set<String> result = new LinkedHashSet<>();
@@ -92,11 +85,9 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
+	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(String catalog, QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
 	{
-		String proto = getProto(primaryKey);
-
-		boolean dualNeeded = "jdbc:postgresql".equals(proto) == false;
+		boolean dualNeeded = "jdbc:postgresql".equals(CatalogSingleton.getProto(catalog)) == false;
 
  		/*-----------------------------------------------------------------*/
 		/* BUILD GLOBAL FROM SET                                           */
@@ -335,13 +326,14 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static String getIsolatedExpression(QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean isNoField, boolean isNoEntity, boolean isNoPrimaryEntity) throws Exception
+	public static String getIsolatedExpression(String catalog, QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean noComp, boolean noEntity, boolean noPrimaryEntity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ISOLATE JOINS                                                   */
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<Set<String>, Set<String>> tuple = getIsolatedPath(
+			catalog,
 			primaryKey,
 			resolutionList,
 			skip,
@@ -352,15 +344,13 @@ public class Helper
 		/* ISOLATE EXPRESSION                                              */
 		/*-----------------------------------------------------------------*/
 
-		if(isNoField || tuple.y.isEmpty() == false)
+		if(noComp || tuple.y.isEmpty() == false)
 		{
 			/*-------------------------------------------------------------*/
 
-			if(isNoPrimaryEntity)
+			if(noPrimaryEntity)
 			{
-				String proto = getProto(primaryKey);
-
-				if("jdbc:oracle".equals(proto) == false)
+				if("jdbc:oracle".equals(CatalogSingleton.getProto(catalog)) == false)
 				{
 					tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 				}
@@ -378,9 +368,9 @@ public class Helper
 
 			StringBuilder stringBuilder = new StringBuilder();
 
-			if(isNoField == false)
+			if(noComp == false)
 			{
-				if(isNoEntity == false)
+				if(noEntity == false)
 				{
 					stringBuilder.append(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
 				}
@@ -409,7 +399,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<List<String>, List<String>> resolve(QId primaryKey, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
+	public static Tuple2<List<String>, List<String>> resolve(String catalog, QId primaryKey, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -433,9 +423,9 @@ public class Helper
 
 		SchemaSingleton.Column column;
 
-		Tuple3<QId, List<Resolution>, List<CharSequence>> tuple;
+		Tuple4<String, QId, List<Resolution>, List<CharSequence>> tuple;
 
-		Map<String, Tuple3<QId, List<Resolution>, List<CharSequence>>> entries = new LinkedHashMap<>();
+		Map<String, Tuple4<String, QId, List<Resolution>, List<CharSequence>>> entries = new LinkedHashMap<>();
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -460,10 +450,7 @@ public class Helper
 					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
 				}
 
-				expression = /* NOT FOR SQL EXPRESSION */
-				             Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())))
-				             /* NOT FOR SQL EXPRESSION */
-				;
+				expression = Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())));
 			}
 
 			/**/
@@ -485,7 +472,10 @@ public class Helper
 			{
 				tmpResolution = new Resolution();
 
-				tmpExpression = resolution.getInternalQId().toString() + " = " + expression.toString();
+				tmpExpression = resolution.getInternalQId().toString()
+				                + " = " +
+				                /*----*/ expression /*----*/.toString()
+				;
 
 				for(SchemaSingleton.FrgnKeys path: resolution.getPaths())
 				{
@@ -510,15 +500,16 @@ public class Helper
 
 					if(tuple == null)
 					{
-						entries.put(field, tuple = new Tuple3<>(
+						entries.put(field, tuple = new Tuple4<>(
+							path.get(0).pkExternalCatalog,
 							new QId(path.get(0).pkInternalCatalog, path.get(0).pkTable, path.get(0).pkColumn),
 							new ArrayList<>(),
 							new ArrayList<>()
 						));
 					}
 
-					tuple.y.add(tmpResolution);
-					tuple.z.add(tmpExpression);
+					tuple.z.add(tmpResolution);
+					tuple.t.add(tmpExpression);
 
 					/*-----------------------------------------------------*/
 				}
@@ -535,15 +526,16 @@ public class Helper
 
 				if(tuple == null)
 				{
-					entries.put(field, tuple = new Tuple3<>(
+					entries.put(field, tuple = new Tuple4<>(
+						/*--------*/ null /*--------*/,
 						/*----------------------------------*/ null /*----------------------------------*/,
 						new ArrayList<>(),
 						new ArrayList<>()
 					));
 				}
 
-				tuple.y.add(resolution);
-				tuple.z.add(expression);
+				tuple.z.add(resolution);
+				tuple.t.add(expression);
 
 				/*---------------------------------------------------------*/
 			}
@@ -558,7 +550,7 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple3<QId, List<Resolution>, List<CharSequence>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple4<String, QId, List<Resolution>, List<CharSequence>>> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
@@ -567,11 +559,11 @@ public class Helper
 
 			if(tuple.x != null)
 			{
-				Y.add(getIsolatedExpression(tuple.x, tuple.y, String.join(" AND ", tuple.z), 1, true, true, false));
+				Y.add(getIsolatedExpression(tuple.x, tuple.y, tuple.z, String.join(" AND ", tuple.t), 1, true, true, false));
 			}
 			else
 			{
-				Y.add(tuple.z.get(tuple.z.size() - 1).toString()); /* GET THE LAST VALUE ONLY */
+				Y.add(tuple.t.get(tuple.t.size() - 1).toString()); /* GET THE LAST VALUE ONLY */
 			}
 		}
 
@@ -579,7 +571,7 @@ public class Helper
 		/* FILL RESERVED FIELDS                                            */
 		/*-----------------------------------------------------------------*/
 
-		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(SchemaSingleton.internalCatalogToExternalCatalog_noException(primaryKey.getCatalog(), null), primaryKey.getEntity()).values())
+		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(catalog, primaryKey.getEntity()).values())
 		{
 			if(tmp.created && insert) {
 				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");

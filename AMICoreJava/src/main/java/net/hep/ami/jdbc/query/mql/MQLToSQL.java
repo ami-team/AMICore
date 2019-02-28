@@ -156,7 +156,7 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple2<Set<String>, Set<String>> tuple = Helper.getIsolatedPath(m_primaryKey, m_resolutionList, 0, false);
+		Tuple2<Set<String>, Set<String>> tuple = Helper.getIsolatedPath(m_catalog, m_primaryKey, m_resolutionList, 0, false);
 
 		return result.addFromPart(tuple.x)
 		             .addWherePart(tuple.y)
@@ -175,6 +175,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
+			m_catalog,
 			m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
 			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
@@ -191,6 +192,8 @@ public class MQLToSQL
 
 		/*-----------------------------------------------------------------*/
 
+		System.out.println(result);
+
 		return result.toStringBuilder();
 	}
 
@@ -203,6 +206,7 @@ public class MQLToSQL
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
+			m_catalog,
 			m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
 			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
@@ -222,6 +226,7 @@ public class MQLToSQL
 		if(context.m_expression != null)
 		{
 			result.addWherePart(Helper.getIsolatedExpression(
+				m_catalog,
 				m_primaryKey,
 				m_resolutionList,
 				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
@@ -252,6 +257,7 @@ public class MQLToSQL
 		if(context.m_expression != null)
 		{
 			result.addWherePart(Helper.getIsolatedExpression(
+				m_catalog,
 				m_primaryKey,
 				m_resolutionList,
 				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
@@ -582,10 +588,18 @@ public class MQLToSQL
 
 	private StringBuilder visitExpressionStdGroup(MQLParser.ExpressionStdGroupContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder expression = visitExpressionOr(context.m_expression, resolutionList, mask);
+
+		/*-----------------------------------------------------------------*/
+
 		return new StringBuilder().append("(")
-		                          .append(visitExpressionOr(context.m_expression, resolutionList, mask))
+		                          .append(expression)
 		                          .append(")")
 		;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -599,6 +613,7 @@ public class MQLToSQL
 		StringBuilder expression = visitExpressionOr(context.m_expression, tmpResolutionList, mask & ~IS_MODIF_STM);
 
 		expression = new StringBuilder(Helper.getIsolatedExpression(
+			m_catalog,
 			m_primaryKey,
 			tmpResolutionList,
 			expression,
@@ -653,6 +668,8 @@ public class MQLToSQL
 	{
 		/*-----------------------------------------------------------------*/
 
+		System.out.println(context.getText());
+
 		QId qid = QId.visitQId(context, QId.Type.FIELD, QId.Type.FIELD);
 
 		/*-----------------------------------------------------------------*/
@@ -693,9 +710,13 @@ public class MQLToSQL
 
 		for(QId qId: list)
 		{
+			System.out.println(qId.toStringBuilder(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD));
+			System.out.println(qId.getConstraints());
+
 			result.add(AutoJoinSingleton.resolve(m_catalog, m_entity, qId, ConfigSingleton.getProperty("maxPathLength", 4)));
 		}
 
+		System.out.println("----------------");
 		/*-----------------------------------------------------------------*/
 
 		return result;

@@ -38,6 +38,8 @@ public class CommandSingletonTest
 		List<String> args2 = runtime.getInputArguments();
 		System.out.println(args2);
 
+		CommandSingleton.executeCommand("AddElement -catalog=\"test2\" -entity=\"DATASET\" -separator=\";\" -fields=\"name;DATASET_TYPE.name{DATASET.typeFK};PROJECT.name{DATASET.typeFK};PROJECT.name{DATASET.projectFK}\" -values=\"test_multi_project;A;AMI;AMI2\"", false);
+/*
 		CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"DATASET\" -separator=\";\" -fields=\"name;DATASET_TYPE.name;PROJECT.name\" -values=\"hh;A;AMI\"", false);
 
 		CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -separator=\";\" -fields=\"FILE.name;DATASET.name;PROJECT.name\" -values=\"file_;dataset_;AMI\"", false);
@@ -109,7 +111,7 @@ public class CommandSingletonTest
 		System.out.println();
 
 		querier1.rollbackAndRelease();
-
+*/
 /* CYCLE
 		Querier querier1 = new SimpleQuerier("test", "admin", true);
 

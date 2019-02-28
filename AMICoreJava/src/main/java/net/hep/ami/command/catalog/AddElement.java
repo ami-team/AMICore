@@ -68,6 +68,8 @@ public class AddElement extends AbstractCommand
 
 		String mql = query.setMode(InsertObj.Mode.MQL).toString();
 
+		System.out.println(mql);
+
 		Querier querier = getQuerier(catalog);
 
 		String sql = querier.mqlToSQL(entity, mql);

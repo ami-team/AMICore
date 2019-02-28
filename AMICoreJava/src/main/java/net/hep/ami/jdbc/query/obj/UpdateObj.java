@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.query.*;
 
 public class UpdateObj
 {
@@ -28,6 +29,13 @@ public class UpdateObj
 	private final List<String> m_valueList = new ArrayList<>();
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
+
+	/*---------------------------------------------------------------------*/
+
+	private String _toString(Object x)
+	{
+		return (m_mode == Mode.MQL && x instanceof QId) ? ((QId) x).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) : x.toString();
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -62,13 +70,13 @@ public class UpdateObj
 
 	/*---------------------------------------------------------------------*/
 
-	public UpdateObj addFieldValuePart(@Nullable CharSequence fieldPart, @Nullable CharSequence valuePart)
+	public UpdateObj addFieldValuePart(@Nullable Object fieldPart, @Nullable CharSequence valuePart)
 	{
 		if(fieldPart != null
 		   &&
 		   valuePart != null
 		 ) {
-			m_fieldList.add(fieldPart.toString());
+			m_fieldList.add(_toString(fieldPart));
 			m_valueList.add(valuePart.toString());
 		}
 
@@ -86,7 +94,7 @@ public class UpdateObj
 				throw new Exception("bad number of values");
 			}
 
-			m_fieldList.addAll(fieldPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+			m_fieldList.addAll(fieldPart.stream().map(x -> _toString(x)).collect(Collectors.toList()));
 			m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
 		}
 
