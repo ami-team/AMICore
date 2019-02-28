@@ -522,17 +522,12 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				tuple = entries.get(field);
-
-				/////////////////
-				{
-					entries.put(field, new Tuple4<>(
-						/*--------*/ null /*--------*/,
-						/*----------------------------------*/ null /*----------------------------------*/,
-						new ArrayList<>(),
-						new LinkedHashSet<>()
-					));
-				}
+				entries.put(field, tuple = new Tuple4<>(
+					/*--------*/ null /*--------*/,
+					/*----------------------------------*/ null /*----------------------------------*/,
+					new ArrayList<>(),
+					new LinkedHashSet<>()
+				));
 
 				tuple.z.add(resolution);
 				tuple.t.add(expression);
