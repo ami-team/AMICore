@@ -3,7 +3,7 @@ package net.hep.ami.jdbc.query.mql;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.jdbc.CatalogSingleton;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -571,7 +571,7 @@ public class Helper
 			}
 			else
 			{
-				Y.add(tuple.z.get(tuple.z.size() - 1).toString()); /* GET THE LAST VALUE */
+				Y.add(tuple.z.get(tuple.z.size() - 1).toString()); /* GET THE LAST VALUE ONLY */
 			}
 		}
 

@@ -1,6 +1,8 @@
 package net.hep.ami;
 
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.*;
 import java.util.regex.*;
 
@@ -31,6 +33,10 @@ public class CommandSingletonTest
 //		LogSingleton.root.info("Hello World!");
 
 //		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
+
+		RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+		List<String> args2 = runtime.getInputArguments();
+		System.out.println(args2);
 
 		CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"DATASET\" -separator=\";\" -fields=\"name;DATASET_TYPE.name;PROJECT.name\" -values=\"hh;A;AMI\"", false);
 

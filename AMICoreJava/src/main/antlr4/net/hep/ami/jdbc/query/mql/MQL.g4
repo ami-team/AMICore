@@ -96,7 +96,7 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionAddSub (COMP expressionAddSub | IN literalTuple)?
+	: NOT? expressionAddSub (COMP expressionAddSub | IN literalTuple | IS NOT? NULL)?
 	;
 
 expressionAddSub
@@ -104,11 +104,11 @@ expressionAddSub
 	;
 
 expressionMulDiv
-	: expressionNotPlusMinus ((MUL | DIV | MOD) expressionNotPlusMinus)*
+	: expressionPlusMinus ((MUL | DIV | MOD) expressionPlusMinus)*
 	;
 
-expressionNotPlusMinus
-	: m_operator=(NOT | PLUS | MINUS)? expressionX
+expressionPlusMinus
+	: m_operator=(PLUS | MINUS)? expressionX
 	;
 
 expressionX
@@ -235,8 +235,16 @@ COMP
 	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | '<' | '>' | '<=' | '>=' | L I K E
 	;
 
+NOT
+	: '!'
+	;
+
 IN
 	: I N
+	;
+
+IS
+	: I S
 	;
 
 PLUS
@@ -257,10 +265,6 @@ DIV
 
 MOD
 	: '%'
-	;
-
-NOT
-	: '!'
 	;
 
 FUNCTION

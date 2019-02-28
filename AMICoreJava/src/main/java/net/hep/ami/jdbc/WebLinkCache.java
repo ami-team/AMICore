@@ -10,6 +10,13 @@ public class WebLinkCache
 
 	/*---------------------------------------------------------------------*/
 
+	private String error(String message)
+	{
+		return new StringBuilder().append("<properties><![CDATA[").append(message).append("]]></properties>").toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String processWebLink(String code, String catalog, String entity, String field, Row row)
 	{
 		/*-----------------------------------------------------------------*/
@@ -24,7 +31,7 @@ public class WebLinkCache
 		}
 		catch(Exception e)
 		{
-			return "";
+			return error(e.getMessage());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -48,7 +55,7 @@ public class WebLinkCache
 		}
 		catch(Exception e)
 		{
-			return new StringBuilder().append("<properties><![CDATA[").append(e.getMessage()).append("]]></properties>").toString();
+			return error(e.getMessage());
 		}
 
 		/*-----------------------------------------------------------------*/

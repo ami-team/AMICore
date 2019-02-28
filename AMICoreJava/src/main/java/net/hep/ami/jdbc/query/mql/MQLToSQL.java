@@ -517,9 +517,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.ExpressionNotPlusMinusContext)
+			/**/ if(child instanceof MQLParser.ExpressionPlusMinusContext)
 			{
-				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionNotPlusMinusContext) child, resolutionList, mask));
+				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionPlusMinusContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -537,7 +537,7 @@ public class MQLToSQL
 
 	/*---------------------------------------------------------------------*/
 
-	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionNotPlusMinusContext context, List<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionNotPlusMinus(MQLParser.ExpressionPlusMinusContext context, List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
