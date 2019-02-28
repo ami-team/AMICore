@@ -423,9 +423,9 @@ public class Helper
 
 		SchemaSingleton.Column column;
 
-		Tuple4<String, QId, List<Resolution>, Set<CharSequence>> tuple;
+		Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>> tuple;
 
-		Map<String, Tuple4<String, QId, List<Resolution>, Set<CharSequence>>> entries = new LinkedHashMap<>();
+		Map<String, Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>>> entries = new LinkedHashMap<>();
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -501,12 +501,15 @@ public class Helper
 					if(tuple == null)
 					{
 						entries.put(field, tuple = new Tuple4<>(
-							path.get(0).pkExternalCatalog,
-							new QId(path.get(0).pkInternalCatalog, path.get(0).pkTable, path.get(0).pkColumn),
+							new Value<>(),
+							new Value<>(),
 							new ArrayList<>(),
 							new LinkedHashSet<>()
 						));
 					}
+
+					tuple.x.value = path.get(0).pkExternalCatalog;
+					tuple.y.value = new QId(path.get(0).pkInternalCatalog, path.get(0).pkTable, path.get(0).pkColumn);
 
 					tuple.z.add(tmpResolution);
 					tuple.t.add(tmpExpression);
@@ -522,12 +525,20 @@ public class Helper
 
 				/*---------------------------------------------------------*/
 
-				entries.put(field, tuple = new Tuple4<>(
-					/*--------*/ null /*--------*/,
-					/*----------------------------------*/ null /*----------------------------------*/,
-					new ArrayList<>(),
-					new LinkedHashSet<>()
-				));
+				tuple = entries.get(field);
+
+				if(tuple == null)
+				{
+					entries.put(field, tuple = new Tuple4<>(
+						new Value<>(),
+						new Value<>(),
+						new ArrayList<>(),
+						new LinkedHashSet<>()
+					));
+				}
+
+				/*------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------*/
 
 				tuple.z.add(resolution);
 				tuple.t.add(expression);
@@ -545,20 +556,22 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple4<String, QId, List<Resolution>, Set<CharSequence>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>>> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
 
 			X.add(Utility.textToSqlId(field));
 
-			if(tuple.x != null)
-			{
-				Y.add(getIsolatedExpression(tuple.x, tuple.y, tuple.z, String.join(" AND ", tuple.t), 1, true, true, false));
+			if(tuple.x.value != null
+			   &&
+			   tuple.y.value != null
+			 ) {
+				Y.add(getIsolatedExpression(tuple.x.value, tuple.y.value, tuple.z, String.join(" AND ", tuple.t), 1, true, true, false));
 			}
 			else
 			{
-				Y.add(tuple.t.iterator().next().toString());
+				Y.add(String.join(" AND ", tuple.t));
 			}
 		}
 
