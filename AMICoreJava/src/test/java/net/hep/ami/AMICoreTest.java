@@ -460,6 +460,37 @@ public class AMICoreTest
 			}
 		}
 
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "DATASET");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;DATASET_TYPE.name{DATASET.typeFK};PROJECT.name{DATASET.typeFK};PROJECT.name{DATASET.projectFK}");
+			arguments.put("values", "test_multi_project_1;A;AMI;AMI2");
+			CommandSingleton.executeCommand("AddElement", arguments, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "DATASET");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;DATASET_TYPE.name{DATASET_TYPE.id};PROJECT.name{DATASET_TYPE.id};PROJECT.name{!DATASET_TYPE.id}");
+			arguments.put("values", "test_multi_project_2;A;AMI;AMI2");
+			CommandSingleton.executeCommand("AddElement", arguments, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
 		/*-----------------------------------------------------------------*/
 
 		try
@@ -564,7 +595,7 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE 'test'=DATASET.name ORDER BY test.DATASET.name\" ";
 
 		try
@@ -577,6 +608,43 @@ public class AMICoreTest
 			testFail = true;
 		}
 
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name='file_1' ORDER BY DATASET.name\" ";
+
+		try
+		{
+			CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name='file_1' AND PROJECT.name='AMI' AND DATASET_TYPE.name='A' ORDER BY DATASET.name\" ";
+
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [FILE.name='file_1'] AND [PROJECT.name='AMI' AND DATASET_TYPE.name='A'] ORDER BY DATASET.name\" ";
+
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		
 		/*-----------------------------------------------------------------*/
 
 		System.out.println("Testing update commands");
