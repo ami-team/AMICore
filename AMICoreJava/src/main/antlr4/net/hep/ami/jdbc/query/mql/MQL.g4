@@ -96,7 +96,7 @@ expressionAnd
 	;
 
 expressionComp
-	: expressionNotAddSub (COMP expressionNotAddSub | NOT? (IN literalTuple | IS NOT? NULL))?
+	: expressionNotAddSub (COMP expressionNotAddSub | IN literalTuple | IS NOT? NULL)?
 	;
 
 expressionNotAddSub
