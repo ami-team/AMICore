@@ -565,7 +565,7 @@ public class AMICoreTest
 			testFail = true;
 		}
 		
-		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE DATASET.name='test' ORDER BY DATASET.name\" ";
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE 'test'=DATASET.name ORDER BY test.DATASET.name\" ";
 
 		try
 		{
