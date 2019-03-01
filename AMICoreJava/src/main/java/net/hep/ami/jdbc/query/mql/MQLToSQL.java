@@ -588,12 +588,12 @@ public class MQLToSQL
 	{
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder expression = visitExpressionOr(context.m_expression, resolutionList, mask);
+		StringBuilder stdExpression = visitExpressionOr(context.m_expression, resolutionList, mask);
 
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder().append("(")
-		                          .append(expression)
+		                          .append(stdExpression)
 		                          .append(")")
 		;
 
@@ -608,23 +608,23 @@ public class MQLToSQL
 
 		List<Resolution> tmpResolutionList = new ArrayList<>();
 
-		StringBuilder expression = visitExpressionOr(context.m_expression, tmpResolutionList, mask & ~IS_MODIF_STM);
+		StringBuilder stdExpression = visitExpressionOr(context.m_expression, tmpResolutionList, mask & ~IS_MODIF_STM);
 
-		expression = new StringBuilder(Helper.getIsolatedExpression(
+		String isoExpression = Helper.getIsolatedExpression(
 			m_catalog,
 			m_primaryKey,
 			tmpResolutionList,
-			expression,
+			stdExpression,
 			0,
 			false,
 			(mask & IS_MODIF_STM) != 0,
 			false
-		));
+		);
 
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder().append("(")
-		                          .append(expression)
+		                          .append(isoExpression)
 		                          .append(")")
 		;
 
