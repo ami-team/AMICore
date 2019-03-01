@@ -681,11 +681,11 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "GetElementInfo -catalog=\"test\" -entity=\"DATASET\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\" -GUI=\"yes\" -expandedLinkedElements=\"\"";
+		commandTest = "GetElementInfo -catalog=\"test\" -entity=\"DATASET\" -primaryFieldName=\"name\" -primaryFieldValue=\"test_multi_project_1\" -GUI=\"yes\" -expandedLinkedElements=\"\"";
 
 		try
 		{
-			CommandSingleton.executeCommand(commandTest, false);
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));;
 		}
 		catch(Exception e)
 		{
