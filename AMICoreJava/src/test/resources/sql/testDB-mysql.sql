@@ -154,6 +154,7 @@ CREATE TABLE `DATASET_PARAM` (
   `id` INT NOT NULL,
   `datasetFK` INT NOT NULL,
   `name` VARCHAR(128) NOT NULL,
+  `type` VARCHAR(128) NOT NULL,
   `intValue` INT(11),
   `floatValue` DECIMAL(6,4),
   `stringValue` VARCHAR(512),
