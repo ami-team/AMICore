@@ -1095,7 +1095,7 @@ public class SchemaSingleton
 			result.append("<row>")
 			      .append("<field name=\"externalCatalog\"><![CDATA[").append(column.externalCatalog).append("]]></field>")
 			      .append("<field name=\"internalCatalog\"><![CDATA[").append(column.internalCatalog).append("]]></field>")
-			      .append("<field name=\"table\"><![CDATA[").append(column.table).append("]]></field>")
+			      .append("<field name=\"entity\"><![CDATA[").append(column.table).append("]]></field>")
 			      .append("<field name=\"name\"><![CDATA[").append(column.name).append("]]></field>")
 			      .append("<field name=\"type\"><![CDATA[").append(column.type).append("]]></field>")
 			      .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
