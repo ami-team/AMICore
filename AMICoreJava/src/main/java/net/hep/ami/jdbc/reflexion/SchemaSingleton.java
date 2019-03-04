@@ -22,7 +22,7 @@ public class SchemaSingleton
 
 		/**/
 
-		private static final Pattern s_numberPattern = Pattern.compile(".*(?:INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
+		private static final Pattern s_numberPattern = Pattern.compile(".*(?:BIT|INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
 
 		/**/
 

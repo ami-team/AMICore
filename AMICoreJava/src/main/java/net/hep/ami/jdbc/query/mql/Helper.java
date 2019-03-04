@@ -193,11 +193,7 @@ public class Helper
 						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.fkExternalCatalog, frgnKey.fkTable), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
-
-						if(idSet.add(tmp) && cnt1 > 0)
-						{
-							trivialCase = false;
-						}
+						idSet.add(tmp);
 					}
 
 					/*-----------------------------------------------------*/
@@ -215,11 +211,7 @@ public class Helper
 						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.pkExternalCatalog, frgnKey.pkTable), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
-
-						if(idSet.add(tmp) && cnt1 > 0)
-						{
-							trivialCase = false;
-						}
+						idSet.add(tmp);
 					}
 
 					/*-----------------------------------------------------*/
@@ -266,10 +258,13 @@ public class Helper
 					whereSet2.add(query);
 
 					/*-----------------------------------------------------*/
+				}
 
-					cnt1++;
+				/*---------------------------------------------------------*/
 
-					/*-----------------------------------------------------*/
+				if(tmpIdSet.containsAll(idSet) == false)
+				{
+					trivialCase = false;
 				}
 
 				/*---------------------------------------------------------*/
