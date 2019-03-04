@@ -556,7 +556,7 @@ public class AMICoreTest
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
 				arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name");
-				arguments.put("values", "file_" + i + ";dataset_" + i +";A");
+				arguments.put("values", "file_" + i + ";dataset_" + i +";TEXT");
 				//arguments.put("fields", "FILE.name;DATASET.name");
 				//arguments.put("values", "file_" + i + ";dataset_" + i +"");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
