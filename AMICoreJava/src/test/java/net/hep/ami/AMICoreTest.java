@@ -500,8 +500,8 @@ public class AMICoreTest
 			arguments.put("catalog", "test");
 			arguments.put("entity", "FILE_TYPE");
 			arguments.put("separator", ";");
-			arguments.put("fields", "name;description");
-			arguments.put("values", "TEXT;This is a test");
+			arguments.put("fields", "name;description;PROJECT.name");
+			arguments.put("values", "TEXT;This is a test;AMI");
 			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
@@ -517,8 +517,8 @@ public class AMICoreTest
 			arguments.put("catalog", "test");
 			arguments.put("entity", "FILE_TYPE");
 			arguments.put("separator", ";");
-			arguments.put("fields", "name;description");
-			arguments.put("values", "BINARY;This is a test");
+			arguments.put("fields", "name;description;PROJECT.name");
+			arguments.put("values", "BINARY;This is a test;AMI");
 			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
@@ -537,8 +537,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "FILE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "name;FILE_TYPE.name");
-				arguments.put("values", "file_" + i + ";BINARY");
+				arguments.put("fields", "name;FILE_TYPE.name;PROJECT.name");
+				arguments.put("values", "file_" + i + ";BINARY;AMI");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
 			}
 			catch(Exception e)
@@ -555,8 +555,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "FILE.name;DATASET.name;PROJECT.name");
-				arguments.put("values", "file_" + i + ";dataset_" + i +";AMI");
+				arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name");
+				arguments.put("values", "file_" + i + ";dataset_" + i +";A");
 				//arguments.put("fields", "FILE.name;DATASET.name");
 				//arguments.put("values", "file_" + i + ";dataset_" + i +"");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
@@ -681,11 +681,11 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "GetElementInfo -catalog=\"test\" -entity=\"DATASET\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\" -GUI=\"yes\" -expandedLinkedElements=\"\"";
+		commandTest = "GetElementInfo -catalog=\"test\" -entity=\"DATASET\" -primaryFieldName=\"name\" -primaryFieldValue=\"test_multi_project_1\" -GUI=\"yes\" -expandedLinkedElements=\"\"";
 
 		try
 		{
-			CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));;
 		}
 		catch(Exception e)
 		{
@@ -728,7 +728,7 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "DATASET.name;PROJECT.name");
+				arguments.put("fields", "DATASET.name;PROJECT.name{DATASET.ID}");
 				arguments.put("values", "dataset_" + (i + 1) +";AMI");
 				arguments.put("keyFields", "FILE.name;DATASET.name;PROJECT.name");
 				arguments.put("keyValues", "file_" + i + ";dataset_" + i +";AMI");
