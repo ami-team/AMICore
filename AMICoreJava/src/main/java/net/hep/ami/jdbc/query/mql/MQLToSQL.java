@@ -704,10 +704,9 @@ public class MQLToSQL
 
 		List<Resolution> result = new ArrayList<>();
 
-		for(QId qId: list)
-		{
-			result.add(AutoJoinSingleton.resolve(m_catalog, m_entity, qId, ConfigSingleton.getProperty("maxPathLength", 4)));
-		}
+		int maxPathLength = ConfigSingleton.getProperty("max_path_length", 999);
+
+		for(QId qId: list) result.add(AutoJoinSingleton.resolve(m_catalog, m_entity, qId, maxPathLength));
 
 		/*-----------------------------------------------------------------*/
 
