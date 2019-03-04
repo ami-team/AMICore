@@ -765,15 +765,17 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "DATASET.name;PROJECT.name{DATASET.ID}");
-				arguments.put("values", "dataset_" + (i + 1) +";AMI");
-				arguments.put("keyFields", "FILE.name;DATASET.name;PROJECT.name");
-				arguments.put("keyValues", "file_" + i + ";dataset_" + i +";AMI");
-				CommandSingleton.executeCommand("UpdateElements", arguments, false);
+				//arguments.put("fields", "DATASET_FILE_BRIDGE.datasetFK");
+				//arguments.put("values", (i + 1) + "" );
+				arguments.put("fields", "DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
+				arguments.put("values", "dataset_" + (i + 1) );
+				arguments.put("keyFields", "FILE.name;DATASET.name");
+				arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
+				//CommandSingleton.executeCommand("UpdateElements", arguments, false);
 			}
 			catch(Exception e)
 			{
-				System.out.println(e.getMessage());
+				System.out.println("xxx"+e.getMessage());
 				testFail = true;
 			}
 		}
