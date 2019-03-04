@@ -225,7 +225,7 @@ public class Helper
 				{
 					/*-----------------------------------------------------*/
 
-					idSignatureSet.add(String.join(":", tmpIdSet));
+					idSignatureSet.add(String.join("~", tmpIdSet));
 
 					/*-----------------------------------------------------*/
 
