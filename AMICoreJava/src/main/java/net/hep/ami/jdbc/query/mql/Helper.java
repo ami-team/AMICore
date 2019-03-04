@@ -148,8 +148,6 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			int cnt1 = 0;
-
 			boolean trivialCase = true;
 
 			Set<String> idSet = new TreeSet<>();
@@ -163,7 +161,7 @@ public class Helper
 			{
 				/*---------------------------------------------------------*/
 
-				int cnt2 = 0;
+				int cnt = 0;
 
 				Set<String> tmpIdSet = new TreeSet<>();
 
@@ -173,7 +171,7 @@ public class Helper
 
 				for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 				{
-					if(cnt2++ < skip)
+					if(cnt++ < skip)
 					{
 						continue;
 					}
