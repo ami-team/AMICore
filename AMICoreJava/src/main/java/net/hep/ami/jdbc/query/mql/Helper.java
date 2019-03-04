@@ -148,9 +148,9 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			boolean trivialCase = true;
-
 			Set<String> idSet = new TreeSet<>();
+
+			Set<String> idSignatureSet = new TreeSet<>();
 
 			Set<String> whereSet1 = new LinkedHashSet<>();
 			Set<String> whereSet2 = new LinkedHashSet<>();
@@ -225,6 +225,10 @@ public class Helper
 				{
 					/*-----------------------------------------------------*/
 
+					idSignatureSet.add(String.join(":", tmpIdSet));
+
+					/*-----------------------------------------------------*/
+
 					if(tmpFromSet.isEmpty() == true)
 					{
 						if(dualNeeded)
@@ -259,13 +263,6 @@ public class Helper
 				}
 
 				/*---------------------------------------------------------*/
-
-				if(tmpIdSet.containsAll(idSet) == false)
-				{
-					trivialCase = false;
-				}
-
-				/*---------------------------------------------------------*/
 			}
 
 			/*-------------------------------------------------------------*/
@@ -274,7 +271,7 @@ public class Helper
 			{
 				/*---------------------------------------------------------*/
 
-				if(trivialCase)
+				if(idSignatureSet.size() == 1)
 				{
 					query = String.join(" UNION ", whereSet1);
 				}
