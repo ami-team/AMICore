@@ -528,6 +528,23 @@ public class AMICoreTest
 			testFail = true;
 		}
 
+		try
+		{
+			arguments.clear();
+			arguments.put("catalog", "test");
+			arguments.put("entity", "FILE_TYPE");
+			arguments.put("separator", ";");
+			arguments.put("fields", "name;description;PROJECT.name");
+			arguments.put("values", "BINARY;This is a test;AMI2");
+			CommandSingleton.executeCommand("AddElement", arguments, false);
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
 		/*-----------------------------------------------------------------*/
 
 		for (int i = 0; i < cptMax; i++) {
@@ -553,10 +570,30 @@ public class AMICoreTest
 			{
 				arguments.clear();
 				arguments.put("catalog", "test");
+				arguments.put("entity", "FILE");
+				arguments.put("separator", ";");
+				arguments.put("fields", "name;FILE_TYPE.name;PROJECT.name");
+				arguments.put("values", "file_ami2_" + i + ";BINARY;AMI2");
+				CommandSingleton.executeCommand("AddElement", arguments, false);
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+		}
+
+		for (int i = 0; i < cptMax; i++) {
+			try
+			{
+				arguments.clear();
+				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_FILE_BRIDGE");
 				arguments.put("separator", ";");
+				//arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name{FILE.typeFK}");
 				arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name");
-				arguments.put("values", "file_" + i + ";dataset_" + i +";A");
+				//arguments.put("values", "file_" + i + ";dataset_" + i +";TEXT");
+				arguments.put("values", "file_" + i + ";dataset_" + i +";BINARY");
 				//arguments.put("fields", "FILE.name;DATASET.name");
 				//arguments.put("values", "file_" + i + ";dataset_" + i +"");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
