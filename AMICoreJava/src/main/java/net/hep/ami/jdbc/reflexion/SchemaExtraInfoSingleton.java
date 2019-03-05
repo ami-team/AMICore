@@ -140,7 +140,7 @@ public class SchemaExtraInfoSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateForeignKeys(String name, String fkCatalog, String fkTable, String fkColumn, String pkCatalog, String pkTable, String pkColumn)
+	public static void updateForeignKeys(String name, String fkCatalog, String fkEntity, String fkField, String pkCatalog, String pkEntity, String pkField)
 	{
 		Map<String, Map<String, Map<String, SchemaSingleton.FrgnKeys>>> a1 = SchemaSingleton.s_forwardFKs;
 		Map<String, Map<String, Map<String, SchemaSingleton.FrgnKeys>>> a2 = SchemaSingleton.s_backwardFKs;
@@ -149,8 +149,8 @@ public class SchemaExtraInfoSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			SchemaSingleton.Column column1 = SchemaSingleton.getFieldInfo(fkCatalog, fkTable, fkColumn);
-			SchemaSingleton.Column column2 = SchemaSingleton.getFieldInfo(pkCatalog, pkTable, pkColumn);
+			SchemaSingleton.Column column1 = SchemaSingleton.getFieldInfo(fkCatalog, fkEntity, fkField);
+			SchemaSingleton.Column column2 = SchemaSingleton.getFieldInfo(pkCatalog, pkEntity, pkField);
 
 			/*-------------------------------------------------------------*/
 
@@ -167,28 +167,28 @@ public class SchemaExtraInfoSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, SchemaSingleton.FrgnKeys> c1 = b1.get(column1.table);
-			Map<String, SchemaSingleton.FrgnKeys> c2 = b2.get(column2.table);
+			Map<String, SchemaSingleton.FrgnKeys> c1 = b1.get(column1.entity);
+			Map<String, SchemaSingleton.FrgnKeys> c2 = b2.get(column2.entity);
 
 			if(c1 == null) {
-				b1.put(column1.table, c1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+				b1.put(column1.entity, c1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
 			}
 
 			if(c2 == null) {
-				b2.put(column2.table, c2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
+				b2.put(column2.entity, c2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
 			}
 
 			/*-------------------------------------------------------------*/
 
-			SchemaSingleton.FrgnKeys d1 = c1.get(column1.name);
-			SchemaSingleton.FrgnKeys d2 = c2.get(column2.name);
+			SchemaSingleton.FrgnKeys d1 = c1.get(column1.field);
+			SchemaSingleton.FrgnKeys d2 = c2.get(column2.field);
 
 			if(d1 == null) {
-				c1.put(column1.name, d1 = new SchemaSingleton.FrgnKeys());
+				c1.put(column1.field, d1 = new SchemaSingleton.FrgnKeys());
 			}
 
 			if(d2 == null) {
-				c2.put(column2.name, d2 = new SchemaSingleton.FrgnKeys());
+				c2.put(column2.field, d2 = new SchemaSingleton.FrgnKeys());
 			}
 
 			/*-------------------------------------------------------------*/
@@ -197,12 +197,12 @@ public class SchemaExtraInfoSingleton
 				name,
 				column1.externalCatalog,
 				column1.internalCatalog,
-				column1.table,
-				column1.name,
+				column1.entity,
+				column1.field,
 				column2.externalCatalog,
 				column2.internalCatalog,
-				column2.table,
-				column2.name
+				column2.entity,
+				column2.field
 			);
 
 			d1.add(frgnKey);

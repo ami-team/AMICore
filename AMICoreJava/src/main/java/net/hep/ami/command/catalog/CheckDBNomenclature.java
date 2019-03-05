@@ -44,7 +44,7 @@ public class CheckDBNomenclature extends AbstractCommand
 
 		for(String catalog: SchemaSingleton.getExternalCatalogNames())
 		{
-			for(String table: SchemaSingleton.getTableNames(catalog))
+			for(String table: SchemaSingleton.getEntityNames(catalog))
 			{
 				columns = SchemaSingleton.getEntityInfo(catalog, table).values();
 
@@ -52,7 +52,7 @@ public class CheckDBNomenclature extends AbstractCommand
 
 				for(SchemaSingleton.Column column: columns)
 				{
-					if(s_regex.matcher(column.name).matches() == false)
+					if(s_regex.matcher(column.field).matches() == false)
 					{
 						result.append("Column name ").append(column.toString()).append(" should match with regular expression " + s_regex.toString() + ".\\n");
 					}
@@ -87,7 +87,7 @@ public class CheckDBNomenclature extends AbstractCommand
 
 		for(String catalog: SchemaSingleton.getExternalCatalogNames())
 		{
-			for(String table: SchemaSingleton.getTableNames(catalog))
+			for(String table: SchemaSingleton.getEntityNames(catalog))
 			{
 				frgnKeys = SchemaSingleton.getForwardFKs(catalog, table).values();
 
@@ -95,9 +95,9 @@ public class CheckDBNomenclature extends AbstractCommand
 
 				for(SchemaSingleton.FrgnKeys frgnKey: frgnKeys)
 				{
-					if(frgnKey.get(0).fkColumn.endsWith("FK") == false)
+					if(frgnKey.get(0).fkField.endsWith("FK") == false)
 					{
-						result.append("Foreign key `").append(frgnKey.get(0).fkTable).append("`.`").append(frgnKey.get(0).fkColumn).append("` should end with `FK`.\\n");
+						result.append("Foreign key `").append(frgnKey.get(0).fkEntity).append("`.`").append(frgnKey.get(0).fkField).append("` should end with `FK`.\\n");
 					}
 					else
 					{

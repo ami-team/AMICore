@@ -30,8 +30,8 @@ public class Resolution
 		{
 			m_resolvedColumn = resolvedColumn;
 
-			m_resolvedInternalQId = new QId(resolvedColumn.internalCatalog, resolvedColumn.table, resolvedColumn.name);
-			m_resolvedExternalQId = new QId(resolvedColumn.externalCatalog, resolvedColumn.table, resolvedColumn.name);
+			m_resolvedInternalQId = new QId(resolvedColumn.internalCatalog, resolvedColumn.entity, resolvedColumn.field);
+			m_resolvedExternalQId = new QId(resolvedColumn.externalCatalog, resolvedColumn.entity, resolvedColumn.field);
 		}
 		else
 		{

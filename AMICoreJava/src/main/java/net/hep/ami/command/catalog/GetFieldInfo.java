@@ -43,7 +43,7 @@ public class GetFieldInfo extends AbstractCommand
 
 		result.append("<rowset type=\"fields\">")
 		      .append("<row>")
-		      .append("<field name=\"name\"><![CDATA[").append(column.name).append("]]></field>")
+		      .append("<field name=\"field\"><![CDATA[").append(column.field).append("]]></field>")
 		      .append("<field name=\"type\"><![CDATA[").append(column.type).append("]]></field>")
 		      .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
 		      .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")

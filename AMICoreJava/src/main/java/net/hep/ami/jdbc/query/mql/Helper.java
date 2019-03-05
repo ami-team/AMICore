@@ -120,8 +120,8 @@ public class Helper
 							continue;
 						}
 
-						globalFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, null).toString(QId.MASK_CATALOG_ENTITY));
-						globalFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, null).toString(QId.MASK_CATALOG_ENTITY));
+						globalFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkEntity, null).toString(QId.MASK_CATALOG_ENTITY));
+						globalFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkEntity, null).toString(QId.MASK_CATALOG_ENTITY));
 
 						globalWherSet.add(frgnKey.toString());
 					}
@@ -178,7 +178,7 @@ public class Helper
 
 					/*-----------------------------------------------------*/
 
-					qId = new QId(frgnKey.fkInternalCatalog, frgnKey.fkTable, frgnKey.fkColumn);
+					qId = new QId(frgnKey.fkInternalCatalog, frgnKey.fkEntity, frgnKey.fkField);
 
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
@@ -188,7 +188,7 @@ public class Helper
 					}
 					else
 					{
-						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.fkExternalCatalog, frgnKey.fkTable), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
+						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.fkExternalCatalog, frgnKey.fkEntity), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
 						idSet.add(tmp);
@@ -196,7 +196,7 @@ public class Helper
 
 					/*-----------------------------------------------------*/
 
-					qId = new QId(frgnKey.pkInternalCatalog, frgnKey.pkTable, frgnKey.pkColumn);
+					qId = new QId(frgnKey.pkInternalCatalog, frgnKey.pkEntity, frgnKey.pkField);
 
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
@@ -206,7 +206,7 @@ public class Helper
 					}
 					else
 					{
-						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.pkExternalCatalog, frgnKey.pkTable), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
+						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.pkExternalCatalog, frgnKey.pkEntity), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
 						idSet.add(tmp);
@@ -471,7 +471,7 @@ public class Helper
 				{
 					/*-----------------------------------------------------*/
 
-					if(path.get(0).fkTable.equals(primaryKey.getEntity()) == false
+					if(path.get(0).fkEntity.equals(primaryKey.getEntity()) == false
 					   ||
 					   path.get(0).fkInternalCatalog.equals(primaryKey.getCatalog()) == false
 					 ) {
@@ -482,7 +482,7 @@ public class Helper
 
 					/*-----------------------------------------------------*/
 
-					field = path.get(0).fkColumn;
+					field = path.get(0).fkField;
 
 					/*-----------------------------------------------------*/
 
@@ -499,7 +499,7 @@ public class Helper
 					}
 
 					tuple.x.value = path.get(0).pkExternalCatalog;
-					tuple.y.value = new QId(path.get(0).pkInternalCatalog, path.get(0).pkTable, path.get(0).pkColumn);
+					tuple.y.value = new QId(path.get(0).pkInternalCatalog, path.get(0).pkEntity, path.get(0).pkField);
 
 					tuple.z.add(tmpResolution);
 					tuple.t.add(tmpExpression);
@@ -511,7 +511,7 @@ public class Helper
 			{
 				/*---------------------------------------------------------*/
 
-				field = resolution.getColumn().name;
+				field = resolution.getColumn().field;
 
 				/*---------------------------------------------------------*/
 
@@ -572,19 +572,19 @@ public class Helper
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(catalog, primaryKey.getEntity()).values())
 		{
 			if(tmp.created && insert) {
-				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");
+				X.add(Utility.textToSqlId(tmp.field)); Y.add("CURRENT_TIMESTAMP");
 			}
 
 			if(tmp.createdBy && insert) {
-				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
+				X.add(Utility.textToSqlId(tmp.field)); Y.add(Utility.textToSqlVal(AMIUser));
 			}
 
 			if(tmp.modified) {
-				X.add(Utility.textToSqlId(tmp.name)); Y.add("CURRENT_TIMESTAMP");
+				X.add(Utility.textToSqlId(tmp.field)); Y.add("CURRENT_TIMESTAMP");
 			}
 
 			if(tmp.modifiedBy) {
-				X.add(Utility.textToSqlId(tmp.name)); Y.add(Utility.textToSqlVal(AMIUser));
+				X.add(Utility.textToSqlId(tmp.field)); Y.add(Utility.textToSqlVal(AMIUser));
 			}
 		}
 

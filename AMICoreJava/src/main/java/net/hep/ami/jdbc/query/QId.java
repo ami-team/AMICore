@@ -64,8 +64,8 @@ public class QId
 	public QId(SchemaSingleton.Column column, boolean isInternal)
 	{
 		setCatalog(isInternal ? column.internalCatalog : column.externalCatalog);
-		setEntity(column.table);
-		setField(column.name);
+		setEntity(column.entity);
+		setField(column.field);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -73,8 +73,8 @@ public class QId
 	public QId(SchemaSingleton.Column column, boolean isInternal, @Nullable Collection<QId> constraints)
 	{
 		setCatalog(isInternal ? column.internalCatalog : column.externalCatalog);
-		setEntity(column.table);
-		setField(column.name);
+		setEntity(column.entity);
+		setField(column.field);
 
 		if(constraints != null)
 		{

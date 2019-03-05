@@ -20,7 +20,7 @@ public class AutoJoinSingleton
 		int cnt,
 		int max,
 		String defaultCatalog,
-		String defaultTable,
+		String defaultEntity,
 		QId givenQId
 	 ) throws Exception {
 
@@ -30,15 +30,15 @@ public class AutoJoinSingleton
 		}
 
 		String givenCatalog = givenQId.getCatalog();
-		String givenTable = givenQId.getEntity();
+		String givenEntity = givenQId.getEntity();
 		String givenColumn = givenQId.getField();
 
 		boolean checkNow = (givenCatalog == null || defaultCatalog.equalsIgnoreCase(givenCatalog))
 		                   &&
-		                   (givenTable == null || defaultTable.equalsIgnoreCase(givenTable))
+		                   (givenEntity == null || defaultEntity.equalsIgnoreCase(givenEntity))
 		;
 
-		SchemaSingleton.Column resolvedColumn = checkNow ? SchemaSingleton.getEntityInfo(defaultCatalog, defaultTable).get(givenColumn) : null;
+		SchemaSingleton.Column resolvedColumn = checkNow ? SchemaSingleton.getEntityInfo(defaultCatalog, defaultEntity).get(givenColumn) : null;
 
 		if(resolvedColumn == null)
 		{
@@ -51,7 +51,7 @@ public class AutoJoinSingleton
 			/* FORWARD RESOLUTION                                          */
 			/*-------------------------------------------------------------*/
 
-			forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultTable).values();
+			forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultEntity).values();
 
 			/*-------------------------------------------------------------*/
 
@@ -59,13 +59,13 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkTable;
+					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkEntity;
 
 					if(done.contains(key) == false)
 					{
 						done.add(key);
 						resolvedPath.add(frgnKey);
-						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkTable, givenQId);
+						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkEntity, givenQId);
 						resolvedPath.pop();
 						done.remove(key);
 					}
@@ -76,7 +76,7 @@ public class AutoJoinSingleton
 			/* BACKWARD RESOLUTION                                         */
 			/*-------------------------------------------------------------*/
 
-			backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultTable).values();
+			backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultEntity).values();
 
 			/*-------------------------------------------------------------*/
 
@@ -84,13 +84,13 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkTable;
+					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkEntity;
 
 					if(done.contains(key) == false)
 					{
 						done.add(key);
 						resolvedPath.add(frgnKey);
-						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkTable, givenQId);
+						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkEntity, givenQId);
 						resolvedPath.pop();
 						done.remove(key);
 					}
@@ -111,9 +111,9 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: resolvedPath)
 				{
-					if(qId.matches(new QId(frgnKey.pkExternalCatalog, frgnKey.pkTable, frgnKey.pkColumn))
+					if(qId.matches(new QId(frgnKey.pkExternalCatalog, frgnKey.pkEntity, frgnKey.pkField))
 					   ||
-					   qId.matches(new QId(frgnKey.fkExternalCatalog, frgnKey.fkTable, frgnKey.fkColumn))
+					   qId.matches(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField))
 					 ) {
 						map.put(qId, !qId.getExclusion());
 					}
@@ -140,38 +140,38 @@ public class AutoJoinSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, QId givenQId, int max) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, QId givenQId, int max) throws Exception
 	{
 		Resolution result = new Resolution();
 
-		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultExternalCatalog, defaultTable, givenQId);
+		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultExternalCatalog, defaultEntity, givenQId);
 
 		return result.finalize(givenQId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, QId givenQId) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, QId givenQId) throws Exception
 	{
 		Resolution result = new Resolution();
 
-		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultExternalCatalog, defaultTable, givenQId);
+		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultExternalCatalog, defaultEntity, givenQId);
 
 		return result.finalize(givenQId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, String givenQId, int max) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, String givenQId, int max) throws Exception
 	{
-		return resolve(defaultExternalCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), max);
+		return resolve(defaultExternalCatalog, defaultEntity, QId.parseQId(givenQId, QId.Type.FIELD), max);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultTable, String givenQId) throws Exception
+	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, String givenQId) throws Exception
 	{
-		return resolve(defaultExternalCatalog, defaultTable, QId.parseQId(givenQId, QId.Type.FIELD), 999);
+		return resolve(defaultExternalCatalog, defaultEntity, QId.parseQId(givenQId, QId.Type.FIELD), 999);
 	}
 
 	/*---------------------------------------------------------------------*/

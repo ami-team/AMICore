@@ -9,6 +9,7 @@ import java.util.stream.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
+
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -28,8 +29,8 @@ public class SchemaSingleton
 
 		public final String externalCatalog;
 		public final String internalCatalog;
-		public final String table;
-		public final String name;
+		public final String entity;
+		public final String field;
 		public final String type;
 		public final int size;
 		public final int digits;
@@ -53,12 +54,12 @@ public class SchemaSingleton
 
 		/**/
 
-		public Column(String _externalCatalog, String _internalCatalog, String _table, String _name, String _type, int _size, int _digits, String _def)
+		public Column(String _externalCatalog, String _internalCatalog, String _entity, String _field, String _type, int _size, int _digits, String _def)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
-			table = _table;
-			name = _name;
+			entity = _entity;
+			field = _field;
 			type = _type;
 			size = _size;
 			digits = _digits;
@@ -70,13 +71,13 @@ public class SchemaSingleton
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(internalCatalog, table, name);
+			return Objects.hash(internalCatalog, entity, field);
 		}
 
 		@Override
 		public String toString()
 		{
-			return "`" + internalCatalog + "`.`" + table + "`.`" + name + "`";
+			return "`" + internalCatalog + "`.`" + entity + "`.`" + field + "`";
 		}
 	}
 
@@ -91,38 +92,38 @@ public class SchemaSingleton
 		public final String name;
 		public final String fkExternalCatalog;
 		public final String fkInternalCatalog;
-		public final String fkTable;
-		public final String fkColumn;
+		public final String fkEntity;
+		public final String fkField;
 		public final String pkExternalCatalog;
 		public final String pkInternalCatalog;
-		public final String pkTable;
-		public final String pkColumn;
+		public final String pkEntity;
+		public final String pkField;
 
 		/**/
 
-		public FrgnKey(String _name, String _fkExternalCatalog, String _fkInternalCatalog, String _fkTable, String _fkColumn, String _pkExternalCatalog, String _pkInternalCatalog, String _pkTable, String _pkColumn)
+		public FrgnKey(String _name, String _fkExternalCatalog, String _fkInternalCatalog, String _fkEntity, String _fkField, String _pkExternalCatalog, String _pkInternalCatalog, String _pkEntity, String _pkField)
 		{
 			name = _name;
 			fkExternalCatalog = _fkExternalCatalog;
 			fkInternalCatalog = _fkInternalCatalog;
-			fkTable = _fkTable;
-			fkColumn = _fkColumn;
+			fkEntity = _fkEntity;
+			fkField = _fkField;
 			pkExternalCatalog = _pkExternalCatalog;
 			pkInternalCatalog = _pkInternalCatalog;
-			pkTable = _pkTable;
-			pkColumn = _pkColumn;
+			pkEntity = _pkEntity;
+			pkField = _pkField;
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(fkInternalCatalog, fkTable, fkColumn, pkInternalCatalog, pkTable, pkColumn);
+			return Objects.hash(fkInternalCatalog, fkEntity, fkField, pkInternalCatalog, pkEntity, pkField);
 		}
 
 		@Override
 		public String toString()
 		{
-			return "`" + fkInternalCatalog + "`.`" + fkTable + "`.`" + fkColumn + "` = `" + pkInternalCatalog + "`.`" + pkTable + "`.`" + pkColumn + "`";
+			return "`" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "`";
 		}
 	}
 
@@ -403,7 +404,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromDatabase() throws Exception
 		{
-			Set<String> tables = new HashSet<>();
+			Set<String> entities = new HashSet<>();
 
 			m_logger.info("for catalog '{}', loading from schema from database...", m_externalCatalog);
 
@@ -446,18 +447,18 @@ public class SchemaSingleton
 							m_tmp1.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
 							m_tmp2.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
 
-							tables.add(temp);
+							entities.add(temp);
 						}
 					}
 				}
 
 				/*---------------------------------------------------------*/
 
-				for(String table: tables)
+				for(String entity: entities)
 				{
-					loadColumnMetadata(metaData, table);
+					loadColumnMetadata(metaData, entity);
 
-					loadFgnKeyMetadata(metaData, table);
+					loadFgnKeyMetadata(metaData, entity);
 				}
 
 				/*---------------------------------------------------------*/
@@ -474,35 +475,35 @@ public class SchemaSingleton
 
 		private void loadColumnMetadata(
 			DatabaseMetaData metaData,
-			String _table
+			String _entity
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_tuple.z, _table, "%"))
+			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_tuple.z, _entity, "%"))
 			{
 				boolean isOracle = resultSet.getClass().getName().startsWith("oracle");
 
 				while(resultSet.next())
 				{
-					String table = resultSet.getString("TABLE_NAME");
-					String name = resultSet.getString("COLUMN_NAME");
+					String entity = resultSet.getString("TABLE_NAME");
+					String field = resultSet.getString("COLUMN_NAME");
 					String type = resultSet.getString("TYPE_NAME");
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
 					boolean nullable = resultSet.getBoolean("NULLABLE");
 
-					if(table != null && name != null && type != null)
+					if(entity != null && field != null && type != null)
 					{
-						Map<String, Column> column = m_tmp1.get(table);
+						Map<String, Column> column = m_tmp1.get(entity);
 
 						if(column != null)
 						{
-							column.put(name, new Column(
+							column.put(field, new Column(
 								m_externalCatalog,
 								m_internalCatalog,
-								table,
-								name,
+								entity,
+								field,
 								type,
 								size,
 								digits,
@@ -517,11 +518,11 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_tuple.z, _table))
+			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
 				while(resultSet.next())
 				{
-					m_tmp1.get(_table).get(resultSet.getString("COLUMN_NAME")).primary = true;
+					m_tmp1.get(_entity).get(resultSet.getString("COLUMN_NAME")).primary = true;
 				}
 			}
 
@@ -532,21 +533,21 @@ public class SchemaSingleton
 
 		private void loadFgnKeyMetadata(
 			DatabaseMetaData metaData,
-			String _table
+			String _entity
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _table))
+			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
 				while(resultSet.next())
 				{
 					String name = resultSet.getString("FK_NAME");
 					String fkInternalCatalog = resultSet.getString("FKTABLE_CAT");
-					String fkTable = resultSet.getString("FKTABLE_NAME");
-					String fkColumn = resultSet.getString("FKCOLUMN_NAME");
+					String fkEntity = resultSet.getString("FKTABLE_NAME");
+					String fkField = resultSet.getString("FKCOLUMN_NAME");
 					String pkInternalCatalog = resultSet.getString("PKTABLE_CAT");
-					String pkTable = resultSet.getString("PKTABLE_NAME");
-					String pkColumn = resultSet.getString("PKCOLUMN_NAME");
+					String pkEntity = resultSet.getString("PKTABLE_NAME");
+					String pkField = resultSet.getString("PKCOLUMN_NAME");
 
 					String fkExternalCatalog;
 					String pkExternalCatalog;
@@ -575,22 +576,22 @@ public class SchemaSingleton
 						pkInternalCatalog = m_internalCatalog;
 					}
 
-					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkTable != null && fkColumn != null && pkExternalCatalog != null && pkInternalCatalog != null && pkTable != null && pkColumn != null)
+					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkInternalCatalog != null && pkEntity != null && pkField != null)
 					{
-						Map<String, FrgnKeys> frgnKey = m_tmp2.get(fkTable);
+						Map<String, FrgnKeys> frgnKey = m_tmp2.get(fkEntity);
 
 						if(frgnKey != null)
 						{
-							frgnKey.put(fkColumn, new FrgnKeys(new FrgnKey(
+							frgnKey.put(fkField, new FrgnKeys(new FrgnKey(
 								name,
 								fkExternalCatalog,
 								fkInternalCatalog,
-								fkTable,
-								fkColumn,
+								fkEntity,
+								fkField,
 								pkExternalCatalog,
 								pkInternalCatalog,
-								pkTable,
-								pkColumn
+								pkEntity,
+								pkField
 							)));
 						}
 					}
@@ -715,8 +716,8 @@ public class SchemaSingleton
 				frgnKey = frgnKeys.get(0);
 
 				m_backwardFKs.get(frgnKey.pkExternalCatalog)
-				             .get(frgnKey.pkTable)
-				             .get(frgnKey.pkColumn)
+				             .get(frgnKey.pkEntity)
+				             .get(frgnKey.pkField)
 				             .add(frgnKey)
 				;
 			}
@@ -881,7 +882,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Map<String, Column>> getTables(String externalCatalog) throws Exception
+	public static Map<String, Map<String, Column>> getEntities(String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -901,11 +902,11 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Column> getEntityInfo(String externalCatalog, String table) throws Exception
+	public static Map<String, Column> getEntityInfo(String externalCatalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Column> map = getTables(externalCatalog).get(table);
+		Map<String, Column> map = getEntities(externalCatalog).get(entity);
 
 		if(map != null)
 		{
@@ -914,18 +915,18 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("entity not found `" + externalCatalog + "`.`" + table + "`");
+		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Column getFieldInfo(String externalCatalog, String table, String field) throws Exception
+	public static Column getFieldInfo(String externalCatalog, String entity, String field) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Column column = getEntityInfo(externalCatalog, table).get(field);
+		Column column = getEntityInfo(externalCatalog, entity).get(field);
 
 		if(column != null)
 		{
@@ -934,14 +935,14 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("field not found `" + externalCatalog + "`.`" + table + "`.`" + field + "`");
+		throw new Exception("field not found `" + externalCatalog + "`.`" + entity + "`.`" + field + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKeys> getForwardFKs(String externalCatalog, String table) throws Exception
+	public static Map<String, FrgnKeys> getForwardFKs(String externalCatalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -949,7 +950,7 @@ public class SchemaSingleton
 
 		if(map1 != null)
 		{
-			Map<String, FrgnKeys> map2 = map1.get(table);
+			Map<String, FrgnKeys> map2 = map1.get(entity);
 
 			if(map2 != null)
 			{
@@ -959,14 +960,14 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("table not found `" + externalCatalog + "`.`" + table + "`");
+		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKeys> getBackwardFKs(String externalCatalog, String table) throws Exception
+	public static Map<String, FrgnKeys> getBackwardFKs(String externalCatalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -974,7 +975,7 @@ public class SchemaSingleton
 
 		if(map1 != null)
 		{
-			Map<String, FrgnKeys> map2 = map1.get(table);
+			Map<String, FrgnKeys> map2 = map1.get(entity);
 
 			if(map2 != null)
 			{
@@ -983,7 +984,7 @@ public class SchemaSingleton
 		}
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("table not found `" + externalCatalog + "`.`" + table + "`");
+		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -1008,47 +1009,47 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getTableNames(String externalCatalog) throws Exception
+	public static List<String> getEntityNames(String externalCatalog) throws Exception
 	{
 		return new ArrayList<>(
-			getTables(externalCatalog).keySet()
+			getEntities(externalCatalog).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<String> getColumnNames(String externalCatalog, String table) throws Exception
+	public static List<String> getFieldNames(String externalCatalog, String entity) throws Exception
 	{
 		return new ArrayList<>(
-			getEntityInfo(externalCatalog, table).keySet()
+			getEntityInfo(externalCatalog, entity).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getForwardFKNames(String externalCatalog, String table) throws Exception
+	public static Set<String> getForwardFKNames(String externalCatalog, String entity) throws Exception
 	{
 		return new LinkedHashSet<>(
-			getForwardFKs(externalCatalog, table).keySet()
+			getForwardFKs(externalCatalog, entity).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Set<String> getBackwardFKNames(String externalCatalog, String table) throws Exception
+	public static Set<String> getBackwardFKNames(String externalCatalog, String entity) throws Exception
 	{
 		return new LinkedHashSet<>(
-			getBackwardFKs(externalCatalog, table).keySet()
+			getBackwardFKs(externalCatalog, entity).keySet()
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Column getPrimaryKey(String externalCatalog, String table) throws Exception
+	public static Column getPrimaryKey(String externalCatalog, String entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		for(Column column: getEntityInfo(externalCatalog, table).values())
+		for(Column column: getEntityInfo(externalCatalog, entity).values())
 		{
 			if(column.primary)
 			{
@@ -1058,19 +1059,19 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("primary key not found for `" + externalCatalog + "`.`" + table + "`");
+		throw new Exception("primary key not found for `" + externalCatalog + "`.`" + entity + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<QId> getSortedColumnQId(String externalCatalog, String table, @Nullable List<QId> constraints, boolean isAdmin) throws Exception
+	public static List<QId> getSortedColumnQId(String externalCatalog, String entity, @Nullable List<QId> constraints, boolean isAdmin) throws Exception
 	{
-		return getEntityInfo(externalCatalog, table).values().stream()
-		                                                     .filter(x -> isAdmin || (x.adminOnly == false && x.crypted == false)).sorted((x, y) -> x.rank - y.rank)
-		                                                     .map(x -> new QId(x, false, constraints))
-		                                                     .collect(Collectors.toList())
+		return getEntityInfo(externalCatalog, entity).values().stream()
+		                                                      .filter(x -> isAdmin || (x.adminOnly == false && x.crypted == false)).sorted((x, y) -> x.rank - y.rank)
+		                                                      .map(x -> new QId(x, false, constraints))
+		                                                      .collect(Collectors.toList())
 		;
 	}
 
@@ -1095,8 +1096,8 @@ public class SchemaSingleton
 			result.append("<row>")
 			      .append("<field name=\"externalCatalog\"><![CDATA[").append(column.externalCatalog).append("]]></field>")
 			      .append("<field name=\"internalCatalog\"><![CDATA[").append(column.internalCatalog).append("]]></field>")
-			      .append("<field name=\"entity\"><![CDATA[").append(column.table).append("]]></field>")
-			      .append("<field name=\"name\"><![CDATA[").append(column.name).append("]]></field>")
+			      .append("<field name=\"entity\"><![CDATA[").append(column.entity).append("]]></field>")
+			      .append("<field name=\"field\"><![CDATA[").append(column.field).append("]]></field>")
 			      .append("<field name=\"type\"><![CDATA[").append(column.type).append("]]></field>")
 			      .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
 			      .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
@@ -1136,12 +1137,12 @@ public class SchemaSingleton
 			      .append("<field name=\"name\"><![CDATA[").append(frgnKey.name).append("]]></field>")
 			      .append("<field name=\"fkExternalCatalog\"><![CDATA[").append(frgnKey.fkExternalCatalog).append("]]></field>")
 			      .append("<field name=\"fkInternalCatalog\"><![CDATA[").append(frgnKey.fkInternalCatalog).append("]]></field>")
-			      .append("<field name=\"fkTable\"><![CDATA[").append(frgnKey.fkTable).append("]]></field>")
-			      .append("<field name=\"fkColumn\"><![CDATA[").append(frgnKey.fkColumn).append("]]></field>")
+			      .append("<field name=\"fkEntity\"><![CDATA[").append(frgnKey.fkEntity).append("]]></field>")
+			      .append("<field name=\"fkColumn\"><![CDATA[").append(frgnKey.fkField).append("]]></field>")
 			      .append("<field name=\"pkExternalCatalog\"><![CDATA[").append(frgnKey.pkExternalCatalog).append("]]></field>")
 			      .append("<field name=\"pkInternalCatalog\"><![CDATA[").append(frgnKey.pkInternalCatalog).append("]]></field>")
-			      .append("<field name=\"pkTable\"><![CDATA[").append(frgnKey.pkTable).append("]]></field>")
-			      .append("<field name=\"pkColumn\"><![CDATA[").append(frgnKey.pkColumn).append("]]></field>")
+			      .append("<field name=\"pkEntity\"><![CDATA[").append(frgnKey.pkEntity).append("]]></field>")
+			      .append("<field name=\"pkColumn\"><![CDATA[").append(frgnKey.pkField).append("]]></field>")
 			      .append("</row>")
 			;
 		}
