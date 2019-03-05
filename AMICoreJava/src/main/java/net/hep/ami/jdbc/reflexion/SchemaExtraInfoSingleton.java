@@ -240,6 +240,7 @@ public class SchemaExtraInfoSingleton
 		router_catalog.get("jdbcUrl").adminOnly = true;
 		router_catalog.get("user").crypted = true;
 		router_catalog.get("pass").crypted = true;
+		router_catalog.get("archived").groupable = true;
 		router_catalog.get("created").created = true;
 		router_catalog.get("createdBy").createdBy = true;
 		router_catalog.get("modified").modified = true;
@@ -249,6 +250,16 @@ public class SchemaExtraInfoSingleton
 
 		Map<String, SchemaSingleton.Column> router_catalog_extra = SchemaSingleton.getEntityInfo("self", "router_catalog_extra");
 
+		router_catalog_extra.get("isHidden").groupable = true;
+		router_catalog_extra.get("isAdminOnly").groupable = true;
+		router_catalog_extra.get("isCrypted").groupable = true;
+		router_catalog_extra.get("isPrimary").groupable = true;
+		router_catalog_extra.get("isCreated").groupable = true;
+		router_catalog_extra.get("isCreatedBy").groupable = true;
+		router_catalog_extra.get("isModified").groupable = true;
+		router_catalog_extra.get("isModifiedBy").groupable = true;
+		router_catalog_extra.get("isStatable").groupable = true;
+		router_catalog_extra.get("isGroupable").groupable = true;
 		router_catalog_extra.get("created").created = true;
 		router_catalog_extra.get("createdBy").createdBy = true;
 		router_catalog_extra.get("modified").modified = true;
@@ -265,12 +276,19 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		Map<String, SchemaSingleton.Column> router_command = SchemaSingleton.getEntityInfo("self", "router_command");
+
+		router_command.get("visible").groupable = true;
+		router_command.get("secured").groupable = true;
+
+		/*-----------------------------------------------------------------*/
+
 		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getEntityInfo("self", "router_user");
 
 		router_user.get("AMIPass").crypted = true;
 		router_user.get("clientDN").crypted = true;
 		router_user.get("issuerDN").crypted = true;
-
+		router_user.get("valid").groupable = true;
 		router_user.get("created").created = true;
 		router_user.get("modified").modified = true;
 
@@ -301,6 +319,7 @@ public class SchemaExtraInfoSingleton
 
 		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface");
 
+		router_search_interface.get("archived").groupable = true;
 		router_search_interface.get("created").created = true;
 		router_search_interface.get("createdBy").createdBy = true;
 		router_search_interface.get("modified").modified = true;
