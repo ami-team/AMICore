@@ -237,7 +237,7 @@ COMP
 	;
 
 NOT
-	: '!'
+	: N O T
 	;
 
 IN
