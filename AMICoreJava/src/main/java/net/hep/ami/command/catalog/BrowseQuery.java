@@ -19,6 +19,9 @@ public class BrowseQuery extends SearchQuery
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
+		arguments.put("count", "count");
+		arguments.put("webLinks", "webLinks");
+
 		return super.main(arguments);
 	}
 
