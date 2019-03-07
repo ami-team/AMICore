@@ -4,7 +4,7 @@ DROP VIEW IF EXISTS "FILE_VIEW";;
 DROP TABLE IF EXISTS "DATASET_FILE_BRIDGE";;
 DROP TABLE IF EXISTS "DATASET_PARAM";;
 DROP TABLE IF EXISTS "FILE";;
-DROP TABLE IF EXISTS "DATASET";;
+DROP TABLE IF EXISTS "DATASET" CASCADE;;
 DROP TABLE IF EXISTS "FILE_TYPE";;
 DROP TABLE IF EXISTS "DATASET_TYPE";;
 DROP TABLE IF EXISTS "PROJECT";;
@@ -22,6 +22,7 @@ CREATE OR REPLACE FUNCTION UPDATE_MODIFIED_FIELD()
 
   $BODY$ LANGUAGE 'plpgsql'
 ;;
+
 
 -----------------------------------------------------------------------------
 
@@ -211,3 +212,12 @@ CREATE VIEW "FILE_VIEW" AS
 ;;
 
 -----------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION AMI_TEST(dataset_name varchar(100))
+RETURNS setof "DATASET" 
+AS 
+$$
+   Select * 
+   From "DATASET" 
+   where "name" = dataset_name;
+$$ LANGUAGE 'sql';;
