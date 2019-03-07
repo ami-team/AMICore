@@ -188,6 +188,7 @@ public class AMICoreTest
 						}
 						catch(SQLException e)
 						{
+							System.out.println(e.getMessage());
 							throw new SQLException(e.getMessage() + " for SQL query: " + query.replace(";;", ""), e);
 						}
 
@@ -718,11 +719,27 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "GetElementInfo -catalog=\"test\" -entity=\"DATASET\" -primaryFieldName=\"name\" -primaryFieldValue=\"test_multi_project_1\" -GUI=\"yes\" -expandedLinkedElements=\"\"";
+		//commandTest = "GetElementInfo -catalog=\"test\" -entity=\"DATASET\" -primaryFieldName=\"name\" -primaryFieldValue=\"test_multi_project_1\" -GUI=\"yes\" -expandedLinkedElements=\"\"";
 
+		/**/ if(jdbcUrl.contains("jdbc:mysql")) {
+			commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -raw=\"CALL AMI_TEST('dataset_1');\"";
+		}
+		else if(jdbcUrl.contains("jdbc:mariadb")) {
+			commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -raw=\"CALL AMI_TEST('dataset_1');\"";
+		}
+		else if(jdbcUrl.contains("jdbc:oracle")) {
+			commandTest = "GetSessionInfo";
+		}
+		else if(jdbcUrl.contains("jdbc:postgresql")) {
+			commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -raw=\"SELECT AMI_TEST('dataset_1');\"";
+		}
+		else {
+			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
+		}
 		try
 		{
-			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));;
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
