@@ -132,7 +132,7 @@ public class GetElementInfo extends AbstractCommand
 				result.append("<row>")
 				      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
-				      .append("<field name=\"multiple\"><![CDATA[").append(frgnKeys.size() > 1).append("]]></field>")
+				      .append("<field name=\"constraint\"><![CDATA[").append(frgnKey.fkField).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
 				      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
