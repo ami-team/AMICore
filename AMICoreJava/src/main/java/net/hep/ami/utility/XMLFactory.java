@@ -64,6 +64,8 @@ public class XMLFactory
 			@SuppressWarnings("rawtypes")
 			public ExtensionFunctionCall makeCallExpression()
 			{
+				/*---------------------------------------------------------*/
+
 				return new ExtensionFunctionCall() {
 
 					public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException
@@ -82,6 +84,8 @@ public class XMLFactory
 						}
 					}
 				};
+
+				/*---------------------------------------------------------*/
 			}
 
 			/*-------------------------------------------------------------*/
@@ -119,6 +123,7 @@ public class XMLFactory
 		));
 	}
 
+	/*---------------------------------------------------------------------*/
 	/*---------------------------------------------------------------------*/
 
 	public static String getAttribute(org.w3c.dom.Node node, String name)
