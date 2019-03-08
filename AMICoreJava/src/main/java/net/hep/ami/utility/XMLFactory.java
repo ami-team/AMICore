@@ -7,7 +7,6 @@ import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
-import net.hep.ami.utility.parser.Utility;
 import net.sf.saxon.*;
 import net.sf.saxon.om.*;
 import net.sf.saxon.dom.*;
@@ -15,6 +14,8 @@ import net.sf.saxon.lib.*;
 import net.sf.saxon.expr.*;
 import net.sf.saxon.trans.*;
 import net.sf.saxon.value.*;
+
+import net.hep.ami.utility.parser.*;
 
 public class XMLFactory
 {
