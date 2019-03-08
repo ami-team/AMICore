@@ -107,8 +107,15 @@ public class GetElementInfo extends AbstractCommand
 
 				try
 				{
-					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity,new SelectObj().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")").addWherePart(new QId(catalog, entity, primaryFieldName, Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField))).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = ?").toString(), primaryFieldValue);
-					
+					List<QId> constraints = Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField));
+
+					String query = new SelectObj().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+					                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?")
+					                              .toString()
+					;
+
+					RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, query, primaryFieldValue);
+
 					sql = rowSet.getSQL();
 					mql = rowSet.getMQL();
 
@@ -125,7 +132,6 @@ public class GetElementInfo extends AbstractCommand
 				result.append("<row>")
 				      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
 				      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
-				      .append("<field name=\"constraint\"><![CDATA[").append(frgnKey.fkField).append("]]></field>")
 				      .append("<field name=\"multiple\"><![CDATA[").append(frgnKeys.size() > 1).append("]]></field>")
 				      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
 				      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
