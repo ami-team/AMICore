@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ami="http://ami.in2p3.fr/xsl" version="2.0">
 
 	<xsl:output method="text" encoding="UTF-8"></xsl:output>
 
@@ -18,43 +18,43 @@
 
 	<xsl:template match="help">
 		<xsl:text>Help: </xsl:text>
-		<xsl:copy-of select="." />
+		<xsl:copy-of select="text()" />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="usage">
 		<xsl:text>Usage: </xsl:text>
-		<xsl:copy-of select="." />
+		<xsl:copy-of select="text()" />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="error">
 		<xsl:text>Error: </xsl:text>
-		<xsl:copy-of select="." />
+		<xsl:copy-of select="text()" />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="info">
 		<xsl:text>Info: </xsl:text>
-		<xsl:copy-of select="." />
+		<xsl:copy-of select="text()" />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="sql">
 		<xsl:text>  Sql: </xsl:text>
-		<xsl:copy-of select="." />
+		<xsl:copy-of select="text()" />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="mql">
 		<xsl:text>  Mql: </xsl:text>
-		<xsl:copy-of select="." />
+		<xsl:copy-of select="text()" />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="ast">
 		<xsl:text>  Ast: </xsl:text>
-		<xsl:copy-of select="." />
+		<xsl:copy-of select="text()" />
 		<xsl:text>&#x0a;</xsl:text>
 	</xsl:template>
 
@@ -74,18 +74,12 @@
 
 		<xsl:for-each select="field">
 
-			<xsl:variable name="s1" select="@name" />
-			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
-			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 			<xsl:text>    -> </xsl:text>
-			<xsl:value-of select="$s3" />
+			<xsl:value-of select="ami:replace(@name, false())" />
 			<xsl:text> = </xsl:text>
 
-			<xsl:variable name="s1" select="." />
-			<xsl:variable name="s2" select="replace($s1, '&#xa;', '\\n')" />
-			<xsl:variable name="s3" select="replace($s2, '&#x9;', '\\t')" />
 			<xsl:text>"</xsl:text>
-			<xsl:value-of select="$s3" />
+			<xsl:value-of select="ami:replace(text(), false())" />
 			<xsl:text>"</xsl:text>
 
 			<xsl:text>&#x0a;</xsl:text>

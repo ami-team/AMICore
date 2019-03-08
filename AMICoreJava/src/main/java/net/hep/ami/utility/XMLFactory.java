@@ -7,14 +7,94 @@ import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
+import net.hep.ami.utility.parser.Utility;
 import net.sf.saxon.*;
+import net.sf.saxon.om.*;
 import net.sf.saxon.dom.*;
+import net.sf.saxon.lib.*;
+import net.sf.saxon.expr.*;
+import net.sf.saxon.trans.*;
+import net.sf.saxon.value.*;
 
 public class XMLFactory
 {
 	/*---------------------------------------------------------------------*/
 
 	private XMLFactory() {}
+
+	/*---------------------------------------------------------------------*/
+
+	private static class AMITransformerFactoryImpl extends TransformerFactoryImpl
+	{
+		/*-----------------------------------------------------------------*/
+
+		private class Replace extends ExtensionFunctionDefinition
+		{
+			/*-------------------------------------------------------------*/
+
+			@Override
+			public StructuredQName getFunctionQName()
+			{
+				return new StructuredQName("ami", "http://ami.in2p3.fr/xsl", "replace");
+			}
+
+			/*-------------------------------------------------------------*/
+
+			@Override
+			public SequenceType[] getArgumentTypes()
+			{
+				return new SequenceType[] {
+					SequenceType.OPTIONAL_STRING,
+					SequenceType.SINGLE_BOOLEAN,
+				};
+			}
+
+			/*-------------------------------------------------------------*/
+
+			@Override
+			public SequenceType getResultType(SequenceType[] suppliedArgumentTypes)
+			{
+				return SequenceType.SINGLE_STRING;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			@Override
+			@SuppressWarnings("rawtypes")
+			public ExtensionFunctionCall makeCallExpression()
+			{
+				return new ExtensionFunctionCall() {
+
+					public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException
+					{
+						Item arg0 = arguments[0].head();
+
+						String s = (arg0 != null) ? arg0.getStringValue() : "";
+
+						Boolean q = ((BooleanValue) arguments[1]).getBooleanValue();
+
+						if(q) {
+							return StringValue.makeStringValue(Utility.escapeJavaString(s));
+						}
+						else {
+							return StringValue.makeStringValue(s.replace("\n", "\\n").replace("\t", "\\t"));
+						}
+					}
+				};
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		public AMITransformerFactoryImpl()
+		{
+			this.getConfiguration().registerExtensionFunction(new Replace());
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -31,7 +111,7 @@ public class XMLFactory
 
 	public static javax.xml.transform.Templates newTemplates(InputStream inputStream) throws Exception
 	{
-		TransformerFactory transformerFactory = new TransformerFactoryImpl();
+		TransformerFactory transformerFactory = new AMITransformerFactoryImpl();
 
 		return transformerFactory.newTemplates(new StreamSource(
 			inputStream
