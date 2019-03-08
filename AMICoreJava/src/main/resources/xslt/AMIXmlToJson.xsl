@@ -97,7 +97,7 @@
 			<xsl:text>"@</xsl:text>
 			<xsl:value-of select="ami:replace(name(), true())" />
 			<xsl:text>":"</xsl:text>
-			<xsl:value-of select="ami:replace(text(), true())" />
+			<xsl:value-of select="ami:replace(., true())" />
 			<xsl:text>",</xsl:text>
 		</xsl:for-each>
 
@@ -179,7 +179,7 @@
 			<xsl:text>"@</xsl:text>
 			<xsl:value-of select="ami:replace(name(), true())" />
 			<xsl:text>":"</xsl:text>
-			<xsl:value-of select="ami:replace(text(), true())" />
+			<xsl:value-of select="ami:replace(., true())" />
 			<xsl:text>",</xsl:text>
 		</xsl:for-each>
 
@@ -214,7 +214,7 @@
 			<xsl:text>"@</xsl:text>
 			<xsl:value-of select="ami:replace(name(), true())" />
 			<xsl:text>":"</xsl:text>
-			<xsl:value-of select="ami:replace(text(), true())" />
+			<xsl:value-of select="ami:replace(., true())" />
 			<xsl:text>"</xsl:text>
 			<xsl:if test="not (position() = last())">,</xsl:if>
 		</xsl:for-each>
