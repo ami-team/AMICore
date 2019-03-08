@@ -21,7 +21,7 @@ options {
 
 		public Pair(String _x, Object _y)
 		{
-			x = Utility.javaStringToText(_x);
+			x = Utility.jsonStringToText(_x);
 			y = /*--------------------*/(_y);
 		}
 	}
@@ -58,7 +58,7 @@ pair returns [ Pair v ]
 	;
 
 term returns [ Object v ]
-	: STRING { $v = Utility.javaStringToText($STRING.text); }
+	: STRING { $v = Utility.jsonStringToText($STRING.text); }
 	| NUMBER { $v = Double.parseDouble($NUMBER.text); }
 	| 'true' { $v = true; }
 	| 'false' { $v = false; }

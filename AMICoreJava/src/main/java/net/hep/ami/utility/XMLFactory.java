@@ -74,7 +74,7 @@ public class XMLFactory
 						Boolean q = ((BooleanValue) arguments[1]).getBooleanValue();
 
 						if(q) {
-							return StringValue.makeStringValue(Utility.escapeJavaString(s));
+							return StringValue.makeStringValue(Utility.escapeJSONString(s));
 						}
 						else {
 							return StringValue.makeStringValue(s.replace("\n", "\\n").replace("\t", "\\t"));
