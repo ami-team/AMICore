@@ -44,9 +44,9 @@ public class CheckDBNomenclature extends AbstractCommand
 
 		for(String catalog: SchemaSingleton.getExternalCatalogNames())
 		{
-			for(String table: SchemaSingleton.getEntityNames(catalog))
+			for(String entity: SchemaSingleton.getEntityNames(catalog))
 			{
-				columns = SchemaSingleton.getEntityInfo(catalog, table).values();
+				columns = SchemaSingleton.getEntityInfo(catalog, entity).values();
 
 				total1 += columns.size();
 
@@ -87,9 +87,9 @@ public class CheckDBNomenclature extends AbstractCommand
 
 		for(String catalog: SchemaSingleton.getExternalCatalogNames())
 		{
-			for(String table: SchemaSingleton.getEntityNames(catalog))
+			for(String entity: SchemaSingleton.getEntityNames(catalog))
 			{
-				frgnKeys = SchemaSingleton.getForwardFKs(catalog, table).values();
+				frgnKeys = SchemaSingleton.getForwardFKs(catalog, entity).values();
 
 				total2 += frgnKeys.size();
 
