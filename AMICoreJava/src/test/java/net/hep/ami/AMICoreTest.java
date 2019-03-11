@@ -200,8 +200,8 @@ public class AMICoreTest
 
 		try 
 		{
-			String fields = "catalog;entity;field;isPrimary";
-			String values = "test;PROJECT;name;1";
+			String fields = "catalog;entity;field;isPrimary;description";
+			String values = "test;PROJECT;name;1;this is a test description";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
