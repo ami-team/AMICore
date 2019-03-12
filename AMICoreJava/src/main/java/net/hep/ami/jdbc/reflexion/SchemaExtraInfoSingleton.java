@@ -36,13 +36,33 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
+			RowSet rowSet1 = router.executeSQLQuery("SELECT `catalog`, `entity`, `isBridge`, `description` FROM `router_entity`");
 
 			/*-------------------------------------------------------------*/
-			/* UPDATE COLUMN                                               */
+			/* UPDATE ENTITIES                                             */
 			/*-------------------------------------------------------------*/
 
 			for(Row row: rowSet1.iterate())
+			{
+				updateEntity(
+					row.getValue(0),
+					row.getValue(1),
+					Integer.parseInt(row.getValue(2)) != 0,
+					row.getValue(3)
+				);
+			}
+
+			/*-------------------------------------------------------------*/
+			/* EXECUTE QUERY                                               */
+			/*-------------------------------------------------------------*/
+
+			RowSet rowSet2 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
+
+			/*-------------------------------------------------------------*/
+			/* UPDATE COLUMNS                                              */
+			/*-------------------------------------------------------------*/
+
+			for(Row row: rowSet2.iterate())
 			{
 				updateColumn(
 					row.getValue(0),
@@ -72,13 +92,13 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet2 = router.executeSQLQuery("SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
+			RowSet rowSet3 = router.executeSQLQuery("SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE FOREIGN KEYS                                         */
 			/*-------------------------------------------------------------*/
 
-			for(Row row: rowSet2.iterate())
+			for(Row row: rowSet3.iterate())
 			{
 				updateForeignKeys(
 					row.getValue(0),
@@ -116,6 +136,13 @@ public class SchemaExtraInfoSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static void updateEntity(String catalog, String entity, boolean bridge, String description)
+	{
+		/* TODO */
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, boolean displayable, boolean base64, String mime, String ctrl, String description, String webLinkScript)
 	{
 		try
@@ -135,10 +162,10 @@ public class SchemaExtraInfoSingleton
 			column.groupable = groupable;
 			column.displayable = displayable;
 			column.base64 = base64;
-			column.mime = mime != null ? mime : "@NULL";
-			column.ctrl = ctrl != null ? ctrl : "@NULL";
-			column.description = description != null ? description.trim() : "N∕A";
-			column.webLinkScript = webLinkScript != null ? webLinkScript.trim() : "@NULL";
+			column.mime = (mime != null) ? mime.trim() : "@NULL";
+			column.ctrl = (ctrl != null) ? ctrl.trim() : "@NULL";
+			column.description = (description != null) ? description.trim() : "N∕A";
+			column.webLinkScript = (webLinkScript != null) ? webLinkScript.trim() : "@NULL";
 		}
 		catch(Exception e)
 		{

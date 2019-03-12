@@ -1081,13 +1081,63 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static void columnToStringBuilder(StringBuilder stringBuilder, Column column)
+	{
+		stringBuilder.append("<row>")
+		             .append("<field name=\"externalCatalog\"><![CDATA[").append(column.externalCatalog).append("]]></field>")
+		             .append("<field name=\"internalCatalog\"><![CDATA[").append(column.internalCatalog).append("]]></field>")
+		             .append("<field name=\"entity\"><![CDATA[").append(column.entity).append("]]></field>")
+		             .append("<field name=\"field\"><![CDATA[").append(column.field).append("]]></field>")
+		             .append("<field name=\"type\"><![CDATA[").append(column.type).append("]]></field>")
+		             .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
+		             .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
+		             .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
+		             .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
+		             .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
+		             .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
+		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
+		             .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
+		             .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
+		             .append("<field name=\"createdBy\"><![CDATA[").append(column.createdBy).append("]]></field>")
+		             .append("<field name=\"modified\"><![CDATA[").append(column.modified).append("]]></field>")
+		             .append("<field name=\"modifiedBy\"><![CDATA[").append(column.modifiedBy).append("]]></field>")
+		             .append("<field name=\"statable\"><![CDATA[").append(column.statable).append("]]></field>")
+		             .append("<field name=\"groupable\"><![CDATA[").append(column.groupable).append("]]></field>")
+		             .append("<field name=\"displayable\"><![CDATA[").append(column.displayable).append("]]></field>")
+		             .append("<field name=\"base64\"><![CDATA[").append(column.base64).append("]]></field>")
+		             .append("<field name=\"mime\"><![CDATA[").append(column.mime).append("]]></field>")
+		             .append("<field name=\"ctrl\"><![CDATA[").append(column.ctrl).append("]]></field>")
+		             .append("<field name=\"description\"><![CDATA[").append(column.description).append("]]></field>")
+		             .append("<field name=\"webLinkScript\"><![CDATA[").append(column.webLinkScript).append("]]></field>")
+		             .append("</row>")
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void frgnKeyToStringBuilder(StringBuilder stringBuilder, FrgnKey frgnKey)
+	{
+		stringBuilder.append("<row>")
+		             .append("<field name=\"name\"><![CDATA[").append(frgnKey.name).append("]]></field>")
+		             .append("<field name=\"fkExternalCatalog\"><![CDATA[").append(frgnKey.fkExternalCatalog).append("]]></field>")
+		             .append("<field name=\"fkInternalCatalog\"><![CDATA[").append(frgnKey.fkInternalCatalog).append("]]></field>")
+		             .append("<field name=\"fkEntity\"><![CDATA[").append(frgnKey.fkEntity).append("]]></field>")
+		             .append("<field name=\"fkColumn\"><![CDATA[").append(frgnKey.fkField).append("]]></field>")
+		             .append("<field name=\"pkExternalCatalog\"><![CDATA[").append(frgnKey.pkExternalCatalog).append("]]></field>")
+		             .append("<field name=\"pkInternalCatalog\"><![CDATA[").append(frgnKey.pkInternalCatalog).append("]]></field>")
+		             .append("<field name=\"pkEntity\"><![CDATA[").append(frgnKey.pkEntity).append("]]></field>")
+		             .append("<field name=\"pkColumn\"><![CDATA[").append(frgnKey.pkField).append("]]></field>")
+		             .append("</row>")
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static StringBuilder getDBSchemas()
 	{
 		StringBuilder result = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
-		Column column;
 
 		result.append("<rowset type=\"fields\">");
 
@@ -1095,39 +1145,12 @@ public class SchemaSingleton
 		for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
 		for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
 		{
-			column = entry3.getValue();
-
-			result.append("<row>")
-			      .append("<field name=\"externalCatalog\"><![CDATA[").append(column.externalCatalog).append("]]></field>")
-			      .append("<field name=\"internalCatalog\"><![CDATA[").append(column.internalCatalog).append("]]></field>")
-			      .append("<field name=\"entity\"><![CDATA[").append(column.entity).append("]]></field>")
-			      .append("<field name=\"field\"><![CDATA[").append(column.field).append("]]></field>")
-			      .append("<field name=\"type\"><![CDATA[").append(column.type).append("]]></field>")
-			      .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
-			      .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
-			      .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
-			      .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
-			      .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
-			      .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
-			      .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
-			      .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
-			      .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
-			      .append("<field name=\"createdBy\"><![CDATA[").append(column.createdBy).append("]]></field>")
-			      .append("<field name=\"modified\"><![CDATA[").append(column.modified).append("]]></field>")
-			      .append("<field name=\"modifiedBy\"><![CDATA[").append(column.modifiedBy).append("]]></field>")
-			      .append("<field name=\"statable\"><![CDATA[").append(column.statable).append("]]></field>")
-			      .append("<field name=\"groupable\"><![CDATA[").append(column.groupable).append("]]></field>")
-			      .append("<field name=\"description\"><![CDATA[").append(column.description).append("]]></field>")
-			      .append("<field name=\"webLinkScript\"><![CDATA[").append(column.webLinkScript).append("]]></field>")
-			      .append("</row>")
-			;
+			columnToStringBuilder(result, entry3.getValue());
 		}
 
 		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
-
-		FrgnKey frgnKey;
 
 		result.append("<rowset type=\"foreignKeys\">");
 
@@ -1135,20 +1158,7 @@ public class SchemaSingleton
 		for(Map.Entry<String, Map<String, FrgnKeys>> entry2: entry1.getValue().entrySet())
 		for(Map.Entry<String, FrgnKeys> entry3: entry2.getValue().entrySet())
 		{
-			frgnKey = entry3.getValue().get(0);
-
-			result.append("<row>")
-			      .append("<field name=\"name\"><![CDATA[").append(frgnKey.name).append("]]></field>")
-			      .append("<field name=\"fkExternalCatalog\"><![CDATA[").append(frgnKey.fkExternalCatalog).append("]]></field>")
-			      .append("<field name=\"fkInternalCatalog\"><![CDATA[").append(frgnKey.fkInternalCatalog).append("]]></field>")
-			      .append("<field name=\"fkEntity\"><![CDATA[").append(frgnKey.fkEntity).append("]]></field>")
-			      .append("<field name=\"fkColumn\"><![CDATA[").append(frgnKey.fkField).append("]]></field>")
-			      .append("<field name=\"pkExternalCatalog\"><![CDATA[").append(frgnKey.pkExternalCatalog).append("]]></field>")
-			      .append("<field name=\"pkInternalCatalog\"><![CDATA[").append(frgnKey.pkInternalCatalog).append("]]></field>")
-			      .append("<field name=\"pkEntity\"><![CDATA[").append(frgnKey.pkEntity).append("]]></field>")
-			      .append("<field name=\"pkColumn\"><![CDATA[").append(frgnKey.pkField).append("]]></field>")
-			      .append("</row>")
-			;
+			frgnKeyToStringBuilder(result, entry3.getValue().get(0));
 		}
 
 		result.append("</rowset>");
