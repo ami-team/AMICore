@@ -1,9 +1,12 @@
 package net.hep.ami;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
+
+import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.*;
 
@@ -105,7 +108,7 @@ public class AMICoreTest
 
 		try 
 		{
-			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"DATASET_TYPE\":{\"x\":540,\"y\":230,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE\":{\"x\":280,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"PROJECT\":{\"x\":540,\"y\":65,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"topColor\":\"#0066CC\",\"bodyColor\":\"#FFFFFF\",\"strokeColor\":\"#0057AD\"}}";
+			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"color\":\"#0066CC\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#0066CC\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"color\":\"#0066CC\"},\"DATASET_TYPE\":{\"x\":540,\"y\":55,\"color\":\"#0066CC\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#0066CC\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#0066CC\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#0066CC\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"color\":\"#0066CC\"}}";
 			String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
 			String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
 
@@ -200,8 +203,8 @@ public class AMICoreTest
 
 		try 
 		{
-			String fields = "catalog;entity;field;isPrimary;description";
-			String values = "test;PROJECT;name;1;this is a test description";
+			String fields = "catalog;entity;field;description";
+			String values = "test;PROJECT;name;this is a test descrition";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
@@ -814,8 +817,17 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-
-
+/*
+			BufferedImage bImage = ImageIO.read(new File("/Users/jfulach/Desktop/WAN/minus.png"));
+	        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	        ImageIO.write(bImage, "jpg", bos );
+	        byte [] data = bos.toByteArray();
+	        System.out.println(data.toString());
+	        StringBuilder sb = new StringBuilder(data.length * 2);
+	        for(byte b: data)
+	           sb.append(String.format("%02x", b));
+	        System.out.println(sb.toString());
+*/
 
 		/*-----------------------------------------------------------------*/
 
