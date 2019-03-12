@@ -384,6 +384,7 @@ CREATE TABLE "router_catalog" (
   "user" VARCHAR2(128),
   "pass" VARCHAR2(128),
   "custom" CLOB,
+  "description" VARCHAR2(512) DEFAULT 'N/A',
   "archived" NUMBER(1, 0) DEFAULT 0,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR2(128),
@@ -424,23 +425,27 @@ ALTER TABLE "router_catalog"
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck7_router_catalog" CHECK("archived" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_catalog" CHECK("description" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck8_router_catalog" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_catalog" CHECK("archived" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck9_router_catalog" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck9_router_catalog" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck10_router_catalog" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck10_router_catalog" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck11_router_catalog" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck11_router_catalog" CHECK("modified" IS NOT NULL)
+;;
+
+ALTER TABLE "router_catalog"
+  ADD CONSTRAINT "ck12_router_catalog" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_catalog"

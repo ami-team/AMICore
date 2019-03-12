@@ -11,13 +11,13 @@ public class CatalogSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final class Tuple extends Tuple7<String, String, String, String, String, String, Boolean>
+	public static final class Tuple extends Tuple8<String, String, String, String, String, String, String, Boolean>
 	{
 		private static final long serialVersionUID = -7534852988258983396L;
 
-		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v, boolean _w)
+		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v, String _w, boolean _a)
 		{
-			super(_x, _y, _z, _t, _u, _v, _w);
+			super(_x, _y, _z, _t, _u, _v, _w, _a);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `archived` FROM `router_catalog`");
+			RowSet rowSet = router.executeSQLQuery("SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `description`, `archived` FROM `router_catalog`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CATALOGS                                                */
@@ -99,7 +99,8 @@ public class CatalogSingleton
 						row.getValue(3),
 						row.getValue(4),
 						row.getValue(5),
-						row.getValue(6)
+						row.getValue(6),
+						row.getValue(7)
 					);
 				}
 				catch(Exception e)
@@ -120,7 +121,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addCatalog(String externalCatalog, String internalCatalog, String internalSchema, String jdbcUrl, String user, String pass, String archived) throws Exception
+	private static void addCatalog(String externalCatalog, String internalCatalog, String internalSchema, String jdbcUrl, String user, String pass, String description, String archived) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ADD CATALOG                                                     */
@@ -143,6 +144,7 @@ public class CatalogSingleton
 				jdbcUrl,
 				user,
 				pass,
+				description,
 				archived.equals("0") == false
 			)
 		);
@@ -225,7 +227,8 @@ public class CatalogSingleton
 			      .append("<field name=\"externalCatalog\"><![CDATA[").append(tuple.x).append("]]></field>")
 			      .append("<field name=\"internalCatalog\"><![CDATA[").append(tuple.y).append("]]></field>")
 			      .append("<field name=\"internalSchema\"><![CDATA[").append(tuple.z).append("]]></field>")
-			      .append("<field name=\"archived\"><![CDATA[").append(tuple.w).append("]]></field>")
+			      .append("<field name=\"description\"><![CDATA[").append(tuple.w).append("]]></field>")
+			      .append("<field name=\"archived\"><![CDATA[").append(tuple.a).append("]]></field>")
 			      .append("</row>")
 			;
 		}

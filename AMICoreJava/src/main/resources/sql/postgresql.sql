@@ -65,6 +65,7 @@ CREATE TABLE "router_catalog" (
   "user" VARCHAR(128) NOT NULL,
   "pass" VARCHAR(128) NOT NULL,
   "custom" TEXT,
+  "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
   "archived" SMALLINT NOT NULL DEFAULT 0,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
