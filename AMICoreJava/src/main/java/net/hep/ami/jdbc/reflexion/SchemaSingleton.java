@@ -39,22 +39,27 @@ public class SchemaSingleton
 		/**/
 
 		public int rank = 999;
+
 		public boolean hidden = false;
 		public boolean adminOnly = false;
 		public boolean crypted = false;
 		public boolean primary = false;
 		public boolean readable = false;
+
+		public boolean automatic = false;
 		public boolean created = false;
 		public boolean createdBy = false;
 		public boolean modified = false;
 		public boolean modifiedBy = false;
-		public boolean automatic = false;
+
 		public boolean statable = false;
 		public boolean groupable = false;
+
 		public boolean displayable = false;
 		public boolean base64 = false;
 		public String mime = "@NULL";
 		public String ctrl = "@NULL";
+
 		public String description = "N/A";
 		public String webLinkScript = "@NULL";
 
@@ -1111,11 +1116,11 @@ public class SchemaSingleton
 		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 		             .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
 		             .append("<field name=\"readable\"><![CDATA[").append(column.readable).append("]]></field>")
+		             .append("<field name=\"automatic\"><![CDATA[").append(column.automatic).append("]]></field>")
 		             .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
 		             .append("<field name=\"createdBy\"><![CDATA[").append(column.createdBy).append("]]></field>")
 		             .append("<field name=\"modified\"><![CDATA[").append(column.modified).append("]]></field>")
 		             .append("<field name=\"modifiedBy\"><![CDATA[").append(column.modifiedBy).append("]]></field>")
-		             .append("<field name=\"automatic\"><![CDATA[").append(column.automatic).append("]]></field>")
 		             .append("<field name=\"statable\"><![CDATA[").append(column.statable).append("]]></field>")
 		             .append("<field name=\"groupable\"><![CDATA[").append(column.groupable).append("]]></field>")
 		             .append("<field name=\"displayable\"><![CDATA[").append(column.displayable).append("]]></field>")

@@ -556,11 +556,11 @@ CREATE TABLE "router_field" (
   "isCrypted" NUMBER(1, 0) DEFAULT 0,
   "isPrimary" NUMBER(1, 0) DEFAULT 0,
   "isReadable" NUMBER(1, 0) DEFAULT 0,
+  "isAutomatic" NUMBER(1, 0) DEFAULT 0,
   "isCreated" NUMBER(1, 0) DEFAULT 0,
   "isCreatedBy" NUMBER(1, 0) DEFAULT 0,
   "isModified" NUMBER(1, 0) DEFAULT 0,
   "isModifiedBy" NUMBER(1, 0) DEFAULT 0,
-  "isAutomatic" NUMBER(1, 0) DEFAULT 0,
   "isStatable" NUMBER(1, 0) DEFAULT 0,
   "isGroupable" NUMBER(1, 0) DEFAULT 0,
   "isDisplayable" NUMBER(1, 0) DEFAULT 0,
@@ -620,23 +620,23 @@ ALTER TABLE "router_field"
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck10_router_field" CHECK("isCreated" IS NOT NULL)
+  ADD CONSTRAINT "ck10_router_field" CHECK("isAutomatic" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck11_router_field" CHECK("isCreatedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck11_router_field" CHECK("isCreated" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck12_router_field" CHECK("isModified" IS NOT NULL)
+  ADD CONSTRAINT "ck12_router_field" CHECK("isCreatedBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck13_router_field" CHECK("isModifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck13_router_field" CHECK("isModified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck14_router_field" CHECK("isAutomatic" IS NOT NULL)
+  ADD CONSTRAINT "ck14_router_field" CHECK("isModifiedBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"

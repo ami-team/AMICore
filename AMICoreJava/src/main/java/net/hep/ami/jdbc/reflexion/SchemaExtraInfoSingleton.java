@@ -57,7 +57,7 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet2 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isReadable`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isAutomatic`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
+			RowSet rowSet2 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isReadable`, `isAutomatic`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMNS                                              */
@@ -146,29 +146,34 @@ public class SchemaExtraInfoSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean readable, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean automatic, boolean statable, boolean groupable, boolean displayable, boolean base64, String mime, String ctrl, String description, String webLinkScript)
+	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean readable, boolean automatic, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, boolean displayable, boolean base64, String mime, String ctrl, String description, String webLinkScript)
 	{
 		try
 		{
 			SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(catalog, entity, field);
 
 			column.rank = rank;
+
 			column.hidden = hidden;
 			column.crypted = crypted;
 			column.adminOnly = adminOnly;
 			column.primary = primary;
 			column.readable = readable;
+
+			column.automatic = automatic;
 			column.created = created;
 			column.createdBy = createdBy;
 			column.modified = modified;
 			column.modifiedBy = modifiedBy;
-			column.automatic = automatic;
+
 			column.statable = statable;
 			column.groupable = groupable;
+
 			column.displayable = displayable;
 			column.base64 = base64;
 			column.mime = (mime != null) ? mime.trim() : "@NULL";
 			column.ctrl = (ctrl != null) ? ctrl.trim() : "@NULL";
+
 			column.description = (description != null) ? description.trim() : "N∕A";
 			column.webLinkScript = (webLinkScript != null) ? webLinkScript.trim() : "@NULL";
 		}
