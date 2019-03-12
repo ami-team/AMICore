@@ -36,7 +36,7 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `description`, `webLinkScript` FROM `router_catalog_extra`");
+			RowSet rowSet1 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMN                                               */
@@ -59,8 +59,12 @@ public class SchemaExtraInfoSingleton
 					Integer.parseInt(row.getValue(11)) != 0,
 					Integer.parseInt(row.getValue(12)) != 0,
 					Integer.parseInt(row.getValue(13)) != 0,
-					row.getValue(14),
-					row.getValue(15)
+					Integer.parseInt(row.getValue(14)) != 0,
+					Integer.parseInt(row.getValue(15)) != 0,
+					row.getValue(16),
+					row.getValue(17),
+					row.getValue(18),
+					row.getValue(19)
 				);
 			}
 
@@ -112,7 +116,7 @@ public class SchemaExtraInfoSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, String description, String webLinkScript)
+	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, boolean displayable, boolean base64, String mime, String ctrl, String description, String webLinkScript)
 	{
 		try
 		{
@@ -129,6 +133,10 @@ public class SchemaExtraInfoSingleton
 			column.modifiedBy = modifiedBy;
 			column.statable = statable;
 			column.groupable = groupable;
+			column.displayable = displayable;
+			column.base64 = base64;
+			column.mime = mime != null ? mime : "@NULL";
+			column.ctrl = ctrl != null ? ctrl : "@NULL";
 			column.description = description != null ? description.trim() : "N∕A";
 			column.webLinkScript = webLinkScript != null ? webLinkScript.trim() : "@NULL";
 		}
@@ -248,22 +256,34 @@ public class SchemaExtraInfoSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_catalog_extra = SchemaSingleton.getEntityInfo("self", "router_catalog_extra");
+		Map<String, SchemaSingleton.Column> router_entity = SchemaSingleton.getEntityInfo("self", "router_entity");
 
-		router_catalog_extra.get("isHidden").groupable = true;
-		router_catalog_extra.get("isAdminOnly").groupable = true;
-		router_catalog_extra.get("isCrypted").groupable = true;
-		router_catalog_extra.get("isPrimary").groupable = true;
-		router_catalog_extra.get("isCreated").groupable = true;
-		router_catalog_extra.get("isCreatedBy").groupable = true;
-		router_catalog_extra.get("isModified").groupable = true;
-		router_catalog_extra.get("isModifiedBy").groupable = true;
-		router_catalog_extra.get("isStatable").groupable = true;
-		router_catalog_extra.get("isGroupable").groupable = true;
-		router_catalog_extra.get("created").created = true;
-		router_catalog_extra.get("createdBy").createdBy = true;
-		router_catalog_extra.get("modified").modified = true;
-		router_catalog_extra.get("modifiedBy").modifiedBy = true;
+		router_entity.get("isBridge").groupable = true;
+		router_entity.get("created").created = true;
+		router_entity.get("createdBy").createdBy = true;
+		router_entity.get("modified").modified = true;
+		router_entity.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, SchemaSingleton.Column> router_field = SchemaSingleton.getEntityInfo("self", "router_field");
+
+		router_field.get("isHidden").groupable = true;
+		router_field.get("isAdminOnly").groupable = true;
+		router_field.get("isCrypted").groupable = true;
+		router_field.get("isPrimary").groupable = true;
+		router_field.get("isCreated").groupable = true;
+		router_field.get("isCreatedBy").groupable = true;
+		router_field.get("isModified").groupable = true;
+		router_field.get("isModifiedBy").groupable = true;
+		router_field.get("isStatable").groupable = true;
+		router_field.get("isGroupable").groupable = true;
+		router_field.get("isDisplayable").groupable = true;
+		router_field.get("isBase64").groupable = true;
+		router_field.get("created").created = true;
+		router_field.get("createdBy").createdBy = true;
+		router_field.get("modified").modified = true;
+		router_field.get("modifiedBy").modifiedBy = true;
 
 		/*-----------------------------------------------------------------*/
 

@@ -13,7 +13,8 @@ DROP TABLE IF EXISTS `router_command`;;
 DROP TABLE IF EXISTS `router_role`;;
 DROP TABLE IF EXISTS `router_converter`;;
 DROP TABLE IF EXISTS `router_foreign_key`;;
-DROP TABLE IF EXISTS `router_catalog_extra`;;
+DROP TABLE IF EXISTS `router_field`;;
+DROP TABLE IF EXISTS `router_entity`;;
 DROP TABLE IF EXISTS `router_catalog`;;
 DROP TABLE IF EXISTS `router_config`;;
 
@@ -69,7 +70,31 @@ ALTER TABLE `router_catalog`
 
 -----------------------------------------------------------------------------
 
-CREATE TABLE `router_catalog_extra` (
+CREATE TABLE `router_entity` (
+  `id` INT NOT NULL,
+  `catalog` VARCHAR(128) NOT NULL,
+  `entity` VARCHAR(128) NOT NULL,
+  `isBridge` TINYINT(1) NOT NULL DEFAULT 0,
+  `description` VARCHAR(512) NOT NULL DEFAULT 'N/A',
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
+
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
+
+ALTER TABLE `router_entity`
+  ADD CONSTRAINT `pk1_router_entity` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_entity` UNIQUE KEY (`catalog`(64), `entity`(64))
+;;
+
+ALTER TABLE `router_entity`
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE `router_field` (
   `id` INT NOT NULL,
   `catalog` VARCHAR(128) NOT NULL,
   `entity` VARCHAR(128) NOT NULL,
@@ -85,6 +110,10 @@ CREATE TABLE `router_catalog_extra` (
   `isModifiedBy` TINYINT(1) NOT NULL DEFAULT 0,
   `isStatable` TINYINT(1) NOT NULL DEFAULT 0,
   `isGroupable` TINYINT(1) NOT NULL DEFAULT 0,
+  `isDisplayable` TINYINT(1) NOT NULL DEFAULT 0,
+  `isBase64` TINYINT(1) NOT NULL DEFAULT 0,
+  `mime` VARCHAR(128),
+  `ctrl` VARCHAR(128),
   `description` VARCHAR(512) NOT NULL DEFAULT 'N/A',
   `webLinkScript` TEXT,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -94,12 +123,12 @@ CREATE TABLE `router_catalog_extra` (
 
 ) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
 
-ALTER TABLE `router_catalog_extra`
-  ADD CONSTRAINT `pk1_router_catalog_extra` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_catalog_extra` UNIQUE KEY (`catalog`(64), `entity`(64), `field`)
+ALTER TABLE `router_field`
+  ADD CONSTRAINT `pk1_router_field` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_field` UNIQUE KEY (`catalog`(64), `entity`(64), `field`)
 ;;
 
-ALTER TABLE `router_catalog_extra`
+ALTER TABLE `router_field`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 

@@ -49,6 +49,10 @@ public class SchemaSingleton
 		public boolean modifiedBy = false;
 		public boolean statable = false;
 		public boolean groupable = false;
+		public boolean displayable = false;
+		public boolean base64 = false;
+		public String mime = "@NULL";
+		public String ctrl = "@NULL";
 		public String description = "N/A";
 		public String webLinkScript = "@NULL";
 
