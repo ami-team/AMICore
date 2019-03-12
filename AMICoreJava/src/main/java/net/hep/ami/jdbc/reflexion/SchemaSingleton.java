@@ -489,6 +489,8 @@ public class SchemaSingleton
 			{
 				boolean isOracle = resultSet.getClass().getName().startsWith("oracle");
 
+				Map<String, Column> columnEntry;
+
 				while(resultSet.next())
 				{
 					String entity = resultSet.getString("TABLE_NAME");
@@ -501,11 +503,11 @@ public class SchemaSingleton
 
 					if(entity != null && field != null && type != null)
 					{
-						Map<String, Column> column = m_tmp1.get(entity);
+						columnEntry = m_tmp1.get(entity);
 
-						if(column != null)
+						if(columnEntry != null)
 						{
-							column.put(field, new Column(
+							columnEntry.put(field, new Column(
 								m_externalCatalog,
 								m_internalCatalog,
 								entity,
@@ -526,9 +528,16 @@ public class SchemaSingleton
 
 			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
+				Column column;
+
 				while(resultSet.next())
 				{
-					m_tmp1.get(_entity).get(resultSet.getString("COLUMN_NAME")).primary = true;
+					column = m_tmp1.get(_entity).get(resultSet.getString("COLUMN_NAME"));
+
+					if(column.statable)
+					{
+						column.primary = true;
+					}
 				}
 			}
 
@@ -545,6 +554,8 @@ public class SchemaSingleton
 
 			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
+				Map<String, FrgnKeys> frgnKeyEntry;
+
 				while(resultSet.next())
 				{
 					String name = resultSet.getString("FK_NAME");
@@ -584,11 +595,11 @@ public class SchemaSingleton
 
 					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkInternalCatalog != null && pkEntity != null && pkField != null)
 					{
-						Map<String, FrgnKeys> frgnKey = m_tmp2.get(fkEntity);
+						frgnKeyEntry = m_tmp2.get(fkEntity);
 
-						if(frgnKey != null)
+						if(frgnKeyEntry != null)
 						{
-							frgnKey.put(fkField, new FrgnKeys(new FrgnKey(
+							frgnKeyEntry.put(fkField, new FrgnKeys(new FrgnKey(
 								name,
 								fkExternalCatalog,
 								fkInternalCatalog,
