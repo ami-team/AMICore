@@ -36,7 +36,7 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = router.executeSQLQuery("SELECT `catalog`, `entity`, `isBridge`, `description` FROM `router_entity`");
+			RowSet rowSet1 = router.executeSQLQuery("SELECT `catalog`, `entity`, `rank`, `isBridge`, `description` FROM `router_entity`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE ENTITIES                                             */
@@ -47,8 +47,9 @@ public class SchemaExtraInfoSingleton
 				updateEntity(
 					row.getValue(0),
 					row.getValue(1),
-					Integer.parseInt(row.getValue(2)) != 0,
-					row.getValue(3)
+					Integer.parseInt(row.getValue(2)),
+					Integer.parseInt(row.getValue(3)) != 0,
+					row.getValue(4)
 				);
 			}
 
@@ -56,7 +57,7 @@ public class SchemaExtraInfoSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet2 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
+			RowSet rowSet2 = router.executeSQLQuery("SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isReadable`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isAutomatic`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMNS                                              */
@@ -81,10 +82,12 @@ public class SchemaExtraInfoSingleton
 					Integer.parseInt(row.getValue(13)) != 0,
 					Integer.parseInt(row.getValue(14)) != 0,
 					Integer.parseInt(row.getValue(15)) != 0,
-					row.getValue(16),
-					row.getValue(17),
+					Integer.parseInt(row.getValue(16)) != 0,
+					Integer.parseInt(row.getValue(17)) != 0,
 					row.getValue(18),
-					row.getValue(19)
+					row.getValue(19),
+					row.getValue(20),
+					row.getValue(21)
 				);
 			}
 
@@ -136,14 +139,14 @@ public class SchemaExtraInfoSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateEntity(String catalog, String entity, boolean bridge, String description)
+	public static void updateEntity(String catalog, String entity, int rank, boolean bridge, String description)
 	{
 		/* TODO */
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, boolean displayable, boolean base64, String mime, String ctrl, String description, String webLinkScript)
+	public static void updateColumn(String catalog, String entity, String field, int rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean readable, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean automatic, boolean statable, boolean groupable, boolean displayable, boolean base64, String mime, String ctrl, String description, String webLinkScript)
 	{
 		try
 		{
@@ -154,10 +157,12 @@ public class SchemaExtraInfoSingleton
 			column.crypted = crypted;
 			column.adminOnly = adminOnly;
 			column.primary = primary;
+			column.readable = readable;
 			column.created = created;
 			column.createdBy = createdBy;
 			column.modified = modified;
 			column.modifiedBy = modifiedBy;
+			column.automatic = automatic;
 			column.statable = statable;
 			column.groupable = groupable;
 			column.displayable = displayable;

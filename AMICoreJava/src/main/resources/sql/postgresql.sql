@@ -13,7 +13,8 @@ DROP TABLE IF EXISTS "router_command";;
 DROP TABLE IF EXISTS "router_role";;
 DROP TABLE IF EXISTS "router_converter";;
 DROP TABLE IF EXISTS "router_foreign_key";;
-DROP TABLE IF EXISTS "router_catalog_extra";;
+DROP TABLE IF EXISTS "router_field";;
+DROP TABLE IF EXISTS "router_entity";;
 DROP TABLE IF EXISTS "router_catalog";;
 DROP TABLE IF EXISTS "router_config";;
 
@@ -84,7 +85,34 @@ CREATE TRIGGER "trig1_router_catalog"
 
 -----------------------------------------------------------------------------
 
-CREATE TABLE "router_catalog_extra" (
+CREATE TABLE "router_entity" (
+  "id" SERIAL,
+  "catalog" VARCHAR(128) NOT NULL,
+  "entity" VARCHAR(128) NOT NULL,
+  "rank" INT NOT NULL DEFAULT 0,
+  "isBridge" SMALLINT NOT NULL DEFAULT 0,
+  "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR(128) NOT NULL,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR(128) NOT NULL
+
+) CHARSET="utf8" COLLATE="utf8_bin" ENGINE="INNODB";;
+
+ALTER TABLE "router_entity"
+  ADD CONSTRAINT "pk1_router_entity" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_entity" UNIQUE ("catalog", "entity")
+;;
+
+CREATE TRIGGER "trig1_router_entity"
+  BEFORE UPDATE ON "router_entity"
+  FOR EACH ROW
+    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE "router_field" (
   "id" SERIAL,
   "catalog" VARCHAR(128) NOT NULL,
   "entity" VARCHAR(128) NOT NULL,
@@ -94,12 +122,18 @@ CREATE TABLE "router_catalog_extra" (
   "isAdminOnly" SMALLINT NOT NULL DEFAULT 0,
   "isCrypted" SMALLINT NOT NULL DEFAULT 0,
   "isPrimary" SMALLINT NOT NULL DEFAULT 0,
+  "isReadable" SMALLINT NOT NULL DEFAULT 0,
   "isCreated" SMALLINT NOT NULL DEFAULT 0,
   "isCreatedBy" SMALLINT NOT NULL DEFAULT 0,
   "isModified" SMALLINT NOT NULL DEFAULT 0,
   "isModifiedBy" SMALLINT NOT NULL DEFAULT 0,
+  "isAutomatic" SMALLINT NOT NULL DEFAULT 0,
   "isStatable" SMALLINT NOT NULL DEFAULT 0,
   "isGroupable" SMALLINT NOT NULL DEFAULT 0,
+  "isDisplayable" SMALLINT NOT NULL DEFAULT 0,
+  "isBase64" SMALLINT NOT NULL DEFAULT 0,
+  "mime" VARCHAR(128),
+  "ctrl" VARCHAR(128),
   "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
   "webLinkScript" TEXT,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -108,13 +142,13 @@ CREATE TABLE "router_catalog_extra" (
   "modifiedBy" VARCHAR(128) NOT NULL
 );;
 
-ALTER TABLE "router_catalog_extra"
-  ADD CONSTRAINT "pk1_router_catalog_extra" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "uk1_router_catalog_extra" UNIQUE ("catalog", "entity", "field")
+ALTER TABLE "router_field"
+  ADD CONSTRAINT "pk1_router_field" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_field" UNIQUE ("catalog", "entity", "field")
 ;;
 
-CREATE TRIGGER "trig1_router_catalog_extra"
-  BEFORE UPDATE ON "router_catalog_extra"
+CREATE TRIGGER "trig1_router_field"
+  BEFORE UPDATE ON "router_field"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;

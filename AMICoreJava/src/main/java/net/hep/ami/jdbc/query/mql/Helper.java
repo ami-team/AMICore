@@ -452,6 +452,8 @@ public class Helper
 			        column.modified
 			        ||
 			        column.modifiedBy
+			        ||
+			        column.automatic
 			 ) {
 				continue;
 			}
