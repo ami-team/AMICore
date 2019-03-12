@@ -37,12 +37,8 @@ public class GetFieldInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(catalog, entity, field);
-
-		/*-----------------------------------------------------------------*/
-
 		result.append("<rowset type=\"fields\">");
-		SchemaSingleton.columnToStringBuilder(result, column);
+		SchemaSingleton.columnToStringBuilder(result, SchemaSingleton.getFieldInfo(catalog, entity, field));
 		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
