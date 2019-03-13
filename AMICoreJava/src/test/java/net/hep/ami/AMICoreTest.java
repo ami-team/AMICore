@@ -235,7 +235,7 @@ public class AMICoreTest
 									+"\\n webLink.newLinkProperties().setLabel(\\\"project table\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"PROJECT\\\");"
 									+"\\n webLink.newLinkProperties().setLabel(\\\"project info\\\").setCtrl(\\\"elementInfo\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"arrows-alt\\\").setTitle(\\\"PROJECT\\\");"
 									+"\\n return webLink;";
-			String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descritionxxxxx"+webLinkScript;
+			String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descriptionxxxxx"+webLinkScript;
 			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
