@@ -203,9 +203,16 @@ public class AMICoreTest
 
 		try 
 		{
-			String fields = "catalog;entity;field;description";
-			String values = "test;PROJECT;name;this is a test descrition";
-			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+			String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScript";
+			String params = "[\\\\\\\"GetServerStatus\\\\\\\"]";
+			params = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+			String webLinkScript = ""
+									+"import net.hep.ami.jdbc.WebLink;"
+									+"\\n webLink = new WebLink();"
+									+"\\n webLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
+									+"\\n return webLink;";
+			String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript;
+			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
 		}
