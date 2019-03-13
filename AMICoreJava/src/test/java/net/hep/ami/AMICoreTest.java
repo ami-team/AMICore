@@ -203,7 +203,7 @@ public class AMICoreTest
 
 		try 
 		{
-			String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScript";
+			String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
 			String params = "[\\\\\\\"GetServerStatus\\\\\\\"]";
 			params = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 			String webLinkScript = ""
@@ -211,7 +211,7 @@ public class AMICoreTest
 									+"\\n webLink = new WebLink();"
 									+"\\n webLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 									+"\\n return webLink;";
-			String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript;
+			String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
@@ -224,7 +224,7 @@ public class AMICoreTest
 
 		try 
 		{
-			String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScript";
+			String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScriptxxxxxisGroupable";
 			String params = "[\\\\\\\"GetServerStatus\\\\\\\"]";
 			params = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"PROJECT\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 			String params2 = "[\\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"PROJECT\\\\\\\",\\\\\\\"id\\\\\\\",\\\\\\\"\\\" + row.getValue(\\\"projectFK\\\") + \\\"\\\\\\\"]";
@@ -234,7 +234,7 @@ public class AMICoreTest
 									+"\\n webLink.newLinkProperties().setLabel(\\\"project table\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"PROJECT\\\");"
 									+"\\n webLink.newLinkProperties().setLabel(\\\"project info\\\").setCtrl(\\\"elementInfo\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"arrows-alt\\\").setTitle(\\\"PROJECT\\\");"
 									+"\\n return webLink;";
-			String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descriptionxxxxx"+webLinkScript;
+			String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descriptionxxxxx"+webLinkScript+"xxxxx1";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
@@ -602,8 +602,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "FILE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "name;FILE_TYPE.name;PROJECT.name");
-				arguments.put("values", "file_" + i + ";BINARY;AMI");
+				arguments.put("fields", "name;FILE_TYPE.name;PROJECT.name;size");
+				arguments.put("values", "file_" + i + ";BINARY;AMI;"+(i*10));
 				CommandSingleton.executeCommand("AddElement", arguments, false);
 			}
 			catch(Exception e)
