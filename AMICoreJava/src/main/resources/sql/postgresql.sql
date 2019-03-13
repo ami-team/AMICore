@@ -97,7 +97,6 @@ CREATE TABLE "router_entity" (
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR(128) NOT NULL
-
 );;
 
 ALTER TABLE "router_entity"
