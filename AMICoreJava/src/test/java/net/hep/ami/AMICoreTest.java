@@ -228,7 +228,6 @@ public class AMICoreTest
 			String params = "[\\\\\\\"GetServerStatus\\\\\\\"]";
 			params = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"PROJECT\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 			String params2 = "[\\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"PROJECT\\\\\\\",\\\\\\\"id\\\\\\\",\\\\\\\"\\\" + row.getValue(\\\"projectFK\\\") + \\\"\\\\\\\"]";
-			
 			String webLinkScript = ""
 									+"import net.hep.ami.jdbc.WebLink;"
 									+"\\n webLink = new WebLink();"
@@ -246,6 +245,20 @@ public class AMICoreTest
 			testFail = true;
 		}
 
+		try 
+		{
+			String fields = "catalog;entity;field;description;rank";
+			String values = "test;DATASET;name;this is a test description;1";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+			CommandSingleton.executeCommand(command, false);
+		}
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
 
 		String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_TYPE","FILE","FILE_TYPE"};
 		for (int i = 0; i < testTables.length; i++) {
