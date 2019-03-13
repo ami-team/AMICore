@@ -108,7 +108,7 @@ public class AMICoreTest
 
 		try 
 		{
-			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"color\":\"#0066CC\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#0066CC\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"color\":\"#0066CC\"},\"DATASET_TYPE\":{\"x\":540,\"y\":55,\"color\":\"#0066CC\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#0066CC\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#0066CC\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#0066CC\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"color\":\"#0066CC\"}}";
+			String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":55,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"color\":\"#C3DB2E\"}}";
 			String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
 			String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
 
@@ -205,7 +205,7 @@ public class AMICoreTest
 		{
 			String fields = "catalog;entity;field;description";
 			String values = "test;PROJECT;name;this is a test descrition";
-			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
 		}
@@ -222,7 +222,7 @@ public class AMICoreTest
 			{
 				String fields = "catalog;entity;field;isCreatedBy";
 				String values = "test;" + testTables[i] +";createdBy;1";
-				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
 			}
@@ -236,7 +236,7 @@ public class AMICoreTest
 			{
 				String fields = "catalog;entity;field;isModifiedBy";
 				String values = "test;" + testTables[i] +";modifiedBy;1";
-				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
 			}
@@ -249,7 +249,7 @@ public class AMICoreTest
 			{
 				String fields = "catalog;entity;field;isCreated";
 				String values = "test;" + testTables[i] +";created;1";
-				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
 			}
@@ -263,7 +263,7 @@ public class AMICoreTest
 			{
 				String fields = "catalog;entity;field;isModified";
 				String values = "test;" + testTables[i] +";modified;1";
-				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
 			}
@@ -279,7 +279,7 @@ public class AMICoreTest
 		{
 			String fields = "catalog;entity;field;isPrimary";
 			String values = "test;FILE_VIEW;id;1";
-			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
 		}
@@ -293,7 +293,7 @@ public class AMICoreTest
 		{
 			String fields = "catalog;entity;field;rank";
 			String values = "test;FILE_VIEW;fileName;1";
-			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
 		}
@@ -307,7 +307,7 @@ public class AMICoreTest
 		{
 			String fields = "catalog;entity;field;rank";
 			String values = "test;FILE_VIEW;datasetName;2";
-			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
 		}
@@ -320,7 +320,7 @@ public class AMICoreTest
 		{
 			String fields = "catalog;entity;field;rank";
 			String values = "test;FILE_VIEW;projectName;3";
-			String command = "AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 			CommandSingleton.executeCommand(command, false);
 		}
