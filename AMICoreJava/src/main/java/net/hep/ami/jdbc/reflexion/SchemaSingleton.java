@@ -35,10 +35,9 @@ public class SchemaSingleton
 		public final int size;
 		public final int digits;
 		public final String def;
+		public /*-*/ int rank;
 
 		/**/
-
-		public int rank = 999;
 
 		public boolean hidden = false;
 		public boolean adminOnly = false;
@@ -65,7 +64,7 @@ public class SchemaSingleton
 
 		/**/
 
-		public Column(String _externalCatalog, String _internalCatalog, String _entity, String _field, String _type, int _size, int _digits, String _def)
+		public Column(String _externalCatalog, String _internalCatalog, String _entity, String _field, String _type, int _size, int _digits, String _def, int _rank)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
@@ -75,6 +74,7 @@ public class SchemaSingleton
 			size = _size;
 			digits = _digits;
 			def = _def;
+			rank = _rank;
 
 			statable = s_numberPattern.matcher(type).matches();
 		}
@@ -496,6 +496,8 @@ public class SchemaSingleton
 
 				Map<String, Column> columnEntry;
 
+				int i = 0;
+
 				while(resultSet.next())
 				{
 					String entity = resultSet.getString("TABLE_NAME");
@@ -522,7 +524,11 @@ public class SchemaSingleton
 								digits,
 								def == null ? (nullable ? "@NULL" : "")
 								            : (def.toUpperCase().contains("CURRENT_TIMESTAMP") ? "@CURRENT_TIMESTAMP"
-								                                                               : (isOracle ? Utility.sqlValToText(def) : def))
+								                                                               : (isOracle ? Utility.sqlValToText(def)
+								                                                                           : /*----------------*/(def)
+								                                                                 )
+								              ),
+								i++
 							));
 						}
 					}
@@ -1099,7 +1105,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void columnToStringBuilder(StringBuilder stringBuilder, Column column)
+	public static void appendColumnToStringBuilder(StringBuilder stringBuilder, Column column)
 	{
 		stringBuilder.append("<row>")
 		             .append("<field name=\"externalCatalog\"><![CDATA[").append(column.externalCatalog).append("]]></field>")
@@ -1135,7 +1141,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void frgnKeyToStringBuilder(StringBuilder stringBuilder, FrgnKey frgnKey)
+	public static void appendFrgnKeyToStringBuilder(StringBuilder stringBuilder, FrgnKey frgnKey)
 	{
 		stringBuilder.append("<row>")
 		             .append("<field name=\"name\"><![CDATA[").append(frgnKey.name).append("]]></field>")
@@ -1165,7 +1171,7 @@ public class SchemaSingleton
 		for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
 		for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
 		{
-			columnToStringBuilder(result, entry3.getValue());
+			appendColumnToStringBuilder(result, entry3.getValue());
 		}
 
 		result.append("</rowset>");
@@ -1178,7 +1184,7 @@ public class SchemaSingleton
 		for(Map.Entry<String, Map<String, FrgnKeys>> entry2: entry1.getValue().entrySet())
 		for(Map.Entry<String, FrgnKeys> entry3: entry2.getValue().entrySet())
 		{
-			frgnKeyToStringBuilder(result, entry3.getValue().get(0));
+			appendFrgnKeyToStringBuilder(result, entry3.getValue().get(0));
 		}
 
 		result.append("</rowset>");
