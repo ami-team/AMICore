@@ -85,6 +85,34 @@ public abstract class AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
+	protected Querier getAdminQuerier(String catalog) throws Exception
+	{
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, true, m_transactionId);
+
+		if(m_isCached)
+		{
+			result.setReadOnly(true);
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	protected Querier getAdminQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	{
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, true, m_transactionId);
+
+		if(m_isCached)
+		{
+			result.setReadOnly(true);
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	protected Querier getQuerier(String catalog) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userRoles.contains("AMI_ADMIN"), m_transactionId);

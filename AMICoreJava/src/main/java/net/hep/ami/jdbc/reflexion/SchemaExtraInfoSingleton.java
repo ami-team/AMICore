@@ -344,7 +344,7 @@ public class SchemaExtraInfoSingleton
 
 		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getEntityInfo("self", "router_user");
 
-		router_user.get("AMIPass").crypted = true;
+		router_user.get("AMIPass").adminOnly = true;
 		router_user.get("clientDN").crypted = true;
 		router_user.get("issuerDN").crypted = true;
 		router_user.get("valid").groupable = true;

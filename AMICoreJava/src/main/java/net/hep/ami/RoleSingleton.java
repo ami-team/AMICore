@@ -238,7 +238,7 @@ public class RoleSingleton
 
 	public static void checkCommand(String validatorClass, String command, Set <String> userRoles, Map<String, String> arguments) throws Exception
 	{
-		if(validatorClass == null || validatorClass.isEmpty())
+		if(validatorClass == null || validatorClass.isEmpty() || "@NULL".equals(validatorClass))
 		{
 			return;
 		}
@@ -288,7 +288,7 @@ public class RoleSingleton
 
 	public static void checkNewUser(String validatorClass, String amiLogin, String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, String firstName, String lastName, String email) throws Exception
 	{
-		if(validatorClass == null || validatorClass.isEmpty())
+		if(validatorClass == null || validatorClass.isEmpty() || "@NULL".equals(validatorClass))
 		{
 			return;
 		}

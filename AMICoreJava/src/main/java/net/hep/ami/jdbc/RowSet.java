@@ -553,6 +553,8 @@ public class RowSet
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
+			/*-------------------------------------------------------------*/
+
 			/**/ if("TIME".equalsIgnoreCase(m_fieldTypes[i]))
 			{
 				/*---------------------------------------------------------*/
@@ -618,34 +620,46 @@ public class RowSet
 				/*---------------------------------------------------------*/
 			}
 
-			if(result[i] != null)
+			/*-------------------------------------------------------------*/
+
+			if(m_fieldAdminOnly[i] || m_fieldCrypted[i])
 			{
-				if((m_fieldAdminOnly[i] || m_fieldCrypted[i]) && m_isAdmin == false)
+				if(m_isAdmin)
 				{
-					result[i] = /*-----------*/ "" /*-----------*/;
+					if(result[i] == null)
+					{
+						result[i] = /*---------*/ "@NULL" /*---------*/;
+					}
+					else
+					{
+						if(m_fieldCrypted[i])
+						{
+							try
+							{
+								result[i] = SecuritySingleton.decrypt(result[i]);
+							}
+							catch(Exception e)
+							{
+								result[i] = /*---------*/ "@NULL" /*---------*/;
+							}
+						}
+					}
 				}
 				else
 				{
-					if(m_fieldCrypted[i])
-					{
-						try
-						{
-							result[i] = SecuritySingleton.decrypt(result[i]);
-						}
-						catch(Exception e)
-						{
-							result[i] = /*-----------*/ "" /*-----------*/;
-						}
-					}
+					result[i] = /*---------*/ "@NOGO" /*---------*/;
 				}
 			}
 			else
 			{
-				result[i] = /*-----------*/ "" /*-----------*/;
+				if(result[i] == null)
+				{
+					result[i] = /*---------*/ "@NULL" /*---------*/;
+				}
 			}
-		}
 
-		/*-----------------------------------------------------------------*/
+			/*-------------------------------------------------------------*/
+		}
 
 		return result;
 	}

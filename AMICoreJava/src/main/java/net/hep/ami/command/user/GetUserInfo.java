@@ -11,7 +11,7 @@ public class GetUserInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	static final String s_guest = ConfigSingleton.getProperty("guest_user");
+	static final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
 
 	/*---------------------------------------------------------------------*/
 
@@ -48,7 +48,7 @@ public class GetUserInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
+		Querier querier = getAdminQuerier("self");
 
 		/*-----------------------------------------------------------------*/
 		/* GET USER INFO                                                   */
@@ -83,11 +83,11 @@ public class GetUserInfo extends AbstractCommand
 				throw new Exception("invalid user `" + amiLogin + "`");
 			}
 
-			AMIUser = s_guest;
+			AMIUser = GUEST_USER;
 			clientDNInAMI = "";
 			issuerDNInAMI = "";
-			firstName = s_guest;
-			lastName = s_guest;
+			firstName = GUEST_USER;
+			lastName = GUEST_USER;
 			email = "N/A";
 			valid = "0";
 		}
@@ -193,7 +193,7 @@ public class GetUserInfo extends AbstractCommand
 		result.append("<rowset type=\"user\">")
 		      .append("<row>")
 		      .append("<field name=\"AMIUser\"><![CDATA[").append(AMIUser).append("]]></field>")
-		      .append("<field name=\"guestUser\"><![CDATA[").append(s_guest).append("]]></field>")
+		      .append("<field name=\"guestUser\"><![CDATA[").append(GUEST_USER).append("]]></field>")
 		      .append("<field name=\"clientDNInAMI\"><![CDATA[").append(clientDNInAMI).append("]]></field>")
 		      .append("<field name=\"issuerDNInAMI\"><![CDATA[").append(issuerDNInAMI).append("]]></field>")
 		      .append("<field name=\"clientDNInSession\"><![CDATA[").append(m_clientDN).append("]]></field>")
