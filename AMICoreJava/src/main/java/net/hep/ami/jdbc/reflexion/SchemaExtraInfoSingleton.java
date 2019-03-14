@@ -309,6 +309,8 @@ public class SchemaExtraInfoSingleton
 		router_field.get("isAdminOnly").groupable = true;
 		router_field.get("isCrypted").groupable = true;
 		router_field.get("isPrimary").groupable = true;
+		router_field.get("isReadable").groupable = true;
+		router_field.get("isAutomatic").groupable = true;
 		router_field.get("isCreated").groupable = true;
 		router_field.get("isCreatedBy").groupable = true;
 		router_field.get("isModified").groupable = true;
