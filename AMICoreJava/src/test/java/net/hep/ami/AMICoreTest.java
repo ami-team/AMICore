@@ -50,6 +50,8 @@ public class AMICoreTest
 			return;
 		}
 
+		System.out.println("Init tests"); 
+
 		/*-----------------------------------------------------------------*/
 
 		System.out.println("Setting up router database: " +  ConfigSingleton.getProperty("router_url"));
