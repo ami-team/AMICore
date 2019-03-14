@@ -23,7 +23,7 @@ public class SchemaSingleton
 
 		/**/
 
-		private static final Pattern s_numberPattern = Pattern.compile(".*(?:BIT|INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMERIC).*", Pattern.CASE_INSENSITIVE);
+		private static final Pattern s_numberPattern = Pattern.compile(".*(?:BIT|INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMBER).*", Pattern.CASE_INSENSITIVE);
 
 		/**/
 
@@ -496,7 +496,7 @@ public class SchemaSingleton
 
 				Map<String, Column> columnEntry;
 
-				int i = 0;
+				int i = 1000;
 
 				while(resultSet.next())
 				{
