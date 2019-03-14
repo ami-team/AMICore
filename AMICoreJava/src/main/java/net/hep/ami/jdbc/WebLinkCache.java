@@ -1,7 +1,8 @@
 package net.hep.ami.jdbc;
 
 import groovy.lang.*;
-import net.hep.ami.LogSingleton;
+
+import net.hep.ami.*;
 
 public class WebLinkCache
 {
@@ -11,9 +12,11 @@ public class WebLinkCache
 
 	/*---------------------------------------------------------------------*/
 
-	private String error(String message)
+	private String error(Exception e)
 	{
-		return new StringBuilder().append("<properties><![CDATA[").append(message).append("]]></properties>").toString();
+		LogSingleton.root.error(e.getMessage(), e);
+
+		return new StringBuilder().append("<properties><![CDATA[").append(e.getMessage()).append("]]></properties>").toString();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -32,7 +35,7 @@ public class WebLinkCache
 		}
 		catch(Exception e)
 		{
-			return error(e.getMessage());
+			return error(e);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -56,9 +59,7 @@ public class WebLinkCache
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
-
-			return error(e.getMessage());
+			return error(e);
 		}
 
 		/*-----------------------------------------------------------------*/
