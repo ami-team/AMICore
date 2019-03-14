@@ -208,9 +208,9 @@ public class AMICoreTest
 			params = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 			String webLinkScript = ""
 									+"import net.hep.ami.jdbc.WebLink;"
-									+"\\n webLink = new WebLink();"
-									+"\\n webLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
-									+"\\n return webLink;";
+									+"\\nwebLink = new WebLink();"
+									+"\\nwebLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
+									+"\\nreturn webLink;";
 			String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
@@ -230,10 +230,17 @@ public class AMICoreTest
 			String params2 = "[\\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"PROJECT\\\\\\\",\\\\\\\"id\\\\\\\",\\\\\\\"\\\" + row.getValue(\\\"projectFK\\\") + \\\"\\\\\\\"]";
 			String webLinkScript = ""
 									+"import net.hep.ami.jdbc.WebLink;"
-									+"\\n webLink = new WebLink();"
-									+"\\n webLink.newLinkProperties().setLabel(\\\"project table\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"PROJECT\\\");"
-									+"\\n webLink.newLinkProperties().setLabel(\\\"project info\\\").setCtrl(\\\"elementInfo\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"arrows-alt\\\").setTitle(\\\"PROJECT\\\");"
-									+"\\n return webLink;";
+									+"\\nimport net.hep.ami.jdbc.Querier;"
+									+"\\nimport net.hep.ami.jdbc.SimpleQuerier;"
+									+"\\nimport net.hep.ami.jdbc.Row;"
+									+"\\nimport net.hep.ami.jdbc.reflexion.SchemaSingleton;"
+									+"\\nString label = SchemaSingleton.getFieldNames(catalog,\\\"PROJECT\\\").toString();"
+									+"\\n//try{ throw new java.lang.Exception(\\\"error test\\\");SimpleQuerier querier = new SimpleQuerier(catalog);}catch(java.lang.Exception e){label=e.getMessage();}"
+									+"\\n//String label = querier.executeSQLQuery(\\\"SELECT name FROM PROJECT WHERE id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\").getAll().get(0).getValue(0);"
+									+"\\nwebLink = new WebLink();"
+									+"\\nwebLink.newLinkProperties().setLabel(\\\"project table\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"PROJECT\\\");"
+									+"\\nwebLink.newLinkProperties().setLabel(label).setCtrl(\\\"elementInfo\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"arrows-alt\\\").setTitle(\\\"PROJECT\\\");"
+									+"\\nreturn webLink;";
 			String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descriptionxxxxx"+webLinkScript+"xxxxx1";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 

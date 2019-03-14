@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc;
 
 import groovy.lang.*;
+import net.hep.ami.LogSingleton;
 
 public class WebLinkCache
 {
@@ -55,6 +56,8 @@ public class WebLinkCache
 		}
 		catch(Exception e)
 		{
+			LogSingleton.root.error(e.getMessage(), e);
+
 			return error(e.getMessage());
 		}
 
