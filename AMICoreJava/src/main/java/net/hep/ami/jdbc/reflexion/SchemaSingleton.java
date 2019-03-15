@@ -780,18 +780,33 @@ public class SchemaSingleton
 			/* POST TREATMENT                                              */
 			/*-------------------------------------------------------------*/
 
-			FrgnKey frgnKey;
+			FrgnKeys frgnKeys1;
 
-			for(Catalog catalog: m_catalogs.values())
-			for(Table entity: catalog.tables.values())
-			for(FrgnKeys frgnKeys: entity.forwardFKs.values())
+			for(Catalog catalog1: m_catalogs.values())
+				for(Table table1: catalog1.tables.values())
+					for(Column column1: table1.columns.values())
 			{
-				frgnKey = frgnKeys.get(0);
+				frgnKeys1 = new FrgnKeys();
 
-				m_catalogs.get(frgnKey.pkExternalCatalog)
-				          .tables.get(frgnKey.pkEntity)
-				          .backwardFKs.get(frgnKey.pkField)
-				          .add(frgnKey)
+				m_catalogs.get(catalog1.externalCatalog)
+				          .tables.get(table1.entity)
+				          .backwardFKs.put(column1.field, frgnKeys1)
+				;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			FrgnKey frgnKey2;
+
+			for(Catalog catalog2: m_catalogs.values())
+				for(Table table2: catalog2.tables.values())
+					for(FrgnKeys frgnKeys2: table2.forwardFKs.values())
+			{
+				frgnKey2 = frgnKeys2.get(0);
+
+				m_catalogs.get(frgnKey2.pkExternalCatalog)
+				          .tables.get(frgnKey2.pkEntity)
+				          .backwardFKs.get(frgnKey2.pkField).add(frgnKey2)
 				;
 			}
 
