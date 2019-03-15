@@ -73,7 +73,7 @@ public class GetEntityInfo extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get the info of the given centity.";
+		return "Get the info of the given entity.";
 	}
 
 	/*---------------------------------------------------------------------*/

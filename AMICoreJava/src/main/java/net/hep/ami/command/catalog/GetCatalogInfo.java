@@ -59,14 +59,14 @@ public class GetCatalogInfo extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get the info of the given centity.";
+		return "Get the info of the given catalog.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\"";
+		return "-catalog=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/
