@@ -17,7 +17,9 @@ public final class RowSetIterable implements Iterable<Row>
 	private final int m_limit;
 	private final int m_offset;
 
-	private int m_i;
+	/*---------------------------------------------------------------------*/
+
+	private int m_i = 0;
 
 	/*---------------------------------------------------------------------*/
 
@@ -279,31 +281,26 @@ public final class RowSetIterable implements Iterable<Row>
 
 		if(type == null)
 		{
-			result.append("<fieldDescriptions>");
+			result.append("<fieldDescriptions>")
+			      .append(descrs)
+			      .append("</fieldDescriptions>")
+
+			      .append("<rowset truncated=\"").append(rowSet.isIncomplete()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">")
+			      .append(rows)
+			      .append("</rowset>")
+			;
 		}
 		else
 		{
-			result.append("<fieldDescriptions rowset=\"").append(Utility.escapeHTML(type)).append("\">");
+			result.append("<fieldDescriptions rowset=\"").append(Utility.escapeHTML(type)).append("\">")
+			      .append(descrs)
+			      .append("</fieldDescriptions>")
+
+			      .append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isIncomplete()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">")
+			      .append(rows)
+			      .append("</rowset>")
+			;
 		}
-
-		result.append(descrs)
-		      .append("</fieldDescriptions>")
-		;
-
-		/*-----------------------------------------------------------------*/
-
-		if(type == null)
-		{
-			result.append("<rowset truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">");
-		}
-		else
-		{
-			result.append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">");
-		}
-
-		result.append(rows)
-		      .append("</rowset>")
-		;
 
 		/*-----------------------------------------------------------------*/
 

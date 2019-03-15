@@ -67,6 +67,132 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
+	public Boolean getValue(int fieldIndex, @Nullable Boolean defaultValue) throws Exception
+	{
+		Boolean result;
+
+		String tmpValue = getValue(fieldIndex);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			tmpValue = tmpValue.trim().toLowerCase();
+
+			/**/ if("1".equals(tmpValue)
+			        ||
+			        "on".equals(tmpValue)
+			        ||
+			        "yes".equals(tmpValue)
+			        ||
+			        "true".equals(tmpValue)
+			 ) {
+				result = true;
+			}
+			else if("0".equals(tmpValue)
+			        ||
+			        "off".equals(tmpValue)
+			        ||
+			        "no".equals(tmpValue)
+			        ||
+			        "false".equals(tmpValue)
+			 ) {
+				result = false;
+			}
+			else
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Integer getValue(int fieldIndex, @Nullable Integer defaultValue) throws Exception
+	{
+		Integer result;
+
+		String tmpValue = getValue(fieldIndex);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			try
+			{
+				result = Integer.parseInt(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Float getValue(int fieldIndex, @Nullable Float defaultValue) throws Exception
+	{
+		Float result;
+
+		String tmpValue = getValue(fieldIndex);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			try
+			{
+				result = Float.parseFloat(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Double getValue(int fieldIndex, @Nullable Double defaultValue) throws Exception
+	{
+		Double result;
+
+		String tmpValue = getValue(fieldIndex);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			try
+			{
+				result = Double.parseDouble(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getValue(String name) throws Exception
 	{
 		if(m_rowSet.m_labelIndices.containsKey(name) == false)
@@ -84,6 +210,132 @@ public class Row
 		{
 			return m_values[m_rowSet.m_labelIndices.get(name)];
 		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Boolean getValue(String name, @Nullable Boolean defaultValue) throws Exception
+	{
+		Boolean result;
+
+		String tmpValue = getValue(name);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			tmpValue = tmpValue.trim().toLowerCase();
+
+			/**/ if("1".equals(tmpValue)
+			        ||
+			        "on".equals(tmpValue)
+			        ||
+			        "yes".equals(tmpValue)
+			        ||
+			        "true".equals(tmpValue)
+			 ) {
+				result = true;
+			}
+			else if("0".equals(tmpValue)
+			        ||
+			        "off".equals(tmpValue)
+			        ||
+			        "no".equals(tmpValue)
+			        ||
+			        "false".equals(tmpValue)
+			 ) {
+				result = false;
+			}
+			else
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Integer getValue(String name, @Nullable Integer defaultValue) throws Exception
+	{
+		Integer result;
+
+		String tmpValue = getValue(name);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			try
+			{
+				result = Integer.parseInt(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Float getValue(String name, @Nullable Float defaultValue) throws Exception
+	{
+		Float result;
+
+		String tmpValue = getValue(name);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			try
+			{
+				result = Float.parseFloat(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Double getValue(String name, @Nullable Double defaultValue) throws Exception
+	{
+		Double result;
+
+		String tmpValue = getValue(name);
+
+		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		{
+			try
+			{
+				result = Double.parseDouble(tmpValue);
+			}
+			catch(NumberFormatException e)
+			{
+				result = defaultValue;
+			}
+		}
+		else
+		{
+			result = defaultValue;
+		}
+
+		return result;
 	}
 
 	/*---------------------------------------------------------------------*/

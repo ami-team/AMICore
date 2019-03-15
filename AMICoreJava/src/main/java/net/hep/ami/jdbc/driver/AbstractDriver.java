@@ -92,6 +92,8 @@ public abstract class AbstractDriver implements Querier
 		m_user = user;
 		m_pass = pass;
 
+		/*-----------------------------------------------------------------*/
+
 		m_AMIUser = AMIUser;
 		m_isAdmin = isAdmin;
 

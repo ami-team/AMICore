@@ -63,11 +63,13 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final WebLinkCache m_webLinkScripts = new WebLinkCache();
 
 	/*---------------------------------------------------------------------*/
 
-	private WebLinkCache m_webLinkScripts = null;
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+	/*---------------------------------------------------------------------*/
 
 	private boolean m_incomplete = false;
 
@@ -624,7 +626,7 @@ public class RowSet
 
 			if(m_fieldAdminOnly[i] || m_fieldCrypted[i])
 			{
-				if(m_isAdmin)
+				if(m_isAdmin == true)
 				{
 					if(result[i] == null)
 					{
@@ -670,17 +672,8 @@ public class RowSet
 	{
 		String webLinkScript = m_fieldWebLinkScript[fieldIndex];
 
-		if(webLinkScript == null || webLinkScript.isEmpty() || "@NULL".equalsIgnoreCase(webLinkScript))
+		if(webLinkScript != null && webLinkScript.isEmpty() == false && "@NULL".equalsIgnoreCase(webLinkScript) == false)
 		{
-			return "";
-		}
-		else
-		{
-			if(m_webLinkScripts == null)
-			{
-				m_webLinkScripts = new WebLinkCache();
-			}
-
 			return m_webLinkScripts.processWebLink(
 				webLinkScript,
 				m_fieldCatalogs[fieldIndex],
@@ -689,6 +682,8 @@ public class RowSet
 				row
 			);
 		}
+
+		return "";
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -705,7 +700,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean isTruncated()
+	public boolean isIncomplete()
 	{
 		return m_incomplete;
 	}

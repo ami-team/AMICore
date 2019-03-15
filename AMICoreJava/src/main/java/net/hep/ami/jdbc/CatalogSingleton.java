@@ -50,7 +50,7 @@ public class CatalogSingleton
 
 			SchemaSingleton.rebuildSchemas(full);
 
-			SchemaExtraInfoSingleton.updateSchemas();
+			MetadataSingleton.patchSchemaSingleton();
 		}
 		catch(Exception e)
 		{
@@ -100,7 +100,7 @@ public class CatalogSingleton
 						row.getValue(4),
 						row.getValue(5),
 						row.getValue(6),
-						row.getValue(7)
+						row.getValue(7, false)
 					);
 				}
 				catch(Exception e)
@@ -121,7 +121,7 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void addCatalog(String externalCatalog, String internalCatalog, String internalSchema, String jdbcUrl, String user, String pass, String description, String archived) throws Exception
+	private static void addCatalog(String externalCatalog, String internalCatalog, String internalSchema, String jdbcUrl, String user, String pass, String description, boolean archived) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* ADD CATALOG                                                     */
@@ -145,7 +145,7 @@ public class CatalogSingleton
 				user,
 				pass,
 				description,
-				archived.equals("0") == false
+				archived
 			)
 		);
 
