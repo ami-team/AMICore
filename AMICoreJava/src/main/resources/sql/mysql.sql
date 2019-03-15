@@ -51,7 +51,7 @@ CREATE TABLE `router_catalog` (
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
   `custom` TEXT,
-  `description` VARCHAR(512) NOT NULL DEFAULT 'N/A',
+  `description` VARCHAR(512) DEFAULT 'N/A',
   `archived` TINYINT(1) NOT NULL DEFAULT 0,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` VARCHAR(128) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE `router_entity` (
   `entity` VARCHAR(128) NOT NULL,
   `rank` INT NOT NULL DEFAULT 0,
   `isBridge` TINYINT(1) NOT NULL DEFAULT 0,
-  `description` VARCHAR(512) NOT NULL DEFAULT 'N/A',
+  `description` VARCHAR(512) DEFAULT 'N/A',
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` VARCHAR(128) NOT NULL,
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -118,7 +118,7 @@ CREATE TABLE `router_field` (
   `isBase64` TINYINT(1) NOT NULL DEFAULT 0,
   `mime` VARCHAR(128),
   `ctrl` VARCHAR(128),
-  `description` VARCHAR(512) NOT NULL DEFAULT 'N/A',
+  `description` VARCHAR(512) DEFAULT 'N/A',
   `webLinkScript` TEXT,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` VARCHAR(128) NOT NULL,
@@ -186,7 +186,7 @@ ALTER TABLE `router_converter`
 CREATE TABLE `router_role` (
   `id` INT NOT NULL,
   `role` VARCHAR(128) NOT NULL,
-  `description` VARCHAR(512)
+  `description` VARCHAR(512) DEFAULT 'N/A'
 
 ) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
 
