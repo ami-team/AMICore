@@ -458,7 +458,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
+			List<Row> rowList = router.executeSQLQuery("SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ? AND `valid` != 0", AMIUser).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -500,7 +500,7 @@ public class FrontEnd extends HttpServlet
 
 				if(countryCode.equals(row.getValue(1)) == false)
 				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
+					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ? AND `valid` != 0", countryCode, result.x);
 				}
 			}
 			catch(Exception e)
