@@ -440,7 +440,7 @@ public class AMICoreTest
 			arguments.put("entity", "PROJECT");
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;description");
-			arguments.put("values", "AMI;This an AMI demonstration project");
+			arguments.put("values", "AMI;This is an AMI demonstration project");
 			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
@@ -457,7 +457,7 @@ public class AMICoreTest
 			arguments.put("entity", "PROJECT");
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;description");
-			arguments.put("values", "AMI2;This an other AMI demonstration project");
+			arguments.put("values", "AMI2;This is an other AMI demonstration project");
 			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
