@@ -10,6 +10,10 @@ public class ConfigSingleton
 {
 	/*---------------------------------------------------------------------*/
 
+	private static final String INVALID_AMI_CONFIG_FILE = "invalid AMI configuration file";
+
+	/*---------------------------------------------------------------------*/
+
 	private static final Map<String, String> s_properties = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*---------------------------------------------------------------------*/
@@ -18,12 +22,10 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static String s_configPathName;
-	private static String s_configFileName;
+	private static String s_configPathName = "N/A";
+	private static String s_configFileName = "N/A";
 
-	/*---------------------------------------------------------------------*/
-
-	private static boolean s_isValidConfFile;
+	private static boolean s_validConfigFile = false;
 
 	/*---------------------------------------------------------------------*/
 
@@ -57,9 +59,7 @@ public class ConfigSingleton
 
 		try
 		{
-			s_isValidConfFile = false;
-			loadConfFile();
-			s_isValidConfFile = true;
+			loadConfigFile();
 
 			SecuritySingleton.init(s_properties.get("encryption_key"));
 		}
@@ -67,30 +67,6 @@ public class ConfigSingleton
 		{
 			LogSingleton.root.error(LogSingleton.FATAL, "could not read configuration", e);
 		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static boolean isValid()
-	{
-		return getProperty("base_url").isEmpty() == false
-		       &&
-		       getProperty("admin_user").isEmpty() == false
-		       &&
-		       getProperty("admin_pass").isEmpty() == false
-		       &&
-		       getProperty("admin_email").isEmpty() == false
-		       &&
-		       getProperty("encryption_key").isEmpty() == false
-		       &&
-		       getProperty("router_catalog").isEmpty() == false
-		       &&
-		       getProperty("router_url").isEmpty() == false
-		       &&
-		       getProperty("router_user").isEmpty() == false
-		       &&
-		       getProperty("router_pass").isEmpty() == false
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -113,7 +89,7 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	private static void loadConfFile() throws Exception
+	private static void loadConfigFile() throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* FIND CONFIG FILE                                                */
@@ -207,10 +183,30 @@ public class ConfigSingleton
 		/* CHECK CONFIG                                                    */
 		/*-----------------------------------------------------------------*/
 
-		if(isValid() == false)
-		{
-			throw new Exception("invalid configuration file");
+		s_validConfigFile = false;
+
+		if(getProperty("base_url").isEmpty()
+		   ||
+		   getProperty("admin_user").isEmpty()
+		   ||
+		   getProperty("admin_pass").isEmpty()
+		   ||
+		   getProperty("admin_email").isEmpty()
+		   ||
+		   getProperty("encryption_key").isEmpty()
+		   ||
+		   getProperty("router_catalog").isEmpty()
+		   ||
+		   getProperty("router_url").isEmpty()
+		   ||
+		   getProperty("router_user").isEmpty()
+		   ||
+		   getProperty("router_pass").isEmpty()
+		) {
+			throw new Exception(INVALID_AMI_CONFIG_FILE);
 		}
+
+		s_validConfigFile = true;
 
 		/*-----------------------------------------------------------------*/
 		/* RESET LOGGERS                                                   */
@@ -344,9 +340,12 @@ public class ConfigSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static boolean isValidConfFile()
+	public static void checkValidAMIConfigFile() throws Exception
 	{
-		return s_isValidConfFile;
+		if(s_validConfigFile == false)
+		{
+			throw new Exception(INVALID_AMI_CONFIG_FILE);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/

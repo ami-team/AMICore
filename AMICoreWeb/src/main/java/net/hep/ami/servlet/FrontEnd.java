@@ -31,10 +31,6 @@ public class FrontEnd extends HttpServlet
 
 	/*---------------------------------------------------------------------*/
 
-	private static final String CONFIG_ERROR = "the AMI database is not properly setup";
-
-	/*---------------------------------------------------------------------*/
-
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
@@ -125,73 +121,70 @@ public class FrontEnd extends HttpServlet
 
 		String data;
 
-		if(ConfigSingleton.isValidConfFile())
+		try
 		{
-			try
+			/*---------------------------------------------------------*/
+			/* CHECK AMI CONFIG FILE                                   */
+			/*---------------------------------------------------------*/
+
+			ConfigSingleton.checkValidAMIConfigFile();
+
+			/*---------------------------------------------------------*/
+			/* RESOLVE LINK                                            */
+			/*---------------------------------------------------------*/
+
+			if(link.isEmpty() == false)
 			{
-				/*---------------------------------------------------------*/
-				/* RESOLVE LINK                                            */
-				/*---------------------------------------------------------*/
-
-				if(link.isEmpty() == false)
+				if(link.matches("[0-9]+") == false)
 				{
-					if(link.matches("[0-9]+") == false)
-					{
-						throw new Exception("invalid link format");
-					}
-
-					Tuple2<String, String> result = resolveLink(link);
-
-					command = result.x;
-					converter = result.y;
+					throw new Exception("invalid link format");
 				}
 
-				/*---------------------------------------------------------*/
-				/* PARSE COMMAND                                           */
-				/*---------------------------------------------------------*/
+				Tuple2<String, String> result = resolveLink(link);
 
-				Command.CommandTuple tuple = Command.parse(command);
-
-				HttpSession session = req.getSession(true);
-
-				updateSessionAndCommandArgs(
-					tuple.arguments,
-					session,
-					req
-				);
-
-				/*---------------------------------------------------------*/
-				/* EXECUTE COMMAND                                         */
-				/*---------------------------------------------------------*/
-
-				data = CommandSingleton.executeCommand(
-					tuple.command,
-					tuple.arguments
-				);
-
-				/*---------------------------------------------------------*/
+				command = result.x;
+				converter = result.y;
 			}
-			catch(Exception e)
-			{
-				if(ConfigSingleton.getProperty("dev_mode", false))
-				{
-					data = XMLTemplates.error(
-						e.getMessage(), e.getStackTrace()
-					);
-				}
-				else
-				{
-					data = XMLTemplates.error(
-						e.getMessage()
-					);
-				}
-			}
-		}
-		else
-		{
-			data = XMLTemplates.error(
-				CONFIG_ERROR
+
+			/*---------------------------------------------------------*/
+			/* PARSE COMMAND                                           */
+			/*---------------------------------------------------------*/
+
+			Command.CommandTuple tuple = Command.parse(command);
+
+			HttpSession session = req.getSession(true);
+
+			updateSessionAndCommandArgs(
+				tuple.arguments,
+				session,
+				req
 			);
+
+			/*---------------------------------------------------------*/
+			/* EXECUTE COMMAND                                         */
+			/*---------------------------------------------------------*/
+
+			data = CommandSingleton.executeCommand(
+				tuple.command,
+				tuple.arguments
+			);
+
+			/*---------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			if(ConfigSingleton.getProperty("dev_mode", false))
+			{
+				data = XMLTemplates.error(
+					e.getMessage(), e.getStackTrace()
+				);
+			}
+			else
+			{
+				data = XMLTemplates.error(
+					e.getMessage()
+				);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -458,7 +451,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ? AND `valid` != 0", AMIUser).getAll();
+			List<Row> rowList = router.executeSQLQuery("SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -500,7 +493,7 @@ public class FrontEnd extends HttpServlet
 
 				if(countryCode.equals(row.getValue(1)) == false)
 				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ? AND `valid` != 0", countryCode, result.x);
+					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
 				}
 			}
 			catch(Exception e)
