@@ -206,12 +206,16 @@ public class AMICoreTest
 		try 
 		{
 			String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
-			String params = "[\\\\\\\"GetServerStatus\\\\\\\"]";
-			params = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+			String params = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+			String params2 = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE valid=1 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+			String params3 = "[\\\\\\\"SearchQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+			
 			String webLinkScript = ""
 									+"import net.hep.ami.jdbc.WebLink;"
 									+"\\nwebLink = new WebLink();"
 									+"\\nwebLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
+									+"\\nwebLink.newLinkProperties().setLabel(\\\"valid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
+									+"\\nwebLink.newLinkProperties().setLabel(\\\"invalid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params3+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
 									+"\\nreturn webLink;";
 			String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 			String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
@@ -253,6 +257,7 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
+
 
 		try 
 		{
@@ -435,7 +440,7 @@ public class AMICoreTest
 			arguments.put("entity", "PROJECT");
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;description");
-			arguments.put("values", "AMI;This an AMI demonstration project");
+			arguments.put("values", "AMI;This is an AMI demonstration project");
 			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
@@ -452,7 +457,7 @@ public class AMICoreTest
 			arguments.put("entity", "PROJECT");
 			arguments.put("separator", ";");
 			arguments.put("fields", "name;description");
-			arguments.put("values", "AMI2;This an other AMI demonstration project");
+			arguments.put("values", "AMI2;This is an other AMI demonstration project");
 			CommandSingleton.executeCommand("AddElement", arguments, false);
 
 		}
@@ -859,10 +864,10 @@ public class AMICoreTest
 			arguments.put("catalog", "test");
 			arguments.put("entity", "DATASET");
 			arguments.put("separator", ";");
-			arguments.put("fields", "name");
-			arguments.put("values", "dataset_test_" + (cptMax-1) +"");
+			arguments.put("fields", "name;valid");
+			arguments.put("values", "dataset_test_" + (cptMax-1) +";0");
 			arguments.put("keyFields", "id");
-			arguments.put("keyValues", "" + cptMax);
+			arguments.put("keyValues", "" + (cptMax-1));
 			CommandSingleton.executeCommand("UpdateElements", arguments, false);
 		}
 		catch(Exception e)
