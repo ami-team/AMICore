@@ -6,11 +6,11 @@ import net.hep.ami.command.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
-public class GetFieldInfo extends AbstractCommand
+public class GetCatalogInfo extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public GetFieldInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetCatalogInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
@@ -23,22 +23,31 @@ public class GetFieldInfo extends AbstractCommand
 		StringBuilder result = new StringBuilder();
 
 		String catalog = arguments.get("catalog");
-		String entity = arguments.get("entity");
-		String field = arguments.get("field");
 
-		if(catalog == null
-		   ||
-		   entity == null
-		   ||
-		   field == null
-		 ) {
+		if(catalog == null)
+		{
 			throw new Exception("invalid usage");
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"field\">");
-		SchemaSingleton.appendColumnToStringBuilder(result, SchemaSingleton.getFieldInfo(catalog, entity, field));
+		SchemaSingleton.Catalog _catalog = SchemaSingleton.getCatalogInfo(catalog);
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"catalog\">");
+		SchemaSingleton.appendCatalogToStringBuilder(result, _catalog);
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"entities\">");
+
+		for(SchemaSingleton.Table table: _catalog.tables.values())
+		{
+			SchemaSingleton.appendTableToStringBuilder(result, table);
+		}
+
 		result.append("</rowset>");
 
 		/*-----------------------------------------------------------------*/
@@ -50,14 +59,14 @@ public class GetFieldInfo extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get the info of the given field.";
+		return "Get the info of the given centity.";
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" -field=\"\"";
+		return "-catalog=\"\" -entity=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/

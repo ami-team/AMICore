@@ -571,7 +571,7 @@ public class Helper
 		/* FILL RESERVED FIELDS                                            */
 		/*-----------------------------------------------------------------*/
 
-		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(catalog, primaryKey.getEntity()).values())
+		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(catalog, primaryKey.getEntity()).columns.values())
 		{
 			if(tmp.created && insert) {
 				X.add(Utility.textToSqlId(tmp.field)); Y.add("CURRENT_TIMESTAMP");

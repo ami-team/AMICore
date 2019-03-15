@@ -1,7 +1,5 @@
 package net.hep.ami.jdbc.reflexion;
 
-import java.util.*;
-
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
@@ -139,12 +137,29 @@ public class MetadataSingleton
 
 	public static void updateEntity(String catalog, String entity, Integer rank, boolean bridge, String description)
 	{
-		if(rank != null)
+		try
 		{
-			/* TODO */
-		}
+			/*-------------------------------------------------------------*/
 
-		/* TODO */
+			SchemaSingleton.Table table = SchemaSingleton.getEntityInfo(catalog, entity);
+
+			/*-------------------------------------------------------------*/
+
+			if(rank != null)
+			{
+				table.rank = rank;
+			}
+
+			table.bridge = bridge;
+
+			table.description = (description != null) ? description.trim() : "N∕A";
+
+			/*-------------------------------------------------------------*/
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.error(e.getMessage(), e);
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -153,7 +168,11 @@ public class MetadataSingleton
 	{
 		try
 		{
+			/*-------------------------------------------------------------*/
+
 			SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(catalog, entity, field);
+
+			/*-------------------------------------------------------------*/
 
 			if(rank != null)
 			{
@@ -182,6 +201,8 @@ public class MetadataSingleton
 
 			column.description = (description != null) ? description.trim() : "N∕A";
 			column.webLinkScript = (webLinkScript != null) ? webLinkScript.trim() : "@NULL";
+
+			/*-------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
@@ -197,72 +218,36 @@ public class MetadataSingleton
 		{
 			/*-------------------------------------------------------------*/
 
-			SchemaSingleton.Column column1 = SchemaSingleton.getFieldInfo(fkCatalog, fkEntity, fkField);
-			SchemaSingleton.Column column2 = SchemaSingleton.getFieldInfo(pkCatalog, pkEntity, pkField);
+			SchemaSingleton.Column fkColumn = SchemaSingleton.getFieldInfo(fkCatalog, fkEntity, fkField);
+			SchemaSingleton.Column pkColumn = SchemaSingleton.getFieldInfo(pkCatalog, pkEntity, pkField);
 
-			/*-------------------------------------------------------------*/
-			/* STEP 1                                                      */
-			/*-------------------------------------------------------------*/
-
-			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b1 = SchemaSingleton.s_forwardFKs.get(column1.externalCatalog);
-			Map<String, Map<String, SchemaSingleton.FrgnKeys>> b2 = SchemaSingleton.s_backwardFKs.get(column2.externalCatalog);
-
-			if(b1 == null) {
-				SchemaSingleton.s_forwardFKs.put(column1.externalCatalog, b1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
-			}
-
-			if(b2 == null) {
-				SchemaSingleton.s_backwardFKs.put(column2.externalCatalog, b2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
-			}
-
-			/*-------------------------------------------------------------*/
-			/* STEP 2                                                      */
-			/*-------------------------------------------------------------*/
-
-			Map<String, SchemaSingleton.FrgnKeys> c1 = b1.get(column1.entity);
-			Map<String, SchemaSingleton.FrgnKeys> c2 = b2.get(column2.entity);
-
-			if(c1 == null) {
-				b1.put(column1.entity, c1 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
-			}
-
-			if(c2 == null) {
-				b2.put(column2.entity, c2 = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true));
-			}
-
-			/*-------------------------------------------------------------*/
-			/* STEP 3                                                      */
-			/*-------------------------------------------------------------*/
-
-			SchemaSingleton.FrgnKeys d1 = c1.get(column1.field);
-			SchemaSingleton.FrgnKeys d2 = c2.get(column2.field);
-
-			if(d1 == null) {
-				c1.put(column1.field, d1 = new SchemaSingleton.FrgnKeys());
-			}
-
-			if(d2 == null) {
-				c2.put(column2.field, d2 = new SchemaSingleton.FrgnKeys());
-			}
-
-			/*-------------------------------------------------------------*/
-			/* STEP 4                                                      */
 			/*-------------------------------------------------------------*/
 
 			SchemaSingleton.FrgnKey frgnKey = new SchemaSingleton.FrgnKey(
 				name,
-				column1.externalCatalog,
-				column1.internalCatalog,
-				column1.entity,
-				column1.field,
-				column2.externalCatalog,
-				column2.internalCatalog,
-				column2.entity,
-				column2.field
+				fkColumn.externalCatalog,
+				fkColumn.internalCatalog,
+				fkColumn.entity,
+				fkColumn.field,
+				pkColumn.externalCatalog,
+				pkColumn.internalCatalog,
+				pkColumn.entity,
+				pkColumn.field
 			);
 
-			d1.add(frgnKey);
-			d2.add(frgnKey);
+			/*-------------------------------------------------------------*/
+
+			SchemaSingleton.s_catalogs.get(fkColumn.externalCatalog)
+			                          .tables.get(fkColumn.entity)
+			                          .forwardFKs.get(fkColumn.field)
+			                          .add(frgnKey)
+			;
+
+			SchemaSingleton.s_catalogs.get(pkColumn.externalCatalog)
+			                          .tables.get(pkColumn.entity)
+			                          .forwardFKs.get(pkColumn.field)
+			                          .add(frgnKey)
+			;
 
 			/*-------------------------------------------------------------*/
 		}

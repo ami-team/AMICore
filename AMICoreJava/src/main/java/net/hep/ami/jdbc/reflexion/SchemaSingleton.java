@@ -17,6 +17,99 @@ public class SchemaSingleton
 {
 	/*---------------------------------------------------------------------*/
 
+	public static final class Catalog implements Serializable
+	{
+		private static final long serialVersionUID = 3229166541876111056L;
+
+		/**/
+
+		public Map<String, Table> tables = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
+
+		/**/
+
+		public final String externalCatalog;
+		public final String internalCatalog;
+		public /*-*/ int rank;
+
+		/**/
+
+		public boolean archived = false;
+
+		public String description = "N/A";
+
+		/**/
+
+		public Catalog(String _externalCatalog, String _internalCatalog, int _rank)
+		{
+			externalCatalog = _externalCatalog;
+			internalCatalog = _internalCatalog;
+			rank = _rank;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(internalCatalog);
+		}
+
+		@Override
+		public String toString()
+		{
+			return "`" + internalCatalog + "`";
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static final class Table implements Serializable
+	{
+		private static final long serialVersionUID = 6564839225538503809L;
+
+		/**/
+
+		public final Map<String, Column> columns = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
+
+		public final Map<String, FrgnKeys> forwardFKs = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
+		public final Map<String, FrgnKeys> backwardFKs = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
+
+		/**/
+
+		public final String externalCatalog;
+		public final String internalCatalog;
+		public final String entity;
+		public /*-*/ int rank;
+
+		/**/
+
+		public boolean bridge = false;
+
+		public String description = "N/A";
+
+		/**/
+
+		public Table(String _externalCatalog, String _internalCatalog, String _entity, int _rank)
+		{
+			externalCatalog = _externalCatalog;
+			internalCatalog = _internalCatalog;
+			entity = _entity;
+			rank = _rank;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(internalCatalog, entity);
+		}
+
+		@Override
+		public String toString()
+		{
+			return "`" + internalCatalog + "`.`" + entity + "`";
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static final class Column implements Serializable
 	{
 		private static final long serialVersionUID = 9088165113864128126L;
@@ -101,10 +194,12 @@ public class SchemaSingleton
 		/**/
 
 		public final String name;
+
 		public final String fkExternalCatalog;
 		public final String fkInternalCatalog;
 		public final String fkEntity;
 		public final String fkField;
+
 		public final String pkExternalCatalog;
 		public final String pkInternalCatalog;
 		public final String pkEntity;
@@ -115,10 +210,12 @@ public class SchemaSingleton
 		public FrgnKey(String _name, String _fkExternalCatalog, String _fkInternalCatalog, String _fkEntity, String _fkField, String _pkExternalCatalog, String _pkInternalCatalog, String _pkEntity, String _pkField)
 		{
 			name = _name;
+
 			fkExternalCatalog = _fkExternalCatalog;
 			fkInternalCatalog = _fkInternalCatalog;
 			fkEntity = _fkEntity;
 			fkField = _fkField;
+
 			pkExternalCatalog = _pkExternalCatalog;
 			pkInternalCatalog = _pkInternalCatalog;
 			pkEntity = _pkEntity;
@@ -167,9 +264,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	protected static final Map<String, Map<String, Map<String, Column>>> s_columns = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
-	protected static final Map<String, Map<String, Map<String, FrgnKeys>>> s_forwardFKs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
-	protected static final Map<String, Map<String, Map<String, FrgnKeys>>> s_backwardFKs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
+	protected static final Map<String, Catalog> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
 
 	/*---------------------------------------------------------------------*/
 
@@ -200,12 +295,14 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		s_columns.clear();
-		s_forwardFKs.clear();
-		s_backwardFKs.clear();
+		s_catalogs.clear();
 
 		/*-----------------------------------------------------------------*/
 	}
+
+	/*---------------------------------------------------------------------*/
+
+	private static int s_rank = 0;
 
 	/*---------------------------------------------------------------------*/
 
@@ -218,13 +315,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		s_columns.put(externalCatalog,
-			new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true)
-		);
-
-		s_forwardFKs.put(externalCatalog,
-			new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true)
-		);
+		s_catalogs.put(externalCatalog, new Catalog(externalCatalog, internalCatalog, s_rank++));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -244,8 +335,7 @@ public class SchemaSingleton
 		private final Map<String, String> m_externalCatalogToInternalCatalog;
 		private final Map<String, String> m_internalCatalogToExternalCatalog;
 
-		private final Map<String, Map<String, Map<String, Column>>> m_columns;
-		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_frgnKeys;
+		private final Map<String, Catalog> m_catalogs;
 
 		/*-----------------------------------------------------------------*/
 
@@ -258,16 +348,14 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		private Map<String, Map<String, Column>> m_tmp1;
-		private Map<String, Map<String, FrgnKeys>> m_tmp2;
+		private Map<String, Table> m_tables;
 
 		/*-----------------------------------------------------------------*/
 
 		public Extractor(
 			Map<String, String> externalCatalogToInternalCatalog,
 			Map<String, String> internalCatalogToExternalCatalog,
-			Map<String, Map<String, Map<String, Column>>> columns,
-			Map<String, Map<String, Map<String, FrgnKeys>>> frgnKeys,
+			Map<String, Catalog> catalogs,
 			String externalCatalog,
 			String internalCatalog,
 			CatalogSingleton.Tuple tuple,
@@ -278,8 +366,7 @@ public class SchemaSingleton
 			m_externalCatalogToInternalCatalog = externalCatalogToInternalCatalog;
 			m_internalCatalogToExternalCatalog = internalCatalogToExternalCatalog;
 
-			m_columns = columns;
-			m_frgnKeys = frgnKeys;
+			m_catalogs = catalogs;
 
 			/*-------------------------------------------------------------*/
 
@@ -298,8 +385,7 @@ public class SchemaSingleton
 		@Override
 		public void run()
 		{
-			m_tmp1 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
-			m_tmp2 = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
+			m_tables = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true);
 
 			try
 			{
@@ -335,8 +421,10 @@ public class SchemaSingleton
 
 		private void apply()
 		{
-			m_columns.put(m_externalCatalog, m_tmp1);
-			m_frgnKeys.put(m_externalCatalog, m_tmp2);
+			Catalog catalog = m_catalogs.get(m_externalCatalog);
+
+			catalog.tables      = m_tables ;
+			catalog.description = m_tuple.w;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -360,16 +448,9 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + m_externalCatalog + "_columns.ser")))
+			try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + m_externalCatalog + ".ser")))
 			{
-				objectOutputStream.writeObject(m_tmp1);
-			}
-
-			/*-------------------------------------------------------------*/
-
-			try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + m_externalCatalog + "_frgnkeys.ser")))
-			{
-				objectOutputStream.writeObject(m_tmp2);
+				objectOutputStream.writeObject((Map<String, Table>) m_tables);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -396,16 +477,9 @@ public class SchemaSingleton
 
 			/*-------------------------------------------------------------*/
 
-			try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + m_externalCatalog + "_columns.ser")))
+			try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + m_externalCatalog + ".ser")))
 			{
-				m_tmp1.putAll((Map<String, Map<String, Column>>) objectInputStream.readObject());
-			}
-
-			/*-------------------------------------------------------------*/
-
-			try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + m_externalCatalog + "_frgnkeys.ser")))
-			{
-				m_tmp2.putAll((Map<String, Map<String, FrgnKeys>>) objectInputStream.readObject());
+				m_tables = (Map<String, Table>) objectInputStream.readObject();
 			}
 
 			/*-------------------------------------------------------------*/
@@ -415,8 +489,6 @@ public class SchemaSingleton
 
 		private void loadSchemaFromDatabase() throws Exception
 		{
-			Set<String> entities = new HashSet<>();
-
 			m_logger.info("for catalog '{}', loading from schema from database...", m_externalCatalog);
 
 			/*-------------------------------------------------------------*/
@@ -441,24 +513,29 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                             */
 				/*---------------------------------------------------------*/
 
+				Set<String> entities = new HashSet<>();
+
+				/*---------------------------------------------------------*/
+
 				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z, "%", new String[] {"TABLE", "VIEW"}))
 				{
-					String temp;
+					String entity;
+
+					int rank = 1000;
 
 					while(resultSet.next())
 					{
-						temp = resultSet.getString("TABLE_NAME");
+						entity = resultSet.getString("TABLE_NAME");
 
-						if(temp != null
+						if(entity != null
 						   &&
-						   temp.toLowerCase().startsWith("db_") == false
+						   entity.toLowerCase().startsWith("db_") == false
 						   &&
-						   temp.toLowerCase().startsWith("x_db_") == false
+						   entity.toLowerCase().startsWith("x_db_") == false
 						 ) {
-							m_tmp1.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
-							m_tmp2.put(temp, new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true));
+							m_tables.put(entity, new Table(m_internalCatalog, m_externalCatalog, entity, rank++));
 
-							entities.add(temp);
+							entities.add(entity);
 						}
 					}
 				}
@@ -490,13 +567,15 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*-------------------------------------------------------------*/
 
+			boolean isOracle = metaData.getClass().getName().startsWith("oracle");
+
+			/*-------------------------------------------------------------*/
+
 			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_tuple.z, _entity, "%"))
 			{
-				boolean isOracle = resultSet.getClass().getName().startsWith("oracle");
+				Table table;
 
-				Map<String, Column> columnEntry;
-
-				int i = 1000;
+				int rank = 1000;
 
 				while(resultSet.next())
 				{
@@ -510,11 +589,11 @@ public class SchemaSingleton
 
 					if(entity != null && field != null && type != null)
 					{
-						columnEntry = m_tmp1.get(entity);
+						table = m_tables.get(entity);
 
-						if(columnEntry != null)
+						if(table != null)
 						{
-							columnEntry.put(field, new Column(
+							table.columns.put(field, new Column(
 								m_externalCatalog,
 								m_internalCatalog,
 								entity,
@@ -528,7 +607,7 @@ public class SchemaSingleton
 								                                                                           : /*----------------*/(def)
 								                                                                 )
 								              ),
-								i++
+								rank++
 							));
 						}
 					}
@@ -539,15 +618,18 @@ public class SchemaSingleton
 
 			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
-				Column column;
-
 				while(resultSet.next())
 				{
-					column = m_tmp1.get(_entity).get(resultSet.getString("COLUMN_NAME"));
+					String entity = resultSet.getString("TABLE_NAME");
+					String field = resultSet.getString("COLUMN_NAME");
+
+					Column column = m_tables.get(entity).columns.get(field);
 
 					if(column.statable)
 					{
 						column.primary = true;
+
+						break;
 					}
 				}
 			}
@@ -565,7 +647,7 @@ public class SchemaSingleton
 
 			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
-				Map<String, FrgnKeys> frgnKeyEntry;
+				Table table;
 
 				while(resultSet.next())
 				{
@@ -606,11 +688,11 @@ public class SchemaSingleton
 
 					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkInternalCatalog != null && pkEntity != null && pkField != null)
 					{
-						frgnKeyEntry = m_tmp2.get(fkEntity);
+						table = m_tables.get(fkEntity);
 
-						if(frgnKeyEntry != null)
+						if(table != null)
 						{
-							frgnKeyEntry.put(fkField, new FrgnKeys(new FrgnKey(
+							table.forwardFKs.put(fkField, new FrgnKeys(new FrgnKey(
 								name,
 								fkExternalCatalog,
 								fkInternalCatalog,
@@ -642,33 +724,19 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		private final Map<String, Map<String, Map<String, Column>>> m_columns;
-		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_forwardFKs;
-		private final Map<String, Map<String, Map<String, FrgnKeys>>> m_backwardFKs;
-
-		/*-----------------------------------------------------------------*/
+		private final Map<String, Catalog> m_catalogs;
 
 		private final List<Thread> m_threads;
 
 		/*-----------------------------------------------------------------*/
 
 		public Executor(
-			Map<String, Map<String, Map<String, Column>>> columns,
-			Map<String, Map<String, Map<String, FrgnKeys>>> forwardFKs,
-			Map<String, Map<String, Map<String, FrgnKeys>>> backwardFKs,
+			Map<String, Catalog> catalogs,
 			List<Thread> threads
 		 ) {
-			/*-------------------------------------------------------------*/
-
-			m_columns = columns;
-			m_forwardFKs = forwardFKs;
-			m_backwardFKs = backwardFKs;
-
-			/*-------------------------------------------------------------*/
+			m_catalogs = catalogs;
 
 			m_threads = threads;
-
-			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -712,41 +780,18 @@ public class SchemaSingleton
 			/* POST TREATMENT                                              */
 			/*-------------------------------------------------------------*/
 
-			for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: this.m_columns.entrySet())
-			{
-				m_backwardFKs.put(entry1.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
-				;
-
-				for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
-				{
-					m_backwardFKs.get(entry1.getKey())
-					             .put(entry2.getKey(), new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, true))
-					;
-
-					for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
-					{
-						m_backwardFKs.get(entry1.getKey())
-						             .get(entry2.getKey())
-						             .put(entry3.getKey(), new FrgnKeys())
-						;
-					}
-				}
-			}
-
-			/*-------------------------------------------------------------*/
-
 			FrgnKey frgnKey;
 
-			for(Map<String, Map<String, FrgnKeys>> value1: m_forwardFKs.values())
-			for(Map<String, FrgnKeys> value2: value1.values())
-			for(FrgnKeys frgnKeys: value2.values())
+			for(Catalog catalog: m_catalogs.values())
+			for(Table entity: catalog.tables.values())
+			for(FrgnKeys frgnKeys: entity.forwardFKs.values())
 			{
 				frgnKey = frgnKeys.get(0);
 
-				m_backwardFKs.get(frgnKey.pkExternalCatalog)
-				             .get(frgnKey.pkEntity)
-				             .get(frgnKey.pkField)
-				             .add(frgnKey)
+				m_catalogs.get(frgnKey.pkExternalCatalog)
+				          .tables.get(frgnKey.pkEntity)
+				          .backwardFKs.get(frgnKey.pkField)
+				          .add(frgnKey)
 				;
 			}
 
@@ -808,8 +853,7 @@ public class SchemaSingleton
 				threads.add(new Thread(new Extractor(
 						s_externalCatalogToInternalCatalog,
 						s_internalCatalogToExternalCatalog,
-						s_columns,
-						s_forwardFKs,
+						s_catalogs,
 						entry.getKey(),
 						entry.getValue(),
 						CatalogSingleton.getTuple(entry.getKey()),
@@ -818,7 +862,7 @@ public class SchemaSingleton
 				));
 			}
 
-			new Executor(s_columns, s_forwardFKs, s_backwardFKs, threads).run();
+			new Executor(s_catalogs, threads).run();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -834,8 +878,7 @@ public class SchemaSingleton
 				threads.add(new Thread(new Extractor(
 						s_externalCatalogToInternalCatalog,
 						s_internalCatalogToExternalCatalog,
-						s_columns,
-						s_forwardFKs,
+						s_catalogs,
 						entry.getKey(),
 						entry.getValue(),
 						CatalogSingleton.getTuple(entry.getKey()),
@@ -844,7 +887,7 @@ public class SchemaSingleton
 				));
 			}
 
-			new Thread(new Executor(s_columns, s_forwardFKs, s_backwardFKs, threads)).start();
+			new Thread(new Executor(s_catalogs, threads)).start();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -910,15 +953,15 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Map<String, Column>> getEntities(String externalCatalog) throws Exception
+	public static Catalog getCatalogInfo(String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, Column>> map = s_columns.get(externalCatalog);
+		Catalog catalog = s_catalogs.get(externalCatalog);
 
-		if(map != null)
+		if(catalog != null)
 		{
-			return map;
+			return catalog;
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -930,20 +973,20 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static Map<String, Column> getEntityInfo(String externalCatalog, String entity) throws Exception
+	public static Table getEntityInfo(String externalCatalog, String _entity) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Column> map = getEntities(externalCatalog).get(entity);
+		Table table = getCatalogInfo(externalCatalog).tables.get(_entity);
 
-		if(map != null)
+		if(table != null)
 		{
-			return map;
+			return table;
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
+		throw new Exception("entity not found `" + externalCatalog + "`.`" + _entity + "`");
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -954,7 +997,7 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		Column column = getEntityInfo(externalCatalog, entity).get(field);
+		Column column = getEntityInfo(externalCatalog, entity).columns.get(field);
 
 		if(column != null)
 		{
@@ -974,11 +1017,11 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, FrgnKeys>> map1 = s_forwardFKs.get(externalCatalog);
+		Catalog catalog = s_catalogs.get(externalCatalog);
 
-		if(map1 != null)
+		if(catalog != null)
 		{
-			Map<String, FrgnKeys> map2 = map1.get(entity);
+			Map<String, FrgnKeys> map2 = catalog.tables.get(entity).forwardFKs;
 
 			if(map2 != null)
 			{
@@ -999,11 +1042,11 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, Map<String, FrgnKeys>> map1 = s_backwardFKs.get(externalCatalog);
+		Catalog catalog = s_catalogs.get(externalCatalog);
 
-		if(map1 != null)
+		if(catalog != null)
 		{
-			Map<String, FrgnKeys> map2 = map1.get(entity);
+			Map<String, FrgnKeys> map2 = catalog.tables.get(entity).backwardFKs;
 
 			if(map2 != null)
 			{
@@ -1040,7 +1083,7 @@ public class SchemaSingleton
 	public static List<String> getEntityNames(String externalCatalog) throws Exception
 	{
 		return new ArrayList<>(
-			getEntities(externalCatalog).keySet()
+			getCatalogInfo(externalCatalog).tables.keySet()
 		);
 	}
 
@@ -1049,7 +1092,7 @@ public class SchemaSingleton
 	public static List<String> getFieldNames(String externalCatalog, String entity) throws Exception
 	{
 		return new ArrayList<>(
-			getEntityInfo(externalCatalog, entity).keySet()
+			getEntityInfo(externalCatalog, entity).columns.keySet()
 		);
 	}
 
@@ -1077,7 +1120,7 @@ public class SchemaSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		for(Column column: getEntityInfo(externalCatalog, entity).values())
+		for(Column column: getEntityInfo(externalCatalog, entity).columns.values())
 		{
 			if(column.primary)
 			{
@@ -1094,12 +1137,50 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<QId> getSortedColumnQId(String externalCatalog, String entity, @Nullable List<QId> constraints, boolean isAdmin) throws Exception
+	public static List<QId> getSortedQId(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
 	{
-		return getEntityInfo(externalCatalog, entity).values().stream()
-		                                                      .sorted((x, y) -> x.rank - y.rank)
-		                                                      .map(x -> new QId(x, false, constraints))
-		                                                      .collect(Collectors.toList())
+		return getEntityInfo(externalCatalog, entity).columns.values().stream()
+		                                                              .sorted((x, y) -> x.rank - y.rank)
+		                                                              .map(x -> new QId(x, false, constraints))
+		                                                              .collect(Collectors.toList())
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<QId> getReadableQId(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
+	{
+		return getEntityInfo(externalCatalog, entity).columns.values().stream()
+		                                                              .filter(x -> x.readable)
+		                                                              .map(x -> new QId(x, false, constraints))
+		                                                              .collect(Collectors.toList())
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void appendCatalogToStringBuilder(StringBuilder stringBuilder, Catalog catalog)
+	{
+		stringBuilder.append("<row>")
+		             .append("<field name=\"externalCatalog\"><![CDATA[").append(catalog.externalCatalog).append("]]></field>")
+		             .append("<field name=\"internalCatalog\"><![CDATA[").append(catalog.internalCatalog).append("]]></field>")
+		             .append("<field name=\"rank\"><![CDATA[").append(catalog.rank).append("]]></field>")
+		             .append("<field name=\"description\"><![CDATA[").append(catalog.description).append("]]></field>")
+		             .append("</row>")
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static void appendTableToStringBuilder(StringBuilder stringBuilder, Table table)
+	{
+		stringBuilder.append("<row>")
+		             .append("<field name=\"externalCatalog\"><![CDATA[").append(table.externalCatalog).append("]]></field>")
+		             .append("<field name=\"internalCatalog\"><![CDATA[").append(table.internalCatalog).append("]]></field>")
+		             .append("<field name=\"entity\"><![CDATA[").append(table.entity).append("]]></field>")
+		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
+		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
+		             .append("</row>")
 		;
 	}
 
@@ -1165,13 +1246,36 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
+		result.append("<rowset type=\"catalogs\">");
+
+		for(Catalog catalog: s_catalogs.values())
+		{
+			appendCatalogToStringBuilder(result, catalog);
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"entities\">");
+
+		for(Catalog catalog: s_catalogs.values())
+		for(Table table: catalog.tables.values())
+		{
+			appendTableToStringBuilder(result, table);
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
 		result.append("<rowset type=\"fields\">");
 
-		for(Map.Entry<String, Map<String, Map<String, Column>>> entry1: s_columns.entrySet())
-		for(Map.Entry<String, Map<String, Column>> entry2: entry1.getValue().entrySet())
-		for(Map.Entry<String, Column> entry3: entry2.getValue().entrySet())
+		for(Catalog catalog: s_catalogs.values())
+		for(Table table: catalog.tables.values())
+		for(Column column: table.columns.values())
 		{
-			appendColumnToStringBuilder(result, entry3.getValue());
+			appendColumnToStringBuilder(result, column);
 		}
 
 		result.append("</rowset>");
@@ -1180,11 +1284,11 @@ public class SchemaSingleton
 
 		result.append("<rowset type=\"foreignKeys\">");
 
-		for(Map.Entry<String, Map<String, Map<String, FrgnKeys>>> entry1: s_forwardFKs.entrySet())
-		for(Map.Entry<String, Map<String, FrgnKeys>> entry2: entry1.getValue().entrySet())
-		for(Map.Entry<String, FrgnKeys> entry3: entry2.getValue().entrySet())
+		for(Catalog catalog: s_catalogs.values())
+		for(Table table: catalog.tables.values())
+		for(FrgnKeys frgnKeys: table.forwardFKs.values())
 		{
-			appendFrgnKeyToStringBuilder(result, entry3.getValue().get(0));
+			appendFrgnKeyToStringBuilder(result, frgnKeys.get(0));
 		}
 
 		result.append("</rowset>");

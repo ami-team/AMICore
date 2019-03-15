@@ -38,7 +38,7 @@ public class AutoJoinSingleton
 		                   (givenEntity == null || defaultEntity.equalsIgnoreCase(givenEntity))
 		;
 
-		SchemaSingleton.Column resolvedColumn = checkNow ? SchemaSingleton.getEntityInfo(defaultCatalog, defaultEntity).get(givenColumn) : null;
+		SchemaSingleton.Column resolvedColumn = checkNow ? SchemaSingleton.getEntityInfo(defaultCatalog, defaultEntity).columns.get(givenColumn) : null;
 
 		if(resolvedColumn == null)
 		{

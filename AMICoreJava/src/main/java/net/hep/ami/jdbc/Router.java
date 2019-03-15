@@ -608,7 +608,7 @@ public class Router implements Querier
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_config = SchemaSingleton.getEntityInfo("self", "router_config");
+		Map<String, SchemaSingleton.Column> router_config = SchemaSingleton.getEntityInfo("self", "router_config").columns;
 
 		router_config.get("paramName").crypted = true;
 		router_config.get("paramValue").crypted = true;
@@ -619,7 +619,7 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getEntityInfo("self", "router_catalog");
+		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getEntityInfo("self", "router_catalog").columns;
 
 		router_catalog.get("internalCatalog").hidden = true;
 		router_catalog.get("internalSchema").hidden = true;
@@ -634,7 +634,7 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_entity = SchemaSingleton.getEntityInfo("self", "router_entity");
+		Map<String, SchemaSingleton.Column> router_entity = SchemaSingleton.getEntityInfo("self", "router_entity").columns;
 
 		router_entity.get("isBridge").groupable = true;
 		router_entity.get("created").created = true;
@@ -644,7 +644,7 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_field = SchemaSingleton.getEntityInfo("self", "router_field");
+		Map<String, SchemaSingleton.Column> router_field = SchemaSingleton.getEntityInfo("self", "router_field").columns;
 
 		router_field.get("isHidden").groupable = true;
 		router_field.get("isAdminOnly").groupable = true;
@@ -667,7 +667,7 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key");
+		Map<String, SchemaSingleton.Column> router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key").columns;
 
 		router_foreign_key.get("created").created = true;
 		router_foreign_key.get("createdBy").createdBy = true;
@@ -676,14 +676,14 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_command = SchemaSingleton.getEntityInfo("self", "router_command");
+		Map<String, SchemaSingleton.Column> router_command = SchemaSingleton.getEntityInfo("self", "router_command").columns;
 
 		router_command.get("visible").groupable = true;
 		router_command.get("secured").groupable = true;
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getEntityInfo("self", "router_user");
+		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getEntityInfo("self", "router_user").columns;
 
 		router_user.get("AMIPass").adminOnly = true;
 		router_user.get("clientDN").crypted = true;
@@ -694,14 +694,14 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
+		Map<String, SchemaSingleton.Column> router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url").columns;
 
 		router_short_url.get("created").created = true;
 		router_short_url.get("modified").modified = true;
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getEntityInfo("self", "router_authority");
+		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getEntityInfo("self", "router_authority").columns;
 
 		router_authority.get("vo").adminOnly = true;
 		router_authority.get("clientDN").adminOnly = true;
@@ -717,7 +717,7 @@ public class Router implements Querier
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface");
+		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface").columns;
 
 		router_search_interface.get("archived").groupable = true;
 		router_search_interface.get("created").created = true;
