@@ -2,7 +2,6 @@ package net.hep.ami.jdbc;
 
 import java.io.*;
 import java.sql.*;
-import java.util.Map;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
@@ -608,122 +607,134 @@ public class Router implements Querier
 	{
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_config = SchemaSingleton.getEntityInfo("self", "router_config").columns;
+		SchemaSingleton.Table router_config = SchemaSingleton.getEntityInfo("self", "router_config");
 
-		router_config.get("paramName").crypted = true;
-		router_config.get("paramValue").crypted = true;
-		router_config.get("created").created = true;
-		router_config.get("createdBy").createdBy = true;
-		router_config.get("modified").modified = true;
-		router_config.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_catalog = SchemaSingleton.getEntityInfo("self", "router_catalog").columns;
-
-		router_catalog.get("internalCatalog").hidden = true;
-		router_catalog.get("internalSchema").hidden = true;
-		router_catalog.get("jdbcUrl").adminOnly = true;
-		router_catalog.get("user").crypted = true;
-		router_catalog.get("pass").crypted = true;
-		router_catalog.get("archived").groupable = true;
-		router_catalog.get("created").created = true;
-		router_catalog.get("createdBy").createdBy = true;
-		router_catalog.get("modified").modified = true;
-		router_catalog.get("modifiedBy").modifiedBy = true;
+		router_config.columns.get("paramName").crypted = true;
+		router_config.columns.get("paramValue").crypted = true;
+		router_config.columns.get("created").created = true;
+		router_config.columns.get("createdBy").createdBy = true;
+		router_config.columns.get("modified").modified = true;
+		router_config.columns.get("modifiedBy").modifiedBy = true;
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_entity = SchemaSingleton.getEntityInfo("self", "router_entity").columns;
+		SchemaSingleton.Table router_catalog = SchemaSingleton.getEntityInfo("self", "router_catalog");
 
-		router_entity.get("isBridge").groupable = true;
-		router_entity.get("created").created = true;
-		router_entity.get("createdBy").createdBy = true;
-		router_entity.get("modified").modified = true;
-		router_entity.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_field = SchemaSingleton.getEntityInfo("self", "router_field").columns;
-
-		router_field.get("isHidden").groupable = true;
-		router_field.get("isAdminOnly").groupable = true;
-		router_field.get("isCrypted").groupable = true;
-		router_field.get("isPrimary").groupable = true;
-		router_field.get("isReadable").groupable = true;
-		router_field.get("isAutomatic").groupable = true;
-		router_field.get("isCreated").groupable = true;
-		router_field.get("isCreatedBy").groupable = true;
-		router_field.get("isModified").groupable = true;
-		router_field.get("isModifiedBy").groupable = true;
-		router_field.get("isStatable").groupable = true;
-		router_field.get("isGroupable").groupable = true;
-		router_field.get("isDisplayable").groupable = true;
-		router_field.get("isBase64").groupable = true;
-		router_field.get("created").created = true;
-		router_field.get("createdBy").createdBy = true;
-		router_field.get("modified").modified = true;
-		router_field.get("modifiedBy").modifiedBy = true;
+		router_catalog.columns.get("internalCatalog").hidden = true;
+		router_catalog.columns.get("internalSchema").hidden = true;
+		router_catalog.columns.get("jdbcUrl").adminOnly = true;
+		router_catalog.columns.get("user").crypted = true;
+		router_catalog.columns.get("pass").crypted = true;
+		router_catalog.columns.get("archived").groupable = true;
+		router_catalog.columns.get("created").created = true;
+		router_catalog.columns.get("createdBy").createdBy = true;
+		router_catalog.columns.get("modified").modified = true;
+		router_catalog.columns.get("modifiedBy").modifiedBy = true;
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key").columns;
+		SchemaSingleton.Table router_entity = SchemaSingleton.getEntityInfo("self", "router_entity");
 
-		router_foreign_key.get("created").created = true;
-		router_foreign_key.get("createdBy").createdBy = true;
-		router_foreign_key.get("modified").modified = true;
-		router_foreign_key.get("modifiedBy").modifiedBy = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_command = SchemaSingleton.getEntityInfo("self", "router_command").columns;
-
-		router_command.get("visible").groupable = true;
-		router_command.get("secured").groupable = true;
+		router_entity.columns.get("isBridge").groupable = true;
+		router_entity.columns.get("created").created = true;
+		router_entity.columns.get("createdBy").createdBy = true;
+		router_entity.columns.get("modified").modified = true;
+		router_entity.columns.get("modifiedBy").modifiedBy = true;
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_user = SchemaSingleton.getEntityInfo("self", "router_user").columns;
+		SchemaSingleton.Table router_field = SchemaSingleton.getEntityInfo("self", "router_field");
 
-		router_user.get("AMIPass").adminOnly = true;
-		router_user.get("clientDN").crypted = true;
-		router_user.get("issuerDN").crypted = true;
-		router_user.get("valid").groupable = true;
-		router_user.get("created").created = true;
-		router_user.get("modified").modified = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url").columns;
-
-		router_short_url.get("created").created = true;
-		router_short_url.get("modified").modified = true;
-
-		/*-----------------------------------------------------------------*/
-
-		Map<String, SchemaSingleton.Column> router_authority = SchemaSingleton.getEntityInfo("self", "router_authority").columns;
-
-		router_authority.get("vo").adminOnly = true;
-		router_authority.get("clientDN").adminOnly = true;
-		router_authority.get("issuerDN").adminOnly = true;
-		router_authority.get("notBefore").adminOnly = true;
-		router_authority.get("notAfter").adminOnly = true;
-		router_authority.get("email").adminOnly = true;
-		router_authority.get("reason").adminOnly = true;
-		router_authority.get("created").created = true;
-		router_authority.get("createdBy").createdBy = true;
-		router_authority.get("modified").modified = true;
-		router_authority.get("modifiedBy").modifiedBy = true;
+		router_field.columns.get("isHidden").groupable = true;
+		router_field.columns.get("isAdminOnly").groupable = true;
+		router_field.columns.get("isCrypted").groupable = true;
+		router_field.columns.get("isPrimary").groupable = true;
+		router_field.columns.get("isReadable").groupable = true;
+		router_field.columns.get("isAutomatic").groupable = true;
+		router_field.columns.get("isCreated").groupable = true;
+		router_field.columns.get("isCreatedBy").groupable = true;
+		router_field.columns.get("isModified").groupable = true;
+		router_field.columns.get("isModifiedBy").groupable = true;
+		router_field.columns.get("isStatable").groupable = true;
+		router_field.columns.get("isGroupable").groupable = true;
+		router_field.columns.get("isDisplayable").groupable = true;
+		router_field.columns.get("isBase64").groupable = true;
+		router_field.columns.get("created").created = true;
+		router_field.columns.get("createdBy").createdBy = true;
+		router_field.columns.get("modified").modified = true;
+		router_field.columns.get("modifiedBy").modifiedBy = true;
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, SchemaSingleton.Column> router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface").columns;
+		SchemaSingleton.Table router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key");
 
-		router_search_interface.get("archived").groupable = true;
-		router_search_interface.get("created").created = true;
-		router_search_interface.get("createdBy").createdBy = true;
-		router_search_interface.get("modified").modified = true;
-		router_search_interface.get("modifiedBy").modifiedBy = true;
+		router_foreign_key.columns.get("created").created = true;
+		router_foreign_key.columns.get("createdBy").createdBy = true;
+		router_foreign_key.columns.get("modified").modified = true;
+		router_foreign_key.columns.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_command_role = SchemaSingleton.getEntityInfo("self", "router_command_role");
+
+		router_command_role.bridge = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_user_role = SchemaSingleton.getEntityInfo("self", "router_user_role");
+
+		router_user_role.bridge = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_command = SchemaSingleton.getEntityInfo("self", "router_command");
+
+		router_command.columns.get("visible").groupable = true;
+		router_command.columns.get("secured").groupable = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_user = SchemaSingleton.getEntityInfo("self", "router_user");
+
+		router_user.columns.get("AMIPass").adminOnly = true;
+		router_user.columns.get("clientDN").crypted = true;
+		router_user.columns.get("issuerDN").crypted = true;
+		router_user.columns.get("valid").groupable = true;
+		router_user.columns.get("created").created = true;
+		router_user.columns.get("modified").modified = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
+
+		router_short_url.columns.get("created").created = true;
+		router_short_url.columns.get("modified").modified = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_authority = SchemaSingleton.getEntityInfo("self", "router_authority");
+
+		router_authority.columns.get("vo").adminOnly = true;
+		router_authority.columns.get("clientDN").adminOnly = true;
+		router_authority.columns.get("issuerDN").adminOnly = true;
+		router_authority.columns.get("notBefore").adminOnly = true;
+		router_authority.columns.get("notAfter").adminOnly = true;
+		router_authority.columns.get("email").adminOnly = true;
+		router_authority.columns.get("reason").adminOnly = true;
+		router_authority.columns.get("created").created = true;
+		router_authority.columns.get("createdBy").createdBy = true;
+		router_authority.columns.get("modified").modified = true;
+		router_authority.columns.get("modifiedBy").modifiedBy = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface");
+
+		router_search_interface.columns.get("archived").groupable = true;
+		router_search_interface.columns.get("created").created = true;
+		router_search_interface.columns.get("createdBy").createdBy = true;
+		router_search_interface.columns.get("modified").modified = true;
+		router_search_interface.columns.get("modifiedBy").modifiedBy = true;
 
 		/*-----------------------------------------------------------------*/
 	}
