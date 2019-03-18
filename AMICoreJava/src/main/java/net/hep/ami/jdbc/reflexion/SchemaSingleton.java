@@ -342,7 +342,7 @@ public class SchemaSingleton
 
 		/*-----------------------------------------------------------------*/
 
-		private Catalog m_catalog;
+		private Catalog m_catalog = null;
 
 		/*-----------------------------------------------------------------*/
 
@@ -828,7 +828,7 @@ public class SchemaSingleton
 		boolean slow = ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
 
 		/*-----------------------------------------------------------------*/
-		/* FORCE                                                      */
+		/* FORCE                                                           */
 		/*-----------------------------------------------------------------*/
 
 		if(flush)
@@ -1161,7 +1161,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<QId> getSortedQId(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
+	public static List<QId> getSortedQIds(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
 		                                                              .sorted((x, y) -> x.rank - y.rank)
@@ -1172,7 +1172,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static List<QId> getReadableQId(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
+	public static List<QId> getReadableQIds(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
 		                                                              .filter(x -> x.readable)

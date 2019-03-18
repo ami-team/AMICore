@@ -691,7 +691,7 @@ public class MQLToSQL
 			}
 			else
 			{
-				list = SchemaSingleton.getSortedQId(catalogName, entityName, qid.getConstraints());
+				list = SchemaSingleton.getSortedQIds(catalogName, entityName, qid.getConstraints());
 			}
 		}
 		else
