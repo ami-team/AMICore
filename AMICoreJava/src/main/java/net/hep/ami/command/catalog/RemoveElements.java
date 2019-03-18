@@ -5,7 +5,6 @@ import java.util.regex.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.obj.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class RemoveElements extends AbstractCommand
@@ -48,7 +47,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		DeleteObj query = new DeleteObj();
+		XQLDelete query = new XQLDelete();
 
 		List<String> whereList = new ArrayList<>();
 
@@ -61,7 +60,7 @@ public class RemoveElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(DeleteObj.Mode.MQL).toString(where)).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(XQLDelete.Mode.MQL).toString(where)).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

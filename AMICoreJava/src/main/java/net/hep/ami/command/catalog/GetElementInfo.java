@@ -5,7 +5,6 @@ import java.util.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -42,7 +41,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = querier.executeMQLQuery(entity, new SelectObj().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?").toString(), primaryFieldValue).toStringBuilder("element");
+		StringBuilder result = querier.executeMQLQuery(entity, new XQLSelect().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?").toString(), primaryFieldValue).toStringBuilder("element");
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
@@ -109,7 +108,7 @@ public class GetElementInfo extends AbstractCommand
 				{
 					List<QId> constraints = Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField));
 
-					String query = new SelectObj().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+					String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
 					                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?")
 					                              .toString()
 					;

@@ -5,7 +5,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 import net.hep.ami.utility.*;
@@ -239,7 +238,7 @@ public class Helper
 
 					/*-----------------------------------------------------*/
 
-					query = new SelectObj().addSelectPart(tmpIdSet)
+					query = new XQLSelect().addSelectPart(tmpIdSet)
 					                       .addFromPart(tmpFromSet)
 					                       .addWherePart(tmpWhereSet)
 					                       .toString()
@@ -279,7 +278,7 @@ public class Helper
 				{
 					query = String.join(((" OR ")), whereSet2);
 
-					SelectObj selectObj = new SelectObj().addSelectPart(idSet)
+					XQLSelect selectObj = new XQLSelect().addSelectPart(idSet)
 					                                     .addWherePart(query)
 					;
 
@@ -348,7 +347,7 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			SelectObj query = new SelectObj().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
+			XQLSelect query = new XQLSelect().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 			                                 .addFromPart(tuple.x)
 			                                 .addWherePart(expression)
 			                                 .addWherePart(tuple.y)

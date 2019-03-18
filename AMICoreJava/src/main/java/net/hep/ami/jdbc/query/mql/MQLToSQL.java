@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.tree.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 import net.hep.ami.utility.*;
@@ -101,7 +100,7 @@ public class MQLToSQL
 
 	private StringBuilder visitSelectStatement(MQLParser.SelectStatementContext context) throws Exception
 	{
-		SelectObj result = new SelectObj();
+		XQLSelect result = new XQLSelect();
 
 		StringBuilder extra = new StringBuilder();
 
@@ -170,7 +169,7 @@ public class MQLToSQL
 
 	private StringBuilder visitInsertStatement(MQLParser.InsertStatementContext context) throws Exception
 	{
-		InsertObj result = new InsertObj(InsertObj.Mode.SQL);
+		XQLInsert result = new XQLInsert(XQLInsert.Mode.SQL);
 
 		/*-----------------------------------------------------------------*/
 
@@ -199,7 +198,7 @@ public class MQLToSQL
 
 	private StringBuilder visitUpdateStatement(MQLParser.UpdateStatementContext context) throws Exception
 	{
-		UpdateObj result = new UpdateObj(UpdateObj.Mode.SQL);
+		XQLUpdate result = new XQLUpdate(XQLUpdate.Mode.SQL);
 
 		/*-----------------------------------------------------------------*/
 
@@ -244,7 +243,7 @@ public class MQLToSQL
 
 	private StringBuilder visitDeleteStatement(MQLParser.DeleteStatementContext context) throws Exception
 	{
-		DeleteObj result = new DeleteObj();
+		XQLDelete result = new XQLDelete();
 
 		/*-----------------------------------------------------------------*/
 
