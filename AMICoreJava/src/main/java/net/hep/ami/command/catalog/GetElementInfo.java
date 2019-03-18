@@ -1,6 +1,7 @@
 package net.hep.ami.command.catalog;
 
 import java.util.*;
+import java.util.stream.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.*;
@@ -75,6 +76,8 @@ public class GetElementInfo extends AbstractCommand
 
 	private void _getLinkedEntities(StringBuilder result, String catalog, String entity, String primaryFieldName, String primaryFieldValue, Collection<SchemaSingleton.FrgnKeys> list, int mode)
 	{
+		List<QId> constraints;
+
 		String condition;
 		String linkedCatalog;
 		String linkedEntity;
@@ -86,12 +89,11 @@ public class GetElementInfo extends AbstractCommand
 		{
 			/*-------------------------------------------------------------*/
 
-			condition = new QId(
-				catalog,
-				entity,
-				primaryFieldName,
-				Collections.singletonList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField))
-			).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?";
+			constraints = Arrays.asList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField));
+
+			/*-------------------------------------------------------------*/
+
+			condition = new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?";
 
 			/*-------------------------------------------------------------*/
 
@@ -129,6 +131,8 @@ public class GetElementInfo extends AbstractCommand
 								   ||
 								   entity.equals(tmp1.get(0).pkEntity) == false
 								 ) {
+									constraints.add(new QId(tmp1.get(0).pkExternalCatalog, tmp1.get(0).pkEntity, tmp1.get(0).pkField));
+
 									linkedCatalog = tmp1.get(0).pkExternalCatalog;
 									linkedEntity = tmp1.get(0).pkEntity;
 									direction = "bridge";
@@ -190,7 +194,7 @@ public class GetElementInfo extends AbstractCommand
 			result.append("<row>")
 			      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
 			      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
-			      .append("<field name=\"constraint\"><![CDATA[").append(frgnKey.fkField).append("]]></field>")
+			      .append("<field name=\"constraint\"><![CDATA[").append(constraints.stream().map(x -> x.toString(QId.MASK_FIELD)).collect(Collectors.joining(", "))).append("]]></field>")
 			      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
 			      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
 			      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
