@@ -1203,6 +1203,7 @@ public class SchemaSingleton
 		             .append("<field name=\"internalCatalog\"><![CDATA[").append(table.internalCatalog).append("]]></field>")
 		             .append("<field name=\"entity\"><![CDATA[").append(table.entity).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
+		             .append("<field name=\"bridge\"><![CDATA[").append(table.bridge).append("]]></field>")
 		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
 		             .append("</row>")
 		;

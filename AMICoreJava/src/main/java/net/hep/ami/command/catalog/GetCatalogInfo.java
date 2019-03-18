@@ -67,9 +67,9 @@ public class GetCatalogInfo extends AbstractCommand
 		result.append("<rowset type=\"foreignKeys\">");
 
 		for(SchemaSingleton.Table table: _catalog.tables.values())
-		 for(SchemaSingleton.FrgnKeys frgnKeys: table.backwardFKs.values())
+		 for(SchemaSingleton.FrgnKeys frgnKeys: table.forwardFKs.values())
 		{
-				SchemaSingleton.appendFrgnKeyToStringBuilder(result, frgnKeys.get(0));
+			SchemaSingleton.appendFrgnKeyToStringBuilder(result, frgnKeys.get(0));
 		}
 
 		result.append("</rowset>");
