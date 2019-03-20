@@ -42,6 +42,7 @@ public class AMICoreTest
 	public void databaseTest() throws Exception
 	{
 		boolean testFail = false;
+		int cptMax = 5000;
 
 		if(System.getProperty("ami.integration") == null)
 		{
@@ -142,7 +143,7 @@ public class AMICoreTest
 		String test_url = ConfigSingleton.getProperty("test_url");
 		String test_user = ConfigSingleton.getProperty("test_user");
 		String test_pass = ConfigSingleton.getProperty("test_pass");
-		int cptMax = 100;
+		
 
 		try 
 		{
@@ -709,7 +710,7 @@ public class AMICoreTest
 		/*-----------------------------------------------------------------*/
 
 		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
-
+		System.out.println(commandTest);
 		try
 		{
 			CommandSingleton.executeCommand(commandTest, false);
@@ -721,7 +722,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * \" ";
-
+		System.out.println(commandTest);
 		try
 		{
 			CommandSingleton.executeCommand(commandTest, false);
@@ -733,7 +734,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE 'test'=DATASET.name ORDER BY test.DATASET.name\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 			CommandSingleton.executeCommand(commandTest, false);
@@ -745,7 +746,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name='file_1' ORDER BY DATASET.name\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 			CommandSingleton.executeCommand(commandTest, false);
@@ -757,7 +758,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name='file_1' AND PROJECT.name='AMI' AND DATASET_TYPE.name='A' ORDER BY DATASET.name\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 		CommandSingleton.executeCommand(commandTest, false);
@@ -769,7 +770,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [FILE.name='file_1'] AND [PROJECT.name='AMI' AND DATASET_TYPE.name='A'] ORDER BY DATASET.name\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 		CommandSingleton.executeCommand(commandTest, false);
@@ -781,7 +782,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [PROJECT.name='AMI2'] AND [PROJECT.name='AMI'] ORDER BY DATASET.name\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 		CommandSingleton.executeCommand(commandTest, false);
@@ -793,7 +794,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [PROJECT.name{DATASET.typeFK}='AMI'] AND [PROJECT.name{DATASET.projectFK}='AMI2'] ORDER BY DATASET.name\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 		CommandSingleton.executeCommand(commandTest, false);
@@ -805,7 +806,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [[PROJECT.name{DATASET.typeFK}='AMI'] AND [PROJECT.name{DATASET.projectFK}='AMI2']] OR [FILE.name='file_1'] ORDER BY DATASET.name, DATASET.id\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 		CommandSingleton.executeCommand(commandTest, false);
@@ -833,6 +834,7 @@ public class AMICoreTest
 		else {
 			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
 		}
+		System.out.println(commandTest);
 		try
 		{
 			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
@@ -845,6 +847,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT COUNT(*) WHERE [[PROJECT.name{DATASET.typeFK}='AMI'] AND [PROJECT.name{DATASET.projectFK}='AMI2']] OR [FILE.name='file_1'] \" ";
+		System.out.println(commandTest);
 		try
 		{
 			CommandSingleton.executeCommand(commandTest, false);
@@ -856,7 +859,7 @@ public class AMICoreTest
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.name,FILE.name WHERE FILE.name='file_1' ORDER BY DATASET.name,FILE.name\" ";
-
+		System.out.println(commandTest);
 		try
 		{
 			CommandSingleton.executeCommand(commandTest, false);
