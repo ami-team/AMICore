@@ -50,6 +50,42 @@ public class AMICoreTest
 			return;
 		}
 
+		/*
+		String commandTestDev = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10000\"";
+		String data = "";
+		try
+		{
+			data = CommandSingleton.executeCommand(commandTestDev, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		StringReader stringReader = new StringReader(data);
+		StringWriter stringWriter = new StringWriter();
+		try
+		{
+			ConverterSingleton.convert("AMIXmlToJson.xsl", stringReader, stringWriter);
+
+			data = stringWriter.toString();
+		}
+		catch(Exception e)
+		{
+			data = XMLTemplates.error(
+				e.getMessage()
+			);
+
+		}
+
+		System.out.println(data);
+
+
+		if(true)
+		return;
+		*/
+
 		System.out.println("Init tests"); 
 
 		/*-----------------------------------------------------------------*/
@@ -106,7 +142,7 @@ public class AMICoreTest
 		String test_url = ConfigSingleton.getProperty("test_url");
 		String test_user = ConfigSingleton.getProperty("test_user");
 		String test_pass = ConfigSingleton.getProperty("test_pass");
-		int cptMax = 10;
+		int cptMax = 100;
 
 		try 
 		{
@@ -936,3 +972,4 @@ public class AMICoreTest
 
 	/*---------------------------------------------------------------------*/
 }
+
