@@ -676,7 +676,75 @@ public class AMICoreTest
 				}
 			}
 			/*-----------------------------------------------------------------*/
+			System.out.println("Testing update commands");
+
+			/*-----------------------------------------------------------------*/
+
+			for (int i = 0; i < cptMax-1; i++) {
+				try
+				{
+					arguments.clear();
+					arguments.put("catalog", "test");
+					arguments.put("entity", "DATASET_FILE_BRIDGE");
+					arguments.put("separator", ";");
+					//arguments.put("fields", "DATASET_FILE_BRIDGE.datasetFK");
+					//arguments.put("values", (i + 1) + "" );
+					arguments.put("fields", "DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
+					arguments.put("values", "dataset_" + (i + 1) );
+					arguments.put("keyFields", "FILE.name;DATASET.name");
+					arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
+					//CommandSingleton.executeCommand("UpdateElements", arguments, false);
+				}
+				catch(Exception e)
+				{
+					System.out.println("xxx"+e.getMessage());
+					testFail = true;
+				}
+			}
+
+				try
+				{
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET");
+				arguments.put("separator", ";");
+				arguments.put("fields", "name;valid");
+				arguments.put("values", "dataset_test_" + (cptMax-1) +";0");
+				arguments.put("keyFields", "id");
+				arguments.put("keyValues", "" + (cptMax-1));
+				CommandSingleton.executeCommand("UpdateElements", arguments, false);
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+			/*-----------------------------------------------------------------*/
+			System.out.println("Testing remove commands");
+
+			/*-----------------------------------------------------------------*/
+
+			for (int i = cptMax/2; i < cptMax; i++) {
+				try
+				{
+					arguments.clear();
+					arguments.put("catalog", "test");
+					arguments.put("entity", "DATASET_FILE_BRIDGE");
+					arguments.put("separator", ";");
+					arguments.put("keyFields", "FILE.name;DATASET.name;PROJECT.name");
+					arguments.put("keyValues", "file_" + i + ";dataset_" + (i + 1) +";AMI");
+					CommandSingleton.executeCommand("RemoveElements", arguments, false);
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
 		}
+
+		
 		System.out.println("Testing select commands");
 
 		/*-----------------------------------------------------------------*/
@@ -845,49 +913,7 @@ public class AMICoreTest
 		}
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("Testing update commands");
-
-		/*-----------------------------------------------------------------*/
-
-		for (int i = 0; i < cptMax-1; i++) {
-			try
-			{
-				arguments.clear();
-				arguments.put("catalog", "test");
-				arguments.put("entity", "DATASET_FILE_BRIDGE");
-				arguments.put("separator", ";");
-				//arguments.put("fields", "DATASET_FILE_BRIDGE.datasetFK");
-				//arguments.put("values", (i + 1) + "" );
-				arguments.put("fields", "DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
-				arguments.put("values", "dataset_" + (i + 1) );
-				arguments.put("keyFields", "FILE.name;DATASET.name");
-				arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
-				//CommandSingleton.executeCommand("UpdateElements", arguments, false);
-			}
-			catch(Exception e)
-			{
-				System.out.println("xxx"+e.getMessage());
-				testFail = true;
-			}
-		}
-
-			try
-			{
-			arguments.clear();
-			arguments.put("catalog", "test");
-			arguments.put("entity", "DATASET");
-			arguments.put("separator", ";");
-			arguments.put("fields", "name;valid");
-			arguments.put("values", "dataset_test_" + (cptMax-1) +";0");
-			arguments.put("keyFields", "id");
-			arguments.put("keyValues", "" + (cptMax-1));
-			CommandSingleton.executeCommand("UpdateElements", arguments, false);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			testFail = true;
-		}
+	
 /*
 			BufferedImage bImage = ImageIO.read(new File("/Users/jfulach/Desktop/WAN/minus.png"));
 	        ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -902,27 +928,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		System.out.println("Testing remove commands");
-
-		/*-----------------------------------------------------------------*/
-
-		for (int i = 0; i < cptMax/2; i++) {
-			try
-			{
-				arguments.clear();
-				arguments.put("catalog", "test");
-				arguments.put("entity", "DATASET_FILE_BRIDGE");
-				arguments.put("separator", ";");
-				arguments.put("keyFields", "FILE.name;DATASET.name;PROJECT.name");
-				arguments.put("keyValues", "file_" + i + ";dataset_" + (i + 1) +";AMI");
-				CommandSingleton.executeCommand("RemoveElements", arguments, false);
-			}
-			catch(Exception e)
-			{
-				System.out.println(e.getMessage());
-				testFail = true;
-			}
-		}
+		
 
 		/*
 		String commandTestDev = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10000\"";
