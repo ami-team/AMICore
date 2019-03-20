@@ -6,7 +6,6 @@ import java.util.stream.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.obj.*;
 import net.hep.ami.utility.parser.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
@@ -58,11 +57,11 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		UpdateObj query;
+		XQLUpdate query;
 
 		try
 		{
-			query = new UpdateObj(UpdateObj.Mode.MQL).addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
+			query = new XQLUpdate(XQLUpdate.Mode.MQL).addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                                         .addFieldValuePart(
 															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
 															Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())

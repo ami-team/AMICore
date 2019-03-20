@@ -52,6 +52,30 @@ public class GetCatalogInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		result.append("<rowset type=\"fields\">");
+
+		for(SchemaSingleton.Table table: _catalog.tables.values())
+		 for(SchemaSingleton.Column column: table.columns.values())
+		{
+			SchemaSingleton.appendColumnToStringBuilder(result, column);
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
+		result.append("<rowset type=\"foreignKeys\">");
+
+		for(SchemaSingleton.Table table: _catalog.tables.values())
+		 for(SchemaSingleton.FrgnKeys frgnKeys: table.forwardFKs.values())
+		{
+			SchemaSingleton.appendFrgnKeyToStringBuilder(result, frgnKeys.get(0));
+		}
+
+		result.append("</rowset>");
+
+		/*-----------------------------------------------------------------*/
+
 		return result;
 	}
 

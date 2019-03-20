@@ -1,63 +1,56 @@
-package net.hep.ami.jdbc.query.obj;
+package net.hep.ami.jdbc.query;
 
 import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.utility.*;
 
-public class SelectObj
+public final class XQLDelete
 {
 	/*---------------------------------------------------------------------*/
 
-	private final List<String> m_selectList = new ArrayList<>();
+	public enum Mode
+	{
+		SQL,
+		MQL
+	}
 
-	private final Set<String> m_fromSet = new LinkedHashSet<>();
+	/*---------------------------------------------------------------------*/
+
+	private Mode m_mode = Mode.SQL;
+
+	/*---------------------------------------------------------------------*/
+
+	private final Set<String> m_deleteSet = new LinkedHashSet<>();
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean m_isDistinct = false;
-
-	/*---------------------------------------------------------------------*/
-
-	public SelectObj addSelectPart(@Nullable CharSequence selectPart)
+	public XQLDelete setMode(Mode mode)
 	{
-		if(selectPart != null)
-		{
-			m_selectList.add(selectPart.toString());
-		}
-
-		return this;
-	}
-
-	public SelectObj addSelectPart(@Nullable Collection<?> selectPart)
-	{
-		if(selectPart != null)
-		{
-			m_selectList.addAll(selectPart.stream().map(x -> x.toString()).collect(Collectors.toList()));
-		}
+		m_mode = mode;
 
 		return this;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectObj addFromPart(@Nullable CharSequence fromPart)
+	public XQLDelete addDeletePart(@Nullable CharSequence selecPart)
 	{
-		if(fromPart != null)
+		if(selecPart != null)
 		{
-			m_fromSet.add(fromPart.toString());
+			m_deleteSet.add(selecPart.toString());
 		}
 
 		return this;
 	}
 
-	public SelectObj addFromPart(@Nullable Collection<?> fromPart)
+	public XQLDelete addDeletePart(@Nullable Collection<?> selecPart)
 	{
-		if(fromPart != null)
+		if(selecPart != null)
 		{
-			m_fromSet.addAll(fromPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+			m_deleteSet.addAll(selecPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 		}
 
 		return this;
@@ -65,7 +58,7 @@ public class SelectObj
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectObj addWherePart(@Nullable CharSequence wherePart)
+	public XQLDelete addWherePart(@Nullable CharSequence wherePart)
 	{
 		if(wherePart != null)
 		{
@@ -75,7 +68,7 @@ public class SelectObj
 		return this;
 	}
 
-	public SelectObj addWherePart(@Nullable Collection<?> wherePart)
+	public XQLDelete addWherePart(@Nullable Collection<?> wherePart)
 	{
 		if(wherePart != null)
 		{
@@ -87,13 +80,11 @@ public class SelectObj
 
 	/*---------------------------------------------------------------------*/
 
-	public SelectObj addWholeQuery(@Nullable SelectObj query)
+	public XQLDelete addWholeQuery(@Nullable XQLDelete query)
 	{
 		if(query != null)
 		{
-			m_selectList.addAll(query.m_selectList);
-
-			m_fromSet.addAll(query.m_fromSet);
+			m_deleteSet.addAll(query.m_deleteSet);
 
 			m_whereSet.addAll(query.m_whereSet);
 		}
@@ -103,23 +94,9 @@ public class SelectObj
 
 	/*---------------------------------------------------------------------*/
 
-	public void setDistinct(boolean isDistinct)
+	public Set<String> getDeleteCollection()
 	{
-		m_isDistinct = isDistinct;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public List<String> getSelectCollection()
-	{
-		return m_selectList;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public Set<String> getFromCollection()
-	{
-		return m_fromSet;
+		return m_deleteSet;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -131,16 +108,9 @@ public class SelectObj
 
 	/*---------------------------------------------------------------------*/
 
-	public String getSelectPart()
+	public String getDeletePart()
 	{
-		return String.join(", ", m_selectList);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getFromPart()
-	{
-		return String.join(", ",  m_fromSet);
+		return String.join(", ", m_deleteSet);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -179,13 +149,19 @@ public class SelectObj
 
 		/*-----------------------------------------------------------------*/
 
-		result.append(m_isDistinct ? "SELECT DISTINCT " : "SELECT ").append(getSelectPart());
-
-		if(m_fromSet.isEmpty() == false) {
-			result.append(" FROM ").append(getFromPart());
+		if(m_mode == Mode.MQL)
+		{
+			result.append("DELETE");
+		}
+		else
+		{
+			result.append("DELETE FROM ").append(getDeletePart());
 		}
 
-		if(m_whereSet.isEmpty() == false) {
+		/*-----------------------------------------------------------------*/
+
+		if(m_whereSet.isEmpty() == false)
+		{
 			result.append(" WHERE ").append(getWherePart());
 		}
 

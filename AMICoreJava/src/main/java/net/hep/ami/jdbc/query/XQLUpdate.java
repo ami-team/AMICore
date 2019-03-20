@@ -1,12 +1,11 @@
-package net.hep.ami.jdbc.query.obj;
+package net.hep.ami.jdbc.query;
 
 import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.utility.*;
-import net.hep.ami.jdbc.query.*;
 
-public class InsertObj
+public final class XQLUpdate
 {
 	/*---------------------------------------------------------------------*/
 
@@ -22,15 +21,17 @@ public class InsertObj
 
 	/*---------------------------------------------------------------------*/
 
-	private final Set<String> m_insertSet = new LinkedHashSet<>();
+	private final Set<String> m_updateSet = new LinkedHashSet<>();
 
 	private final List<String> m_fieldList = new ArrayList<>();
 
 	private final List<String> m_valueList = new ArrayList<>();
 
+	private final Set<String> m_whereSet = new LinkedHashSet<>();
+
 	/*---------------------------------------------------------------------*/
 
-	public InsertObj(Mode mode)
+	public XQLUpdate(Mode mode)
 	{
 		m_mode = mode;
 	}
@@ -44,21 +45,21 @@ public class InsertObj
 
 	/*---------------------------------------------------------------------*/
 
-	public InsertObj addInsertPart(@Nullable CharSequence updatePart)
+	public XQLUpdate addUpdatePart(@Nullable CharSequence updatePart)
 	{
 		if(updatePart != null)
 		{
-			m_insertSet.add(updatePart.toString());
+			m_updateSet.add(updatePart.toString());
 		}
 
 		return this;
 	}
 
-	public InsertObj addInsertPart(@Nullable Collection<?> updatePart)
+	public XQLUpdate addUpdatePart(@Nullable Collection<?> updatePart)
 	{
 		if(updatePart != null)
 		{
-			m_insertSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+			m_updateSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 		}
 
 		return this;
@@ -66,7 +67,7 @@ public class InsertObj
 
 	/*---------------------------------------------------------------------*/
 
-	public InsertObj addFieldValuePart(@Nullable Object fieldPart, @Nullable CharSequence valuePart)
+	public XQLUpdate addFieldValuePart(@Nullable Object fieldPart, @Nullable CharSequence valuePart)
 	{
 		if(fieldPart != null
 		   &&
@@ -79,7 +80,7 @@ public class InsertObj
 		return this;
 	}
 
-	public InsertObj addFieldValuePart(@Nullable Collection<?> fieldPart, @Nullable Collection<?> valuePart) throws Exception
+	public XQLUpdate addFieldValuePart(@Nullable Collection<?> fieldPart, @Nullable Collection<?> valuePart) throws Exception
 	{
 		if(fieldPart != null
 		   &&
@@ -99,15 +100,21 @@ public class InsertObj
 
 	/*---------------------------------------------------------------------*/
 
-	public InsertObj addWholeQuery(@Nullable InsertObj query)
+	public XQLUpdate addWherePart(@Nullable CharSequence wherePart)
 	{
-		if(query != null)
+		if(wherePart != null)
 		{
-			m_insertSet.addAll(query.m_insertSet);
+			m_whereSet.add(wherePart.toString());
+		}
 
-			m_fieldList.addAll(query.m_fieldList);
+		return this;
+	}
 
-			m_valueList.addAll(query.m_valueList);
+	public XQLUpdate addWherePart(@Nullable Collection<?> wherePart)
+	{
+		if(wherePart != null)
+		{
+			m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
 		}
 
 		return this;
@@ -115,9 +122,27 @@ public class InsertObj
 
 	/*---------------------------------------------------------------------*/
 
-	public Set<String> getInsertCollection()
+	public XQLUpdate addWholeQuery(@Nullable XQLUpdate query)
 	{
-		return m_insertSet;
+		if(query != null)
+		{
+			m_updateSet.addAll(query.m_updateSet);
+
+			m_fieldList.addAll(query.m_fieldList);
+
+			m_valueList.addAll(query.m_valueList);
+
+			m_whereSet.addAll(query.m_whereSet);
+		}
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Set<String> getUpdateCollection()
+	{
+		return m_updateSet;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -136,23 +161,71 @@ public class InsertObj
 
 	/*---------------------------------------------------------------------*/
 
-	public String getInsertPart()
+	public Set<String> getWhereCollection()
 	{
-		return String.join(", ", m_insertSet);
+		return m_whereSet;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldValuePart()
+	public String getUpdatePart()
 	{
-		return new StringBuilder().append("(")
-		                          .append(String.join(", ", m_fieldList))
-		                          .append(") VALUES (")
-		                          .append(String.join(", ", m_valueList))
-		                          .append(")")
-		                          .toString()
-		;
+		return String.join(", ", m_updateSet);
+	}
 
+	/*---------------------------------------------------------------------*/
+
+	public String getSetPart()
+	{
+		if(m_mode == Mode.MQL)
+		{
+			/*-------------------------------------------------------------*/
+
+			return new StringBuilder().append("(")
+			                          .append(String.join(", ", m_fieldList))
+			                          .append(") VALUES (")
+			                          .append(String.join(", ", m_valueList))
+			                          .append(")")
+			                          .toString()
+			;
+
+			/*-------------------------------------------------------------*/
+		}
+		else
+		{
+			/*-------------------------------------------------------------*/
+
+			StringBuilder stringBuilder = new StringBuilder();
+
+			final int length = Math.min(
+				m_fieldList.size(),
+				m_valueList.size()
+			);
+
+			for(int i = 0; i < length; i++)
+			{
+				if(i > 0)
+				{
+					stringBuilder.append(", ");
+				}
+
+				stringBuilder.append(m_fieldList.get(i).toString())
+				             .append( " = ")
+				             .append(m_valueList.get(i).toString())
+				;
+			}
+
+			return stringBuilder.toString();
+
+			/*-------------------------------------------------------------*/
+		}
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getWherePart()
+	{
+		return String.join(" AND ", m_whereSet);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -186,11 +259,18 @@ public class InsertObj
 
 		if(m_mode == Mode.MQL)
 		{
-			result.append("INSERT ").append(getFieldValuePart());
+			result.append("UPDATE ").append(getSetPart());
 		}
 		else
 		{
-			result.append("INSERT INTO ").append(getInsertPart()).append(" ").append(getFieldValuePart());
+			result.append("UPDATE ").append(getUpdatePart()).append(" SET ").append(getSetPart());
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(m_whereSet.isEmpty() == false)
+		{
+			result.append(" WHERE ").append(getWherePart());
 		}
 
 		/*-----------------------------------------------------------------*/

@@ -12,7 +12,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 
 	/*---------------------------------------------------------------------*/
 
-	private static class StringComparator<U> implements Comparator<U>
+	private static final class StringComparator<U> implements Comparator<U>
 	{
 		@Override
 		public int compare(U o1, U o2)
@@ -26,7 +26,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 
 	/*---------------------------------------------------------------------*/
 
-	private static class EntryComparator<U, V> implements Comparator<Map.Entry<U, V>>
+	private static final class EntryComparator<U, V> implements Comparator<Map.Entry<U, V>>
 	{
 		@Override
 		public int compare(Map.Entry<U, V> o1, Map.Entry<U, V> o2)
