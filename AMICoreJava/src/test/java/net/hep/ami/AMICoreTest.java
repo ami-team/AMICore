@@ -142,7 +142,7 @@ public class AMICoreTest
 		String test_url = ConfigSingleton.getProperty("test_url");
 		String test_user = ConfigSingleton.getProperty("test_user");
 		String test_pass = ConfigSingleton.getProperty("test_pass");
-		int cptMax = 100;
+		int cptMax = 100000;
 
 		try 
 		{
