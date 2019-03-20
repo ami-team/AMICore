@@ -705,11 +705,12 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE 'test'=DATASET.name ORDER BY test.DATASET.name\" ";
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE 'dataset_0'=DATASET.name ORDER BY test.DATASET.name\" ";
 		System.out.println(commandTest);
 		try
 		{
 			CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 		}
 		catch(Exception e)
 		{
@@ -717,11 +718,12 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name='file_1' ORDER BY DATASET.name\" ";
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name{DATASET_FILE_BRIDGE.datasetFK}='file_"+(cptMax-1)+"' ORDER BY DATASET.name\" ";
 		System.out.println(commandTest);
 		try
 		{
-			CommandSingleton.executeCommand(commandTest, false);
+			//CommandSingleton.executeCommand(commandTest, false);
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 		}
 		catch(Exception e)
 		{
@@ -729,7 +731,7 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name='file_1' AND PROJECT.name='AMI' AND DATASET_TYPE.name='A' ORDER BY DATASET.name\" ";
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE FILE.name{DATASET_FILE_BRIDGE.datasetFK}='file_"+(cptMax-1)+"' AND PROJECT.name='AMI' AND DATASET_TYPE.name='A' ORDER BY DATASET.name\" ";
 		System.out.println(commandTest);
 		try
 		{
@@ -741,7 +743,7 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [FILE.name='file_1'] AND [PROJECT.name='AMI' AND DATASET_TYPE.name='A'] ORDER BY DATASET.name\" ";
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [FILE.name{DATASET_FILE_BRIDGE.datasetFK}='file_"+(cptMax-1)+"'] AND [PROJECT.name='AMI' AND DATASET_TYPE.name='A'] ORDER BY DATASET.name\" ";
 		System.out.println(commandTest);
 		try
 		{
@@ -777,7 +779,7 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [[PROJECT.name{DATASET.typeFK}='AMI'] AND [PROJECT.name{DATASET.projectFK}='AMI2']] OR [FILE.name='file_1'] ORDER BY DATASET.name, DATASET.id\" ";
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [[PROJECT.name{DATASET.typeFK}='AMI'] AND [PROJECT.name{DATASET.projectFK}='AMI2']] OR [FILE.name{DATASET_FILE_BRIDGE.datasetFK}='file_"+(cptMax-1)+"'] ORDER BY DATASET.name, DATASET.id\" ";
 		System.out.println(commandTest);
 		try
 		{
