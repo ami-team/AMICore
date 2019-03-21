@@ -42,7 +42,7 @@ public class AMICoreTest
 	public void databaseTest() throws Exception
 	{
 		boolean testFail = false;
-		int cptMax = 100;
+		int cptMax = 10;
 		int cptMax2 = 5;
 		boolean doCreateAndFill = true;
 		String path;
@@ -574,7 +574,7 @@ public class AMICoreTest
 			}
 	
 			/*-----------------------------------------------------------------*/
-	
+			System.out.println("Adding datasets");
 			for (int i = 0; i < cptMax; i++) {
 				try
 				{
@@ -678,7 +678,7 @@ public class AMICoreTest
 			}
 			
 			/*-----------------------------------------------------------------*/
-	
+			System.out.println("Adding files");
 			for (int i = 0; i < cptMax; i++) {
 				try
 				{
@@ -714,7 +714,7 @@ public class AMICoreTest
 					testFail = true;
 				}
 			}
-	
+			System.out.println("Adding files/datasets relations");
 			for (int i = 0; i < cptMax; i++) {
 				try
 				{
@@ -743,7 +743,7 @@ public class AMICoreTest
 
 			/*-----------------------------------------------------------------*/
 
-			for (int i = 0; i < cptMax-1; i++) {
+			for (int i = 1; i < 2; i++) {
 				try
 				{
 					arguments.clear();
@@ -756,7 +756,7 @@ public class AMICoreTest
 					arguments.put("values", "dataset_" + (i + 1) );
 					arguments.put("keyFields", "FILE.name;DATASET.name");
 					arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
-					//CommandSingleton.executeCommand("UpdateElements", arguments, false);
+					CommandSingleton.executeCommand("UpdateElements", arguments, false);
 				}
 				catch(Exception e)
 				{
