@@ -13,9 +13,9 @@ public class H2Driver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public H2Driver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin) throws Exception
+	public H2Driver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
 	{
-		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin);
+		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/

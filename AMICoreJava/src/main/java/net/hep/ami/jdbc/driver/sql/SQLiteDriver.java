@@ -13,9 +13,9 @@ public class SQLiteDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public SQLiteDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin) throws Exception
+	public SQLiteDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
 	{
-		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin);
+		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/

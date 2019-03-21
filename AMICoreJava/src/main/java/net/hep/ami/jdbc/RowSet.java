@@ -15,8 +15,8 @@ public class RowSet
 	/*---------------------------------------------------------------------*/
 
 	protected final ResultSet m_resultSet;
-
 	protected final boolean m_isAdmin;
+	protected final boolean m_links;
 
 	protected final String m_sql;
 	protected final String m_mql;
@@ -79,16 +79,16 @@ public class RowSet
 
 	public RowSet(ResultSet resultSet) throws Exception
 	{
-		this(resultSet, null, false, null, null, null);
+		this(resultSet, null, false, false, null, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, boolean isAdmin, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
-
 		m_isAdmin = isAdmin;
+		m_links = links;
 
 		m_sql = sql != null ? sql : "";
 		m_mql = mql != null ? mql : "";
@@ -670,17 +670,20 @@ public class RowSet
 
 	protected String processWebLink(int fieldIndex, Row row)
 	{
-		String webLinkScript = m_fieldWebLinkScript[fieldIndex];
-
-		if(webLinkScript != null && webLinkScript.isEmpty() == false && "@NULL".equalsIgnoreCase(webLinkScript) == false)
+		if(m_links)
 		{
-			return m_webLinkScripts.processWebLink(
-				webLinkScript,
-				m_fieldCatalogs[fieldIndex],
-				m_fieldEntities[fieldIndex],
-				m_fieldNames[fieldIndex],
-				row
-			);
+			String webLinkScript = m_fieldWebLinkScript[fieldIndex];
+
+			if(webLinkScript != null && webLinkScript.isEmpty() == false && "@NULL".equalsIgnoreCase(webLinkScript) == false)
+			{
+				return m_webLinkScripts.processWebLink(
+					webLinkScript,
+					m_fieldCatalogs[fieldIndex],
+					m_fieldEntities[fieldIndex],
+					m_fieldNames[fieldIndex],
+					row
+				);
+			}
 		}
 
 		return "";

@@ -32,21 +32,21 @@ public class SimpleQuerier implements Querier
 	{
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
 
-		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, true);
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, true, false);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SimpleQuerier(String catalog, String AMIUser, boolean isAdmin) throws Exception
+	public SimpleQuerier(String catalog, String AMIUser, boolean isAdmin, boolean links) throws Exception
 	{
-		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, isAdmin);
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin) throws Exception
+	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
 	{
-		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin);
+		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/

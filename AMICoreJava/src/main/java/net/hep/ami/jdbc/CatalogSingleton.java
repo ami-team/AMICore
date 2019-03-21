@@ -177,11 +177,11 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(String catalog, String AMIUser, boolean isAdmin) throws Exception
+	public static AbstractDriver getConnection(String catalog, String AMIUser, boolean isAdmin, boolean links) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, isAdmin);
+		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/

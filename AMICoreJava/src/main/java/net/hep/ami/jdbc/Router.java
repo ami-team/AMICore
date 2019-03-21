@@ -42,7 +42,8 @@ public class Router implements Querier
 			user,
 			pass,
 			AMIUser,
-			true
+			true,
+			false
 		);
 	}
 

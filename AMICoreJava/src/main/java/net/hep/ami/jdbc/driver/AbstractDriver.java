@@ -34,6 +34,7 @@ public abstract class AbstractDriver implements Querier
 
 	protected final String m_AMIUser;
 	protected final boolean m_isAdmin;
+	protected final boolean m_links;
 
 	/*---------------------------------------------------------------------*/
 
@@ -56,7 +57,7 @@ public abstract class AbstractDriver implements Querier
 	 * @param pass The database password.
 	 */
 
-	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin) throws Exception
+	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET JDBC ANNOTATION                                             */
@@ -96,6 +97,7 @@ public abstract class AbstractDriver implements Querier
 
 		m_AMIUser = AMIUser;
 		m_isAdmin = isAdmin;
+		m_links = links;
 
 		/*-----------------------------------------------------------------*/
 		/* CREATE CONNECTION                                               */
@@ -213,7 +215,7 @@ public abstract class AbstractDriver implements Querier
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, m_isAdmin, SQL, mql, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, m_isAdmin, m_links, SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -230,7 +232,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			sql = Tokenizer.format(sql, args);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, m_isAdmin, sql, null, null);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, m_isAdmin, m_links, sql, null, null);
 		}
 		catch(Exception e)
 		{
@@ -247,7 +249,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			raw = Tokenizer.format(raw, args);
 
-			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog, m_isAdmin, raw, null, null);
+			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog, m_isAdmin, m_links, raw, null, null);
 		}
 		catch(Exception e)
 		{
