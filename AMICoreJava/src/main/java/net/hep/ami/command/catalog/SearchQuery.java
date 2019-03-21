@@ -34,7 +34,8 @@ public class SearchQuery extends AbstractCommand
 		String limit = arguments.get("limit");
 		String offset = arguments.get("offset");
 
-		boolean links = arguments.containsKey("links");
+/*		boolean count = arguments.containsKey("count");
+ */		boolean links = arguments.containsKey("links");
 
 		if(catalog == null || (raw == null && sql == null && (mql == null || entity == null)))
 		{
