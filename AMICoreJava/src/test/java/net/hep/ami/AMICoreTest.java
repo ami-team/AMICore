@@ -43,7 +43,7 @@ public class AMICoreTest
 	{
 		boolean testFail = false;
 		int cptMax = 1000;
-		boolean doCreateAndFill = true;
+		boolean doCreateAndFill = false;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -790,8 +790,8 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
-			//CommandSingleton.executeCommand(commandTest, false);
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 		}
 		catch(Exception e)
 		{
@@ -931,7 +931,7 @@ public class AMICoreTest
 		
 
 		/*
-		String commandTestDev = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10000\"";
+		String commandTestDev = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10\"";
 		String data = "";
 		try
 		{
@@ -968,6 +968,39 @@ public class AMICoreTest
 		
 		/*-----------------------------------------------------------------*/
 
+		String commandTestDev = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10\"";
+		System.out.println(commandTestDev);
+		String data = "";
+		try
+		{
+			data = CommandSingleton.executeCommand(commandTestDev, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		StringReader stringReader = new StringReader(data);
+		StringWriter stringWriter = new StringWriter();
+		try
+		{
+			ConverterSingleton.convert("AMIXmlToJson.xsl", stringReader, stringWriter);
+
+			data = stringWriter.toString();
+		}
+		catch(Exception e)
+		{
+			data = XMLTemplates.error(
+				e.getMessage()
+			);
+
+		}
+
+		//System.out.println(data);
+
+
+		
 		System.out.println("Testing GetServerStatus command");
 
 		/*-----------------------------------------------------------------*/
