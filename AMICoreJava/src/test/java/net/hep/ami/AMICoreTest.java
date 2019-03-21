@@ -42,8 +42,9 @@ public class AMICoreTest
 	public void databaseTest() throws Exception
 	{
 		boolean testFail = false;
-		int cptMax = 1000;
-		boolean doCreateAndFill = false;
+		int cptMax = 100;
+		int cptMax2 = 5;
+		boolean doCreateAndFill = true;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -240,6 +241,27 @@ public class AMICoreTest
 	
 			try 
 			{
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
+				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"FILE\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE DATASET.name{test.DATASET_FILE_BRIDGE.fileFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+			
+				String webLinkScript = ""
+										+"import net.hep.ami.jdbc.WebLink;"
+										+"\\nwebLink = new WebLink();"
+										+"\\nwebLink.newLinkProperties().setLabel(\\\"files\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
+										+"\\nreturn webLink;";
+				String values = "testxxxxxDATASETxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+	
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+	
+			try 
+			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScriptxxxxxisGroupable";
 				String params = "[\\\\\\\"GetServerStatus\\\\\\\"]";
 				params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"PROJECT\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
@@ -268,11 +290,27 @@ public class AMICoreTest
 				testFail = true;
 			}
 	
-	
+			/*
 			try 
 			{
 				String fields = "catalog;entity;field;description;rank";
 				String values = "test;DATASET;name;this is a test description;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+	
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+			 */	
+
+			try 
+			{
+				//rank is 0 by default at insertion
+				String fields = "catalog;entity;field;description;isGroupable";
+				String values = "test;DATASET;valid;this is a test description;1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 	
 				CommandSingleton.executeCommand(command, false);
@@ -657,17 +695,19 @@ public class AMICoreTest
 			for (int i = 0; i < cptMax; i++) {
 				try
 				{
-					arguments.clear();
-					arguments.put("catalog", "test");
-					arguments.put("entity", "DATASET_FILE_BRIDGE");
-					arguments.put("separator", ";");
-					//arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name{FILE.typeFK}");
-					arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name");
-					//arguments.put("values", "file_" + i + ";dataset_" + i +";TEXT");
-					arguments.put("values", "file_" + i + ";dataset_" + i +";BINARY");
-					//arguments.put("fields", "FILE.name;DATASET.name");
-					//arguments.put("values", "file_" + i + ";dataset_" + i +"");
-					CommandSingleton.executeCommand("AddElement", arguments, false);
+					for (int j = 0; j < cptMax2; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_FILE_BRIDGE");
+						arguments.put("separator", ";");
+						//arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name{FILE.typeFK}");
+						arguments.put("fields", "FILE.name;DATASET.name;FILE_TYPE.name");
+						//arguments.put("values", "file_" + i + ";dataset_" + i +";TEXT");
+						arguments.put("values", "file_" + j + ";dataset_" + i +";BINARY");
+						//arguments.put("fields", "FILE.name;DATASET.name");
+						//arguments.put("values", "file_" + i + ";dataset_" + i +"");
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
 				}
 				catch(Exception e)
 				{
