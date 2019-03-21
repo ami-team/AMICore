@@ -242,11 +242,12 @@ public class AMICoreTest
 			try 
 			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
-				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"FILE\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE DATASET.name{test.DATASET_FILE_BRIDGE.fileFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"FILE\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE DATASET.id{test.DATASET_FILE_BRIDGE.fileFK}='\\\" + row.getValue(\\\"id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 			
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink();"
+										+"\\nif(row.getValue(\\\"id\\\")!=null)"
 										+"\\nwebLink.newLinkProperties().setLabel(\\\"files\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 										+"\\nreturn webLink;";
 				String values = "testxxxxxDATASETxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
@@ -263,11 +264,12 @@ public class AMICoreTest
 			try 
 			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
-				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE FILE.name{test.DATASET_FILE_BRIDGE.datasetFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE FILE.id{test.DATASET_FILE_BRIDGE.datasetFK}='\\\" + row.getValue(\\\"id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 			
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink();"
+										+"\\nif(row.getValue(\\\"id\\\")!=null)"
 										+"\\nwebLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 										+"\\nreturn webLink;";
 				String values = "testxxxxxFILExxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
