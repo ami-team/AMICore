@@ -259,6 +259,27 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
+			
+			try 
+			{
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
+				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE FILE.name{test.DATASET_FILE_BRIDGE.datasetFK}='\\\" + row.getValue(\\\"name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+			
+				String webLinkScript = ""
+										+"import net.hep.ami.jdbc.WebLink;"
+										+"\\nwebLink = new WebLink();"
+										+"\\nwebLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
+										+"\\nreturn webLink;";
+				String values = "testxxxxxFILExxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+	
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
 	
 			try 
 			{
