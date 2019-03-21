@@ -20,7 +20,7 @@ public class BrowseQuery extends SearchQuery
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		arguments.put("count", "count");
-		arguments.put("webLinks", "webLinks");
+		arguments.put("links", "links");
 
 		return super.main(arguments);
 	}

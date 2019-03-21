@@ -34,6 +34,8 @@ public class SearchQuery extends AbstractCommand
 		String limit = arguments.get("limit");
 		String offset = arguments.get("offset");
 
+		boolean links = arguments.containsKey("links");
+
 		if(catalog == null || (raw == null && sql == null && (mql == null || entity == null)))
 		{
 			throw new Exception("invalid usage");
@@ -65,7 +67,7 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog);
+		Querier querier = getQuerier(catalog, links);
 
 		/*-----------------------------------------------------------------*/
 
