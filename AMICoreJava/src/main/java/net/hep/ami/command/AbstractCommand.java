@@ -204,7 +204,7 @@ public abstract class AbstractCommand
 
 			if(object instanceof StringBuilder)
 			{
-				result = (StringBuilder)   object  ;
+				result = (StringBuilder) ((object));
 				//////////////.put(key, result);
 			}
 			else

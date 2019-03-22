@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.*;
+import net.hep.ami.jdbc.query.sql.Tokenizer;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class SearchQuery extends AbstractCommand
@@ -34,8 +35,8 @@ public class SearchQuery extends AbstractCommand
 		String limit = arguments.get("limit");
 		String offset = arguments.get("offset");
 
-/*		boolean count = arguments.containsKey("count");
- */		boolean links = arguments.containsKey("links");
+		boolean count = arguments.containsKey("count");
+		boolean links = arguments.containsKey("links");
 
 		if(catalog == null || (raw == null && sql == null && (mql == null || entity == null)))
 		{
@@ -44,25 +45,39 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String extra = "";
+		Map<String, String> parts = Tokenizer.splitXQL((raw == null) ? (sql == null) ? mql.trim() : sql.trim() : raw.trim());
+
+		XQLSelect xqlSelect1 = new XQLSelect().addSelectPart("COUNT(*)")
+		                                      .addFromPart(parts.get(Tokenizer.FROM))
+		                                      .addWherePart(parts.get(Tokenizer.WHERE))
+		;
+
+		XQLSelect xqlSelect2 = new XQLSelect().addSelectPart(parts.get(Tokenizer.SELECT))
+		                                      .addFromPart(parts.get(Tokenizer.FROM))
+		                                      .addWherePart(parts.get(Tokenizer.WHERE))
+		;
+
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder extra = new StringBuilder();
 
 		if(orderBy != null)
 		{
-			extra += " ORDER BY " + QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
+			extra.append(" ORDER BY ").append( QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
 			if(orderWay != null)
 			{
-				extra += " " + orderWay;
+				extra.append(" ").append(orderWay);
 			}
 		}
 
 		if(limit != null)
 		{
-			extra += " LIMIT " + limit;
+			extra.append(" LIMIT ").append(limit);
 
 			if(offset != null)
 			{
-				extra += " OFFSET " + offset;
+				extra.append(" OFFSET ").append(offset);
 			}
 		}
 
@@ -72,24 +87,56 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		RowSet result;
+		Integer totalNumberOfRows = null;
 
-		/**/ if(raw != null)
+		if(count)
 		{
-			result = querier.executeRawQuery(raw + extra);
-		}
-		else if(sql != null)
-		{
-			result = querier.executeSQLQuery(sql + extra);
-		}
-		else
-		{
-			result = querier.executeMQLQuery(entity, mql + extra);
+			/*-------------------------------------------------------------*/
+
+			RowSet result2;
+
+			/**/ if(raw != null)
+			{
+				result2 = querier.executeRawQuery(xqlSelect1.toString());
+			}
+			else if(sql != null)
+			{
+				result2 = querier.executeSQLQuery(xqlSelect1.toString());
+			}
+			else
+			{
+				result2 = querier.executeMQLQuery(entity, xqlSelect1.toString());
+			}
+
+			/*-------------------------------------------------------------*/
+
+			totalNumberOfRows = result2.getAll().get(0).getValue(0, (Integer) null);
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return result.toStringBuilder();
+		RowSet result2;
+
+		/**/ if(raw != null)
+		{
+			result2 = querier.executeRawQuery(xqlSelect2.toString(extra));
+		}
+		else if(sql != null)
+		{
+			result2 = querier.executeSQLQuery(xqlSelect2.toString(extra));
+		}
+		else
+		{
+			result2 = querier.executeMQLQuery(entity, xqlSelect2.toString(extra));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return result2.toStringBuilder("query", totalNumberOfRows);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

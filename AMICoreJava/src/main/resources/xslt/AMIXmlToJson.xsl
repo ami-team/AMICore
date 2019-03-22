@@ -149,6 +149,12 @@
 			<xsl:text>,</xsl:text>
 		</xsl:if>
 
+		<xsl:if test="@totalNumberOfRows">
+			<xsl:text>"@totalNumberOfRows":</xsl:text>
+				<xsl:value-of select="@totalNumberOfRows" />
+			<xsl:text>,</xsl:text>
+		</xsl:if>
+
 		<xsl:text>"row":[</xsl:text>
 		<xsl:apply-templates select="row" />
 		<xsl:text>]</xsl:text>

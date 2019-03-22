@@ -71,7 +71,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean m_incomplete = false;
+	private boolean m_truncated = false;
 
 	private boolean m_lock = false;
 
@@ -691,21 +691,21 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected void setIncomplete() throws Exception
+	protected void setTruncated() throws Exception
 	{
 		if(m_lock)
 		{
 			throw new Exception("rowset already read");
 		}
 
-		m_incomplete = true;
+		m_truncated = true;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public boolean isIncomplete()
+	public boolean isTruncated()
 	{
-		return m_incomplete;
+		return m_truncated;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -763,9 +763,9 @@ public class RowSet
 		return RowSetIterable.getStringBuilder(this, type);
 	}
 
-	public StringBuilder toStringBuilder(@Nullable String type, int limit, int offset) throws Exception
+	public StringBuilder toStringBuilder(@Nullable String type, @Nullable Integer totalNumberOfRows) throws Exception
 	{
-		return RowSetIterable.getStringBuilder(this, type, limit, offset);
+		return RowSetIterable.getStringBuilder(this, type, totalNumberOfRows);
 	}
 
 	/*---------------------------------------------------------------------*/

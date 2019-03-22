@@ -147,7 +147,7 @@ public final class RowSetIterable implements Iterable<Row>
 		{
 			if(nb == 0)
 			{
-				rowSet.setIncomplete();
+				rowSet.setTruncated();
 
 				break;
 			}
@@ -166,19 +166,19 @@ public final class RowSetIterable implements Iterable<Row>
 
 	public static StringBuilder getStringBuilder(RowSet rowSet) throws Exception
 	{
-		return getStringBuilder(rowSet, null, Integer.MAX_VALUE, 0);
+		return getStringBuilder(rowSet, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type) throws Exception
 	{
-		return getStringBuilder(rowSet, type, Integer.MAX_VALUE, 0);
+		return getStringBuilder(rowSet, type, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type, int limit, int offset) throws Exception
+	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type, @Nullable Integer totalNumberOfRows) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -246,7 +246,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
 
-		int nb = maxNumberOfRows;
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -255,20 +255,18 @@ public final class RowSetIterable implements Iterable<Row>
 		                                        .append("<ast><![CDATA[").append(rowSet.m_ast).append("]]></ast>")
 		;
 
-		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
-		{ /* DO NOTHING */ }
-		for(int i = 0; i < limit && rowSet.m_resultSet.next(); i++)
+		for(int nb = maxNumberOfRows; rowSet.m_resultSet.next(); nb--)
 		{
-			if(nb == 0)
+			if(nb > 0)
 			{
-				rowSet.setIncomplete();
+				rows.append(new Row(rowSet).toStringBuilder());
+			}
+			else
+			{
+				rowSet.setTruncated();
 
 				break;
 			}
-
-			nb--;
-
-			rows.append(new Row(rowSet).toStringBuilder());
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -285,7 +283,7 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(descrs)
 			      .append("</fieldDescriptions>")
 
-			      .append("<rowset truncated=\"").append(rowSet.isIncomplete()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">")
+			      .append("<rowset truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\" totalNumberOfRows=\"").append(totalNumberOfRows).append("\">")
 			      .append(rows)
 			      .append("</rowset>")
 			;
@@ -296,7 +294,7 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(descrs)
 			      .append("</fieldDescriptions>")
 
-			      .append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isIncomplete()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\">")
+			      .append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\" totalNumberOfRows=\"").append(totalNumberOfRows).append("\">")
 			      .append(rows)
 			      .append("</rowset>")
 			;

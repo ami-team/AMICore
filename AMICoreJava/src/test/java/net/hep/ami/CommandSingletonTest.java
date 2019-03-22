@@ -34,6 +34,8 @@ public class CommandSingletonTest
 
 //		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
 
+		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\" -count", false));
+
 		System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_role\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\"", false));
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\"", false));

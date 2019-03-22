@@ -114,6 +114,101 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
+	public static final String SELECT = "SELECT";
+	public static final String FROM = "FROM";
+	public static final String WHERE = "WHERE";
+	public static final String GROUP = "GROUP";
+	public static final String ORDER = "ORDER";
+	public static final String LIMIT = "LIMIT";
+	public static final String OFFSET = "OFFSET";
+
+	private static final Set<String> s_xqlRegions = new HashSet<>();
+
+	static
+	{
+		s_xqlRegions.add(SELECT);
+		s_xqlRegions.add(FROM);
+		s_xqlRegions.add(WHERE);
+		s_xqlRegions.add(GROUP);
+		s_xqlRegions.add(ORDER);
+		s_xqlRegions.add(LIMIT);
+		s_xqlRegions.add(OFFSET);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Map<String, String> splitXQL(String xql)
+	{
+		Map<String, String> result = new HashMap<>();
+
+		/*-----------------------------------------------------------------*/
+
+		int lock = 0;
+
+		String TOKEN = "";
+		String keyword = "";
+
+		List<String> tokens = new ArrayList<>();
+
+		for(String token: Tokenizer.tokenize(xql.trim()))
+		{
+			/*-------------------------------------------------------------*/
+
+			TOKEN = token.toUpperCase();
+
+			/*-------------------------------------------------------------*/
+
+			/**/ if("(".equals(token))
+			{
+				tokens.add("(");
+				lock++;
+			}
+			else if(")".equals(token))
+			{
+				tokens.add(")");
+				lock--;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			else if(lock == 0 && s_xqlRegions.contains(TOKEN))
+			{
+				if(keyword.isEmpty() == false)
+				{
+					result.put(keyword, String.join("", tokens).trim());
+				}
+
+				tokens.clear();
+				keyword = TOKEN;
+			}
+
+			/*-------------------------------------------------------------*/
+
+			else if("BY".equals(TOKEN) == false)
+			{
+				tokens.add(token);
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(keyword.isEmpty() == false)
+		{
+			result.put(keyword, String.join("", tokens).trim());
+		}
+
+		tokens.clear();
+		keyword = null;
+
+		/*-----------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String backQuotesToDoubleQuotes(String token)
 	{
 		if(token.startsWith("`")
