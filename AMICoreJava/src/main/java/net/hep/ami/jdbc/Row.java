@@ -71,36 +71,27 @@ public class Row
 	{
 		Boolean result;
 
-		String tmpValue = getValue(fieldIndex);
+		String tmpValue = getValue(fieldIndex).trim().toLowerCase();
 
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
-		{
-			tmpValue = tmpValue.trim().toLowerCase();
-
-			/**/ if("1".equals(tmpValue)
-			        ||
-			        "on".equals(tmpValue)
-			        ||
-			        "yes".equals(tmpValue)
-			        ||
-			        "true".equals(tmpValue)
-			 ) {
-				result = true;
-			}
-			else if("0".equals(tmpValue)
-			        ||
-			        "off".equals(tmpValue)
-			        ||
-			        "no".equals(tmpValue)
-			        ||
-			        "false".equals(tmpValue)
-			 ) {
-				result = false;
-			}
-			else
-			{
-				result = defaultValue;
-			}
+		/**/ if("1".equals(tmpValue)
+		        ||
+		        "on".equals(tmpValue)
+		        ||
+		        "yes".equals(tmpValue)
+		        ||
+		        "true".equals(tmpValue)
+		 ) {
+			result = true;
+		}
+		else if("0".equals(tmpValue)
+		        ||
+		        "off".equals(tmpValue)
+		        ||
+		        "no".equals(tmpValue)
+		        ||
+		        "false".equals(tmpValue)
+		 ) {
+			result = false;
 		}
 		else
 		{

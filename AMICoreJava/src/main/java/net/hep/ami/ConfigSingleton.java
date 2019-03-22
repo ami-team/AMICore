@@ -370,7 +370,7 @@ public class ConfigSingleton
 	{
 		String result = System.getProperty(key);
 
-		return result != null ? result : "";
+		return result != null && "@NULL".equals(result) == false ? result : "";
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -379,7 +379,7 @@ public class ConfigSingleton
 	{
 		String result = System.getProperty(key);
 
-		return result != null ? result : defaultValue;
+		return result != null && "@NULL".equals(result) == false ? result : defaultValue;
 	}
 	/*---------------------------------------------------------------------*/
 
@@ -434,7 +434,7 @@ public class ConfigSingleton
 
 		String tmpValue = System.getProperty(key);
 
-		if(tmpValue != null)
+		if(tmpValue != null && "@NULL".equals(tmpValue) == false)
 		{
 			try
 			{
@@ -461,7 +461,7 @@ public class ConfigSingleton
 
 		String tmpValue = System.getProperty(key);
 
-		if(tmpValue != null)
+		if(tmpValue != null && "@NULL".equals(tmpValue) == false)
 		{
 			try
 			{
@@ -488,7 +488,7 @@ public class ConfigSingleton
 
 		String tmpValue = System.getProperty(key);
 
-		if(tmpValue != null)
+		if(tmpValue != null && "@NULL".equals(tmpValue) == false)
 		{
 			try
 			{
@@ -529,7 +529,7 @@ public class ConfigSingleton
 	{
 		String result = s_properties.get(key);
 
-		return result != null ? result : "";
+		return result != null && "@NULL".equals(result) == false ? result : "";
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -538,7 +538,7 @@ public class ConfigSingleton
 	{
 		String result = s_properties.get(key);
 
-		return result != null ? result : defaultValue;
+		return result != null && "@NULL".equals(result) == false ? result : defaultValue;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -594,7 +594,7 @@ public class ConfigSingleton
 
 		String tmpValue = s_properties.get(key);
 
-		if(tmpValue != null)
+		if(tmpValue != null && "@NULL".equals(tmpValue) == false)
 		{
 			try
 			{
@@ -621,7 +621,7 @@ public class ConfigSingleton
 
 		String tmpValue = s_properties.get(key);
 
-		if(tmpValue != null)
+		if(tmpValue != null && "@NULL".equals(tmpValue) == false)
 		{
 			try
 			{
@@ -648,7 +648,7 @@ public class ConfigSingleton
 
 		String tmpValue = s_properties.get(key);
 
-		if(tmpValue != null)
+		if(tmpValue != null && "@NULL".equals(tmpValue) == false)
 		{
 			try
 			{
