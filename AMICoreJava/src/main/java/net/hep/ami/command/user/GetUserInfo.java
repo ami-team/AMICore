@@ -62,7 +62,7 @@ public class GetUserInfo extends AbstractCommand
 		String firstName;
 		String lastName;
 		String email;
-		String valid;
+		boolean valid;
 
 		if(rowList.size() == 1)
 		{
@@ -74,7 +74,7 @@ public class GetUserInfo extends AbstractCommand
 			firstName = row1.getValue("firstName");
 			lastName = row1.getValue("lastName");
 			email = row1.getValue("email");
-			valid = row1.getValue("valid");
+			valid = row1.getValue("valid", false);
 		}
 		else
 		{
@@ -89,7 +89,7 @@ public class GetUserInfo extends AbstractCommand
 			firstName = GUEST_USER;
 			lastName = GUEST_USER;
 			email = "N/A";
-			valid = "0";
+			valid = true;
 		}
 
 		if("@NULL".equals(clientDNInAMI)) {
@@ -100,11 +100,7 @@ public class GetUserInfo extends AbstractCommand
 			issuerDNInAMI = "";
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		boolean VALID = "0".equals(valid) == false;
-
-		boolean VOMS_ENABLED = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
+		boolean vomsEnabled = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
 
 		/*-----------------------------------------------------------------*/
 		/* ATTACH CERTIFICATE                                              */
@@ -119,7 +115,7 @@ public class GetUserInfo extends AbstractCommand
 
 			String sql;
 
-			if(VOMS_ENABLED == false)
+			if(vomsEnabled == false)
 			{
 				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
 			}
@@ -149,7 +145,7 @@ public class GetUserInfo extends AbstractCommand
 
 			String sql;
 
-			if(VOMS_ENABLED == false)
+			if(vomsEnabled == false)
 			{
 				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
 			}
@@ -211,9 +207,9 @@ public class GetUserInfo extends AbstractCommand
 		      .append("<field name=\"firstName\"><![CDATA[").append(firstName).append("]]></field>")
 		      .append("<field name=\"lastName\"><![CDATA[").append(lastName).append("]]></field>")
 		      .append("<field name=\"email\"><![CDATA[").append(email).append("]]></field>")
-		      .append("<field name=\"valid\"><![CDATA[").append(VALID).append("]]></field>")
+		      .append("<field name=\"valid\"><![CDATA[").append(valid).append("]]></field>")
 		      .append("<field name=\"certEnabled\"><![CDATA[").append(m_isSecure).append("]]></field>")
-		      .append("<field name=\"vomsEnabled\"><![CDATA[").append(VOMS_ENABLED).append("]]></field>")
+		      .append("<field name=\"vomsEnabled\"><![CDATA[").append(vomsEnabled).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")
 		;
