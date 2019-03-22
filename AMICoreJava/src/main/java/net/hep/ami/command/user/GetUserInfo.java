@@ -92,6 +92,14 @@ public class GetUserInfo extends AbstractCommand
 			valid = "0";
 		}
 
+		if("@NULL".equals(clientDNInAMI)) {
+			clientDNInAMI = "";
+		}
+
+		if("@NULL".equals(issuerDNInAMI)) {
+			issuerDNInAMI = "";
+		}
+
 		/*-----------------------------------------------------------------*/
 
 		boolean VALID = "0".equals(valid) == false;

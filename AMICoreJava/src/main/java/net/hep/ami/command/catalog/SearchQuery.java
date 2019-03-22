@@ -45,7 +45,18 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Map<String, String> parts = Tokenizer.splitXQL((raw == null) ? (sql == null) ? mql.trim() : sql.trim() : raw.trim());
+		Querier querier = getQuerier(catalog, links);
+
+		/*-----------------------------------------------------------------*/
+
+		if(raw != null)
+		{
+			return querier.executeRawQuery(raw).toStringBuilder();
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		Map<String, String> parts = Tokenizer.splitXQL((mql != null) ? mql.trim() : sql.trim());
 
 		XQLSelect xqlSelect1 = new XQLSelect().addSelectPart("COUNT(*)")
 		                                      .addFromPart(parts.get(Tokenizer.FROM))
@@ -83,10 +94,6 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog, links);
-
-		/*-----------------------------------------------------------------*/
-
 		Integer totalNumberOfRows = null;
 
 		if(count)
@@ -95,11 +102,7 @@ public class SearchQuery extends AbstractCommand
 
 			RowSet result2;
 
-			/**/ if(raw != null)
-			{
-				result2 = querier.executeRawQuery(xqlSelect1.toString());
-			}
-			else if(sql != null)
+			/**/ if(sql != null)
 			{
 				result2 = querier.executeSQLQuery(xqlSelect1.toString());
 			}
@@ -119,11 +122,7 @@ public class SearchQuery extends AbstractCommand
 
 		RowSet result2;
 
-		/**/ if(raw != null)
-		{
-			result2 = querier.executeRawQuery(xqlSelect2.toString(extra));
-		}
-		else if(sql != null)
+		/**/ if(sql != null)
 		{
 			result2 = querier.executeSQLQuery(xqlSelect2.toString(extra));
 		}
