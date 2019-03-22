@@ -74,7 +74,7 @@ public class SearchQuery extends AbstractCommand
 
 		if(orderBy != null)
 		{
-			extra.append(" ORDER BY ").append( QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD));
+			extra.append(" ORDER BY ").append(QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD));
 
 			if(orderWay != null)
 			{
