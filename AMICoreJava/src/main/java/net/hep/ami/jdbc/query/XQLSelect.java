@@ -15,6 +15,8 @@ public final class XQLSelect
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
 
+	private final Set<String> m_extraSet = new LinkedHashSet<>();
+
 	/*---------------------------------------------------------------------*/
 
 	private boolean m_isDistinct = false;
@@ -87,6 +89,28 @@ public final class XQLSelect
 
 	/*---------------------------------------------------------------------*/
 
+	public XQLSelect addExtraPart(@Nullable CharSequence extraPart)
+	{
+		if(extraPart != null)
+		{
+			m_extraSet.add(extraPart.toString());
+		}
+
+		return this;
+	}
+
+	public XQLSelect addExtraPart(@Nullable Collection<?> extraPart)
+	{
+		if(extraPart != null)
+		{
+			m_extraSet.addAll(extraPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+		}
+
+		return this;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public XQLSelect addWholeQuery(@Nullable XQLSelect query)
 	{
 		if(query != null)
@@ -96,6 +120,8 @@ public final class XQLSelect
 			m_fromSet.addAll(query.m_fromSet);
 
 			m_whereSet.addAll(query.m_whereSet);
+
+			m_extraSet.addAll(query.m_extraSet);
 		}
 
 		return this;
@@ -131,6 +157,13 @@ public final class XQLSelect
 
 	/*---------------------------------------------------------------------*/
 
+	public Set<String> getExtraCollection()
+	{
+		return m_extraSet;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getSelectPart()
 	{
 		return String.join(", ", m_selectList);
@@ -152,28 +185,21 @@ public final class XQLSelect
 
 	/*---------------------------------------------------------------------*/
 
-	public String toString()
+	public String getExtraPart()
 	{
-		return toStringBuilder(null).toString();
+		return String.join(" ", m_extraSet);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public String toString(@Nullable CharSequence extra)
+	public String toString()
 	{
-		return toStringBuilder(extra).toString();
+		return toStringBuilder().toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	public StringBuilder toStringBuilder()
-	{
-		return toStringBuilder(null);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public StringBuilder toStringBuilder(@Nullable CharSequence extra)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -189,11 +215,8 @@ public final class XQLSelect
 			result.append(" WHERE ").append(getWherePart());
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		if(extra != null)
-		{
-			result.append(extra);
+		if(m_extraSet.isEmpty() == false) {
+			result.append(" ").append(getExtraPart());
 		}
 
 		/*-----------------------------------------------------------------*/

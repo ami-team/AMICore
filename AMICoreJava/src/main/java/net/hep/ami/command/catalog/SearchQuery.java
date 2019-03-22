@@ -70,25 +70,37 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder extra = new StringBuilder();
+		String groupBy = parts.get(Tokenizer.GROUP);
+
+		if(groupBy != null)
+		{
+			groupBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
+
+			xqlSelect1.addExtraPart(" GROUP BY " + groupBy);
+			xqlSelect2.addExtraPart(" GROUP BY " + groupBy);
+		}
+
+		/*-----------------------------------------------------------------*/
 
 		if(orderBy != null)
 		{
-			extra.append(" ORDER BY ").append(QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD));
+			orderBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
+
+			xqlSelect2.addExtraPart(" ORDER BY " + orderBy);
 
 			if(orderWay != null)
 			{
-				extra.append(" ").append(orderWay);
+				xqlSelect2.addExtraPart(" " + orderWay);
 			}
 		}
 
 		if(limit != null)
 		{
-			extra.append(" LIMIT ").append(limit);
+			xqlSelect2.addExtraPart(" LIMIT " + limit);
 
 			if(offset != null)
 			{
-				extra.append(" OFFSET ").append(offset);
+				xqlSelect2.addExtraPart(" OFFSET " + offset);
 			}
 		}
 
@@ -124,11 +136,11 @@ public class SearchQuery extends AbstractCommand
 
 		/**/ if(sql != null)
 		{
-			result2 = querier.executeSQLQuery(xqlSelect2.toString(extra));
+			result2 = querier.executeSQLQuery(xqlSelect2.toString());
 		}
 		else
 		{
-			result2 = querier.executeMQLQuery(entity, xqlSelect2.toString(extra));
+			result2 = querier.executeMQLQuery(entity, xqlSelect2.toString());
 		}
 
 		/*-----------------------------------------------------------------*/

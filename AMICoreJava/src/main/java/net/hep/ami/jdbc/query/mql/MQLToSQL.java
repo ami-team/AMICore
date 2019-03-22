@@ -159,7 +159,8 @@ public class MQLToSQL
 
 		return result.addFromPart(tuple.x)
 		             .addWherePart(tuple.y)
-		             .toStringBuilder(extra)
+		             .addExtraPart(extra)
+		             .toStringBuilder()
 		;
 
 		/*-----------------------------------------------------------------*/
