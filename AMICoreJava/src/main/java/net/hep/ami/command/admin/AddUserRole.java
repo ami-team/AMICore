@@ -38,7 +38,7 @@ public class AddUserRole extends AbstractCommand
 		/* GET USER ID                                                     */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList1 = querier.executeSQLQuery("SELECT `id` FROM `router_user` WHERE `AMIUser` = ?", user).getAll();
+		List<Row> rowList1 = querier.executeSQLQuery("router_user", "SELECT `id` FROM `router_user` WHERE `AMIUser` = ?", user).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -51,7 +51,7 @@ public class AddUserRole extends AbstractCommand
 		/* GET ROLE ID                                                     */
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList2 = querier.executeSQLQuery("SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
+		List<Row> rowList2 = querier.executeSQLQuery("router_role", "SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
 
 		if(rowList2.size() != 1)
 		{

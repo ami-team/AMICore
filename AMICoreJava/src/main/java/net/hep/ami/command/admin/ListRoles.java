@@ -19,7 +19,7 @@ public class ListRoles extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		return getQuerier("self").executeSQLQuery("SELECT `role`, `description` FROM `router_role`").toStringBuilder("roles");
+		return getQuerier("self").executeSQLQuery("router_role", "SELECT `role`, `description` FROM `router_role`").toStringBuilder("roles");
 	}
 
 	/*---------------------------------------------------------------------*/

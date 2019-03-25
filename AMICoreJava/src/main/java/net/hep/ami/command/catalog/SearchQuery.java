@@ -51,7 +51,7 @@ public class SearchQuery extends AbstractCommand
 
 		if(raw != null)
 		{
-			return querier.executeRawQuery(raw).toStringBuilder();
+			return querier.executeRawQuery(entity, raw).toStringBuilder();
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -128,7 +128,7 @@ public class SearchQuery extends AbstractCommand
 
 			/**/ if(sql != null)
 			{
-				result2 = querier.executeSQLQuery(xqlSelect1.toString());
+				result2 = querier.executeSQLQuery(entity, xqlSelect1.toString());
 			}
 			else
 			{
@@ -148,7 +148,7 @@ public class SearchQuery extends AbstractCommand
 
 		/**/ if(sql != null)
 		{
-			result2 = querier.executeSQLQuery(xqlSelect2.toString());
+			result2 = querier.executeSQLQuery(entity, xqlSelect2.toString());
 		}
 		else
 		{

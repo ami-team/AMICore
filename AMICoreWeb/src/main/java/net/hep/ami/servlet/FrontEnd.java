@@ -300,7 +300,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("SELECT `command`, `converter` FROM `router_link` WHERE `id` = ?", linkId).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_link", "SELECT `command`, `converter` FROM `router_link` WHERE `id` = ?", linkId).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET LINK                                                    */
@@ -364,7 +364,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */
@@ -451,7 +451,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
 
 			/*-------------------------------------------------------------*/
 			/* GET CREDENTIALS                                             */

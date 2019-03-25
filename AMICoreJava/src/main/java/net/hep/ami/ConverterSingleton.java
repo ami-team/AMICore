@@ -78,7 +78,7 @@ public class ConverterSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("SELECT `xslt`, `mime` FROM `router_converter`");
+			RowSet rowSet = router.executeSQLQuery("router_converter", "SELECT `xslt`, `mime` FROM `router_converter`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CONVERTERS                                              */

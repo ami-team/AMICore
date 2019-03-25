@@ -226,13 +226,13 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(@Nullable String entity, String sql, Object... args) throws Exception
 	{
 		try
 		{
 			sql = Tokenizer.format(sql, args);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, null, m_isAdmin, m_links, sql, null, null);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_isAdmin, m_links, sql, null, null);
 		}
 		catch(Exception e)
 		{
@@ -243,13 +243,13 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(@Nullable String entity, String raw, Object... args) throws Exception
 	{
 		try
 		{
 			raw = Tokenizer.format(raw, args);
 
-			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, null, m_isAdmin, m_links, raw, null, null);
+			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_isAdmin, m_links, raw, null, null);
 		}
 		catch(Exception e)
 		{

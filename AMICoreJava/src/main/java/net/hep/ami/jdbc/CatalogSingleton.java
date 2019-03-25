@@ -82,7 +82,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `description`, `archived` FROM `router_catalog`");
+			RowSet rowSet = router.executeSQLQuery("router_catalog", "SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `description`, `archived` FROM `router_catalog`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD CATALOGS                                                */

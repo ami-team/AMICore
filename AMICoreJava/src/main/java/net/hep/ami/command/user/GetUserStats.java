@@ -38,8 +38,8 @@ public class GetUserStats extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return new StringBuilder().append(querier.executeSQLQuery(sql1).toStringBuilder(  "users"  ))
-		                          .append(querier.executeSQLQuery(sql2).toStringBuilder("countries"))
+		return new StringBuilder().append(querier.executeSQLQuery("router_user", sql1).toStringBuilder(  "users"  ))
+		                          .append(querier.executeSQLQuery("router_user", sql2).toStringBuilder("countries"))
 		;
 
 		/*-----------------------------------------------------------------*/

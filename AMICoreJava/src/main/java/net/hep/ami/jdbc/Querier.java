@@ -67,7 +67,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	public RowSet executeSQLQuery(String sql, Object... args) throws Exception;
+	public RowSet executeSQLQuery(@Nullable String entity, String sql, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -80,7 +80,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	public RowSet executeRawQuery(String raw, Object... args) throws Exception;
+	public RowSet executeRawQuery(@Nullable String entity, String raw, Object... args) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

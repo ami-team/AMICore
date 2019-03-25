@@ -241,7 +241,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("SELECT `paramName`, `paramValue` FROM `router_config`");
+			RowSet rowSet = router.executeSQLQuery("router_config", "SELECT `paramName`, `paramValue` FROM `router_config`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD PROPERTIES                                              */
@@ -288,7 +288,7 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------*/
 
-		List<Row> rows = querier.executeSQLQuery("SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?", name).getAll();
+		List<Row> rows = querier.executeSQLQuery("router_config", "SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?", name).getAll();
 
 		/*------------------------------------------------------------------*/
 

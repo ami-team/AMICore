@@ -100,7 +100,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
+			RowSet rowSet = router.executeSQLQuery("router_command", "SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
 
 			/*-------------------------------------------------------------*/
 			/* ADD COMMANDS                                                */

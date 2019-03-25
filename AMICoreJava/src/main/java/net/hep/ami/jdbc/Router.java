@@ -82,17 +82,17 @@ public class Router implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(@Nullable String entity, String sql, Object... args) throws Exception
 	{
-		return m_driver.executeSQLQuery(sql, args);
+		return m_driver.executeSQLQuery(entity, sql, args);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(@Nullable String entity, String raw, Object... args) throws Exception
 	{
-		return m_driver.executeRawQuery(raw, args);
+		return m_driver.executeRawQuery(entity, raw, args);
 	}
 
 	/*---------------------------------------------------------------------*/
