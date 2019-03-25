@@ -82,6 +82,18 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		String limit2 = parts.get(Tokenizer.LIMIT);
+		if(limit == null && limit2 != null) {
+			limit = limit2;
+		}
+
+		String offset2 = parts.get(Tokenizer.OFFSET);
+		if(offset == null && offset2 != null) {
+			offset = offset2;
+		}
+
+		/*-----------------------------------------------------------------*/
+
 		if(orderBy != null)
 		{
 			orderBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
