@@ -58,16 +58,11 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	protected final Map<String, Integer> m_nameIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
-	protected final Map<String, Integer> m_labelIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
 	private final WebLinkCache m_webLinkScripts = new WebLinkCache();
-
-	/*---------------------------------------------------------------------*/
-
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -79,12 +74,12 @@ public class RowSet
 
 	public RowSet(ResultSet resultSet) throws Exception
 	{
-		this(resultSet, null, false, false, null, null, null);
+		this(resultSet, null, null, false, false, null, null, null);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	public RowSet(ResultSet resultSet, @Nullable String defaultCatalog, @Nullable String defaultEntity, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		m_resultSet = resultSet;
 		m_isAdmin = isAdmin;
@@ -156,14 +151,14 @@ public class RowSet
 			{
 				m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resultSetMetaData.getCatalogName(i + 1), "");
 
-				if(m_fieldEntities[i].isEmpty())
+				if(m_fieldCatalogs[i].isEmpty())
 				{
 					m_fieldCatalogs[i] = "N/A";
 				}
 			}
 			catch(Exception e1)
 			{
-				m_fieldCatalogs[i] =  "N/A";
+				m_fieldCatalogs[i] = "N/A";
 			}
 
 			/*-------------------------------------------------------------*/
@@ -315,11 +310,6 @@ public class RowSet
 					"issuerDN".equals(m_fieldNames[i])
 				);
 			}
-
-			/*-------------------------------------------------------------*/
-
-			m_nameIndices.put(m_fieldNames[i], i);
-			m_labelIndices.put(m_fieldLabels[i], i);
 
 			/*-------------------------------------------------------------*/
 		}

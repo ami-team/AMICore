@@ -62,19 +62,21 @@ public class GetUserInfo extends AbstractCommand
 		String firstName;
 		String lastName;
 		String email;
+		String country;
 		boolean valid;
 
 		if(rowList.size() == 1)
 		{
 			Row row1 = rowList.get(0);
 
-			AMIUser = row1.getValue("AMIUser");
-			clientDNInAMI = row1.getValue("clientDN");
-			issuerDNInAMI = row1.getValue("issuerDN");
-			firstName = row1.getValue("firstName");
-			lastName = row1.getValue("lastName");
-			email = row1.getValue("email");
-			valid = row1.getValue("valid", false);
+			AMIUser = row1.getValue(0);
+			clientDNInAMI = row1.getValue(1);
+			issuerDNInAMI = row1.getValue(2);
+			firstName = row1.getValue(3);
+			lastName = row1.getValue(4);
+			email = row1.getValue(5);
+			country = row1.getValue(6);
+			valid = row1.getValue(7, false);
 		}
 		else
 		{
@@ -89,6 +91,7 @@ public class GetUserInfo extends AbstractCommand
 			firstName = GUEST_USER;
 			lastName = GUEST_USER;
 			email = "N/A";
+			country = "N/A";
 			valid = true;
 		}
 
@@ -207,6 +210,7 @@ public class GetUserInfo extends AbstractCommand
 		      .append("<field name=\"firstName\"><![CDATA[").append(firstName).append("]]></field>")
 		      .append("<field name=\"lastName\"><![CDATA[").append(lastName).append("]]></field>")
 		      .append("<field name=\"email\"><![CDATA[").append(email).append("]]></field>")
+		      .append("<field name=\"country\"><![CDATA[").append(country).append("]]></field>")
 		      .append("<field name=\"valid\"><![CDATA[").append(valid).append("]]></field>")
 		      .append("<field name=\"certEnabled\"><![CDATA[").append(m_isSecure).append("]]></field>")
 		      .append("<field name=\"vomsEnabled\"><![CDATA[").append(vomsEnabled).append("]]></field>")
@@ -223,8 +227,8 @@ public class GetUserInfo extends AbstractCommand
 		for(Row row2: rowSet2.iterate())
 		{
 			result.append("<row>")
-			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue("role")).append("]]></field>")
-			      .append("<field name=\"description\"><![CDATA[").append(row2.getValue("description")).append("]]></field>")
+			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue(0)).append("]]></field>")
+			      .append("<field name=\"description\"><![CDATA[").append(row2.getValue(1)).append("]]></field>")
 			      .append("</row>")
 			;
 		}

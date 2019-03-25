@@ -215,7 +215,7 @@ public abstract class AbstractDriver implements Querier
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, m_isAdmin, m_links, SQL, mql, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, entity, m_isAdmin, m_links, SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -232,7 +232,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			sql = Tokenizer.format(sql, args);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, m_isAdmin, m_links, sql, null, null);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, null, m_isAdmin, m_links, sql, null, null);
 		}
 		catch(Exception e)
 		{
@@ -249,7 +249,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			raw = Tokenizer.format(raw, args);
 
-			return new RowSet(m_statement.executeQuery(raw), m_externalCatalog, m_isAdmin, m_links, raw, null, null);
+			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, null, m_isAdmin, m_links, raw, null, null);
 		}
 		catch(Exception e)
 		{
@@ -306,7 +306,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			raw = Tokenizer.format(raw, args);
 
-			return new Update(m_statement.executeUpdate(raw), raw, null, null);
+			return new Update(m_statement.executeUpdate(/*----*/(raw)), raw, null, null);
 		}
 		catch(Exception e)
 		{
@@ -321,7 +321,9 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			String SQL = (isRawQuery == false) ? patchSQL(sql) : sql;
+			String SQL = (isRawQuery == false) ? patchSQL(sql)
+			                                   : /*----*/(sql)
+			;
 
 			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 
