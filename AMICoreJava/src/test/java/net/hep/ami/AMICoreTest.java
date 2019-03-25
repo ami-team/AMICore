@@ -295,9 +295,10 @@ public class AMICoreTest
 										+"\\nimport net.hep.ami.jdbc.SimpleQuerier;"
 										+"\\nimport net.hep.ami.jdbc.Row;"
 										+"\\nimport net.hep.ami.jdbc.reflexion.SchemaSingleton;"
-										+"\\nString label = SchemaSingleton.getFieldNames(catalog,\\\"PROJECT\\\").toString();"
-										+"\\n//try{ throw new java.lang.Exception(\\\"error test\\\");SimpleQuerier querier = new SimpleQuerier(catalog);}catch(java.lang.Exception e){label=e.getMessage();}"
-										+"\\n//String label = querier.executeSQLQuery(\\\"SELECT name FROM PROJECT WHERE id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\").getAll().get(0).getValue(0);"
+										+"\\nString test = SchemaSingleton.getFieldNames(catalog,\\\"PROJECT\\\").toString();"
+										+"\\nQuerier querier = new SimpleQuerier(catalog);"
+										+"\\nString label = querier.executeSQLQuery(\\\"SELECT name FROM PROJECT WHERE id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\").getAll().get(0).getValue(0);"
+										+"\\nquerier.rollbackAndRelease();"
 										+"\\nwebLink = new WebLink();"
 										+"\\nwebLink.newLinkProperties().setLabel(\\\"project table\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"PROJECT\\\");"
 										+"\\nwebLink.newLinkProperties().setLabel(label).setCtrl(\\\"elementInfo\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"arrows-alt\\\").setTitle(\\\"PROJECT\\\");"
@@ -1051,6 +1052,7 @@ public class AMICoreTest
 			ConverterSingleton.convert("AMIXmlToJson.xsl", stringReader, stringWriter);
 
 			data = stringWriter.toString();
+			System.out.println(data);
 		}
 		catch(Exception e)
 		{
