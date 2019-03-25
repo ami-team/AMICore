@@ -78,22 +78,20 @@ public class GetElementInfo extends AbstractCommand
 	{
 		List<QId> constraints;
 
-		String condition;
 		String linkedCatalog;
 		String linkedEntity;
 		String direction;
-
 
 		for(SchemaSingleton.FrgnKeys frgnKeys: list)
 		 for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 		{
 			/*-------------------------------------------------------------*/
 
-			constraints = Arrays.asList(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField));
+			constraints = new ArrayList<>();
 
 			/*-------------------------------------------------------------*/
 
-			condition = new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?";
+			constraints.add(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField));
 
 			/*-------------------------------------------------------------*/
 
@@ -125,24 +123,19 @@ public class GetElementInfo extends AbstractCommand
 
 						if(table.bridge)
 						{
+							constraints.clear();
+
 							for(SchemaSingleton.FrgnKeys tmp1: table.forwardFKs.values())
 							{
+								constraints.add(new QId(tmp1.get(0).fkExternalCatalog, tmp1.get(0).fkEntity, tmp1.get(0).fkField));
+
 								if(catalog.equals(tmp1.get(0).pkExternalCatalog) == false
 								   ||
 								   entity.equals(tmp1.get(0).pkEntity) == false
 								 ) {
-									constraints.add(new QId(tmp1.get(0).pkExternalCatalog, tmp1.get(0).pkEntity, tmp1.get(0).pkField));
-
 									linkedCatalog = tmp1.get(0).pkExternalCatalog;
 									linkedEntity = tmp1.get(0).pkEntity;
 									direction = "bridge";
-
-									condition += " AND " + new QId(tmp1.get(0).pkExternalCatalog, tmp1.get(0).pkEntity, tmp1.get(0).pkField).toString(QId.MASK_CATALOG_ENTITY_FIELD)
-									                     + " = "
-									                     + new QId(tmp1.get(0).fkExternalCatalog, tmp1.get(0).fkEntity, tmp1.get(0).fkField).toString(QId.MASK_CATALOG_ENTITY_FIELD)
-									;
-
-									break;
 								}
 							}
 						}
@@ -170,7 +163,7 @@ public class GetElementInfo extends AbstractCommand
 			{
 
 				String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
-				                              .addWherePart(condition)
+				                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?")
 				                              .toString()
 				;
 
@@ -194,9 +187,9 @@ public class GetElementInfo extends AbstractCommand
 			result.append("<row>")
 			      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
 			      .append("<field name=\"entity\"><![CDATA[").append(linkedEntity).append("]]></field>")
-			      .append("<field name=\"constraint\"><![CDATA[").append(constraints.stream().map(x -> x.toString(QId.MASK_FIELD)).collect(Collectors.joining(", "))).append("]]></field>")
-			      .append("<field name=\"sql\"><![CDATA[").append(sql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
-			      .append("<field name=\"mql\"><![CDATA[").append(mql.replace("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")", new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD))).append("]]></field>")
+			      .append("<field name=\"constraint\"><![CDATA[").append(constraints.stream().map(x -> x.toString(QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", "))).append("]]></field>")
+			      .append("<field name=\"sql\"><![CDATA[").append(sql.replaceFirst("COUNT\\(([^)]+)\\)", "$1")).append("]]></field>")
+			      .append("<field name=\"mql\"><![CDATA[").append(mql.replaceFirst("COUNT\\(([^)]+)\\)", "$1")).append("]]></field>")
 			      .append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
 			      .append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
 			      .append("</row>")
