@@ -219,7 +219,7 @@ public class AMICoreTest
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params2 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE valid=1 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
-				String params3 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
+				String params3 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
@@ -255,7 +255,7 @@ public class AMICoreTest
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink();"
 										+"\\nif(rowSet.isANameOrLabel(\\\"test.DATASET.id\\\"))"
-										+"\\nwebLink.newLinkProperties().setLabel(\\\"files\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
+										+"\\nwebLink.newLinkProperties().setLabel(\\\"files\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"FILE\\\");"
 										+"\\nreturn webLink;";
 				String values = "testxxxxxDATASETxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
@@ -304,7 +304,7 @@ public class AMICoreTest
 										+"\\nimport net.hep.ami.jdbc.reflexion.SchemaSingleton;"
 										+"\\nString test = SchemaSingleton.getFieldNames(catalog,\\\"PROJECT\\\").toString();"
 										+"\\nQuerier querier = new SimpleQuerier(catalog);"
-										+"\\nString label = querier.executeSQLQuery(null,\\\"SELECT name FROM PROJECT WHERE id='\\\" + row.getValue(\\\"test.DATASET.projectFK\\\") + \\\"'\\\").getAll().get(0).getValue(0);"
+										+"\\nString label = querier.executeSQLQuery(null,\\\"SELECT `name` FROM `PROJECT` WHERE `id`='\\\" + row.getValue(\\\"test.DATASET.projectFK\\\") + \\\"'\\\").getAll().get(0).getValue(0);"
 										+"\\nquerier.rollbackAndRelease();"
 										+"\\nwebLink = new WebLink();"
 										+"\\nif(rowSet.isANameOrLabel(\\\"test.DATASET.id\\\"))"
