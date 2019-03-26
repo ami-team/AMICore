@@ -81,19 +81,19 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private static String buildName(String catalog, String entity, String field)
+	private static String buildName(@Nullable String catalog, @Nullable String entity, @Nullable String field)
 	{
 		List<String> result = new ArrayList<>();
 
-		if("N/A".equals(catalog) == false) {
+		if(catalog != null && "N/A".equals(catalog) == false) {
 			result.add(catalog);
 		}
 
-		if("N/A".equals(entity) == false) {
+		if(entity != null && "N/A".equals(entity) == false) {
 			result.add(entity);
 		}
 
-		if("N/A".equals(field) == false) {
+		if(field != null && "N/A".equals(field) == false) {
 			result.add(field);
 		}
 
@@ -259,27 +259,7 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			m_fieldNames_i = buildName(
-				m_fieldCatalogs[i],
-				m_fieldEntities[i],
-				m_fieldNames[i]
-			);
-
-			/*-------------------------------------------------------------*/
-
-			if(defaultEntity != null && defaultEntity.equals(m_fieldEntities[i]) == false)
-			{
-				if(defaultCatalog != null && defaultCatalog.equals(m_fieldCatalogs[i]) == false)
-				{
-					m_fieldLabels[i] = buildName(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldLabels[i]);
-				}
-				else
-				{
-					m_fieldLabels[i] = buildName("N/A", m_fieldEntities[i], m_fieldLabels[i]);
-				}
-			}
-
-			/*-------------------------------------------------------------*/
+			/* FOR ORACLE */
 
 			if(defaultCatalog != null
 			   &&
@@ -298,6 +278,25 @@ public class RowSet
 
 				resolveLabel(labelToFieldMap, defaultCatalog, i, sql);
 			}
+
+			/*-------------------------------------------------------------*/
+
+			if(defaultCatalog != null && defaultCatalog.equals(m_fieldCatalogs[i]) == false
+			   ||
+			   defaultEntity != null && defaultEntity.equals(m_fieldEntities[i]) == false
+			 ) {
+				m_fieldLabels[i] = buildName(
+					m_fieldCatalogs[i],
+					m_fieldEntities[i],
+					m_fieldLabels[i]
+				);
+			}
+
+			m_fieldNames_i = buildName(
+				m_fieldCatalogs[i],
+				m_fieldEntities[i],
+				m_fieldNames[i]
+			);
 
 			/*-------------------------------------------------------------*/
 
@@ -374,9 +373,7 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 		}
-		System.out.println(m_nameIndices);
-		System.out.println(m_labelIndices);
-		System.out.println();
+
 		/*-----------------------------------------------------------------*/
 	}
 
