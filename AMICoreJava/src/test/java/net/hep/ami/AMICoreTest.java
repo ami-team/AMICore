@@ -769,7 +769,7 @@ public class AMICoreTest
 
 			/*-----------------------------------------------------------------*/
 
-			for (int i = 1; i < 2; i++) {
+			for (int i = 2; i < 4; i++) {
 				try
 				{
 					arguments.clear();
@@ -779,8 +779,8 @@ public class AMICoreTest
 					//arguments.put("fields", "DATASET_FILE_BRIDGE.datasetFK");
 					//arguments.put("values", (i + 1) + "" );
 					arguments.put("fields", "FILE.name{DATASET_FILE_BRIDGE.fileFK}");
-					arguments.put("values", "file_" + (i + cptMax2));
-					arguments.put("keyFields", "FILE.name;DATASET.name");
+					arguments.put("values", "file_" + (cptMax-1));
+					arguments.put("keyFields", "FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
 					arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
 					CommandSingleton.executeCommand("UpdateElements", arguments, false);
 				}
