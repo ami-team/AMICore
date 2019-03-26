@@ -81,7 +81,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private static String buildName(@Nullable String catalog, @Nullable String entity, @Nullable String field)
+	private static String buildNameOrLabel(@Nullable String catalog, @Nullable String entity, @Nullable String field)
 	{
 		List<String> result = new ArrayList<>();
 
@@ -285,14 +285,14 @@ public class RowSet
 			   ||
 			   defaultEntity != null && defaultEntity.equals(m_fieldEntities[i]) == false
 			 ) {
-				m_fieldLabels[i] = buildName(
+				m_fieldLabels[i] = buildNameOrLabel(
 					m_fieldCatalogs[i],
 					m_fieldEntities[i],
 					m_fieldLabels[i]
 				);
 			}
 
-			m_fieldNames_i = buildName(
+			m_fieldNames_i = buildNameOrLabel(
 				m_fieldCatalogs[i],
 				m_fieldEntities[i],
 				m_fieldNames[i]
