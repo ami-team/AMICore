@@ -23,11 +23,11 @@ public class WebLinkCache
 
 	public String processWebLink(String code, String catalog, String entity, String field, Row row)
 	{
-		if(code != null
-		   &&
-		   code.isEmpty() == false
-		   &&
-		   "@NULL".equalsIgnoreCase(code) == false
+		if(code == null
+		   ||
+		   code.isEmpty()
+		   ||
+		   "@NULL".equalsIgnoreCase(code)
 		 ) {
 			return "";
 		}

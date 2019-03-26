@@ -374,7 +374,9 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 		}
-
+		System.out.println(m_nameIndices);
+		System.out.println(m_labelIndices);
+		System.out.println();
 		/*-----------------------------------------------------------------*/
 	}
 
