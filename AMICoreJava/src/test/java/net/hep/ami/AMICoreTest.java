@@ -297,7 +297,7 @@ public class AMICoreTest
 										+"\\nimport net.hep.ami.jdbc.reflexion.SchemaSingleton;"
 										+"\\nString test = SchemaSingleton.getFieldNames(catalog,\\\"PROJECT\\\").toString();"
 										+"\\nQuerier querier = new SimpleQuerier(catalog);"
-										+"\\nString label = querier.executeSQLQuery(\\\"SELECT name FROM PROJECT WHERE id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\").getAll().get(0).getValue(0);"
+										+"\\nString label = querier.executeSQLQuery(null,\\\"SELECT name FROM PROJECT WHERE id='\\\" + row.getValue(\\\"projectFK\\\") + \\\"'\\\").getAll().get(0).getValue(0);"
 										+"\\nquerier.rollbackAndRelease();"
 										+"\\nwebLink = new WebLink();"
 										+"\\nwebLink.newLinkProperties().setLabel(\\\"project table\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"PROJECT\\\");"

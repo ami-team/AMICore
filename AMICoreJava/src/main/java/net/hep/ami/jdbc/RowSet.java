@@ -228,12 +228,14 @@ public class RowSet
 			/*-------------------------------------------------------------*/
 
 			if(defaultEntity != null && m_fieldEntities[i].equals(defaultEntity) == false) {
-				m_fieldLabels[i] = defaultEntity + "." + m_fieldLabels[i];
+				m_fieldLabels[i] = m_fieldEntities[i] + "." + m_fieldLabels[i];
 			}
 
+			/*
 			if(defaultCatalog != null && m_fieldCatalogs[i].equals(defaultCatalog) == false) {
-				m_fieldLabels[i] = defaultCatalog + "." + m_fieldLabels[i];
+				m_fieldLabels[i] = m_fieldCatalogs[i] + "." + m_fieldLabels[i];
 			}
+			*/
 
 			/*-------------------------------------------------------------*/
 
