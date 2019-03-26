@@ -737,6 +737,7 @@ public class RowSet
 				m_fieldCatalogs[fieldIndex],
 				m_fieldEntities[fieldIndex],
 				m_fieldNames[fieldIndex],
+				this,
 				row
 			);
 		}

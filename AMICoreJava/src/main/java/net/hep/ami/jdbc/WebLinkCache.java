@@ -21,7 +21,7 @@ public class WebLinkCache
 
 	/*---------------------------------------------------------------------*/
 
-	public String processWebLink(String code, String catalog, String entity, String field, Row row)
+	public String processWebLink(String code, String catalog, String entity, String field, RowSet rowSet, Row row)
 	{
 		if(code == null
 		   ||
@@ -56,6 +56,7 @@ public class WebLinkCache
 		binding.setVariable("catalog", catalog);
 		binding.setVariable("entity", entity);
 		binding.setVariable("field", field);
+		binding.setVariable("rowSet", rowSet);
 		binding.setVariable("row", row);
 
 		script.setBinding(binding);
