@@ -3,6 +3,7 @@ package net.hep.ami.jdbc;
 import groovy.lang.*;
 
 import net.hep.ami.*;
+import net.hep.ami.utility.*;
 
 public class WebLinkCache
 {
@@ -21,7 +22,7 @@ public class WebLinkCache
 
 	/*---------------------------------------------------------------------*/
 
-	public String processWebLink(String code, String catalog, String entity, String field, RowSet rowSet, Row row)
+	public String processWebLink(@Nullable String code, String catalog, String entity, String field, RowSet rowSet, Row row)
 	{
 		if(code == null
 		   ||
