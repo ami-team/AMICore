@@ -36,7 +36,7 @@ public class GetElementInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog);
+		Querier querier = getQuerier(catalog, true);
 
 		/*-----------------------------------------------------------------*/
 		/*                                                                 */
