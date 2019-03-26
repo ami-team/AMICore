@@ -95,6 +95,7 @@ public class AMICoreTest
 				{
 					db.rollbackAndRelease();
 	
+					System.out.println(e.getMessage());
 					throw e;
 				}
 	
@@ -777,15 +778,15 @@ public class AMICoreTest
 					arguments.put("separator", ";");
 					//arguments.put("fields", "DATASET_FILE_BRIDGE.datasetFK");
 					//arguments.put("values", (i + 1) + "" );
-					arguments.put("fields", "DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
-					arguments.put("values", "dataset_" + (i + 1) );
+					arguments.put("fields", "FILE.name{DATASET_FILE_BRIDGE.fileFK}");
+					arguments.put("values", "file_" + (i + cptMax2));
 					arguments.put("keyFields", "FILE.name;DATASET.name");
 					arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
 					CommandSingleton.executeCommand("UpdateElements", arguments, false);
 				}
 				catch(Exception e)
 				{
-					System.out.println("xxx"+e.getMessage());
+					System.out.println(e.getMessage());
 					testFail = true;
 				}
 			}
