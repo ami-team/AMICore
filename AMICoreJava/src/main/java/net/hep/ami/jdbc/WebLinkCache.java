@@ -23,6 +23,15 @@ public class WebLinkCache
 
 	public String processWebLink(String code, String catalog, String entity, String field, Row row)
 	{
+		if(code != null
+		   &&
+		   code.isEmpty() == false
+		   &&
+		   "@NULL".equalsIgnoreCase(code) == false
+		 ) {
+			return "";
+		}
+
 		/*-----------------------------------------------------------------*/
 		/* COMPILE GROOVY SCRIPT                                           */
 		/*-----------------------------------------------------------------*/
@@ -53,9 +62,11 @@ public class WebLinkCache
 
 		/*-----------------------------------------------------------------*/
 
+		String result;
+
 		try
 		{
-			return ((WebLink) script.run()).toString();
+			result = ((WebLink) script.run()).toString();
 		}
 		catch(Exception e)
 		{
@@ -63,5 +74,7 @@ public class WebLinkCache
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		return result;
 	}
 }

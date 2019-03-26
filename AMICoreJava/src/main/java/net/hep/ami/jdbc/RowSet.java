@@ -28,6 +28,8 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	/* From JDBC */
+
 	protected final String[] m_fieldCatalogs;
 	protected final String[] m_fieldEntities;
 	protected final String[] m_fieldNames;
@@ -35,6 +37,8 @@ public class RowSet
 	protected final String[] m_fieldTypes;
 
 	/*---------------------------------------------------------------------*/
+
+	/* From AMI */
 
 	protected final int[] m_fieldRank;
 	protected final boolean[] m_fieldHidden;
@@ -74,6 +78,27 @@ public class RowSet
 	private boolean m_truncated = false;
 
 	private boolean m_lock = false;
+
+	/*---------------------------------------------------------------------*/
+
+	private static String buildName(String catalog, String entity, String field)
+	{
+		List<String> result = new ArrayList<>();
+
+		if("N/A".equals(catalog) == false) {
+			result.add(catalog);
+		}
+
+		if("N/A".equals(entity) == false) {
+			result.add(entity);
+		}
+
+		if("N/A".equals(field) == false) {
+			result.add(field);
+		}
+
+		return String.join(".", result);
+	}
 
 	/*---------------------------------------------------------------------*/
 
@@ -143,6 +168,8 @@ public class RowSet
 		/*-----------------------------------------------------------------*/
 		/* FILL DATA STRUCTURES                                            */
 		/*-----------------------------------------------------------------*/
+
+		String m_fieldNames_i;
 
 		Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap = null;
 
@@ -232,22 +259,24 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			if(defaultEntity != null
-			   &&
-			   m_fieldEntities[i].equals("N/A") == false
-			   &&
-			   m_fieldEntities[i].equals(defaultEntity) == false
-			 ) {
-				m_fieldLabels[i] = m_fieldEntities[i] + "." + m_fieldLabels[i];
-			}
+			m_fieldNames_i = buildName(
+				m_fieldCatalogs[i],
+				m_fieldEntities[i],
+				m_fieldNames[i]
+			);
 
-			if(defaultCatalog != null
-			   &&
-			   m_fieldCatalogs[i].equals("N/A") == false
-			   &&
-			   m_fieldCatalogs[i].equals(defaultCatalog) == false
-			 ) {
-				m_fieldLabels[i] = m_fieldCatalogs[i] + "." + m_fieldLabels[i];
+			/*-------------------------------------------------------------*/
+
+			if(defaultEntity != null && defaultEntity.equals(m_fieldEntities[i]) == false)
+			{
+				if(defaultCatalog != null && defaultCatalog.equals(m_fieldCatalogs[i]) == false)
+				{
+					m_fieldLabels[i] = buildName(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldLabels[i]);
+				}
+				else
+				{
+					m_fieldLabels[i] = buildName("N/A", m_fieldEntities[i], m_fieldLabels[i]);
+				}
 			}
 
 			/*-------------------------------------------------------------*/
@@ -338,11 +367,10 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			m_nameIndices.put(m_fieldNames[i], i);
+			m_nameIndices.put(m_fieldNames_i, i);
 			m_labelIndices.put(m_fieldLabels[i], i);
 
 			/*-------------------------------------------------------------*/
-
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -693,18 +721,13 @@ public class RowSet
 	{
 		if(m_links)
 		{
-			String webLinkScript = m_fieldWebLinkScript[fieldIndex];
-
-			if(webLinkScript != null && webLinkScript.isEmpty() == false && "@NULL".equalsIgnoreCase(webLinkScript) == false)
-			{
-				return m_webLinkScripts.processWebLink(
-					webLinkScript,
-					m_fieldCatalogs[fieldIndex],
-					m_fieldEntities[fieldIndex],
-					m_fieldNames[fieldIndex],
-					row
-				);
-			}
+			return m_webLinkScripts.processWebLink(
+				m_fieldWebLinkScript[fieldIndex],
+				m_fieldCatalogs[fieldIndex],
+				m_fieldEntities[fieldIndex],
+				m_fieldNames[fieldIndex],
+				row
+			);
 		}
 
 		return "";
