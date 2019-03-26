@@ -281,7 +281,9 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			if((
+			if(defaultCatalog != null
+			   &&
+			   (
 				"N/A".equals(m_fieldCatalogs[i]) == true
 				||
 				"N/A".equals(m_fieldEntities[i]) == true
