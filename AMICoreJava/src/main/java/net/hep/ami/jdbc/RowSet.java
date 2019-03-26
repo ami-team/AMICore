@@ -231,7 +231,7 @@ public class RowSet
 				m_fieldLabels[i] = m_fieldEntities[i] + "." + m_fieldLabels[i];
 			}
 
-			if(defaultCatalog != null && defaultCatalog != "N/A" && m_fieldCatalogs[i].equals(defaultCatalog) == false) {
+			if(defaultCatalog != null && m_fieldCatalogs[i].equals(defaultCatalog) == false && m_fieldCatalogs[i].equals("N/A") == false) {
 				m_fieldLabels[i] = m_fieldCatalogs[i] + "." + m_fieldLabels[i];
 			}
 
