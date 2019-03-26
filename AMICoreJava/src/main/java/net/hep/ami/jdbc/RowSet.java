@@ -58,6 +58,11 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	protected final Map<String, Integer> m_nameIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
+	protected final Map<String, Integer> m_labelIndices = new AMIMap<>(AMIMap.Type.HASH_MAP, false, true);
+
+	/*---------------------------------------------------------------------*/
+
 	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
@@ -227,11 +232,21 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			if(defaultEntity != null && m_fieldEntities[i].equals(defaultEntity) == false) {
+			if(defaultEntity != null
+			   &&
+			   m_fieldEntities[i].equals("N/A") == false
+			   &&
+			   m_fieldEntities[i].equals(defaultEntity) == false
+			 ) {
 				m_fieldLabels[i] = m_fieldEntities[i] + "." + m_fieldLabels[i];
 			}
 
-			if(defaultCatalog != null && m_fieldCatalogs[i].equals(defaultCatalog) == false && m_fieldCatalogs[i].equals("N/A") == false) {
+			if(defaultCatalog != null
+			   &&
+			   m_fieldCatalogs[i].equals("N/A") == false
+			   &&
+			   m_fieldCatalogs[i].equals(defaultCatalog) == false
+			 ) {
 				m_fieldLabels[i] = m_fieldCatalogs[i] + "." + m_fieldLabels[i];
 			}
 
@@ -322,6 +337,12 @@ public class RowSet
 			}
 
 			/*-------------------------------------------------------------*/
+
+			m_nameIndices.put(m_fieldNames[i], i);
+			m_labelIndices.put(m_fieldLabels[i], i);
+
+			/*-------------------------------------------------------------*/
+
 		}
 
 		/*-----------------------------------------------------------------*/
