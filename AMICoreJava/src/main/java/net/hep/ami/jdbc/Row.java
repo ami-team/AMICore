@@ -20,37 +20,9 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
-	public String getFieldCatalog(int fieldIndex) throws Exception
+	public RowSet getRowSet()
 	{
-		return m_rowSet.getCatalogOfField(fieldIndex);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getFieldEntity(int fieldIndex) throws Exception
-	{
-		return m_rowSet.getEntityOfField(fieldIndex);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getFieldName(int fieldIndex) throws Exception
-	{
-		return m_rowSet.getNameOfField(fieldIndex);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getFieldLabel(int fieldIndex) throws Exception
-	{
-		return m_rowSet.getLabelOfField(fieldIndex);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public String getFieldType(int fieldIndex) throws Exception
-	{
-		return m_rowSet.getTypeOfField(fieldIndex);
+		return m_rowSet;
 	}
 
 	/*---------------------------------------------------------------------*/

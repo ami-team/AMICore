@@ -530,6 +530,16 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	public boolean isANameOrLabel(String name)
+	{
+		return m_nameIndices.containsKey(name)
+		       ||
+		       m_labelIndices.containsKey(name)
+		;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public int getNumberOfFields()
 	{
 		return m_numberOfFields;
