@@ -536,7 +536,7 @@ public class SchemaSingleton
 						   &&
 						   entity.toLowerCase().startsWith("x_db_") == false
 						 ) {
-							m_catalog.tables.put(entity, new Table(m_internalCatalog, m_externalCatalog, entity, rank++));
+							m_catalog.tables.put(entity, new Table(m_externalCatalog, m_internalCatalog, entity, rank++));
 
 							entities.add(entity);
 						}
