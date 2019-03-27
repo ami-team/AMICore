@@ -769,7 +769,7 @@ public class AMICoreTest
 
 			/*-----------------------------------------------------------------*/
 
-			for (int i = 2; i < 4; i++) {
+			for (int i = 2; i < 5; i++) {
 				try
 				{
 					arguments.clear();
@@ -778,11 +778,22 @@ public class AMICoreTest
 					arguments.put("separator", ";");
 					//arguments.put("fields", "DATASET_FILE_BRIDGE.datasetFK");
 					//arguments.put("values", (i + 1) + "" );
-					arguments.put("fields", "FILE.name{DATASET_FILE_BRIDGE.fileFK}");
-					arguments.put("values", "file_" + (cptMax-1));
-					arguments.put("keyFields", "FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
-					arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
-					CommandSingleton.executeCommand("UpdateElements", arguments, false);
+					//arguments.put("fields", "FILE.name{DATASET_FILE_BRIDGE.fileFK}");
+					//arguments.put("values", "file_" + (cptMax-1));
+					arguments.put("fields", "comment");
+					arguments.put("values", "test_" + i);
+					//arguments.put("keyFields", "FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
+					//arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
+					if(i == 2)
+						arguments.put("where", "FILE.name{DATASET_FILE_BRIDGE.fileFK}='file_" + i + "' AND DATASET.name{DATASET_FILE_BRIDGE.datasetFK}='dataset_" + i +"'");
+					else 
+					{
+						arguments.put("keyFields", "FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
+						arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
+					}
+					//System.out.println("FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
+					System.out.println(CommandSingleton.executeCommand("UpdateElements", arguments, false).replace(">", ">\n"));
+					//CommandSingleton.executeCommand("UpdateElements", arguments, false);
 				}
 				catch(Exception e)
 				{
@@ -790,6 +801,26 @@ public class AMICoreTest
 					testFail = true;
 				}
 			}
+
+				try
+				{
+					arguments.clear();
+					arguments.put("catalog", "test");
+					arguments.put("entity", "DATASET_FILE_BRIDGE");
+					arguments.put("separator", ";");
+					arguments.put("fields", "comment;FILE.name{DATASET_FILE_BRIDGE.fileFK}");
+					arguments.put("values", "test_x;file_5");
+					arguments.put("keyFields", "FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
+					arguments.put("keyValues", "file_0;dataset_0");
+
+					System.out.println(CommandSingleton.executeCommand("UpdateElements", arguments, false).replace(">", ">\n"));
+					//CommandSingleton.executeCommand("UpdateElements", arguments, false);
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
 
 				try
 				{
@@ -814,7 +845,7 @@ public class AMICoreTest
 
 			/*-----------------------------------------------------------------*/
 
-			for (int i = cptMax/2; i < cptMax; i++) {
+			for (int i = 0; i < 1; i++) {
 				try
 				{
 					arguments.clear();
@@ -1000,6 +1031,34 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
+		
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -mql=\"SELECT * WHERE FILE.name{DATASET_FILE_BRIDGE.fileFK}='file_2' AND DATASET.name{DATASET_FILE_BRIDGE.datasetFK}='dataset_2'\" ";
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -mql=\"SELECT * WHERE comment='test_2'\" ";
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+
 		/*-----------------------------------------------------------------*/
 
 	
