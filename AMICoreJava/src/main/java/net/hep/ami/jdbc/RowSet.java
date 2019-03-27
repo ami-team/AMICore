@@ -281,9 +281,13 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			if(defaultCatalog != null && defaultCatalog.equals(m_fieldCatalogs[i]) == false
-			   ||
-			   defaultEntity != null && defaultEntity.equals(m_fieldEntities[i]) == false
+			if(m_fieldNames[i].equalsIgnoreCase(m_fieldLabels[i])
+			   &&
+			   (
+			       defaultCatalog != null && defaultCatalog.equalsIgnoreCase(m_fieldCatalogs[i]) == false
+			       ||
+			       defaultEntity != null && defaultEntity.equalsIgnoreCase(m_fieldEntities[i]) == false
+			   )
 			 ) {
 				m_fieldLabels[i] = buildNameOrLabel(
 					m_fieldCatalogs[i],
