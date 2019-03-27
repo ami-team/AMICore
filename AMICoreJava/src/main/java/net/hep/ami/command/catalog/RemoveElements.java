@@ -36,11 +36,9 @@ public class RemoveElements extends AbstractCommand
 		                                                        : new String[] {}
 		;
 
-		String where = arguments.containsKey("where") ? arguments.get("where").trim()
-		                                              : ""
-		;
+		String where = arguments.get("where");
 
-		if(catalog == null || entity == null || keyFields.length != keyValues.length || (keyFields.length == 0 && where.isEmpty()))
+		if(catalog == null || entity == null || keyFields.length != keyValues.length || (keyFields.length == 0 && where == null))
 		{
 			throw new Exception("invalid usage");
 		}
@@ -53,14 +51,16 @@ public class RemoveElements extends AbstractCommand
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add(QId.parseQId(keyFields[i], QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
+			whereList.add(QId.parseQId(keyFields[i], QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
 
-		query.addWherePart(whereList);
+		query.addWherePart(whereList)
+		     .addWherePart(where)
+		;
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(XQLDelete.Mode.MQL).toString(where)).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(XQLDelete.Mode.MQL).toString()).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

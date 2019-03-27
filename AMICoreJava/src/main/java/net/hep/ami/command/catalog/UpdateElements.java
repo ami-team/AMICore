@@ -46,11 +46,9 @@ public class UpdateElements extends AbstractCommand
 		                                                        : new String[] {}
 		;
 
-		String where = arguments.containsKey("where") ? arguments.get("where").trim()
-		                                              : ""
-		;
+		String where = arguments.get("where");
 
-		if(catalog == null || entity == null || fields.length == 0 || fields.length != values.length || keyFields.length != keyValues.length)
+		if(catalog == null || entity == null || fields.length == 0 || fields.length != values.length || keyFields.length != keyValues.length || (keyFields.length == 0 && where == null))
 		{
 			throw new Exception("invalid usage");
 		}
@@ -77,14 +75,16 @@ public class UpdateElements extends AbstractCommand
 
 		for(int i = 0; i < keyFields.length; i++)
 		{
-			whereList.add(QId.parseQId(keyFields[i], QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
+			whereList.add(QId.parseQId(keyFields[i], QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + keyValues[i].trim().replace("'", "''") + "'");
 		}
 
-		query.addWherePart(whereList);
+		query.addWherePart(whereList)
+		     .addWherePart(where)
+		;
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.toString(where)).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.toString()).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
