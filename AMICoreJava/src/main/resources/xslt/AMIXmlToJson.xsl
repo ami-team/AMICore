@@ -195,14 +195,13 @@
 		<xsl:if test="properties|link">,</xsl:if>
 
 		<xsl:if test="properties">
-			<xsl:text>"properties":[</xsl:text>
+			<xsl:text>"properties":</xsl:text>
 			<xsl:apply-templates select="properties" />
-			<xsl:text>]</xsl:text>
 			<xsl:if test="link">,</xsl:if>
 		</xsl:if>
 
 		<xsl:if test="link">
-			<xsl:text>"link":[</xsl:text>
+			<xsl:text>"links":[</xsl:text>
 			<xsl:apply-templates select="link" />
 			<xsl:text>]</xsl:text>
 		</xsl:if>
