@@ -342,6 +342,23 @@ public class AMICoreTest
 				testFail = true;
 			}
 	
+			try 
+			{
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScript";
+				String webLinkScript = ""
+										+"import net.hep.ami.jdbc.WebLink;"
+										+"\\nresult = new WebLink().setClass(\\\"d-block\\\").setUnitName(\\\"Octet\\\").setUnitFactor(\\\"\\\").setUnitBase(\\\"1024\\\").setHumanReadable(\\\"true\\\");"
+										+"\\nreturn webLink;";
+				String values = "testxxxxxFILExxxxxsizexxxxxthis is a test descriptionxxxxx"+webLinkScript+"";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
 			/*
 			try 
 			{
