@@ -256,7 +256,19 @@ public class AMICoreTest
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink();"
 										+"\\nif(rowSet.isANameOrLabel(\\\"test.DATASET.id\\\"))"
-										+"\\nwebLink.newLinkProperties().setLabel(\\\"files\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"FILE\\\");"
+										+"\\nwebLink.newLinkProperties().setLabel(\\\"files\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"FILE\\\").setClass(\\\"badge badge-info\\\");"
+										+"\\nif(rowSet.isANameOrLabel(\\\"test.DATASET.valid\\\"))"
+										+"\\n{"
+										+"\\nswitch(row.getValue(\\\"test.DATASET.valid\\\"))"
+										+"\\n{"
+										+"\\ncase [\\\"1\\\"]:"
+										+"\\nwebLink.setClass(\\\"badge badge-success w-100 d-block\\\"); "
+										+"\\nbreak;"
+										+"\\ncase [\\\"0\\\"]:"
+										+"\\nwebLink.setClass(\\\"badge badge-info w-100  d-block\\\"); "
+										+"\\nbreak;"
+										+"\\n}"
+										+"\\n}"
 										+"\\nreturn webLink;";
 				String values = "testxxxxxDATASETxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
@@ -1036,8 +1048,8 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			//CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
@@ -1049,6 +1061,21 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' LIMIT 20 OFFSET 0 \"";
+		//commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' \"";
+		
+		System.out.println(commandTest);
+		try
+		{
 			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 			//CommandSingleton.executeCommand(commandTest, false);
 		}
@@ -1057,8 +1084,7 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-
-
+		
 		/*-----------------------------------------------------------------*/
 
 	
