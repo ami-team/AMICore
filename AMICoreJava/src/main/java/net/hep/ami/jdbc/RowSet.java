@@ -416,17 +416,57 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		if(qId.is(QId.MASK_CATALOG_ENTITY_FIELD) == false)
+		if(qId.is(QId.MASK_CATALOG_ENTITY_FIELD))
 		{
-			if(defaultCatalog == null)
+			/*-------------------------------------------------------------*/
+
+			m_fieldCatalogs[fieldIndex] = qId.getCatalog();
+			m_fieldEntities[fieldIndex] = qId.getEntity();
+			m_fieldNames[fieldIndex] = qId.getField();
+
+			return true;
+
+			/*-------------------------------------------------------------*/
+		}
+		else if(qId.is(QId.MASK_ENTITY_FIELD))
+		{
+			/*-------------------------------------------------------------*/
+
+			if(defaultCatalog != null)
 			{
-				for(QId table: qId.is(QId.MASK_ENTITY_FIELD) ? Collections.singletonList(qId) : labelToFieldMap.y)
+				try
+				{
+					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, qId.getEntity(), qId).getExternalQId();
+
+					m_fieldCatalogs[fieldIndex] = resolvedQId.getCatalog();
+					m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
+					m_fieldNames[fieldIndex] = resolvedQId.getField();
+
+					return true;
+				}
+				catch(Exception e)
+				{
+					/* IGNORE */
+				}
+			}
+
+			/*-------------------------------------------------------------*/
+		}
+		else if(qId.is(QId.MASK_FIELD))
+		{
+			/*-------------------------------------------------------------*/
+
+			if(defaultCatalog != null)
+			{
+				/*---------------------------------------------------------*/
+
+				if(defaultEntity != null)
 				{
 					try
 					{
-						QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getExternalQId();
+						QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, defaultEntity, qId).getExternalQId();
 
-						m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog(resolvedQId.getCatalog());
+						m_fieldCatalogs[fieldIndex] = resolvedQId.getCatalog();
 						m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
 						m_fieldNames[fieldIndex] = resolvedQId.getField();
 
@@ -437,22 +477,37 @@ public class RowSet
 						/* IGNORE */
 					}
 				}
-			}
-		}
-		else
-		{
-			try
-			{
-				m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog(qId.getCatalog());
-				m_fieldEntities[fieldIndex] = qId.getEntity();
-				m_fieldNames[fieldIndex] = qId.getField();
 
-				return true;
+				/*---------------------------------------------------------*/
+
+				String newDefaultCatalog;
+				String newDefaultEntity;
+
+				for(QId table: labelToFieldMap.y)
+				{
+					newDefaultCatalog = table.getCatalog() != null ? table.getCatalog() : defaultCatalog;
+					newDefaultEntity = table.getEntity() != null ? table.getEntity() : defaultEntity;
+
+					try
+					{
+						QId resolvedQId = AutoJoinSingleton.resolve(newDefaultCatalog, newDefaultEntity, qId).getExternalQId();
+
+						m_fieldCatalogs[fieldIndex] = resolvedQId.getCatalog();
+						m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
+						m_fieldNames[fieldIndex] = resolvedQId.getField();
+
+						return true;
+					}
+					catch(Exception e)
+					{
+						/* IGNORE */
+					}
+				}
+
+				/*---------------------------------------------------------*/
 			}
-			catch(Exception e)
-			{
-				/* IGNORE */
-			}
+
+			/*-------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
