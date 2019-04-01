@@ -919,7 +919,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog_noException(String internalCatalog, String value)
+	public static String internalCatalogToExternalCatalog_noException(@Nullable String internalCatalog, String value)
 	{
 		String result = s_internalCatalogToExternalCatalog.get(internalCatalog);
 
@@ -928,7 +928,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog_noException(String externalCatalog, String value)
+	public static String externalCatalogToInternalCatalog_noException(@Nullable String externalCatalog, String value)
 	{
 		String result =  s_externalCatalogToInternalCatalog.get(externalCatalog);
 
@@ -937,7 +937,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog(String internalCatalog) throws Exception
+	public static String internalCatalogToExternalCatalog(@Nullable String internalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -957,7 +957,7 @@ public class SchemaSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog(String externalCatalog) throws Exception
+	public static String externalCatalogToInternalCatalog(@Nullable String externalCatalog) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 

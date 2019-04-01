@@ -261,22 +261,20 @@ public class RowSet
 
 			/* FOR ORACLE */
 
-			if(defaultCatalog != null
+			if("N/A".equals(m_fieldLabels[i]) == false
 			   &&
 			   (
 				"N/A".equals(m_fieldCatalogs[i]) == true
 				||
 				"N/A".equals(m_fieldEntities[i]) == true
 			   )
-			   &&
-			   "N/A".equals(m_fieldLabels[i]) == false
 			 ) {
 				if(labelToFieldMap == null)
 				{
 					labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
 				}
 
-				resolveLabel(labelToFieldMap, defaultCatalog, i, sql);
+				resolveLabel(labelToFieldMap, defaultCatalog, defaultEntity, i, sql);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -383,7 +381,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private void resolveLabel(Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap, String defaultCatalog, int fieldIndex, String sql)
+	private void resolveLabel(Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex, String sql)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -405,7 +403,22 @@ public class RowSet
 		}
 		catch(Exception e)
 		{
-			/* IGNORE */
+			return;
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		if(labelToFieldMap.y.size() == 1
+		   &&
+		   defaultCatalog != null
+		   &&
+		   defaultEntity != null
+		 ) {
+			m_fieldCatalogs[fieldIndex] = defaultCatalog;
+
+			m_fieldEntities[fieldIndex] = defaultEntity;
+
+			m_fieldNames[fieldIndex] = qId.getField();
 
 			return;
 		}
@@ -414,23 +427,24 @@ public class RowSet
 
 		if(qId.is(QId.MASK_CATALOG_ENTITY_FIELD) == false)
 		{
-			for(QId table: labelToFieldMap.y)
+			if(defaultCatalog == null)
 			{
-				try
+				for(QId table: labelToFieldMap.y)
 				{
-					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getExternalQId();
+					try
+					{
+						QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, table.getEntity(), qId).getExternalQId();
 
-					m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resolvedQId.getCatalog(), "N/A");
-					m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
-					m_fieldNames[fieldIndex] = resolvedQId.getField();
+						m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resolvedQId.getCatalog(), "N/A");
+						m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
+						m_fieldNames[fieldIndex] = resolvedQId.getField();
 
-					break;
-				}
-				catch(Exception e)
-				{
-					/* IGNORE */
-
-					return;
+						break;
+					}
+					catch(Exception e)
+					{
+						/* IGNORE */
+					}
 				}
 			}
 		}
