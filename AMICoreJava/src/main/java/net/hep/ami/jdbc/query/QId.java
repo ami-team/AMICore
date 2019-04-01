@@ -412,11 +412,11 @@ public final class QId
 
 	public boolean is(int mask)
 	{
-		return ((mask & MASK_CATALOG) == 0 || m_catalog != null)
+		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
 		       &&
-		       ((mask & MASK_ENTITY) == 0 || m_entity != null)
+		       (((mask & MASK_ENTITY) != 0) == (m_entity != null))
 		       &&
-		       ((mask & MASK_FIELD) == 0 || m_field != null)
+		       (((mask & MASK_FIELD) != 0) == (m_field != null))
 		;
 	}
 
