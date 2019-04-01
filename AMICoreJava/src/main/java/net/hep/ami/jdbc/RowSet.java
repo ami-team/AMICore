@@ -420,11 +420,18 @@ public class RowSet
 		{
 			/*-------------------------------------------------------------*/
 
-			m_fieldCatalogs[fieldIndex] = qId.getCatalog();
-			m_fieldEntities[fieldIndex] = qId.getEntity();
-			m_fieldNames[fieldIndex] = qId.getField();
+			try
+			{
+				m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog(qId.getCatalog());
+				m_fieldEntities[fieldIndex] = qId.getEntity();
+				m_fieldNames[fieldIndex] = qId.getField();
 
-			return true;
+				return true;
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
 
 			/*-------------------------------------------------------------*/
 		}
