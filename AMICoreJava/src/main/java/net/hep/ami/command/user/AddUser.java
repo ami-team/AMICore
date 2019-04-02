@@ -152,7 +152,7 @@ public class AddUser extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-amiLogin=\"\" (-amiPassword=\"\")? (-clientDN=\"\")? (-issuerDN=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\"";
+		return "-amiLogin=\"\" (-amiPassword=\"\")? (-clientDN=\"\")? (-issuerDN=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\" -agree";
 	}
 
 	/*---------------------------------------------------------------------*/
