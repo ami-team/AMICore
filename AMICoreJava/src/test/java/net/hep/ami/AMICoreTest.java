@@ -44,7 +44,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = false;
+		boolean doCreateAndFill = true;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -80,31 +80,31 @@ public class AMICoreTest
 				/*-------------------------------------------------------------*/
 				/* SETUP SERVER CONFIG                                         */
 				/*-------------------------------------------------------------*/
-	
+
 				Router db = new Router();
-	
+
 				try
 				{
 					db.create();
-	
+
 					db.fill(ConfigSingleton.getProperty("router_schema"));
-	
+
 					db.commitAndRelease();
 				}
 				catch(Exception e)
 				{
 					db.rollbackAndRelease();
-	
+
 					System.out.println(e.getMessage());
 					throw e;
 				}
-	
+
 				/*-------------------------------------------------------------*/
 				/* LOAD SERVER CONFIG                                          */
 				/*-------------------------------------------------------------*/
-	
+
 				Router.reload(true);
-	
+
 				/*-------------------------------------------------------------*/
 			}
 			catch(Exception e)
@@ -112,24 +112,24 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			/*-----------------------------------------------------------------*/
-	
+
 			System.out.println("Setting up test database: " + ConfigSingleton.getProperty("test_url"));
-	
+
 			/*-----------------------------------------------------------------*/
-	
-		
-			
-	
+
+
+
+
 			try 
 			{
 				String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":55,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"color\":\"#C3DB2E\"}}";
 				String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
 				String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
-	
+
 				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -138,29 +138,29 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			/*-----------------------------------------------------------------*/
-	
+
 			CatalogSingleton.reload(true);
-	
+
 			/*-----------------------------------------------------------------*/
-	
+
 			SimpleQuerier testDB = new SimpleQuerier("test", "admin", true, false);
-	
+
 			/*-----------------------------------------------------------------*/
 			/* SELECT PROFILE                                                  */
 			/*-----------------------------------------------------------------*/
-	
 
-	
+
+
 			/**/ if(jdbcUrl.contains("jdbc:mysql")) {
 				path = "/sql/testDB-mysql.sql";
-				try {
+				/*try {
 					testDB.getStatement().execute("GRANT ALL ON " + test_catalog + ".* TO 'ami_test_router'@'%';");
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
-				}
-				
+				}*/
+
 			}
 			else if(jdbcUrl.contains("jdbc:mariadb")) {
 				path = "/sql/testDB-mysql.sql";
@@ -174,36 +174,36 @@ public class AMICoreTest
 			else {
 				throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
 			}
-		
+
 			/*-----------------------------------------------------------------*/
 			/* GET INPUT STREAM                                                */
 			/*-----------------------------------------------------------------*/
-	
+
 			InputStream inputStream = Router.class.getResourceAsStream(path);
-	
+
 			/*-----------------------------------------------------------------*/
 			/* EXECUTE SQL QUERIES                                             */
 			/*-----------------------------------------------------------------*/
-	
+
 			try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
 			{
 				String line = "";
 				String query = "";
-	
+
 				while((line = bufferedReader.readLine()) != null)
 				{
 					line = line.trim();
-	
+
 					if(line.isEmpty() == false
 					   &&
 					   line.startsWith("-") == false
 					 ) {
 						query += line + " ";
-	
+
 						if(line.endsWith(";;"))
 						{
 							LogSingleton.root.info(query);
-	
+
 							try
 							{
 								//System.out.println("Query " + query.replace(";;", ""));
@@ -214,20 +214,20 @@ public class AMICoreTest
 								System.out.println(e.getMessage());
 								throw new SQLException(e.getMessage() + " for SQL query: " + query.replace(";;", ""), e);
 							}
-	
+
 							query = "";
 						}
 					}
 				}
 			}
-	
+
 			try 
 			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params2 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.ID, PROJECT.NAME{test.DATASET.projectFK} AS `PROJECT.NAME` WHERE valid=1 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params3 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} AS `PROJECT.NAME` WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
-				
+
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink();"
@@ -244,7 +244,7 @@ public class AMICoreTest
 										+"\\nreturn webLink;";
 				String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -252,12 +252,12 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try 
 			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"FILE\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE DATASET.id{test.DATASET_FILE_BRIDGE.fileFK}='\\\" + row.getValue(\\\"test.DATASET.id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
-			
+
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink();"
@@ -281,7 +281,7 @@ public class AMICoreTest
 										+"\\nreturn webLink;";
 				String values = "testxxxxxDATASETxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -289,12 +289,12 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-			
+
 			try 
 			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE FILE.id{test.DATASET_FILE_BRIDGE.datasetFK}='\\\" + row.getValue(\\\"test.FILE.id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
-			
+
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink();"
@@ -305,7 +305,7 @@ public class AMICoreTest
 										+"\\nreturn webLink;";
 				String values = "testxxxxxFILExxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -313,7 +313,7 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try 
 			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScriptxxxxxisGroupable";
@@ -339,7 +339,7 @@ public class AMICoreTest
 										+"\\nreturn webLink;";
 				String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descriptionxxxxx"+webLinkScript+"xxxxx1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -347,15 +347,15 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try 
 			{
-				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScript";
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScriptxxxxxisStatable";
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink().setUnitName(\\\"Byte\\\").setUnitFactor(\\\"\\\").setUnitBase(\\\"1024\\\").setHumanReadable(\\\"true\\\");"
 										+"\\nreturn webLink;";
-				String values = "testxxxxxFILExxxxxsizexxxxxthis is a test descriptionxxxxx"+webLinkScript+"";
+				String values = "testxxxxxFILExxxxxsizexxxxxthis is a test descriptionxxxxx"+webLinkScript+"xxxxx1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 				CommandSingleton.executeCommand(command, false);
 			}
@@ -371,7 +371,7 @@ public class AMICoreTest
 				String fields = "catalog;entity;field;description;rank";
 				String values = "test;DATASET;name;this is a test description;1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -379,7 +379,7 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-			 */	
+			 */
 
 			try 
 			{
@@ -387,7 +387,7 @@ public class AMICoreTest
 				String fields = "catalog;entity;field;description;isGroupable";
 				String values = "test;DATASET;valid;this is a test description;1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -395,14 +395,14 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-			
+
 			try 
 			{
 
 				String fields = "catalog;entity;description;isBridge";
 				String values = "test;DATASET_FILE_BRIDGE;this is a test description;1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_entity\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -410,7 +410,7 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_TYPE","FILE","FILE_TYPE"};
 			for (int i = 0; i < testTables.length; i++) {
 				try 
@@ -418,7 +418,7 @@ public class AMICoreTest
 					String fields = "catalog;entity;field;isCreatedBy";
 					String values = "test;" + testTables[i] +";createdBy;1";
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 					CommandSingleton.executeCommand(command, false);
 				}
 				catch (Exception e) 
@@ -426,13 +426,13 @@ public class AMICoreTest
 					System.out.println(e.getMessage());
 					testFail = true;
 				}
-	
+
 				try 
 				{
 					String fields = "catalog;entity;field;isModifiedBy";
 					String values = "test;" + testTables[i] +";modifiedBy;1";
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 					CommandSingleton.executeCommand(command, false);
 				}
 				catch (Exception e) 
@@ -445,7 +445,7 @@ public class AMICoreTest
 					String fields = "catalog;entity;field;isCreated";
 					String values = "test;" + testTables[i] +";created;1";
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 					CommandSingleton.executeCommand(command, false);
 				}
 				catch (Exception e) 
@@ -453,13 +453,13 @@ public class AMICoreTest
 					System.out.println(e.getMessage());
 					testFail = true;
 				}
-	
+
 				try 
 				{
 					String fields = "catalog;entity;field;isModified";
 					String values = "test;" + testTables[i] +";modified;1";
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 					CommandSingleton.executeCommand(command, false);
 				}
 				catch (Exception e) 
@@ -467,15 +467,15 @@ public class AMICoreTest
 					System.out.println(e.getMessage());
 					testFail = true;
 				}
-	
+
 			}
-	
+
 			try 
 			{
 				String fields = "catalog;entity;field;isPrimary";
 				String values = "test;FILE_VIEW;id;1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -483,13 +483,13 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try 
 			{
 				String fields = "catalog;entity;field;rank";
 				String values = "test;FILE_VIEW;fileName;1";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -497,13 +497,13 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try 
 			{
 				String fields = "catalog;entity;field;rank";
 				String values = "test;FILE_VIEW;datasetName;2";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -516,7 +516,7 @@ public class AMICoreTest
 				String fields = "catalog;entity;field;rank";
 				String values = "test;FILE_VIEW;projectName;3";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -524,13 +524,13 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-		
+
 			try 
 			{
 				String fields = "name;fkCatalog;fkTable;fkColumn;pkCatalog;pkTable;pkColumn";
 				String values = "fk1_FILE_VIEW;test;FILE_VIEW;id;test;DATASET_FILE_BRIDGE;id";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_foreign_key\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
-	
+
 				//CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
@@ -538,22 +538,22 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			testDB.commitAndRelease();
-	
+
 			/*-----------------------------------------------------------------*/
-	
+
 			System.out.println("Testing add commands");
-	
+
 			/*-----------------------------------------------------------------*/
-	
-	
+
+
 			CatalogSingleton.reload(true);
-	
+
 			/*-----------------------------------------------------------------*/
-	
+
 			String command = "SearchQuery -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT externalCatalog, jdbcUrl WHERE externalCatalog LIKE '%%' \" ";
-	
+
 			try
 			{
 				CommandSingleton.executeCommand(command, false);
@@ -563,12 +563,9 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			/*-----------------------------------------------------------------*/
-	
-		
-			/*-----------------------------------------------------------------*/
-	
+
 			try
 			{
 				arguments.clear();
@@ -578,14 +575,14 @@ public class AMICoreTest
 				arguments.put("fields", "name;description");
 				arguments.put("values", "AMI;This is an AMI demonstration project");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
-	
+
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try
 			{
 				arguments.clear();
@@ -595,16 +592,16 @@ public class AMICoreTest
 				arguments.put("fields", "name;description");
 				arguments.put("values", "AMI2;This is an other AMI demonstration project");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
-	
+
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			/*-----------------------------------------------------------------*/
-	
+
 			try
 			{
 				arguments.clear();
@@ -614,14 +611,14 @@ public class AMICoreTest
 				arguments.put("fields", "name;PROJECT.name;description");
 				arguments.put("values", "A;AMI;This is a test");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
-	
+
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try
 			{
 				arguments.clear();
@@ -631,14 +628,14 @@ public class AMICoreTest
 				arguments.put("fields", "name;PROJECT.name;description");
 				arguments.put("values", "B;AMI;This is a test");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
-	
+
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			/*-----------------------------------------------------------------*/
 			System.out.println("Adding datasets");
 			for (int i = 0; i < cptMax; i++) {
@@ -658,7 +655,7 @@ public class AMICoreTest
 					testFail = true;
 				}
 			}
-	
+
 			try
 			{
 				arguments.clear();
@@ -674,7 +671,7 @@ public class AMICoreTest
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-			
+
 			try
 			{
 				arguments.clear();
@@ -691,7 +688,7 @@ public class AMICoreTest
 				testFail = true;
 			}
 			/*-----------------------------------------------------------------*/
-	
+
 			try
 			{
 				arguments.clear();
@@ -701,14 +698,14 @@ public class AMICoreTest
 				arguments.put("fields", "name;description;PROJECT.name");
 				arguments.put("values", "TEXT;This is a test;AMI");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
-	
+
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try
 			{
 				arguments.clear();
@@ -718,14 +715,14 @@ public class AMICoreTest
 				arguments.put("fields", "name;description;PROJECT.name");
 				arguments.put("values", "BINARY;This is a test;AMI");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
-	
+
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-	
+
 			try
 			{
 				arguments.clear();
@@ -735,14 +732,14 @@ public class AMICoreTest
 				arguments.put("fields", "name;description;PROJECT.name");
 				arguments.put("values", "BINARY;This is a test;AMI2");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
-	
+
 			}
 			catch(Exception e)
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
 			}
-			
+
 			/*-----------------------------------------------------------------*/
 			System.out.println("Adding files");
 			for (int i = 0; i < cptMax; i++) {
@@ -762,7 +759,7 @@ public class AMICoreTest
 					testFail = true;
 				}
 			}
-	
+
 			for (int i = 0; i < cptMax; i++) {
 				try
 				{
@@ -832,8 +829,8 @@ public class AMICoreTest
 						arguments.put("keyValues", "file_" + i + ";dataset_" + i +"");
 					}
 					//System.out.println("FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
-					System.out.println(CommandSingleton.executeCommand("UpdateElements", arguments, false).replace(">", ">\n"));
-					//CommandSingleton.executeCommand("UpdateElements", arguments, false);
+					//System.out.println(CommandSingleton.executeCommand("UpdateElements", arguments, false).replace(">", ">\n"));
+					CommandSingleton.executeCommand("UpdateElements", arguments, false);
 				}
 				catch(Exception e)
 				{
@@ -853,8 +850,8 @@ public class AMICoreTest
 					arguments.put("keyFields", "FILE.name{DATASET_FILE_BRIDGE.fileFK};DATASET.name{DATASET_FILE_BRIDGE.datasetFK}");
 					arguments.put("keyValues", "file_0;dataset_0");
 
-					System.out.println(CommandSingleton.executeCommand("UpdateElements", arguments, false).replace(">", ">\n"));
-					//CommandSingleton.executeCommand("UpdateElements", arguments, false);
+					//System.out.println(CommandSingleton.executeCommand("UpdateElements", arguments, false).replace(">", ">\n"));
+					CommandSingleton.executeCommand("UpdateElements", arguments, false);
 				}
 				catch(Exception e)
 				{
@@ -904,7 +901,7 @@ public class AMICoreTest
 			}
 		}
 
-		
+
 		System.out.println("Testing select commands");
 
 		/*-----------------------------------------------------------------*/
@@ -1071,7 +1068,7 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+	
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -mql=\"SELECT * WHERE FILE.name{DATASET_FILE_BRIDGE.fileFK}='file_2' AND DATASET.name{DATASET_FILE_BRIDGE.datasetFK}='dataset_2'\" ";
 		System.out.println(commandTest);
 		try
@@ -1084,7 +1081,7 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+	
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -mql=\"SELECT * WHERE comment='test_2'\" ";
 		System.out.println(commandTest);
 		try
@@ -1098,39 +1095,39 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} AS `AMI_TEST_DATABASE.PROJECT.name` WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' LIMIT 20 OFFSET 0 \"";
+		commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} AS `test.PROJECT.name` WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' LIMIT 20 OFFSET 0 \"";
 		//commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' \"";
-		
+	
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			//CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+	
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT * \"";
 		//commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' \"";
-		
+	
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			//CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+
 		/*-----------------------------------------------------------------*/
 
-	
+
 /*
 			BufferedImage bImage = ImageIO.read(new File("/Users/jfulach/Desktop/WAN/minus.png"));
 	        ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -1145,7 +1142,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		
+
 
 		/*
 		String commandTestDev = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10\"";
@@ -1182,7 +1179,7 @@ public class AMICoreTest
 		if(true)
 		return;
 		*/
-		
+
 		/*-----------------------------------------------------------------*/
 
 		String commandTestDev = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10\"";
@@ -1205,7 +1202,7 @@ public class AMICoreTest
 			ConverterSingleton.convert("AMIXmlToJson.xsl", stringReader, stringWriter);
 
 			data = stringWriter.toString();
-			System.out.println(data);
+			//System.out.println(data);
 		}
 		catch(Exception e)
 		{
@@ -1218,7 +1215,7 @@ public class AMICoreTest
 		//System.out.println(data);
 
 
-		
+
 		System.out.println("Testing GetServerStatus command");
 
 		/*-----------------------------------------------------------------*/
