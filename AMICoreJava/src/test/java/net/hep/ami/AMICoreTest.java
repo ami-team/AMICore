@@ -814,6 +814,29 @@ public class AMICoreTest
 				}
 			}
 			/*-----------------------------------------------------------------*/
+			System.out.println("Adding datasets/datasets relations");
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < cptMax2; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_GRAPH");
+						arguments.put("separator", ";");
+
+						arguments.put("fields", "DATASET.name{sourceFK};DATASET.name{destinationFK};comment");
+						arguments.put("values", "dataset_" + j + ";dataset_" + i +";a comment");
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			/*-----------------------------------------------------------------*/
 			System.out.println("Testing update commands");
 
 			/*-----------------------------------------------------------------*/
