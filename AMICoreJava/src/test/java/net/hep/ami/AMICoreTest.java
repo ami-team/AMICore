@@ -44,7 +44,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = true;
+		boolean doCreateAndFill = false;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -1153,9 +1153,37 @@ public class AMICoreTest
 			testFail = true;
 		}
 	
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT * ORDER BY PROJECT.name DESC\"";
-		//commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' \"";
-	
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name{DATASET_FILE_BRIDGE.datasetFK} AS test \"";
+		
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name as `FILE.name`\"";
+		
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name AS test ORDER BY PROJECT.name DESC\"";
+
 		System.out.println(commandTest);
 		try
 		{
