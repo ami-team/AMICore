@@ -1167,7 +1167,7 @@ public class AMICoreTest
 			testFail = true;
 		}
 		
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name as `FILE.name`\"";
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name as `name`\"";
 		
 		System.out.println(commandTest);
 		try
