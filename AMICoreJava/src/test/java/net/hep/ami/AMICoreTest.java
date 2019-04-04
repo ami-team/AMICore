@@ -124,7 +124,7 @@ public class AMICoreTest
 
 			try 
 			{
-				String testCustom = "{\"DATASET\":{\"x\":280,\"y\":55,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_PARAM\":{\"x\":20,\"y\":20,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":55,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":410,\"color\":\"#C3DB2E\"}}";
+				String testCustom = "{\"DATASET\":{\"x\":280,\"y\":40,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_GRAPH\":{\"x\":20,\"y\":40,\"color\":\"#00CC52\"},\"DATASET_PARAM\":{\"x\":20,\"y\":210,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":40,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":470,\"color\":\"#C3DB2E\"}}";
 				String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
 				String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
 
@@ -223,6 +223,18 @@ public class AMICoreTest
 
 			try 
 			{
+				String command = "AddUser -amiLogin=\"demo\" -amiPassword=\"pipopipo\" -firstName=\"Jack\" -lastName=\"White\" -email=\"ami@lpsc.in2p3.fr\" -agree ";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+			try 
+			{
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params2 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.ID, PROJECT.NAME{test.DATASET.projectFK} AS `PROJECT.NAME` WHERE valid=1 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
@@ -236,6 +248,14 @@ public class AMICoreTest
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"valid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"invalid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params3+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
+										+"\\n	webLink.newLinkProperties().setLabel(\\\"search dataset\\\").setCtrl(\\\"search\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\"\\\").setSettings(\\\"{\\\\\\\"name\\\\\\\" : \\\\\\\"Search dataset\\\\\\\",\\\\\\\"defaultCatalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"defaultEntity\\\\\\\": \\\\\\\"DATASET\\\\\\\",\\\\\\\"defaultPrimaryField\\\\\\\": \\\\\\\"id\\\\\\\",\\\\\\\"criterias\\\\\\\": ["
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"type\\\\\\\": 4, \\\\\\\"states\\\\\\\": {\\\\\\\"on\\\\\\\" : \\\\\\\"1\\\\\\\", \\\\\\\"off\\\\\\\": \\\\\\\"ALL\\\\\\\"}, \\\\\\\"select\\\\\\\": \\\\\\\"1\\\\\\\", \\\\\\\"inclusive\\\\\\\": true, \\\\\\\"auto_open\\\\\\\": true},"
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 1, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.size\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"size\\\\\\\", \\\\\\\"type\\\\\\\": 2, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"type\\\\\\\": 3, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"projectFK\\\\\\\"}] }"
+										+ "]}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"Search Datataset\\\");"
 										+"\\n}"
 										+"\\nif(rowSet.isANameOrLabel(\\\"test.PROJECT.id\\\"))"
 										+"\\n{"
@@ -411,7 +431,7 @@ public class AMICoreTest
 				testFail = true;
 			}
 
-			String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_TYPE","FILE","FILE_TYPE"};
+			String[] testTables = {"PROJECT","DATASET","DATASET_FILE_BRIDGE","DATASET_PARAM","DATASET_GRAPH","DATASET_TYPE","FILE","FILE_TYPE"};
 			for (int i = 0; i < testTables.length; i++) {
 				try 
 				{
@@ -802,6 +822,128 @@ public class AMICoreTest
 				}
 			}
 			/*-----------------------------------------------------------------*/
+			System.out.println("Adding datasets/datasets relations");
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < cptMax2; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_GRAPH");
+						arguments.put("separator", ";");
+
+						arguments.put("fields", "DATASET.name{sourceFK};DATASET.name{destinationFK};comment");
+						arguments.put("values", "dataset_" + j + ";dataset_" + i +";a comment");
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+
+			/*-----------------------------------------------------------------*/
+			System.out.println("Adding datasets params");
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 3; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="stringValue";
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";value_" + j);
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 3; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="intValue";
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j);
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 3; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="floatValue";
+						
+						String sep = ".";
+						if(jdbcUrl.contains("jdbc:oracle")) {
+							sep = ",";
+						}
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j + sep + "999");
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 2; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="booleanValue";
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j + "");
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+
+			/*-----------------------------------------------------------------*/
 			System.out.println("Testing update commands");
 
 			/*-----------------------------------------------------------------*/
@@ -1110,14 +1252,55 @@ public class AMICoreTest
 			testFail = true;
 		}
 	
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT * \"";
-		//commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='AMI' \"";
-	
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name{DATASET_FILE_BRIDGE.datasetFK} AS test \"";
+		
 		System.out.println(commandTest);
 		try
 		{
-			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			CommandSingleton.executeCommand(commandTest, false);
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name as `name`\"";
+		
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name, id as `name`\"";
+		
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name AS test ORDER BY PROJECT.name DESC\"";
+
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
