@@ -1308,13 +1308,13 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name{DATASET_FILE_BRIDGE.datasetFK} as `name`\"";
-		
+
 		System.out.println(commandTest);
 		try
 		{
-			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
@@ -1322,9 +1322,9 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name, id as `name`\"";
-		
+
 		System.out.println(commandTest);
 		try
 		{
@@ -1336,7 +1336,7 @@ public class AMICoreTest
 			System.out.println(e.getMessage());
 			testFail = true;
 		}
-		
+
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name AS test ORDER BY PROJECT.name DESC\"";
 
 		System.out.println(commandTest);
