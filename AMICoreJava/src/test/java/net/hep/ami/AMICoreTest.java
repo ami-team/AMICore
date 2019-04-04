@@ -490,6 +490,22 @@ public class AMICoreTest
 
 			}
 
+			
+			try 
+			{
+				String fields = "catalog;entity;field;isGroupable";
+				String values = "test;DATASET_PARAM;type;1";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e) 
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+			
 			try 
 			{
 				String fields = "catalog;entity;field;isPrimary";
@@ -559,6 +575,7 @@ public class AMICoreTest
 				testFail = true;
 			}
 
+			
 			testDB.commitAndRelease();
 
 			/*-----------------------------------------------------------------*/
@@ -858,7 +875,7 @@ public class AMICoreTest
 
 						String tpmType ="stringValue";
 						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
-						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";value_" + j);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";value_" + j + "_" + i);
 
 						CommandSingleton.executeCommand("AddElement", arguments, false);
 					}
