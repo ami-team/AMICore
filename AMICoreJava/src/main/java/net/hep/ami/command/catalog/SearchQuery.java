@@ -29,6 +29,8 @@ public class SearchQuery extends AbstractCommand
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
+		String groupBy = arguments.get("groupBy");
+
 		String orderBy = arguments.get("orderBy");
 		String orderWay = arguments.get("orderWay");
 
@@ -70,17 +72,20 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String groupBy = parts.get(Tokenizer.GROUP);
-
-		if(groupBy != null)
-		{
-			groupBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
-
-			xqlSelect1.addExtraPart(" GROUP BY " + groupBy);
-			xqlSelect2.addExtraPart(" GROUP BY " + groupBy);
+		String groupBy2 = parts.get(Tokenizer.GROUP);
+		if(groupBy == null && groupBy2 != null) {
+			groupBy = groupBy2;
 		}
 
-		/*-----------------------------------------------------------------*/
+		String orderBy2 = parts.get(Tokenizer.ORDER);
+		if(orderBy == null && orderBy2 != null) {
+			orderBy = orderBy2;
+		}
+
+		String orderWay2 = parts.get(Tokenizer.WAY);
+		if(orderWay == null && orderWay2 != null) {
+			orderWay = orderWay2;
+		}
 
 		String limit2 = parts.get(Tokenizer.LIMIT);
 		if(limit == null && limit2 != null) {
@@ -94,25 +99,33 @@ public class SearchQuery extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		if(groupBy != null)
+		{
+			groupBy = QId.parseQId(groupBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
+
+			xqlSelect1.addExtraPart("GROUP BY " + groupBy);
+			xqlSelect2.addExtraPart("GROUP BY " + groupBy);
+		}
+
 		if(orderBy != null)
 		{
 			orderBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
 
-			xqlSelect2.addExtraPart(" ORDER BY " + orderBy);
+			xqlSelect2.addExtraPart("ORDER BY " + orderBy);
 
 			if(orderWay != null)
 			{
-				xqlSelect2.addExtraPart(" " + orderWay);
+				xqlSelect2.addExtraPart(orderWay);
 			}
 		}
 
 		if(limit != null)
 		{
-			xqlSelect2.addExtraPart(" LIMIT " + limit);
+			xqlSelect2.addExtraPart("LIMIT " + limit);
 
 			if(offset != null)
 			{
-				xqlSelect2.addExtraPart(" OFFSET " + offset);
+				xqlSelect2.addExtraPart("OFFSET " + offset);
 			}
 		}
 
@@ -173,7 +186,7 @@ public class SearchQuery extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"\" (-raw=\"\" | -sql=\"\" | (-entity=\"\" -mql=\"\")) (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
 	}
 
 	/*---------------------------------------------------------------------*/

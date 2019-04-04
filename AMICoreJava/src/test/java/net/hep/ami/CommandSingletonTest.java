@@ -36,11 +36,11 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\" -count", false));
 
-		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\"", false);
+		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1 ORDER BY id ASC LIMIT 1 OFFSET 2\"", false);
 
-		/*System.out.println(*/CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n")/*)*/;
+//		/*System.out.println(*/CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n")/*)*/;
 
-		/*System.out.println(*/CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT `self`.`router_command`.`id`, `self`.`router_role`.`id` WHERE `self`.`router_role`.`id`{`self`.`router_command_role`.`commandFK`, `self`.`router_command_role`.`roleFK`} = '1'\" -limit=\"20\" -offset=\"0\"", false).replace(">", ">\n")/*)*/;
+//		/*System.out.println(*/CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT `self`.`router_command`.`id`, `self`.`router_role`.`id` WHERE `self`.`router_role`.`id`{`self`.`router_command_role`.`commandFK`, `self`.`router_command_role`.`roleFK`} = '1'\" -limit=\"20\" -offset=\"0\"", false).replace(">", ">\n")/*)*/;
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\"", false));
 
