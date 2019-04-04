@@ -943,6 +943,32 @@ public class AMICoreTest
 				}
 			}
 
+			if(!jdbcUrl.contains("jdbc:oracle")) {
+				for (int i = 0; i < cptMax; i++) {
+					try
+					{
+						for (int j = 0; j < 1; j++) {
+							arguments.clear();
+							arguments.put("catalog", "test");
+							arguments.put("entity", "DATASET_PARAM");
+							arguments.put("separator", ";");
+
+							String tpmType ="timestampValue";
+							arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+
+							arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";2010-04-04 11:19:52.0");
+
+							CommandSingleton.executeCommand("AddElement", arguments, false);
+						}
+					}
+					catch(Exception e)
+					{
+						System.out.println(e.getMessage());
+						testFail = true;
+					}
+				}
+			}
+
 			/*-----------------------------------------------------------------*/
 			System.out.println("Testing update commands");
 
