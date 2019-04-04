@@ -44,7 +44,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = false;
+		boolean doCreateAndFill = true;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -844,6 +844,128 @@ public class AMICoreTest
 					testFail = true;
 				}
 			}
+
+			/*-----------------------------------------------------------------*/
+			System.out.println("Adding datasets params");
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 3; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="stringValue";
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";value_" + j);
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 3; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="intValue";
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j);
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 3; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="floatValue";
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j + ".999");
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 2; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="booleanValue";
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j + "");
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
+			
+			for (int i = 0; i < cptMax; i++) {
+				try
+				{
+					for (int j = 0; j < 2; j++) {
+						arguments.clear();
+						arguments.put("catalog", "test");
+						arguments.put("entity", "DATASET_PARAM");
+						arguments.put("separator", ";");
+
+						String tpmType ="blobValue";
+						String blob = "";
+						
+						for (int k = 0; k < 100; k++) {
+							blob += "bla ";
+						}
+						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + blob);
+
+						CommandSingleton.executeCommand("AddElement", arguments, false);
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					testFail = true;
+				}
+			}
 			/*-----------------------------------------------------------------*/
 			System.out.println("Testing update commands");
 
@@ -1181,6 +1303,19 @@ public class AMICoreTest
 			testFail = true;
 		}
 		
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name, id as `name`\"";
+		
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
 		
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name AS test ORDER BY PROJECT.name DESC\"";
 

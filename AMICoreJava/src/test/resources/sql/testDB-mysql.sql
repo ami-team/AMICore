@@ -187,7 +187,7 @@ CREATE TABLE `DATASET_PARAM` (
   `floatValue` DECIMAL(6,4),
   `stringValue` VARCHAR(512),
   `timestampValue` TIMESTAMP,
-  `booleanValue` BIT DEFAULT NULL,
+  `booleanValue` TINYINT DEFAULT NULL,
   `blobValue` BLOB DEFAULT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` VARCHAR(128) NOT NULL,
