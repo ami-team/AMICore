@@ -903,9 +903,13 @@ public class AMICoreTest
 						arguments.put("separator", ";");
 
 						String tpmType ="floatValue";
+						
+						String sep = ".";
+						if(jdbcUrl.contains("jdbc:oracle")) {
+							sep = ",";
+						}
 						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
-						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j + ".999");
-
+						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + j + sep + "999");
 						CommandSingleton.executeCommand("AddElement", arguments, false);
 					}
 				}
@@ -938,34 +942,7 @@ public class AMICoreTest
 					testFail = true;
 				}
 			}
-			
-			for (int i = 0; i < cptMax; i++) {
-				try
-				{
-					for (int j = 0; j < 2; j++) {
-						arguments.clear();
-						arguments.put("catalog", "test");
-						arguments.put("entity", "DATASET_PARAM");
-						arguments.put("separator", ";");
 
-						String tpmType ="blobValue";
-						String blob = "";
-						
-						for (int k = 0; k < 100; k++) {
-							blob += "bla ";
-						}
-						arguments.put("fields", "DATASET.name{datasetFK};name;type;" + tpmType);
-						arguments.put("values", "dataset_" + i + ";param_" + j + "_" + tpmType +";"  + tpmType +";" + blob);
-
-						CommandSingleton.executeCommand("AddElement", arguments, false);
-					}
-				}
-				catch(Exception e)
-				{
-					System.out.println(e.getMessage());
-					testFail = true;
-				}
-			}
 			/*-----------------------------------------------------------------*/
 			System.out.println("Testing update commands");
 

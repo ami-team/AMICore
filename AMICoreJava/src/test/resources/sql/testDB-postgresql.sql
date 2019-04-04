@@ -213,7 +213,6 @@ CREATE TABLE "DATASET_PARAM" (
   "stringValue" character varying DEFAULT NULL,
   "timestampValue" timestamp,
   "booleanValue" SMALLINT DEFAULT NULL,
-  "blobValue" bytea DEFAULT NULL,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
