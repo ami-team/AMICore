@@ -70,8 +70,6 @@ public class SearchQuery extends AbstractCommand
 		                                      .addWherePart(parts.get(Tokenizer.WHERE))
 		;
 
-		System.out.println(parts);
-
 		/*-----------------------------------------------------------------*/
 
 		String groupBy2 = parts.get(Tokenizer.GROUP);
@@ -105,29 +103,29 @@ public class SearchQuery extends AbstractCommand
 		{
 			groupBy = QId.parseQId(groupBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
 
-			xqlSelect1.addExtraPart(" GROUP BY " + groupBy);
-			xqlSelect2.addExtraPart(" GROUP BY " + groupBy);
+			xqlSelect1.addExtraPart("GROUP BY " + groupBy);
+			xqlSelect2.addExtraPart("GROUP BY " + groupBy);
 		}
 
 		if(orderBy != null)
 		{
 			orderBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
 
-			xqlSelect2.addExtraPart(" ORDER BY " + orderBy);
+			xqlSelect2.addExtraPart("ORDER BY " + orderBy);
 
 			if(orderWay != null)
 			{
-				xqlSelect2.addExtraPart(" " + orderWay);
+				xqlSelect2.addExtraPart(orderWay);
 			}
 		}
 
 		if(limit != null)
 		{
-			xqlSelect2.addExtraPart(" LIMIT " + limit);
+			xqlSelect2.addExtraPart("LIMIT " + limit);
 
 			if(offset != null)
 			{
-				xqlSelect2.addExtraPart(" OFFSET " + offset);
+				xqlSelect2.addExtraPart("OFFSET " + offset);
 			}
 		}
 
