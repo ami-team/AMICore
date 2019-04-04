@@ -119,6 +119,7 @@ public class Tokenizer
 	public static final String WHERE = "WHERE";
 	public static final String GROUP = "GROUP";
 	public static final String ORDER = "ORDER";
+	public static final String WAY = "WAY";
 	public static final String LIMIT = "LIMIT";
 	public static final String OFFSET = "OFFSET";
 
@@ -186,7 +187,14 @@ public class Tokenizer
 
 			else if("BY".equals(TOKEN) == false)
 			{
-				tokens.add(token);
+				if(ORDER.equals(keyword) && ("ASC".equals(TOKEN) || "DESC".equals(TOKEN)))
+				{
+					result.put(WAY, TOKEN);
+				}
+				else
+				{
+					tokens.add(token);
+				}
 			}
 
 			/*-------------------------------------------------------------*/

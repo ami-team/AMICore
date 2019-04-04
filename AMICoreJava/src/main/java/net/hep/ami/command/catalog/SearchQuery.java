@@ -29,6 +29,8 @@ public class SearchQuery extends AbstractCommand
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
+		String groupBy = arguments.get("groupBy");
+
 		String orderBy = arguments.get("orderBy");
 		String orderWay = arguments.get("orderWay");
 
@@ -68,19 +70,24 @@ public class SearchQuery extends AbstractCommand
 		                                      .addWherePart(parts.get(Tokenizer.WHERE))
 		;
 
+		System.out.println(parts);
+
 		/*-----------------------------------------------------------------*/
 
-		String groupBy = parts.get(Tokenizer.GROUP);
-
-		if(groupBy != null)
-		{
-			groupBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
-
-			xqlSelect1.addExtraPart(" GROUP BY " + groupBy);
-			xqlSelect2.addExtraPart(" GROUP BY " + groupBy);
+		String groupBy2 = parts.get(Tokenizer.GROUP);
+		if(groupBy == null && groupBy2 != null) {
+			groupBy = groupBy2;
 		}
 
-		/*-----------------------------------------------------------------*/
+		String orderBy2 = parts.get("ORDER");
+		if(orderBy == null && orderBy2 != null) {
+			orderBy = orderBy2;
+		}
+
+		String orderWay2 = parts.get("WAY");
+		if(orderWay == null && orderWay2 != null) {
+			orderWay = orderWay2;
+		}
 
 		String limit2 = parts.get(Tokenizer.LIMIT);
 		if(limit == null && limit2 != null) {
@@ -93,6 +100,14 @@ public class SearchQuery extends AbstractCommand
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		if(groupBy != null)
+		{
+			groupBy = QId.parseQId(groupBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
+
+			xqlSelect1.addExtraPart(" GROUP BY " + groupBy);
+			xqlSelect2.addExtraPart(" GROUP BY " + groupBy);
+		}
 
 		if(orderBy != null)
 		{
@@ -173,7 +188,7 @@ public class SearchQuery extends AbstractCommand
 
 	public static String usage()
 	{
-		return "-catalog=\"\" (-raw=\"\" | -sql=\"\" | (-entity=\"\" -mql=\"\")) (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
 	}
 
 	/*---------------------------------------------------------------------*/

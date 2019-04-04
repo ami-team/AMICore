@@ -52,6 +52,7 @@ public class MQLToSQL
 
 	public static String parse(String externalCatalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
 	{
+		System.out.println(query);
 		/*-----------------------------------------------------------------*/
 
 		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
