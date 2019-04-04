@@ -44,7 +44,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = true;
+		boolean doCreateAndFill = false;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -1300,8 +1300,8 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			//CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
@@ -1309,13 +1309,13 @@ public class AMICoreTest
 			testFail = true;
 		}
 		
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name as `name`\"";
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name{DATASET_FILE_BRIDGE.datasetFK} as `name`\"";
 		
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			//CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
@@ -1328,7 +1328,7 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 			//CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
@@ -1342,8 +1342,8 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			//CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
