@@ -77,12 +77,12 @@ public class SearchQuery extends AbstractCommand
 			groupBy = groupBy2;
 		}
 
-		String orderBy2 = parts.get("ORDER");
+		String orderBy2 = parts.get(Tokenizer.ORDER);
 		if(orderBy == null && orderBy2 != null) {
 			orderBy = orderBy2;
 		}
 
-		String orderWay2 = parts.get("WAY");
+		String orderWay2 = parts.get(Tokenizer.WAY);
 		if(orderWay == null && orderWay2 != null) {
 			orderWay = orderWay2;
 		}
