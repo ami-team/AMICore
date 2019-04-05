@@ -346,6 +346,7 @@ ALTER TABLE `router_authority`
 
 CREATE TABLE `router_search_interface` (
   `id` INT NOT NULL,
+  `group` VARCHAR(128) NOT NULL,
   `interface` VARCHAR(128) NOT NULL,
   `json` TEXT NOT NULL,
   `archived` TINYINT(1) NOT NULL DEFAULT 0,

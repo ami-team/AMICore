@@ -343,6 +343,7 @@ CREATE TRIGGER "trig1_router_authority"
 
 CREATE TABLE "router_search_interface" (
   "id" SERIAL,
+  "group" VARCHAR(128) NOT NULL,
   "interface" VARCHAR(128) NOT NULL,
   "json" TEXT NOT NULL,
   "archived" SMALLINT NOT NULL DEFAULT 0,

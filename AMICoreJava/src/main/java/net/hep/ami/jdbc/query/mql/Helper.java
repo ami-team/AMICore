@@ -349,7 +349,7 @@ public class Helper
 
 			XQLSelect query = new XQLSelect().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 			                                 .addFromPart(tuple.x)
-			                                 .addWherePart(expression)
+			                                 .addWherePart("(" + expression + ")")
 			                                 .addWherePart(tuple.y)
 			;
 
