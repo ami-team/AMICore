@@ -27,7 +27,7 @@ public class ListInterfaces extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		XQLSelect xqlSelect = new XQLSelect().addSelectPart("`group`, `interface`, `json`")
-		                                     .addFromPart("`router_interface`")
+		                                     .addFromPart("`router_search_interface`")
 		;
 
 		if(group != null) {
@@ -40,7 +40,7 @@ public class ListInterfaces extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLQuery("router_interface", xqlSelect.toString()).toStringBuilder();
+		return getQuerier("self").executeSQLQuery("router_search_interface", xqlSelect.toString()).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
