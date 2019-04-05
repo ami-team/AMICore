@@ -119,7 +119,7 @@ public class MQLToSQL
 
 		if(context.m_expression != null)
 		{
-			result.addWherePart(visitExpressionOr(context.m_expression, m_resolutionList, 0));
+			result.addWherePart(visitExpressionOr(context.m_expression, m_resolutionList, 0).insert(0, "(").append(")"));
 		}
 
 		/*-----------------------------------------------------------------*/
