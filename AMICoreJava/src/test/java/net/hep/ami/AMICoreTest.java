@@ -256,6 +256,21 @@ public class AMICoreTest
 										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"type\\\\\\\": 3, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
 										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"projectFK\\\\\\\"}] }"
 										+ "]}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"Search Datataset\\\");"
+										
+										
+										+"\\n	webLink.newLinkProperties().setLabel(\\\"test\\\").setCtrl(\\\"search\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\"\\\").setSettings(\\\"{\\\\\\\"name\\\\\\\" : \\\\\\\"Search dataset\\\\\\\",\\\\\\\"defaultCatalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\","
+										+ "\\\\\\\"defaultEntity\\\\\\\": \\\\\\\"DATASET\\\\\\\","
+										+ "\\\\\\\"defaultSelect\\\\\\\": \\\\\\\"name AS test, PROJECT.name{DATASET.projectFK} AS project, DATASET.id, DATASET.valid\\\\\\\","
+										+ "\\\\\\\"defaultPrimaryField\\\\\\\": \\\\\\\"id\\\\\\\",\\\\\\\"criterias\\\\\\\": ["
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"type\\\\\\\": 4, \\\\\\\"states\\\\\\\": {\\\\\\\"on\\\\\\\" : \\\\\\\"1\\\\\\\", \\\\\\\"off\\\\\\\": \\\\\\\"ALL\\\\\\\"}, \\\\\\\"select\\\\\\\": \\\\\\\"1\\\\\\\", \\\\\\\"inclusive\\\\\\\": true, \\\\\\\"auto_open\\\\\\\": true},"
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 1, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.size\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"size\\\\\\\", \\\\\\\"type\\\\\\\": 2, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"type\\\\\\\": 3, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"projectFK\\\\\\\"}] }"
+										+ "]}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"Search Datataset\\\");"
+										
+										
 										+"\\n}"
 										+"\\nif(rowSet.isANameOrLabel(\\\"test.PROJECT.id\\\"))"
 										+"\\n{"
@@ -567,7 +582,7 @@ public class AMICoreTest
 				String values = "fk1_FILE_VIEW;test;FILE_VIEW;id;test;DATASET_FILE_BRIDGE;id";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_foreign_key\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
-				//CommandSingleton.executeCommand(command, false);
+				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
 			{
@@ -1309,13 +1324,56 @@ public class AMICoreTest
 			testFail = true;
 		}
 
+		commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [`test`.`FILE`.`size`{ `test`.`DATASET_FILE_BRIDGE`.`datasetFK`} < 10 OR `test`.`FILE`.`size`{ `test`.`DATASET_FILE_BRIDGE`.`datasetFK`} > 50]\" -limit=\"10\" -offset=\"0\" ";
+		
+		System.out.println(commandTest);
+		try
+		{
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		//commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT `test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}  LIMIT 10 OFFSET 0\" ";
+		
+		//commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT `test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`} WHERE [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_1']  ORDER BY `test`.`FILE`.`name` ASC LIMIT 10 OFFSET 0\" ";
+		
+		//commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT `test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`} WHERE [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_2']  ORDER BY `test`.`FILE`.`name` ASC LIMIT 10 OFFSET 0\" ";
+		
+		
+		//commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT `test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`} WHERE ([`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_1'] OR [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_2'])  ORDER BY `test`.`FILE`.`name` ASC LIMIT 10 OFFSET 0\" ";
+		
+		commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT `test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`} WHERE [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_1'] OR [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_2']  ORDER BY `test`.`FILE`.`name` ASC LIMIT 10 OFFSET 0\" ";
+		
+		
+
+		
+		//commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT `test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`} WHERE [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_1'] OR [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_2'] OR [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_3'] OR [`test`.`FILE`.`name`{`test`.`DATASET_FILE_BRIDGE`.`datasetFK`}='file_4'] ORDER BY `test`.`FILE`.`name` ASC LIMIT 10 OFFSET 0\" ";
+		
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+		
+		
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name{DATASET_FILE_BRIDGE.datasetFK} as `name`\"";
 
 		System.out.println(commandTest);
 		try
 		{
 			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			CommandSingleton.executeCommand(commandTest, false);
+			//CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
