@@ -1,7 +1,10 @@
 package net.hep.ami.jdbc.reflexion;
 
+import java.util.Map;
+
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.utility.*;
 
 public class MetadataSingleton
@@ -237,17 +240,34 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			SchemaSingleton.s_catalogs.get(fkColumn.externalCatalog)
-			                          .tables.get(fkColumn.entity)
-			                          .forwardFKs.get(fkColumn.field)
-			                          .add(frgnKey)
+			Map<String, FrgnKeys> forwardFKs = SchemaSingleton.s_catalogs.get(fkColumn.externalCatalog)
+			                                                  .tables.get(fkColumn.entity)
+			                                                  .forwardFKs
 			;
 
-			SchemaSingleton.s_catalogs.get(pkColumn.externalCatalog)
-			                          .tables.get(pkColumn.entity)
-			                          .backwardFKs.get(pkColumn.field)
-			                          .add(frgnKey)
+			Map<String, FrgnKeys> backwardFKs = SchemaSingleton.s_catalogs.get(pkColumn.externalCatalog)
+			                                                   .tables.get(pkColumn.entity)
+			                                                   .backwardFKs
 			;
+
+			/*-------------------------------------------------------------*/
+
+			FrgnKeys a = forwardFKs.get(fkColumn.field);
+
+			if(a == null) {
+				forwardFKs.put(fkColumn.field, a = new FrgnKeys());
+			}
+
+			FrgnKeys b = backwardFKs.get(pkColumn.field);
+
+			if(b == null) {
+				backwardFKs.put(pkColumn.field, b = new FrgnKeys());
+			}
+
+			/*-------------------------------------------------------------*/
+
+			a.add(frgnKey);
+			b.add(frgnKey);
 
 			/*-------------------------------------------------------------*/
 		}
