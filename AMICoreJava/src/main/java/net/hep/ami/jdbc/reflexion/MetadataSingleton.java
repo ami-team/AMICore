@@ -245,7 +245,7 @@ public class MetadataSingleton
 
 			SchemaSingleton.s_catalogs.get(pkColumn.externalCatalog)
 			                          .tables.get(pkColumn.entity)
-			                          .forwardFKs.get(pkColumn.field)
+			                          .backwardFKs.get(pkColumn.field)
 			                          .add(frgnKey)
 			;
 
