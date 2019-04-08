@@ -234,7 +234,7 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> buildLabelToFieldMap(String sql) throws Exception
+	public static Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> extractAliasInfo(String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* EXTRACT FIELDS AND TABLES                                       */
@@ -356,21 +356,21 @@ public class Tokenizer
 			{
 				/**/ if(idx > 0)
 				{
+					fieldHasAliasList.add(true);
+
 					fieldAliasMap.put(
 						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.FIELD, QId.Type.NONE),
 						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.FIELD, QId.Type.NONE)
 					);
-
-					fieldHasAliasList.add(true);
 				}
 				else
 				{
+					fieldHasAliasList.add(false);
+
 					fieldAliasMap.put(
 						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE),
 						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE)
 					);
-
-					fieldHasAliasList.add(false);
 				}
 			}
 			catch(Exception e)
@@ -400,21 +400,21 @@ public class Tokenizer
 			{
 				/**/ if(idx > 0)
 				{
+					tableHasAliasList.add(true);
+
 					tableAliasMap.put(
 						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
 					);
-
-					tableHasAliasList.add(true);
 				}
 				else
 				{
+					tableHasAliasList.add(false);
+
 					tableAliasMap.put(
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE)
 					);
-
-					tableHasAliasList.add(false);
 				}
 			}
 			catch(Exception e)

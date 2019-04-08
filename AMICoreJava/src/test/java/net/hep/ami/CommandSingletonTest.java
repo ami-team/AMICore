@@ -36,7 +36,9 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\" -count", false));
 
-		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT id, id AS toto, router_user.id AS id WHERE 1=1 ORDER BY id ASC LIMIT 1 OFFSET 2\"", false);
+		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\" -limit=\"20\" -offset=\"0\" -count", false);
+
+//		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT id, id AS toto, router_user.id AS id WHERE 1=1 ORDER BY id ASC LIMIT 1 OFFSET 2\"", false);
 
 //		/*System.out.println(*/CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n")/*)*/;
 

@@ -173,7 +173,7 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
+		Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> aliasInfo = Tokenizer.extractAliasInfo(sql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -266,7 +266,7 @@ public class RowSet
 				"N/A".equals(m_fieldEntities[i]) == true
 			   )
 			 ) {
-				resolveLabel(labelToFieldMap, defaultCatalog, defaultEntity, i, sql);
+				resolveLabel(aliasInfo, defaultCatalog, defaultEntity, i, sql);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -277,7 +277,7 @@ public class RowSet
 				m_fieldNames[i]
 			);
 
-			if(labelToFieldMap.y.get(i) == false
+			if(aliasInfo.y.get(i) == false
 			   &&
 			   (
 			       defaultCatalog != null && defaultCatalog.equalsIgnoreCase(m_fieldCatalogs[i]) == false
@@ -369,7 +369,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean resolveLabel(Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> labelToFieldMap, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex, String sql)
+	private boolean resolveLabel(Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> aliasInfo, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex, String sql)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -379,7 +379,7 @@ public class RowSet
 		{
 			qId = QId.parseQId(m_fieldLabels[fieldIndex], QId.Type.FIELD);
 
-			for(Map.Entry<QId, QId> entry: labelToFieldMap.x.entrySet())
+			for(Map.Entry<QId, QId> entry: aliasInfo.x.entrySet())
 			{
 				if(qId.matches(entry.getKey()))
 				{
@@ -396,7 +396,7 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		if(labelToFieldMap.u.size() == 1
+		if(aliasInfo.u.size() == 1
 		   &&
 		   defaultCatalog != null
 		   &&
@@ -465,7 +465,7 @@ public class RowSet
 				String newDefaultCatalog;
 				String newDefaultEntity;
 
-				for(QId table: labelToFieldMap.u)
+				for(QId table: aliasInfo.u)
 				{
 					newDefaultCatalog = table.getCatalog() != null ? table.getCatalog() : defaultCatalog;
 					newDefaultEntity = table.getEntity() != null ? table.getEntity() : defaultEntity;
