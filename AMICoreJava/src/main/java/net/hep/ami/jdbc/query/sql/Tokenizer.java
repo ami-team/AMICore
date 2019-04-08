@@ -234,7 +234,7 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> extractAliasInfo(String sql) throws Exception
+	public static Tuple5<Map<QId, QId>, List<Boolean>, Set<QId>, List<Boolean>, Set<QId>> extractAliasInfo(String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* EXTRACT FIELDS AND TABLES                                       */
@@ -337,9 +337,10 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		Map<QId, QId> fieldAliasMap = new HashMap<>();
-
 		List<Boolean> fieldHasAliasList = new ArrayList<>();
+
+		Map<QId, QId> rawFieldAliasMap = new HashMap<>();
+
 
 		for(List<String> field: fields)
 		{
@@ -358,7 +359,7 @@ public class Tokenizer
 				{
 					fieldHasAliasList.add(true);
 
-					fieldAliasMap.put(
+					rawFieldAliasMap.put(
 						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.FIELD, QId.Type.NONE),
 						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.FIELD, QId.Type.NONE)
 					);
@@ -367,7 +368,7 @@ public class Tokenizer
 				{
 					fieldHasAliasList.add(false);
 
-					fieldAliasMap.put(
+					rawFieldAliasMap.put(
 						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE),
 						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE)
 					);
@@ -381,9 +382,9 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		Map<QId, QId> tableAliasMap = new HashMap<>();
-
 		List<Boolean> tableHasAliasList = new ArrayList<>();
+
+		Map<QId, QId> rawFableAliasMap = new HashMap<>();
 
 		for(List<String> table: tables)
 		{
@@ -402,7 +403,7 @@ public class Tokenizer
 				{
 					tableHasAliasList.add(true);
 
-					tableAliasMap.put(
+					rawFableAliasMap.put(
 						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
 					);
@@ -411,7 +412,7 @@ public class Tokenizer
 				{
 					tableHasAliasList.add(false);
 
-					tableAliasMap.put(
+					rawFableAliasMap.put(
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE)
 					);
@@ -427,13 +428,13 @@ public class Tokenizer
 		/*                                                                 */
 		/*-----------------------------------------------------------------*/
 
-		Map<QId, QId> result = new HashMap<>();
+		Map<QId, QId> aliasFieldMap = new HashMap<>();
 
-		for(Map.Entry<QId, QId> entry: fieldAliasMap.entrySet())
+		for(Map.Entry<QId, QId> entry: rawFieldAliasMap.entrySet())
 		{
 			if(entry.getValue().is(QId.MASK_ENTITY_FIELD))
 			{
-				QId table = tableAliasMap.get(new QId(
+				QId table = rawFableAliasMap.get(new QId(
 					null,
 					entry.getValue().getEntity(),
 					null
@@ -441,7 +442,7 @@ public class Tokenizer
 
 				if(table != null)
 				{
-					result.put(
+					aliasFieldMap.put(
 						entry.getKey(),
 						new QId(
 							table.getCatalog(),
@@ -452,7 +453,7 @@ public class Tokenizer
 				}
 				else
 				{
-					result.put(
+					aliasFieldMap.put(
 						entry.getKey(),
 						entry.getValue()
 					);
@@ -460,7 +461,7 @@ public class Tokenizer
 			}
 			else
 			{
-				result.put(
+				aliasFieldMap.put(
 					entry.getKey(),
 					entry.getValue()
 				);
@@ -470,11 +471,11 @@ public class Tokenizer
 		/*-----------------------------------------------------------------*/
 
 		return new Tuple5<>(
-			result,
+			aliasFieldMap,
 			fieldHasAliasList,
+			rawFieldAliasMap.keySet(),
 			tableHasAliasList,
-			fieldAliasMap.keySet(),
-			tableAliasMap.keySet()
+			rawFableAliasMap.keySet()
 		);
 	}
 

@@ -173,7 +173,7 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> aliasInfo = Tokenizer.extractAliasInfo(sql);
+		Tuple5<Map<QId, QId>, List<Boolean>, Set<QId>, List<Boolean>, Set<QId>> aliasInfo = Tokenizer.extractAliasInfo(sql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -369,7 +369,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean resolveLabel(Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> aliasInfo, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex, String sql)
+	private boolean resolveLabel(Tuple5<Map<QId, QId>, List<Boolean>, Set<QId>, List<Boolean>, Set<QId>> aliasInfo, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex, String sql)
 	{
 		/*-----------------------------------------------------------------*/
 
