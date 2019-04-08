@@ -277,7 +277,9 @@ public class RowSet
 				m_fieldNames[i]
 			);
 
-			if(aliasInfo.y.get(i) == false
+			if(aliasInfo.y.size() > i
+			   &&
+			   aliasInfo.y.get(i) == false
 			   &&
 			   (
 			       defaultCatalog != null && defaultCatalog.equalsIgnoreCase(m_fieldCatalogs[i]) == false
