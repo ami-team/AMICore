@@ -171,7 +171,9 @@ public class RowSet
 
 		String m_fieldNames_i;
 
-		Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap = null;
+		/*-----------------------------------------------------------------*/
+
+		Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
 
 		/*-----------------------------------------------------------------*/
 
@@ -264,11 +266,6 @@ public class RowSet
 				"N/A".equals(m_fieldEntities[i]) == true
 			   )
 			 ) {
-				if(labelToFieldMap == null)
-				{
-					labelToFieldMap = Tokenizer.buildLabelToFieldMap(sql);
-				}
-
 				resolveLabel(labelToFieldMap, defaultCatalog, defaultEntity, i, sql);
 			}
 
@@ -280,7 +277,7 @@ public class RowSet
 				m_fieldNames[i]
 			);
 
-			if(m_fieldNames[i].equalsIgnoreCase(m_fieldLabels[i])
+			if(labelToFieldMap.y.get(i) == false
 			   &&
 			   (
 			       defaultCatalog != null && defaultCatalog.equalsIgnoreCase(m_fieldCatalogs[i]) == false
@@ -372,7 +369,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private boolean resolveLabel(Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> labelToFieldMap, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex, String sql)
+	private boolean resolveLabel(Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> labelToFieldMap, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex, String sql)
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -399,7 +396,7 @@ public class RowSet
 
 		/*-----------------------------------------------------------------*/
 
-		if(labelToFieldMap.y.size() == 1
+		if(labelToFieldMap.u.size() == 1
 		   &&
 		   defaultCatalog != null
 		   &&
@@ -465,32 +462,10 @@ public class RowSet
 
 			if(defaultCatalog != null)
 			{
-				/*---------------------------------------------------------*/
-
-				if(defaultEntity != null)
-				{
-					try
-					{
-						QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, defaultEntity, qId).getExternalQId();
-
-						m_fieldCatalogs[fieldIndex] = resolvedQId.getCatalog();
-						m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
-						m_fieldNames[fieldIndex] = resolvedQId.getField();
-
-						return true;
-					}
-					catch(Exception e)
-					{
-						/* IGNORE */
-					}
-				}
-
-				/*---------------------------------------------------------*/
-
 				String newDefaultCatalog;
 				String newDefaultEntity;
 
-				for(QId table: labelToFieldMap.y)
+				for(QId table: labelToFieldMap.u)
 				{
 					newDefaultCatalog = table.getCatalog() != null ? table.getCatalog() : defaultCatalog;
 					newDefaultEntity = table.getEntity() != null ? table.getEntity() : defaultEntity;

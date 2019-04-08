@@ -234,10 +234,10 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple3<Map<QId, QId>, Set<QId>, Set<QId>> buildLabelToFieldMap(String sql) throws Exception
+	public static Tuple5<Map<QId, QId>, List<Boolean>, List<Boolean>, Set<QId>, Set<QId>> buildLabelToFieldMap(String sql) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* EXTRACT FIELDS AND TABLES                                       */
 		/*-----------------------------------------------------------------*/
 
 		int cnt = 0;
@@ -327,7 +327,7 @@ public class Tokenizer
 		}
 
 		/*-----------------------------------------------------------------*/
-		/*                                                                 */
+		/* BUILD FIELD-ALIAS AND TABLE-ALIAS MAPS                          */
 		/*-----------------------------------------------------------------*/
 
 		int l;
@@ -338,6 +338,8 @@ public class Tokenizer
 		/*-----------------------------------------------------------------*/
 
 		Map<QId, QId> fieldAliasMap = new HashMap<>();
+
+		List<Boolean> fieldHasAliasList = new ArrayList<>();
 
 		for(List<String> field: fields)
 		{
@@ -358,6 +360,8 @@ public class Tokenizer
 						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.FIELD, QId.Type.NONE),
 						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.FIELD, QId.Type.NONE)
 					);
+
+					fieldHasAliasList.add(true);
 				}
 				else
 				{
@@ -365,6 +369,8 @@ public class Tokenizer
 						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE),
 						QId.parseQId(tmp, QId.Type.FIELD, QId.Type.NONE)
 					);
+
+					fieldHasAliasList.add(false);
 				}
 			}
 			catch(Exception e)
@@ -376,6 +382,8 @@ public class Tokenizer
 		/*-----------------------------------------------------------------*/
 
 		Map<QId, QId> tableAliasMap = new HashMap<>();
+
+		List<Boolean> tableHasAliasList = new ArrayList<>();
 
 		for(List<String> table: tables)
 		{
@@ -396,6 +404,8 @@ public class Tokenizer
 						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
 					);
+
+					tableHasAliasList.add(true);
 				}
 				else
 				{
@@ -403,6 +413,8 @@ public class Tokenizer
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE)
 					);
+
+					tableHasAliasList.add(false);
 				}
 			}
 			catch(Exception e)
@@ -457,10 +469,12 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple3<>(
+		return new Tuple5<>(
 			result,
-			tableAliasMap.keySet(),
-			fieldAliasMap.keySet()
+			fieldHasAliasList,
+			tableHasAliasList,
+			fieldAliasMap.keySet(),
+			tableAliasMap.keySet()
 		);
 	}
 
