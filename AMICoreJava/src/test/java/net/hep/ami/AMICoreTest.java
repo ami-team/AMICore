@@ -44,7 +44,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = true;
+		boolean doCreateAndFill = false;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -1396,7 +1396,7 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name AS test ORDER BY PROJECT.name DESC\"";
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name, created AS test ORDER BY PROJECT.name DESC\"";
 
 		System.out.println(commandTest);
 		try
