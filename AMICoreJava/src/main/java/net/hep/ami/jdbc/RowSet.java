@@ -67,7 +67,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -710,18 +710,9 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				Timestamp timestamp = m_resultSet.getTimestamp(i + 1);
+				result[i] = m_dateFormat.format(m_resultSet.getTimestamp(i + 1));
 
-				if(timestamp != null)
-				{
-					result[i] = timestamp.toString();
-
-					if(result[i] == null)
-					{
-						result[i] = m_resultSet.getString(i + 1);
-					}
-				}
-				else
+				if(result[i] == null)
 				{
 					result[i] = m_resultSet.getString(i + 1);
 				}
