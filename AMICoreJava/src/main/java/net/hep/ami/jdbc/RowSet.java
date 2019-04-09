@@ -704,7 +704,7 @@ public class RowSet
 
 				/*---------------------------------------------------------*/
 			}
-			else if("TIMESTAMP".equalsIgnoreCase(m_fieldTypes[i]))
+			else if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP"))
 			{
 				/*---------------------------------------------------------*/
 				/* TIMESTAMP                                               */
