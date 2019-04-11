@@ -248,6 +248,7 @@ public class AMICoreTest
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"valid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"invalid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params3+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
+									/*
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"search dataset\\\").setCtrl(\\\"search\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\"\\\").setSettings(\\\"{\\\\\\\"name\\\\\\\" : \\\\\\\"Search dataset\\\\\\\",\\\\\\\"defaultCatalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"defaultEntity\\\\\\\": \\\\\\\"DATASET\\\\\\\",\\\\\\\"defaultPrimaryField\\\\\\\": \\\\\\\"id\\\\\\\",\\\\\\\"criterias\\\\\\\": ["
 										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"type\\\\\\\": 4, \\\\\\\"states\\\\\\\": {\\\\\\\"on\\\\\\\" : \\\\\\\"1\\\\\\\", \\\\\\\"off\\\\\\\": \\\\\\\"ALL\\\\\\\"}, \\\\\\\"select\\\\\\\": \\\\\\\"1\\\\\\\", \\\\\\\"inclusive\\\\\\\": true, \\\\\\\"auto_open\\\\\\\": true},"
 										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
@@ -257,7 +258,7 @@ public class AMICoreTest
 										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"projectFK\\\\\\\"}] }"
 										+ "]}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"Search Datataset\\\");"
 										
-										
+									*/
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"test\\\").setCtrl(\\\"search\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\"\\\").setSettings(\\\"{\\\\\\\"name\\\\\\\" : \\\\\\\"Search dataset\\\\\\\",\\\\\\\"defaultCatalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\","
 										+ "\\\\\\\"defaultEntity\\\\\\\": \\\\\\\"DATASET\\\\\\\","
 										+ "\\\\\\\"defaultSelect\\\\\\\": \\\\\\\"name AS test, PROJECT.name{DATASET.projectFK} AS project, DATASET.id, DATASET.valid\\\\\\\","
@@ -831,9 +832,12 @@ public class AMICoreTest
 				}
 			}
 			System.out.println("Adding files/datasets relations");
+			boolean testInter = false;
 			for (int i = 0; i < cptMax; i++) {
 				try
 				{
+					boolean localTestInter = testInter;
+
 					for (int j = 0; j < cptMax2; j++) {
 						arguments.clear();
 						arguments.put("catalog", "test");
@@ -845,7 +849,12 @@ public class AMICoreTest
 						arguments.put("values", "file_" + j + ";dataset_" + i +";BINARY");
 						//arguments.put("fields", "FILE.name;DATASET.name");
 						//arguments.put("values", "file_" + i + ";dataset_" + i +"");
-						CommandSingleton.executeCommand("AddElement", arguments, false);
+						if(localTestInter)
+						{
+							CommandSingleton.executeCommand("AddElement", arguments, false);
+						}
+
+						localTestInter = ! localTestInter;
 					}
 				}
 				catch(Exception e)
@@ -853,6 +862,8 @@ public class AMICoreTest
 					System.out.println(e.getMessage());
 					testFail = true;
 				}
+
+				testInter = !testInter;
 			}
 			/*-----------------------------------------------------------------*/
 			System.out.println("Adding datasets/datasets relations");
