@@ -680,12 +680,7 @@ public class RowSet
 				/* TIME                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_dateFormat.format(m_resultSet.getTime(i + 1));
-
-				if(result[i] == null)
-				{
-					result[i] = m_resultSet.getString(i + 1);
-				}
+				result[i] = m_resultSet.getTime(i + 1) == null ? m_resultSet.getString(i + 1) : m_dateFormat.format(m_resultSet.getTime(i + 1));
 
 				/*---------------------------------------------------------*/
 			}
@@ -695,12 +690,7 @@ public class RowSet
 				/* DATE                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_dateFormat.format(m_resultSet.getDate(i + 1));
-
-				if(result[i] == null)
-				{
-					result[i] = m_resultSet.getString(i + 1);
-				}
+				result[i] = m_resultSet.getDate(i + 1) == null ? m_resultSet.getString(i + 1) : m_dateFormat.format(m_resultSet.getDate(i + 1));
 
 				/*---------------------------------------------------------*/
 			}
@@ -710,12 +700,7 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_dateFormat.format(m_resultSet.getTimestamp(i + 1));
-
-				if(result[i] == null)
-				{
-					result[i] = m_resultSet.getString(i + 1);
-				}
+				result[i] = m_resultSet.getTimestamp(i + 1) == null ? m_resultSet.getString(i + 1) : m_dateFormat.format(m_resultSet.getTimestamp(i + 1));
 
 				/*---------------------------------------------------------*/
 			}
