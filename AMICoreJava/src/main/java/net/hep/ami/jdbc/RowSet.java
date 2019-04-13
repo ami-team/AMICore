@@ -67,7 +67,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSSS", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -666,6 +666,10 @@ public class RowSet
 
 	protected String[] getCurrentRow() throws SQLException
 	{
+		java.sql.Time time;
+		java.sql.Date date;
+		java.sql.Timestamp timestamp;
+
 		String[] result = new String[m_numberOfFields];
 
 		/*-----------------------------------------------------------------*/
@@ -680,7 +684,11 @@ public class RowSet
 				/* TIME                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_resultSet.getTime(i + 1) == null ? m_resultSet.getString(i + 1) : m_dateFormat.format(m_resultSet.getTime(i + 1));
+				time = m_resultSet.getTime(i + 1);
+
+				result[i] = (time != null) ? m_dateFormat.format(time)
+				                           : m_resultSet.getString(i + 1)
+				;
 
 				/*---------------------------------------------------------*/
 			}
@@ -690,7 +698,11 @@ public class RowSet
 				/* DATE                                                    */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_resultSet.getDate(i + 1) == null ? m_resultSet.getString(i + 1) : m_dateFormat.format(m_resultSet.getDate(i + 1));
+				date = m_resultSet.getDate(i + 1);
+
+				result[i] = (date != null) ? m_dateFormat.format(date)
+				                           : m_resultSet.getString(i + 1)
+				;
 
 				/*---------------------------------------------------------*/
 			}
@@ -700,7 +712,11 @@ public class RowSet
 				/* TIMESTAMP                                               */
 				/*---------------------------------------------------------*/
 
-				result[i] = m_resultSet.getTimestamp(i + 1) == null ? m_resultSet.getString(i + 1) : m_dateFormat.format(m_resultSet.getTimestamp(i + 1));
+				timestamp = m_resultSet.getTimestamp(i + 1);
+
+				result[i] = (timestamp != null) ? m_dateFormat.format(timestamp)
+				                                : m_resultSet.getString(i + 1)
+				;
 
 				/*---------------------------------------------------------*/
 			}
