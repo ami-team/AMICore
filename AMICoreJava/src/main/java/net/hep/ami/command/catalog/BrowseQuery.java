@@ -36,7 +36,7 @@ public class BrowseQuery extends SearchQuery
 
 	public static String usage()
 	{
-		return "-catalog=\"\" (-sql=\"\" | (-entity=\"\" -mql=\"\"))";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";
 	}
 
 	/*---------------------------------------------------------------------*/
