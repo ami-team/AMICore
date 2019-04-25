@@ -459,6 +459,10 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
+			Set<String> lockedFields = new HashSet<>();
+
+			/*-------------------------------------------------------------*/
+
 			if(resolution.getMaxPathLen() > 0)
 			{
 				tmpResolution = new Resolution();
@@ -484,6 +488,11 @@ public class Helper
 					/*-----------------------------------------------------*/
 
 					field = path.get(0).fkField;
+
+					if(lockedFields.contains(field))
+					{
+						continue;
+					}
 
 					/*-----------------------------------------------------*/
 
@@ -514,6 +523,8 @@ public class Helper
 
 				field = resolution.getColumn().field;
 
+				lockedFields.add(field);
+
 				/*---------------------------------------------------------*/
 
 				tuple = entries.get(field);
@@ -531,7 +542,9 @@ public class Helper
 				/*------------------------------------------*/
 				/*----------------------------------------------------------------------------------------------*/
 
-				tuple.z.add(resolution);
+				tuple.z.clear();
+				tuple.t.clear();
+
 				tuple.t.add(expression);
 
 				/*---------------------------------------------------------*/
@@ -562,7 +575,7 @@ public class Helper
 			}
 			else
 			{
-				Y.add(String.join(" AND ", tuple.t));
+				Y.add(tuple.t.iterator().next().toString());
 			}
 		}
 
