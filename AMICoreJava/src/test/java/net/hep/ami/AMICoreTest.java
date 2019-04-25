@@ -44,7 +44,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = false;
+		boolean doCreateAndFill = true;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -832,6 +832,19 @@ public class AMICoreTest
 				}
 			}
 			System.out.println("Adding files/datasets relations");
+
+			command = "AddElement -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -separator=\";\" -fields=\"fileFK;DATASET.NAME\" -values=\"3;dataset_0\"";
+			System.out.println(command);
+			try
+			{
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
 			boolean testInter = false;
 			for (int i = 0; i < cptMax; i++) {
 				try
