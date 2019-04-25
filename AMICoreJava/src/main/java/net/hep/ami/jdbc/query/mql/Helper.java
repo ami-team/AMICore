@@ -412,9 +412,15 @@ public class Helper
 
 		SchemaSingleton.Column column;
 
+		/*-----------------------------------------------------------------*/
+
+		Set<String> locked = new HashSet<>();
+
 		Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>> tuple;
 
 		Map<String, Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>>> entries = new LinkedHashMap<>();
+
+		/*-----------------------------------------------------------------*/
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -459,10 +465,6 @@ public class Helper
 
 			/*-------------------------------------------------------------*/
 
-			Set<String> lockedFields = new HashSet<>();
-
-			/*-------------------------------------------------------------*/
-
 			if(resolution.getMaxPathLen() > 0)
 			{
 				tmpResolution = new Resolution();
@@ -487,7 +489,7 @@ public class Helper
 
 					field = path.get(0).fkField;
 
-					if(lockedFields.contains(field))
+					if(locked.contains(field))
 					{
 						continue;
 					}
@@ -525,7 +527,7 @@ public class Helper
 
 				field = resolution.getColumn().field;
 
-				lockedFields.add(field);
+				locked.add(field);
 
 				/*---------------------------------------------------------*/
 
