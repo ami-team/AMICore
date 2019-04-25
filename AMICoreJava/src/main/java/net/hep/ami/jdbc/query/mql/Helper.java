@@ -483,8 +483,6 @@ public class Helper
 						continue;
 					}
 
-					tmpResolution.addPath(resolution.getExternalQId(), resolution.getColumn(), path);
-
 					/*-----------------------------------------------------*/
 
 					field = path.get(0).fkField;
@@ -493,6 +491,10 @@ public class Helper
 					{
 						continue;
 					}
+
+					/*-----------------------------------------------------*/
+
+					tmpResolution.addPath(resolution.getExternalQId(), resolution.getColumn(), path);
 
 					/*-----------------------------------------------------*/
 
