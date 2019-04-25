@@ -834,7 +834,7 @@ public class AMICoreTest
 			System.out.println("Adding files/datasets relations");
 
 			command = "AddElement -catalog=\"test\" -entity=\"DATASET_FILE_BRIDGE\" -separator=\";\" -fields=\"fileFK;DATASET.NAME\" -values=\"3;dataset_0\"";
-			System.out.println(command);
+			//System.out.println(command);
 			try
 			{
 				CommandSingleton.executeCommand(command, false);
