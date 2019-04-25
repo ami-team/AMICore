@@ -489,14 +489,14 @@ public class Helper
 
 					field = path.get(0).fkField;
 
-					if(locked.contains(field))
+					if(locked.contains(field) == false)
+					{
+						tmpResolution.addPath(resolution.getExternalQId(), resolution.getColumn(), path);
+					}
+					else
 					{
 						continue;
 					}
-
-					/*-----------------------------------------------------*/
-
-					tmpResolution.addPath(resolution.getExternalQId(), resolution.getColumn(), path);
 
 					/*-----------------------------------------------------*/
 
@@ -543,11 +543,8 @@ public class Helper
 					));
 				}
 
-				/*------------------------------------------*/
-				/*----------------------------------------------------------------------------------------------*/
-
-				tuple.x.value = null;
-				tuple.y.value = null;
+				tuple.x.value = /*--------*/ null /*--------*/;
+				tuple.y.value = /*----------------------------------*/ null /*----------------------------------*/;
 
 				tuple.z.clear();
 				tuple.t.clear();
