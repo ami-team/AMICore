@@ -67,7 +67,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSSS", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
