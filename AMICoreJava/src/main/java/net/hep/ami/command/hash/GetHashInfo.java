@@ -33,7 +33,7 @@ public class GetHashInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("router_short_url", "SELECT `hash`, `name`, `rank`, `json` FROM `router_short_url` WHERE `hash` = ? AND (`shared` = 1 OR `createdBy` = ?)", hash, m_AMIUser).getAll();
+		List<Row> rowList = querier.executeSQLQuery("router_short_url", "SELECT `hash`, `name`, `rank`, `json` FROM `router_short_url` WHERE `hash` = ? AND (`shared` = 1 OR `owner` = ?)", hash, m_AMIUser).getAll();
 
 		if(rowList.size() != 1)
 		{

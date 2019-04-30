@@ -67,7 +67,9 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+	private final DateFormat m_timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -664,6 +666,25 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
+	private String formatTimestamp(java.sql.Timestamp timestamp)
+	{
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		result.append(m_timestampFormat.format(timestamp));
+
+		result.append(timestamp.getNanos() / 1000);
+
+		/*-----------------------------------------------------------------*/
+
+		return result.toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	protected String[] getCurrentRow() throws SQLException
 	{
 		java.sql.Time time;
@@ -714,7 +735,7 @@ public class RowSet
 
 				timestamp = m_resultSet.getTimestamp(i + 1);
 
-				result[i] = (timestamp != null) ? m_dateFormat.format(timestamp)
+				result[i] = (timestamp != null) ? formatTimestamp(timestamp)
 				                                : m_resultSet.getString(i + 1)
 				;
 
