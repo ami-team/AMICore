@@ -676,7 +676,16 @@ public class RowSet
 
 		result.append(m_timestampFormat.format(timestamp));
 
-		result.append(timestamp.getNanos() / 1000);
+		/*-----------------------------------------------------------------*/
+
+		String ms = String.valueOf(timestamp.getNanos() / 1000);
+
+		for(int i = 0; i < 6 - ms.length(); i++)
+		{
+			result.append('0');
+		}
+
+		result.append(ms);
 
 		/*-----------------------------------------------------------------*/
 
