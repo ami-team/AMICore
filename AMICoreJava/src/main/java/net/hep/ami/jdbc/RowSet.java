@@ -67,7 +67,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final DateFormat m_timedateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	private final DateFormat m_timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.", Locale.US);
 
@@ -707,7 +707,7 @@ public class RowSet
 
 				time = m_resultSet.getTime(i + 1);
 
-				result[i] = (time != null) ? m_dateFormat.format(time)
+				result[i] = (time != null) ? m_timedateFormat.format(time)
 				                           : m_resultSet.getString(i + 1)
 				;
 
@@ -721,7 +721,7 @@ public class RowSet
 
 				date = m_resultSet.getDate(i + 1);
 
-				result[i] = (date != null) ? m_dateFormat.format(date)
+				result[i] = (date != null) ? m_timedateFormat.format(date)
 				                           : m_resultSet.getString(i + 1)
 				;
 
