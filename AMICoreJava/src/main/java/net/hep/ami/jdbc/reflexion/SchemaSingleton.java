@@ -520,7 +520,7 @@ public class SchemaSingleton
 
 				/*---------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z, "%", new String[] {"TABLE", "VIEW"}))
+				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z, "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
 				{
 					String entity;
 
