@@ -66,6 +66,7 @@ public class Update
 		                          .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
 		                          .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
 		                          .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
+		                          .append("<rowset><row><field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field></row></rowset>")
 		;
 	}
 
