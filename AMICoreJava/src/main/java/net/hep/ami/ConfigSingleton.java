@@ -47,6 +47,7 @@ public class ConfigSingleton
 		s_reserved.add("router_url");
 		s_reserved.add("router_user");
 		s_reserved.add("router_pass");
+		s_reserved.add("time_zone");
 
 		reload();
 	}
