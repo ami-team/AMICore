@@ -27,6 +27,13 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
+	public int getNumberOfFields()
+	{
+		return m_rowSet.m_numberOfFields;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getCatalog(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getCatalogOfField(fieldIndex);
