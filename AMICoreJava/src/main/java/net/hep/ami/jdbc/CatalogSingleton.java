@@ -66,13 +66,7 @@ public class CatalogSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		Router router = new Router(
-			"self",
-			ConfigSingleton.getProperty("router_catalog"),
-			ConfigSingleton.getProperty("router_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
-		);
+		Router router = new Router();
 
 		/*-----------------------------------------------------------------*/
 
@@ -177,11 +171,11 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(String catalog, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public static AbstractDriver getConnection(String catalog, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, isAdmin, links);
+		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, timeZone, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/

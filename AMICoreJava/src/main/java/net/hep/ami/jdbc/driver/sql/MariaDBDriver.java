@@ -13,19 +13,26 @@ public class MariaDBDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public MariaDBDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public MariaDBDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
-		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
+		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void setDB(String db) throws Exception
+	public void setupSession(String db, String tz) throws Exception
 	{
+		if("UTC".equalsIgnoreCase(tz))
+		{
+			tz = "+00:00";
+		}
+
 		m_statement.executeQuery("SET SESSION sql_mode = 'NO_BACKSLASH_ESCAPES';");
 
 		m_statement.executeQuery("USE `" + db + "`;");
+
+		m_statement.executeQuery("SET time_zone = '" + tz + "';");
 	}
 
 	/*---------------------------------------------------------------------*/

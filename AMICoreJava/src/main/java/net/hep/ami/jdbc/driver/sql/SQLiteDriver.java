@@ -13,15 +13,15 @@ public class SQLiteDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
-	public SQLiteDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public SQLiteDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
-		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
+		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void setDB(String db) throws Exception
+	public void setupSession(String db, String tz) throws Exception
 	{
 		/* DO NOTHING */
 	}

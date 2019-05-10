@@ -123,6 +123,7 @@ public class DriverSingleton
 					String.class,
 					String.class,
 					String.class,
+					String.class,
 					boolean.class,
 					boolean.class
 				)
@@ -161,11 +162,11 @@ public class DriverSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public static AbstractDriver getConnection(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		try
 		{
-			return (AbstractDriver) getTuple(jdbcUrl).u.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
+			return (AbstractDriver) getTuple(jdbcUrl).u.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 		}
 		catch(InvocationTargetException e)
 		{

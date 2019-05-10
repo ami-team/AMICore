@@ -31,22 +31,23 @@ public class SimpleQuerier implements Querier
 	public SimpleQuerier(String catalog) throws Exception
 	{
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
+		String timeZone = ConfigSingleton.getProperty("time_zone", "UTC");
 
-		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, true, false);
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, true, false);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SimpleQuerier(String catalog, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public SimpleQuerier(String catalog, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
-		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, isAdmin, links);
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
-		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
+		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -31,16 +31,16 @@ public class TransactionalQuerier implements Querier
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(String catalog, String AMIUser, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public TransactionalQuerier(String catalog, String AMIUser, String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(catalog, AMIUser, isAdmin, links, m_transactionId = transactionId);
+		m_driver = TransactionPoolSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links, m_transactionId = transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public TransactionalQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public TransactionalQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links, m_transactionId = transactionId);
+		m_driver = TransactionPoolSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links, m_transactionId = transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/

@@ -145,7 +145,7 @@ public class AMICoreTest
 
 			/*-----------------------------------------------------------------*/
 
-			SimpleQuerier testDB = new SimpleQuerier("test", "admin", true, false);
+			SimpleQuerier testDB = new SimpleQuerier("test", "UTC", "admin", true, false);
 
 			/*-----------------------------------------------------------------*/
 			/* SELECT PROFILE                                                  */

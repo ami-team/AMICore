@@ -21,13 +21,7 @@ public class MetadataSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		Router router = new Router(
-			"self",
-			ConfigSingleton.getProperty("router_catalog"),
-			ConfigSingleton.getProperty("router_url"),
-			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
-		);
+		Router router = new Router();
 
 		/*-----------------------------------------------------------------*/
 

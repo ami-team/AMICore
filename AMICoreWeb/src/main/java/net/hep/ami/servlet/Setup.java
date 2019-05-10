@@ -227,6 +227,13 @@ public class Setup extends HttpServlet
 		;
 
 		/*-----------------------------------------------------------------*/
+
+		String time_zone = req.getParameter("time_zone");
+		time_zone = (time_zone != null) ? time_zone.trim()
+		                                : ConfigSingleton.getProperty("time_zone")
+		;
+
+		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (USER EXTENTIONS)                            */
 		/*-----------------------------------------------------------------*/
 
@@ -260,6 +267,8 @@ public class Setup extends HttpServlet
 		                    .replace("{{ROUTER_URL}}", router_url)
 		                    .replace("{{ROUTER_USER}}", router_user)
 		                    .replace("{{ROUTER_PASS}}", router_pass)
+		                     /**/
+		                    .replace("{{TIME_ZONE}}", time_zone)
 		                    /**/
 		                    .replace("{{CLASS_PATH}}", class_path)
 		;
@@ -314,6 +323,11 @@ public class Setup extends HttpServlet
 		router_pass = (router_pass != null) ? router_pass.trim() : "";
 
 		/*-----------------------------------------------------------------*/
+
+		String time_zone = req.getParameter("time_zone");
+		time_zone = (time_zone != null) ? time_zone.trim() : "";
+
+		/*-----------------------------------------------------------------*/
 		/* GET/POST VARIABLES (USER EXTENTIONS)                            */
 		/*-----------------------------------------------------------------*/
 
@@ -349,6 +363,8 @@ public class Setup extends HttpServlet
 		              .append("  <property name=\"router_url\"><![CDATA[" + router_url + "]]></property>\n")
 		              .append("  <property name=\"router_user\"><![CDATA[" + router_user + "]]></property>\n")
 		              .append("  <property name=\"router_pass\"><![CDATA[" + router_pass + "]]></property>\n")
+		              .append("\n")
+		              .append("  <property name=\"time_zone\"><![CDATA[" + time_zone + "]]></property>\n")
 		              .append("\n")
 		              .append("  <property name=\"class_path\"><![CDATA[" + class_path + "]]></property>\n")
 		              .append("</properties>\n")
@@ -393,7 +409,7 @@ public class Setup extends HttpServlet
 			/* SETUP SERVER CONFIG                                         */
 			/*-------------------------------------------------------------*/
 
-			Router db = new Router("self", router_catalog, router_url, router_user, router_pass);
+			Router db = new Router("self", router_catalog, router_url, router_user, router_pass, "UTC");
 
 			try
 			{
@@ -460,6 +476,8 @@ public class Setup extends HttpServlet
 			                     .replace("{{ROUTER_USER}}", router_user)
 			                     .replace("{{ROUTER_PASS}}", router_pass)
 			                     /**/
+			                     .replace("{{TIME_ZONE}}", time_zone)
+			                     /**/
 			                     .replace("{{CLASS_PATH}}", class_path)
 			;
 
@@ -500,6 +518,8 @@ public class Setup extends HttpServlet
 			                     .replace("{{ROUTER_URL}}", router_url)
 			                     .replace("{{ROUTER_USER}}", router_user)
 			                     .replace("{{ROUTER_PASS}}", router_pass)
+			                     /**/
+			                     .replace("{{TIME_ZONE}}", time_zone)
 			                     /**/
 			                     .replace("{{CLASS_PATH}}", class_path)
 			                     /**/

@@ -153,9 +153,21 @@
 								</div>
 							</div>
 
-							<div class="custom-control custom-checkbox">
-								<input class="custom-control-input" type="checkbox" name="router_reset" id="router_reset">
-								<label class="custom-control-label text-danger" for="router_reset">Reset the AMI database</label>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="custom-control custom-checkbox">
+										<input class="custom-control-input" type="checkbox" name="router_reset" id="router_reset">
+										<label class="custom-control-label text-danger" for="router_reset">Reset the AMI database</label>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="control-label" for="time_zone">time zone<sup class="text-danger">*</sup></label>
+										<select class="custom-select custom-select-sm" name="time_zone" value="{{TIME_ZONE}}" id="time_zone">
+											<option value="UTC">UTC</option>
+										</select>
+									</div>
+								</div>
 							</div>
 
 							<input type="hidden" name="Level" value="3" />

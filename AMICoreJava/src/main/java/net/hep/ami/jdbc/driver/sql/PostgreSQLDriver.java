@@ -39,17 +39,17 @@ public class PostgreSQLDriver extends AbstractDriver
 
 	/*---------------------------------------------------------------------*/
 
-	public PostgreSQLDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public PostgreSQLDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
-		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links);
+		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public void setDB(String db) throws Exception
+	public void setupSession(String db, String tz) throws Exception
 	{
-		/* DO NOTHING */
+		this.m_statement.executeQuery("SET TIME ZONE '" + tz + "';");
 	}
 
 	/*---------------------------------------------------------------------*/

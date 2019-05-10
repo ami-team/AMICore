@@ -33,6 +33,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	protected final String m_AMIUser;
+	protected final String m_timeZone;
 	protected final boolean m_isAdmin;
 	protected final boolean m_links;
 
@@ -40,6 +41,9 @@ public abstract class AbstractDriver implements Querier
 
 	protected final Connection m_connection;
 	protected final Statement m_statement;
+
+	/*---------------------------------------------------------------------*/
+
 
 	/*---------------------------------------------------------------------*/
 
@@ -57,7 +61,7 @@ public abstract class AbstractDriver implements Querier
 	 * @param pass The database password.
 	 */
 
-	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links) throws Exception
+	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 		/* GET JDBC ANNOTATION                                             */
@@ -96,6 +100,7 @@ public abstract class AbstractDriver implements Querier
 		/*-----------------------------------------------------------------*/
 
 		m_AMIUser = AMIUser;
+		m_timeZone = timeZone;
 		m_isAdmin = isAdmin;
 		m_links = links;
 
@@ -129,10 +134,10 @@ public abstract class AbstractDriver implements Querier
 		m_statementMap.put("@", m_statement = m_connection.createStatement());
 
 		/*-----------------------------------------------------------------*/
-		/* SET DB                                                          */
+		/* SETUP SESSION                                                   */
 		/*-----------------------------------------------------------------*/
 
-		setDB(internalCatalog);
+		setupSession(internalCatalog, timeZone);
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -153,12 +158,13 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	/**
-	 * Set the default internal catalog.
+	 * Setup the session.
 	 *
 	 * @param db The internal catalog.
+	 * @param tz The time zone.
 	 */
 
-	public abstract void setDB(String db) throws Exception;
+	public abstract void setupSession(String db, String tz) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
@@ -329,16 +335,16 @@ public abstract class AbstractDriver implements Querier
 
 			if(result == null || result.isClosed())
 			{
-					m_statementMap.put(SQL, result = (returnGeneratedKeys == false) ? (
-							m_connection.prepareStatement(SQL)
+				m_statementMap.put(SQL, result = (returnGeneratedKeys == false) ? (
+						m_connection.prepareStatement(SQL)
+					) : (
+						(columnNames == null) ? (
+							m_connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)
 						) : (
-							(columnNames == null) ? (
-								m_connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)
-							) : (
-								m_connection.prepareStatement(SQL, /*-----*/ columnNames /*-----*/)
-							)
+							m_connection.prepareStatement(SQL, /*-----*/ columnNames /*-----*/)
 						)
-					);
+					)
+				);
 			}
 
 			return result;

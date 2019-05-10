@@ -30,7 +30,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(String catalog, String AMIUser, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public static AbstractDriver getConnection(String catalog, String AMIUser, String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -57,7 +57,7 @@ public class TransactionPoolSingleton
 		/**/		{
 		/**/			s_pools.put(transactionId, transaction = new HashMap<>());
 		/**/
-		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, isAdmin, links));
+		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links));
 		/**/		}
 		/**/		else
 		/**/		{
@@ -65,7 +65,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/			if(result == null)
 		/**/			{
-		/**/				transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, isAdmin, links));
+		/**/				transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links));
 		/**/			}
 		/**/		}
 		}
@@ -77,7 +77,7 @@ public class TransactionPoolSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public static AbstractDriver getConnection(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -104,7 +104,7 @@ public class TransactionPoolSingleton
 		/**/		{
 		/**/			s_pools.put(transactionId, transaction = new HashMap<>());
 		/**/
-		/**/			transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links));
+		/**/			transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links));
 		/**/		}
 		/**/		else
 		/**/		{
@@ -112,7 +112,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/			if(result == null)
 		/**/			{
-		/**/				transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, isAdmin, links));
+		/**/				transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links));
 		/**/			}
 		/**/		}
 		}

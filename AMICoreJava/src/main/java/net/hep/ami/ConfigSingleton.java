@@ -225,13 +225,7 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                  */
 		/*-----------------------------------------------------------------*/
 
-		Router router = new Router(
-			"self",
-			getProperty("router_catalog"),
-			getProperty("router_url"),
-			getProperty("router_user"),
-			getProperty("router_pass")
-		);
+		Router router = new Router();
 
 		/*-----------------------------------------------------------------*/
 

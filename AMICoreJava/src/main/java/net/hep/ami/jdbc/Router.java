@@ -25,13 +25,14 @@ public class Router implements Querier
 			ConfigSingleton.getProperty("router_catalog"),
 			ConfigSingleton.getProperty("router_url"),
 			ConfigSingleton.getProperty("router_user"),
-			ConfigSingleton.getProperty("router_pass")
+			ConfigSingleton.getProperty("router_pass"),
+			ConfigSingleton.getProperty("time_zone", "UTC")
 		);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public Router(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	public Router(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String timeZone) throws Exception
 	{
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
 
@@ -42,6 +43,7 @@ public class Router implements Querier
 			user,
 			pass,
 			AMIUser,
+			timeZone,
 			true,
 			false
 		);

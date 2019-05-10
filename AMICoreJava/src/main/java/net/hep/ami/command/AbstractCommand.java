@@ -25,6 +25,8 @@ public abstract class AbstractCommand
 
 	protected final String m_userAgent;
 
+	protected final String m_timeZone;
+
 	/*---------------------------------------------------------------------*/
 
 	protected final Set<String> m_userRoles;
@@ -45,8 +47,8 @@ public abstract class AbstractCommand
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/
 
-		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : ConfigSingleton.getProperty("guest_user");
-		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : ConfigSingleton.getProperty("guest_pass");
+		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : ConfigSingleton.getProperty("guest_user", "guest");
+		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : ConfigSingleton.getProperty("guest_pass", "guest");
 
 		m_clientDN = arguments.containsKey("clientDN") ? arguments.remove("clientDN") : "";
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
@@ -58,6 +60,8 @@ public abstract class AbstractCommand
 		m_isCached = arguments.containsKey( "cached" ) ? "false".equalsIgnoreCase(arguments.remove( "cached" )) == false : false;
 
 		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "N/A";
+
+		m_timeZone = arguments.containsKey("timeZone") ? arguments.remove("timeZone") : ConfigSingleton.getProperty("time_zone", "UTC");
 
 		/*-----------------------------------------------------------------*/
 		/* CONSTRUCTOR PARAMETERS                                          */
@@ -87,7 +91,7 @@ public abstract class AbstractCommand
 
 	protected Querier getAdminQuerier(String catalog) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, true, false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_timeZone, true, false, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -101,7 +105,7 @@ public abstract class AbstractCommand
 
 	protected Querier getAdminQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, true, false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_timeZone, true, false, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -115,7 +119,7 @@ public abstract class AbstractCommand
 
 	protected Querier getQuerier(String catalog) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_timeZone, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -129,7 +133,7 @@ public abstract class AbstractCommand
 
 	protected Querier getQuerier(String catalog, boolean links) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_timeZone, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -143,7 +147,7 @@ public abstract class AbstractCommand
 
 	protected Querier getQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_timeZone, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -157,7 +161,7 @@ public abstract class AbstractCommand
 
 	protected Querier getQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, boolean links) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_timeZone, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
 
 		if(m_isCached)
 		{
