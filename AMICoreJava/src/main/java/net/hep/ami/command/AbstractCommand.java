@@ -47,8 +47,8 @@ public abstract class AbstractCommand
 		/* ARGUMENT PARAMETERS                                             */
 		/*-----------------------------------------------------------------*/
 
-		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : ConfigSingleton.getProperty("guest_user", "guest");
-		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : ConfigSingleton.getProperty("guest_pass", "guest");
+		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : ConfigSingleton.getProperty("guest_user");
+		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : ConfigSingleton.getProperty("guest_pass");
 
 		m_clientDN = arguments.containsKey("clientDN") ? arguments.remove("clientDN") : "";
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
@@ -61,7 +61,7 @@ public abstract class AbstractCommand
 
 		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "N/A";
 
-		m_timeZone = arguments.containsKey("timeZone") ? arguments.remove("timeZone") : ConfigSingleton.getProperty("time_zone", "UTC");
+		m_timeZone = arguments.containsKey("timeZone") ? arguments.remove("timeZone") : ConfigSingleton.getProperty("time_zone");
 
 		/*-----------------------------------------------------------------*/
 		/* CONSTRUCTOR PARAMETERS                                          */

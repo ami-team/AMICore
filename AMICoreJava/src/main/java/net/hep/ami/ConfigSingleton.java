@@ -202,6 +202,8 @@ public class ConfigSingleton
 		   getProperty("router_user").isEmpty()
 		   ||
 		   getProperty("router_pass").isEmpty()
+		   ||
+		   getProperty("time_zone").isEmpty()
 		) {
 			throw new Exception(INVALID_AMI_CONFIG_FILE);
 		}
