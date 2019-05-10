@@ -27,6 +27,41 @@ public class Row
 
 	/*---------------------------------------------------------------------*/
 
+	public String getCatalog(int fieldIndex) throws Exception
+	{
+		return m_rowSet.getCatalogOfField(fieldIndex);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getEntity(int fieldIndex) throws Exception
+	{
+		return m_rowSet.getEntityOfField(fieldIndex);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getName(int fieldIndex) throws Exception
+	{
+		return m_rowSet.getNameOfField(fieldIndex);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getLabel(int fieldIndex) throws Exception
+	{
+		return m_rowSet.getLabelOfField(fieldIndex);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getType(int fieldIndex) throws Exception
+	{
+		return m_rowSet.getTypeOfField(fieldIndex);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public String getValue(int fieldIndex) throws Exception
 	{
 		if(fieldIndex < 0 || fieldIndex >= m_rowSet.m_numberOfFields)
