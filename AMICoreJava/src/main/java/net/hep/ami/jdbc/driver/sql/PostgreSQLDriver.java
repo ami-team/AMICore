@@ -49,7 +49,7 @@ public class PostgreSQLDriver extends AbstractDriver
 	@Override
 	public void setupSession(String db, String tz) throws Exception
 	{
-		this.m_statement.executeUpdate("SET TIME ZONE '" + tz + "';");
+		this.m_statement.executeUpdate("SET TIME ZONE '" + tz + "'");
 	}
 
 	/*---------------------------------------------------------------------*/
