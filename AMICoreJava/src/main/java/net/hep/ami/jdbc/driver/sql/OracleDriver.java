@@ -26,7 +26,7 @@ public class OracleDriver extends AbstractDriver
 	@Override
 	public void setupSession(String db, String tz) throws Exception
 	{
-		this.m_statement.executeQuery("ALTER SESSION SET time_zone = '" + tz + "';");
+		this.m_statement.executeUpdate("ALTER SESSION SET time_zone = '" + tz + "';");
 	}
 
 	/*---------------------------------------------------------------------*/
