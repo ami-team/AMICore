@@ -63,7 +63,7 @@ public class AMICoreTest
 
 		if(!test_catalog.toLowerCase().contains("test_"))
 		{
-			System.out.println("skipping integration not e test router");
+			System.out.println("skipping integration not a test router");
 
 			return;
 		}
