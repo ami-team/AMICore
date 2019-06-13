@@ -61,6 +61,12 @@ public class AMICoreTest
 			return;
 		}
 
+		if(!test_catalog.toLowerCase().contains("test_"))
+		{
+			System.out.println("skipping integration not a test router");
+
+			return;
+		}
 
 
 
@@ -145,7 +151,7 @@ public class AMICoreTest
 
 			/*-----------------------------------------------------------------*/
 
-			SimpleQuerier testDB = new SimpleQuerier("test", "UTC", "admin", true, false);
+			SimpleQuerier testDB = new SimpleQuerier("test", "admin", "UTC", true, false);
 
 			/*-----------------------------------------------------------------*/
 			/* SELECT PROFILE                                                  */
