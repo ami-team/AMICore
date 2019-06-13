@@ -707,8 +707,10 @@ public class RowSet
 		{
 			/*-------------------------------------------------------------*/
 
-			/**/ if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP") || "DATETIME".equalsIgnoreCase(m_fieldTypes[i]))
-			{
+			/**/ if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP")
+			        ||
+			        m_fieldTypes[i].toUpperCase().startsWith("DATETIME")
+			 ) {
 				/*---------------------------------------------------------*/
 				/* TIMESTAMP & DATETIME                                    */
 				/*---------------------------------------------------------*/
