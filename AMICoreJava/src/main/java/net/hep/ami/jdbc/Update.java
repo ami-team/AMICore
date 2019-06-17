@@ -6,7 +6,9 @@ public class Update
 {
 	/*---------------------------------------------------------------------*/
 
-	private final int m_nbOfUpdatedRows;
+	private final Integer m_nbOfUpdatedRows;
+
+	private final String m_generatedKey;
 
 	private final String m_sql;
 	private final String m_mql;
@@ -25,6 +27,21 @@ public class Update
 	{
 		m_nbOfUpdatedRows = nbOfUpdatedRows;
 
+		m_generatedKey = /**/null/**/;
+
+		m_sql = sql != null ? sql : "";
+		m_mql = mql != null ? mql : "";
+		m_ast = ast != null ? ast : "";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public Update(int nbOfUpdatedRows, @Nullable String generatedKey, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	{
+		m_nbOfUpdatedRows = nbOfUpdatedRows;
+
+		m_generatedKey = generatedKey;
+
 		m_sql = sql != null ? sql : "";
 		m_mql = mql != null ? mql : "";
 		m_ast = ast != null ? ast : "";
@@ -35,6 +52,13 @@ public class Update
 	public int getNbOfUpdatedRows()
 	{
 		return m_nbOfUpdatedRows;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public String getGeneratedKey()
+	{
+		return m_generatedKey;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -62,12 +86,27 @@ public class Update
 
 	public StringBuilder toStringBuilder() throws Exception
 	{
-		return new StringBuilder().append("<sql><![CDATA[").append(m_sql).append("]]></sql>")
-		                          .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
-		                          .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
-		                          .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
-		                          .append("<rowset><row><field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field></row></rowset>")
+		StringBuilder result = new StringBuilder().append("<sql><![CDATA[").append(m_sql).append("]]></sql>")
+		                                          .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
+		                                          .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
+		                                          .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
 		;
+
+		if(m_generatedKey == null)
+		{
+			return result.append("<rowset><row>")
+			             .append("<field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field>")
+			             .append("</row></rowset>")
+			;
+		}
+		else
+		{
+			return result.append("<rowset><row>")
+			             .append("<field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field>")
+			             .append("<field name=\"generatedKey\"><![CDATA[").append(m_generatedKey).append("]]></field>")
+			             .append("</row></rowset>")
+			;
+		}
 	}
 
 	/*---------------------------------------------------------------------*/
