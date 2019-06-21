@@ -293,7 +293,8 @@ STRING
 	;
 
 PARAMETER
-	: '?' INT?
+	: '?' INT
+	| '?'
 	;
 
 NUMBER

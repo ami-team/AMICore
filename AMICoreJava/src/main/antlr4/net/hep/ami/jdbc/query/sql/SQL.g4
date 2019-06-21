@@ -20,6 +20,7 @@ query returns [ List<String> tokens ]
 token returns [ String v ]
 	: SPACES		{ $v = $SPACES.getText(); }
 	| STRING		{ $v = $STRING.getText(); }
+	| PARAMETER		{ $v = $PARAMETER.getText(); }
 	| OTHERS		{ $v = $OTHERS.getText(); }
 	;
 
@@ -38,8 +39,19 @@ STRING
 	| '"' ('""' | ~'"')+ '"'
 	;
 
+PARAMETER
+	: '?' INT
+	| '?'
+	;
+
 OTHERS
 	: .
+	;
+
+/*-------------------------------------------------------------------------*/
+
+fragment INT
+	: [0-9]+
 	;
 
 /*-------------------------------------------------------------------------*/
