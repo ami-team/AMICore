@@ -22,16 +22,22 @@ public class FlushCommandCache extends AbstractCommand
 	{
 		String delay = arguments.get("delay");
 
-		if(delay == null)
-		{
-			CacheSingleton.flush();
+		/*-----------------------------------------------------------------*/
+
+		long t1 = System.currentTimeMillis();
+
+		if(delay == null) {
+			CacheSingleton.flush(/*-------------------*/);
 		}
-		else
-		{
+		else {
 			CacheSingleton.flush(Integer.parseInt(delay));
 		}
 
-		return new StringBuilder("<info><![CDATA[done with success]]></info>");
+		long t2 = System.currentTimeMillis();
+
+		/*-----------------------------------------------------------------*/
+
+		return new StringBuilder("<info><![CDATA[done with success within " + String.format(Locale.US, "%.3f", 0.001f * (t2 - t1)) + "s]]></info>");
 	}
 
 	/*---------------------------------------------------------------------*/

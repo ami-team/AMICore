@@ -57,7 +57,7 @@ public class UpdateConfig extends AbstractCommand
 
 			if(name.isEmpty() == false)
 			{
-				if("::null::".equals(value))
+				if("@NULL".equalsIgnoreCase(value))
 				{
 					ConfigSingleton.removeProperty(name);
 

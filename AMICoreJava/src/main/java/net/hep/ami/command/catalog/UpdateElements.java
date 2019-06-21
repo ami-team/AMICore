@@ -7,6 +7,8 @@ import java.util.stream.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
+import net.hep.ami.jdbc.query.sql.Tokenizer;
+import net.hep.ami.utility.Tuple2;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
@@ -63,7 +65,7 @@ public class UpdateElements extends AbstractCommand
 			query = new XQLUpdate(XQLUpdate.Mode.MQL).addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                                         .addFieldValuePart(
 															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-															Arrays.stream(values).map( x ->           "?"           ).collect(Collectors.toList())
+															IntStream.range(0, values.length).mapToObj(i -> "?" + i).collect(Collectors.toList())
 			                                          )
 			;
 		}
@@ -85,7 +87,11 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String mql = query.toString();
+		Tuple2<String, List<String>> tuple = Tokenizer.format2(query.toString(), values);
+
+		/*-----------------------------------------------------------------*/
+
+		String mql = tuple.x;
 
 		Querier querier = getQuerier(catalog);
 
@@ -96,9 +102,9 @@ public class UpdateElements extends AbstractCommand
 
 		PreparedStatement statement = querier.prepareStatement(sql, false, true, null);
 
-		for(int i = 0; i < values.length; i++)
+		for(int i = 0; i < tuple.y.size(); i++)
 		{
-			statement.setString(i + 1, values[i]);
+			statement.setString(i + 1, tuple.y.get(i));
 		}
 
 		/*-----------------------------------------------------------------*/
