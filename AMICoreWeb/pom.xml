@@ -29,18 +29,18 @@
 		<!--**************************************************************-->
 
 		<dependency>
-			<groupId>net.hep.ami</groupId>
-			<artifactId>AMICoreJava</artifactId>
-			<version>${project.version}</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!--**************************************************************-->
 
 		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-servlet-api</artifactId>
-			<version>9.0.21</version>
-			<scope>provided</scope>
+			<groupId>net.hep.ami</groupId>
+			<artifactId>AMICoreJava</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!--**************************************************************-->

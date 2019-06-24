@@ -12,7 +12,6 @@ public class AMIFilter implements ContainerResponseFilter
 	@Override
 	public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException
 	{
-/*
 		String origin = request.getHeaderString("Origin");
 
 		if(origin != null)
@@ -23,7 +22,6 @@ public class AMIFilter implements ContainerResponseFilter
 			headers.add("Access-Control-Allow-Credentials", "true");
 			headers.add("Access-Control-Allow-Origin", origin);
 		}
-*/
 	}
 
 	/*---------------------------------------------------------------------*/
