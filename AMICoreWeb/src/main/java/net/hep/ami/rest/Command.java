@@ -67,7 +67,10 @@ public class Command
 	 ) {
 		try
 		{
-			/**/ if("json".equalsIgnoreCase(format)) {
+			/**/ if("xml".equalsIgnoreCase(format)) {
+				return execute(request, command, s_help, "AMIXmlToXml.xsl");
+			}
+			else if("json".equalsIgnoreCase(format)) {
 				return execute(request, command, s_help, "AMIXmlToJson.xsl");
 			}
 			else if("csv".equalsIgnoreCase(format)) {
@@ -120,7 +123,10 @@ public class Command
 	 ) {
 		try
 		{
-			/**/ if("json".equalsIgnoreCase(format)) {
+			/**/ if("xml".equalsIgnoreCase(format)) {
+				return execute(request, command, parseArguments(arguments), "AMIXmlToXml.xsl");
+			}
+			else if("json".equalsIgnoreCase(format)) {
 				return execute(request, command, parseArguments(arguments), "AMIXmlToJson.xsl");
 			}
 			else if("csv".equalsIgnoreCase(format)) {
