@@ -1,23 +1,24 @@
 package net.hep.ami.rest.filter;
 
+import java.io.*;
+
 import javax.ws.rs.core.*;
+import javax.ws.rs.container.*;
 
-import com.sun.jersey.spi.container.*;
-
-public class CORS implements ContainerResponseFilter
+public class AMIFilter implements ContainerResponseFilter
 {
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public ContainerResponse filter(ContainerRequest request, ContainerResponse response)
+	public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException
 	{
 		/*-----------------------------------------------------------------*/
 
-		String token = request.getHeaderValue("AMI-Token");
+		String token = request.getHeaderString("AMI-Token");
 
 		if(token != null)
 		{
-			MultivaluedMap<String, Object> headers = response.getHttpHeaders();
+			MultivaluedMap<String, Object> headers = response.getHeaders();
 
 			headers.add("Cookie", "JSESSIONID=" + token);
 
@@ -26,11 +27,11 @@ public class CORS implements ContainerResponseFilter
 
 		/*-----------------------------------------------------------------*/
 
-		String origin = request.getHeaderValue("Origin");
+		String origin = request.getHeaderString("Origin");
 
 		if(origin != null)
 		{
-			MultivaluedMap<String, Object> headers = response.getHttpHeaders();
+			MultivaluedMap<String, Object> headers = response.getHeaders();
 
 			headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE");
 			headers.add("Access-Control-Allow-Credentials", "true");
@@ -38,8 +39,6 @@ public class CORS implements ContainerResponseFilter
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		return response;
 	}
 
 	/*---------------------------------------------------------------------*/
