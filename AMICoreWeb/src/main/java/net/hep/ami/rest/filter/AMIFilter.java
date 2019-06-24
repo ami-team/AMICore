@@ -12,21 +12,6 @@ public class AMIFilter implements ContainerResponseFilter
 	@Override
 	public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException
 	{
-		/*-----------------------------------------------------------------*/
-
-		String token = request.getHeaderString("AMI-Token");
-
-		if(token != null)
-		{
-			MultivaluedMap<String, Object> headers = response.getHeaders();
-
-			headers.add("Cookie", "JSESSIONID=" + token);
-
-			headers.remove("AMI-Token");
-		}
-
-		/*-----------------------------------------------------------------*/
-
 		String origin = request.getHeaderString("Origin");
 
 		if(origin != null)
@@ -37,8 +22,6 @@ public class AMIFilter implements ContainerResponseFilter
 			headers.add("Access-Control-Allow-Credentials", "true");
 			headers.add("Access-Control-Allow-Origin", origin);
 		}
-
-		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
