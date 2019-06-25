@@ -21,12 +21,10 @@
 			<param-name>jersey.container.ContainerResponseFilters</param-name>
 			<param-value>net.hep.ami.rest.filter.AMIFilter</param-value>
 		</init-param>
-		<!--
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>net.hep.ami.rest.app.AMIApp</param-value>
 		</init-param>
-		-->
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 

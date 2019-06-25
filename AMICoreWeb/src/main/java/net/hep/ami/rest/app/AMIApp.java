@@ -1,13 +1,13 @@
 package net.hep.ami.rest.app;
-/*
+
 import java.util.*;
 
 import javax.ws.rs.core.*;
-*/
-public class AMIApp //extends Application
+
+public class AMIApp extends Application
 {
 	/*---------------------------------------------------------------------*/
-/*
+
 	@Override
 	public Set<Class<?>> getClasses()
 	{
@@ -17,6 +17,6 @@ public class AMIApp //extends Application
 
 		return classes;
 	}
-*/
+
 	/*---------------------------------------------------------------------*/
 }
