@@ -1,5 +1,6 @@
 package net.hep.ami.jdbc.driver.sql;
 
+import java.sql.DatabaseMetaData;
 import java.util.*;
 
 import net.hep.ami.jdbc.driver.*;
@@ -16,9 +17,19 @@ public class OracleDriver extends AbstractDriver
 {
 	/*---------------------------------------------------------------------*/
 
+	private final int MAJOR_VERSION;
+	private final int MINOR_VERSION;
+
+	/*---------------------------------------------------------------------*/
+
 	public OracleDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
+
+		DatabaseMetaData metaData = m_connection.getMetaData();
+
+		MAJOR_VERSION = metaData.getDatabaseMajorVersion();
+		MINOR_VERSION = metaData.getDatabaseMinorVersion();
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -44,44 +55,17 @@ public class OracleDriver extends AbstractDriver
 
 		boolean selectFound = false;
 		boolean fromFound = false;
+		boolean xxxFound = false;
 
-		int limitValue = -1;
-		int offsetValue = 0;
-
-		int flag = 0;
 		int cnt = 0;
 
-		for(String token: tokens)
+		if(MAJOR_VERSION >= 12)
 		{
-			if(";".equals(token) == false)
+			/*-------------------------------------------------------------*/
+
+			for(String token: tokens)
 			{
-				/**/ if("LIMIT".equalsIgnoreCase(token))
-				{
-					flag = 1;
-				}
-				else if("OFFSET".equalsIgnoreCase(token))
-				{
-					flag = 2;
-				}
-				else if(flag == 1)
-				{
-					try
-					{
-						limitValue = Integer.valueOf(token);
-						flag = 0;
-					}
-					catch(NumberFormatException e) { /* IGNORE */ }
-				}
-				else if(flag == 2)
-				{
-					try
-					{
-						offsetValue = Integer.valueOf(token);
-						flag = 0;
-					}
-					catch(NumberFormatException e) { /* IGNORE */ }
-				}
-				else
+				if(";".equals(token) == false)
 				{
 					/**/ if("(".equals(token))
 					{
@@ -98,10 +82,23 @@ public class OracleDriver extends AbstractDriver
 							/**/ if("SELECT".equalsIgnoreCase(token))
 							{
 								selectFound = true;
+								fromFound = false;
+								xxxFound = false;
 							}
 							else if("FROM".equalsIgnoreCase(token))
 							{
 								fromFound = true;
+							}
+							else if("WHERE".equalsIgnoreCase(token) || "LIMIT".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
+							{
+								if(selectFound == true && fromFound == false && xxxFound == false)
+								{
+									result.append(" FROM dual ");
+
+									fromFound = true;
+								}
+
+								xxxFound = true;
 							}
 						}
 					}
@@ -109,20 +106,127 @@ public class OracleDriver extends AbstractDriver
 					result.append(Tokenizer.backQuotesToDoubleQuotes(token));
 				}
 			}
+
+			/*-------------------------------------------------------------*/
+
+			if(selectFound == true && fromFound == false && xxxFound == false)
+			{
+				result.append(" FROM dual");
+
+				fromFound = true;
+			}
+
+			/*-------------------------------------------------------------*/
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(selectFound == true && fromFound == false)
+		else
 		{
-			result.append(" FROM dual");
-		}
+			/*-------------------------------------------------------------*/
 
-		/*-----------------------------------------------------------------*/
 
-		if(limitValue >= 0)
-		{
-			result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM ORACLE_ROWNUM FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE ORACLE_ROWNUM >= ").append(offsetValue + 1);
+			int limitValue = -1;
+			int offsetValue = 0;
+
+			int flag = 0;
+
+			for(String token: tokens)
+			{
+				if(";".equals(token) == false)
+				{
+					/**/ if("LIMIT".equalsIgnoreCase(token))
+					{
+						if(selectFound == true && fromFound == false && xxxFound == false)
+						{
+							result.append(" FROM dual ");
+
+							fromFound = true;
+						}
+
+						xxxFound = true;
+
+						flag = 1;
+					}
+					else if("OFFSET".equalsIgnoreCase(token))
+					{
+						flag = 2;
+					}
+					else if(flag == 1)
+					{
+						try
+						{
+							limitValue = Integer.valueOf(token);
+							flag = 0;
+						}
+						catch(NumberFormatException e) { /* IGNORE */ }
+					}
+					else if(flag == 2)
+					{
+						try
+						{
+							offsetValue = Integer.valueOf(token);
+							flag = 0;
+						}
+						catch(NumberFormatException e) { /* IGNORE */ }
+					}
+					else
+					{
+						/**/ if("(".equals(token))
+						{
+							cnt++;
+						}
+						else if(")".equals(token))
+						{
+							cnt--;
+						}
+						else
+						{
+							if(cnt == 0)
+							{
+								/**/ if("SELECT".equalsIgnoreCase(token))
+								{
+									selectFound = true;
+									fromFound = false;
+									xxxFound = false;
+								}
+								else if("FROM".equalsIgnoreCase(token))
+								{
+									fromFound = true;
+								}
+								else if("WHERE".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
+								{
+									if(selectFound == true && fromFound == false && xxxFound == false)
+									{
+										result.append(" FROM dual ");
+
+										fromFound = true;
+									}
+
+									xxxFound = true;
+								}
+							}
+						}
+
+						result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+					}
+				}
+			}
+
+			/*-----------------------------------------------------------------*/
+
+			if(selectFound == true && fromFound == false && xxxFound == false)
+			{
+				result.append(" FROM dual");
+
+				fromFound = true;
+			}
+
+			/*-----------------------------------------------------------------*/
+
+			if(limitValue >= 0)
+			{
+				result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM AS ORACLE_ROWNUM FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE ORACLE_ROWNUM >= ").append(offsetValue + 1);
+			}
+
+			/*-----------------------------------------------------------------*/
 		}
 
 		/*-----------------------------------------------------------------*/
