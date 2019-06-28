@@ -360,7 +360,7 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
-			if("_ORACLE_ROWNUM_".equals(m_fieldNames[i]))
+			if("ORACLE_ROWNUM".equals(m_fieldNames[i]))
 			{
 				m_fieldHidden[i] = true;
 				m_fieldAutomatic[i] = true;
