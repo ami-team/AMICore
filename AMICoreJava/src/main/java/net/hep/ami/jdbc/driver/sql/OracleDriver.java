@@ -122,7 +122,7 @@ public class OracleDriver extends AbstractDriver
 
 		if(limitValue >= 0)
 		{
-			result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM rnum FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE rnum >= ").append(offsetValue + 1);
+			result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM _ORACLE_ROWNUM_ FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE _ORACLE_ROWNUM_ >= ").append(offsetValue + 1);
 		}
 
 		/*-----------------------------------------------------------------*/

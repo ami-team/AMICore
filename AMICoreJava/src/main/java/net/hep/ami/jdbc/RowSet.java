@@ -360,16 +360,19 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
+			if("_ORACLE_ROWNUM_".equals(m_fieldNames[i]))
+			{
+				m_fieldHidden[i] = true;
+				m_fieldAutomatic[i] = true;
+			}
+
+			/*-------------------------------------------------------------*/
+
 			m_nameIndices.put(m_fieldNames_i, i);
 			m_labelIndices.put(m_fieldLabels[i], i);
 
 			/*-------------------------------------------------------------*/
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		//System.out.println(Arrays.asList(m_fieldNames));
-		//System.out.println(Arrays.asList(m_fieldLabels));
 
 		/*-----------------------------------------------------------------*/
 	}
