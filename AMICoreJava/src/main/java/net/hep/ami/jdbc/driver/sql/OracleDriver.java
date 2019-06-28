@@ -18,7 +18,6 @@ public class OracleDriver extends AbstractDriver
 	/*---------------------------------------------------------------------*/
 
 	private final int MAJOR_VERSION;
-	private final int MINOR_VERSION;
 
 	/*---------------------------------------------------------------------*/
 
@@ -29,7 +28,6 @@ public class OracleDriver extends AbstractDriver
 		DatabaseMetaData metaData = m_connection.getMetaData();
 
 		MAJOR_VERSION = metaData.getDatabaseMajorVersion();
-		MINOR_VERSION = metaData.getDatabaseMinorVersion();
 	}
 
 	/*---------------------------------------------------------------------*/
