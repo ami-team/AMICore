@@ -40,7 +40,7 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static String format1(String sql, Object[] args) throws Exception
+	public static String formatStatement(String sql, Object[] args) throws Exception
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -115,9 +115,10 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple2<String, List<String>> format2(String sql, Object[] args) throws Exception
+	public static Tuple3<String, List<String>, List<Boolean>> formatPreparedStatement(String sql, Object[] args) throws Exception
 	{
-		List<String> list = new ArrayList<>();
+		List<String> list1 = new ArrayList<>();
+		List<Boolean> list2 = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -127,7 +128,7 @@ public class Tokenizer
 
 		if(l == 0)
 		{
-			return new Tuple2<String, List<String>>(sql, list);
+			return new Tuple3<String, List<String>, List<Boolean>>(sql, list1, list2);
 		}
 
 		/*-----------------------------------------------------------------*/
@@ -136,7 +137,7 @@ public class Tokenizer
 
 		for(String token: Tokenizer.tokenize(sql))
 		{
-			if(token.startsWith("?"))
+			/**/ if(token.startsWith("?"))
 			{
 				/*---------------------------------------------------------*/
 
@@ -151,7 +152,30 @@ public class Tokenizer
 
 				/*---------------------------------------------------------*/
 
-				list.add(args[i].toString());
+				list1.add(args[i].toString());
+				list2.add(false);
+
+				stringBuilder.append("?");
+
+				/*---------------------------------------------------------*/
+			}
+			else if(token.startsWith("AMI_ENCRYPT("))
+			{
+				/*---------------------------------------------------------*/
+
+				i = Integer.parseInt(token.substring(12, token.length() - 1));
+
+				/*---------------------------------------------------------*/
+
+				if(i >= l)
+				{
+					throw new Exception("not enough arguments");
+				}
+
+				/*---------------------------------------------------------*/
+
+				list1.add(args[i].toString());
+				list2.add(true);
 
 				stringBuilder.append("?");
 
@@ -169,7 +193,7 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple2<String, List<String>>(stringBuilder.toString(), list);
+		return new Tuple3<String, List<String>, List<Boolean>>(stringBuilder.toString(), list1, list2);
 
 		/*-----------------------------------------------------------------*/
 	}

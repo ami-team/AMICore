@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
@@ -387,6 +388,10 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
+	private static final Pattern HHH = Pattern.compile("\\?[0..9]+");
+
+	/*---------------------------------------------------------------------*/
+
 	public static Tuple2<List<String>, List<String>> resolve(String catalog, QId primaryKey, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
@@ -442,6 +447,11 @@ public class Helper
 				if(isAdmin == false)
 				{
 					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
+				}
+
+				if(HHH.matcher(expression).matches())
+				{
+					expression = "AMI_ENCRYPT(" + expression.toString() + ")";
 				}
 			}
 
