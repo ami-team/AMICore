@@ -382,7 +382,7 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String kjavaStringToText(@Nullable String s)
+	public static String javaStringToText(@Nullable String s)
 	{
 		if(s == null)
 		{
