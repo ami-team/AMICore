@@ -185,9 +185,23 @@ public class Tokenizer
 
 			/*-------------------------------------------------------------*/
 
-			else if("BY".equals(TOKEN) == false)
+			else if(lock == 0)
 			{
-				if(ORDER.equals(keyword) && ("ASC".equals(TOKEN) || "DESC".equals(TOKEN)))
+				/**/ if(s_xqlRegions.contains(TOKEN))
+				{
+					if(keyword.isEmpty() == false)
+					{
+						result.put(keyword, String.join("", tokens).trim());
+					}
+
+					tokens.clear();
+					keyword = TOKEN;
+				}
+				else if(ORDER.equals(keyword) && (/*-------*/ "BY".equals(TOKEN) /*-------*/))
+				{
+					/* IGNORE `BY` KEYWORD */;
+				}
+				else if(ORDER.equals(keyword) && ("ASC".equals(TOKEN) || "DESC".equals(TOKEN)))
 				{
 					result.put(WAY, TOKEN);
 				}
@@ -195,6 +209,10 @@ public class Tokenizer
 				{
 					tokens.add(token);
 				}
+			}
+			else
+			{
+				tokens.add(token);
 			}
 
 			/*-------------------------------------------------------------*/
