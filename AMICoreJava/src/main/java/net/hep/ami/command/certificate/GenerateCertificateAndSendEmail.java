@@ -211,7 +211,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* SAVE NEW CERTIFICATE                                            */
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = querier.prepareStatement("INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, false, null);
+		PreparedStatement preparedStatement = querier.preparedStatement("INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, false, null);
 
 		preparedStatement.setString(1, virtOrg);
 		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));

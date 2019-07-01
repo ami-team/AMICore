@@ -320,7 +320,7 @@ public abstract class AbstractDriver implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement prepareStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement preparedStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		try
 		{

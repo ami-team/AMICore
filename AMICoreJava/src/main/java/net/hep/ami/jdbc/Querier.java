@@ -135,7 +135,7 @@ public interface Querier
 	 * @return The new PreparedStatement object.
 	 */
 
-	public PreparedStatement prepareStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception;
+	public PreparedStatement preparedStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 

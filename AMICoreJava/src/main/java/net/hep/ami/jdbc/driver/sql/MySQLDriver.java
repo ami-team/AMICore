@@ -28,11 +28,11 @@ public class MySQLDriver extends AbstractDriver
 			tz = "+00:00";
 		}
 
-		m_statement.executeQuery("SET SESSION sql_mode = 'NO_BACKSLASH_ESCAPES'");
-
 		m_statement.executeQuery("USE `" + db + "`");
 
 		m_statement.executeQuery("SET time_zone = '" + tz + "'");
+
+		m_statement.executeQuery("SET SESSION sql_mode = 'ANSI_QUOTES'");
 	}
 
 	/*---------------------------------------------------------------------*/

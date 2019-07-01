@@ -81,7 +81,7 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = querier.prepareStatement(sql, false, true, null);
+		PreparedStatement statement = querier.preparedStatement(sql, false, true, null);
 
 		for(int i = 0; i < tuple.y.size(); i++)
 		{

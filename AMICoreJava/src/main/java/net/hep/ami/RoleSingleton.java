@@ -24,7 +24,7 @@ public class RoleSingleton
 	{
 		Set<String> result = new HashSet<>();
 
-		PreparedStatement statement = querier.prepareStatement(
+		PreparedStatement statement = querier.preparedStatement(
 			"SELECT `router_role`.`role` FROM `router_command`, `router_command_role`, `router_role` WHERE" +
 			/*-------------------------------------------------------------*/
 			/* SELECT COMMAND                                              */
@@ -66,7 +66,7 @@ public class RoleSingleton
 	{
 		Set<String> result = new HashSet<>();
 
-		PreparedStatement statement = querier.prepareStatement(
+		PreparedStatement statement = querier.preparedStatement(
 			"SELECT `router_role`.`role` FROM `router_user`, `router_user_role`, `router_role` WHERE" +
 			/*-------------------------------------------------------------*/
 			/* SELECT USER                                                 */
@@ -109,7 +109,7 @@ public class RoleSingleton
 	{
 		String result;
 
-		PreparedStatement statement = querier.prepareStatement(
+		PreparedStatement statement = querier.preparedStatement(
 			"SELECT `AMIPass` FROM `router_user` WHERE `router_user`.`AMIUser` = ?",
 			false,
 			false,
