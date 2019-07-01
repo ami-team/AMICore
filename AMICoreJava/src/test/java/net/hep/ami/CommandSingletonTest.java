@@ -40,7 +40,12 @@ public class CommandSingletonTest
 
 //		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT id, id AS toto, router_user.id AS id WHERE 1=1 ORDER BY id ASC LIMIT 1 OFFSET 2\"", false);
 
-		System.out.println(Pattern.compile("^\\?[0-9]+$").matcher("?456").matches());
+		final Pattern HHH = Pattern.compile("^\\?([0-9]+)$");
+		final Pattern GGG = Pattern.compile("^AMI_ENCRYPT\\([ \\t]*\\?([0-9]+)[ \\t]*\\)$");
+
+		System.out.println(HHH.matcher("?456").matches());
+		Matcher m = GGG.matcher("AMI_ENCRYPT( ?456 )");
+		System.out.println(m.matches() ? m.group(1) : "");
 
 //		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n"));
 

@@ -2,6 +2,8 @@ package net.hep.ami.jdbc.query.sql;
 
 import java.math.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.*;
 
@@ -115,6 +117,11 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
+	private static final Pattern HHH = Pattern.compile("^" +                 "\\?([0-9]+)" +      "$");
+	private static final Pattern GGG = Pattern.compile("^AMI_ENCRYPT\\([ \\t]*\\?([0-9]+)[ \\t]*\\)$");
+
+	/*---------------------------------------------------------------------*/
+
 	public static Tuple3<String, List<String>, List<Boolean>> formatPreparedStatement(String sql, Object[] args) throws Exception
 	{
 		List<String> list1 = new ArrayList<>();
@@ -135,13 +142,15 @@ public class Tokenizer
 
 		int i;
 
+		Matcher m;
+	
 		for(String token: Tokenizer.tokenize(sql))
 		{
-			/**/ if(token.startsWith("?"))
+			/**/ if((m = HHH.matcher(token)).matches())
 			{
 				/*---------------------------------------------------------*/
 
-				i = Integer.parseInt(token.substring(1));
+				i = Integer.parseInt(m.group(1));
 
 				/*---------------------------------------------------------*/
 
@@ -159,11 +168,11 @@ public class Tokenizer
 
 				/*---------------------------------------------------------*/
 			}
-			else if(token.startsWith("AMI_ENCRYPT("))
+			/**/ if((m = GGG.matcher(token)).matches())
 			{
 				/*---------------------------------------------------------*/
 
-				i = Integer.parseInt(token.substring(12, token.length() - 1));
+				i = Integer.parseInt(m.group(1));
 
 				/*---------------------------------------------------------*/
 
