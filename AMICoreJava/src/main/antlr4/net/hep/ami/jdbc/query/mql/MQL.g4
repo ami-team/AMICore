@@ -144,7 +144,7 @@ basicQId
 /*---------------------------*/
 
 literal
-	: STRING | NUMBER | NULL | CURRENT_TIMESTAMP | '?'
+	: NULL | CURRENT_TIMESTAMP | STRING | PARAMETER | NUMBER
 	;
 
 /*-------------------------------------------------------------------------*/
@@ -290,6 +290,11 @@ CURRENT_TIMESTAMP
 
 STRING
 	: '\'' ('\'\'' | ~'\'')* '\''
+	;
+
+PARAMETER
+	: '?' INT
+	| '?'
 	;
 
 NUMBER

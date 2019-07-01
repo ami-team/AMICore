@@ -112,13 +112,13 @@ public class Token
 				        &&
 				        issuerDN != null
 				 ) {
-					rows = router.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
 				}
 				else if(AMIUser != null
 				        &&
 				        AMIPass != null
 				 ) {
-					rows = router.executeSQLQuery("SELECT AMIUser, AMIPass FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
+					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
 				}
 				else
 				{
@@ -140,7 +140,7 @@ public class Token
 		}
 		catch(Exception e)
 		{
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 
 		/*-----------------------------------------------------------------*/

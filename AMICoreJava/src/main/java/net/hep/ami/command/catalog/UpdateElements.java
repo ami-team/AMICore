@@ -1,12 +1,15 @@
 package net.hep.ami.command.catalog;
 
+import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
 
-import net.hep.ami.command.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.utility.parser.*;
+import net.hep.ami.jdbc.query.sql.Tokenizer;
+import net.hep.ami.utility.Tuple2;
+import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
@@ -62,7 +65,7 @@ public class UpdateElements extends AbstractCommand
 			query = new XQLUpdate(XQLUpdate.Mode.MQL).addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                                         .addFieldValuePart(
 															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-															Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())
+															IntStream.range(0, values.length).mapToObj(i -> "?" + i).collect(Collectors.toList())
 			                                          )
 			;
 		}
@@ -84,7 +87,42 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.toString()).toStringBuilder();
+		Tuple2<String, List<String>> tuple = Tokenizer.format2(query.toString(), values);
+
+		/*-----------------------------------------------------------------*/
+
+		String mql = tuple.x;
+
+		Querier querier = getQuerier(catalog);
+
+		String sql = querier.mqlToSQL(entity, mql);
+		String ast = querier.mqlToAST(entity, mql);
+
+		/*-----------------------------------------------------------------*/
+
+		PreparedStatement statement = querier.prepareStatement(sql, false, true, null);
+
+		for(int i = 0; i < tuple.y.size(); i++)
+		{
+			statement.setString(i + 1, tuple.y.get(i));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		final int nbOfUpdatedRows;
+
+		try
+		{
+			nbOfUpdatedRows = statement.executeUpdate();
+		}
+		catch(SQLException e)
+		{
+			throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

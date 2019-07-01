@@ -27,6 +27,17 @@ public class GetServerStatus extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		String version = System.getProperty("java.version");
+
+		result.append("<rowset type=\"java\">")
+		      .append("<row>")
+		      .append("<field name=\"buildVersion\"><![CDATA[").append(version).append("]]></field>")
+		      .append("</row>")
+		      .append("</rowset>")
+		;
+
+		/*-----------------------------------------------------------------*/
+
 		String tags;
 		String buildVersion;
 		String branch;
@@ -59,7 +70,7 @@ public class GetServerStatus extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"software\">")
+		result.append("<rowset type=\"ami\">")
 		      .append("<row>")
 		      .append("<field name=\"tags\"><![CDATA[").append(tags).append("]]></field>")
 		      .append("<field name=\"buildVersion\"><![CDATA[").append(buildVersion).append("]]></field>")
@@ -89,7 +100,7 @@ public class GetServerStatus extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		result.append("<rowset type=\"hardware\">")
+		result.append("<rowset type=\"system\">")
 		      .append("<row>")
 		      .append("<field name=\"hostName\"><![CDATA[").append(hostName).append("]]></field>")
 		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")

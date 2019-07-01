@@ -40,13 +40,12 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static String format(String sql, Object... args) throws Exception
+	public static String format1(String sql, Object[] args) throws Exception
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
-		/***/ int i = 0x000000000;
 		final int l = args.length;
 
 		if(l == 0)
@@ -55,6 +54,8 @@ public class Tokenizer
 		}
 
 		/*-----------------------------------------------------------------*/
+
+		int i = 0;
 
 		Object arg;
 
@@ -110,6 +111,67 @@ public class Tokenizer
 		/*-----------------------------------------------------------------*/
 
 		return stringBuilder.toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Tuple2<String, List<String>> format2(String sql, Object[] args) throws Exception
+	{
+		List<String> list = new ArrayList<>();
+
+		StringBuilder stringBuilder = new StringBuilder();
+
+		/*-----------------------------------------------------------------*/
+
+		final int l = args.length;
+
+		if(l == 0)
+		{
+			return new Tuple2<String, List<String>>(sql, list);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		int i;
+
+		for(String token: Tokenizer.tokenize(sql))
+		{
+			if(token.startsWith("?"))
+			{
+				/*---------------------------------------------------------*/
+
+				i = Integer.parseInt(token.substring(1));
+
+				/*---------------------------------------------------------*/
+
+				if(i >= l)
+				{
+					throw new Exception("not enough arguments");
+				}
+
+				/*---------------------------------------------------------*/
+
+				list.add(args[i].toString());
+
+				stringBuilder.append("?");
+
+				/*---------------------------------------------------------*/
+			}
+			else
+			{
+				/*---------------------------------------------------------*/
+
+				stringBuilder.append(token);
+
+				/*---------------------------------------------------------*/
+			}
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return new Tuple2<String, List<String>>(stringBuilder.toString(), list);
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

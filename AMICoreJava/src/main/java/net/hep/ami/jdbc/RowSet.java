@@ -68,7 +68,8 @@ public class RowSet
 	/*---------------------------------------------------------------------*/
 
 	private final DateFormat m_timedateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-	private final DateFormat m_timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.", Locale.US);
+	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+	private final DateFormat m_timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
 	/*---------------------------------------------------------------------*/
 
@@ -359,16 +360,19 @@ public class RowSet
 
 			/*-------------------------------------------------------------*/
 
+			if("ORACLE_ROWNUM".equals(m_fieldNames[i]))
+			{
+				m_fieldHidden[i] = true;
+				m_fieldAutomatic[i] = true;
+			}
+
+			/*-------------------------------------------------------------*/
+
 			m_nameIndices.put(m_fieldNames_i, i);
 			m_labelIndices.put(m_fieldLabels[i], i);
 
 			/*-------------------------------------------------------------*/
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		//System.out.println(Arrays.asList(m_fieldNames));
-		//System.out.println(Arrays.asList(m_fieldLabels));
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -674,11 +678,7 @@ public class RowSet
 	{
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		result.append(m_timestampFormat.format(timestamp));
+		StringBuilder result = new StringBuilder().append(m_timedateFormat.format(timestamp)).append(".");
 
 		/*-----------------------------------------------------------------*/
 
@@ -700,9 +700,7 @@ public class RowSet
 
 	protected String[] getCurrentRow() throws SQLException
 	{
-		java.sql.Time time;
-		java.sql.Date date;
-		java.sql.Timestamp timestamp;
+		java.util.Date date;
 
 		String[] result = new String[m_numberOfFields];
 
@@ -712,15 +710,17 @@ public class RowSet
 		{
 			/*-------------------------------------------------------------*/
 
-			/**/ if("TIME".equalsIgnoreCase(m_fieldTypes[i]))
-			{
+			/**/ if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP")
+			        ||
+			        m_fieldTypes[i].toUpperCase().startsWith("DATETIME")
+			 ) {
 				/*---------------------------------------------------------*/
-				/* TIME                                                    */
+				/* TIMESTAMP & DATETIME                                    */
 				/*---------------------------------------------------------*/
 
-				time = m_resultSet.getTime(i + 1);
+				date = m_resultSet.getTimestamp(i + 1);
 
-				result[i] = (time != null) ? m_timedateFormat.format(time)
+				result[i] = (date != null) ? formatTimestamp((java.sql.Timestamp) date)
 				                           : m_resultSet.getString(i + 1)
 				;
 
@@ -734,22 +734,22 @@ public class RowSet
 
 				date = m_resultSet.getDate(i + 1);
 
-				result[i] = (date != null) ? m_timedateFormat.format(date)
+				result[i] = (date != null) ? m_dateFormat.format(date)
 				                           : m_resultSet.getString(i + 1)
 				;
 
 				/*---------------------------------------------------------*/
 			}
-			else if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP"))
+			else if("TIME".equalsIgnoreCase(m_fieldTypes[i]))
 			{
 				/*---------------------------------------------------------*/
-				/* TIMESTAMP                                               */
+				/* TIME                                                    */
 				/*---------------------------------------------------------*/
 
-				timestamp = m_resultSet.getTimestamp(i + 1);
+				date = m_resultSet.getTime(i + 1);
 
-				result[i] = (timestamp != null) ? formatTimestamp(timestamp)
-				                                : m_resultSet.getString(i + 1)
+				result[i] = (date != null) ? m_timeFormat.format(date)
+				                           : m_resultSet.getString(i + 1)
 				;
 
 				/*---------------------------------------------------------*/

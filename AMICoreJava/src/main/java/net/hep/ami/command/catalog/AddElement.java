@@ -7,7 +7,8 @@ import java.util.stream.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.utility.parser.*;
+import net.hep.ami.jdbc.query.sql.Tokenizer;
+import net.hep.ami.utility.Tuple2;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
@@ -54,7 +55,7 @@ public class AddElement extends AbstractCommand
 			query = new XQLInsert(XQLInsert.Mode.MQL).addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                                         .addFieldValuePart(
 															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-															Arrays.stream(values).map( x -> Utility.textToSqlVal(x) ).collect(Collectors.toList())
+															IntStream.range(0, values.length).mapToObj(i -> "?" + i).collect(Collectors.toList())
 			                                          )
 			;
 		}
@@ -65,7 +66,11 @@ public class AddElement extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		String mql = query.toString();
+		Tuple2<String, List<String>> tuple = Tokenizer.format2(query.toString(), values);
+
+		/*-----------------------------------------------------------------*/
+
+		String mql = tuple.x;
 
 		Querier querier = getQuerier(catalog);
 
@@ -76,9 +81,18 @@ public class AddElement extends AbstractCommand
 
 		PreparedStatement statement = querier.prepareStatement(sql, false, true, null);
 
+		for(int i = 0; i < tuple.y.size(); i++)
+		{
+			statement.setString(i + 1, tuple.y.get(i));
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		final int nbOfUpdatedRows;
+
 		try
 		{
-			statement.execute();
+			nbOfUpdatedRows = statement.executeUpdate();
 		}
 		catch(SQLException e)
 		{
@@ -89,25 +103,23 @@ public class AddElement extends AbstractCommand
 
 		ResultSet resultSet = statement.getGeneratedKeys();
 
-		String generatedKey;
-
 		try
 		{
-			generatedKey = resultSet.next() ? resultSet.getString(1) : "0";
+			if(resultSet.next())
+			{
+				return new Update(nbOfUpdatedRows, resultSet.getString(1), mql, sql, ast).toStringBuilder();
+			}
+			else
+			{
+				return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
+			}
 		}
 		catch(SQLException e)
 		{
-			generatedKey = "0";
+			return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		return new StringBuilder().append("<sql><![CDATA[").append(sql).append("]]></sql>")
-		                          .append("<mql><![CDATA[").append(mql).append("]]></mql>")
-		                          .append("<ast><![CDATA[").append(ast).append("]]></ast>")
-		                          .append("<rowset><row><field name=\"generatedKey\"><![CDATA[").append(generatedKey).append("]]></field></row></rowset>")
-		                          .append("<info><![CDATA[1 element inserted with success]]></info>")
-		;
 	}
 
 	/*---------------------------------------------------------------------*/
