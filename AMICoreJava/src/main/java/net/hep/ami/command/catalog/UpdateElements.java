@@ -5,11 +5,13 @@ import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.sql.Tokenizer;
-import net.hep.ami.utility.Tuple2;
+import net.hep.ami.jdbc.query.sql.*;
+import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
@@ -104,7 +106,9 @@ public class UpdateElements extends AbstractCommand
 
 		for(int i = 0; i < tuple.y.size(); i++)
 		{
-			statement.setString(i + 1, tuple.y.get(i));
+			statement.setString(i + 1, SchemaSingleton.getFieldInfo(catalog, entity, fields[i]).crypted ? SecuritySingleton.encrypt(tuple.y.get(i))
+			                                                                                            : /*---------------------*/(tuple.y.get(i))
+			);
 		}
 
 		/*-----------------------------------------------------------------*/

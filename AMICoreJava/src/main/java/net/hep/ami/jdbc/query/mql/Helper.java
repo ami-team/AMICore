@@ -2,7 +2,6 @@ package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
 
-import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -444,8 +443,6 @@ public class Helper
 				{
 					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
 				}
-
-				expression = Utility.textToSqlVal(SecuritySingleton.encrypt(Utility.sqlValToText(expression.toString())));
 			}
 
 			/**/
