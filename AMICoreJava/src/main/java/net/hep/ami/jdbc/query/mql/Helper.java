@@ -388,7 +388,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern HHH = Pattern.compile("\\?[0..9]+");
+	private static final Pattern HHH = Pattern.compile("^\\?[0-9]+$");
 
 	/*---------------------------------------------------------------------*/
 
@@ -457,15 +457,15 @@ public class Helper
 
 			/**/
 
-			else if(column.created
+			else if(column.automatic
+			        ||
+			        column.created
 			        ||
 			        column.createdBy
 			        ||
 			        column.modified
 			        ||
 			        column.modifiedBy
-			        ||
-			        column.automatic
 			 ) {
 				continue;
 			}

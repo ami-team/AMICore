@@ -40,9 +40,11 @@ public class CommandSingletonTest
 
 //		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT id, id AS toto, router_user.id AS id WHERE 1=1 ORDER BY id ASC LIMIT 1 OFFSET 2\"", false);
 
-		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n"));
+		System.out.println(Pattern.compile("^\\?[0-9]+$").matcher("?456").matches());
 
-		System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_role\" -separator=\"§\" -fields=\"role\" -values=\"123456\" -keyFields=\"id\" -keyValues=\"7\"", false).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n"));
+
+//		System.out.println(CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_role\" -separator=\"§\" -fields=\"role\" -values=\"123456\" -keyFields=\"id\" -keyValues=\"7\"", false).replace(">", ">\n"));
 
 //		/*System.out.println(*/CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT `self`.`router_command`.`id`, `self`.`router_role`.`id` WHERE `self`.`router_role`.`id`{`self`.`router_command_role`.`commandFK`, `self`.`router_command_role`.`roleFK`} = '1'\" -limit=\"20\" -offset=\"0\"", false).replace(">", ">\n")/*)*/;
 

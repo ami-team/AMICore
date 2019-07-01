@@ -222,6 +222,10 @@ public class Tokenizer
 		s_xqlRegions.add(OFFSET);
 	}
 
+	/*   `UNION`   NOT SUPPORTED! */
+	/* `UNION ALL` NOT SUPPORTED! */
+	/* `INTERSECT` NOT SUPPORTED! */
+
 	/*---------------------------------------------------------------------*/
 
 	public static Map<String, String> splitXQL(String xql)
@@ -283,15 +287,11 @@ public class Tokenizer
 					tokens.clear();
 					keyword = TOKEN;
 				}
-				else if(ORDER.equals(keyword) && (/*-------*/ "BY".equals(TOKEN) /*-------*/))
-				{
-					/* IGNORE `BY` KEYWORD */;
-				}
-				else if(ORDER.equals(keyword) && ("ASC".equals(TOKEN) || "DESC".equals(TOKEN)))
+				else if(ORDER.equals(keyword) == true && ("ASC".equals(TOKEN) || "DESC".equals(TOKEN)) == true)
 				{
 					result.put(WAY, TOKEN);
 				}
-				else
+				else if(ORDER.equals(keyword) == false || (/*-------*/ "BY".equals(TOKEN) /*-------*/) == false)
 				{
 					tokens.add(token);
 				}
