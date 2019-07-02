@@ -293,9 +293,10 @@ STRING
 	;
 
 PARAMETER
-	: '?#' INT
-	| '?' INT
-	| '?'
+	: '?#' INT		/* CRYPTED LABELED PARAMETER */
+	| '?' INT		/* LABELED PARAMETER */
+	| '?#'			/* CRYPTED PARAMETER */
+	| '?'			/* PARAMETER */
 	;
 
 NUMBER

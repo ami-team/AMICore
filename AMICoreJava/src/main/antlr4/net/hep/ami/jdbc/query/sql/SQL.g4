@@ -42,6 +42,7 @@ STRING
 PARAMETER
 	: '?#' INT		/* CRYPTED LABELED PARAMETER */
 	| '?' INT		/* LABELED PARAMETER */
+	| '?#'			/* CRYPTED PARAMETER */
 	| '?'			/* PARAMETER */
 	;
 
