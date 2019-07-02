@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.antlr.v4.runtime.*;
 
+import net.hep.ami.SecuritySingleton;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.utility.*;
 
@@ -61,7 +62,34 @@ public class Tokenizer
 
 		for(String token: Tokenizer.tokenize(sql))
 		{
-			if("?".equals(token))
+			/**/ if("?#".equals(token))
+			{
+				/*---------------------------------------------------------*/
+
+				if(i >= l)
+				{
+					throw new Exception("not enough arguments");
+				}
+
+				/*---------------------------------------------------------*/
+
+				arg = args[i++];
+
+				/**/ if(arg == null)
+				{
+					stringBuilder.append("NULL");
+				}
+				else
+				{
+					stringBuilder.append("'")
+					             .append(SecuritySingleton.encrypt(arg.toString()))
+					             .append("'")
+					;
+				}
+
+				/*---------------------------------------------------------*/
+			}
+			else if("?".equals(token))
 			{
 				/*---------------------------------------------------------*/
 
