@@ -88,11 +88,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple3<String, List<String>, List<Boolean>> tuple = Tokenizer.formatPreparedStatement(query.toString(), values);
-
-		/*-----------------------------------------------------------------*/
-
-		String mql = tuple.x;
+		String mql = query.toString();
 
 		Querier querier = getQuerier(catalog);
 
@@ -101,7 +97,11 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		PreparedStatement statement = querier.preparedStatement(sql, false, true, null);
+		Tuple3<String, List<String>, List<Boolean>> tuple = Tokenizer.formatPreparedStatement(sql, values);
+
+		/*-----------------------------------------------------------------*/
+
+		PreparedStatement statement = querier.preparedStatement(tuple.x, false, true, null);
 
 		for(int i = 0; i < tuple.y.size(); i++)
 		{
