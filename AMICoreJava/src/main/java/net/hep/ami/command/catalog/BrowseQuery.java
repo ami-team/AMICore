@@ -27,13 +27,6 @@ public class BrowseQuery extends SearchQuery
 
 	/*---------------------------------------------------------------------*/
 
-	public static String help()
-	{
-		return "Execute a simple SQL or MQL query.";
-	}
-
-	/*---------------------------------------------------------------------*/
-
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)?";

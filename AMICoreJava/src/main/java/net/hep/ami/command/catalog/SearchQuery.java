@@ -53,9 +53,9 @@ public class SearchQuery extends AbstractCommand
 		{
 			/*-------------------------------------------------------------*/
 
-			for(String CATALOG: CatalogSingleton.resolve(catalog))
+			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
-				result.append(getQuerier(CATALOG, links).executeRawQuery(entity, raw).toStringBuilder());
+				result.append(getQuerier(catalog2, links).executeRawQuery(entity, raw).toStringBuilder());
 			}
 
 			/*-------------------------------------------------------------*/
@@ -139,11 +139,11 @@ public class SearchQuery extends AbstractCommand
 
 			Querier querier;
 
-			for(String CATALOG: CatalogSingleton.resolve(catalog))
+			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
 				/*---------------------------------------------------------*/
 
-				querier = getQuerier(CATALOG, links);
+				querier = getQuerier(catalog2, links);
 
 				/*---------------------------------------------------------*/
 
@@ -151,7 +151,7 @@ public class SearchQuery extends AbstractCommand
 
 				if(count)
 				{
-					/*-------------------------------------------------------------*/
+					/*-----------------------------------------------------*/
 
 					RowSet rowSet1;
 
