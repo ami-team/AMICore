@@ -1,8 +1,6 @@
 package net.hep.ami;
 
 import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.util.*;
 import java.util.regex.*;
 
@@ -39,13 +37,6 @@ public class CommandSingletonTest
 //		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"mc16_001:production\" -entity=\"dataset\" -mql=\"SELECT * WHERE `mc16_001:production`.`dataset`.`AMIStatus` = \'VALID\'\" -limit=\"20\" -offset=\"0\" -count", false));
 
 //		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT id, id AS toto, router_user.id AS id WHERE 1=1 ORDER BY id ASC LIMIT 1 OFFSET 2\"", false);
-
-		final Pattern HHH = Pattern.compile("^\\?([0-9]+)$");
-		final Pattern GGG = Pattern.compile("^AMI_ENCRYPT\\([ \\t]*\\?([0-9]+)[ \\t]*\\)$");
-
-		System.out.println(HHH.matcher("?456").matches());
-		Matcher m = GGG.matcher("AMI_ENCRYPT( ?456 )");
-		System.out.println(m.matches() ? m.group(1) : "");
 
 //		System.out.println(CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n"));
 

@@ -388,7 +388,7 @@ public class Helper
 
 	/*---------------------------------------------------------------------*/
 
-	private static final Pattern HHH = Pattern.compile("^\\?[0-9]+$");
+	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
 
 	/*---------------------------------------------------------------------*/
 
@@ -451,7 +451,7 @@ public class Helper
 
 				if(HHH.matcher(expression).matches())
 				{
-					expression = "AMI_ENCRYPT(" + expression.toString() + ")";
+					expression = "?#" + expression.toString().substring(1);
 				}
 			}
 
