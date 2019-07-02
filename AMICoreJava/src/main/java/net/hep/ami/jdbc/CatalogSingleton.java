@@ -1,6 +1,7 @@
 package net.hep.ami.jdbc;
 
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
@@ -203,6 +204,31 @@ public class CatalogSingleton
 		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getKey(tuple.y, tuple.t, tuple.u , tuple.v);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static List<String> resolve(String catalogPattern) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+
+		Pattern pattern = Pattern.compile(catalogPattern);
+
+		/*-----------------------------------------------------------------*/
+
+		List<String> result = new ArrayList<>();
+
+		for(String catalog: s_catalogs.keySet())
+		{
+			if(pattern.matcher(catalog).matches())
+			{
+				result.add(catalog);
+			}
+		}
+
+		return result;
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/
