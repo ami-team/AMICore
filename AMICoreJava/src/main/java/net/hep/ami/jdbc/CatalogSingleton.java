@@ -212,7 +212,7 @@ public class CatalogSingleton
 	{
 		/*-----------------------------------------------------------------*/
 
-		Pattern pattern = Pattern.compile(catalogPattern);
+		Pattern pattern = Pattern.compile(catalogPattern, Pattern.CASE_INSENSITIVE);
 
 		/*-----------------------------------------------------------------*/
 
