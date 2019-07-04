@@ -113,6 +113,8 @@ public class SearchQuery extends AbstractCommand
 				xqlSelect2.addExtraPart("GROUP BY " + groupBy);
 			}
 
+			/*-------------------------------------------------------------*/
+
 			if(orderBy != null)
 			{
 				orderBy = QId.parseQId(orderBy, QId.Type.FIELD).toString(QId.MASK_CATALOG_ENTITY_FIELD);
@@ -121,7 +123,7 @@ public class SearchQuery extends AbstractCommand
 
 				if(orderWay != null)
 				{
-					xqlSelect2.addExtraPart(orderWay);
+					xqlSelect2.addExtraPart(/*----------*/ orderWay);
 				}
 			}
 
