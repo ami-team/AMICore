@@ -55,7 +55,7 @@ public class SearchQuery extends AbstractCommand
 
 			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
-				result.append(getQuerier(catalog2, links).executeRawQuery(entity, raw).toStringBuilder());
+				result.append(getQuerier(catalog2, links).executeRawQuery(entity, raw).toStringBuilder(catalog2, null));
 			}
 
 			/*-------------------------------------------------------------*/
@@ -186,7 +186,7 @@ public class SearchQuery extends AbstractCommand
 
 				/*---------------------------------------------------------*/
 
-				result.append(rowSet2.toStringBuilder("query", totalNumberOfRows));
+				result.append(rowSet2.toStringBuilder(catalog2, totalNumberOfRows));
 
 				/*---------------------------------------------------------*/
 			}
