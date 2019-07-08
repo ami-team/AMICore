@@ -150,6 +150,12 @@ public class Command
 	private Response execute(HttpServletRequest request, String command, Map<String, String> arguments, String converter)
 	{
 		/*-----------------------------------------------------------------*/
+		/* GET SESSION OF REQUEST                                          */
+		/*-----------------------------------------------------------------*/
+
+		HttpSession session = request.getSession(true);
+
+		/*-----------------------------------------------------------------*/
 		/* CHECK CRENDENTIALS                                              */
 		/*-----------------------------------------------------------------*/
 
@@ -157,7 +163,7 @@ public class Command
 
 		try
 		{
-			tuple = (Token.Tuple) request.getSession(true).getAttribute("token");
+			tuple = (Token.Tuple) session.getAttribute("token");
 
 			if(tuple == null)
 			{
@@ -204,6 +210,10 @@ public class Command
 		else {
 			arguments.put("userAgent", "web");
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		arguments.put("userSession", session.getId());
 
 		/*-----------------------------------------------------------------*/
 

@@ -24,6 +24,7 @@ public abstract class AbstractCommand
 	protected final boolean m_isCached;
 
 	protected final String m_userAgent;
+	protected final String m_userSession;
 
 	protected final String m_timeZone;
 
@@ -60,6 +61,7 @@ public abstract class AbstractCommand
 		m_isCached = arguments.containsKey( "cached" ) ? "false".equalsIgnoreCase(arguments.remove( "cached" )) == false : false;
 
 		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "N/A";
+		m_userSession = arguments.containsKey("userSession") ? arguments.remove("userSession") : "";
 
 		m_timeZone = arguments.containsKey("timeZone") ? arguments.remove("timeZone") : ConfigSingleton.getProperty("time_zone");
 
