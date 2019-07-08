@@ -1,6 +1,7 @@
 package net.hep.ami.utility;
 
 import java.io.*;
+import java.nio.charset.*;
 
 public class TextFile
 {
@@ -33,7 +34,7 @@ public class TextFile
 
 	public static void read(StringBuilder stringBuilder, InputStream inputStream) throws Exception
 	{
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
 		String line;
 
@@ -49,7 +50,7 @@ public class TextFile
 
 	public static void readLine(StringBuilder stringBuilder, InputStream inputStream) throws Exception
 	{
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
 		String line;
 
@@ -66,7 +67,7 @@ public class TextFile
 
 	public static void write(OutputStream outputStream, CharSequence charSequence) throws Exception
 	{
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 
 		outputStreamWriter.write(charSequence.toString());
 

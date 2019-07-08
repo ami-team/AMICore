@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<web-app metadata-complete="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+<web-app version="4.0"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         metadata-complete="true">
 
 	<display-name>AMI Server</display-name>
 
 	<session-config>
-		<session-timeout>120</session-timeout>
+		<session-timeout>-1</session-timeout>
+		<cookie-config>
+			<path>/AMI</path>
+		</cookie-config>
 	</session-config>
 
 	<!--******************************************************************-->
