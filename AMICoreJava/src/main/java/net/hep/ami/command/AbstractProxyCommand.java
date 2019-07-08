@@ -95,7 +95,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
-	abstract String command();
+	abstract protected String command();
 
 	/*---------------------------------------------------------------------*/
 }
