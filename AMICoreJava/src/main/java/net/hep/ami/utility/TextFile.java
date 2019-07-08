@@ -57,8 +57,7 @@ public class TextFile
 		if((line = bufferedReader.readLine()) != null)
 		{
 			stringBuilder.append(line)
-		//	             .append('\n')
-
+			             /////////////
 			;
 		}
 	}
