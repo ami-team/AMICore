@@ -47,7 +47,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		HttpURLConnection connection = HttpConnectionFactory.connection(ConfigSingleton.getProperty("proxy_api_url") + "/command/" + command() + "/xml");
+		HttpURLConnection connection = HttpConnectionFactory.connection(ConfigSingleton.getProperty("proxy_command_api_url") + "/command/" + command() + "/xml");
 
 		/*-----------------------------------------------------------------*/
 
@@ -56,8 +56,8 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 			connection.setRequestMethod("POST");
 
 			connection.setRequestProperty(
-				ConfigSingleton.getProperty("proxy_api_token_name", "AMI-Token"),
-				ConfigSingleton.getProperty("proxy_api_token_value", m_userSession)
+				ConfigSingleton.getProperty("proxy_command_token_name", "AMI-Token"),
+				ConfigSingleton.getProperty("proxy_command_token_value", m_userSession)
 			);
 
 			connection.setRequestProperty("Content-Type", "application/json");
