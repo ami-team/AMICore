@@ -213,7 +213,10 @@ public class Command
 
 		/*-----------------------------------------------------------------*/
 
-		arguments.put("userSession", session.getId());
+		if(arguments.containsKey("userSession") == false)
+		{
+			arguments.put("userSession", session.getId());
+		}
 
 		/*-----------------------------------------------------------------*/
 
