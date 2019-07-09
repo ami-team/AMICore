@@ -90,9 +90,27 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return output;
+		int idx1 = output.indexOf("<Result>");
+		int idx2 = output.indexOf("</Result>");
+
+		if(idx1 > 0 && idx1 < idx2)
+		{
+			output = new StringBuilder(output.substring(idx1 + 8, idx2 + 0));
+		}
+		else
+		{
+			int idx3 = output.indexOf("<AMIMessage>");
+			int idx4 = output.indexOf("</AMIMessage>");
+
+			if(idx3 > 0 && idx3 < idx4)
+			{
+				output = new StringBuilder(output.substring(idx1 + 12, idx2 + 0));
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
+
+		return output;
 	}
 
 	/*---------------------------------------------------------------------*/
