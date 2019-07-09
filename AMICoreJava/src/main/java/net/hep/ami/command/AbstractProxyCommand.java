@@ -15,6 +15,9 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 	public AbstractProxyCommand(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
+
+		arguments.put("AMIUser", m_AMIUser);
+		arguments.put("AMIPass", m_AMIPass);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -26,40 +29,43 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		StringBuilder output = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
+		/* BUILD POST DATA                                                 */
+		/*-----------------------------------------------------------------*/
 
-		List<String> list = new ArrayList<>();
+		StringBuffer argumentString = new StringBuffer();
 
 		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
-			list.add(
-				new StringBuilder().append("\"")
-				                   .append(Utility.escapeJSONString(entry.getKey()))
-				                   .append("\":\"")
-				                   .append(Utility.escapeJSONString(entry.getValue()))
-				                   .append("\"")
-				                   .toString()
-			);
+			argumentString.append(" -").append(entry.getKey()).append("=\"").append(Utility.escapeJavaString(entry.getValue())).append("\"");
 		}
-
-		/*-------------------------------------------------------------*/
-
-		input.append("{").append(String.join(",", list)).append("}");
 
 		/*-----------------------------------------------------------------*/
 
-		HttpURLConnection connection = HttpConnectionFactory.connection(ConfigSingleton.getProperty("proxy_command_api_url") + "/command/" + command() + "/xml");
+		input.append("Command=").append(command()).append(URLEncoder.encode(argumentString.toString(), "UTF-8"));
+
+		/*-----------------------------------------------------------------*/
+		/* EXECUTE COMMAND                                                 */
+		/*-----------------------------------------------------------------*/
+
+		HttpURLConnection connection = HttpConnectionFactory.connection(ConfigSingleton.getProperty("proxy_command_endpoint"));
 
 		/*-----------------------------------------------------------------*/
 
 		try
 		{
-			connection.setRequestMethod("POST");
+			/*-------------------------------------------------------------*/
 
-			connection.setRequestProperty(ConfigSingleton.getProperty("proxy_command_token_name", "AMI-Token"), arguments.containsKey("user_session") ? arguments.remove("user_session") : m_userSession);
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("Accept", "application/xml");
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF");
+			connection.setRequestProperty("Content-Length", String.valueOf(input.length()));
 
+			connection.setRequestProperty("Connection", "Close");
+
+			connection.setRequestProperty("User-Agent", m_userAgent);
+
+			connection.setConnectTimeout(1500);
+			connection.setReadTimeout(1500);
 			connection.setDoOutput(true);
+			connection.setDoInput(true);
 
 			/*-------------------------------------------------------------*/
 
@@ -84,9 +90,27 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return output;
+		int idx1 = output.indexOf("<Result>");
+		int idx2 = output.indexOf("</Result>");
+
+		if(idx1 > 0 && idx1 < idx2)
+		{
+			output = new StringBuilder(output.substring(idx1 + 8, idx2 + 0));
+		}
+		else
+		{
+			int idx3 = output.indexOf("<AMIMessage>");
+			int idx4 = output.indexOf("</AMIMessage>");
+
+			if(idx3 > 0 && idx3 < idx4)
+			{
+				output = new StringBuilder(output.substring(idx1 + 12, idx2 + 0));
+			}
+		}
 
 		/*-----------------------------------------------------------------*/
+
+		return output;
 	}
 
 	/*---------------------------------------------------------------------*/
