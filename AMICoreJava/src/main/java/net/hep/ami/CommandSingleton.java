@@ -50,12 +50,17 @@ public class CommandSingleton
 	{
 		s_reserved.add("AMIUser");
 		s_reserved.add("AMIPass");
+
 		s_reserved.add("clientDN");
 		s_reserved.add("issuerDN");
+
 		s_reserved.add("notBefore");
 		s_reserved.add("notAfter");
+
 		s_reserved.add("isSecure");
+
 		s_reserved.add("userAgent");
+		s_reserved.add("userSession");
 
 		reload();
 	}
