@@ -197,26 +197,28 @@ public class Command
 
 		String agent = request.getHeader("User-Agent");
 
-		if(agent.startsWith("cami")
-		   ||
-		   agent.startsWith("jami")
-		   ||
-		   agent.startsWith("pami")
-		   ||
-		   agent.startsWith("pyAMI")
+		if(agent != null
+		   &&
+		   (
+		     agent.startsWith("cami")
+		     ||
+		     agent.startsWith("jami")
+		     ||
+		     agent.startsWith("pami")
+		     ||
+		     agent.startsWith("pyAMI")
+		   )
 		 ) {
 			arguments.put("userAgent", agent);
 		}
-		else {
+		else
+		{
 			arguments.put("userAgent", "web");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/**/
 
-		if(arguments.containsKey("userSession") == false)
-		{
-			arguments.put("userSession", session.getId());
-		}
+		arguments.put("userSession", session.getId());
 
 		/*-----------------------------------------------------------------*/
 
