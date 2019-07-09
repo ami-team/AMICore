@@ -659,7 +659,10 @@ public class FrontEnd extends HttpServlet
 
 		/*-----------------------------------------------------------------*/
 
-		arguments.put("userSession", session.getId());
+		if(arguments.containsKey("userSession") == false)
+		{
+			arguments.put("userSession", session.getId());
+		}
 
 		/*-----------------------------------------------------------------*/
 	}
