@@ -15,9 +15,6 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 	public AbstractProxyCommand(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
-
-		arguments.put("AMIUser", m_AMIUser);
-		arguments.put("AMIPass", m_AMIPass);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -38,6 +35,11 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		{
 			argumentString.append(" -").append(entry.getKey()).append("=\"").append(Utility.escapeJavaString(entry.getValue())).append("\"");
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
+		argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
 
 		/*-----------------------------------------------------------------*/
 
@@ -90,27 +92,17 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int idx1 = output.indexOf("<Result>");
-		int idx2 = output.indexOf("</Result>");
+		int idx1 = output.  indexOf  ("<rowset>");
+		int idx2 = output.lastIndexOf("</rowset>");
 
-		if(idx1 > 0 && idx1 < idx2)
-		{
-			output = new StringBuilder(output.substring(idx1 + 8, idx2 + 0));
+		if(idx1 > 0 && idx1 < idx2) {
+			return new StringBuilder(output.substring(idx1 + 0, idx2 + 9));
 		}
-		else
-		{
-			int idx3 = output.indexOf("<AMIMessage>");
-			int idx4 = output.indexOf("</AMIMessage>");
-
-			if(idx3 > 0 && idx3 < idx4)
-			{
-				output = new StringBuilder(output.substring(idx1 + 12, idx2 + 0));
-			}
+		else {
+			return new StringBuilder(/*--------------------------------*/);
 		}
 
 		/*-----------------------------------------------------------------*/
-
-		return output;
 	}
 
 	/*---------------------------------------------------------------------*/
