@@ -92,11 +92,11 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int idx1 = output.  indexOf  ("<rowset>");
-		int idx2 = output.lastIndexOf("</rowset>");
+		int idx1 = output.  indexOf  ("<rowset");
+		int idx2 = output.lastIndexOf("rowset>");
 
 		if(idx1 > 0 && idx1 < idx2) {
-			return new StringBuilder(output.substring(idx1 + 0, idx2 + 9));
+			return new StringBuilder(output.substring(idx1 + 0, idx2 + 7));
 		}
 		else {
 			return new StringBuilder(/*--------------------------------*/);

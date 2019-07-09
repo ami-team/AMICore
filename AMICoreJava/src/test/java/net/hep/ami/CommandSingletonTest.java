@@ -30,7 +30,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("GetSessionInfo -userSession2=\"Hello\"", false);
+		CommandSingleton.executeCommand("GetSessionInfo", false);
 
 		//CommandSingleton.executeCommand("FlushServerCaches -full", false);
 
