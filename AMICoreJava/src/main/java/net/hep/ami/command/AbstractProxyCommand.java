@@ -22,8 +22,8 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder output = new StringBuilder();
 		StringBuilder input = new StringBuilder();
+		StringBuilder output = new StringBuilder();
 
 		/*-----------------------------------------------------------------*/
 
@@ -43,7 +43,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-------------------------------------------------------------*/
 
-		output.append("{").append(String.join(",", list)).append("}");
+		input.append("{").append(String.join(",", list)).append("}");
 
 		/*-----------------------------------------------------------------*/
 
@@ -65,14 +65,14 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 			try(OutputStream outputStream = connection.getOutputStream())
 			{
-				TextFile.write(outputStream, output);
+				TextFile.write(outputStream, input);
 			}
 
 			/*-------------------------------------------------------------*/
 
 			try(InputStream inputStream = connection.getInputStream())
 			{
-				TextFile.read(input, inputStream);
+				TextFile.read(output, inputStream);
 			}
 
 			/*-------------------------------------------------------------*/
@@ -84,7 +84,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return input;
+		return output;
 
 		/*-----------------------------------------------------------------*/
 	}
