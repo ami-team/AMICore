@@ -20,7 +20,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public final StringBuilder main(Map<String, String> arguments) throws Exception
 	{
 		StringBuilder input = new StringBuilder();
 		StringBuilder output = new StringBuilder();
