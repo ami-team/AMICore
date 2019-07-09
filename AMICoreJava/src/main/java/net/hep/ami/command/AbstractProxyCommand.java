@@ -55,11 +55,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		{
 			connection.setRequestMethod("POST");
 
-			connection.setRequestProperty(
-				ConfigSingleton.getProperty("proxy_command_token_name", "AMI-Token"),
-				ConfigSingleton.getProperty("proxy_command_token_value", m_userSession)
-			);
-
+			connection.setRequestProperty(ConfigSingleton.getProperty("proxy_command_token_name", "AMI-Token"), arguments.containsKey("user_session") ? arguments.remove("user_session") : m_userSession);
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("Accept", "application/xml");
 
