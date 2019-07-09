@@ -92,15 +92,35 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int idx1 = output.  indexOf  ("<rowset");
-		int idx2 = output.lastIndexOf("rowset>");
+		int idx1 = output.  indexOf  ("<fieldDescriptions");
+		int idx2 = output.lastIndexOf("fieldDescriptions>");
 
-		if(idx1 > 0 && idx1 < idx2) {
-			return new StringBuilder(output.substring(idx1 + 0, idx2 + 7));
+		StringBuilder fieldDescriptions;
+
+		if(idx1 > 0x00 && idx1 < idx2) {
+			fieldDescriptions = new StringBuilder(output.substring(idx1 + 0, idx2 + 18));
 		}
 		else {
-			return new StringBuilder(/*--------------------------------*/);
+			fieldDescriptions = new StringBuilder(/*---------------------------------*/);
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		int idx3 = output.  indexOf  ("<rowset");
+		int idx4 = output.lastIndexOf("rowset>");
+
+		StringBuilder rowSets;
+
+		if(idx3 > idx2 && idx3 < idx4) {
+			rowSets = new StringBuilder(output.substring(idx3 + 0, idx4 + 7));
+		}
+		else {
+			rowSets = new StringBuilder(/*--------------------------------*/);
+		}
+
+		/*-----------------------------------------------------------------*/
+
+		return fieldDescriptions.append(rowSets);
 
 		/*-----------------------------------------------------------------*/
 	}
