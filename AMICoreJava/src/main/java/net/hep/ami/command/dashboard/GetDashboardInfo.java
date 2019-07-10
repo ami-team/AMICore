@@ -29,10 +29,11 @@ public class GetDashboardInfo extends AbstractCommand
 
 		result.append("<row>");
 
+		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
 		result.append("<field name=\"control\"><![CDATA[").append("DomText").append("]]></field>");
 		result.append("<field name=\"params\"><![CDATA[").append("[\"Test1\", \"test1\", \"thermometer-half\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("1").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("1").append("]]></field>");
+		result.append("<field name=\"x\"><![CDATA[").append("2").append("]]></field>");
+		result.append("<field name=\"y\"><![CDATA[").append("2").append("]]></field>");
 		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
 		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
 
@@ -42,10 +43,11 @@ public class GetDashboardInfo extends AbstractCommand
 
 		result.append("<row>");
 
+		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
 		result.append("<field name=\"control\"><![CDATA[").append("DomText").append("]]></field>");
 		result.append("<field name=\"params\"><![CDATA[").append("[\"Test1\", \"test1\", \"thermometer-half\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("1").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("1").append("]]></field>");
+		result.append("<field name=\"x\"><![CDATA[").append("2").append("]]></field>");
+		result.append("<field name=\"y\"><![CDATA[").append("2").append("]]></field>");
 		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
 		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
 
@@ -55,10 +57,11 @@ public class GetDashboardInfo extends AbstractCommand
 
 		result.append("<row>");
 
+		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
 		result.append("<field name=\"control\"><![CDATA[").append("DomText").append("]]></field>");
 		result.append("<field name=\"params\"><![CDATA[").append("[\"Test1\", \"test1\", \"thermometer-half\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("1").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("1").append("]]></field>");
+		result.append("<field name=\"x\"><![CDATA[").append("2").append("]]></field>");
+		result.append("<field name=\"y\"><![CDATA[").append("2").append("]]></field>");
 		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
 		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
 
@@ -68,6 +71,7 @@ public class GetDashboardInfo extends AbstractCommand
 
 		result.append("<row>");
 
+		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
 		result.append("<field name=\"control\"><![CDATA[").append("DomSwitch").append("]]></field>");
 		result.append("<field name=\"params\"><![CDATA[").append("[\"Test2\", true, \"lightbulb-o\", \"Hello\"]").append("]]></field>");
 		result.append("<field name=\"x\"><![CDATA[").append("1").append("]]></field>");
@@ -80,6 +84,8 @@ public class GetDashboardInfo extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		result.append("<row>");
+
+		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
 		result.append("<field name=\"control\"><![CDATA[").append("DomRange").append("]]></field>");
 		result.append("<field name=\"params\"><![CDATA[").append("[\"Test3\", \"0\", \"10\", \"1\", \"0\", \"lightbulb-o\", \"Hello\"]").append("]]></field>");
 		result.append("<field name=\"x\"><![CDATA[").append("1").append("]]></field>");
