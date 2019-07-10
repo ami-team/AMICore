@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import org.w3c.dom.*;
+
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
@@ -22,9 +24,6 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 	@Override
 	public final StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder input = new StringBuilder();
-		StringBuilder output = new StringBuilder();
-
 		/*-----------------------------------------------------------------*/
 		/* BUILD POST DATA                                                 */
 		/*-----------------------------------------------------------------*/
@@ -43,7 +42,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		input.append("Command=").append(command()).append(URLEncoder.encode(argumentString.toString(), "UTF-8"));
+		StringBuilder input = new StringBuilder().append("Command=").append(command()).append(URLEncoder.encode(argumentString.toString(), "UTF-8"));
 
 		/*-----------------------------------------------------------------*/
 		/* EXECUTE COMMAND                                                 */
@@ -52,6 +51,8 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		HttpURLConnection connection = HttpConnectionFactory.connection(ConfigSingleton.getProperty("proxy_command_endpoint"));
 
 		/*-----------------------------------------------------------------*/
+
+		Document document;
 
 		try
 		{
@@ -64,8 +65,8 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 			connection.setRequestProperty("User-Agent", m_userAgent);
 
-			connection.setConnectTimeout(1500);
-			connection.setReadTimeout(1500);
+			connection.setConnectTimeout(ConfigSingleton.getProperty("proxy_command_connect_timeout", 60000));
+			connection.setReadTimeout(ConfigSingleton.getProperty("proxy_command_read_timeout", 60000));
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 
@@ -78,10 +79,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 			/*-------------------------------------------------------------*/
 
-			try(InputStream inputStream = connection.getInputStream())
-			{
-				TextFile.read(output, inputStream);
-			}
+			document = XMLFactory.newDocument(connection.getInputStream());
 
 			/*-------------------------------------------------------------*/
 		}
@@ -92,38 +90,29 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		int idx1 = output.  indexOf  ("<fieldDescriptions");
-		int idx2 = output.lastIndexOf("fieldDescriptions>");
+		StringBuilder result = new StringBuilder();
 
-		StringBuilder fieldDescriptions;
-
-		if(idx1 > 0x00 && idx1 < idx2) {
-			fieldDescriptions = new StringBuilder(output.substring(idx1 + 0, idx2 + 18));
-		}
-		else {
-			fieldDescriptions = new StringBuilder(/*---------------------------------*/);
+		for(Node node: XMLFactory.nodeListToIterable(document.getElementsByTagName("info"))) {
+			result.append(XMLFactory.nodeToString(node));
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		int idx3 = output.  indexOf  ("<rowset");
-		int idx4 = output.lastIndexOf("rowset>");
-
-		StringBuilder rowSets;
-
-		if(idx3 > idx2 && idx3 < idx4) {
-			rowSets = new StringBuilder(output.substring(idx3 + 0, idx4 + 7));
+		for(Node node: XMLFactory.nodeListToIterable(document.getElementsByTagName("error"))) {
+			result.append(XMLFactory.nodeToString(node));
 		}
-		else {
-			rowSets = new StringBuilder(/*--------------------------------*/);
+
+		for(Node node: XMLFactory.nodeListToIterable(document.getElementsByTagName("fieldDescriptions"))) {
+			result.append(XMLFactory.nodeToString(node));
+		}
+
+		for(Node node: XMLFactory.nodeListToIterable(document.getElementsByTagName("rowset"))) {
+			result.append(XMLFactory.nodeToString(node));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return fieldDescriptions.append(rowSets);
-
-		/*-----------------------------------------------------------------*/
+		return result;
 	}
+
 
 	/*---------------------------------------------------------------------*/
 

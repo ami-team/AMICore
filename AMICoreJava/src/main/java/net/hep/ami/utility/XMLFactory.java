@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
 import net.sf.saxon.*;
@@ -155,12 +156,33 @@ public class XMLFactory
 
 	/*---------------------------------------------------------------------*/
 
-	public static Iterable<org.w3c.dom.Node> toIterable(org.w3c.dom.NodeList nodeList)
+	public static String nodeToString(org.w3c.dom.Node node) throws Exception
+	{
+		StringWriter result = new StringWriter();
+
+		Transformer transformer = TransformerFactoryImpl.newInstance().newTransformer();
+
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+		transformer.transform(
+			new DOMSource(node),
+			new StreamResult(result)
+		);
+
+		return result.toString();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Iterable<org.w3c.dom.Node> nodeListToIterable(org.w3c.dom.NodeList nodeList)
 	{
 		if(nodeList == null)
 		{
 			throw new NullPointerException();
 		}
+
+		/*-----------------------------------------------------------------*/
 
 		return () -> new Iterator<org.w3c.dom.Node>()
 		{
@@ -184,6 +206,8 @@ public class XMLFactory
 				throw new NoSuchElementException();
 			}
 		};
+
+		/*-----------------------------------------------------------------*/
 	}
 
 	/*---------------------------------------------------------------------*/

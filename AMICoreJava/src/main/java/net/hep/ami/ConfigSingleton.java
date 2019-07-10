@@ -155,7 +155,7 @@ public class ConfigSingleton
 			/* ADD PROPERTIES                                              */
 			/*-------------------------------------------------------------*/
 
-			for(org.w3c.dom.Node node: XMLFactory.toIterable(nodeList))
+			for(org.w3c.dom.Node node: XMLFactory.nodeListToIterable(nodeList))
 			{
 				s_properties.put(
 					XMLFactory.getAttribute(node,
