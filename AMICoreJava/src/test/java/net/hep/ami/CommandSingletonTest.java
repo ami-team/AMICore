@@ -30,7 +30,7 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("GetSessionInfo", false);
+//		CommandSingleton.executeCommand("GetSessionInfo", false);
 
 		CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_command\" -separator=\"|\" -fields=\"secured\" -values=\"0\" -keyFields=\"id\" -keyValues=\"24\"", false);
 

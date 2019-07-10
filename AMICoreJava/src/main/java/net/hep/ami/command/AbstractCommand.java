@@ -56,8 +56,8 @@ public abstract class AbstractCommand
 		m_notBefore = arguments.containsKey("notBefore") ? arguments.remove("notBefore") : "";
 		m_notAfter  = arguments.containsKey("notAfter" ) ? arguments.remove("notAfter" ) : "";
 
-		m_isSecure = "false".equalsIgnoreCase(arguments.remove("isSecure")) == false;
-		m_isCached = "false".equalsIgnoreCase(arguments.remove( "cached" )) == false;
+		m_isSecure = arguments.containsKey("isSecure") ? "false".equalsIgnoreCase(arguments.remove("isSecure")) == false : false;
+		m_isCached = arguments.containsKey( "cached" ) ? "false".equalsIgnoreCase(arguments.remove( "cached" )) == false : false;
 
 		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "N/A";
 		m_userSession = arguments.containsKey("userSession") ? arguments.remove("userSession") : "";
