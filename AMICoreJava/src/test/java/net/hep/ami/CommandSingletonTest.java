@@ -32,6 +32,8 @@ public class CommandSingletonTest
 
 		CommandSingleton.executeCommand("GetSessionInfo", false);
 
+		CommandSingleton.executeCommand("UpdateElements -catalog=\"self\" -entity=\"router_command\" -separator=\"|\" -fields=\"secured\" -values=\"0\" -keyFields=\"id\" -keyValues=\"24\"", false);
+
 		//CommandSingleton.executeCommand("FlushServerCaches -full", false);
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"mc(12|16).*\" -entity=\"router_role\" -mql=\"SELECT `*`\"", false));
