@@ -112,7 +112,10 @@ public class FindNewCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		CommandSingleton.reload();
+		if(foundCommandNames.size() > 0)
+		{
+			CommandSingleton.reload();
+		}
 
 		/*-----------------------------------------------------------------*/
 
