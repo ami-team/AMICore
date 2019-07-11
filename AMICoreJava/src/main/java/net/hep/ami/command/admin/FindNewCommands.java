@@ -112,6 +112,10 @@ public class FindNewCommands extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		CommandSingleton.reload();
+
+		/*-----------------------------------------------------------------*/
+
 		return new StringBuilder("<info><![CDATA[done with success, added command(s): " + foundCommandNames + "]]></info>");
 	}
 
