@@ -50,6 +50,7 @@
 	<servlet>
 		<servlet-name>FrontEnd</servlet-name>
 		<servlet-class>net.hep.ami.servlet.FrontEnd</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
@@ -62,6 +63,7 @@
 	<servlet>
 		<servlet-name>Setup</servlet-name>
 		<servlet-class>net.hep.ami.servlet.Setup</servlet-class>
+		<load-on-startup>0</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
