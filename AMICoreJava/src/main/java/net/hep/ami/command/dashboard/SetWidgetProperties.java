@@ -19,14 +19,22 @@ public class SetWidgetProperties extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		String id = arguments.get("id");
+		String x = arguments.get("x");
+		String y = arguments.get("y");
+		String width = arguments.get("width");
+		String height = arguments.get("height");
+
+		if(id == null || x == null || y == null || width == null || height == null)
+		{
+			throw new Exception("invalid usage");
+		}
 
 		/*-----------------------------------------------------------------*/
 
+		return getQuerier("self").executeSQLUpdate("UPDATE `router_dashboard` SET `x` = ?, `y` = ?, `width` = ?, `height` = ? WHERE `id` = ?", x, y, width, height, id).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
-
-		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -34,6 +42,13 @@ public class SetWidgetProperties extends AbstractCommand
 	public static String help()
 	{
 		return "Get the given widget property.";
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String usage()
+	{
+		return "-id=\"\" -x=\"\"-y=\"\" -width=\"\" -height=\"\"";
 	}
 
 	/*---------------------------------------------------------------------*/
