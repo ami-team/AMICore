@@ -46,6 +46,15 @@ END;
 ;;
 
 BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_dashboard"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE "router_short_url"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -194,6 +203,15 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_authority"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_dashboard"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -1169,6 +1187,81 @@ CREATE TRIGGER "trig1_router_short_url"
 
 CREATE TRIGGER "trig2_router_short_url"
   BEFORE UPDATE ON "router_short_url"
+  FOR EACH ROW
+  BEGIN
+    :NEW."modified" := SYSDATE;
+  END;
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE "router_dashboard" (
+  "id" NUMBER(*, 0),
+  "control" VARCHAR2(128),
+  "params" VARCHAR2(512),
+  "x" NUMBER(*, 0) DEFAULT 0,
+  "y" NUMBER(*, 0) DEFAULT 0,
+  "width" NUMBER(*, 0) DEFAULT 0,
+  "height" NUMBER(*, 0) DEFAULT 0,
+  "owner" VARCHAR2(128),
+  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck1_router_dashboard" CHECK("id" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck2_router_dashboard" CHECK("control" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck3_router_dashboard" CHECK("params" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck4_router_dashboard" CHECK("x" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck5_router_dashboard" CHECK("y" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck6_router_dashboard" CHECK("width" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck7_router_dashboard" CHECK("height" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck8_router_dashboard" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck10_router_dashboard" CHECK("modified" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_dashboard"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_dashboard"
+  BEFORE INSERT ON "router_dashboard"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_dashboard".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+CREATE TRIGGER "trig2_router_dashboard"
+  BEFORE UPDATE ON "router_dashboard"
   FOR EACH ROW
   BEGIN
     :NEW."modified" := SYSDATE;

@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS "router_ipv4_blocks";;
 DROP TABLE IF EXISTS "router_locations";;
 DROP TABLE IF EXISTS "router_search_interface";;
 DROP TABLE IF EXISTS "router_authority";;
+DROP TABLE IF EXISTS "router_dashboard";;
 DROP TABLE IF EXISTS "router_short_url";;
 DROP TABLE IF EXISTS "router_user_role";;
 DROP TABLE IF EXISTS "router_user";;
@@ -306,6 +307,31 @@ ALTER TABLE "router_short_url"
 
 CREATE TRIGGER "trig1_router_short_url"
   BEFORE UPDATE ON "router_short_url"
+  FOR EACH ROW
+    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE "router_dashboard" (
+  "id" SERIAL,
+  "control" VARCHAR(128) NOT NULL,
+  "params" VARCHAR(512) NOT NULL,
+  "x" INT NOT NULL DEFAULT 0,
+  "y" INT NOT NULL DEFAULT 0,
+  "width" INT NOT NULL DEFAULT 0,
+  "height" INT NOT NULL DEFAULT 0,
+  "owner" VARCHAR(128) NOT NULL,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
+;;
+
+CREATE TRIGGER "trig1_router_dashboard"
+  BEFORE UPDATE ON "router_dashboard"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;

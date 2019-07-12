@@ -363,7 +363,7 @@ public class Router implements Querier
 			getJdbcUrl(),
 			SecuritySingleton.encrypt(getUser()),
 			SecuritySingleton.encrypt(getPass()),
-			"{\"router_authority\":{\"x\":10,\"y\":740,\"color\":\"#CCCC33\"},\"router_catalog\":{\"x\":260,\"y\":10,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":10,\"y\":380,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":10,\"y\":280,\"color\":\"#0066CC\"},\"router_config\":{\"x\":10,\"y\":10,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":10,\"y\":170,\"color\":\"#FF0000\"},\"router_entity\":{\"x\":510,\"y\":10,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":760,\"y\":10,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":760,\"y\":470,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":260,\"y\":710,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":760,\"y\":710,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":510,\"y\":725,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":260,\"y\":280,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":260,\"y\":380,\"color\":\"#1494CC\"},\"router_short_url\":{\"x\":10,\"y\":530,\"color\":\"#1494CC\"},\"router_user\":{\"x\":510,\"y\":380,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":510,\"y\":280,\"color\":\"#0066CC\"}}"
+			"{\"router_authority\":{\"x\":0,\"y\":760,\"color\":\"#CCCC33\"},\"router_catalog\":{\"x\":250,\"y\":0,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":0,\"y\":370,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":0,\"y\":270,\"color\":\"#0066CC\"},\"router_config\":{\"x\":0,\"y\":0,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":0,\"y\":160,\"color\":\"#FF0000\"},\"router_dashboard\":{\"x\":250,\"y\":550,\"color\":\"#1494CC\"},\"router_entity\":{\"x\":500,\"y\":0,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":750,\"y\":0,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":750,\"y\":460,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":250,\"y\":760,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":750,\"y\":760,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":500,\"y\":775,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":250,\"y\":270,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":250,\"y\":370,\"color\":\"#1494CC\"},\"router_short_url\":{\"x\":0,\"y\":550,\"color\":\"#1494CC\"},\"router_user\":{\"x\":500,\"y\":370,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":500,\"y\":270,\"color\":\"#0066CC\"}}"
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -710,8 +710,17 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
 
+		router_short_url.columns.get("owner").createdBy = true;
 		router_short_url.columns.get("created").created = true;
 		router_short_url.columns.get("modified").modified = true;
+
+		/*-----------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_dashboard = SchemaSingleton.getEntityInfo("self", "router_dashboard");
+
+		router_dashboard.columns.get("owner").createdBy = true;
+		router_dashboard.columns.get("created").created = true;
+		router_dashboard.columns.get("modified").modified = true;
 
 		/*-----------------------------------------------------------------*/
 

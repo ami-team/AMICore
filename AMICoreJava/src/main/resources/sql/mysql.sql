@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `router_ipv4_blocks`;;
 DROP TABLE IF EXISTS `router_locations`;;
 DROP TABLE IF EXISTS `router_search_interface`;;
 DROP TABLE IF EXISTS `router_authority`;;
+DROP TABLE IF EXISTS `router_dashboard`;;
 DROP TABLE IF EXISTS `router_short_url`;;
 DROP TABLE IF EXISTS `router_user_role`;;
 DROP TABLE IF EXISTS `router_user`;;
@@ -311,6 +312,30 @@ ALTER TABLE `router_short_url`
 ;;
 
 ALTER TABLE `router_short_url`
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+;;
+
+-----------------------------------------------------------------------------
+
+CREATE TABLE `router_dashboard` (
+  `id` INT NOT NULL,
+  `control` VARCHAR(128) NOT NULL,
+  `params` VARCHAR(512) NOT NULL,
+  `x` INT NOT NULL DEFAULT 0,
+  `y` INT NOT NULL DEFAULT 0,
+  `width` INT NOT NULL DEFAULT 0,
+  `height` INT NOT NULL DEFAULT 0,
+  `owner` VARCHAR(128) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
+
+ALTER TABLE `router_dashboard`
+  ADD CONSTRAINT `pk1_router_dashboard` PRIMARY KEY (`id`)
+;;
+
+ALTER TABLE `router_dashboard`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 

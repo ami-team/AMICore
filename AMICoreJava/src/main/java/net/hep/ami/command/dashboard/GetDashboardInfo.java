@@ -2,6 +2,7 @@ package net.hep.ami.command.dashboard;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -19,83 +20,33 @@ public class GetDashboardInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		/*-----------------------------------------------------------------*/
+
+		Querier querier = getQuerier("self");
 
 		/*-----------------------------------------------------------------*/
+
+		RowSet rowSet = querier.executeSQLQuery("router_dashboard", "SELECT `id`, `control`, `params`, `x`, `y`, `width`, `height` FROM `router_dashboard` WHERE `owner` = ?", m_AMIUser);
+
+		/*-----------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
 
 		result.append("<rowset>");
 
-		/*-----------------------------------------------------------------*/
-
-		result.append("<row>");
-
-		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
-		result.append("<field name=\"control\"><![CDATA[").append("DomText").append("]]></field>");
-		result.append("<field name=\"params\"><![CDATA[").append("[\"Test1\", \"test1\", \"thermometer-half\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
-
-		result.append("</row>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<row>");
-
-		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
-		result.append("<field name=\"control\"><![CDATA[").append("DomText").append("]]></field>");
-		result.append("<field name=\"params\"><![CDATA[").append("[\"Test1\", \"test1\", \"thermometer-half\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
-
-		result.append("</row>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<row>");
-
-		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
-		result.append("<field name=\"control\"><![CDATA[").append("DomText").append("]]></field>");
-		result.append("<field name=\"params\"><![CDATA[").append("[\"Test1\", \"test1\", \"thermometer-half\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
-
-		result.append("</row>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<row>");
-
-		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
-		result.append("<field name=\"control\"><![CDATA[").append("DomSwitch").append("]]></field>");
-		result.append("<field name=\"params\"><![CDATA[").append("[\"Test2\", true, \"lightbulb-o\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("1").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("1").append("]]></field>");
-		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
-
-		result.append("</row>");
-
-		/*-----------------------------------------------------------------*/
-
-		result.append("<row>");
-
-		result.append("<field name=\"id\"><![CDATA[").append("kkk").append("]]></field>");
-		result.append("<field name=\"control\"><![CDATA[").append("DomRange").append("]]></field>");
-		result.append("<field name=\"params\"><![CDATA[").append("[\"Test3\", \"0\", \"10\", \"1\", \"0\", \"lightbulb-o\", \"Hello\"]").append("]]></field>");
-		result.append("<field name=\"x\"><![CDATA[").append("1").append("]]></field>");
-		result.append("<field name=\"y\"><![CDATA[").append("1").append("]]></field>");
-		result.append("<field name=\"width\"><![CDATA[").append("2").append("]]></field>");
-		result.append("<field name=\"height\"><![CDATA[").append("2").append("]]></field>");
-
-		result.append("</row>");
-
-		/*-----------------------------------------------------------------*/
+		for(Row row: rowSet.iterate())
+		{
+			result.append("<row>")
+			      .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
+			      .append("<field name=\"control\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
+			      .append("<field name=\"params\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
+			      .append("<field name=\"x\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
+			      .append("<field name=\"y\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
+			      .append("<field name=\"width\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
+			      .append("<field name=\"height\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
+			      .append("</row>")
+			;
+		}
 
 		result.append("</rowset>");
 
