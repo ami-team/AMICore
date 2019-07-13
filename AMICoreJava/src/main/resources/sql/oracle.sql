@@ -1199,6 +1199,8 @@ CREATE TABLE "router_dashboard" (
   "id" NUMBER(*, 0),
   "control" VARCHAR2(128),
   "params" VARCHAR2(512),
+  "settings" VARCHAR2(512),
+  "autoRefresh" NUMBER(1, 0) DEFAULT 1,
   "x" NUMBER(*, 0) DEFAULT 0,
   "y" NUMBER(*, 0) DEFAULT 0,
   "width" NUMBER(*, 0) DEFAULT 0,
@@ -1225,27 +1227,39 @@ ALTER TABLE "router_dashboard"
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck4_router_dashboard" CHECK("x" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_dashboard" CHECK("settings" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck5_router_dashboard" CHECK("y" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_dashboard" CHECK("autoRefresh" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck6_router_dashboard" CHECK("width" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_dashboard" CHECK("x" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck7_router_dashboard" CHECK("height" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_dashboard" CHECK("y" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck8_router_dashboard" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_dashboard" CHECK("width" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck10_router_dashboard" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck9_router_dashboard" CHECK("height" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck10_router_dashboard" CHECK("owner" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck11_router_dashboard" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck12_router_dashboard" CHECK("modified" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_dashboard"

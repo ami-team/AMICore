@@ -26,7 +26,7 @@ public class GetDashboardInfo extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		RowSet rowSet = querier.executeSQLQuery("router_dashboard", "SELECT `id`, `control`, `params`, `x`, `y`, `width`, `height` FROM `router_dashboard` WHERE `owner` = ?", m_AMIUser);
+		RowSet rowSet = querier.executeSQLQuery("router_dashboard", "SELECT `id`, `control`, `params`, `settings`, `autoRefresh`, `x`, `y`, `width`, `height` FROM `router_dashboard` WHERE `owner` = ?", m_AMIUser);
 
 		/*-----------------------------------------------------------------*/
 
@@ -40,10 +40,12 @@ public class GetDashboardInfo extends AbstractCommand
 			      .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
 			      .append("<field name=\"control\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
 			      .append("<field name=\"params\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
-			      .append("<field name=\"x\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
-			      .append("<field name=\"y\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
-			      .append("<field name=\"width\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
-			      .append("<field name=\"height\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
+			      .append("<field name=\"settings\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
+			      .append("<field name=\"autoRefresh\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
+			      .append("<field name=\"x\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
+			      .append("<field name=\"y\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
+			      .append("<field name=\"width\"><![CDATA[").append(row.getValue(7)).append("]]></field>")
+			      .append("<field name=\"height\"><![CDATA[").append(row.getValue(8)).append("]]></field>")
 			      .append("</row>")
 			;
 		}

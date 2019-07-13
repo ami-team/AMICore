@@ -317,6 +317,8 @@ CREATE TABLE "router_dashboard" (
   "id" SERIAL,
   "control" VARCHAR(128) NOT NULL,
   "params" VARCHAR(512) NOT NULL,
+  "settings" VARCHAR(512) NOT NULL,
+  "autoRefresh" SMALLINT NOT NULL DEFAULT 1,
   "x" INT NOT NULL DEFAULT 0,
   "y" INT NOT NULL DEFAULT 0,
   "width" INT NOT NULL DEFAULT 0,
