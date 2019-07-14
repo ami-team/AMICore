@@ -1115,8 +1115,7 @@ CREATE TABLE "router_short_url" (
   "json" CLOB,
   "shared" NUMBER(1, 0) DEFAULT 0,
   "expire" NUMBER(1, 0) DEFAULT 0,
-  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128),
+  "owner" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR2(128)
  );;
@@ -1158,19 +1157,15 @@ ALTER TABLE "router_short_url"
 ;;
 
 ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck8_router_short_url" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_short_url" CHECK("owner" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck9_router_short_url" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck9_router_short_url" CHECK("modified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck10_router_short_url" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck11_router_short_url" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck10_router_short_url" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_short_url"
