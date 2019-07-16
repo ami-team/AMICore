@@ -4,25 +4,26 @@ import java.io.*;
 
 import org.antlr.v4.runtime.*;
 
+@SuppressWarnings("unchecked")
 public class JSON
 {
 	/*---------------------------------------------------------------------*/
 
-	public static Object parse(String s) throws Exception
+	public static <T> T parse(String s, Class<T> clazz) throws Exception
 	{
-		return parse(CharStreams.fromString(s));
+		return (T) parse(CharStreams.fromString(s), clazz);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public static Object parse(InputStream inputStream) throws Exception
+	public static <T> T parse(InputStream inputStream, Class<T> clazz) throws Exception
 	{
-		return parse(CharStreams.fromStream(inputStream));
+		return (T) parse(CharStreams.fromStream(inputStream), clazz);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private static Object parse(CharStream charStream) throws Exception
+	private static <T> T parse(CharStream charStream, Class<T> clazz) throws Exception
 	{
 		/*-----------------------------------------------------------------*/
 
@@ -36,7 +37,7 @@ public class JSON
 
 		/*-----------------------------------------------------------------*/
 
-		Object result = parser.file().v;
+		T result = (T) parser.file().v;
 
 		if(listener.isSuccess() == false)
 		{

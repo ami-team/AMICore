@@ -51,7 +51,7 @@ CREATE TABLE `router_catalog` (
   `jdbcUrl` VARCHAR(2048) NOT NULL,
   `user` VARCHAR(128) NOT NULL,
   `pass` VARCHAR(128) NOT NULL,
-  `custom` TEXT,
+  `json` TEXT,
   `description` VARCHAR(512) DEFAULT 'N/A',
   `archived` TINYINT(1) NOT NULL DEFAULT 0,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -77,7 +77,7 @@ CREATE TABLE `router_entity` (
   `catalog` VARCHAR(128) NOT NULL,
   `entity` VARCHAR(128) NOT NULL,
   `rank` INT,
-  `isBridge` TINYINT(1) NOT NULL DEFAULT 0,
+  `json` TEXT,
   `description` VARCHAR(512) DEFAULT 'N/A',
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` VARCHAR(128) NOT NULL,
@@ -103,24 +103,8 @@ CREATE TABLE `router_field` (
   `entity` VARCHAR(128) NOT NULL,
   `field` VARCHAR(128) NOT NULL,
   `rank` INT,
-  `isHidden` TINYINT(1) NOT NULL DEFAULT 0,
-  `isAdminOnly` TINYINT(1) NOT NULL DEFAULT 0,
-  `isCrypted` TINYINT(1) NOT NULL DEFAULT 0,
-  `isPrimary` TINYINT(1) NOT NULL DEFAULT 0,
-  `isReadable` TINYINT(1) NOT NULL DEFAULT 0,
-  `isAutomatic` TINYINT(1) NOT NULL DEFAULT 0,
-  `isCreated` TINYINT(1) NOT NULL DEFAULT 0,
-  `isCreatedBy` TINYINT(1) NOT NULL DEFAULT 0,
-  `isModified` TINYINT(1) NOT NULL DEFAULT 0,
-  `isModifiedBy` TINYINT(1) NOT NULL DEFAULT 0,
-  `isStatable` TINYINT(1) NOT NULL DEFAULT 0,
-  `isGroupable` TINYINT(1) NOT NULL DEFAULT 0,
-  `isDisplayable` TINYINT(1) NOT NULL DEFAULT 0,
-  `isBase64` TINYINT(1) NOT NULL DEFAULT 0,
-  `mime` VARCHAR(128),
-  `ctrl` VARCHAR(128),
+  `json` TEXT,
   `description` VARCHAR(512) DEFAULT 'N/A',
-  `webLinkScript` TEXT,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` VARCHAR(128) NOT NULL,
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -157,7 +141,8 @@ CREATE TABLE `router_foreign_key` (
 
 ALTER TABLE `router_foreign_key`
   ADD CONSTRAINT `pk1_router_frgn_key` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_frgn_key` UNIQUE KEY (`name`)
+  ADD CONSTRAINT `uk1_router_frgn_key` UNIQUE KEY (`name`),
+  ADD CONSTRAINT `uk2_router_frgn_key` UNIQUE KEY (`fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn`)
 ;;
 
 ALTER TABLE `router_foreign_key`
@@ -254,7 +239,7 @@ CREATE TABLE `router_user` (
   `email` VARCHAR(128) NOT NULL,
   `country` VARCHAR(128) DEFAULT 'N/A',
   `ssoUser` VARCHAR(128),
-  `custom` TEXT,
+  `json` TEXT,
   `valid` TINYINT(1) NOT NULL DEFAULT 1,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -374,7 +359,7 @@ ALTER TABLE `router_authority`
 CREATE TABLE `router_search_interface` (
   `id` INT NOT NULL,
   `group` VARCHAR(128) NOT NULL,
-  `interface` VARCHAR(128) NOT NULL,
+  `name` VARCHAR(128) NOT NULL,
   `json` TEXT NOT NULL,
   `archived` TINYINT(1) NOT NULL DEFAULT 0,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -386,7 +371,7 @@ CREATE TABLE `router_search_interface` (
 
 ALTER TABLE `router_search_interface`
   ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`interface`)
+  ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`name`)
 ;;
 
 ALTER TABLE `router_search_interface`

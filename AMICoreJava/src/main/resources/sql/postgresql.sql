@@ -65,7 +65,7 @@ CREATE TABLE "router_catalog" (
   "jdbcUrl" VARCHAR(2048) NOT NULL,
   "user" VARCHAR(128) NOT NULL,
   "pass" VARCHAR(128) NOT NULL,
-  "custom" TEXT,
+  "json" TEXT,
   "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
   "archived" SMALLINT NOT NULL DEFAULT 0,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -92,7 +92,7 @@ CREATE TABLE "router_entity" (
   "catalog" VARCHAR(128) NOT NULL,
   "entity" VARCHAR(128) NOT NULL,
   "rank" INT,
-  "isBridge" SMALLINT NOT NULL DEFAULT 0,
+  "json" TEXT,
   "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
@@ -119,24 +119,8 @@ CREATE TABLE "router_field" (
   "entity" VARCHAR(128) NOT NULL,
   "field" VARCHAR(128) NOT NULL,
   "rank" INT,
-  "isHidden" SMALLINT NOT NULL DEFAULT 0,
-  "isAdminOnly" SMALLINT NOT NULL DEFAULT 0,
-  "isCrypted" SMALLINT NOT NULL DEFAULT 0,
-  "isPrimary" SMALLINT NOT NULL DEFAULT 0,
-  "isReadable" SMALLINT NOT NULL DEFAULT 0,
-  "isAutomatic" SMALLINT NOT NULL DEFAULT 0,
-  "isCreated" SMALLINT NOT NULL DEFAULT 0,
-  "isCreatedBy" SMALLINT NOT NULL DEFAULT 0,
-  "isModified" SMALLINT NOT NULL DEFAULT 0,
-  "isModifiedBy" SMALLINT NOT NULL DEFAULT 0,
-  "isStatable" SMALLINT NOT NULL DEFAULT 0,
-  "isGroupable" SMALLINT NOT NULL DEFAULT 0,
-  "isDisplayable" SMALLINT NOT NULL DEFAULT 0,
-  "isBase64" SMALLINT NOT NULL DEFAULT 0,
-  "mime" VARCHAR(128),
-  "ctrl" VARCHAR(128),
+  "json" TEXT,
   "description" VARCHAR(512) NOT NULL DEFAULT 'N/A',
-  "webLinkScript" TEXT,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -173,7 +157,8 @@ CREATE TABLE "router_foreign_key" (
 
 ALTER TABLE "router_foreign_key"
   ADD CONSTRAINT "pk1_router_foreign_key" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "uk1_router_foreign_key" UNIQUE ("name")
+  ADD CONSTRAINT "uk1_router_foreign_key" UNIQUE ("name"),
+  ADD CONSTRAINT "uk2_router_foreign_key" UNIQUE ("fkCatalog", "fkTable", "fkColumn", "pkCatalog", "pkTable", "pkColumn")
 ;;
 
 CREATE TRIGGER "trig1_router_foreign_key"
@@ -252,7 +237,7 @@ CREATE TABLE "router_user" (
   "email" VARCHAR(128) NOT NULL,
   "country" VARCHAR(128) DEFAULT 'N/A',
   "ssoUser" VARCHAR(128),
-  "custom" TEXT,
+  "json" TEXT,
   "valid" SMALLINT NOT NULL DEFAULT 1,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -371,7 +356,7 @@ CREATE TRIGGER "trig1_router_authority"
 CREATE TABLE "router_search_interface" (
   "id" SERIAL,
   "group" VARCHAR(128) NOT NULL,
-  "interface" VARCHAR(128) NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
   "json" TEXT NOT NULL,
   "archived" SMALLINT NOT NULL DEFAULT 0,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -382,7 +367,7 @@ CREATE TABLE "router_search_interface" (
 
 ALTER TABLE "router_search_interface"
   ADD CONSTRAINT "pk1_router_search_interface" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("interface")
+  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("name")
 ;;
 
 CREATE TRIGGER "trig1_router_search_interface"

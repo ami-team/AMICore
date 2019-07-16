@@ -356,14 +356,14 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `custom`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, '0', 'admin', 'admin');",
+		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `json`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, '0', 'admin', 'admin');",
 			getExternalCatalog(),
 			getInternalCatalog(),
 			(schema != null) ? schema : "",
 			getJdbcUrl(),
 			SecuritySingleton.encrypt(getUser()),
 			SecuritySingleton.encrypt(getPass()),
-			"{\"router_authority\":{\"x\":0,\"y\":760,\"color\":\"#CCCC33\"},\"router_catalog\":{\"x\":250,\"y\":0,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":0,\"y\":370,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":0,\"y\":270,\"color\":\"#0066CC\"},\"router_config\":{\"x\":0,\"y\":0,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":0,\"y\":160,\"color\":\"#FF0000\"},\"router_dashboard\":{\"x\":250,\"y\":550,\"color\":\"#1494CC\"},\"router_entity\":{\"x\":500,\"y\":0,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":750,\"y\":0,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":750,\"y\":460,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":250,\"y\":790,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":750,\"y\":790,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":500,\"y\":805,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":250,\"y\":270,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":250,\"y\":370,\"color\":\"#1494CC\"},\"router_short_url\":{\"x\":0,\"y\":550,\"color\":\"#1494CC\"},\"router_user\":{\"x\":500,\"y\":370,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":500,\"y\":270,\"color\":\"#0066CC\"}}"
+			"{\"router_authority\":{\"x\":250,\"y\":370,\"color\":\"#1494CC\"},\"router_catalog\":{\"x\":0,\"y\":0,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":0,\"y\":370,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":0,\"y\":270,\"color\":\"#0066CC\"},\"router_config\":{\"x\":750,\"y\":240,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":750,\"y\":400,\"color\":\"#FF0000\"},\"router_dashboard\":{\"x\":0,\"y\":640,\"color\":\"#CCCC33\"},\"router_entity\":{\"x\":250,\"y\":0,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":500,\"y\":0,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":750,\"y\":0,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":0,\"y\":880,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":500,\"y\":880,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":250,\"y\":895,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":250,\"y\":270,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":500,\"y\":640,\"color\":\"#CCCC33\"},\"router_short_url\":{\"x\":250,\"y\":640,\"color\":\"#CCCC33\"},\"router_user\":{\"x\":500,\"y\":370,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":500,\"y\":270,\"color\":\"#0066CC\"}}"
 		);
 
 		/*-----------------------------------------------------------------*/
@@ -638,7 +638,6 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_entity = SchemaSingleton.getEntityInfo("self", "router_entity");
 
-		router_entity.columns.get("isBridge").groupable = true;
 		router_entity.columns.get("created").created = true;
 		router_entity.columns.get("createdBy").createdBy = true;
 		router_entity.columns.get("modified").modified = true;
@@ -648,20 +647,6 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_field = SchemaSingleton.getEntityInfo("self", "router_field");
 
-		router_field.columns.get("isHidden").groupable = true;
-		router_field.columns.get("isAdminOnly").groupable = true;
-		router_field.columns.get("isCrypted").groupable = true;
-		router_field.columns.get("isPrimary").groupable = true;
-		router_field.columns.get("isReadable").groupable = true;
-		router_field.columns.get("isAutomatic").groupable = true;
-		router_field.columns.get("isCreated").groupable = true;
-		router_field.columns.get("isCreatedBy").groupable = true;
-		router_field.columns.get("isModified").groupable = true;
-		router_field.columns.get("isModifiedBy").groupable = true;
-		router_field.columns.get("isStatable").groupable = true;
-		router_field.columns.get("isGroupable").groupable = true;
-		router_field.columns.get("isDisplayable").groupable = true;
-		router_field.columns.get("isBase64").groupable = true;
 		router_field.columns.get("created").created = true;
 		router_field.columns.get("createdBy").createdBy = true;
 		router_field.columns.get("modified").modified = true;

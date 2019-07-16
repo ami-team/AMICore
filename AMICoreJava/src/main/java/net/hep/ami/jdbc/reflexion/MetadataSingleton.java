@@ -6,6 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.JSON;
 
 public class MetadataSingleton
 {
@@ -31,7 +32,7 @@ public class MetadataSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet1 = router.executeSQLQuery("router_entity", "SELECT `catalog`, `entity`, `rank`, `isBridge`, `description` FROM `router_entity`");
+			RowSet rowSet1 = router.executeSQLQuery("router_entity", "SELECT `catalog`, `entity`, `rank`, `json`, `description` FROM `router_entity`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE ENTITIES                                             */
@@ -43,7 +44,7 @@ public class MetadataSingleton
 					row.getValue(0),
 					row.getValue(1),
 					row.getValue(2, (Integer) null),
-					row.getValue(3, false),
+					row.getValue(3),
 					row.getValue(4)
 				);
 			}
@@ -52,7 +53,7 @@ public class MetadataSingleton
 			/* EXECUTE QUERY                                               */
 			/*-------------------------------------------------------------*/
 
-			RowSet rowSet2 = router.executeSQLQuery("router_field", "SELECT `catalog`, `entity`, `field`, `rank`, `isHidden`, `isAdminOnly`, `isCrypted`, `isPrimary`, `isReadable`, `isAutomatic`, `isCreated`, `isCreatedBy`, `isModified`, `isModifiedBy`, `isStatable`, `isGroupable`, `isDisplayable`, `isBase64`, `mime`, `ctrl`, `description`, `webLinkScript` FROM `router_field`");
+			RowSet rowSet2 = router.executeSQLQuery("router_field", "SELECT `catalog`, `entity`, `field`, `rank`, `json`, `description` FROM `router_field`");
 
 			/*-------------------------------------------------------------*/
 			/* UPDATE COLUMNS                                              */
@@ -65,24 +66,8 @@ public class MetadataSingleton
 					row.getValue(1),
 					row.getValue(2),
 					row.getValue(3, (Integer) null),
-					row.getValue(4, false),
-					row.getValue(5, false),
-					row.getValue(6, false),
-					row.getValue(7, false),
-					row.getValue(8, false),
-					row.getValue(9, false),
-					row.getValue(10, false),
-					row.getValue(11, false),
-					row.getValue(12, false),
-					row.getValue(13, false),
-					row.getValue(14, false),
-					row.getValue(15, false),
-					row.getValue(16, false),
-					row.getValue(17, false),
-					row.getValue(18),
-					row.getValue(19),
-					row.getValue(20),
-					row.getValue(21)
+					row.getValue(4),
+					row.getValue(5)
 				);
 			}
 
@@ -132,7 +117,8 @@ public class MetadataSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateEntity(String catalog, String entity, Integer rank, boolean bridge, String description)
+	@SuppressWarnings("unchecked")
+	public static void updateEntity(String catalog, String entity, Integer rank, String json, String description)
 	{
 		try
 		{
@@ -142,14 +128,20 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null ? json : "{}", Map.class);
+
+			/*-------------------------------------------------------------*/
+
 			if(rank != null)
 			{
 				table.rank = rank;
 			}
 
-			table.bridge = bridge;
-
 			table.description = (description != null) ? description.trim() : "N∕A";
+
+			/*-------------------------------------------------------------*/
+
+			table.bridge = map.containsKey("bridge") ? (Boolean) map.get("bridge") : false;
 
 			/*-------------------------------------------------------------*/
 		}
@@ -161,7 +153,8 @@ public class MetadataSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	public static void updateColumn(String catalog, String entity, String field, @Nullable Integer rank, boolean hidden, boolean adminOnly, boolean crypted, boolean primary, boolean readable, boolean automatic, boolean created, boolean createdBy, boolean modified, boolean modifiedBy, boolean statable, boolean groupable, boolean displayable, boolean base64, String mime, String ctrl, String description, String webLinkScript)
+	@SuppressWarnings("unchecked")
+	public static void updateColumn(String catalog, String entity, String field, @Nullable Integer rank, String json, String description)
 	{
 		try
 		{
@@ -171,33 +164,40 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null ? json : "{}", Map.class);
+
+			/*-------------------------------------------------------------*/
+
 			if(rank != null)
 			{
 				column.rank = rank;
 			}
 
-			column.hidden = hidden;
-			column.crypted = crypted;
-			column.adminOnly = adminOnly;
-			column.primary = primary;
-			column.readable = readable;
-
-			column.automatic = automatic;
-			column.created = created;
-			column.createdBy = createdBy;
-			column.modified = modified;
-			column.modifiedBy = modifiedBy;
-
-			column.statable = statable;
-			column.groupable = groupable;
-
-			column.displayable = displayable;
-			column.base64 = base64;
-			column.mime = (mime != null) ? mime.trim() : "@NULL";
-			column.ctrl = (ctrl != null) ? ctrl.trim() : "@NULL";
-
 			column.description = (description != null) ? description.trim() : "N∕A";
-			column.webLinkScript = (webLinkScript != null) ? webLinkScript.trim() : "@NULL";
+
+			/*-------------------------------------------------------------*/
+
+			column.hidden = map.containsKey("hidden") ? (Boolean) map.get("hidden") : false;
+			column.crypted = map.containsKey("crypted") ? (Boolean) map.get("crypted") : false;
+			column.adminOnly = map.containsKey("adminOnly") ? (Boolean) map.get("adminOnly") : false;
+			column.primary = map.containsKey("primary") ? (Boolean) map.get("primary") : false;
+			column.readable = map.containsKey("readable") ? (Boolean) map.get("readable") : false;
+
+			column.automatic = map.containsKey("automatic") ? (Boolean) map.get("automatic") : false;
+			column.created = map.containsKey("created") ? (Boolean) map.get("created") : false;
+			column.createdBy = map.containsKey("createdBy") ? (Boolean) map.get("createdBy") : false;
+			column.modified = map.containsKey("modified") ? (Boolean) map.get("modified") : false;
+			column.modifiedBy = map.containsKey("modifiedBy") ? (Boolean) map.get("modifiedBy") : false;
+
+			column.statable = map.containsKey("statable") ? (Boolean) map.get("statable") : false;
+			column.groupable = map.containsKey("groupable") ? (Boolean) map.get("groupable") : false;
+
+			column.displayable = map.containsKey("displayable") ? (Boolean) map.get("displayable") : false;
+			column.base64 = map.containsKey("base64") ? (Boolean) map.get("base64") : false;
+			column.mime = map.containsKey("mime") ? ((String) map.get("ctrl")).trim() : "@NULL";
+			column.ctrl = map.containsKey("ctrl") ? ((String) map.get("ctrl")).trim() : "@NULL";
+
+			column.webLinkScript = map.containsKey("webLinkScript") ? ((String) map.get("webLinkScript")).trim() : "@NULL";
 
 			/*-------------------------------------------------------------*/
 		}

@@ -32,13 +32,13 @@ public class SetJSONSchema extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("UPDATE `router_catalog` SET `custom` = ? WHERE `externalCatalog` = ?", json, catalog);
+		Update update = getQuerier("self").executeSQLUpdate("UPDATE `router_catalog` SET `json` = ? WHERE `externalCatalog` = ?", json, catalog);
 
 		/*-----------------------------------------------------------------*/
 
 		return new StringBuilder(
 			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
-			                                 : "<error><![CDATA[nothing done]]></error>"
+			                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

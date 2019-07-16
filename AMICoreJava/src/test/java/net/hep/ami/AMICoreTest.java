@@ -131,7 +131,7 @@ public class AMICoreTest
 			try 
 			{
 				String testCustom = "{\"DATASET\":{\"x\":280,\"y\":40,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_GRAPH\":{\"x\":20,\"y\":40,\"color\":\"#00CC52\"},\"DATASET_PARAM\":{\"x\":20,\"y\":210,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":40,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":470,\"color\":\"#C3DB2E\"}}";
-				String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;custom";
+				String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;json";
 				String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
 
 				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";

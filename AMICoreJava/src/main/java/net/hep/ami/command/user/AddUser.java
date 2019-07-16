@@ -48,7 +48,7 @@ public class AddUser extends AbstractCommand
 
 		if(arguments.containsKey("agree") == false)
 		{
-			throw new Exception("you must agree with the terms and conditions");
+			throw new Exception("you must accept the terms and conditions");
 		}
 
 		/*-----------------------------------------------------------------*/
