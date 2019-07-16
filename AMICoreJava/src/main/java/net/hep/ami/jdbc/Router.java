@@ -688,6 +688,8 @@ public class Router implements Querier
 		router_user.columns.get("clientDN").crypted = true;
 		router_user.columns.get("issuerDN").crypted = true;
 		router_user.columns.get("country").adminOnly = true;
+		router_user.columns.get("ssoUser").adminOnly = true;
+		router_user.columns.get("json").adminOnly = true;
 		router_user.columns.get("valid").groupable = true;
 		router_user.columns.get("created").created = true;
 		router_user.columns.get("modified").modified = true;
