@@ -33,6 +33,7 @@ public class MariaDBDriver extends AbstractDriver
 		m_statement.executeQuery("SET time_zone = '" + tz + "'");
 
 		m_statement.executeQuery("SET SESSION sql_mode = 'ANSI_QUOTES'");
+		m_statement.executeQuery("SET SESSION sql_mode = 'NO_BACKSLASH_ESCAPES'");
 	}
 
 	/*---------------------------------------------------------------------*/
