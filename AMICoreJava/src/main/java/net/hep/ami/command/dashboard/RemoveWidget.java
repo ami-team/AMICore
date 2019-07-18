@@ -29,7 +29,7 @@ public class RemoveWidget extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLUpdate("DELETE FROM `router_dashboard` WHERE `id` = ? AND `owner = ?`", id, m_AMIUser).toStringBuilder();
+		return getQuerier("self").executeSQLUpdate("DELETE FROM `router_dashboard` WHERE `id` = ? AND `owner` = ?", id, m_AMIUser).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}
