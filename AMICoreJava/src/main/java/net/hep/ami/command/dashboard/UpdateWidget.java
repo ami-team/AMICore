@@ -5,11 +5,11 @@ import java.util.*;
 import net.hep.ami.command.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
-public class SetWidgetProperties extends AbstractCommand
+public class UpdateWidget extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public SetWidgetProperties(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public UpdateWidget(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
@@ -41,7 +41,7 @@ public class SetWidgetProperties extends AbstractCommand
 
 	public static String help()
 	{
-		return "Get the given widget property.";
+		return "Update the given widget.";
 	}
 
 	/*---------------------------------------------------------------------*/
