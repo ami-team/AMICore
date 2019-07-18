@@ -128,7 +128,7 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null ? json : "{}", Map.class);
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null && json.isEmpty() == false && "@NULL".equalsIgnoreCase(json) == false ? json : "{}", Map.class);
 
 			/*-------------------------------------------------------------*/
 
@@ -164,7 +164,7 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null ? json : "{}", Map.class);
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null && json.isEmpty() == false && "@NULL".equalsIgnoreCase(json) == false ? json : "{}", Map.class);
 
 			/*-------------------------------------------------------------*/
 
