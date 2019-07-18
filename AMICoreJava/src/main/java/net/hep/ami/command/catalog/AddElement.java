@@ -82,8 +82,13 @@ public class AddElement extends AbstractCommand
 
 		PreparedStatement statement = querier.preparedStatement(tuple.x, false, true, null);
 
+		System.out.println(tuple.x);
+		System.out.println(tuple.y);
+		System.out.println(tuple.z);
+
 		for(int i = 0; i < tuple.y.size(); i++)
 		{
+			System.out.println(i);
 			statement.setString(i + 1, tuple.z.get(i) ? SecuritySingleton.encrypt(tuple.y.get(i))
 			                                          : /*---------------------*/(tuple.y.get(i))
 			);

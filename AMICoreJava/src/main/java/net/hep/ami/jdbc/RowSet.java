@@ -67,7 +67,7 @@ public class RowSet
 
 	/*---------------------------------------------------------------------*/
 
-	private final DateFormat m_timedateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private final DateFormat m_datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 	private final DateFormat m_dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 	private final DateFormat m_timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
@@ -678,18 +678,27 @@ public class RowSet
 	{
 		/*-----------------------------------------------------------------*/
 
-		StringBuilder result = new StringBuilder().append(m_timedateFormat.format(timestamp)).append(".");
+		StringBuilder result = new StringBuilder().append(m_datetimeFormat.format(timestamp));
 
 		/*-----------------------------------------------------------------*/
 
-		String ms = String.valueOf(timestamp.getNanos() / 1000);
+		final int precision = ConfigSingleton.getProperty("timestamp_precision", 6);
 
-		for(int i = 0; i < 6 - ms.length(); i++)
+		/*-----------------------------------------------------------------*/
+
+		if(precision >= 1 && precision <= 9)
 		{
-			result.append('0');
-		}
+			String ms = String.valueOf(Math.ceil(timestamp.getNanos() / Math.pow(10, 9 - precision)));
 
-		result.append(ms);
+			result.append(".");
+
+			for(int i = 0; i < precision - ms.length(); i++)
+			{
+				result.append('0');
+			}
+
+			result.append(ms);
+		}
 
 		/*-----------------------------------------------------------------*/
 
