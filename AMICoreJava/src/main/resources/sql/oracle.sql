@@ -401,7 +401,7 @@ CREATE TABLE "router_catalog" (
   "jdbcUrl" VARCHAR2(2048),
   "user" VARCHAR2(128),
   "pass" VARCHAR2(128),
-  "custom" CLOB,
+  "json" CLOB,
   "description" VARCHAR2(512) DEFAULT 'N/A',
   "archived" NUMBER(1, 0) DEFAULT 0,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -493,8 +493,7 @@ CREATE TABLE "router_entity" (
   "catalog" VARCHAR2(128),
   "entity" VARCHAR2(128),
   "rank" NUMBER(*, 0),
-  "isBridge" NUMBER(1, 0) DEFAULT 0,
-  "mime" VARCHAR2(128),
+  "json" CLOB,
   "description" VARCHAR2(512) DEFAULT 'N/A',
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR2(128),
@@ -519,27 +518,23 @@ ALTER TABLE "router_entity"
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck3_router_entity" CHECK("isBridge" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_entity" CHECK("description" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck4_router_entity" CHECK("description" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_entity" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck5_router_entity" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_entity" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck6_router_entity" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_entity" CHECK("modified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck7_router_entity" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck8_router_entity" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_entity" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_entity"
@@ -570,24 +565,8 @@ CREATE TABLE "router_field" (
   "entity" VARCHAR2(128),
   "field" VARCHAR2(128),
   "rank" NUMBER(*, 0),
-  "isHidden" NUMBER(1, 0) DEFAULT 0,
-  "isAdminOnly" NUMBER(1, 0) DEFAULT 0,
-  "isCrypted" NUMBER(1, 0) DEFAULT 0,
-  "isPrimary" NUMBER(1, 0) DEFAULT 0,
-  "isReadable" NUMBER(1, 0) DEFAULT 0,
-  "isAutomatic" NUMBER(1, 0) DEFAULT 0,
-  "isCreated" NUMBER(1, 0) DEFAULT 0,
-  "isCreatedBy" NUMBER(1, 0) DEFAULT 0,
-  "isModified" NUMBER(1, 0) DEFAULT 0,
-  "isModifiedBy" NUMBER(1, 0) DEFAULT 0,
-  "isStatable" NUMBER(1, 0) DEFAULT 0,
-  "isGroupable" NUMBER(1, 0) DEFAULT 0,
-  "isDisplayable" NUMBER(1, 0) DEFAULT 0,
-  "isBase64" NUMBER(1, 0) DEFAULT 0,
-  "mime" VARCHAR2(128),
-  "ctrl" VARCHAR2(128),
+  "json" CLOB,
   "description" VARCHAR2(512) DEFAULT 'N/A',
-  "webLinkScript" CLOB,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR2(128),
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -615,79 +594,23 @@ ALTER TABLE "router_field"
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck4_router_field" CHECK("isHidden" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_field" CHECK("description" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck5_router_field" CHECK("isAdminOnly" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_field" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck6_router_field" CHECK("isCrypted" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_field" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck7_router_field" CHECK("isPrimary" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_field" CHECK("modified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck8_router_field" CHECK("isReadable" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck9_router_field" CHECK("isAutomatic" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck10_router_field" CHECK("isCreated" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck11_router_field" CHECK("isCreatedBy" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck12_router_field" CHECK("isModified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck13_router_field" CHECK("isModifiedBy" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck14_router_field" CHECK("isStatable" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck15_router_field" CHECK("isGroupable" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck16_router_field" CHECK("isDisplayable" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck17_router_field" CHECK("isBase64" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck18_router_field" CHECK("description" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck19_router_field" CHECK("created" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck20_router_field" CHECK("createdBy" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck21_router_field" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck22_router_field" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_field" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_field"
@@ -987,7 +910,7 @@ CREATE TABLE "router_user" (
   "email" VARCHAR2(128),
   "country" VARCHAR2(128) DEFAULT 'N/A',
   "ssoUser" VARCHAR2(128),
-  "custom" CLOB,
+  "json" CLOB,
   "valid" NUMBER(1, 0) DEFAULT 1,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -1360,7 +1283,7 @@ CREATE TRIGGER "trig2_router_authority"
 CREATE TABLE "router_search_interface" (
   "id" NUMBER(*, 0),
   "group" VARCHAR2(128),
-  "interface" VARCHAR2(128),
+  "name" VARCHAR2(128),
   "json" CLOB,
   "archived" NUMBER(1, 0) DEFAULT 0,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -1374,7 +1297,7 @@ ALTER TABLE "router_search_interface"
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("interface")
+  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("group", "name")
 ;;
 
 ALTER TABLE "router_search_interface"
@@ -1386,7 +1309,7 @@ ALTER TABLE "router_search_interface"
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck3_router_search_interface" CHECK("interface" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_search_interface" CHECK("name" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_search_interface"

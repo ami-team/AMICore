@@ -367,7 +367,7 @@ CREATE TABLE "router_search_interface" (
 
 ALTER TABLE "router_search_interface"
   ADD CONSTRAINT "pk1_router_search_interface" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("name")
+  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("group", "name")
 ;;
 
 CREATE TRIGGER "trig1_router_search_interface"

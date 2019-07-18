@@ -114,7 +114,11 @@ public class Tokenizer
 				        ||
 				        arg instanceof BigInteger
 				 ) {
-					stringBuilder.append(arg);
+					stringBuilder.append(arg.toString());
+				}
+				else if(arg instanceof Boolean)
+				{
+					stringBuilder.append(((Boolean) arg) ? "1" : "0");
 				}
 				else
 				{

@@ -371,7 +371,7 @@ CREATE TABLE `router_search_interface` (
 
 ALTER TABLE `router_search_interface`
   ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`name`)
+  ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`group`, `name`)
 ;;
 
 ALTER TABLE `router_search_interface`
