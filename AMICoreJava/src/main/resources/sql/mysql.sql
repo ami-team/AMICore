@@ -305,8 +305,8 @@ ALTER TABLE `router_short_url`
 CREATE TABLE `router_dashboard` (
   `id` INT NOT NULL,
   `control` VARCHAR(128) NOT NULL,
-  `params` VARCHAR(512) NOT NULL,
-  `settings` VARCHAR(512) NOT NULL,
+  `params` TEXT NOT NULL,
+  `settings` TEXT NOT NULL,
   `autoRefresh` TINYINT(1) NOT NULL DEFAULT 1,
   `x` INT NOT NULL DEFAULT 0,
   `y` INT NOT NULL DEFAULT 0,

@@ -1116,8 +1116,8 @@ CREATE TRIGGER "trig2_router_short_url"
 CREATE TABLE "router_dashboard" (
   "id" NUMBER(*, 0),
   "control" VARCHAR2(128),
-  "params" VARCHAR2(512),
-  "settings" VARCHAR2(512),
+  "params" CLOB,
+  "settings" CLOB,
   "autoRefresh" NUMBER(1, 0) DEFAULT 1,
   "x" NUMBER(*, 0) DEFAULT 0,
   "y" NUMBER(*, 0) DEFAULT 0,
