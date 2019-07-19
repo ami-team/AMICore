@@ -92,10 +92,9 @@ public class Tokenizer
 				}
 				else
 				{
-					stringBuilder.append("'")
-					             .append(SecuritySingleton.encrypt(arg.toString()))
-					             .append("'")
-					;
+					stringBuilder.append(Utility.textToSqlVal(
+						SecuritySingleton.encrypt(arg.toString())
+					));
 				}
 
 				/*---------------------------------------------------------*/
@@ -203,7 +202,9 @@ public class Tokenizer
 
 				/*---------------------------------------------------------*/
 
-				list.add(SecuritySingleton.encrypt(args[i].toString()));
+				list.add(
+					SecuritySingleton.encrypt(args[i].toString())
+				);
 
 				stringBuilder.append("?");
 

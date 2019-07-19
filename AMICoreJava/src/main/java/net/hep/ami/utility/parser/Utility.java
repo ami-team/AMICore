@@ -206,7 +206,13 @@ public class Utility
 			return null;
 		}
 
-		return "'" + escapeJSONString(s) + "'"; /* DON'T CHECK IF ALREADY A STRING */
+		/* DON'T CHECK IF ALREADY A STRING */
+
+		return new StringBuilder().append("'")
+		                          .append(escapeJSONString(s))
+		                          .append("'")
+		                          .toString()
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -419,7 +425,13 @@ public class Utility
 			return null;
 		}
 
-		return "'" + escapeJavaString(s) + "'"; /* DON'T CHECK IF ALREADY A STRING */
+		/* DON'T CHECK IF ALREADY A STRING */
+
+		return new StringBuilder().append("'")
+		                          .append(escapeJavaString(s))
+		                          .append("'")
+		                          .toString()
+		;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -503,9 +515,9 @@ public class Utility
 
 		/*-----------------------------------------------------------------*/
 
-		/**/ if("NULL".equalsIgnoreCase(tmp))
+		/**/ if(/*---*/"NULL"/*---*/.equalsIgnoreCase(tmp))
 		{
-			return "@NULL";
+			return /*---*/"@NULL"/*---*/;
 		}
 		else if("CURRENT_TIMESTAMP".equalsIgnoreCase(tmp))
 		{
@@ -544,9 +556,9 @@ public class Utility
 
 		/*-----------------------------------------------------------------*/
 
-		/**/ if("@NULL".equalsIgnoreCase(tmp))
+		/**/ if(/*---*/"@NULL"/*---*/.equalsIgnoreCase(tmp))
 		{
-			return "NULL";
+			return /*---*/"NULL"/*---*/;
 		}
 		else if("@CURRENT_TIMESTAMP".equalsIgnoreCase(tmp))
 		{
@@ -555,7 +567,13 @@ public class Utility
 
 		/*-----------------------------------------------------------------*/
 
-		return "'" + s.replace("'", "''") + "'"; /* DON'T CHECK IF ALREADY A STRING */
+		/* DON'T CHECK IF ALREADY A STRING */
+
+		return new StringBuilder().append("'")
+		                          .append(s.replace("'", "''"))
+		                          .append("'")
+		                          .toString()
+		;
 
 		/*-----------------------------------------------------------------*/
 	}
@@ -611,4 +629,3 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 }
-
