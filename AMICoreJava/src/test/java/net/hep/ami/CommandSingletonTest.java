@@ -34,11 +34,15 @@ public class CommandSingletonTest
 
 		CommandSingleton.executeCommand("GetSessionInfo", false);
 
-		CommandSingleton.executeCommand("AddElement -catalog=\"nika2:production\" -entity=\"scan\" -separator=\"§\" -fields=\"scanId§nbSubscans§startTime§endTime§source§type§tau225§receiver§azimuth§elevation§px§py§fx§fy§fz§comment\" -values=\"467465§1§2015-10-13 21:35:22§2015-10-13 21:37:05§Uranus§Lissajous§0.554055§NIKA§125.532975§46.424788§-14.800000§6.600000§0.000000§0.000000§-0.200000§focuslissold (the new one doesn' t work because the FOOFFSET parameter is not filled correctly)\"", false);
+//		CommandSingleton.executeCommand("AddElement -catalog=\"nika2:production\" -entity=\"scan\" -separator=\"§\" -fields=\"scanId§nbSubscans§startTime§endTime§source§type§tau225§receiver§azimuth§elevation§px§py§fx§fy§fz§comment\" -values=\"467465§1§2015-10-13 21:35:22§2015-10-13 21:37:05§Uranus§Lissajous§0.554055§NIKA§125.532975§46.424788§-14.800000§6.600000§0.000000§0.000000§-0.200000§focuslissold (the new one doesn' t work because the FOOFFSET parameter is not filled correctly)\"", false);
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"mc(12|16).*\" -entity=\"router_role\" -mql=\"SELECT `*`\"", false));
 
-//		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isHidden|isAdminOnly|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"self|router_short_url|hash|0|N/A|(\\\"\\\\\\\"\\\");|0|0|0|0|0|0|0|0|0|0\"", false);
+//		CommandSingleton.executeCommand("AddWidget -control=\"table\" -params=\"[\\\"BrowseQuery -catalog=\\\\\\\"self\\\\\\\" -entity=\\\\\\\"router_dashboard\\\\\\\" -mql=\\\\\\\"SELECT `*` WHERE \\'autoRefresh\\' = 0\\\\\\\"\\\"]\" -settings=\"{\\\"enableCache\\\":false,\\\"enableCount\\\":true,\\\"showToolBar\\\":true,\\\"showDetails\\\":true,\\\"showTools\\\":true,\\\"canEdit\\\":true,\\\"catalog\\\":\\\"self\\\",\\\"entity\\\":\\\"router_dashboard\\\",\\\"primaryField\\\":\\\"id\\\",\\\"rowset\\\":\\\"\\\",\\\"start\\\":1,\\\"stop\\\":20,\\\"orderBy\\\":\\\"\\\",\\\"orderWay\\\":\\\"\\\",\\\"maxCellLength\\\":64,\\\"card\\\":true}\"", false);
+
+//		CommandSingleton.executeCommand("AddWidget -control=\"foo\" -params=\"[\\n]\" -settings=\"{}\"", false);
+
+		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_field\" -fields=\"catalog|entity|field|rank|description\" -values=\"self|router_short_url|hash|0|h'k\"", false);
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\" -count", false));
 

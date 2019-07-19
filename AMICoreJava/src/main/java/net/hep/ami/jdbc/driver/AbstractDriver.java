@@ -213,7 +213,7 @@ public abstract class AbstractDriver implements Querier
 
 		try
 		{
-			mql = Tokenizer.formatStatement(mql, args);
+			mql = Tokenizer.formatStatement(this, mql, args);
 
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
@@ -233,7 +233,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			sql = Tokenizer.formatStatement(sql, args);
+			sql = Tokenizer.formatStatement(this, sql, args);
 
 			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_isAdmin, m_links, sql, null, null);
 		}
@@ -250,7 +250,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			raw = Tokenizer.formatStatement(raw, args);
+			raw = Tokenizer.formatStatement(this, raw, args);
 
 			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_isAdmin, m_links, raw, null, null);
 		}
@@ -270,7 +270,7 @@ public abstract class AbstractDriver implements Querier
 
 		try
 		{
-			mql = Tokenizer.formatStatement(mql, args);
+			mql = Tokenizer.formatStatement(this, mql, args);
 
 			sql = mqlToSQL(entity, mql);
 			ast = mqlToAST(entity, mql);
@@ -290,7 +290,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			sql = Tokenizer.formatStatement(sql, args);
+			sql = Tokenizer.formatStatement(this, sql, args);
 
 			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, null, null);
 		}
@@ -307,7 +307,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		try
 		{
-			raw = Tokenizer.formatStatement(raw, args);
+			raw = Tokenizer.formatStatement(this, raw, args);
 
 			return new Update(m_statement.executeUpdate(/*----*/(raw)), raw, null, null);
 		}

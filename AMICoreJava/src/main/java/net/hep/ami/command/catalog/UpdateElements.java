@@ -5,7 +5,6 @@ import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
 
-import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.sql.*;
@@ -97,7 +96,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		Tuple3<String, List<String>, List<Boolean>> tuple = Tokenizer.formatPreparedStatement(sql, values);
+		Tuple2<String, List<String>> tuple = Tokenizer.formatPreparedStatement(querier, sql, values);
 
 		/*-----------------------------------------------------------------*/
 
@@ -105,9 +104,7 @@ public class UpdateElements extends AbstractCommand
 
 		for(int i = 0; i < tuple.y.size(); i++)
 		{
-			statement.setString(i + 1, tuple.z.get(i) ? SecuritySingleton.encrypt(tuple.y.get(i))
-			                                          : /*---------------------*/(tuple.y.get(i))
-			);
+			statement.setString(i + 1, tuple.y.get(i));
 		}
 
 		/*-----------------------------------------------------------------*/

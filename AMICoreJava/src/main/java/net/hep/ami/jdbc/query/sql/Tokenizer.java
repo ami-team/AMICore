@@ -6,8 +6,10 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 
 import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.Utility;
 
 public class Tokenizer
 {
@@ -41,7 +43,7 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static String formatStatement(String sql, Object[] args) throws Exception
+	public static String formatStatement(Querier querier, String sql, Object[] args) throws Exception
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -53,6 +55,15 @@ public class Tokenizer
 		{
 			return sql;
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		String proto = querier.getJdbcProto();
+
+		boolean escape = "jdbc:mysql".equals(proto)
+		                 ||
+		                 "jdbc:mariadb".equals(proto)
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -122,10 +133,10 @@ public class Tokenizer
 				}
 				else
 				{
-					stringBuilder.append("'")
-					             .append(arg.toString().replace("'", "''"))
-					             .append("'")
-					;
+					stringBuilder.append(Utility.textToSqlVal(
+						escape ? Utility.escapeJavaString(arg.toString())
+						       : /*--------------------*/(arg.toString())
+					));
 				}
 
 				/*---------------------------------------------------------*/
@@ -147,10 +158,9 @@ public class Tokenizer
 
 	/*---------------------------------------------------------------------*/
 
-	public static Tuple3<String, List<String>, List<Boolean>> formatPreparedStatement(String sql, Object[] args) throws Exception
+	public static Tuple2<String, List<String>> formatPreparedStatement(Querier querier, String sql, Object[] args) throws Exception
 	{
-		List<String> list1 = new ArrayList<>();
-		List<Boolean> list2 = new ArrayList<>();
+		List<String> list = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -160,8 +170,17 @@ public class Tokenizer
 
 		if(l == 0)
 		{
-			return new Tuple3<String, List<String>, List<Boolean>>(sql, list1, list2);
+			return new Tuple2<String, List<String>>(sql, list);
 		}
+
+		/*-----------------------------------------------------------------*/
+
+		String proto = querier.getJdbcProto();
+
+		boolean escape = "jdbc:mysql".equals(proto)
+		                 ||
+		                 "jdbc:mariadb".equals(proto)
+		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -184,8 +203,7 @@ public class Tokenizer
 
 				/*---------------------------------------------------------*/
 
-				list1.add(args[i].toString());
-				list2.add(true);
+				list.add(SecuritySingleton.encrypt(args[i].toString()));
 
 				stringBuilder.append("?");
 
@@ -206,8 +224,10 @@ public class Tokenizer
 
 				/*---------------------------------------------------------*/
 
-				list1.add(args[i].toString());
-				list2.add(false);
+				list.add(
+					escape ? Utility.escapeJavaString(args[i].toString())
+					       : /*--------------------*/(args[i].toString())
+				);
 
 				stringBuilder.append("?");
 
@@ -225,7 +245,7 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		return new Tuple3<String, List<String>, List<Boolean>>(stringBuilder.toString(), list1, list2);
+		return new Tuple2<String, List<String>>(stringBuilder.toString(), list);
 
 		/*-----------------------------------------------------------------*/
 	}

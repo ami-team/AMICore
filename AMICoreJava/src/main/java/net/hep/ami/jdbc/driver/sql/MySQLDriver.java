@@ -33,6 +33,7 @@ public class MySQLDriver extends AbstractDriver
 		m_statement.executeQuery("SET time_zone = '" + tz + "'");
 
 		m_statement.executeQuery("SET SESSION sql_mode = 'ANSI_QUOTES'");
+
 	}
 
 	/*---------------------------------------------------------------------*/
