@@ -11,6 +11,7 @@ import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class AddElement extends AbstractCommand
@@ -82,16 +83,27 @@ public class AddElement extends AbstractCommand
 
 		PreparedStatement statement = querier.preparedStatement(tuple.x, false, true, null);
 
-		System.out.println(tuple.x);
-		System.out.println(tuple.y);
-		System.out.println(tuple.z);
+		String proto = CatalogSingleton.getProto(catalog);
 
-		for(int i = 0; i < tuple.y.size(); i++)
+		if("jdbc:mysql".equals(proto) == false
+		   &&
+		   "jdbc:mariadb".equals(proto) == false
+		 ) {
+			for(int i = 0; i < tuple.y.size(); i++)
+			{
+				statement.setString(i + 1, tuple.z.get(i) ? SecuritySingleton.encrypt(tuple.y.get(i))
+				                                          : /*--------------------*/(tuple.y.get(i))
+				);
+			}
+		}
+		else
 		{
-			System.out.println(i);
-			statement.setString(i + 1, tuple.z.get(i) ? SecuritySingleton.encrypt(tuple.y.get(i))
-			                                          : /*---------------------*/(tuple.y.get(i))
-			);
+			for(int i = 0; i < tuple.y.size(); i++)
+			{
+				statement.setString(i + 1, tuple.z.get(i) ? SecuritySingleton.encrypt(tuple.y.get(i))
+				                                          : Utility.escapeJavaString(tuple.y.get(i))
+				);
+			}
 		}
 
 		/*-----------------------------------------------------------------*/
