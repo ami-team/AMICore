@@ -302,6 +302,7 @@ CREATE TABLE "router_dashboard" (
   "control" VARCHAR(128) NOT NULL,
   "params" TEXT NOT NULL,
   "settings" TEXT NOT NULL,
+  "transparent" SMALLINT NOT NULL DEFAULT 0,
   "autoRefresh" SMALLINT NOT NULL DEFAULT 1,
   "x" INT NOT NULL DEFAULT 0,
   "y" INT NOT NULL DEFAULT 0,

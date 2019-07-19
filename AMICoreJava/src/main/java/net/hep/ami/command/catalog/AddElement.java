@@ -76,7 +76,7 @@ public class AddElement extends AbstractCommand
 		/*-----------------------------------------------------------------*/
 
 		Tuple2<String, List<String>> tuple = Tokenizer.formatPreparedStatement(querier, sql, values);
-System.out.println(tuple);
+
 		/*-----------------------------------------------------------------*/
 
 		PreparedStatement statement = querier.preparedStatement(tuple.x, false, true, null);

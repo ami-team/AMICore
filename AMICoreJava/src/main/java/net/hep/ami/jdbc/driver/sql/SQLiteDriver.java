@@ -6,7 +6,8 @@ import net.hep.ami.utility.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:sqlite",
-	clazz = "org.sqlite.JDBC"
+	clazz = "org.sqlite.JDBC",
+	backslashEscapes = false
 )
 
 public class SQLiteDriver extends AbstractDriver

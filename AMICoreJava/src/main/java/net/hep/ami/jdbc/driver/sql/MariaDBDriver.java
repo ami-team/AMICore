@@ -6,7 +6,8 @@ import net.hep.ami.utility.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mariadb",
-	clazz = "org.mariadb.jdbc.Driver"
+	clazz = "org.mariadb.jdbc.Driver",
+	backslashEscapes = true
 )
 
 public class MariaDBDriver extends AbstractDriver

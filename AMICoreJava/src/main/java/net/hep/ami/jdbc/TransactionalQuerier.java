@@ -191,6 +191,14 @@ public class TransactionalQuerier implements Querier
 	/*---------------------------------------------------------------------*/
 
 	@Override
+	public boolean getBackslashEscapes()
+	{
+		return m_driver.getBackslashEscapes();
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
 	public String getJdbcUrl()
 	{
 		return m_driver.getJdbcUrl();

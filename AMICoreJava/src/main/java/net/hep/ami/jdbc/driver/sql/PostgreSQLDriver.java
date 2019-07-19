@@ -10,7 +10,8 @@ import net.hep.ami.utility.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:postgresql",
-	clazz = "org.postgresql.Driver"
+	clazz = "org.postgresql.Driver",
+	backslashEscapes = false
 )
 
 public class PostgreSQLDriver extends AbstractDriver

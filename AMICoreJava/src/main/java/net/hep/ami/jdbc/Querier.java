@@ -208,6 +208,16 @@ public interface Querier
 	/*---------------------------------------------------------------------*/
 
 	/**
+	 * ???.
+	 *
+	 * @return ???.
+	 */
+
+	public boolean getBackslashEscapes();
+
+	/*---------------------------------------------------------------------*/
+
+	/**
 	 * Retrieves the JDBC URL of this querier.
 	 *
 	 * @return The JDBC URL.

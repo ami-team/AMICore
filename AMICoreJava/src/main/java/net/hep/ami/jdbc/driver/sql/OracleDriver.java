@@ -10,7 +10,8 @@ import net.hep.ami.utility.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:oracle",
-	clazz = "oracle.jdbc.driver.OracleDriver"
+	clazz = "oracle.jdbc.driver.OracleDriver",
+	backslashEscapes = false
 )
 
 public class OracleDriver extends AbstractDriver

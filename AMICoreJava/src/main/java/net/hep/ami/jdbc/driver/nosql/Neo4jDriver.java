@@ -6,7 +6,8 @@ import net.hep.ami.utility.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.NoSQL,
 	proto = "jdbc:neo4j",
-	clazz = "org.neo4j.jdbc.Driver"
+	clazz = "org.neo4j.jdbc.Driver",
+	backslashEscapes = false
 )
 
 public class Neo4jDriver extends AbstractDriver

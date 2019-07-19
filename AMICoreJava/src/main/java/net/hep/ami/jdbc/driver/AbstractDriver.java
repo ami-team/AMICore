@@ -26,6 +26,7 @@ public abstract class AbstractDriver implements Querier
 	protected final DriverMetadata.Type m_jdbcType;
 	protected final String m_jdbcProto;
 	protected final String m_jdbcClass;
+	protected final boolean m_jdbcBackslashEscapes;
 	protected final String m_jdbcUrl;
 	protected final String m_user;
 	protected final String m_pass;
@@ -90,6 +91,7 @@ public abstract class AbstractDriver implements Querier
 		m_jdbcType = annotation.type();
 		m_jdbcProto = annotation.proto();
 		m_jdbcClass = annotation.clazz();
+		m_jdbcBackslashEscapes = annotation.backslashEscapes();
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
@@ -502,6 +504,14 @@ public abstract class AbstractDriver implements Querier
 	public String getJdbcClass()
 	{
 		return m_jdbcClass;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	@Override
+	public boolean getBackslashEscapes()
+	{
+		return m_jdbcBackslashEscapes;
 	}
 
 	/*---------------------------------------------------------------------*/

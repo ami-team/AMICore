@@ -9,7 +9,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.Utility;
+import net.hep.ami.utility.parser.*;
 
 public class Tokenizer
 {
@@ -58,12 +58,7 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		String proto = querier.getJdbcProto();
-
-		boolean escape = "jdbc:mysql".equals(proto)
-		                 ||
-		                 "jdbc:mariadb".equals(proto)
-		;
+		final boolean escape = querier.getBackslashEscapes();
 
 		/*-----------------------------------------------------------------*/
 
@@ -174,12 +169,7 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		String proto = querier.getJdbcProto();
-
-		boolean escape = "jdbc:mysql".equals(proto)
-		                 ||
-		                 "jdbc:mariadb".equals(proto)
-		;
+		final boolean escape = querier.getBackslashEscapes();
 
 		/*-----------------------------------------------------------------*/
 
@@ -274,6 +264,8 @@ public class Tokenizer
 		s_xqlRegions.add(LIMIT);
 		s_xqlRegions.add(OFFSET);
 	}
+
+	/*---------------------------------------------------------------------*/
 
 	/*   `UNION`   NOT SUPPORTED! */
 	/* `UNION ALL` NOT SUPPORTED! */
@@ -541,7 +533,7 @@ public class Tokenizer
 
 		List<Boolean> tableHasAliasList = new ArrayList<>();
 
-		Map<QId, QId> rawFableAliasMap = new HashMap<>();
+		Map<QId, QId> rawTableAliasMap = new HashMap<>();
 
 		for(List<String> table: tables)
 		{
@@ -560,7 +552,7 @@ public class Tokenizer
 				{
 					tableHasAliasList.add(true);
 
-					rawFableAliasMap.put(
+					rawTableAliasMap.put(
 						QId.parseQId(tmp.substring(idx + 1, l), QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp.substring(0, idx + 0), QId.Type.ENTITY, QId.Type.NONE)
 					);
@@ -569,7 +561,7 @@ public class Tokenizer
 				{
 					tableHasAliasList.add(false);
 
-					rawFableAliasMap.put(
+					rawTableAliasMap.put(
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE),
 						QId.parseQId(tmp, QId.Type.ENTITY, QId.Type.NONE)
 					);
@@ -591,7 +583,7 @@ public class Tokenizer
 		{
 			if(entry.getValue().is(QId.MASK_ENTITY_FIELD))
 			{
-				QId table = rawFableAliasMap.get(new QId(
+				QId table = rawTableAliasMap.get(new QId(
 					null,
 					entry.getValue().getEntity(),
 					null
@@ -632,7 +624,7 @@ public class Tokenizer
 			fieldHasAliasList,
 			rawFieldAliasMap.keySet(),
 			tableHasAliasList,
-			rawFableAliasMap.keySet()
+			rawTableAliasMap.keySet()
 		);
 	}
 

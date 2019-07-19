@@ -20,7 +20,7 @@ public class CommandSingletonTest
 
 	public static void main(String[] args) throws Exception
 	{
-		Map<String, String> arguments = new HashMap<String, String>();
+		System.out.println(ConfigSingleton.getConfigFileName());
 
 //		CommandSingleton.executeCommand("RemoveElements -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -keyFields=\"catalog|entity|field\" -keyValues=\"self|router_catalog|json\"", false);
 
@@ -29,8 +29,6 @@ public class CommandSingletonTest
 //		LogSingleton.root.error(LogSingleton.FATAL, "Hello World!");
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
-
-		System.out.println(ConfigSingleton.getConfigFileName());
 
 		CommandSingleton.executeCommand("GetSessionInfo", false);
 
@@ -42,7 +40,7 @@ public class CommandSingletonTest
 
 //		CommandSingleton.executeCommand("AddWidget -control=\"foo\" -params=\"[\\n]\" -settings=\"{}\"", false);
 
-		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_field\" -fields=\"catalog|entity|field|rank|description\" -values=\"self|router_short_url|hash|0|h'k\"", false);
+//		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_field\" -fields=\"catalog|entity|field|rank|description\" -values=\"self|router_short_url|hash|0|h'k\"", false);
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\" -count", false));
 

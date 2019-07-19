@@ -6,7 +6,8 @@ import net.hep.ami.utility.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:h2",
-	clazz = "org.h2.Driver"
+	clazz = "org.h2.Driver",
+	backslashEscapes = false
 )
 
 public class H2Driver extends AbstractDriver
