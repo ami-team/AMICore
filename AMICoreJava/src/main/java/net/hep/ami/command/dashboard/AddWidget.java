@@ -2,8 +2,8 @@ package net.hep.ami.command.dashboard;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.Update;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class AddWidget extends AbstractCommand

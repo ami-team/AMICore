@@ -1,12 +1,11 @@
 package net.hep.ami.jdbc.reflexion;
 
-import java.util.Map;
+import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton.FrgnKeys;
 import net.hep.ami.utility.*;
-import net.hep.ami.utility.parser.JSON;
+import net.hep.ami.utility.parser.*;
 
 public class MetadataSingleton
 {
@@ -129,7 +128,7 @@ public class MetadataSingleton
 
 	private static String _safeString(String s, String def)
 	{
-		return s != null && (s = s.trim()).isEmpty() == false ? s : def;
+		return s != null && (s = s.trim()).isEmpty() == false && "@NULL".equalsIgnoreCase(s) == false ? s : def;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -145,7 +144,7 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null && json.isEmpty() == false && "@NULL".equalsIgnoreCase(json) == false ? json : "{}", Map.class);
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class);
 
 			/*-------------------------------------------------------------*/
 
@@ -178,7 +177,7 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, ?> map = (Map<String, ?>) JSON.parse(json != null && json.isEmpty() == false && "@NULL".equalsIgnoreCase(json) == false ? json : "{}", Map.class);
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class);
 
 			/*-------------------------------------------------------------*/
 
@@ -245,28 +244,28 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, FrgnKeys> forwardFKs = SchemaSingleton.s_catalogs.get(fkColumn.externalCatalog)
-			                                                  .tables.get(fkColumn.entity)
-			                                                  .forwardFKs
+			Map<String, SchemaSingleton.FrgnKeys> forwardFKs = SchemaSingleton.s_catalogs.get(fkColumn.externalCatalog)
+			                                                                  .tables.get(fkColumn.entity)
+			                                                                  .forwardFKs
 			;
 
-			Map<String, FrgnKeys> backwardFKs = SchemaSingleton.s_catalogs.get(pkColumn.externalCatalog)
-			                                                   .tables.get(pkColumn.entity)
-			                                                   .backwardFKs
+			Map<String, SchemaSingleton.FrgnKeys> backwardFKs = SchemaSingleton.s_catalogs.get(pkColumn.externalCatalog)
+			                                                                   .tables.get(pkColumn.entity)
+			                                                                   .backwardFKs
 			;
 
 			/*-------------------------------------------------------------*/
 
-			FrgnKeys a = forwardFKs.get(fkColumn.field);
+			SchemaSingleton.FrgnKeys a = forwardFKs.get(fkColumn.field);
 
 			if(a == null) {
-				forwardFKs.put(fkColumn.field, a = new FrgnKeys());
+				forwardFKs.put(fkColumn.field, a = new SchemaSingleton.FrgnKeys());
 			}
 
-			FrgnKeys b = backwardFKs.get(pkColumn.field);
+			SchemaSingleton.FrgnKeys b = backwardFKs.get(pkColumn.field);
 
 			if(b == null) {
-				backwardFKs.put(pkColumn.field, b = new FrgnKeys());
+				backwardFKs.put(pkColumn.field, b = new SchemaSingleton.FrgnKeys());
 			}
 
 			/*-------------------------------------------------------------*/

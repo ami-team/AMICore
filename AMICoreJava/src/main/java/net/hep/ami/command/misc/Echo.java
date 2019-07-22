@@ -3,7 +3,7 @@ package net.hep.ami.command.misc;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.parser.Utility;
+import net.hep.ami.utility.parser.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
 public class Echo extends AbstractCommand

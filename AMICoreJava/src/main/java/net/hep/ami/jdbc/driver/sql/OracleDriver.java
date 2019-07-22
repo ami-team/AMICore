@@ -1,6 +1,6 @@
 package net.hep.ami.jdbc.driver.sql;
 
-import java.sql.DatabaseMetaData;
+import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.driver.*;
