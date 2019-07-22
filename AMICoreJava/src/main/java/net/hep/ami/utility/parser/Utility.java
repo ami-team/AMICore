@@ -547,6 +547,13 @@ public class Utility
 
 	public static String textToSqlVal(@Nullable String s)
 	{
+		return textToSqlVal(s, false);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String textToSqlVal(@Nullable String s, boolean javaEscape)
+	{
 		if(s == null)
 		{
 			return null;
@@ -570,7 +577,7 @@ public class Utility
 		/* DON'T CHECK IF ALREADY A STRING */
 
 		return new StringBuilder().append("'")
-		                          .append(s.replace("'", "''"))
+		                          .append(javaEscape ? escapeJavaString(s): s.replace("'", "''"))
 		                          .append("'")
 		                          .toString()
 		;

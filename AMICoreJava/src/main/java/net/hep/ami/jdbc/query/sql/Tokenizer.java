@@ -87,9 +87,7 @@ public class Tokenizer
 				}
 				else
 				{
-					stringBuilder.append(Utility.textToSqlVal(
-						SecuritySingleton.encrypt(arg.toString())
-					));
+					stringBuilder.append(SecuritySingleton.encrypt(arg.toString()));
 				}
 
 				/*---------------------------------------------------------*/
@@ -127,10 +125,7 @@ public class Tokenizer
 				}
 				else
 				{
-					stringBuilder.append(Utility.textToSqlVal(
-						escape ? Utility.escapeJavaString(arg.toString())
-						       : /*--------------------*/(arg.toString())
-					));
+					stringBuilder.append(Utility.textToSqlVal(arg.toString(), escape));
 				}
 
 				/*---------------------------------------------------------*/
