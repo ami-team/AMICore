@@ -117,6 +117,23 @@ public class MetadataSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	private static int _safeInteger(Integer i, int def)
+	{
+		return i != null ? i : def;
+	}
+
+	private static boolean _safeBoolean(Boolean b, boolean def)
+	{
+		return b != null ? b : def;
+	}
+
+	private static String _safeString(String s, String def)
+	{
+		return s != null && (s = s.trim()).isEmpty() == false ? s : def;
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	@SuppressWarnings("unchecked")
 	public static void updateEntity(String catalog, String entity, Integer rank, String json, String description)
 	{
@@ -132,16 +149,13 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			if(rank != null)
-			{
-				table.rank = rank;
-			}
+			table.rank = _safeInteger(rank, table.rank);
 
-			table.description = (description != null) ? description.trim() : "N∕A";
+			table.description = _safeString(description, "N∕A");
 
 			/*-------------------------------------------------------------*/
 
-			table.bridge = map.containsKey("bridge") ? (Boolean) map.get("bridge") : false;
+			table.bridge = _safeBoolean((Boolean) map.get("bridge"), false);
 
 			/*-------------------------------------------------------------*/
 		}
@@ -168,36 +182,33 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			if(rank != null)
-			{
-				column.rank = rank;
-			}
+			column.rank = _safeInteger(rank, column.rank);
 
-			column.description = (description != null) ? description.trim() : "N∕A";
+			column.description = _safeString(description, "N∕A");
 
 			/*-------------------------------------------------------------*/
 
-			column.hidden = map.containsKey("hidden") ? (Boolean) map.get("hidden") : false;
-			column.crypted = map.containsKey("crypted") ? (Boolean) map.get("crypted") : false;
-			column.adminOnly = map.containsKey("adminOnly") ? (Boolean) map.get("adminOnly") : false;
-			column.primary = map.containsKey("primary") ? (Boolean) map.get("primary") : false;
-			column.readable = map.containsKey("readable") ? (Boolean) map.get("readable") : false;
+			column.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
+			column.crypted = _safeBoolean((Boolean) map.get("crypted"), false);
+			column.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
+			column.primary = _safeBoolean((Boolean) map.get("primary"), false);
+			column.readable = _safeBoolean((Boolean) map.get("readable"), false);
 
-			column.automatic = map.containsKey("automatic") ? (Boolean) map.get("automatic") : false;
-			column.created = map.containsKey("created") ? (Boolean) map.get("created") : false;
-			column.createdBy = map.containsKey("createdBy") ? (Boolean) map.get("createdBy") : false;
-			column.modified = map.containsKey("modified") ? (Boolean) map.get("modified") : false;
-			column.modifiedBy = map.containsKey("modifiedBy") ? (Boolean) map.get("modifiedBy") : false;
+			column.automatic = _safeBoolean((Boolean) map.get("automatic"), false);
+			column.created = _safeBoolean((Boolean) map.get("created"), false);
+			column.createdBy = _safeBoolean((Boolean) map.get("createdBy"), false);
+			column.modified = _safeBoolean((Boolean) map.get("modified"), false);
+			column.modifiedBy = _safeBoolean((Boolean) map.get("modifiedBy"), false);
 
-			column.statable = map.containsKey("statable") ? (Boolean) map.get("statable") : false;
-			column.groupable = map.containsKey("groupable") ? (Boolean) map.get("groupable") : false;
+			column.statable = _safeBoolean((Boolean) map.get("statable"), false);
+			column.groupable = _safeBoolean((Boolean) map.get("groupable"), false);
 
-			column.displayable = map.containsKey("displayable") ? (Boolean) map.get("displayable") : false;
-			column.base64 = map.containsKey("base64") ? (Boolean) map.get("base64") : false;
-			column.mime = map.containsKey("mime") ? ((String) map.get("ctrl")).trim() : "@NULL";
-			column.ctrl = map.containsKey("ctrl") ? ((String) map.get("ctrl")).trim() : "@NULL";
+			column.displayable =_safeBoolean((Boolean) map.get("displayable"), false);
+			column.base64 = _safeBoolean((Boolean) map.get("base64"), false);
+			column.mime = _safeString((String) map.get("mime"), "@NULL");
+			column.ctrl = _safeString((String) map.get("ctrl"), "@NULL");
 
-			column.webLinkScript = map.containsKey("webLinkScript") ? ((String) map.get("webLinkScript")).trim() : "@NULL";
+			column.webLinkScript = _safeString((String) map.get("webLinkScript"), "@NULL");
 
 			/*-------------------------------------------------------------*/
 		}

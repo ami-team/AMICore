@@ -169,10 +169,6 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		final boolean escape = querier.getBackslashEscapes();
-
-		/*-----------------------------------------------------------------*/
-
 		int i;
 
 		for(String token: Tokenizer.tokenize(sql))
@@ -192,9 +188,7 @@ public class Tokenizer
 
 				/*---------------------------------------------------------*/
 
-				list.add(
-					SecuritySingleton.encrypt(args[i].toString())
-				);
+				list.add(SecuritySingleton.encrypt(args[i].toString()));
 
 				stringBuilder.append("?");
 
@@ -215,10 +209,7 @@ public class Tokenizer
 
 				/*---------------------------------------------------------*/
 
-				list.add(
-					escape ? Utility.escapeJavaString(args[i].toString())
-					       : /*--------------------*/(args[i].toString())
-				);
+				list.add(/*---------------------*/(args[i].toString()));
 
 				stringBuilder.append("?");
 
