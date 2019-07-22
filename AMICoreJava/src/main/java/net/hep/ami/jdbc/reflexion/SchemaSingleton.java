@@ -606,9 +606,7 @@ public class SchemaSingleton
 								digits,
 								def == null ? (nullable ? "@NULL" : "")
 								            : (def.toUpperCase().contains("CURRENT_TIMESTAMP") ? "@CURRENT_TIMESTAMP"
-								                                                               : (isOracle ? Utility.sqlValToText(def)
-								                                                                           : /*----------------*/(def)
-								                                                                 )
+								                                                               : (isOracle ? Utility.sqlValToText(def, false) : def)
 								              ),
 								rank++
 							));

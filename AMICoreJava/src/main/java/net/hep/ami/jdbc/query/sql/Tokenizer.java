@@ -58,7 +58,7 @@ public class Tokenizer
 
 		/*-----------------------------------------------------------------*/
 
-		final boolean escape = querier.getBackslashEscapes();
+		boolean escape = querier.getBackslashEscapes();
 
 		/*-----------------------------------------------------------------*/
 

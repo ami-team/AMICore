@@ -594,6 +594,10 @@ public class Helper
 		/* FILL RESERVED FIELDS                                            */
 		/*-----------------------------------------------------------------*/
 
+		boolean backslashEscapes = CatalogSingleton.doBackslashEscapes(catalog);
+
+		/*-----------------------------------------------------------------*/
+
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(catalog, primaryKey.getEntity()).columns.values())
 		{
 			if(tmp.created && insert) {
@@ -601,7 +605,7 @@ public class Helper
 			}
 
 			if(tmp.createdBy && insert) {
-				X.add(Utility.textToSqlId(tmp.field)); Y.add(Utility.textToSqlVal(AMIUser));
+				X.add(Utility.textToSqlId(tmp.field)); Y.add(Utility.textToSqlVal(AMIUser, backslashEscapes));
 			}
 
 			if(tmp.modified) {
@@ -609,7 +613,7 @@ public class Helper
 			}
 
 			if(tmp.modifiedBy) {
-				X.add(Utility.textToSqlId(tmp.field)); Y.add(Utility.textToSqlVal(AMIUser));
+				X.add(Utility.textToSqlId(tmp.field)); Y.add(Utility.textToSqlVal(AMIUser, backslashEscapes));
 			}
 		}
 

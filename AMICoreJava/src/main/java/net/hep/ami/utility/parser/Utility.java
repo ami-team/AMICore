@@ -504,7 +504,7 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String sqlValToText(@Nullable String s)
+	public static String sqlValToText(@Nullable String s, boolean javaEscapes)
 	{
 		if(s == null)
 		{
@@ -534,7 +534,9 @@ public class Utility
 			   &&
 			   tmp.charAt(l - 1) == '\''
 			 ) {
-				s = tmp.substring(0 + 1, l - 1).trim().replace("''", "'");
+				s = tmp.substring(0 + 1, l - 1).trim();
+
+				s = javaEscapes ? unescapeJavaString(s): s.replace("''", "'");
 			}
 		}
 
@@ -545,14 +547,7 @@ public class Utility
 
 	/*---------------------------------------------------------------------*/
 
-	public static String textToSqlVal(@Nullable String s)
-	{
-		return textToSqlVal(s, false);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String textToSqlVal(@Nullable String s, boolean javaEscape)
+	public static String textToSqlVal(@Nullable String s, boolean javaEscapes)
 	{
 		if(s == null)
 		{
@@ -577,7 +572,7 @@ public class Utility
 		/* DON'T CHECK IF ALREADY A STRING */
 
 		return new StringBuilder().append("'")
-		                          .append(javaEscape ? escapeJavaString(s): s.replace("'", "''"))
+		                          .append(javaEscapes ? escapeJavaString(s): s.replace("'", "''"))
 		                          .append("'")
 		                          .toString()
 		;

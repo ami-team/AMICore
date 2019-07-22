@@ -12,13 +12,13 @@ public class DriverSingleton
 {
 	/*---------------------------------------------------------------------*/
 
-	public static final class Tuple extends Tuple5<DriverMetadata.Type, String, String, String, Constructor<?>>
+	public static final class Tuple extends Tuple6<DriverMetadata.Type, String, String, Boolean, String, Constructor<?>>
 	{
 		private static final long serialVersionUID = 3082894522888817449L;
 
-		public Tuple(DriverMetadata.Type _x, String _y, String _z, String _t, Constructor<?> _u)
+		public Tuple(DriverMetadata.Type _x, String _y, String _z, Boolean _t, String _u, Constructor<?> _v)
 		{
-			super(_x, _y, _z, _t, _u);
+			super(_x, _y, _z, _t, _u, _v);
 		}
 	}
 
@@ -115,6 +115,7 @@ public class DriverSingleton
 				jdbc.type(),
 				jdbc.proto(),
 				jdbc.clazz(),
+				jdbc.backslashEscapes(),
 				clazz.getName(),
 				clazz.getConstructor(
 					String.class,
@@ -166,7 +167,7 @@ public class DriverSingleton
 	{
 		try
 		{
-			return (AbstractDriver) getTuple(jdbcUrl).u.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
+			return (AbstractDriver) getTuple(jdbcUrl).v.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 		}
 		catch(InvocationTargetException e)
 		{
@@ -186,6 +187,20 @@ public class DriverSingleton
 	public static String getProto(String jdbcUrl) throws Exception
 	{
 		return getTuple(jdbcUrl).y;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static String getClass(String jdbcUrl) throws Exception
+	{
+		return getTuple(jdbcUrl).z;
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Boolean doBackslashEscapes(String jdbcUrl) throws Exception
+	{
+		return getTuple(jdbcUrl).t;
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -211,7 +226,8 @@ public class DriverSingleton
 			      .append("<field name=\"jdbcType\"><![CDATA[").append(tuple.x).append("]]></field>")
 			      .append("<field name=\"jdbcProto\"><![CDATA[").append(tuple.y).append("]]></field>")
 			      .append("<field name=\"jdbcClass\"><![CDATA[").append(tuple.z).append("]]></field>")
-			      .append("<field name=\"driverClass\"><![CDATA[").append(tuple.t).append("]]></field>")
+			      .append("<field name=\"jdbcBackslashEscapes\"><![CDATA[").append(tuple.t).append("]]></field>")
+			      .append("<field name=\"driverClass\"><![CDATA[").append(tuple.u).append("]]></field>")
 			      .append("</row>")
 			;
 		}

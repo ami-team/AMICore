@@ -3,6 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.Querier;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.utility.parser.*;
 
@@ -26,21 +27,25 @@ public class ListInterfaces extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
+		Querier querier = getQuerier("self");
+
+		/*-----------------------------------------------------------------*/
+
 		XQLSelect xqlSelect = new XQLSelect().addSelectPart("`group`, `interface`, `json`")
 		                                     .addFromPart("`router_search_interface`")
 		;
 
 		if(group != null) {
-			xqlSelect.addWherePart("`group` LIKE " + Utility.textToSqlVal(group));
+			xqlSelect.addWherePart("`group` LIKE " + Utility.textToSqlVal(group, querier.getBackslashEscapes()));
 		}
 
 		if(name != null) {
-			xqlSelect.addWherePart("`interface` LIKE " + Utility.textToSqlVal(name));
+			xqlSelect.addWherePart("`name` LIKE " + Utility.textToSqlVal(name, querier.getBackslashEscapes()));
 		}
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLQuery("router_search_interface", xqlSelect.toString()).toStringBuilder();
+		return querier.executeSQLQuery("router_search_interface", xqlSelect.toString()).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

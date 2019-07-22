@@ -199,6 +199,24 @@ public class CatalogSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	public static String getClass(String catalog) throws Exception
+	{
+		Tuple tuple = getTuple(catalog);
+
+		return DriverSingleton.getClass(tuple.t);
+	}
+
+	/*---------------------------------------------------------------------*/
+
+	public static Boolean doBackslashEscapes(String catalog) throws Exception
+	{
+		Tuple tuple = getTuple(catalog);
+
+		return DriverSingleton.doBackslashEscapes(tuple.t);
+	}
+
+	/*---------------------------------------------------------------------*/
+
 	public static String getKey(String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
