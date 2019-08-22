@@ -1180,7 +1180,7 @@ public class SchemaSingleton
 	public static List<QId> getSortedQIds(@NotNull String externalCatalog, @NotNull String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
-		                                                              .sorted((x, y) -> x.rank - y.rank)
+		                                                              .sorted(Comparator.comparingInt(x -> x.rank))
 		                                                              .map(x -> new QId(x, false, constraints))
 		                                                              .collect(Collectors.toList())
 		;

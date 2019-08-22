@@ -1,0 +1,8 @@
+T__0=1
+T__1=2
+IDENTIFIER=3
+STRING=4
+COMMENT=5
+WS=6
+'-'=1
+'='=2
