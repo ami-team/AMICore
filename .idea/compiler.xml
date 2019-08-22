@@ -11,9 +11,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="AMICore" target="10" />
+      <module name="AMICore" target="11" />
       <module name="AMICoreJava" target="11" />
-      <module name="AMICoreWeb" target="10" />
+      <module name="AMICoreWeb" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
