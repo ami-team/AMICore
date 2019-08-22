@@ -5,27 +5,29 @@ import java.nio.charset.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.parser.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
 public class ResetPassword extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static final String EMAIL = "%s?subapp=resetPassword&userdata=%s";
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public ResetPassword(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public ResetPassword(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String amiLogin = arguments.get("amiLogin");
 
@@ -34,7 +36,7 @@ public class ResetPassword extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rowList = getQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass`, `email` FROM `router_user` WHERE `AMIUser` = ? AND `valid` != 0", amiLogin).getAll(10, 0);
 
@@ -59,24 +61,28 @@ public class ResetPassword extends AbstractCommand
 			);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[email sent with success]]></info>");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Reset password.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-amiLogin=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -2,21 +2,28 @@ package net.hep.ami.role;
 
 import net.hep.ami.utility.*;
 
-@FunctionalInterface
-public interface NewUserValidator
+abstract public class NewUserValidator
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean check(
-		String amiLogin,
-		String amiPassword,
+	abstract public boolean check(
+		@NotNull String amiLogin,
+		@NotNull String amiPassword,
 		@Nullable String clientDN,
 		@Nullable String issuerDN,
-		String firstName,
-		String lastName,
-		String email
+		@NotNull String firstName,
+		@NotNull String lastName,
+		@NotNull String email
 
-	)  throws Exception;
+	) throws Exception;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	String help()
+	{
+		return "";
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

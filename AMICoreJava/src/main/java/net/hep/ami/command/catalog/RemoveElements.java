@@ -4,22 +4,24 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.query.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class RemoveElements extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RemoveElements(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public RemoveElements(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
@@ -43,9 +45,9 @@ public class RemoveElements extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		XQLDelete query = new XQLDelete();
+		XQLDelete query = new XQLDelete(XQLDelete.Mode.MQL);
 
 		List<String> whereList = new ArrayList<>();
 
@@ -58,26 +60,30 @@ public class RemoveElements extends AbstractCommand
 		     .addWherePart(where)
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.setMode(XQLDelete.Mode.MQL).toString()).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.toString()).toStringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Remove one or more elements.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -keyFields=\"\" -keyValues=\"\" (-where=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -7,33 +7,33 @@ import net.hep.ami.utility.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:h2",
 	clazz = "org.h2.Driver",
-	backslashEscapes = false
+	flags = DriverMetadata.FLAG_HAS_DUAL
 )
 
 public class H2Driver extends AbstractDriver
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public H2Driver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	public H2Driver(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @NotNull String user, @NotNull String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void setupSession(String db, String tz) throws Exception
+	public void setupSession(String db, String tz)
 	{
 		/* DO NOTHING */
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	public String patchSQL(String sql)
 	{
 		return sql;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

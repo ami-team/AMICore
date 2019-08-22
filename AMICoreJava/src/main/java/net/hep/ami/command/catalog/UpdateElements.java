@@ -7,24 +7,24 @@ import java.util.stream.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public UpdateElements(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public UpdateElements(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
@@ -56,7 +56,7 @@ public class UpdateElements extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------------------------------------------*/
 
 		XQLUpdate query;
 
@@ -85,7 +85,7 @@ public class UpdateElements extends AbstractCommand
 		     .addWherePart(where)
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String mql = query.toString();
 
@@ -94,11 +94,11 @@ public class UpdateElements extends AbstractCommand
 		String sql = querier.mqlToSQL(entity, mql);
 		String ast = querier.mqlToAST(entity, mql);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2<String, List<String>> tuple = Tokenizer.formatPreparedStatement(querier, sql, values);
+		Tuple2<String, List<String>> tuple = net.hep.ami.jdbc.query.sql.Formatter.formatPreparedStatement(querier, sql, values);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		PreparedStatement statement = querier.preparedStatement(tuple.x, false, true, null);
 
@@ -107,7 +107,7 @@ public class UpdateElements extends AbstractCommand
 			statement.setString(i + 1, tuple.y.get(i));
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		final int nbOfUpdatedRows;
 
@@ -120,26 +120,30 @@ public class UpdateElements extends AbstractCommand
 			throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Update one or more elements.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

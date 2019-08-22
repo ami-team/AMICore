@@ -7,7 +7,7 @@ import net.hep.ami.utility.*;
 
 public final class XQLUpdate
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public enum Mode
 	{
@@ -15,11 +15,11 @@ public final class XQLUpdate
 		MQL
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final Mode m_mode;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final Set<String> m_updateSet = new LinkedHashSet<>();
 
@@ -29,22 +29,25 @@ public final class XQLUpdate
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public XQLUpdate(Mode mode)
+	public XQLUpdate(@NotNull Mode mode)
 	{
 		m_mode = mode;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String _toString(Object x)
+	@NotNull
+	private String _toString(@NotNull Object x)
 	{
 		return (m_mode == Mode.MQL && x instanceof QId) ? ((QId) x).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) : x.toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLUpdate addUpdatePart(@Nullable CharSequence updatePart)
 	{
 		if(updatePart != null)
@@ -55,18 +58,22 @@ public final class XQLUpdate
 		return this;
 	}
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLUpdate addUpdatePart(@Nullable Collection<?> updatePart)
 	{
 		if(updatePart != null)
 		{
-			m_updateSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+			m_updateSet.addAll(updatePart.stream().map(Object::toString).collect(Collectors.toSet()));
 		}
 
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLUpdate addFieldValuePart(@Nullable Object fieldPart, @Nullable CharSequence valuePart)
 	{
 		if(fieldPart != null
@@ -80,6 +87,8 @@ public final class XQLUpdate
 		return this;
 	}
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLUpdate addFieldValuePart(@Nullable Collection<?> fieldPart, @Nullable Collection<?> valuePart) throws Exception
 	{
 		if(fieldPart != null
@@ -91,15 +100,17 @@ public final class XQLUpdate
 				throw new Exception("bad number of values");
 			}
 
-			m_fieldList.addAll(fieldPart.stream().map(x -> _toString(x)).collect(Collectors.toList()));
-			m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+			m_fieldList.addAll(fieldPart.stream().map(this::_toString).collect(Collectors.toList()));
+			m_valueList.addAll(valuePart.stream().map(Object::toString).collect(Collectors.toList()));
 		}
 
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLUpdate addWherePart(@Nullable CharSequence wherePart)
 	{
 		if(wherePart != null)
@@ -110,18 +121,22 @@ public final class XQLUpdate
 		return this;
 	}
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLUpdate addWherePart(@Nullable Collection<?> wherePart)
 	{
 		if(wherePart != null)
 		{
-			m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+			m_whereSet.addAll(wherePart.stream().map(Object::toString).collect(Collectors.toSet()));
 		}
 
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLUpdate addWholeQuery(@Nullable XQLUpdate query)
 	{
 		if(query != null)
@@ -138,48 +153,58 @@ public final class XQLUpdate
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public Set<String> getUpdateCollection()
 	{
 		return m_updateSet;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public List<String> getFieldCollection()
 	{
 		return m_fieldList;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public List<String> getValueCollection()
 	{
 		return m_valueList;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public Set<String> getWhereCollection()
 	{
 		return m_whereSet;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getUpdatePart()
 	{
 		return String.join(", ", m_updateSet);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getSetPart()
 	{
 		if(m_mode == Mode.MQL)
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			return new StringBuilder().append("(")
 			                          .append(String.join(", ", m_fieldList))
@@ -189,11 +214,11 @@ public final class XQLUpdate
 			                          .toString()
 			;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		else
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			StringBuilder stringBuilder = new StringBuilder();
 
@@ -209,53 +234,58 @@ public final class XQLUpdate
 					stringBuilder.append(", ");
 				}
 
-				stringBuilder.append(m_fieldList.get(i).toString())
+				stringBuilder.append(m_fieldList.get(i))
 				             .append( " = ")
-				             .append(m_valueList.get(i).toString())
+				             .append(m_valueList.get(i))
 				;
 			}
 
 			return stringBuilder.toString();
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getWherePart()
 	{
 		return String.join(" AND ", m_whereSet);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String toString()
 	{
 		return toStringBuilder(null).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String toString(@Nullable CharSequence extra)
 	{
 		return toStringBuilder(extra).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder()
 	{
 		return toStringBuilder(null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder(@Nullable CharSequence extra)
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*--------------------------------------------------------------------------------------------------------*/
 
 		if(m_mode == Mode.MQL)
 		{
@@ -266,24 +296,24 @@ public final class XQLUpdate
 			result.append("UPDATE ").append(getUpdatePart()).append(" SET ").append(getSetPart());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*--------------------------------------------------------------------------------------------------------*/
 
-		if(m_whereSet.isEmpty() == false)
+		if(!m_whereSet.isEmpty())
 		{
 			result.append(" WHERE ").append(getWherePart());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*--------------------------------------------------------------------------------------------------------*/
 
 		if(extra != null)
 		{
 			result.append(extra);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*--------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

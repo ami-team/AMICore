@@ -4,21 +4,23 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
 public class RemoveConfigProperty extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RemoveConfigProperty(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public RemoveConfigProperty(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String name = arguments.get("name");
 
@@ -27,13 +29,13 @@ public class RemoveConfigProperty extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------------------------------------------*/
 
 		ConfigSingleton.removeProperty(name);
 
 		int nb = ConfigSingleton.removePropertyInDataBase(getQuerier("self"), name);
 
-		/*-----------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder(
 			nb > 0 ? "<info><![CDATA[done with success]]></info>"
@@ -41,19 +43,23 @@ public class RemoveConfigProperty extends AbstractCommand
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Remove a global configuration property.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-name=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

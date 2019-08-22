@@ -4,64 +4,66 @@ import net.hep.ami.utility.*;
 
 public class XMLTemplates
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private XMLTemplates() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void format(StringBuilder result, String tag, @Nullable String message)
+	@NotNull
+	private static Object[] asArray(@NotNull Object arg)
 	{
-		if(message == null)
-		{
-			message = "null";
-		}
-
-		result.append("<").append(tag).append(">")
-		      .append("<![CDATA[").append(message.replace("]]>", "))>")).append("]]>")
-		      .append("</").append(tag).append(">")
+		return arg.getClass().isArray() ? (Object[]) arg
+		                                : new Object[] {arg}
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String info(Object... args)
+	@NotNull
+	private static String format(@NotNull String tag, @NotNull Object[] args)
 	{
 		StringBuilder xml = new StringBuilder();
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		for(Object arg: args)
 		{
-			for(Object ARG: arg.getClass().isArray() == false ? new Object[] {arg} : (Object[]) arg)
+			for(Object ARG: asArray(arg))
 			{
-				format(xml, "info", ARG.toString());
+				xml.append("<").append(tag).append(">")
+				   .append("<![CDATA[").append(ARG.toString().replace("]]>", "))>")).append("]]>")
+				   .append("</").append(tag).append(">")
+				;
 			}
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		                          .append("<AMIMessage>").append(xml).append("<executionTime>0.0</executionTime></AMIMessage>")
 		                          .toString()
 		;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String error(Object... args)
+	@NotNull
+	public static String info(@NotNull Object... args)
 	{
-		StringBuilder xml = new StringBuilder();
-
-		for(Object arg: args)
-		{
-			for(Object ARG: arg.getClass().isArray() == false ? new Object[] {arg} : (Object[]) arg)
-			{
-				format(xml, "error", ARG.toString());
-			}
-		}
-
-		return new StringBuilder().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-		                          .append("<AMIMessage>").append(xml).append("<executionTime>0.0</executionTime></AMIMessage>")
-		                          .toString()
-		;
+		return format("info", args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String error(@NotNull Object... args)
+	{
+		return format("error", args);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -5,25 +5,27 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class GetUserInfo extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetUserInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetUserInfo(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -31,13 +33,8 @@ public class GetUserInfo extends AbstractCommand
 		boolean attachCert = arguments.containsKey("attachCert");
 		boolean detachCert = arguments.containsKey("detachCert");
 
-		String amiLogin = arguments.containsKey("amiLogin") ? arguments.get("amiLogin")
-		                                                    : m_AMIUser
-		;
-
-		String amiPassword = arguments.containsKey("amiPassword") ? arguments.get("amiPassword")
-		                                                          : m_AMIPass
-		;
+		String amiLogin = arguments.getOrDefault("amiLogin", m_AMIUser);
+		String amiPassword = arguments.getOrDefault("amiPassword", m_AMIPass);
 
 		if(attachCert
 		   &&
@@ -46,13 +43,13 @@ public class GetUserInfo extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getAdminQuerier("self");
 
-		/*-----------------------------------------------------------------*/
-		/* GET USER INFO                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET USER INFO                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
 
@@ -105,9 +102,9 @@ public class GetUserInfo extends AbstractCommand
 
 		boolean vomsEnabled = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
 
-		/*-----------------------------------------------------------------*/
-		/* ATTACH CERTIFICATE                                              */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ATTACH CERTIFICATE                                                                                         */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(attachCert)
 		{
@@ -118,7 +115,7 @@ public class GetUserInfo extends AbstractCommand
 
 			String sql;
 
-			if(vomsEnabled == false)
+			if(!vomsEnabled)
 			{
 				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
 			}
@@ -135,9 +132,9 @@ public class GetUserInfo extends AbstractCommand
 			);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* DETACH CERTIFICATE                                              */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* DETACH CERTIFICATE                                                                                         */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(detachCert)
 		{
@@ -148,7 +145,7 @@ public class GetUserInfo extends AbstractCommand
 
 			String sql;
 
-			if(vomsEnabled == false)
+			if(!vomsEnabled)
 			{
 				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
 			}
@@ -165,37 +162,25 @@ public class GetUserInfo extends AbstractCommand
 			);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* GET USER ROLES                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET USER ROLES                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		RowSet rowSet2 = querier.executeSQLQuery("router_role", "SELECT `router_role`.`role`, `router_role`.`description` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
 
-		/*-----------------------------------------------------------------*/
-		/* GET OTHER INFO                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET OTHER INFO                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		String termsAndConditions = ConfigSingleton.getProperty("terms_and_conditions", null);
+		String termsAndConditions = ConfigSingleton.getProperty("terms_and_conditions", "N/A");
 
-		if(termsAndConditions == null || termsAndConditions.isEmpty()) {
-			termsAndConditions = "N/A";
-		}
+		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
 
-		String ssoLabel = ConfigSingleton.getProperty("sso_label", null);
+		String ssoURL = ConfigSingleton.getProperty("sso_url", "N/A");
 
-		if(ssoLabel == null || ssoLabel.isEmpty()) {
-			ssoLabel = "SSO";
-		}
-
-		String ssoURL = ConfigSingleton.getProperty("sso_url", null);
-
-		if(ssoURL == null || ssoURL.isEmpty()) {
-			ssoURL = "N/A";
-		}
-
-		/*-----------------------------------------------------------------*/
-		/* USER                                                            */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* USER                                                                                                       */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"user\">")
 		      .append("<row>")
@@ -218,9 +203,9 @@ public class GetUserInfo extends AbstractCommand
 		      .append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
-		/* ROLES                                                           */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ROLES                                                                                                      */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"role\">");
 
@@ -235,15 +220,15 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
-		/* UDP                                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* UDP                                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"udp\">");
 
-		if(termsAndConditions.isEmpty() == false
+		if(!termsAndConditions.isEmpty()
 		   &&
-		   "N/A".equals(termsAndConditions) == false
+		   !"N/A".equals(termsAndConditions)
 		 ) {
 			result.append("<row>")
 			      .append("<field name=\"termsAndConditions\"><![CDATA[").append(termsAndConditions).append("]]></field>")
@@ -253,15 +238,15 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
-		/* SSO                                                            */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SSO                                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"sso\">");
 
-		if(ssoURL.isEmpty() == false
+		if(!ssoURL.isEmpty()
 		   &&
-		   "N/A".equals(ssoURL) == false
+		   !"N/A".equals(ssoURL)
 		 ) {
 			result.append("<row>")
 			      .append("<field name=\"label\"><![CDATA[").append(ssoLabel).append("]]></field>")
@@ -272,24 +257,28 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Get the user information.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "(-amiLogin=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

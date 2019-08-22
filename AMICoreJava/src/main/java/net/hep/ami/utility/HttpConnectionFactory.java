@@ -6,25 +6,31 @@ import javax.net.ssl.*;
 
 public class HttpConnectionFactory
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final PermissiveSocketFactory s_socketFactory = new PermissiveSocketFactory();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private HttpConnectionFactory() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static HttpURLConnection connection(String spec) throws Exception
+	@NotNull
+	public static HttpURLConnection connection(@NotNull String url) throws Exception
 	{
-		HttpURLConnection result = (HttpURLConnection) new URL(spec).openConnection();
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(result instanceof HttpsURLConnection)
+		URLConnection result = new URL(url).openConnection();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/**/ if(result instanceof HttpsURLConnection)
 		{
 			SSLSocketFactory socketFactory;
 
-			/**/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			socketFactory = s_socketFactory.getTLSSocketFactory();
 
@@ -38,13 +44,25 @@ public class HttpConnectionFactory
 				}
 			}
 
-			/**/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			((HttpsURLConnection) result).setSSLSocketFactory(socketFactory);
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			return (HttpURLConnection) result;
+		}
+		else if(result instanceof HttpURLConnection)
+		{
+			return (HttpURLConnection) result;
 		}
 
-		return result;
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		throw new Exception("not and HTTP(S) connection");
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

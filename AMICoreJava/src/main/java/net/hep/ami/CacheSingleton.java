@@ -5,26 +5,28 @@ import java.util.*;
 
 import net.spy.memcached.*;
 
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 public class CacheSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static private MemcachedClient s_memcachedClient = null;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private CacheSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static
 	{
 		reload();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void reload()
 	{
@@ -57,15 +59,16 @@ public class CacheSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void put(String key, Object value)
+	@Nullable
+	public static Object put(@NotNull String key, @Nullable Object value)
 	{
 		if(s_memcachedClient != null)
 		{
 			try
 			{
-				s_memcachedClient.set(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value);
+				return s_memcachedClient.set(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value);
 			}
 			catch(Exception e)
 			{
@@ -73,12 +76,13 @@ public class CacheSingleton
 			}
 		}
 
-		return /**/;
+		return null;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Object get(String key)
+	@Nullable
+	public static Object get(@NotNull String key)
 	{
 		if(s_memcachedClient != null)
 		{
@@ -95,7 +99,7 @@ public class CacheSingleton
 		return null;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void flush()
 	{
@@ -112,7 +116,7 @@ public class CacheSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void flush(int delay)
 	{
@@ -129,13 +133,14 @@ public class CacheSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static StringBuilder getStatus()
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"memcached\">");
 
@@ -145,15 +150,9 @@ public class CacheSingleton
 			{
 				result.append("<row>");
 
-				/*---------------------------------------------------------*/
-
 				result.append("<field name=\"addr\"><![CDATA[").append(entry1.getKey()).append("]]></field>");
 
-				/*---------------------------------------------------------*/
-
-				entry1.getValue().entrySet().stream().forEach(x -> result.append("<field name=\"").append(Utility.escapeHTML(x.getKey())).append("\"><![CDATA[").append(x.getValue()).append("]]></field>"));
-
-				/*---------------------------------------------------------*/
+				entry1.getValue().forEach((x, y) -> result.append("<field name=\"").append(Utility.escapeHTML(x)).append("\"><![CDATA[").append(y).append("]]></field>"));
 
 				result.append("</row>");
 			}
@@ -161,10 +160,10 @@ public class CacheSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

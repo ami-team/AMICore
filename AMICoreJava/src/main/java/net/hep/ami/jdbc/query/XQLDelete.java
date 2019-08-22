@@ -7,7 +7,7 @@ import net.hep.ami.utility.*;
 
 public final class XQLDelete
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public enum Mode
 	{
@@ -15,49 +15,53 @@ public final class XQLDelete
 		MQL
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private Mode m_mode = Mode.SQL;
+	private final Mode m_mode;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final Set<String> m_deleteSet = new LinkedHashSet<>();
 
 	private final Set<String> m_whereSet = new LinkedHashSet<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public XQLDelete setMode(Mode mode)
+	public XQLDelete(@NotNull Mode mode)
 	{
 		m_mode = mode;
-
-		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public XQLDelete addDeletePart(@Nullable CharSequence selecPart)
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
+	public XQLDelete addDeletePart(@Nullable CharSequence selectPart)
 	{
-		if(selecPart != null)
+		if(selectPart != null)
 		{
-			m_deleteSet.add(selecPart.toString());
+			m_deleteSet.add(selectPart.toString());
 		}
 
 		return this;
 	}
 
-	public XQLDelete addDeletePart(@Nullable Collection<?> selecPart)
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
+	public XQLDelete addDeletePart(@Nullable Collection<?> selectPart)
 	{
-		if(selecPart != null)
+		if(selectPart != null)
 		{
-			m_deleteSet.addAll(selecPart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+			m_deleteSet.addAll(selectPart.stream().map(Object::toString).collect(Collectors.toSet()));
 		}
 
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLDelete addWherePart(@Nullable CharSequence wherePart)
 	{
 		if(wherePart != null)
@@ -68,18 +72,22 @@ public final class XQLDelete
 		return this;
 	}
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLDelete addWherePart(@Nullable Collection<?> wherePart)
 	{
 		if(wherePart != null)
 		{
-			m_whereSet.addAll(wherePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+			m_whereSet.addAll(wherePart.stream().map(Object::toString).collect(Collectors.toSet()));
 		}
 
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLDelete addWholeQuery(@Nullable XQLDelete query)
 	{
 		if(query != null)
@@ -92,62 +100,72 @@ public final class XQLDelete
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public Set<String> getDeleteCollection()
 	{
 		return m_deleteSet;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public Set<String> getWhereCollection()
 	{
 		return m_whereSet;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getDeletePart()
 	{
 		return String.join(", ", m_deleteSet);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getWherePart()
 	{
 		return String.join(" AND ", m_whereSet);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String toString()
 	{
 		return toStringBuilder(null).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String toString(@Nullable CharSequence extra)
 	{
 		return toStringBuilder(extra).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder()
 	{
 		return toStringBuilder(null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder(@Nullable CharSequence extra)
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(m_mode == Mode.MQL)
 		{
@@ -158,24 +176,24 @@ public final class XQLDelete
 			result.append("DELETE FROM ").append(getDeletePart());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(m_whereSet.isEmpty() == false)
+		if(!m_whereSet.isEmpty())
 		{
 			result.append(" WHERE ").append(getWherePart());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(extra != null)
 		{
 			result.append(extra);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

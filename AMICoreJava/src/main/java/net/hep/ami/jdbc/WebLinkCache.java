@@ -7,35 +7,44 @@ import net.hep.ami.utility.*;
 
 public class WebLinkCache
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final GroovyShell m_groovyShell = new GroovyShell(WebLinkCache.class.getClassLoader());
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String error(Exception e)
+	@NotNull
+	private String error(@NotNull Exception e)
 	{
 		LogSingleton.root.error(e.getMessage(), e);
 
 		return new StringBuilder().append("<properties><![CDATA[").append(e.getMessage()).append("]]></properties>").toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public String processWebLink(@Nullable String code, String catalog, String entity, String field, RowSet rowSet, Row row)
+	@NotNull
+	public String processWebLink(@Nullable String code, @NotNull String catalog, @NotNull String entity, @NotNull String field, @NotNull RowSet rowSet, @NotNull Row row)
 	{
-		if(code == null
-		   ||
-		   code.isEmpty()
-		   ||
-		   "@NULL".equalsIgnoreCase(code)
-		 ) {
+		if(code != null)
+		{
+			code = code.trim();
+
+			if(code.isEmpty()
+			   ||
+			   "@NULL".equalsIgnoreCase(code)
+			 ) {
+				return "";
+			}
+		}
+		else
+		{
 			return "";
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* COMPILE GROOVY SCRIPT                                           */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMPILE GROOVY SCRIPT                                                                                      */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Script script;
 
@@ -48,9 +57,9 @@ public class WebLinkCache
 			return error(e);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* RUN GROOVY SCRIPT                                               */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* RUN GROOVY SCRIPT                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Binding binding = new Binding();
 
@@ -62,21 +71,19 @@ public class WebLinkCache
 
 		script.setBinding(binding);
 
-		/*-----------------------------------------------------------------*/
-
-		String result;
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			result = ((WebLink) script.run()).toString();
+			return script.run().toString();
 		}
 		catch(Exception e)
 		{
 			return error(e);
 		}
 
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

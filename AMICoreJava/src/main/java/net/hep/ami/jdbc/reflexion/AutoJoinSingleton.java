@@ -3,25 +3,27 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 import java.util.stream.*;
 
+import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.query.*;
 
 public class AutoJoinSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private AutoJoinSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static void resolve(
-		Resolution resolution,
-		Stack<SchemaSingleton.FrgnKey> resolvedPath,
-		Set<String> done,
+		@NotNull Resolution resolution,
+		@NotNull Stack<SchemaSingleton.FrgnKey> resolvedPath,
+		@NotNull Set<String> done,
 		int cnt,
 		int max,
-		String defaultCatalog,
-		String defaultEntity,
-		QId givenQId
+		@NotNull String defaultCatalog,
+		@NotNull String defaultEntity,
+		@NotNull QId givenQId
 	 ) throws Exception {
 
 		if(cnt >= max)
@@ -47,13 +49,13 @@ public class AutoJoinSingleton
 			Collection<SchemaSingleton.FrgnKeys> forwardLists;
 			Collection<SchemaSingleton.FrgnKeys> backwardLists;
 
-			/*-------------------------------------------------------------*/
-			/* FORWARD RESOLUTION                                          */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* FORWARD RESOLUTION                                                                                     */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultEntity).values();
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(SchemaSingleton.FrgnKeys list: forwardLists)
 			{
@@ -61,7 +63,7 @@ public class AutoJoinSingleton
 				{
 					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkEntity;
 
-					if(done.contains(key) == false)
+					if(!done.contains(key))
 					{
 						done.add(key);
 						resolvedPath.add(frgnKey);
@@ -72,13 +74,13 @@ public class AutoJoinSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
-			/* BACKWARD RESOLUTION                                         */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* BACKWARD RESOLUTION                                                                                    */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultEntity).values();
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(SchemaSingleton.FrgnKeys list: backwardLists)
 			{
@@ -86,7 +88,7 @@ public class AutoJoinSingleton
 				{
 					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkEntity;
 
-					if(done.contains(key) == false)
+					if(!done.contains(key))
 					{
 						done.add(key);
 						resolvedPath.add(frgnKey);
@@ -97,13 +99,13 @@ public class AutoJoinSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		else
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			Map<QId, Boolean> map = givenQId.getConstraints().stream().collect(Collectors.toMap(x -> x, x -> x.getExclusion()));
+			Map<QId, Boolean> map = givenQId.getConstraints().stream().collect(Collectors.toMap(x -> x, QId::getExclusion));
 
 			/**/
 
@@ -124,23 +126,24 @@ public class AutoJoinSingleton
 
 			for(boolean found: map.values())
 			{
-				if(found == false)
+				if(!found)
 				{
 					return;
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			resolution.addPath(givenQId, resolvedColumn, resolvedPath);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, QId givenQId, int max) throws Exception
+	@NotNull
+	public static Resolution resolve(@NotNull String defaultExternalCatalog, @NotNull String defaultEntity, @NotNull QId givenQId, int max) throws Exception
 	{
 		Resolution result = new Resolution();
 
@@ -149,9 +152,10 @@ public class AutoJoinSingleton
 		return result.finalize(givenQId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, QId givenQId) throws Exception
+	@NotNull
+	public static Resolution resolve(@NotNull String defaultExternalCatalog, @NotNull String defaultEntity, @NotNull QId givenQId) throws Exception
 	{
 		Resolution result = new Resolution();
 
@@ -160,19 +164,21 @@ public class AutoJoinSingleton
 		return result.finalize(givenQId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, String givenQId, int max) throws Exception
+	@NotNull
+	public static Resolution resolve(@NotNull String defaultExternalCatalog, @NotNull String defaultEntity, @NotNull String givenQId, int max) throws Exception
 	{
 		return resolve(defaultExternalCatalog, defaultEntity, QId.parseQId(givenQId, QId.Type.FIELD), max);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Resolution resolve(String defaultExternalCatalog, String defaultEntity, String givenQId) throws Exception
+	@NotNull
+	public static Resolution resolve(@NotNull String defaultExternalCatalog, @NotNull String defaultEntity, @NotNull String givenQId) throws Exception
 	{
 		return resolve(defaultExternalCatalog, defaultEntity, QId.parseQId(givenQId, QId.Type.FIELD), 999);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -10,7 +10,7 @@ import net.hep.ami.jdbc.reflexion.*;
 
 public class CatalogSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class Tuple extends Tuple8<String, String, String, String, String, String, String, Boolean>
 	{
@@ -22,22 +22,23 @@ public class CatalogSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, true, true);
+	private static final Map<String, Tuple> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, true, true);
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private CatalogSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static
 	{
 		reload(false);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void reload(boolean full)
 	{
@@ -59,29 +60,29 @@ public class CatalogSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static void addCatalogs() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE QUERIER                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Router router = new Router();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* EXECUTE QUERY                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			RowSet rowSet = router.executeSQLQuery("router_catalog", "SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `description`, `archived` FROM `router_catalog`");
 
-			/*-------------------------------------------------------------*/
-			/* ADD CATALOGS                                                */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* ADD CATALOGS                                                                                           */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(Row row: rowSet.iterate())
 			{
@@ -104,30 +105,40 @@ public class CatalogSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		finally
 		{
 			router.rollbackAndRelease();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void addCatalog(String externalCatalog, String internalCatalog, String internalSchema, String jdbcUrl, String user, String pass, String description, boolean archived) throws Exception
+	private static void addCatalog(@NotNull String externalCatalog, @NotNull String internalCatalog, @NotNull String internalSchema, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String description, boolean archived) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* ADD CATALOG                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ADD CATALOG                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if("@NULL".equalsIgnoreCase(internalSchema))
 		{
 			internalSchema = null;
 		}
 
-		/*-----------------------------------------------------------------*/
+		if("@NULL".equalsIgnoreCase(user))
+		{
+			user = null;
+		}
+
+		if("@NULL".equalsIgnoreCase(pass))
+		{
+			pass = null;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_catalogs.put(
 			externalCatalog
@@ -144,21 +155,22 @@ public class CatalogSingleton
 			)
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* ADD SCHEMA                                                      */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ADD SCHEMA                                                                                                 */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(DriverSingleton.getType(jdbcUrl) == DriverMetadata.Type.SQL)
 		{
 			SchemaSingleton.addSchema(externalCatalog, internalCatalog);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Tuple getTuple(String catalog) throws Exception
+	@NotNull
+	public static Tuple getTuple(@NotNull String catalog) throws Exception
 	{
 		Tuple tuple = s_catalogs.get(catalog);
 
@@ -170,69 +182,76 @@ public class CatalogSingleton
 		return tuple;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(String catalog, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	@NotNull
+	public static AbstractDriver getConnection(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, timeZone, isAdmin, links);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static DriverMetadata.Type getType(String catalog) throws Exception
+	@NotNull
+	public static DriverMetadata.Type getType(@NotNull String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getType(tuple.t);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String getProto(String catalog) throws Exception
+	@NotNull
+	public static String getProto(@NotNull String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getProto(tuple.t);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String getClass(String catalog) throws Exception
+	@NotNull
+	public static String getClass(@NotNull String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getClass(tuple.t);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Boolean doBackslashEscapes(String catalog) throws Exception
+	////////
+	public static int getFlags(@NotNull String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.doBackslashEscapes(tuple.t);
+		return DriverSingleton.getFlags(tuple.t);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String getKey(String catalog) throws Exception
+	@NotNull
+	public static String getKey(@NotNull String catalog) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
 		return DriverSingleton.getKey(tuple.y, tuple.t, tuple.u , tuple.v);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<String> resolve(String catalogPattern) throws Exception
+	@NotNull
+	public static List<String> resolve(@NotNull String catalogPattern)
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Pattern pattern = Pattern.compile(catalogPattern, Pattern.CASE_INSENSITIVE);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<String> result = new ArrayList<>();
 
@@ -246,16 +265,17 @@ public class CatalogSingleton
 
 		return result;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static StringBuilder listCatalogs()
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"catalogs\">");
 
@@ -273,10 +293,10 @@ public class CatalogSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

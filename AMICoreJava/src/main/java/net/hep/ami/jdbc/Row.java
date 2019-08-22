@@ -5,70 +5,95 @@ import net.hep.ami.utility.parser.*;
 
 public class Row
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final RowSet m_rowSet;
 
 	private final String[] m_values;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected Row(RowSet rowSet) throws Exception
+	protected Row(@NotNull RowSet rowSet) throws Exception
 	{
 		m_values = (m_rowSet = rowSet).getCurrentRow();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public RowSet getRowSet()
 	{
 		return m_rowSet;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public int getNumberOfFields()
 	{
 		return m_rowSet.m_numberOfFields;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getCatalog(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getCatalogOfField(fieldIndex);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getEntity(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getEntityOfField(fieldIndex);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getName(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getNameOfField(fieldIndex);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getLabel(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getLabelOfField(fieldIndex);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getType(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getTypeOfField(fieldIndex);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
+	private static String checkString(@Nullable String currentValue, @Nullable String defaultValue)
+	{
+		if(currentValue != null)
+		{
+			String tempValue = currentValue.trim();
+
+			if(!tempValue.isEmpty() && !"@NULL".equalsIgnoreCase(tempValue))
+			{
+				return currentValue;
+			}
+		}
+
+		return defaultValue;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
 	public String getValue(int fieldIndex) throws Exception
 	{
 		if(fieldIndex < 0 || fieldIndex >= m_rowSet.m_numberOfFields)
@@ -76,298 +101,216 @@ public class Row
 			throw new Exception("field index out of range");
 		}
 
-		return m_values[fieldIndex];
+		return checkString(m_values[fieldIndex], "@NULL");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public String getValue(int fieldIndex, @Nullable String defaultValue) throws Exception
+	{
+		if(fieldIndex < 0 || fieldIndex >= m_rowSet.m_numberOfFields)
+		{
+			throw new Exception("field index out of range");
+		}
+
+		return checkString(m_values[fieldIndex], defaultValue);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
 	public Boolean getValue(int fieldIndex, @Nullable Boolean defaultValue) throws Exception
 	{
-		Boolean result;
-
-		String tmpValue = getValue(fieldIndex).trim().toLowerCase();
-
-		/**/ if("1".equals(tmpValue)
-		        ||
-		        "on".equals(tmpValue)
-		        ||
-		        "yes".equals(tmpValue)
-		        ||
-		        "true".equals(tmpValue)
-		 ) {
-			result = true;
-		}
-		else if("0".equals(tmpValue)
-		        ||
-		        "off".equals(tmpValue)
-		        ||
-		        "no".equals(tmpValue)
-		        ||
-		        "false".equals(tmpValue)
-		 ) {
-			result = false;
-		}
-		else
+		try
 		{
-			result = defaultValue;
+			return Bool.valueOf(getValue(fieldIndex, ""));
 		}
-
-		return result;
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
 	public Integer getValue(int fieldIndex, @Nullable Integer defaultValue) throws Exception
 	{
-		Integer result;
-
-		String tmpValue = getValue(fieldIndex);
-
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		try
 		{
-			try
-			{
-				result = Integer.parseInt(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
+			return Integer.valueOf(getValue(fieldIndex, ""));
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			result = defaultValue;
+			return defaultValue;
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
 	public Float getValue(int fieldIndex, @Nullable Float defaultValue) throws Exception
 	{
-		Float result;
-
-		String tmpValue = getValue(fieldIndex);
-
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		try
 		{
-			try
-			{
-				result = Float.parseFloat(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
+			return Float.valueOf(getValue(fieldIndex, ""));
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			result = defaultValue;
+			return defaultValue;
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
 	public Double getValue(int fieldIndex, @Nullable Double defaultValue) throws Exception
 	{
-		Double result;
-
-		String tmpValue = getValue(fieldIndex);
-
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		try
 		{
-			try
-			{
-				result = Double.parseDouble(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
+			return Double.valueOf(getValue(fieldIndex, ""));
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			result = defaultValue;
+			return defaultValue;
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getValue(String name) throws Exception
 	{
-		if(m_rowSet.m_labelIndices.containsKey(name) == false)
+		if(!m_rowSet.m_labelIndices.containsKey(name))
 		{
-			if(m_rowSet.m_nameIndices.containsKey(name) == false)
+			if(!m_rowSet.m_nameIndices.containsKey(name))
 			{
 				throw new Exception("field label/name `" + name + "` not in row");
 			}
 			else
 			{
-				return m_values[m_rowSet.m_nameIndices.get(name)];
+				return checkString(m_values[m_rowSet.m_nameIndices.get(name)], "@NULL");
 			}
 		}
 		else
 		{
-			return m_values[m_rowSet.m_labelIndices.get(name)];
+			return checkString(m_values[m_rowSet.m_labelIndices.get(name)], "@NULL");
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Boolean getValue(String name, @Nullable Boolean defaultValue) throws Exception
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public String getValue(String name, @Nullable String defaultValue) throws Exception
 	{
-		Boolean result;
-
-		String tmpValue = getValue(name);
-
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		if(!m_rowSet.m_labelIndices.containsKey(name))
 		{
-			tmpValue = tmpValue.trim().toLowerCase();
-
-			/**/ if("1".equals(tmpValue)
-			        ||
-			        "on".equals(tmpValue)
-			        ||
-			        "yes".equals(tmpValue)
-			        ||
-			        "true".equals(tmpValue)
-			 ) {
-				result = true;
-			}
-			else if("0".equals(tmpValue)
-			        ||
-			        "off".equals(tmpValue)
-			        ||
-			        "no".equals(tmpValue)
-			        ||
-			        "false".equals(tmpValue)
-			 ) {
-				result = false;
+			if(!m_rowSet.m_nameIndices.containsKey(name))
+			{
+				throw new Exception("field label/name `" + name + "` not in row");
 			}
 			else
 			{
-				result = defaultValue;
+				return checkString(m_values[m_rowSet.m_nameIndices.get(name)], defaultValue);
 			}
 		}
 		else
 		{
-			result = defaultValue;
+			return checkString(m_values[m_rowSet.m_labelIndices.get(name)], defaultValue);
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public Boolean getValue(String name, @Nullable Boolean defaultValue) throws Exception
+	{
+		try
+		{
+			return Bool.valueOf(getValue(name, (String) null));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
 	public Integer getValue(String name, @Nullable Integer defaultValue) throws Exception
 	{
-		Integer result;
-
-		String tmpValue = getValue(name);
-
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		try
 		{
-			try
-			{
-				result = Integer.parseInt(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
+			return Integer.valueOf(getValue(name, ""));
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			result = defaultValue;
+			return defaultValue;
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
 	public Float getValue(String name, @Nullable Float defaultValue) throws Exception
 	{
-		Float result;
-
-		String tmpValue = getValue(name);
-
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		try
 		{
-			try
-			{
-				result = Float.parseFloat(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
+			return Float.valueOf(getValue(name, ""));
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			result = defaultValue;
+			return defaultValue;
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
 	public Double getValue(String name, @Nullable Double defaultValue) throws Exception
 	{
-		Double result;
-
-		String tmpValue = getValue(name);
-
-		if(tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+		try
 		{
-			try
-			{
-				result = Double.parseDouble(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
+			return Double.valueOf(getValue(name, ""));
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			result = defaultValue;
+			return defaultValue;
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder()
 	{
 		return toStringBuilder(null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder(@Nullable String type)
 	{
-		StringBuilder result = new StringBuilder();
+		AMIStringBuilder result = new AMIStringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(type == null)
-		{
-			result.append("<row>");
-		}
-		else
-		{
-			result.append("<row type=\"").append(Utility.escapeHTML(type)).append("\">");
-		}
+		result.append("<row").appendIf(type != null, " type=\"", Utility.escapeHTML(type), "\"").append(">");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(int i = 0; i < m_rowSet.m_numberOfFields; i++)
 		{
@@ -377,14 +320,14 @@ public class Row
 			;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("</row>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result;
+		return result.toStringBuilder();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

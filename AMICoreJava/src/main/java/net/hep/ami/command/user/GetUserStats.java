@@ -4,27 +4,29 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class GetUserStats extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetUserStats(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetUserStats(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String sql1 = "SELECT"
 		              + "(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 1) AS `valid`"
@@ -32,25 +34,27 @@ public class GetUserStats extends AbstractCommand
 		              + "(SELECT COUNT(`id`) FROM `router_user` WHERE `valid` = 0) AS `invalid`"
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String sql2 = "SELECT `country` AS `code`, COUNT(`country`) AS `z` FROM `router_user` WHERE `valid` = 1 GROUP BY `country`";
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append(querier.executeSQLQuery("router_user", sql1).toStringBuilder(  "users"  ))
 		                          .append(querier.executeSQLQuery("router_user", sql2).toStringBuilder("countries"))
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Get the user stats.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

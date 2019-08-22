@@ -2,7 +2,7 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ami="http://ami.in2p3.fr/xsl" version="2.0">
 
-	<xsl:output method="text" encoding="UTF-8"></xsl:output>
+	<xsl:output method="text" encoding="UTF-8" />
 
 	<xsl:template match="/AMIMessage">
 		<xsl:text>#AMI Result&#x0a;&#x0a;</xsl:text>

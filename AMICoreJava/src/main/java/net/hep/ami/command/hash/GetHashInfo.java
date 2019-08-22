@@ -4,21 +4,23 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class GetHashInfo extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetHashInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetHashInfo(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String hash = arguments.get("hash");
 
@@ -27,11 +29,11 @@ public class GetHashInfo extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rowList = querier.executeSQLQuery("router_short_url", "SELECT `hash`, `name`, `rank`, `json` FROM `router_short_url` WHERE `hash` = ? AND (`shared` = 1 OR `owner` = ?)", hash, m_AMIUser).getAll();
 
@@ -40,7 +42,7 @@ public class GetHashInfo extends AbstractCommand
 				throw new Exception("undefined hash `" + hash + "`");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<rowset>")
 		                          .append("<row>")
@@ -52,22 +54,26 @@ public class GetHashInfo extends AbstractCommand
 		                          .append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Get the hash information.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-hash=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

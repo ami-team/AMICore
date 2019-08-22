@@ -2,6 +2,7 @@ package net.hep.ami;
 
 import java.sql.*;
 import java.util.*;
+import java.lang.reflect.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
@@ -9,117 +10,236 @@ import net.hep.ami.utility.*;
 
 public class RoleSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, Class<?>> s_roleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
-	private static final Map<String, Class<?>> s_userValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final class Tuple1 extends Tuple3<String, String, Constructor<CommandValidator>>
+	{
+		private static final long serialVersionUID = -5126479111138460006L;
 
-	/*---------------------------------------------------------------------*/
+		private Tuple1(@NotNull String _x, @NotNull String _y, @NotNull Constructor<CommandValidator> _z)
+		{
+			super(_x, _y, _z);
+		}
+	}
 
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final class Tuple2 extends Tuple3<String, String, Constructor<NewUserValidator>>
+	{
+		private static final long serialVersionUID = 6410545925675367511L;
+
+		private Tuple2(@NotNull String _x, @NotNull String _y, @NotNull Constructor<NewUserValidator> _z)
+		{
+			super(_x, _y, _z);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final Map<String, Tuple1> s_commandRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, Tuple2> s_newUserRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final Set<String> s_reservedParams = new HashSet<>();
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@org.jetbrains.annotations.Contract(pure = true)
 	private RoleSingleton() {}
 
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	static
+	{
+		s_reservedParams.add("GetSessionInfo");
+		s_reservedParams.add("ResetPassword");
+		s_reservedParams.add("AddUser");
+
+		reload();
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void reload()
+	{
+		s_commandRoleValidators.clear();
+		s_newUserRoleValidators.clear();
+
+		addRoleValidators();
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static void addRoleValidators()
+	{
+		for(String className: ClassSingleton.findClassNames("net.hep.ami.role"))
+		{
+			try
+			{
+				addRoleValidator(className);
+			}
+			catch(Exception e)
+			{
+				LogSingleton.root.error(LogSingleton.FATAL, "for role validator `{}`", className, e);
+			}
+		}
+	}
+
 	/*---------------------------------------------------------------------*/
 
-	private static Set<String> _getCommandRoles(Querier querier, String command) throws Exception
+	@SuppressWarnings("unchecked")
+	private static void addRoleValidator(@NotNull String className) throws Exception
+	{
+		/*-----------------------------------------------------------------*/
+		/* GET ROLE VALIDATOR                                              */
+		/*-----------------------------------------------------------------*/
+
+		Class<?> clazz = ClassSingleton.forName(className);
+
+		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
+		{
+			return;
+		}
+
+		/*-----------------------------------------------------------------*/
+		/* ADD ROLE VALIDATOR                                              */
+		/*-----------------------------------------------------------------*/
+
+		/**/ if(ClassSingleton.extendsClass(clazz, CommandValidator.class))
+		{
+			s_commandRoleValidators.put(
+				className,
+				new Tuple1(
+					className,
+					clazz.getMethod("help").invoke(null).toString(),
+					(Constructor<CommandValidator>) clazz.getConstructor()
+				)
+			);
+		}
+		else if(ClassSingleton.extendsClass(clazz, NewUserValidator.class))
+		{
+			s_newUserRoleValidators.put(
+				className,
+				new Tuple2(
+					className,
+					clazz.getMethod("help").invoke(null).toString(),
+					(Constructor<NewUserValidator>) clazz.getConstructor()
+				)
+			);
+		}
+
+		/*-----------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	private static Set<String> _getCommandRoles(@NotNull Querier querier, @NotNull String command) throws Exception
 	{
 		Set<String> result = new HashSet<>();
 
-		PreparedStatement statement = querier.preparedStatement(
+		try(PreparedStatement statement = querier.preparedStatement(
+			/*--------------------------------------------------------------------------------------------------------*/
 			"SELECT `router_role`.`role` FROM `router_command`, `router_command_role`, `router_role` WHERE" +
-			/*-------------------------------------------------------------*/
-			/* SELECT COMMAND                                              */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* SELECT COMMAND                                                                                         */
+			/*--------------------------------------------------------------------------------------------------------*/
 			" `router_command`.`command` = ?" +
-			/*-------------------------------------------------------------*/
-			/* SELECT ROLE                                                 */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* SELECT ROLE                                                                                            */
+			/*--------------------------------------------------------------------------------------------------------*/
 			" AND `router_command_role`.`commandFK` = `router_command`.`id`" +
-			" AND `router_command_role`.`roleFK` = `router_role`.`id`",
-			/*-------------------------------------------------------------*/
+			" AND `router_command_role`.`roleFK`    =  `router_role`  .`id`",
+			/*--------------------------------------------------------------------------------------------------------*/
 			false,
 			false,
 			null
-		);
+		 )) {
+			/*--------------------------------------------------------------------------------------------------------*/
 
-		statement.setString(1, command);
+			statement.setString(1, command);
 
-		try
-		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			ResultSet resultSet = statement.executeQuery();
 
 			while(resultSet.next())
 			{
 				result.add(resultSet.getString(1));
 			}
-		}
-		finally
-		{
-			statement.close();
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static Set<String> _getUserRoles(Querier querier, String amiUser, String amiPass) throws Exception
+	@NotNull
+	private static Set<String> _getUserRoles(@NotNull Querier querier, @NotNull String amiUser, @NotNull String amiPass) throws Exception
 	{
 		Set<String> result = new HashSet<>();
 
-		PreparedStatement statement = querier.preparedStatement(
+		try(PreparedStatement statement = querier.preparedStatement(
+			/*--------------------------------------------------------------------------------------------------------*/
 			"SELECT `router_role`.`role` FROM `router_user`, `router_user_role`, `router_role` WHERE" +
-			/*-------------------------------------------------------------*/
-			/* SELECT USER                                                 */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* SELECT USER                                                                                            */
+			/*--------------------------------------------------------------------------------------------------------*/
 			" `router_user`.`AMIUser` = ? AND `router_user`.`AMIPass` = ? AND `router_user`.`valid` != 0" +
-			/*-------------------------------------------------------------*/
-			/* SELECT ROLE                                                 */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* SELECT ROLE                                                                                            */
+			/*--------------------------------------------------------------------------------------------------------*/
 			" AND `router_user_role`.`userFK` = `router_user`.`id`" +
 			" AND `router_user_role`.`roleFK` = `router_role`.`id`",
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 			false,
 			false,
 			null
-		);
+		 )) {
+			/*--------------------------------------------------------------------------------------------------------*/
 
-		statement.setString(1, /*---------------------*/(amiUser));
-		statement.setString(2, SecuritySingleton.encrypt(amiPass));
+			statement.setString(1, /*---------------------*/(amiUser));
+			statement.setString(2, SecuritySingleton.encrypt(amiPass));
 
-		try
-		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			ResultSet resultSet = statement.executeQuery();
 
 			while(resultSet.next())
 			{
 				result.add(resultSet.getString(1));
 			}
-		}
-		finally
-		{
-			statement.close();
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static String _getPassFromUser(Querier querier, String amiUser) throws Exception
+	@NotNull
+	private static String _getPassFromUser(@NotNull Querier querier, @NotNull String amiUser) throws Exception
 	{
 		String result;
 
-		PreparedStatement statement = querier.preparedStatement(
-			"SELECT `AMIPass` FROM `router_user` WHERE `router_user`.`AMIUser` = ?",
+		try(PreparedStatement statement = querier.preparedStatement(
+			/*--------------------------------------------------------------------------------------------------------*/
+			"SELECT `AMIPass` FROM `router_user` WHERE `router_user`.`AMIUser` = ? AND `router_user`.`valid` != 0",
+			/*--------------------------------------------------------------------------------------------------------*/
 			false,
 			false,
 			null
-		);
+		 )) {
+			/*--------------------------------------------------------------------------------------------------------*/
 
-		statement.setString(1, amiUser);
+			statement.setString(1, amiUser);
 
-		try
-		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			ResultSet resultSet = statement.executeQuery();
 
 			if(resultSet.next())
@@ -130,34 +250,34 @@ public class RoleSingleton
 			{
 				throw new Exception("user `" + amiUser + "` is not registered in AMI");
 			}
-		}
-		finally
-		{
-			statement.close();
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Set<String> checkRoles(Querier querier, String command, Map<String, String> arguments, String validatorClass, boolean check) throws Exception
+	@NotNull
+	public static Set<String> checkRoles(@NotNull Querier querier, @NotNull String command, @NotNull Map<String, String> arguments, @Nullable String validatorClass, boolean check) throws Exception
 	{
-		/*---------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String changeUser = arguments.remove("changeUser");
 
-		if(changeUser == null && (
-			"GetSessionInfo".equals(command)
-			||
-			"ResetPassword".equals(command)
-			||
-			"AddUser".equals(command)
-		 )) {
-			return new HashSet<>();
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(changeUser == null && s_reservedParams.contains(command))
+		{
+			Set<String> result = new HashSet<>();
+
+			result.add("AMI_GUEST");
+
+			return result;
 		}
 
-		/*---------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String amiUser = arguments.get("AMIUser");
 		String amiPass = arguments.get("AMIPass");
@@ -170,14 +290,16 @@ public class RoleSingleton
 			{
 				throw new Exception("user not authenticated");
 			}
-
-			amiUser = ConfigSingleton.getProperty("admin_user");
-			amiPass = ConfigSingleton.getProperty("admin_pass");
+			else
+			{
+				amiUser = ConfigSingleton.getProperty("admin_user");
+				amiPass = ConfigSingleton.getProperty("admin_pass");
+			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* GET ROLE                                                        */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET ROLE                                                                                                   */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> commandRoles = _getCommandRoles(
 			querier,
@@ -190,7 +312,7 @@ public class RoleSingleton
 			amiPass
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(changeUser != null && userRoles.contains("AMI_SUDOER"))
 		{
@@ -206,20 +328,20 @@ public class RoleSingleton
 			);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CHECK ROLE                                                      */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK ROLE                                                                                                 */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(check)
 		{
-			boolean isGuestCommand = commandRoles.contains("AMI_GUEST");
 			boolean isAdminUser    = userRoles   .contains("AMI_ADMIN");
+			boolean isGuestCommand = commandRoles.contains("AMI_GUEST");
 
-			if(isGuestCommand
+			if(isAdminUser
 			   ||
-			   isAdminUser
+			   isGuestCommand
 			   ||
-			   Collections.disjoint(commandRoles, userRoles) == false
+			   !Collections.disjoint(commandRoles, userRoles)
 			 ) {
 				checkCommand(validatorClass, command, userRoles, arguments);
 			}
@@ -229,54 +351,56 @@ public class RoleSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return userRoles;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkCommand(String validatorClass, String command, Set <String> userRoles, Map<String, String> arguments) throws Exception
+	public static void checkCommand(@Nullable String validatorClass, @NotNull String command, @NotNull Set <String> userRoles, @NotNull Map<String, String> arguments) throws Exception
 	{
-		if(validatorClass == null || validatorClass.isEmpty() || "@NULL".equals(validatorClass))
+		if(validatorClass == null)
 		{
 			return;
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* GET VALIDATOR                                                   */
-		/*-----------------------------------------------------------------*/
-
-		Class<?> clazz = s_roleValidators.get(validatorClass);
-
-		if(clazz == null)
+		else
 		{
-			clazz = ClassSingleton.forName(validatorClass);
+			validatorClass = validatorClass.trim();
 
-			if(ClassSingleton.extendsClass(clazz, CommandValidator.class))
+			if(validatorClass.isEmpty() || "@NULL".equalsIgnoreCase(validatorClass))
 			{
-				throw new Exception("class `" + validatorClass + "` doesn't extend `CommandValidator`");
+				return;
 			}
-
-			s_roleValidators.put(validatorClass, clazz);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE VALIDATOR                                               */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET VALIDATOR                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Tuple1 tuple = s_commandRoleValidators.get(validatorClass);
+
+		if(tuple == null)
+		{
+			throw new Exception("could not find command validator `" + validatorClass + "`");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXECUTE VALIDATOR                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		boolean isOk;
 
 		try
 		{
-			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, command, userRoles, arguments);
+			isOk = tuple.z.newInstance().check(command, userRoles, arguments);
 		}
 		catch(Exception e)
 		{
 			throw new Exception("could not execute command validator `" + validatorClass + "`", e);
 		}
 
-		if(isOk == false)
+		if(!isOk)
 		{
 			throw new Exception("operation not authorized");
 		}
@@ -284,55 +408,99 @@ public class RoleSingleton
 		/*-----------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkNewUser(String validatorClass, String amiLogin, String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, String firstName, String lastName, String email) throws Exception
+	public static void checkNewUser(@Nullable String validatorClass, @NotNull String amiLogin, @NotNull String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, @NotNull String firstName, @NotNull String lastName, @NotNull String email) throws Exception
 	{
-		if(validatorClass == null || validatorClass.isEmpty() || "@NULL".equals(validatorClass))
+		if(validatorClass == null)
 		{
 			return;
 		}
-
-		/*-----------------------------------------------------------------*/
-		/* GET VALIDATOR                                                   */
-		/*-----------------------------------------------------------------*/
-
-		Class<?> clazz = s_userValidators.get(validatorClass);
-
-		if(clazz == null)
+		else
 		{
-			clazz = ClassSingleton.forName(validatorClass);
+			validatorClass = validatorClass.trim();
 
-			if(ClassSingleton.extendsClass(clazz, NewUserValidator.class))
+			if(validatorClass.isEmpty() || "@NULL".equalsIgnoreCase(validatorClass))
 			{
-				throw new Exception("class `" + validatorClass + "` doesn't extend `NewUserValidator`");
+				return;
 			}
-
-			s_userValidators.put(validatorClass, clazz);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE VALIDATOR                                               */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET VALIDATOR                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Tuple2 tuple = s_newUserRoleValidators.get(validatorClass);
+
+		if(tuple == null)
+		{
+			throw new Exception("could not find user validator `" + validatorClass + "`");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXECUTE VALIDATOR                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		boolean isOk;
 
 		try
 		{
-			isOk = (boolean) clazz.getMethod("check", clazz).invoke(null, amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
+			isOk = tuple.z.newInstance().check(amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
 		}
 		catch(Exception e)
 		{
 			throw new Exception("could not execute user validator `" + validatorClass + "`", e);
 		}
 
-		if(isOk == false)
+		if(!isOk)
 		{
 			throw new Exception("operation not authorized");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static StringBuilder listRoleValidator()
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"commandRoleValidator\">");
+
+		for(Tuple1 tuple: s_commandRoleValidators.values())
+		{
+			result.append("<row>")
+			     .append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
+			     .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
+			     .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"newUserRoleValidator\">");
+
+		for(Tuple2 tuple: s_newUserRoleValidators.values())
+		{
+			result.append("<row>")
+			      .append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
+			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

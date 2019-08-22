@@ -3,22 +3,24 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class GetEntityInfo extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetEntityInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetEntityInfo(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -32,17 +34,17 @@ public class GetEntityInfo extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table table = SchemaSingleton.getEntityInfo(catalog, entity);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"entity\">");
 		SchemaSingleton.appendTableToStringBuilder(result, table);
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"fields\">");
 
@@ -53,7 +55,7 @@ public class GetEntityInfo extends AbstractCommand
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"foreignKeys\">");
 
@@ -64,24 +66,28 @@ public class GetEntityInfo extends AbstractCommand
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Get the info of the given entity.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -8,11 +8,11 @@ import net.hep.ami.utility.*;
 
 public class SimpleQuerier implements Querier
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final AbstractDriver m_driver;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static
 	{
@@ -26,9 +26,9 @@ public class SimpleQuerier implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SimpleQuerier(String catalog) throws Exception
+	public SimpleQuerier(@NotNull String catalog) throws Exception
 	{
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
 		String timeZone = ConfigSingleton.getProperty("time_zone", "UTC");
@@ -36,21 +36,21 @@ public class SimpleQuerier implements Querier
 		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, true, false);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SimpleQuerier(String catalog, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	public SimpleQuerier(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SimpleQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	public SimpleQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void setReadOnly(boolean readOnly) throws Exception
@@ -58,108 +58,118 @@ public class SimpleQuerier implements Querier
 		m_driver.setReadOnly(readOnly);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public String mqlToSQL(String entity, String mql) throws Exception
+	public String mqlToSQL(@NotNull String entity, @NotNull String mql) throws Exception
 	{
 		return m_driver.mqlToSQL(entity, mql);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public String mqlToAST(String entity, String mql) throws Exception
+	public String mqlToAST(@NotNull String entity, @NotNull String mql) throws Exception
 	{
 		return m_driver.mqlToAST(entity, mql);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
 	{
 		return m_driver.executeMQLQuery(entity, mql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public RowSet executeSQLQuery(@Nullable String entity, String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLQuery(entity, sql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public RowSet executeRawQuery(@Nullable String entity, String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, Object... args) throws Exception
 	{
 		return m_driver.executeRawQuery(entity, raw, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
 	{
 		return m_driver.executeMQLUpdate(entity, mql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public Update executeSQLUpdate(String sql, Object... args) throws Exception
+	public Update executeSQLUpdate(@NotNull String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLUpdate(sql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public Update executeRawUpdate(String raw, Object... args) throws Exception
+	public Update executeRawUpdate(@NotNull String raw, Object... args) throws Exception
 	{
 		return m_driver.executeRawUpdate(raw, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public PreparedStatement preparedStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void commit() throws Exception
 	{
 		m_driver.commit();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void rollback() throws Exception
 	{
 		m_driver.rollback();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void commitAndRelease() throws Exception
 	{
 		m_driver.commitAndRelease();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void rollbackAndRelease() throws Exception
 	{
 		m_driver.rollbackAndRelease();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	@Deprecated
 	public Connection getConnection()
@@ -167,8 +177,9 @@ public class SimpleQuerier implements Querier
 		return m_driver.getConnection();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	@Deprecated
 	public Statement getStatement()
@@ -176,77 +187,86 @@ public class SimpleQuerier implements Querier
 		return m_driver.getStatement();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getInternalCatalog()
 	{
 		return m_driver.getInternalCatalog();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getExternalCatalog()
 	{
 		return m_driver.getExternalCatalog();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public DriverMetadata.Type getJdbcType()
 	{
 		return m_driver.getJdbcType();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getJdbcProto()
 	{
 		return m_driver.getJdbcProto();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getJdbcClass()
 	{
 		return m_driver.getJdbcClass();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	////////
 	@Override
-	public boolean getBackslashEscapes()
+	public int getJdbcFlags()
 	{
-		return m_driver.getBackslashEscapes();
+		return m_driver.getJdbcFlags();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getJdbcUrl()
 	{
 		return m_driver.getJdbcUrl();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getUser()
 	{
 		return m_driver.getUser();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getPass()
 	{
 		return m_driver.getPass();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

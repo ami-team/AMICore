@@ -4,21 +4,23 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class AddRole extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public AddRole(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public AddRole(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String role = arguments.get("role");
 
@@ -31,7 +33,7 @@ public class AddRole extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("INSERT INTO `router_role` (`role`, `description`, `validatorClass`) VALUES (?, ?, ?)",
 			role,
@@ -39,7 +41,7 @@ public class AddRole extends AbstractCommand
 			roleValidatorClass
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder(
 			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
@@ -47,19 +49,23 @@ public class AddRole extends AbstractCommand
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Add a role.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-role=\"value\" (-description=\"\")? (-roleValidatorClass=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

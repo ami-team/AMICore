@@ -3,6 +3,7 @@ package net.hep.ami.command;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.nio.charset.*;
 
 import org.w3c.dom.*;
 
@@ -12,51 +13,52 @@ import net.hep.ami.utility.parser.*;
 
 public abstract class AbstractProxyCommand extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public AbstractProxyCommand(Set<String> userRoles, Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public final StringBuilder main(Map<String, String> arguments) throws Exception
+	public final StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* BUILD POST DATA                                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* BUILD POST DATA                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		StringBuffer argumentString = new StringBuffer();
+		StringBuilder argumentString = new StringBuilder();
 
 		for(Map.Entry<String, String> entry: arguments.entrySet())
 		{
 			argumentString.append(" -").append(entry.getKey()).append("=\"").append(Utility.escapeJavaString(entry.getValue())).append("\"");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
 		argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		StringBuilder input = new StringBuilder().append("Command=").append(command()).append(URLEncoder.encode(argumentString.toString(), "UTF-8"));
+		StringBuilder input = new StringBuilder().append("Command=").append(command()).append(URLEncoder.encode(argumentString.toString(), StandardCharsets.UTF_8));
 
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE COMMAND                                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXECUTE COMMAND                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		HttpURLConnection connection = HttpConnectionFactory.connection(ConfigSingleton.getProperty("proxy_command_endpoint"));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Document document;
 
 		try
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF");
 			connection.setRequestProperty("Content-Length", String.valueOf(input.length()));
@@ -70,25 +72,25 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			try(OutputStream outputStream = connection.getOutputStream())
 			{
 				TextFile.write(outputStream, input);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			document = XMLFactory.newDocument(connection.getInputStream());
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		finally
 		{
 			connection.disconnect();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder result = new StringBuilder();
 
@@ -108,15 +110,14 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 			result.append(XMLFactory.nodeToString(node));
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	abstract protected String command();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

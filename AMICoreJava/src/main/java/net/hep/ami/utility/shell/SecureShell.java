@@ -9,13 +9,13 @@ import net.hep.ami.utility.*;
 
 public class SecureShell extends AbstractShell
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	JSch m_jsch;
 
 	Session m_session;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static final Properties s_properties = new Properties();
 
@@ -26,11 +26,11 @@ public class SecureShell extends AbstractShell
 		s_properties.put("PreferredAuthentications", "publickey,password");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public SecureShell(String host, int port, String user, String passwordOrPrivateKey) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_jsch = new JSch();
 
@@ -38,7 +38,7 @@ public class SecureShell extends AbstractShell
 
 		m_session.setConfig(s_properties);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(passwordOrPrivateKey.length() > 64)
 		{
@@ -49,10 +49,10 @@ public class SecureShell extends AbstractShell
 			m_session.setPassword(passwordOrPrivateKey);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void connect() throws Exception
@@ -60,15 +60,15 @@ public class SecureShell extends AbstractShell
 		m_session.connect();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void disconnect() throws Exception
+	public void disconnect() ////// Exception
 	{
 		m_session.disconnect();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public ShellTuple exec(String[] args) throws Exception
@@ -76,7 +76,7 @@ public class SecureShell extends AbstractShell
 		StringBuilder inputStringBuilder = new StringBuilder();
 		StringBuilder errorStringBuilder = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		ChannelExec channel = (ChannelExec) m_session.openChannel("exec");
 
@@ -95,7 +95,7 @@ public class SecureShell extends AbstractShell
 				inputThread.join();
 				errorThread.join();
 
-				while(channel.isClosed() == false)
+				while(!channel.isClosed())
 				{
 					Thread.sleep(10);
 				}
@@ -106,14 +106,14 @@ public class SecureShell extends AbstractShell
 			channel.disconnect();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new ShellTuple(channel.getExitStatus(), inputStringBuilder, errorStringBuilder);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
@@ -139,7 +139,7 @@ public class SecureShell extends AbstractShell
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void writeTextFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
@@ -165,5 +165,5 @@ public class SecureShell extends AbstractShell
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

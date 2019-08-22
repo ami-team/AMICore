@@ -1,44 +1,45 @@
 package net.hep.ami.utility;
 
 import java.io.*;
+import java.util.*;
 import java.nio.charset.*;
 
 public class TextFile
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private TextFile() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void read(StringBuilder stringBuilder, File file) throws Exception
+	public static void read(@NotNull StringBuilder stringBuilder, @NotNull File file) throws Exception
 	{
 		read(stringBuilder, new FileInputStream(file));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void readLine(StringBuilder stringBuilder, File file) throws Exception
-	{
-		readLine(stringBuilder, new FileInputStream(file));
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void write(File file, CharSequence charSequence) throws Exception
+	public static void write(@NotNull File file, @NotNull CharSequence charSequence) throws Exception
 	{
 		write(new FileOutputStream(file), charSequence);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void read(StringBuilder stringBuilder, InputStream inputStream) throws Exception
+	@NotNull
+	public static Iterable<String> inputStreamToIterable(@NotNull File file, boolean trim) throws Exception
+	{
+		return inputStreamToIterable(new FileInputStream(file), trim);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void read(@NotNull StringBuilder stringBuilder, @NotNull InputStream inputStream) throws Exception
 	{
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
-		String line;
-
-		while((line = bufferedReader.readLine()) != null)
+		for(String line; (line = bufferedReader.readLine()) != null; )
 		{
 			stringBuilder.append(line)
 			             .append('\n')
@@ -46,25 +47,9 @@ public class TextFile
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void readLine(StringBuilder stringBuilder, InputStream inputStream) throws Exception
-	{
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-		String line;
-
-		if((line = bufferedReader.readLine()) != null)
-		{
-			stringBuilder.append(line)
-			             /////////////
-			;
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static void write(OutputStream outputStream, CharSequence charSequence) throws Exception
+	public static void write(@NotNull OutputStream outputStream, @NotNull CharSequence charSequence) throws Exception
 	{
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 
@@ -73,5 +58,104 @@ public class TextFile
 		outputStreamWriter.flush();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static Iterable<String> inputStreamToIterable(@NotNull InputStream inputStream, boolean trim)
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(!trim)
+		{
+			return () -> new Iterator<>()
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				private String m_line;
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				@Override
+				public boolean hasNext()
+				{
+					try
+					{
+						return (m_line = bufferedReader.readLine()) != null;
+					}
+					catch(Exception e)
+					{
+						m_line = null;
+
+						throw new RuntimeException(e);
+					}
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				@NotNull
+				@Override
+				public String next()
+				{
+					if(m_line != null)
+					{
+						return m_line;
+					}
+
+					throw new NoSuchElementException();
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			};
+		}
+		else
+		{
+			return () -> new Iterator<>()
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				private String m_line;
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				@Override
+				public boolean hasNext()
+				{
+					try
+					{
+						return (m_line = bufferedReader.readLine()) != null;
+					}
+					catch(Exception e)
+					{
+						m_line = null;
+
+						throw new RuntimeException(e);
+					}
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				@NotNull
+				@Override
+				public String next()
+				{
+					if(m_line != null)
+					{
+						return m_line.trim();
+					}
+
+					throw new NoSuchElementException();
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			};
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

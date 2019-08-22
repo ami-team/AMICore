@@ -6,7 +6,7 @@ import net.hep.ami.utility.*;
 
 public class SimpleShell extends AbstractShell
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public ShellTuple exec(String[] args) throws Exception
@@ -29,21 +29,21 @@ public class SimpleShell extends AbstractShell
 		return new ShellTuple(process.waitFor(), inputStringBuilder, errorStringBuilder);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void connect() throws Exception
+	public void connect()
 	{
-		/* N/A */
+		/* DO NOTHING */
 	}
 
 	@Override
-	public void disconnect() throws Exception
+	public void disconnect()
 	{
-		/* N/A */
+		/* DO NOTHING */
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
@@ -54,7 +54,7 @@ public class SimpleShell extends AbstractShell
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void writeTextFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
@@ -65,5 +65,5 @@ public class SimpleShell extends AbstractShell
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

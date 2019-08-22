@@ -2,6 +2,7 @@ package net.hep.ami.jdbc;
 
 import java.io.*;
 import java.sql.*;
+import java.util.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
@@ -12,11 +13,11 @@ import net.hep.ami.utility.*;
 
 public class Router implements Querier
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final AbstractDriver m_driver;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public Router() throws Exception
 	{
@@ -28,11 +29,12 @@ public class Router implements Querier
 			ConfigSingleton.getProperty("router_pass"),
 			ConfigSingleton.getProperty("time_zone", "UTC")
 		);
+		Objects.hash();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Router(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String timeZone) throws Exception
+	public Router(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String timeZone) throws Exception
 	{
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
 
@@ -49,7 +51,7 @@ public class Router implements Querier
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void setReadOnly(boolean readOnly) throws Exception
@@ -57,107 +59,116 @@ public class Router implements Querier
 		m_driver.setReadOnly(readOnly);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public String mqlToSQL(String entity, String mql) throws Exception
+	public String mqlToSQL(@NotNull String entity, @NotNull String mql) throws Exception
 	{
 		return m_driver.mqlToSQL(entity, mql);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public String mqlToAST(String entity, String mql) throws Exception
+	public String mqlToAST(@NotNull String entity, @NotNull String mql) throws Exception
 	{
 		return m_driver.mqlToAST(entity, mql);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
 	{
 		return m_driver.executeMQLQuery(entity, mql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public RowSet executeSQLQuery(@Nullable String entity, String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLQuery(entity, sql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public RowSet executeRawQuery(@Nullable String entity, String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, Object... args) throws Exception
 	{
 		return m_driver.executeRawQuery(entity, raw, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
 	{
 		return m_driver.executeMQLUpdate(entity, mql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public Update executeSQLUpdate(String sql, Object... args) throws Exception
+	public Update executeSQLUpdate(@NotNull String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLUpdate(sql, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public Update executeRawUpdate(String raw, Object... args) throws Exception
+	public Update executeRawUpdate(@NotNull String raw, Object... args) throws Exception
 	{
 		return m_driver.executeRawUpdate(raw, args);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public PreparedStatement preparedStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void commit() throws Exception
 	{
 		m_driver.commit();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void rollback() throws Exception
 	{
 		m_driver.rollback();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void commitAndRelease() throws Exception
 	{
 		m_driver.commitAndRelease();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void rollbackAndRelease() throws Exception
 	{
 		m_driver.rollbackAndRelease();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	@Deprecated
@@ -166,7 +177,7 @@ public class Router implements Querier
 		return m_driver.getConnection();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	@Deprecated
@@ -175,79 +186,88 @@ public class Router implements Querier
 		return m_driver.getStatement();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getInternalCatalog()
 	{
 		return m_driver.getInternalCatalog();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getExternalCatalog()
 	{
 		return m_driver.getExternalCatalog();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public DriverMetadata.Type getJdbcType()
 	{
 		return m_driver.getJdbcType();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getJdbcProto()
 	{
 		return m_driver.getJdbcProto();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getJdbcClass()
 	{
 		return m_driver.getJdbcClass();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	////////
 	@Override
-	public boolean getBackslashEscapes()
+	public int getJdbcFlags()
 	{
-		return m_driver.getBackslashEscapes();
+		return m_driver.getJdbcFlags();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getJdbcUrl()
 	{
 		return m_driver.getJdbcUrl();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getUser()
 	{
 		return m_driver.getUser();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String getPass()
 	{
 		return m_driver.getPass();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Create the AMI router tables.
@@ -256,9 +276,9 @@ public class Router implements Querier
 	@SuppressWarnings("deprecation")
 	public void create() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* SELECT PROFILE                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SELECT PROFILE                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String path;
 
@@ -280,57 +300,60 @@ public class Router implements Querier
 			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* GET INPUT STREAM                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXECUTE SQL QUERIES                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		InputStream inputStream = Router.class.getResourceAsStream(path);
+		String query = "";
 
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE SQL QUERIES                                             */
-		/*-----------------------------------------------------------------*/
-
-		try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
+		try(InputStream inputStream = Router.class.getResourceAsStream(path))
 		{
-			String line = "";
-			String query = "";
-
-			while((line = bufferedReader.readLine()) != null)
+			for(String line: TextFile.inputStreamToIterable(inputStream, true))
 			{
-				line = line.trim();
-
-				if(line.isEmpty() == false
+				if(!line.isEmpty()
 				   &&
-				   line.startsWith("-") == false
+				   !line.startsWith("-")
 				 ) {
 					query += line + " ";
 
 					if(line.endsWith(";;"))
 					{
+						/*--------------------------------------------------------------------------------------------*/
+
+						query = query.substring(0, query.length() - 2);
+
+						/*--------------------------------------------------------------------------------------------*/
+
 						LogSingleton.root.info(query);
+
+						/*--------------------------------------------------------------------------------------------*/
 
 						try
 						{
-							m_driver.getStatement().executeUpdate(query.replace(";;", ""));
+							m_driver.getStatement().executeUpdate(query);
 						}
 						catch(SQLException e)
 						{
-							throw new SQLException(e.getMessage() + " for SQL query: " + query.replace(";;", ""), e);
+							throw new SQLException(e.getMessage() + " for SQL query: " + query, e);
 						}
 
+						/*--------------------------------------------------------------------------------------------*/
+
 						query = "";
+
+						/*--------------------------------------------------------------------------------------------*/
 					}
 				}
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Fill the AMI routeur tables.
+	 * Fill the AMI router tables.
 	 */
 
 	public void fill() throws Exception
@@ -338,10 +361,10 @@ public class Router implements Querier
 		fill(null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Fill the AMI routeur tables.
+	 * Fill the AMI router tables.
 	 *
 	 * @param schema The schema name, an empty string or <code>null</code>;
 	 */
@@ -358,9 +381,9 @@ public class Router implements Querier
 		String guest_user = ConfigSingleton.getProperty("guest_user");
 		String guest_pass = ConfigSingleton.getProperty("guest_pass");
 
-		/*-----------------------------------------------------------------*/
-		/* CATALOGS                                                        */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CATALOGS                                                                                                   */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.root.info("setup catalogs...");
 
@@ -374,9 +397,9 @@ public class Router implements Querier
 			"{\"router_authority\":{\"x\":250,\"y\":370,\"color\":\"#1494CC\"},\"router_catalog\":{\"x\":0,\"y\":0,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":0,\"y\":370,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":0,\"y\":270,\"color\":\"#0066CC\"},\"router_config\":{\"x\":750,\"y\":240,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":750,\"y\":400,\"color\":\"#FF0000\"},\"router_dashboard\":{\"x\":0,\"y\":640,\"color\":\"#CCCC33\"},\"router_entity\":{\"x\":250,\"y\":0,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":500,\"y\":0,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":750,\"y\":0,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":0,\"y\":890,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":500,\"y\":890,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":250,\"y\":905,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":250,\"y\":270,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":500,\"y\":640,\"color\":\"#CCCC33\"},\"router_short_url\":{\"x\":250,\"y\":640,\"color\":\"#CCCC33\"},\"router_user\":{\"x\":500,\"y\":370,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":500,\"y\":270,\"color\":\"#0066CC\"}}"
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* CONVERTERS                                                      */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CONVERTERS                                                                                                 */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.root.info("setup converters...");
 
@@ -404,9 +427,9 @@ public class Router implements Querier
 			";"
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* ROLES                                                           */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ROLES                                                                                                      */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.root.info("setup roles...");
 
@@ -446,9 +469,9 @@ public class Router implements Querier
 			";"
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* USERS                                                           */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* USERS                                                                                                      */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.root.info("setup users...");
 
@@ -528,95 +551,90 @@ public class Router implements Querier
 			"AMI_GUEST"
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* COMMANDS                                                        */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMMANDS                                                                                                   */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.root.info("setup commands...");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		PreparedStatement statement1 = preparedStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, false, null);
-
-		PreparedStatement statement2 = preparedStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, false, null);
-
-		try
+		try(PreparedStatement statement1 = preparedStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, false, null))
 		{
-			String commandName;
-			String commandRole;
-
-			int commandVisible;
-			int commandSecured;
-
-			for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
+			try(PreparedStatement statement2 = preparedStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, false, null))
 			{
-				Class<?> clazz = ClassSingleton.forName(commandClass);
+				String commandName;
+				String commandRole;
 
-				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
+				int commandVisible;
+				int commandSecured;
 
-				if(commandMetadata != null
-				   &&
-				   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
-				   &&
-				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
-				 ) {
-					/*-----------------------------------------------------*/
+				for(String commandClass : ClassSingleton.findClassNames("net.hep.ami.command"))
+				{
+					Class<?> clazz = ClassSingleton.forName(commandClass);
 
-					commandName = clazz.getSimpleName();
+					CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
 
-					commandRole = commandMetadata.role();
+					if(commandMetadata != null
+						   &&
+						   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+						   &&
+						   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
+					)
+					{
+						/*------------------------------------------------------------------------------------------------*/
 
-					commandVisible = commandMetadata.visible() ? 1 : 0;
-					commandSecured = commandMetadata.secured() ? 1 : 0;
+						commandName = clazz.getSimpleName();
 
-					/*-----------------------------------------------------*/
+						commandRole = commandMetadata.role();
 
-					statement1.setString(1, commandName);
-					statement1.setString(2, commandClass);
-					statement1.setInt(3, commandVisible);
-					statement1.setInt(4, commandSecured);
+						commandVisible = commandMetadata.visible() ? 1 : 0;
+						commandSecured = commandMetadata.secured() ? 1 : 0;
 
-					statement2.setString(1, commandName);
-					statement2.setString(2, commandRole);
+						/*------------------------------------------------------------------------------------------------*/
 
-					statement1.addBatch();
-					statement2.addBatch();
+						statement1.setString(1, commandName);
+						statement1.setString(2, commandClass);
+						statement1.setInt(3, commandVisible);
+						statement1.setInt(4, commandSecured);
 
-					/*-----------------------------------------------------*/
+						statement2.setString(1, commandName);
+						statement2.setString(2, commandRole);
+
+						statement1.addBatch();
+						statement2.addBatch();
+
+						/*------------------------------------------------------------------------------------------------*/
+					}
 				}
+
+				statement1.executeBatch();
+				statement2.executeBatch();
 			}
-
-			statement1.executeBatch();
-			statement2.executeBatch();
-		}
-		finally
-		{
-			statement2.close();
-			statement1.close();
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* LOCALIZATION                                                    */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* LOCALIZATION                                                                                               */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.root.info("setup localization...");
 
-		//LocalizationSingleton.importCSVToAMI(this);
+		LocalizationSingleton.importCSVToAMI(this);
 
-		/*-----------------------------------------------------------------*/
-		/* DONE                                                            */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* DONE                                                                                                       */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.root.info("done");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void patchSchemaSingleton() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_config = SchemaSingleton.getEntityInfo("self", "router_config");
 
@@ -627,7 +645,7 @@ public class Router implements Querier
 		router_config.columns.get("modified").modified = true;
 		router_config.columns.get("modifiedBy").modifiedBy = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_catalog = SchemaSingleton.getEntityInfo("self", "router_catalog");
 
@@ -642,7 +660,7 @@ public class Router implements Querier
 		router_catalog.columns.get("modified").modified = true;
 		router_catalog.columns.get("modifiedBy").modifiedBy = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_entity = SchemaSingleton.getEntityInfo("self", "router_entity");
 
@@ -651,7 +669,7 @@ public class Router implements Querier
 		router_entity.columns.get("modified").modified = true;
 		router_entity.columns.get("modifiedBy").modifiedBy = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_field = SchemaSingleton.getEntityInfo("self", "router_field");
 
@@ -660,7 +678,7 @@ public class Router implements Querier
 		router_field.columns.get("modified").modified = true;
 		router_field.columns.get("modifiedBy").modifiedBy = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key");
 
@@ -669,26 +687,26 @@ public class Router implements Querier
 		router_foreign_key.columns.get("modified").modified = true;
 		router_foreign_key.columns.get("modifiedBy").modifiedBy = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_command_role = SchemaSingleton.getEntityInfo("self", "router_command_role");
 
 		router_command_role.bridge = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_user_role = SchemaSingleton.getEntityInfo("self", "router_user_role");
 
 		router_user_role.bridge = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_command = SchemaSingleton.getEntityInfo("self", "router_command");
 
 		router_command.columns.get("visible").groupable = true;
 		router_command.columns.get("secured").groupable = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_user = SchemaSingleton.getEntityInfo("self", "router_user");
 
@@ -702,7 +720,7 @@ public class Router implements Querier
 		router_user.columns.get("created").created = true;
 		router_user.columns.get("modified").modified = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
 
@@ -710,7 +728,7 @@ public class Router implements Querier
 		router_short_url.columns.get("created").created = true;
 		router_short_url.columns.get("modified").modified = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_dashboard = SchemaSingleton.getEntityInfo("self", "router_dashboard");
 
@@ -718,7 +736,7 @@ public class Router implements Querier
 		router_dashboard.columns.get("created").created = true;
 		router_dashboard.columns.get("modified").modified = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_authority = SchemaSingleton.getEntityInfo("self", "router_authority");
 
@@ -734,7 +752,7 @@ public class Router implements Querier
 		router_authority.columns.get("modified").modified = true;
 		router_authority.columns.get("modifiedBy").modifiedBy = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SchemaSingleton.Table router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface");
 
@@ -744,12 +762,12 @@ public class Router implements Querier
 		router_search_interface.columns.get("modified").modified = true;
 		router_search_interface.columns.get("modifiedBy").modifiedBy = true;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void reload(boolean full) throws Exception
+	public static void reload(boolean full)
 	{
 		ClassSingleton.reload(/**/);
 		ConfigSingleton.reload(/**/);
@@ -761,5 +779,5 @@ public class Router implements Querier
 		ConverterSingleton.reload(/**/);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

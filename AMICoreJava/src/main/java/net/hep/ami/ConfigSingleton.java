@@ -5,54 +5,68 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.parser.*;
 
 public class ConfigSingleton
 {
-	/*---------------------------------------------------------------------*/
-
-	private static final String INVALID_AMI_CONFIG_FILE = "invalid AMI configuration file";
-
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Map<String, String> s_properties = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Set<String> s_reserved = new HashSet<>();
+	private static final Set<String> s_reservedParams = new HashSet<>();
+	private static final Set<String> s_neededParams = new HashSet<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static String s_configPathName = "N/A";
 	private static String s_configFileName = "N/A";
 
-	private static boolean s_validConfigFile = false;
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	/*---------------------------------------------------------------------*/
-
+	@org.jetbrains.annotations.Contract(pure = true)
 	private ConfigSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static
 	{
-		s_reserved.add("base_url");
-		s_reserved.add("admin_user");
-		s_reserved.add("admin_pass");
-		s_reserved.add("admin_email");
-		s_reserved.add("guest_user");
-		s_reserved.add("guest_pass");
-		s_reserved.add("encryption_key");
-		s_reserved.add("router_catalog");
-		s_reserved.add("router_schema");
-		s_reserved.add("router_url");
-		s_reserved.add("router_user");
-		s_reserved.add("router_pass");
-		s_reserved.add("time_zone");
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		s_reservedParams.add("base_url");
+		s_reservedParams.add("admin_user");
+		s_reservedParams.add("admin_pass");
+		s_reservedParams.add("admin_email");
+		s_reservedParams.add("guest_user");
+		s_reservedParams.add("guest_pass");
+		s_reservedParams.add("encryption_key");
+		s_reservedParams.add("router_catalog");
+		s_reservedParams.add("router_schema");
+		s_reservedParams.add("router_url");
+		s_reservedParams.add("router_user");
+		s_reservedParams.add("router_pass");
+		s_reservedParams.add("time_zone");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		s_neededParams.add("base_url");
+		s_neededParams.add("admin_user");
+		s_neededParams.add("admin_pass");
+		s_neededParams.add("admin_email");
+		s_neededParams.add("encryption_key");
+		s_neededParams.add("router_catalog");
+		s_neededParams.add("router_url");
+		s_neededParams.add("router_user");
+		s_neededParams.add("router_pass");
+		s_neededParams.add("time_zone");
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		reload();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void reload()
 	{
@@ -70,31 +84,33 @@ public class ConfigSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static File toFile(String configPathName)
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> new")
+	private static File toFile(@NotNull String configPathName)
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(configPathName.toLowerCase().endsWith(".xml") == false)
+		if(!configPathName.toLowerCase().endsWith(".xml"))
 		{
 			configPathName = configPathName + File.separator + "AMI.xml";
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new File(configPathName);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static void loadConfigFile() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* FIND CONFIG FILE                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* FIND CONFIG FILE                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		File file;
 		String path;
@@ -103,21 +119,21 @@ public class ConfigSingleton
 
 		if(path == null
 		   ||
-		   (file = toFile(path)).exists() == false
+		   !(file = toFile(path)).exists()
 		 ) {
 
 			path = System.getProperty("catalina.base");
 
 			if(path == null
 			   ||
-			   (file = toFile(path + File.separator + "conf")).exists() == false
+			   !(file = toFile(path + File.separator + "conf")).exists()
 			 ) {
 
 				path = System.getProperty((("user.home")));
 
 				if(path == null
 				   ||
-				   (file = toFile(path + File.separator + ".ami")).exists() == false
+				   !(file = toFile(path + File.separator + ".ami")).exists()
 				 ) {
 					/*----------------------------*/
 					/* DEFAULT FOR DEBs/RPMs      */
@@ -130,46 +146,46 @@ public class ConfigSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_configPathName = file.getParentFile().getPath();
 		s_configFileName = file        .        getPath();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try(InputStream inputStream = new FileInputStream(file))
 		{
-			/*-------------------------------------------------------------*/
-			/* PARSE CONFIG FILE                                           */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* PARSE CONFIG FILE                                                                                      */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			org.w3c.dom.Document document = XMLFactory.newDocument(inputStream);
 
-			/*-------------------------------------------------------------*/
-			/* READ CONFIG FILE                                            */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* READ CONFIG FILE                                                                                       */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			org.w3c.dom.NodeList nodeList = document.getElementsByTagName("property");
 
-			/*-------------------------------------------------------------*/
-			/* ADD PROPERTIES                                              */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* ADD PROPERTIES                                                                                         */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(org.w3c.dom.Node node: XMLFactory.nodeListToIterable(nodeList))
 			{
 				s_properties.put(
-					XMLFactory.getAttribute(node,
-					                         "name"),
-					XMLFactory.getContent(node)
+					XMLFactory.getNodeAttribute(node,
+					                             "name"),
+					XMLFactory.getNodeContent(node)
 				);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* DEFAULT USERS                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* DEFAULT USERS                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_properties.put("sudoer_user", "sudoer");
 		s_properties.put("sudoer_pass", s_properties.get("admin_pass"));
@@ -180,69 +196,44 @@ public class ConfigSingleton
 		s_properties.put("guest_user", "guest");
 		s_properties.put("guest_pass", "guest");
 
-		/*-----------------------------------------------------------------*/
-		/* CHECK CONFIG                                                    */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK CONFIG                                                                                               */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		s_validConfigFile = false;
+		checkValidAMIConfigFile();
 
-		if(getProperty("base_url").isEmpty()
-		   ||
-		   getProperty("admin_user").isEmpty()
-		   ||
-		   getProperty("admin_pass").isEmpty()
-		   ||
-		   getProperty("admin_email").isEmpty()
-		   ||
-		   getProperty("encryption_key").isEmpty()
-		   ||
-		   getProperty("router_catalog").isEmpty()
-		   ||
-		   getProperty("router_url").isEmpty()
-		   ||
-		   getProperty("router_user").isEmpty()
-		   ||
-		   getProperty("router_pass").isEmpty()
-		   ||
-		   getProperty("time_zone").isEmpty()
-		) {
-			throw new Exception(INVALID_AMI_CONFIG_FILE);
-		}
-
-		s_validConfigFile = true;
-
-		/*-----------------------------------------------------------------*/
-		/* RESET LOGGERS                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* RESET LOGGERS                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.reset("WARN");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void readDataBase() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE QUERIER                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Router router = new Router();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* EXECUTE QUERY                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			RowSet rowSet = router.executeSQLQuery("router_config", "SELECT `paramName`, `paramValue` FROM `router_config`");
 
-			/*-------------------------------------------------------------*/
-			/* ADD PROPERTIES                                              */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* ADD PROPERTIES                                                                                         */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			String name;
 			String value;
@@ -252,67 +243,64 @@ public class ConfigSingleton
 				name = row.getValue(0);
 				value = row.getValue(1);
 
-				if(s_reserved.contains(name) == false)
+				if(!s_reservedParams.contains(name))
 				{
 					s_properties.put(name, value);
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		finally
 		{
 			router.rollbackAndRelease();
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* RESET LOGGERS                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* RESET LOGGERS                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LogSingleton.reset("WARN");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static int setPropertyInDataBase(Querier querier, String name, String value, String AMIUser) throws Exception
+	public static int setPropertyInDataBase(@NotNull Querier querier, @NotNull String name, @Nullable String value, @NotNull String AMIUser) throws Exception
 	{
 		int result;
 
 		name = SecuritySingleton.encrypt(name);
 		value = SecuritySingleton.encrypt(value);
 
-		/*------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rows = querier.executeSQLQuery("router_config", "SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?", name).getAll();
 
-		/*------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(rows.size() == 0)
+		/**/ if(rows.isEmpty())
 		{
 			result = querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, AMIUser, AMIUser).getNbOfUpdatedRows();
 		}
+		else if(!rows.get(0).getValue(0).equals(value))
+		{
+			result = querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, AMIUser, name).getNbOfUpdatedRows();
+		}
 		else
 		{
-			if(rows.get(0).getValue(0).equals(value) == false)
-			{
-				result = querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, AMIUser, name).getNbOfUpdatedRows();
-			}
-			else
-			{
-				result = 0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
-			}
+			result = 0;
 		}
 
-		/*------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static int removePropertyInDataBase(Querier querier, String name) throws Exception
+	public static int removePropertyInDataBase(@NotNull Querier querier, @NotNull String name) throws Exception
 	{
 		Update update = querier.executeSQLUpdate("DELETE FROM `router_config` WHERE `paramName` = ?",
 			SecuritySingleton.encrypt(name)
@@ -321,356 +309,279 @@ public class ConfigSingleton
 		return update.getNbOfUpdatedRows();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String getConfigPathName()
 	{
 		return s_configPathName;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String getConfigFileName()
 	{
 		return s_configFileName;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void checkValidAMIConfigFile() throws Exception
 	{
-		if(s_validConfigFile == false)
+		for(String key: s_neededParams)
 		{
-			throw new Exception(INVALID_AMI_CONFIG_FILE);
+			if(getProperty(key, (String) null) == null)
+			{
+				throw new Exception("invalid AMI configuration file");
+			}
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
-	/* SYSTEM                                                              */
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* HELPERS                                                                                                        */
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String setSystemProperty(String key, String value)
+	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
+	public static String checkString(@Nullable String currentValue, @Nullable String defaultValue)
 	{
-		return System.setProperty(key, value);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String removeSystemProperty(String key)
-	{
-		return System.clearProperty(key);
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String getSystemProperty(String key)
-	{
-		String result = System.getProperty(key);
-
-		return result != null && result.isEmpty() == false && "@NULL".equals(result) == false ? result : "";
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static String getSystemProperty(String key, String defaultValue)
-	{
-		String result = System.getProperty(key);
-
-		return result != null && result.isEmpty() == false && "@NULL".equals(result) == false ? result : defaultValue;
-	}
-	/*---------------------------------------------------------------------*/
-
-	public static boolean getSystemProperty(String key, boolean defaultValue)
-	{
-		boolean result;
-
-		String tmpValue = System.getProperty(key);
-
-		if(tmpValue != null)
+		if(currentValue != null)
 		{
-			tmpValue = tmpValue.trim().toLowerCase();
+			String tempValue = currentValue.trim();
 
-			/**/ if("1".equals(tmpValue)
-			        ||
-			        "on".equals(tmpValue)
-			        ||
-			        "yes".equals(tmpValue)
-			        ||
-			        "true".equals(tmpValue)
-			 ) {
-				result = true;
-			}
-			else if("0".equals(tmpValue)
-			        ||
-			        "off".equals(tmpValue)
-			        ||
-			        "no".equals(tmpValue)
-			        ||
-			        "false".equals(tmpValue)
-			 ) {
-				result = false;
-			}
-			else
+			if(!tempValue.isEmpty() && !"@NULL".equalsIgnoreCase(tempValue))
 			{
-				result = defaultValue;
+				return currentValue;
 			}
+		}
+
+		return defaultValue;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* SYSTEM PROPERTIES                                                                                              */
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String setSystemProperty(@NotNull String key, @Nullable String value)
+	{
+		value = checkString(value, null);
+
+		if(value != null)
+		{
+			return checkString(System.setProperty(key, value), "");
 		}
 		else
 		{
-			result = defaultValue;
+			return checkString(System.clearProperty(key), "");
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static int getSystemProperty(String key, int defaultValue)
+	@NotNull
+	public static String removeSystemProperty(@NotNull String key)
 	{
-		int result;
+		return checkString(System.clearProperty(key), "");
+	}
 
-		String tmpValue = System.getProperty(key);
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-		if(tmpValue != null && tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
+	@NotNull
+	public static String getSystemProperty(@NotNull String key)
+	{
+		return checkString(System.getProperty(key), "");
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static String getSystemProperty(@NotNull String key, @Nullable String defaultValue)
+	{
+		return checkString(System.getProperty(key), defaultValue);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Boolean getSystemProperty(@NotNull String key, Boolean defaultValue)
+	{
+		try
 		{
-			try
-			{
-				result = Integer.parseInt(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
+			return Bool.valueOf(checkString(System.getProperty(key), ""));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Integer getSystemProperty(@NotNull String key, Integer defaultValue)
+	{
+		try
+		{
+			return Integer.valueOf(checkString(System.getProperty(key), ""));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Float getSystemProperty(@NotNull String key, Float defaultValue)
+	{
+		try
+		{
+			return Float.valueOf(checkString(System.getProperty(key), ""));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Double getSystemProperty(@NotNull String key, Double defaultValue)
+	{
+		try
+		{
+			return Double.valueOf(checkString(System.getProperty(key), ""));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* AMI PROPERTIES                                                                                                 */
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String setProperty(@NotNull String key, @Nullable String value)
+	{
+		value = checkString(value, null);
+
+		if(value != null)
+		{
+			return checkString(s_properties.put(key, value), "");
 		}
 		else
 		{
-			result = defaultValue;
+			return checkString(s_properties.remove(key), "");
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static float getSystemProperty(String key, float defaultValue)
+	@NotNull
+	public static String removeProperty(@NotNull String key)
 	{
-		float result;
-
-		String tmpValue = System.getProperty(key);
-
-		if(tmpValue != null && tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
-		{
-			try
-			{
-				result = Float.parseFloat(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
-		}
-		else
-		{
-			result = defaultValue;
-		}
-
-		return result;
+		return checkString(s_properties.remove(key), "");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static double getSystemProperty(String key, double defaultValue)
+	@NotNull
+	public static String getProperty(@NotNull String key)
 	{
-		double result;
-
-		String tmpValue = System.getProperty(key);
-
-		if(tmpValue != null && tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
-		{
-			try
-			{
-				result = Double.parseDouble(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
-		}
-		else
-		{
-			result = defaultValue;
-		}
-
-		return result;
+		return checkString(s_properties.get(key), "");
 	}
 
-	/*---------------------------------------------------------------------*/
-	/* AMI                                                                 */
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String setProperty(String key, String value)
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static String getProperty(@NotNull String key, @Nullable String defaultValue)
 	{
-		return s_properties.put(key, value);
+		return checkString(s_properties.get(key), defaultValue);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String removeProperty(String key)
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Boolean getProperty(@NotNull String key, Boolean defaultValue)
 	{
-		return s_properties.remove(key);
+		try
+		{
+			return Bool.valueOf(checkString(s_properties.get(key), ""));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String getProperty(String key)
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Integer getProperty(@NotNull String key, Integer defaultValue)
 	{
-		String result = s_properties.get(key);
-
-		return result != null && result.isEmpty() == false && "@NULL".equals(result) == false ? result : "";
+		try
+		{
+			return Integer.valueOf(checkString(s_properties.get(key), ""));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String getProperty(String key, String defaultValue)
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Float getProperty(@NotNull String key, Float defaultValue)
 	{
-		String result = s_properties.get(key);
-
-		return result != null && result.isEmpty() == false && "@NULL".equals(result) == false ? result : defaultValue;
+		try
+		{
+			return Float.valueOf(checkString(s_properties.get(key), ""));
+		}
+		catch(NumberFormatException e)
+		{
+			return defaultValue;
+		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static boolean getProperty(String key, boolean defaultValue)
+	@Nullable
+	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	public static Double getProperty(@NotNull String key, Double defaultValue)
 	{
-		boolean result;
-
-		String tmpValue = s_properties.get(key);
-
-		if(tmpValue != null)
+		try
 		{
-			tmpValue = tmpValue.trim().toLowerCase();
-
-			/**/ if("1".equals(tmpValue)
-			        ||
-			        "on".equals(tmpValue)
-			        ||
-			        "yes".equals(tmpValue)
-			        ||
-			        "true".equals(tmpValue)
-			 ) {
-				result = true;
-			}
-			else if("0".equals(tmpValue)
-			        ||
-			        "off".equals(tmpValue)
-			        ||
-			        "no".equals(tmpValue)
-			        ||
-			        "false".equals(tmpValue)
-			 ) {
-				result = false;
-			}
-			else
-			{
-				result = defaultValue;
-			}
+			return Double.valueOf(checkString(s_properties.get(key), ""));
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			result = defaultValue;
+			return defaultValue;
 		}
-
-		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static int getProperty(String key, int defaultValue)
-	{
-		int result;
-
-		String tmpValue = s_properties.get(key);
-
-		if(tmpValue != null && tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
-		{
-			try
-			{
-				result = Integer.parseInt(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
-		}
-		else
-		{
-			result = defaultValue;
-		}
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static float getProperty(String key, float defaultValue)
-	{
-		float result;
-
-		String tmpValue = s_properties.get(key);
-
-		if(tmpValue != null && tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
-		{
-			try
-			{
-				result = Float.parseFloat(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
-		}
-		else
-		{
-			result = defaultValue;
-		}
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static double getProperty(String key, double defaultValue)
-	{
-		double result;
-
-		String tmpValue = s_properties.get(key);
-
-		if(tmpValue != null && tmpValue.isEmpty() == false && "@NULL".equals(tmpValue) == false)
-		{
-			try
-			{
-				result = Double.parseDouble(tmpValue);
-			}
-			catch(NumberFormatException e)
-			{
-				result = defaultValue;
-			}
-		}
-		else
-		{
-			result = defaultValue;
-		}
-
-		return result;
-	}
-
-	/*---------------------------------------------------------------------*/
-
+	@NotNull
 	public static StringBuilder showConfig()
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"paths\">")
 		      .append("<row>")
@@ -680,7 +591,7 @@ public class ConfigSingleton
 		      .append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"params\">");
 
@@ -694,10 +605,10 @@ public class ConfigSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

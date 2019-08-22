@@ -7,31 +7,33 @@ import java.lang.reflect.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class FindNewCommands extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public FindNewCommands(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public FindNewCommands(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		ClassSingleton.reload();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String commandName;
 		String commandRole;
@@ -61,17 +63,17 @@ public class FindNewCommands extends AbstractCommand
 				   &&
 				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
 				   &&
-				   existingCommandNames.contains(commandName = clazz.getSimpleName()) == false
+				   !existingCommandNames.contains(commandName = clazz.getSimpleName())
 				 ) {
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					commandRole = commandMetadata.role();
 
 					commandVisible = commandMetadata.visible() ? 1 : 0;
 					commandSecured = commandMetadata.secured() ? 1 : 0;
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					statement1.setString(1, commandName);
 					statement1.setString(2, commandClass);
@@ -84,11 +86,11 @@ public class FindNewCommands extends AbstractCommand
 					statement1.addBatch();
 					statement2.addBatch();
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					foundCommandNames.add(commandName);
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 				}
 			}
 			catch(Exception e)
@@ -110,24 +112,26 @@ public class FindNewCommands extends AbstractCommand
 			statement1.close();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(foundCommandNames.size() > 0)
 		{
 			CommandSingleton.reload();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success, added command(s): " + foundCommandNames + "]]></info>");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Automatically find new commands.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

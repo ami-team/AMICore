@@ -11,25 +11,25 @@ import net.hep.ami.utility.parser.*;
 
 public class CommandSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final class Tuple extends Tuple7<String, String, String, Constructor<?>, Boolean, Boolean, String>
 	{
 		private static final long serialVersionUID = -1908438407272143175L;
 
-		public Tuple(String _x, String _y, String _z, Constructor<?> _t, boolean _u, boolean _v, String w)
+		private Tuple(@NotNull String _x, @NotNull String _y, @NotNull String _z, @NotNull Constructor<?> _t, boolean _u, boolean _v, @NotNull String w)
 		{
 			super(_x, _y, _z, _t, _u, _v, w);
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Map<String, Tuple> s_commands = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	private static final Set<String> s_reserved = new HashSet<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Pattern s_xml10Pattern = Pattern.compile(
 		  "[^"
@@ -40,11 +40,12 @@ public class CommandSingleton
 		+ "]+"
 	);
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private CommandSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static
 	{
@@ -65,7 +66,7 @@ public class CommandSingleton
 		reload();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void reload()
 	{
@@ -81,29 +82,29 @@ public class CommandSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static void addCommands() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE QUERIER                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Router router = new Router();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* EXECUTE QUERY                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			RowSet rowSet = router.executeSQLQuery("router_command", "SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
 
-			/*-------------------------------------------------------------*/
-			/* ADD COMMANDS                                                */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* ADD COMMANDS                                                                                           */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(Row row: rowSet.iterate())
 			{
@@ -123,23 +124,23 @@ public class CommandSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		finally
 		{
 			router.rollbackAndRelease();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void addCommand(String commandName, String commandClass, String commandVisible, String commandSecured, String commandRoleValidatorClass) throws Exception
+	private static void addCommand(@NotNull String commandName, @NotNull String commandClass, @NotNull String commandVisible, @NotNull String commandSecured, @NotNull String commandRoleValidatorClass) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET CLASS OBJECT                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET CLASS OBJECT                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Class<?> clazz = ClassSingleton.forName(commandClass);
 
@@ -148,14 +149,14 @@ public class CommandSingleton
 			return;
 		}
 
-		if(ClassSingleton.extendsClass(clazz, AbstractCommand.class) == false)
+		if(!ClassSingleton.extendsClass(clazz, AbstractCommand.class))
 		{
 			throw new Exception("class '" + commandClass + "' doesn't extend 'AbstractCommand'");
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* ADD COMMAND                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ADD COMMAND                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_commands.put(
 			commandName
@@ -169,69 +170,75 @@ public class CommandSingleton
 					Map.class,
 					long.class
 				),
-				commandVisible.equals("0") == false,
-				commandSecured.equals("0") == false,
+				!commandVisible.equals("0"),
+				!commandSecured.equals("0"),
 				commandRoleValidatorClass
 			)
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String executeCommand(String command) throws Exception
+	@NotNull
+	public static String executeCommand(@NotNull String command) throws Exception
 	{
 		Command.CommandTuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, boolean checkRoles) throws Exception
+	@NotNull
+	public static String executeCommand(@NotNull String command, boolean checkRoles) throws Exception
 	{
 		Command.CommandTuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, boolean checkRoles, long transactionId) throws Exception
+	@NotNull
+	public static String executeCommand(@NotNull String command, boolean checkRoles, long transactionId) throws Exception
 	{
 		Command.CommandTuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments) throws Exception
+	@NotNull
+	public static String executeCommand(@NotNull String command, @NotNull Map<String, String> arguments) throws Exception
 	{
 		return executeCommand(command, arguments, true, -1);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception
+	@NotNull
+	public static String executeCommand(@NotNull String command, @NotNull Map<String, String> arguments, boolean checkRoles) throws Exception
 	{
 		return executeCommand(command, arguments, checkRoles, -1);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String executeCommand(String command, Map<String, String> arguments, boolean checkRoles, long transactionId) throws Exception
+	@NotNull
+	public static String executeCommand(@NotNull String command, @NotNull Map<String, String> arguments, boolean checkRoles, long transactionId) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET COMMAND                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET COMMAND                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Tuple tuple;
 
 		for(;;)
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			tuple = s_commands.get(command);
 
@@ -240,7 +247,7 @@ public class CommandSingleton
 				break;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(command.startsWith("AMI"))
 			{
@@ -251,12 +258,12 @@ public class CommandSingleton
 				throw new Exception("command `" + command + "` not found");
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CHECK ROLES                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK ROLES                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> userRoles;
 
@@ -271,13 +278,13 @@ public class CommandSingleton
 			router.commitAndRelease();
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE COMMAND AND BUILD RESULT                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXECUTE COMMAND AND BUILD RESULT                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder stringBuilder = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		             .append("\n")
@@ -285,7 +292,7 @@ public class CommandSingleton
 		             .append("<command><![CDATA[").append(command).append("]]></command>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String key;
 		String value;
@@ -297,7 +304,7 @@ public class CommandSingleton
 			key = entry.getKey();
 			value = entry.getValue();
 
-			if(s_reserved.contains(key) == false)
+			if(!s_reserved.contains(key))
 			{
 				key = Utility.escapeHTML(Utility.escapeJavaString(key));
 				value = Utility.escapeHTML(Utility.escapeJavaString(value));
@@ -308,13 +315,13 @@ public class CommandSingleton
 
 		stringBuilder.append("</arguments>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(arguments.containsKey("help") == false)
+		if(!arguments.containsKey("help"))
 		{
-			/*-------------------------------------------------------------*/
-			/* CREATE COMMAND INSTANCE                                     */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* CREATE COMMAND INSTANCE                                                                                */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			AbstractCommand commandObject = (AbstractCommand) tuple.t.newInstance(
 				userRoles,
@@ -322,28 +329,25 @@ public class CommandSingleton
 				transactionId
 			);
 
-			/*-------------------------------------------------------------*/
-			/* EXECUTE COMMAND INSTANCE                                    */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* EXECUTE COMMAND INSTANCE                                                                               */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			long t1 = System.currentTimeMillis();
 			StringBuilder content = commandObject.execute();
 			long t2 = System.currentTimeMillis();
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			stringBuilder.append("<executionTime>").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("</executionTime>");
+			stringBuilder.append("<executionTime>").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("</executionTime>")
+			             .append(s_xml10Pattern.matcher(content).replaceAll("?"))
+			;
 
-			if(content != null)
-			{
-				stringBuilder.append(s_xml10Pattern.matcher(content).replaceAll("?"));
-			}
-
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		else
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			stringBuilder.append("<executionTime>0.000</executionTime>")
 
@@ -356,32 +360,35 @@ public class CommandSingleton
 			             .append("]]></usage>")
 			;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		stringBuilder.append("</AMIMessage>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return stringBuilder.toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static Set<String> getCommandNames()
 	{
 		return s_commands.keySet();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static StringBuilder listCommands()
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"commands\">");
 
@@ -406,10 +413,10 @@ public class CommandSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -4,21 +4,23 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class LocalizeIP extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public LocalizeIP(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public LocalizeIP(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -29,44 +31,42 @@ public class LocalizeIP extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		LocalizationSingleton.Localization localization = LocalizationSingleton.localizeIP(getQuerier("self"), ip);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append(
-			"<rowset type=\"localization\">"
-			+
-			"<row>"
-			+
-			"<field name=\"ContinentCode\"><![CDATA[" + localization.continentCode + "]]></field>"
-			+
-			"<field name=\"CountryCode\"><![CDATA[" + localization.countryCode + "]]></field>"
-			+
-			"</row>"
-			+
-			"</rowset>"
-		);
+		result.append("<rowset type=\"localization\">")
+		      .append("<row>")
+		      .append("<field name=\"ContinentCode\"><![CDATA[").append(localization.continentCode).append("]]></field>")
+		      .append("<field name=\"CountryCode\"><![CDATA[").append(localization.countryCode).append("]]></field>")
+		      .append("</row>")
+		      .append("</rowset>")
+		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Localize an IP address.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-ip=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

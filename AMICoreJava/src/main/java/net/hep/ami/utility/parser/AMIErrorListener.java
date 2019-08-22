@@ -2,17 +2,20 @@ package net.hep.ami.utility.parser;
 
 import java.util.*;
 
+import net.hep.ami.*;
+import net.hep.ami.utility.*;
+
 import org.antlr.v4.runtime.*;
 
 public class AMIErrorListener extends BaseErrorListener
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private List<String> m_messages = new ArrayList<>();
+	private final List<String> m_messages = new ArrayList<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static AMIErrorListener setListener(Lexer lexer, Parser parser)
+public static AMIErrorListener setListener(Lexer lexer, Parser parser)
 	{
 		AMIErrorListener result = new AMIErrorListener();
 
@@ -25,27 +28,43 @@ public class AMIErrorListener extends BaseErrorListener
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int column, String message, RecognitionException e)
 	{
-		m_messages.add("line " + line + ":" + column + ", " + message);
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(ConfigSingleton.getProperty("dev_mode", false))
+		{
+			List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
+
+			Collections.reverse(stack);
+
+			m_messages.add("stack: " + stack);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		m_messages.add("line " + line + ", column: " + column + ", " + message);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isSuccess()
+	public boolean isError()
 	{
-		return m_messages.isEmpty();
+		return !m_messages.isEmpty();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String toString()
 	{
 		return String.join(". ", m_messages);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

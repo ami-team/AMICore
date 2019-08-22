@@ -6,39 +6,39 @@ import java.util.stream.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class RevokeCertificateAndSendEmail extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RevokeCertificateAndSendEmail(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public RevokeCertificateAndSendEmail(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String email = arguments.get("email");
-		String virtOrg = arguments.get("virtOrg");
-		String reason = arguments.get("reason");
-		String code = arguments.get("code");
+		String email = arguments.getOrDefault("email", "");
+		String virtOrg = arguments.getOrDefault("virtOrg", "");
+		String reason = arguments.getOrDefault("reason", "");
+		String code = arguments.getOrDefault("code", "");
 
-		if((email == null || email.isEmpty())
+		if(email.isEmpty()
 		   ||
-		   (virtOrg == null || virtOrg.isEmpty())
-		   || (
-			(code == null || code.isEmpty())
-			!=
-			(reason == null || reason.isEmpty())
-		)) {
+		   virtOrg.isEmpty()
+		   ||
+		   (code.isEmpty() != reason.isEmpty())
+		 ) {
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rows = getQuerier("self").executeSQLQuery("router_authority", "SELECT `clientDN`, `serial` FROM `router_authority` WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", virtOrg, email).getAll();
 
@@ -47,7 +47,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 			throw new Exception("no certificate found for email `" + email + "`");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String dns = rows.stream().map(x -> {
 
@@ -62,7 +62,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		}).collect(Collectors.joining("\n"));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		final String CODE = SecuritySingleton.md5Sum(
 			Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
@@ -70,9 +70,9 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 			SecuritySingleton.encrypt(email)
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(code == null)
+		if(code.isEmpty())
 		{
 			MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, null, "AMI certificate revocation", "Dear user,\n\nYou are about to revoke the following AMI certificate(s):\n\n" + dns + "\n\nConfirmation code: " + CODE + "\n\nBest regards.");
 		}
@@ -95,24 +95,28 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Revoke client or server certificate(s).";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-email=\"\" (-vo=\"\" -reason=\"\" -code=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

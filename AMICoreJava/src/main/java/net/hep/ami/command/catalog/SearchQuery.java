@@ -6,21 +6,23 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.sql.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class SearchQuery extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SearchQuery(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public SearchQuery(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
@@ -45,65 +47,79 @@ public class SearchQuery extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder result = new StringBuilder();
 
 		if(raw != null)
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
 				result.append(getQuerier(catalog2, links).executeRawQuery(entity, raw).toStringBuilder(catalog2, null));
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		else
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			Map<String, String> parts = Tokenizer.splitXQL((mql != null) ? mql.trim() : sql.trim());
+			Map<String, List<String>> parts = Tokenizer.splitXQL((mql != null) ? mql : sql);
 
-			XQLSelect xqlSelect1 = new XQLSelect().addSelectPart("COUNT(*)")
-				                                  .addFromPart(parts.get(Tokenizer.FROM))
-				                                  .addWherePart(parts.get(Tokenizer.WHERE))
-			;
+			XQLSelect xqlSelect1 = new XQLSelect().addSelectPart(/*---------------*/ "COUNT(*)" /*---------------*/);
 
-			XQLSelect xqlSelect2 = new XQLSelect().addSelectPart(parts.get(Tokenizer.SELECT))
-				                                  .addFromPart(parts.get(Tokenizer.FROM))
-				                                  .addWherePart(parts.get(Tokenizer.WHERE))
-			;
+			XQLSelect xqlSelect2 = new XQLSelect().addSelectPart(String.join("", parts.get(Tokenizer.SELECT)).trim());
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			String groupBy2 = parts.get(Tokenizer.GROUP);
+			List<String> from = parts.get(Tokenizer.FROM);
+			if(from != null)
+			{
+				String _from = String.join("", parts.get(Tokenizer.FROM)).trim();
+				xqlSelect1.addFromPart(_from);
+				xqlSelect2.addFromPart(_from);
+			}
+
+			List<String> where = parts.get(Tokenizer.WHERE);
+			if(where != null)
+			{
+				String _where = String.join("", parts.get(Tokenizer.WHERE)).trim();
+
+				xqlSelect1.addWherePart(_where);
+				xqlSelect2.addWherePart(_where);
+			}
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			List<String> groupBy2 = parts.get(Tokenizer.GROUP);
 			if(groupBy == null && groupBy2 != null) {
-				groupBy = groupBy2;
+				groupBy = String.join("", groupBy2).trim();
 			}
 
-			String orderBy2 = parts.get(Tokenizer.ORDER);
+			List<String> orderBy2 = parts.get(Tokenizer.ORDER);
 			if(orderBy == null && orderBy2 != null) {
-				orderBy = orderBy2;
+				orderBy = String.join("", orderBy2).trim();
 			}
 
-			String orderWay2 = parts.get(Tokenizer.WAY);
+			List<String> orderWay2 = parts.get(Tokenizer.WAY);
 			if(orderWay == null && orderWay2 != null) {
-				orderWay = orderWay2;
+				orderWay = String.join("", orderWay2).trim();
 			}
 
-			String limit2 = parts.get(Tokenizer.LIMIT);
+			List<String> limit2 = parts.get(Tokenizer.LIMIT);
 			if(limit == null && limit2 != null) {
-				limit = limit2;
+				limit = String.join("", limit2).trim();
 			}
 
-			String offset2 = parts.get(Tokenizer.OFFSET);
+			List<String> offset2 = parts.get(Tokenizer.OFFSET);
 			if(offset == null && offset2 != null) {
-				offset = offset2;
+				offset = String.join("", offset2).trim();
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(groupBy != null)
 			{
@@ -113,7 +129,7 @@ public class SearchQuery extends AbstractCommand
 				xqlSelect2.addExtraPart("GROUP BY " + groupBy);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(orderBy != null)
 			{
@@ -137,23 +153,23 @@ public class SearchQuery extends AbstractCommand
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			Querier querier;
 
 			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				querier = getQuerier(catalog2, links);
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				Integer totalNumberOfRows = null;
 
 				if(count)
 				{
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					RowSet rowSet1;
 
@@ -166,14 +182,14 @@ public class SearchQuery extends AbstractCommand
 						rowSet1 = querier.executeMQLQuery(entity, xqlSelect1.toString());
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					totalNumberOfRows = rowSet1.getAll().get(0).getValue(0, (Integer) null);
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				RowSet rowSet2;
 
@@ -186,32 +202,36 @@ public class SearchQuery extends AbstractCommand
 					rowSet2 = querier.executeMQLQuery(entity, xqlSelect2.toString());
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				result.append(rowSet2.toStringBuilder(catalog2, totalNumberOfRows));
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Execute a simple raw, SQL or MQL query (select mode). Parameter `catalog` can be a regular expression.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)? (-count)? (-links)?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

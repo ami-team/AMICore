@@ -11,7 +11,7 @@ public class AMIApp extends Application
 	@Override
 	public Set<Class<?>> getClasses()
 	{
-		final Set<Class<?>> classes = new HashSet<Class<?>>();
+		final Set<Class<?>> classes = new HashSet<>();
 
 		classes.add(net.hep.ami.rest.filter.AMIFilter.class);
 

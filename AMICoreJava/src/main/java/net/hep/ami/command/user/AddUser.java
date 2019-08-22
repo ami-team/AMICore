@@ -5,27 +5,29 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class AddUser extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*------------------------------------------------------------------------------------------------------------*/
 
 	static final String SHORT_EMAIL = "%s";
 
 	static final String LONG_EMAIL = "%s %s";
 
-	/*---------------------------------------------------------------------*/
+	/*------------------------------------------------------------------------------------------------------------*/
 
-	public AddUser(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public AddUser(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String amiLogin = arguments.get("amiLogin");
 		String amiPassword = arguments.get("amiPassword");
@@ -44,14 +46,14 @@ public class AddUser extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(arguments.containsKey("agree") == false)
+		if(!arguments.containsKey("agree"))
 		{
 			throw new Exception("you must accept the terms and conditions");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		boolean generatedPassword;
 
@@ -66,7 +68,7 @@ public class AddUser extends AbstractCommand
 			generatedPassword = false;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String clientDN;
 		String issuerDN;
@@ -82,7 +84,7 @@ public class AddUser extends AbstractCommand
 			issuerDN = null;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		RoleSingleton.checkNewUser(
 			ConfigSingleton.getProperty("user_validator_class"),
@@ -95,27 +97,27 @@ public class AddUser extends AbstractCommand
 			email
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = querier.executeSQLUpdate("INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			amiLogin,
 			SecuritySingleton.encrypt(amiPassword),
-			clientDN != null && clientDN.isEmpty() == false ? SecuritySingleton.encrypt(clientDN) : null,
-			issuerDN != null && issuerDN.isEmpty() == false ? SecuritySingleton.encrypt(issuerDN) : null,
+			clientDN != null && !clientDN.isEmpty() ? SecuritySingleton.encrypt(clientDN) : null,
+			issuerDN != null && !issuerDN.isEmpty() ? SecuritySingleton.encrypt(issuerDN) : null,
 			firstName,
 			lastName,
 			email
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		querier.executeSQLUpdate("INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", amiLogin, "AMI_USER");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
@@ -124,8 +126,8 @@ public class AddUser extends AbstractCommand
 				email,
 				null,
 				"New AMI account",
-				generatedPassword == false ? String.format(SHORT_EMAIL, /*--*/ amiLogin /*--*/)
-				                           : String.format(LONG_EMAIL, amiLogin, amiPassword)
+				!generatedPassword ? String.format(SHORT_EMAIL, /*--*/ amiLogin /*--*/)
+				                   : String.format(LONG_EMAIL, amiLogin, amiPassword)
 			);
 		}
 		catch(Exception e)
@@ -133,7 +135,7 @@ public class AddUser extends AbstractCommand
 			LogSingleton.root.error(e.getMessage(), e);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder(
 			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
@@ -141,19 +143,23 @@ public class AddUser extends AbstractCommand
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Add a user.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-amiLogin=\"\" (-amiPassword=\"\")? (-clientDN=\"\")? (-issuerDN=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\" -agree";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

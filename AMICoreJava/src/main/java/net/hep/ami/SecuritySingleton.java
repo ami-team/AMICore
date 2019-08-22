@@ -28,20 +28,19 @@ import net.hep.ami.utility.*;
 
 public class SecuritySingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static class Revocation
 	{
 		public static final int SUPERSEDED = 0;
 		public static final int COMPROMISED = 1;
-		public static final int AFFILIATION_CHANGED = 3;
-		public static final int PRIVILEGE_WITHDRAWN = 4;
-		public static final int CESSATION_OF_OPERATION = 5;
+		public static final int AFFILIATION_CHANGED = 2;
 
 		public final BigInteger serial;
 		public final Integer reason;
 		public final Date date;
 
+		@org.jetbrains.annotations.Contract(pure = true)
 		public Revocation(BigInteger _serial, Integer _reason, Date _date)
 		{
 			serial = _serial;
@@ -50,38 +49,38 @@ public class SecuritySingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class PEM
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public static final int PRIVATE_KEY = 1;
-		public static final int PUBLIC_KEY = 2;
-		public static final int X509_CERTIFICATE = 4;
-		public static final int X509_CRL = 8;
+		public static final int PRIVATE_KEY = (1 << 0);
+		public static final int PUBLIC_KEY = (1 << 1);
+		public static final int X509_CERTIFICATE = (1 << 2);
+		public static final int X509_CRL = (1 << 3);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		public final PrivateKey[] privateKeys;
 		public final PublicKey[] publicKeys;
 		public final X509Certificate[] x509Certificates;
 		public final X509CRL[] x509CRLs;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public PEM(InputStream inputStream) throws Exception
+		public PEM(@NotNull InputStream inputStream) throws Exception
 		{
 			this(inputStream, PRIVATE_KEY | PUBLIC_KEY | X509_CERTIFICATE | X509_CRL);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public PEM(InputStream inputStream, int flag) throws Exception
+		public PEM(@NotNull InputStream inputStream, int flag) throws Exception
 		{
-			/*-------------------------------------------------------------*/
-			/* LOAD FILE                                                   */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* LOAD FILE                                                                                              */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			String line;
 
@@ -98,7 +97,7 @@ public class SecuritySingleton
 			{
 				while((line = bufferedReader.readLine()) != null)
 				{
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					/**/ if(line.matches("-----BEGIN( | [^ ]+ )PRIVATE KEY-----")
 						    ||
@@ -113,7 +112,7 @@ public class SecuritySingleton
 						append = true;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					else if(line.matches("-----END( | [^ ]+ )PRIVATE KEY-----"))
 					{
@@ -125,7 +124,7 @@ public class SecuritySingleton
 						append = false;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					else if(line.matches("-----END( | [^ ]+ )PUBLIC KEY-----"))
 					{
@@ -137,7 +136,7 @@ public class SecuritySingleton
 						append = false;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					else if(line.matches("-----END CERTIFICATE-----"))
 					{
@@ -149,7 +148,7 @@ public class SecuritySingleton
 						append = false;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					else if(line.matches("-----END X509 CRL-----"))
 					{
@@ -161,29 +160,29 @@ public class SecuritySingleton
 						append = false;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					else if(append)
 					{
 						stringBuilder.append(line);
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 				}
 			}
 
-			/*-------------------------------------------------------------*/
-			/* GET NUMBER OF OBJECTS                                       */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* GET NUMBER OF OBJECTS                                                                                  */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			final int numberOfPrivateKeys = list1.size();
 			final int numberOfPublicKeys = list2.size();
 			final int numberOfCertificates = list3.size();
 			final int numberOfCRLs = list4.size();
 
-			/*-------------------------------------------------------------*/
-			/* BUILD OBJECTS                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* BUILD OBJECTS                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			privateKeys = new PrivateKey[numberOfPrivateKeys];
 
@@ -197,7 +196,7 @@ public class SecuritySingleton
 				);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			publicKeys = new PublicKey[numberOfPublicKeys];
 
@@ -211,7 +210,7 @@ public class SecuritySingleton
 				);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			x509Certificates = new X509Certificate[numberOfCertificates];
 
@@ -225,7 +224,7 @@ public class SecuritySingleton
 				);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			x509CRLs = new X509CRL[numberOfCRLs];
 
@@ -239,11 +238,12 @@ public class SecuritySingleton
 				);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
+		@org.jetbrains.annotations.Contract(pure = true)
 		public PEM(@Nullable PrivateKey[] _privateKeys, @Nullable PublicKey[] _publicKeys, @Nullable X509Certificate[] _x509Certificates, @Nullable X509CRL[] _x509CRLs)
 		{
 			privateKeys = _privateKeys;
@@ -252,11 +252,12 @@ public class SecuritySingleton
 			x509CRLs = _x509CRLs;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public static PEM generateCA(int keysize, String subject, @Nullable String email, int validity) throws Exception
+		@NotNull
+		public static PEM generateCA(int keySize, @NotNull String subject, @Nullable String email, int validity) throws Exception
 		{
-			KeyPair keyPair = SecuritySingleton.generateKeyPair(keysize);
+			KeyPair keyPair = SecuritySingleton.generateKeyPair(keySize);
 
 			X509Certificate certificate = SecuritySingleton.generateCA(
 				keyPair.getPrivate(),
@@ -274,11 +275,12 @@ public class SecuritySingleton
 			);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public static PEM generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, int keysize, String subject, @Nullable String email, @Nullable String virtOrg, int validity) throws Exception
+		@NotNull
+		public static PEM generateCertificate(@NotNull PrivateKey caPrivateKey, @NotNull X509Certificate caCertificate, int keySize, @NotNull String subject, @Nullable String email, @Nullable String virtOrg, int validity) throws Exception
 		{
-			KeyPair keyPair = SecuritySingleton.generateKeyPair(keysize);
+			KeyPair keyPair = SecuritySingleton.generateKeyPair(keySize);
 
 			X509Certificate certificate = SecuritySingleton.generateCertificate(
 				caPrivateKey,
@@ -298,9 +300,10 @@ public class SecuritySingleton
 			);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public static PEM generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable List<Revocation> revocations) throws Exception
+		@NotNull
+		public static PEM generateCRL(@NotNull PrivateKey caPrivateKey, @NotNull X509Certificate caCertificate, @Nullable List<Revocation> revocations) throws Exception
 		{
 			X509CRL crl = SecuritySingleton.generateCRL(caPrivateKey, caCertificate, revocations);
 
@@ -312,13 +315,14 @@ public class SecuritySingleton
 			);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
+		@NotNull
 		public String toString()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(privateKeys != null)
 			{
@@ -331,7 +335,7 @@ public class SecuritySingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(publicKeys != null)
 			{
@@ -344,7 +348,7 @@ public class SecuritySingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(x509Certificates != null)
 			{
@@ -364,7 +368,7 @@ public class SecuritySingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(x509CRLs != null)
 			{
@@ -384,47 +388,49 @@ public class SecuritySingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			return stringBuilder.toString();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
+		@NotNull
 		public byte[] toByteArray()
 		{
 			return toString().getBytes(StandardCharsets.UTF_8);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final String BC = org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static KeyParameter s_keyParameter;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private SecuritySingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static
 	{
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void init(String password) throws Exception
+	public static void init(@NotNull String password) throws Exception
 	{
 		final int length = password.length();
 
-		/****/ if(length <= 16) {
+		/*--*/ if(length <= 16) {
 			s_keyParameter = new KeyParameter(String.format("%1$-16s", password).getBytes(StandardCharsets.UTF_8));
 		} else if(length <= 24) {
 			s_keyParameter = new KeyParameter(String.format("%1$-24s", password).getBytes(StandardCharsets.UTF_8));
@@ -435,28 +441,30 @@ public class SecuritySingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
-	/* KEYES AND CERTIFICATES                                              */
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* KEYS AND CERTIFICATES                                                                                          */
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static KeyPair generateKeyPair(int keysize) throws Exception
+	@NotNull
+	public static KeyPair generateKeyPair(int keySize) throws Exception
 	{
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", BC);
 
-		keyPairGenerator.initialize(keysize, new SecureRandom());
+		keyPairGenerator.initialize(keySize, new SecureRandom());
 
 		return keyPairGenerator.generateKeyPair();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static X509Certificate generateCA(PrivateKey privateKey, PublicKey publicKey, String subject, @Nullable String email, int validity) throws Exception
+	@NotNull
+	public static X509Certificate generateCA(@NotNull PrivateKey privateKey, @NotNull PublicKey publicKey, @NotNull String subject, @Nullable String email, int validity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE X509 CERTIFICATE BUILDER                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE X509 CERTIFICATE BUILDER                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		javax.security.auth.x500.X500Principal clientDN = new javax.security.auth.x500.X500Principal(subject);
 
@@ -477,9 +485,9 @@ public class SecuritySingleton
 			publicKey
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* ADD X509 EXTENSIONS                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ADD X509 EXTENSIONS                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		// Basic Constraints
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, new BasicConstraints(true));
@@ -493,9 +501,9 @@ public class SecuritySingleton
 			builder.addExtension(new ASN1ObjectIdentifier("2.5.29.17"), false, new GeneralNames(new GeneralName(GeneralName.rfc822Name, email)));
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE X509 CERTIFICATE                                         */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE X509 CERTIFICATE                                                                                    */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(privateKey);
 
@@ -503,12 +511,14 @@ public class SecuritySingleton
 			builder.build(contentSigner)
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static DERSequence amiVirtOrg(final String virtOrg)
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> new")
+	public static DERSequence amiVirtOrg(@NotNull String virtOrg)
 	{
 		return new DERSequence(new ASN1Encodable[] {
 			new ASN1ObjectIdentifier("1.3.6.1.4.1.10813.666"),
@@ -516,13 +526,14 @@ public class SecuritySingleton
 		});
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static X509Certificate generateCertificate(PrivateKey caPrivateKey, X509Certificate caCertificate, PublicKey publicKey, String subject, @Nullable String email, @Nullable String virtOrg, int validity) throws Exception
+	@NotNull
+	public static X509Certificate generateCertificate(@NotNull PrivateKey caPrivateKey, @NotNull X509Certificate caCertificate, @NotNull PublicKey publicKey, @NotNull String subject, @Nullable String email, @Nullable String virtOrg, int validity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE X509 CERTIFICATE BUILDER                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE X509 CERTIFICATE BUILDER                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		javax.security.auth.x500.X500Principal clientDN = new javax.security.auth.x500.X500Principal(subject);
 
@@ -543,11 +554,11 @@ public class SecuritySingleton
 			publicKey
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* ADD X509 EXTENSIONS                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ADD X509 EXTENSIONS                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<GeneralName> generalNames = new ArrayList<>();
+		ArrayList<GeneralName> generalNames = new ArrayList<>();
 
 		if(email != null) {
 			generalNames.add(new GeneralName(GeneralName.rfc822Name, /*--*/email/*--*/));
@@ -557,7 +568,7 @@ public class SecuritySingleton
 			generalNames.add(new GeneralName(GeneralName.otherName, amiVirtOrg(virtOrg)));
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		// Basic Constraints
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(false));
@@ -569,11 +580,11 @@ public class SecuritySingleton
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(caCertificate));
 
 		// Subject Alternative Name
-		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.17"), false, new GeneralNames(generalNames.stream().toArray(size -> new GeneralName[size])));
+		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.17"), false, new GeneralNames(generalNames.toArray(new GeneralName[generalNames.size()])));
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE X509 CERTIFICATE                                         */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE X509 CERTIFICATE                                                                                    */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(caPrivateKey);
 
@@ -581,16 +592,17 @@ public class SecuritySingleton
 			builder.build(contentSigner)
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static X509CRL generateCRL(PrivateKey caPrivateKey, X509Certificate caCertificate, @Nullable List<Revocation> revocations) throws Exception
+	@NotNull
+	public static X509CRL generateCRL(@NotNull PrivateKey caPrivateKey, @NotNull X509Certificate caCertificate, @Nullable List<Revocation> revocations) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE X509 CRL BUILDER                                         */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE X509 CRL BUILDER                                                                                    */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		org.bouncycastle.asn1.x500.X500Name issuerDN = org.bouncycastle.asn1.x500.X500Name.getInstance(caCertificate.getSubjectX500Principal().getEncoded());
 
@@ -606,12 +618,12 @@ public class SecuritySingleton
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.superseded);
 						break;
 
-					case Revocation.AFFILIATION_CHANGED:
-						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.affiliationChanged);
-						break;
-
 					case Revocation.COMPROMISED:
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.keyCompromise);
+						break;
+
+					case Revocation.AFFILIATION_CHANGED:
+						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.affiliationChanged);
 						break;
 
 					default:
@@ -621,16 +633,16 @@ public class SecuritySingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* ADD X509 EXTENSIONS                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ADD X509 EXTENSIONS                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		// Authority Key Identifier
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(caCertificate));
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE X509 CRL                                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE X509 CRL                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA512WithRSA").setProvider(BC).build(caPrivateKey);
 
@@ -638,12 +650,13 @@ public class SecuritySingleton
 			builder.build(contentSigner)
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static KeyStore generateJKSKeyStore(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
+	@NotNull
+	public static KeyStore generateJKSKeyStore(@NotNull PrivateKey privateKey, @NotNull X509Certificate[] certificates, @NotNull char[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("JKS");
 
@@ -654,9 +667,10 @@ public class SecuritySingleton
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static KeyStore generatePKCS12KeyStore(PrivateKey privateKey, X509Certificate[] certificates, char[] password) throws Exception
+	@NotNull
+	public static KeyStore generatePKCS12KeyStore(@NotNull PrivateKey privateKey, @NotNull X509Certificate[] certificates, @NotNull char[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("PKCS12");
 
@@ -667,22 +681,22 @@ public class SecuritySingleton
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String byteArrayToBase64String(byte[] data)
+	@NotNull
+	public static String byteArrayToBase64String(@NotNull byte[] data)
 	{
-		/*-----------------------------------------------------------------*/
-		/* ENCODE TO BASE64                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ENCODE TO BASE64                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String string = org.bouncycastle.util.encoders.Base64.toBase64String(data);
 
-		/*-----------------------------------------------------------------*/
-		/* SPLIT BASE64 STRING                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SPLIT BASE64 STRING                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		int i = 0;
-		int j = 0;
+		int i = 0, j;
 
 		final int l = string.length();
 
@@ -694,34 +708,34 @@ public class SecuritySingleton
 
 			if(j > l)
 			{
-				result.append(string.substring(i, l));
+				result.append(string, i, l);
 				result.append("\n");
 
 				break;
 			}
 			else
 			{
-				result.append(string.substring(i, j));
+				result.append(string, i, j);
 				result.append("\n");
 
 				i = j;
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result.toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static boolean isProxy(X509Certificate certificate)
+	public static boolean isProxy(@NotNull X509Certificate certificate)
 	{
 		byte[] data;
 
-		/*-----------------------------------------------------------------*/
-		/* CHECK RFC3820 PROXY                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK RFC3820 PROXY                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		data = certificate.getExtensionValue("1.3.6.1.5.5.7.1.14");
 
@@ -730,9 +744,9 @@ public class SecuritySingleton
 			return true;
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CHECK RFC_DRAFT PROXY                                           */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK RFC_DRAFT PROXY                                                                                      */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		data = certificate.getExtensionValue("1.3.6.1.4.1.3536.1.222");
 
@@ -741,9 +755,9 @@ public class SecuritySingleton
 			return true;
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CHECK VOMS PROXY                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK VOMS PROXY                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String[] parts = certificate.getSubjectX500Principal().getName("RFC2253").split(",", -1);
 
@@ -757,14 +771,15 @@ public class SecuritySingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return false;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String getDN(javax.security.auth.x500.X500Principal principal)
+	@NotNull
+	public static String getDN(@NotNull javax.security.auth.x500.X500Principal principal)
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -776,13 +791,13 @@ public class SecuritySingleton
 		return result.toString();
 	}
 
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
-	/* CRYPTO                                                              */
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* CRYPTO                                                                                                         */
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void encrypt(OutputStream outputStreamut, InputStream inputStream) throws Exception
+	private static void encrypt(@NotNull OutputStream outputStream, @NotNull InputStream inputStream) throws Exception
 	{
 		if(s_keyParameter == null)
 		{
@@ -795,48 +810,13 @@ public class SecuritySingleton
 		byte[] ibuff = new byte[16];
 		byte[] obuff = new byte[512];
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine());
 
 		cipher.init(true, s_keyParameter);
 
-		/*-----------------------------------------------------------------*/
-
-		while((noBytesRead = inputStream.read(ibuff)) >= 0)
-		{
-			noBytesProcessed = cipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
-			outputStreamut.write(obuff, 0, noBytesProcessed);
-		}
-
-		noBytesProcessed = cipher.doFinal(obuff, 0);
-		outputStreamut.write(obuff, 0, noBytesProcessed);
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static void decrypt(OutputStream outputStream, InputStream inputStream) throws Exception
-	{
-		if(s_keyParameter == null)
-		{
-			throw new Exception("SecuritySingleton not initialized");
-		}
-
-		int noBytesRead;
-		int noBytesProcessed;
-
-		byte[] ibuff = new byte[16];
-		byte[] obuff = new byte[512];
-
-		/*-----------------------------------------------------------------*/
-
-		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine());
-
-		cipher.init(false, s_keyParameter);
-
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		while((noBytesRead = inputStream.read(ibuff)) >= 0)
 		{
@@ -847,12 +827,48 @@ public class SecuritySingleton
 		noBytesProcessed = cipher.doFinal(obuff, 0);
 		outputStream.write(obuff, 0, noBytesProcessed);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static byte[] encrypt(byte[] data) throws Exception
+	private static void decrypt(@NotNull OutputStream outputStream, @NotNull InputStream inputStream) throws Exception
+	{
+		if(s_keyParameter == null)
+		{
+			throw new Exception("SecuritySingleton not initialized");
+		}
+
+		int noBytesRead;
+		int noBytesProcessed;
+
+		byte[] ibuff = new byte[16];
+		byte[] obuff = new byte[512];
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine());
+
+		cipher.init(false, s_keyParameter);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		while((noBytesRead = inputStream.read(ibuff)) >= 0)
+		{
+			noBytesProcessed = cipher.processBytes(ibuff, 0, noBytesRead, obuff, 0);
+			outputStream.write(obuff, 0, noBytesProcessed);
+		}
+
+		noBytesProcessed = cipher.doFinal(obuff, 0);
+		outputStream.write(obuff, 0, noBytesProcessed);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static byte[] encrypt(@NotNull byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
  		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
@@ -862,9 +878,10 @@ public class SecuritySingleton
 		return outputStream.toByteArray();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static byte[] decrypt(byte[] data) throws Exception
+	@NotNull
+	public static byte[] decrypt(@NotNull byte[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
@@ -874,31 +891,34 @@ public class SecuritySingleton
 		return outputStream.toByteArray();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static String encrypt(@Nullable String s) throws Exception
 	{
-		return s != null && s.isEmpty() == false ? new String(
+		return s != null && !s.isEmpty() ? new String(
 			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes(StandardCharsets.UTF_8)))
 		, StandardCharsets.UTF_8) : "";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static String decrypt(@Nullable String s) throws Exception
 	{
-		return s != null && s.isEmpty() == false ? new String(
+		return s != null && !s.isEmpty() ? new String(
 			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8)))
 		, StandardCharsets.UTF_8) : "";
 	}
 
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
-	/* HASH                                                                */
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* HASH                                                                                                           */
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String md5Sum(byte[] s) throws Exception
+	@NotNull
+	public static String md5Sum(@NotNull byte[] s) throws Exception
 	{
 		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 
@@ -907,16 +927,18 @@ public class SecuritySingleton
 		return String.format("%032x", new BigInteger(1, messageDigest.digest()));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String md5Sum(String s) throws Exception
+	@NotNull
+	public static String md5Sum(@NotNull String s) throws Exception
 	{
 		return md5Sum(s.getBytes(StandardCharsets.UTF_8));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String sha256Sum(byte[] s) throws Exception
+	@NotNull
+	public static String sha256Sum(@NotNull byte[] s) throws Exception
 	{
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
@@ -925,28 +947,30 @@ public class SecuritySingleton
 		return String.format("%064x", new BigInteger(1, messageDigest.digest()));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String sha256Sum(String s) throws Exception
+	@NotNull
+	public static String sha256Sum(@NotNull String s) throws Exception
 	{
 		return sha256Sum(s.getBytes(StandardCharsets.UTF_8));
 	}
 
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
-	/* TEMPORARY PASSWORD                                                  */
-	/*---------------------------------------------------------------------*/
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* TEMPORARY PASSWORD                                                                                             */
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static private final String PASSWORD_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_=+-/";
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static String generatePassword()
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		final Random random = new Random();
 
@@ -961,27 +985,29 @@ public class SecuritySingleton
 		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
 		result.append(PASSWORD_CHARACTERS.charAt(random.nextInt(max)));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result.toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String buildTmpPassword(String user, String pass) throws Exception
+	@NotNull
+	public static String buildTmpPassword(@NotNull String user, @NotNull String pass) throws Exception
 	{
 		return generateTmpPassword(user, pass, true);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String generateTmpPassword(String user, String pass, boolean full) throws Exception
+	@NotNull
+	public static String generateTmpPassword(@NotNull String user, @NotNull String pass, boolean full) throws Exception
 	{
 		String result;
 
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result = sha256Sum(encrypt(
 			calendar.get(Calendar.   YEAR    )
@@ -995,13 +1021,13 @@ public class SecuritySingleton
 			pass
 		)).substring(0, 16);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(full)
 		{
 			calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			result += sha256Sum(encrypt(
 				calendar.get(Calendar.   YEAR    )
@@ -1015,17 +1041,19 @@ public class SecuritySingleton
 				pass
 			)).substring(0, 16);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Tuple2<String, String> checkPassword(String user, String pass_from_user, String pass_from_db) throws Exception
+	@NotNull
+	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	public static Tuple2<String, String> checkPassword(@NotNull String user, @NotNull String pass_from_user, @NotNull String pass_from_db) throws Exception
 	{
-		if(pass_from_user.equals(pass_from_db) == false)
+		if(!pass_from_user.equals(pass_from_db))
 		{
 			if(pass_from_user.length() == 32)
 			{
@@ -1033,9 +1061,9 @@ public class SecuritySingleton
 				String b = /**/ pass_from_user /**/.substring(16, 32);
 				String c = generateTmpPassword(user, pass_from_db, false);
 
-				if(a.equals(c) == false
+				if(!a.equals(c)
 				   &&
-				   b.equals(c) == false
+				   !b.equals(c)
 				 ) {
 					throw new Exception("invalid password");
 				}
@@ -1046,11 +1074,11 @@ public class SecuritySingleton
 			}
 		}
 
-		return new Tuple2<String, String>(
+		return new Tuple2<>(
 			/**/user/**/,
 			pass_from_db
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -12,15 +12,21 @@ public @interface DriverMetadata
 
 	/**
 	 * Database type. For NoSQL databases, MQL is disabled.
-	 *
-	 * @return The database type.
 	 */
 
-	public enum Type
+	enum Type
 	{
-		SQL,	/**< SQL database */
-		NoSQL	/**< NoSQL database */
+		/**< SQL database */
+		SQL,
+		/**< NoSQL database */
+		NoSQL
 	}
+
+	/*---------------------------------------------------------------------*/
+
+	int FLAG_BACKSLASH_ESCAPE = (1 << 0);
+	int FLAG_QID_IN_MODIF = (1 << 1);
+	int FLAG_HAS_DUAL = (1 << 2);
 
 	/*---------------------------------------------------------------------*/
 
@@ -30,7 +36,7 @@ public @interface DriverMetadata
 
 	String clazz();
 
-	boolean backslashEscapes();
+	int flags();
 
 	/*---------------------------------------------------------------------*/
 }

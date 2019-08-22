@@ -3,11 +3,12 @@ package net.hep.ami.jdbc;
 import java.util.*;
 import java.util.stream.*;
 
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 public class WebLink
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public String m_id = "";
 	public String m_class = "";
@@ -16,9 +17,9 @@ public class WebLink
 	public String m_unitBase = "";
 	public String m_humanReadable = "";
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static enum Location
+	public enum Location
 	{
 		NONE(""),
 		BODY("body"),
@@ -26,22 +27,25 @@ public class WebLink
 
 		private final String m_value;
 
-		private Location(String value)
+		@org.jetbrains.annotations.Contract(pure = true)
+		Location(@NotNull String value)
 		{
 			m_value = value;
 		}
 
+		@NotNull
+		@org.jetbrains.annotations.Contract(pure = true)
 		public String toString()
 		{
 			return m_value;
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public class LinkProperties
+	public static class LinkProperties
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		public String m_id = "";
 		public String m_class = "";
@@ -56,67 +60,74 @@ public class WebLink
 		public String m_icon = "";
 		public String m_title = "";
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public LinkProperties setId(String id) {
+		public LinkProperties setId(@NotNull String id) {
 			m_id = id;
 			return this;
 		}
 
-		public LinkProperties setClass(String clazz) {
+		public LinkProperties setClass(@NotNull String clazz) {
 			m_class = clazz;
 			return this;
 		}
 
-		public LinkProperties setHRef(String href) {
+		public LinkProperties setHRef(@NotNull String href) {
 			m_href = href;
 			return this;
 		}
 
-		public LinkProperties setTarget(String target) {
+		public LinkProperties setTarget(@NotNull String target) {
 			m_target = target;
 			return this;
 		}
 
-		public LinkProperties setLabel(String label) {
+		public LinkProperties setLabel(@NotNull String label) {
 			m_label = label;
 			return this;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		public LinkProperties setCtrl(String ctrl) {
+		@NotNull
+		public LinkProperties setCtrl(@NotNull String ctrl) {
 			m_ctrl = ctrl;
 			return this;
 		}
 
-		public LinkProperties setLocation(Location location) {
+		@NotNull
+		public LinkProperties setLocation(@NotNull Location location) {
 			m_location = location;
 			return this;
 		}
 
-		public LinkProperties setParams(String params) {
+		@NotNull
+		public LinkProperties setParams(@NotNull String params) {
 			m_params = params;
 			return this;
 		}
 
-		public LinkProperties setSettings(String settings) {
+		@NotNull
+		public LinkProperties setSettings(@NotNull String settings) {
 			m_settings = settings;
 			return this;
 		}
 
-		public LinkProperties setIcon(String icon) {
+		@NotNull
+		public LinkProperties setIcon(@NotNull String icon) {
 			m_icon = icon;
 			return this;
 		}
 
-		public LinkProperties setTitle(String title) {
+		@NotNull
+		public LinkProperties setTitle(@NotNull String title) {
 			m_title = title;
 			return this;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
+		@NotNull
 		@Override
 		public String toString()
 		{
@@ -138,47 +149,54 @@ public class WebLink
 			;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private final List<LinkProperties> m_linkProperties = new ArrayList<LinkProperties>();
+	private final List<LinkProperties> m_linkProperties = new ArrayList<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public WebLink setId(String id) {
+	@NotNull
+	public WebLink setId(@NotNull String id) {
 		m_id = id;
 		return this;
 	}
 
-	public WebLink setClass(String clazz) {
+	@NotNull
+	public WebLink setClass(@NotNull String clazz) {
 		m_class = clazz;
 		return this;
 	}
 
-	public WebLink setUnitName(String unitName) {
+	@NotNull
+	public WebLink setUnitName(@NotNull String unitName) {
 		m_unitName = unitName;
 		return this;
 	}
 
-	public WebLink setUnitFactor(String unitFactor) {
+	@NotNull
+	public WebLink setUnitFactor(@NotNull String unitFactor) {
 		m_unitFactor = unitFactor;
 		return this;
 	}
 
-	public WebLink setUnitBase(String unitBase) {
+	@NotNull
+	public WebLink setUnitBase(@NotNull String unitBase) {
 		m_unitBase = unitBase;
 		return this;
 	}
 
-	public WebLink setHumanReadable(String humanReadable) {
+	@NotNull
+	public WebLink setHumanReadable(@NotNull String humanReadable) {
 		m_humanReadable = humanReadable;
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public LinkProperties newLinkProperties()
 	{
 		LinkProperties result = new LinkProperties();
@@ -188,23 +206,24 @@ public class WebLink
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String toString()
 	{
 		return new StringBuilder().append("<properties")
-		        .append(" id=\"").append(Utility.escapeHTML(m_id)).append("\"")
-		        .append(" class=\"").append(Utility.escapeHTML(m_class)).append("\"")
-		        .append(" unitName=\"").append(Utility.escapeHTML(m_unitName)).append("\"")
-		        .append(" unitFactor=\"").append(Utility.escapeHTML(m_unitFactor)).append("\"")
-		        .append(" unitBase=\"").append(Utility.escapeHTML(m_unitBase)).append("\"")
-		        .append(" humanReadable=\"").append(Utility.escapeHTML(m_humanReadable)).append("\"")
-		        .append(" />")
-		        .append(m_linkProperties.stream().map(x -> x.toString()).collect(Collectors.joining("")))
-		        .toString()
+		                          .append(" id=\"").append(Utility.escapeHTML(m_id)).append("\"")
+		                          .append(" class=\"").append(Utility.escapeHTML(m_class)).append("\"")
+		                          .append(" unitName=\"").append(Utility.escapeHTML(m_unitName)).append("\"")
+		                          .append(" unitFactor=\"").append(Utility.escapeHTML(m_unitFactor)).append("\"")
+		                          .append(" unitBase=\"").append(Utility.escapeHTML(m_unitBase)).append("\"")
+		                          .append(" humanReadable=\"").append(Utility.escapeHTML(m_humanReadable)).append("\"")
+		                          .append(" />")
+		                          .append(m_linkProperties.stream().map(LinkProperties::toString).collect(Collectors.joining("")))
+		                          .toString()
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

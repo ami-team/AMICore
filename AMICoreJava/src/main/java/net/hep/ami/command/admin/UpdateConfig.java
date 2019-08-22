@@ -6,21 +6,23 @@ import java.util.regex.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
 public class UpdateConfig extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public UpdateConfig(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public UpdateConfig(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String separator = arguments.containsKey("separator") ? Pattern.quote(arguments.get("separator"))
 		                                                      : ","
@@ -39,11 +41,11 @@ public class UpdateConfig extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String name;
 		String value;
@@ -55,7 +57,7 @@ public class UpdateConfig extends AbstractCommand
 			name = _names[i].trim();
 			value = _values[i].trim();
 
-			if(name.isEmpty() == false)
+			if(!name.isEmpty())
 			{
 				if("@NULL".equalsIgnoreCase(value))
 				{
@@ -78,24 +80,28 @@ public class UpdateConfig extends AbstractCommand
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success, updated parameter(s): " + updatedParamNames + "]]></info>");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Update the global configuration.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "(-separator=\",\")? -names=\"\" -values=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

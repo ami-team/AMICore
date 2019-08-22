@@ -7,22 +7,22 @@ import net.hep.ami.utility.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mysql",
 	clazz = "com.mysql.cj.jdbc.Driver",
-	backslashEscapes = true
+	flags = DriverMetadata.FLAG_BACKSLASH_ESCAPE | DriverMetadata.FLAG_HAS_DUAL
 )
 
 public class MySQLDriver extends AbstractDriver
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public MySQLDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	public MySQLDriver(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @NotNull String user, @NotNull String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void setupSession(String db, String tz) throws Exception
+	public void setupSession(@NotNull String db, @NotNull String tz) throws Exception
 	{
 		if("UTC".equalsIgnoreCase(tz))
 		{
@@ -34,16 +34,15 @@ public class MySQLDriver extends AbstractDriver
 		m_statement.executeQuery("SET time_zone = '" + tz + "'");
 
 		m_statement.executeQuery("SET SESSION sql_mode = 'ANSI_QUOTES'");
-
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	public String patchSQL(String sql)
 	{
 		return sql; /* MySQL/MariaDB is the default */
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

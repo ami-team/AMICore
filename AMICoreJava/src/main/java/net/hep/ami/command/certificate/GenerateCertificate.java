@@ -7,58 +7,53 @@ import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_CERT", visible = false, secured = true)
 public class GenerateCertificate extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GenerateCertificate(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GenerateCertificate(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
 		StringBuilder result = new StringBuilder();
 
-		String country = arguments.get("country");
+		String country = arguments.getOrDefault("country", "").trim();
+		String locality = arguments.getOrDefault("locality", "").trim();
+		String organization = arguments.getOrDefault("organization", "").trim();
+		String organizationalUnit = arguments.getOrDefault("organizationalUnit", "").trim();
+		String commonName = arguments.getOrDefault("commonName", "").trim();
+		String email = arguments.getOrDefault("email", "").trim();
+		String virtOrg = arguments.getOrDefault("virtOrg", "").trim();
+		String password = arguments.getOrDefault("password", "").trim();
 
-		String locality = arguments.get("locality");
-
-		String organization = arguments.get("organization");
-
-		String organizationalUnit = arguments.get("organizationalUnit");
-
-		String commonName = arguments.get("commonName");
-
-		String email = arguments.get("email");
-
-		String virtOrg = arguments.get("virtOrg");
-
-		String password = arguments.get("password");
-
-		if(country == null || country.isEmpty()
+		if(country.isEmpty()
 		   ||
-		   locality == null || locality.isEmpty()
+		   locality.isEmpty()
 		   ||
-		   organization == null || organization.isEmpty()
+		   organization.isEmpty()
 		   ||
-		   organizationalUnit == null || organizationalUnit.isEmpty()
+		   organizationalUnit.isEmpty()
 		   ||
-		   commonName == null || commonName.isEmpty()
+		   commonName.isEmpty()
 		   ||
-		   email == null || email.isEmpty()
+		   email.isEmpty()
 		   ||
-		   virtOrg == null || virtOrg.isEmpty()
+		   virtOrg.isEmpty()
 		   ||
-		   password == null || password.isEmpty()
+		   password.isEmpty()
 		 ) {
 			throw new Exception("invalid usage");
 		}
@@ -81,11 +76,11 @@ public class GenerateCertificate extends AbstractCommand
 			validity = 1;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String fileName = ConfigSingleton.getConfigPathName() + File.separator + "ca.pem";
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SecuritySingleton.PEM ca = new SecuritySingleton.PEM(new FileInputStream(fileName));
 
@@ -102,7 +97,7 @@ public class GenerateCertificate extends AbstractCommand
 		caKey = ca.privateKeys[0];
 		caCrt = ca.x509Certificates[0];
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCertificate(
 			caKey,
@@ -121,7 +116,7 @@ public class GenerateCertificate extends AbstractCommand
 			validity
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
 		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
@@ -129,7 +124,7 @@ public class GenerateCertificate extends AbstractCommand
 		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try(ByteArrayOutputStream output1 = new ByteArrayOutputStream())
 		{
@@ -153,24 +148,28 @@ public class GenerateCertificate extends AbstractCommand
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Generate a client or server certificate. Default validity: 1 year.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-virtOrg=\"\")? -password=\"\" (-validity=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

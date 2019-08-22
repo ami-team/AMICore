@@ -3,21 +3,23 @@ package net.hep.ami.command.dashboard;
 import java.util.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class UpdateWidget extends AbstractCommand
 {
 	/*---------------------------------------------------------------------*/
 
-	public UpdateWidget(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public UpdateWidget(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
 	/*---------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String id = arguments.get("id");
 		String x = arguments.get("x");
@@ -39,6 +41,8 @@ public class UpdateWidget extends AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Update the given widget.";
@@ -46,6 +50,8 @@ public class UpdateWidget extends AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-id=\"\" -x=\"\"-y=\"\" -width=\"\" -height=\"\"";

@@ -116,19 +116,22 @@ public class MetadataSingleton
 
 	/*---------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
 	private static int _safeInteger(Integer i, int def)
 	{
 		return i != null ? i : def;
 	}
 
+	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
 	private static boolean _safeBoolean(Boolean b, boolean def)
 	{
 		return b != null ? b : def;
 	}
 
+	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
 	private static String _safeString(String s, String def)
 	{
-		return s != null && (s = s.trim()).isEmpty() == false && "@NULL".equalsIgnoreCase(s) == false ? s : def;
+		return ConfigSingleton.checkString(s, def);
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -144,7 +147,12 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class);
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class, false);
+
+			if(map == null)
+			{
+				return;
+			}
 
 			/*-------------------------------------------------------------*/
 
@@ -177,7 +185,12 @@ public class MetadataSingleton
 
 			/*-------------------------------------------------------------*/
 
-			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class);
+			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class, false);
+
+			if(map == null)
+			{
+				return;
+			}
 
 			/*-------------------------------------------------------------*/
 

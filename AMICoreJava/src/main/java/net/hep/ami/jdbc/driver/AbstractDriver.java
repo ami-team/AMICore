@@ -6,7 +6,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
-import net.hep.ami.jdbc.query.sql.*;
+import net.hep.ami.jdbc.query.sql.Formatter;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
 
@@ -16,38 +16,38 @@ import net.hep.ami.utility.*;
 
 public abstract class AbstractDriver implements Querier
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final String m_externalCatalog;
 	protected final String m_internalCatalog;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final DriverMetadata.Type m_jdbcType;
 	protected final String m_jdbcProto;
 	protected final String m_jdbcClass;
-	protected final boolean m_jdbcBackslashEscapes;
+	protected final int    m_jdbcFlags;
 	protected final String m_jdbcUrl;
 	protected final String m_user;
 	protected final String m_pass;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final String m_AMIUser;
 	protected final String m_timeZone;
 	protected final boolean m_isAdmin;
 	protected final boolean m_links;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final Connection m_connection;
 	protected final Statement m_statement;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final Map<String, Statement> m_statementMap = new HashMap<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Constructor
@@ -61,9 +61,9 @@ public abstract class AbstractDriver implements Querier
 
 	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* GET JDBC ANNOTATION                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET JDBC ANNOTATION                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		DriverMetadata annotation = getClass().getAnnotation(DriverMetadata.class);
 
@@ -72,40 +72,40 @@ public abstract class AbstractDriver implements Querier
 			throw new Exception("annotation `Jdbc` not found for driver `" + getClass().getName() + "`");
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* SET CATALOG INFO                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SET CATALOG INFO                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(externalCatalog == null)
 		{
 			externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog_noException(internalCatalog, internalCatalog);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_externalCatalog = externalCatalog;
 		m_internalCatalog = internalCatalog;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_jdbcType = annotation.type();
 		m_jdbcProto = annotation.proto();
 		m_jdbcClass = annotation.clazz();
-		m_jdbcBackslashEscapes = annotation.backslashEscapes();
+		m_jdbcFlags = annotation.flags();
 		m_jdbcUrl = jdbcUrl;
 		m_user = user;
 		m_pass = pass;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_AMIUser = AMIUser;
 		m_timeZone = timeZone;
 		m_isAdmin = isAdmin;
 		m_links = links;
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE CONNECTION                                               */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE CONNECTION                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_connection = ConnectionPoolSingleton.getConnection(
 			m_externalCatalog,
@@ -115,7 +115,7 @@ public abstract class AbstractDriver implements Querier
 			m_pass
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
@@ -126,22 +126,22 @@ public abstract class AbstractDriver implements Querier
 			LogSingleton.root.error(e.getMessage(), e);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE STATEMENT                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE STATEMENT                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_statementMap.put("@", m_statement = m_connection.createStatement());
 
-		/*-----------------------------------------------------------------*/
-		/* SETUP SESSION                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SETUP SESSION                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		setupSession(internalCatalog, timeZone);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Puts this connection in read-only mode.
@@ -154,7 +154,7 @@ public abstract class AbstractDriver implements Querier
 		m_connection.setReadOnly(readOnly);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Setup the session.
@@ -165,7 +165,7 @@ public abstract class AbstractDriver implements Querier
 
 	public abstract void setupSession(String db, String tz) throws Exception;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Patches the given SQL.
@@ -175,7 +175,7 @@ public abstract class AbstractDriver implements Querier
 
 	public abstract String patchSQL(String sql) throws Exception;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String mqlToSQL(String entity, String mql) throws Exception
@@ -190,7 +190,7 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String mqlToAST(String entity, String mql) throws Exception
@@ -205,7 +205,7 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
@@ -215,7 +215,7 @@ public abstract class AbstractDriver implements Querier
 
 		try
 		{
-			mql = Tokenizer.formatStatement(this, mql, args);
+			mql = Formatter.formatStatement(this, mql, args);
 
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
@@ -228,14 +228,14 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public RowSet executeSQLQuery(@Nullable String entity, String sql, Object... args) throws Exception
 	{
 		try
 		{
-			sql = Tokenizer.formatStatement(this, sql, args);
+			sql = Formatter.formatStatement(this, sql, args);
 
 			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_isAdmin, m_links, sql, null, null);
 		}
@@ -245,14 +245,14 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public RowSet executeRawQuery(@Nullable String entity, String raw, Object... args) throws Exception
 	{
 		try
 		{
-			raw = Tokenizer.formatStatement(this, raw, args);
+			raw = Formatter.formatStatement(this, raw, args);
 
 			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_isAdmin, m_links, raw, null, null);
 		}
@@ -262,7 +262,7 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
@@ -272,7 +272,7 @@ public abstract class AbstractDriver implements Querier
 
 		try
 		{
-			mql = Tokenizer.formatStatement(this, mql, args);
+			mql = Formatter.formatStatement(this, mql, args);
 
 			sql = mqlToSQL(entity, mql);
 			ast = mqlToAST(entity, mql);
@@ -285,14 +285,14 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public Update executeSQLUpdate(String sql, Object... args) throws Exception
 	{
 		try
 		{
-			sql = Tokenizer.formatStatement(this, sql, args);
+			sql = Formatter.formatStatement(this, sql, args);
 
 			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, null, null);
 		}
@@ -302,14 +302,14 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public Update executeRawUpdate(String raw, Object... args) throws Exception
 	{
 		try
 		{
-			raw = Tokenizer.formatStatement(this, raw, args);
+			raw = Formatter.formatStatement(this, raw, args);
 
 			return new Update(m_statement.executeUpdate(/*----*/(raw)), raw, null, null);
 		}
@@ -319,22 +319,22 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public PreparedStatement preparedStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
 	{
 		try
 		{
-			String SQL = (isRawQuery == false) ? patchSQL(sql)
-			                                   : /*----*/(sql)
+			String SQL = !isRawQuery ? patchSQL(sql)
+			                         : /*----*/(sql)
 			;
 
 			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
 
 			if(result == null || result.isClosed())
 			{
-				m_statementMap.put(SQL, result = (returnGeneratedKeys == false) ? (
+				m_statementMap.put(SQL, result = !returnGeneratedKeys ? (
 						m_connection.prepareStatement(SQL)
 					) : (
 						(columnNames == null) ? (
@@ -350,37 +350,37 @@ public abstract class AbstractDriver implements Querier
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for " + (isRawQuery == false ? "SQL" : "RAW") + " query: " + sql, e);
+			throw new Exception(e.getMessage() + " for " + (isRawQuery ? "RAW" : "SQL") + " query: " + sql, e);
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void commit() throws Exception
 	{
-		if(m_connection.getAutoCommit() == false)
+		if(!m_connection.getAutoCommit())
 		{
 			m_connection.commit();
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void rollback() throws Exception
 	{
-		if(m_connection.getAutoCommit() == false)
+		if(!m_connection.getAutoCommit())
 		{
 			m_connection.rollback();
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void commitAndRelease() throws Exception
 	{
 		try
 		{
-			if(m_connection.getAutoCommit() == false)
+			if(!m_connection.getAutoCommit())
 			{
 				m_connection.commit();
 			}
@@ -391,7 +391,7 @@ public abstract class AbstractDriver implements Querier
 			{
 				try
 				{
-					if(statement.isClosed() == false)
+					if(!statement.isClosed())
 					{
 						statement.close();
 					}
@@ -408,13 +408,13 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void rollbackAndRelease() throws Exception
 	{
 		try
 		{
-			if(m_connection.getAutoCommit() == false)
+			if(!m_connection.getAutoCommit())
 			{
 				m_connection.rollback();
 			}
@@ -425,7 +425,7 @@ public abstract class AbstractDriver implements Querier
 			{
 				try
 				{
-					if(statement.isClosed() == false)
+					if(!statement.isClosed())
 					{
 						statement.close();
 					}
@@ -442,7 +442,7 @@ public abstract class AbstractDriver implements Querier
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * @deprecated (for internal use only)
@@ -454,7 +454,7 @@ public abstract class AbstractDriver implements Querier
 		return m_connection;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * @deprecated (for internal use only)
@@ -466,7 +466,7 @@ public abstract class AbstractDriver implements Querier
 		return m_statement;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String getExternalCatalog()
@@ -474,7 +474,7 @@ public abstract class AbstractDriver implements Querier
 		return m_externalCatalog;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String getInternalCatalog()
@@ -482,7 +482,7 @@ public abstract class AbstractDriver implements Querier
 		return m_internalCatalog;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public DriverMetadata.Type getJdbcType()
@@ -490,7 +490,7 @@ public abstract class AbstractDriver implements Querier
 		return m_jdbcType;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String getJdbcProto()
@@ -498,7 +498,7 @@ public abstract class AbstractDriver implements Querier
 		return m_jdbcProto;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String getJdbcClass()
@@ -506,15 +506,15 @@ public abstract class AbstractDriver implements Querier
 		return m_jdbcClass;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public boolean getBackslashEscapes()
+	public int getJdbcFlags()
 	{
-		return m_jdbcBackslashEscapes;
+		return m_jdbcFlags;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String getJdbcUrl()
@@ -522,7 +522,7 @@ public abstract class AbstractDriver implements Querier
 		return m_jdbcUrl;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String getUser()
@@ -530,7 +530,7 @@ public abstract class AbstractDriver implements Querier
 		return m_user;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String getPass()
@@ -538,5 +538,5 @@ public abstract class AbstractDriver implements Querier
 		return m_pass;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

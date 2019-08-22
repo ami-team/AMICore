@@ -2,17 +2,26 @@ package net.hep.ami.role;
 
 import java.util.*;
 
-@FunctionalInterface
-public interface CommandValidator
+import net.hep.ami.utility.*;
+
+abstract public class CommandValidator
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean check(
-		String command,
-		Set<String> userRoles,
-		Map<String, String> arguments
+	abstract public boolean check(
+		@NotNull String command,
+		@NotNull Set<String> userRoles,
+		@NotNull Map<String, String> arguments
 
-	)  throws Exception;
+	) throws Exception;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	String help()
+	{
+		return "";
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

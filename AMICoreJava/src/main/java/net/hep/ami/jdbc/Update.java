@@ -4,7 +4,7 @@ import net.hep.ami.utility.*;
 
 public class Update
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final Integer m_nbOfUpdatedRows;
 
@@ -14,16 +14,18 @@ public class Update
 	private final String m_mql;
 	private final String m_ast;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Update(int nbOfUpdatedRows) throws Exception
+	@org.jetbrains.annotations.Contract(pure = true)
+	public Update(int nbOfUpdatedRows)
 	{
 		this(nbOfUpdatedRows, null, null, null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Update(int nbOfUpdatedRows, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	@org.jetbrains.annotations.Contract(pure = true)
+	public Update(int nbOfUpdatedRows, @Nullable String sql, @Nullable String mql, @Nullable String ast)
 	{
 		m_nbOfUpdatedRows = nbOfUpdatedRows;
 
@@ -34,9 +36,10 @@ public class Update
 		m_ast = ast != null ? ast : "";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Update(int nbOfUpdatedRows, @Nullable String generatedKey, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	@org.jetbrains.annotations.Contract(pure = true)
+	public Update(int nbOfUpdatedRows, @Nullable String generatedKey, @Nullable String sql, @Nullable String mql, @Nullable String ast)
 	{
 		m_nbOfUpdatedRows = nbOfUpdatedRows;
 
@@ -47,67 +50,64 @@ public class Update
 		m_ast = ast != null ? ast : "";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public int getNbOfUpdatedRows()
 	{
 		return m_nbOfUpdatedRows;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
 	public String getGeneratedKey()
 	{
 		return m_generatedKey;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getSQL()
 	{
 		return m_sql;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getMQL()
 	{
 		return m_mql;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getAST()
 	{
 		return m_ast;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public StringBuilder toStringBuilder() throws Exception
+	@NotNull
+	public StringBuilder toStringBuilder()
 	{
-		StringBuilder result = new StringBuilder().append("<sql><![CDATA[").append(m_sql).append("]]></sql>")
-		                                          .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
-		                                          .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
-		                                          .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
+		AMIStringBuilder result = new AMIStringBuilder().append("<sql><![CDATA[").append(m_sql).append("]]></sql>")
+		                                                .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
+		                                                .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
+		                                                .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
+		                                                .append("<rowset>")
+		                                                .append("<row>")
+		                                                .append("<field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field>")
+		                                                .appendIf(m_generatedKey != null, "<field name=\"generatedKey\"><![CDATA[", m_generatedKey, "]]></field>")
+		                                                .append("</row>")
+		                                                .append("</rowset>")
 		;
 
-		if(m_generatedKey == null)
-		{
-			return result.append("<rowset><row>")
-			             .append("<field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field>")
-			             .append("</row></rowset>")
-			;
-		}
-		else
-		{
-			return result.append("<rowset><row>")
-			             .append("<field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field>")
-			             .append("<field name=\"generatedKey\"><![CDATA[").append(m_generatedKey).append("]]></field>")
-			             .append("</row></rowset>")
-			;
-		}
+		return result.toStringBuilder();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

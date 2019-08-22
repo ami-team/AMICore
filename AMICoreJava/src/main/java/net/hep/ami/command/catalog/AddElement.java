@@ -5,33 +5,31 @@ import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
 
-import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.query.*;
-import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.query.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class AddElement extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public AddElement(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public AddElement(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
-		String separator = arguments.containsKey("separator") ? Pattern.quote(arguments.get("separator"))
-		                                                      : ","
-		;
+		String separator = Pattern.quote(arguments.getOrDefault("separator", ","));
 
 		String[] fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
 		                                                  : new String[] {}
@@ -46,7 +44,7 @@ public class AddElement extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		XQLInsert query;
 
@@ -64,7 +62,7 @@ public class AddElement extends AbstractCommand
 			throw new Exception(e);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String mql = query.toString();
 
@@ -73,11 +71,11 @@ public class AddElement extends AbstractCommand
 		String sql = querier.mqlToSQL(entity, mql);
 		String ast = querier.mqlToAST(entity, mql);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2<String, List<String>> tuple = Tokenizer.formatPreparedStatement(querier, sql, values);
+		Tuple2<String, List<String>> tuple = net.hep.ami.jdbc.query.sql.Formatter.formatPreparedStatement(querier, sql, values);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		PreparedStatement statement = querier.preparedStatement(tuple.x, false, true, null);
 
@@ -86,7 +84,7 @@ public class AddElement extends AbstractCommand
 			statement.setString(i + 1, tuple.y.get(i));
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		final int nbOfUpdatedRows;
 
@@ -99,7 +97,7 @@ public class AddElement extends AbstractCommand
 			throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		ResultSet resultSet = statement.getGeneratedKeys();
 
@@ -119,22 +117,26 @@ public class AddElement extends AbstractCommand
 			return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Add one element.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -fields=\"\" -values=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

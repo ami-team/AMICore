@@ -4,61 +4,35 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import net.hep.ami.utility.parser.*;
+
 public class AMIMap<U, V> implements Map<U, V>, Serializable
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 5473885106100385148L;
 
-	/*---------------------------------------------------------------------*/
-
-	private static final class StringComparator<U> implements Comparator<U>
-	{
-		@Override
-		public int compare(U o1, U o2)
-		{
-			String s1 = o1.toString();
-			String s2 = o2.toString();
-
-			return s1.compareTo(s2);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	private static final class EntryComparator<U, V> implements Comparator<Map.Entry<U, V>>
-	{
-		@Override
-		public int compare(Map.Entry<U, V> o1, Map.Entry<U, V> o2)
-		{
-			String s1 = o1.getKey().toString();
-			String s2 = o2.getKey().toString();
-
-			return s1.compareTo(s2);
-		}
-	}
-
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public enum Type
 	{
 		TREE_MAP,
 		HASH_MAP,
 		LINKED_HASH_MAP,
-		CONCURENT_HASH_MAP
+		CONCURRENT_HASH_MAP
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final boolean m_isOrdered;
 
 	private final Map<U, V> m_underlyingMap;
 
-	private final Map<Object, Object> m_lowerCaseToOrigCaseMap;
+	private final Map<String, String> m_lowerCaseToOrigCaseMap;
 
 	/*---------------------------------------------------------------------*/
 
-	public AMIMap(Type type, boolean isOrdered, boolean isCaseInsensitive)
+	public AMIMap(@NotNull Type type, boolean isOrdered, boolean isCaseInsensitive)
 	{
 		m_isOrdered = isOrdered;
 
@@ -78,7 +52,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 				m_underlyingMap = new LinkedHashMap<>();
 				break;
 
-			case CONCURENT_HASH_MAP:
+			case CONCURRENT_HASH_MAP:
 				m_underlyingMap = new ConcurrentHashMap<>();
 				break;
 
@@ -87,14 +61,15 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Set<String> newSet(Type type, boolean isOrdered, boolean isCaseInsensitive)
+	@NotNull
+	public static Set<String> newSet(@NotNull Type type, boolean isOrdered, boolean isCaseInsensitive)
 	{
 		return Collections.newSetFromMap(new AMIMap<>(type, isOrdered, isCaseInsensitive));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public int size()
@@ -102,7 +77,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		return m_underlyingMap.size();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public boolean isEmpty()
@@ -110,41 +85,33 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		return m_underlyingMap.isEmpty();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private Object _getKey(Object key)
+	@NotNull
+	private Object _getKey(@NotNull Object key)
 	{
 		if(m_lowerCaseToOrigCaseMap != null && key instanceof String)
 		{
-			Object tmp = m_lowerCaseToOrigCaseMap.get(((String) key).toLowerCase());
-
-			if(tmp != null)
-			{
-				key = tmp;
-			}
+			key = m_lowerCaseToOrigCaseMap.getOrDefault(((String) key).toLowerCase(), (String) key);
 		}
 
 		return key;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private Object _setKey(Object key)
+	@NotNull
+	private Object _setKey(@NotNull Object key)
 	{
 		if(m_lowerCaseToOrigCaseMap != null && key instanceof String)
 		{
-			m_lowerCaseToOrigCaseMap.put(((String) key).toLowerCase(), key);
-
-		//	if(key != null)
-		//	{
-		//		key = key;
-		//	}
+			m_lowerCaseToOrigCaseMap.put(((String) key).toLowerCase(), (String) key);
 		}
 
 		return key;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public boolean containsKey(Object key)
@@ -152,7 +119,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		return m_underlyingMap.containsKey(_getKey(key));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public boolean containsValue(Object value)
@@ -160,27 +127,30 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		return m_underlyingMap.containsValue(value);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
 	@Override
-	public V remove(Object key)
+	public V remove(@NotNull Object key)
 	{
 		return m_underlyingMap.remove(_getKey(key));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
 	@Override
-	public V get(Object key)
+	public V get(@NotNull Object key)
 	{
 		return m_underlyingMap.get(_getKey(key));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public V put(U key, V value)
+	public V put(@NotNull U key, @Nullable V value)
 	{
 		return m_underlyingMap.put(
 			(U) _setKey(key),
@@ -188,11 +158,11 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void putAll(Map<? extends U, ? extends V> map)
+	public void putAll(@NotNull Map<? extends U, ? extends V> map)
 	{
 		for(final Entry<? extends U, ? extends V> entry: map.entrySet())
 		{
@@ -203,7 +173,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void clear()
@@ -211,8 +181,9 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		m_underlyingMap.clear();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public Set<Map.Entry<U, V>> entrySet()
 	{
@@ -220,7 +191,13 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 
 		if(m_isOrdered)
 		{
-			result = new TreeSet<>(new EntryComparator<>());
+			result = new TreeSet<>((o1, o2) -> {
+
+				String s1 = o1.getKey().toString();
+				String s2 = o2.getKey().toString();
+
+				return s1.compareTo(s2);
+			});
 
 			result.addAll(m_underlyingMap.entrySet());
 		}
@@ -232,8 +209,9 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public Set<U> keySet()
 	{
@@ -241,7 +219,13 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 
 		if(m_isOrdered)
 		{
-			result = new TreeSet<>(new StringComparator<>());
+			result = new TreeSet<>((o1, o2) -> {
+
+				String s1 = o1.toString();
+				String s2 = o2.toString();
+
+				return s1.compareTo(s2);
+			});
 
 			result.addAll(m_underlyingMap.keySet());
 		}
@@ -253,8 +237,9 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public Collection<V> values()
 	{
@@ -277,12 +262,14 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@Override
 	public String toString()
 	{
-		return m_underlyingMap.toString();
+		return Utility.object2json(m_underlyingMap).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

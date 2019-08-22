@@ -6,26 +6,28 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.shell.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class GetServerStatus extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetServerStatus(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetServerStatus(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String version = System.getProperty("java.version");
 
@@ -36,7 +38,7 @@ public class GetServerStatus extends AbstractCommand
 		      .append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String tags;
 		String buildVersion;
@@ -47,16 +49,28 @@ public class GetServerStatus extends AbstractCommand
 
 		try(final InputStream inputStream = GetServerStatus.class.getClassLoader().getResourceAsStream("/git.properties"))
 		{
-			Properties properties = new Properties();
+			if(inputStream != null)
+			{
+				Properties properties = new Properties();
 
-			properties.load(inputStream);
+				properties.load(inputStream);
 
-			tags = properties.getProperty("git.tags");
-			buildVersion = properties.getProperty("git.build.version");
-			branch = properties.getProperty("git.branch");
-			commitId = properties.getProperty("git.commit.id");
-			commitIdAbbrev = properties.getProperty("git.commit.id.abbrev");
-			remoteOriginURL = properties.getProperty("git.remote.origin.url");
+				tags = properties.getProperty("git.tags");
+				buildVersion = properties.getProperty("git.build.version");
+				branch = properties.getProperty("git.branch");
+				commitId = properties.getProperty("git.commit.id");
+				commitIdAbbrev = properties.getProperty("git.commit.id.abbrev");
+				remoteOriginURL = properties.getProperty("git.remote.origin.url");
+			}
+			else
+			{
+				tags = "N/A";
+				buildVersion = "N/A";
+				branch = "N/A";
+				commitId = "N/A";
+				commitIdAbbrev = "N/A";
+				remoteOriginURL = "N/A";
+			}
 		}
 		catch(Exception e)
 		{
@@ -68,7 +82,7 @@ public class GetServerStatus extends AbstractCommand
 			remoteOriginURL = "N/A";
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"ami\">")
 		      .append("<row>")
@@ -82,7 +96,7 @@ public class GetServerStatus extends AbstractCommand
 		      .append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SimpleShell simpleShell = new SimpleShell();
 
@@ -92,13 +106,13 @@ public class GetServerStatus extends AbstractCommand
 
 		String hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim() : "N/A";
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Runtime runtime = java.lang.Runtime.getRuntime();
 
 		File file = new File(System.getProperty("catalina.base", GetServerStatus.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"system\">")
 		      .append("<row>")
@@ -112,25 +126,27 @@ public class GetServerStatus extends AbstractCommand
 		      .append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append(ConnectionPoolSingleton.getStatus());
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append(CacheSingleton.getStatus());
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Get the server status.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

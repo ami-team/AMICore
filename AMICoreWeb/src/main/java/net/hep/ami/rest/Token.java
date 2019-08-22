@@ -14,7 +14,7 @@ import net.hep.ami.utility.*;
 @Path("/token")
 public class Token
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected static final class Tuple extends Tuple6<String, String, String, String, String, String>
 	{
@@ -26,7 +26,7 @@ public class Token
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@GET
 	@Path("password")
@@ -39,15 +39,15 @@ public class Token
 		return get(request, username, password, null, null, null, null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@GET
 	@Path("certificate")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response getBycertificate(
+	public Response getByCertificate(
 		@Context HttpServletRequest request
 	 ) {
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		java.security.cert.X509Certificate[] certificates = (java.security.cert.X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
 
@@ -55,7 +55,7 @@ public class Token
 		{
 			for(java.security.cert.X509Certificate certificate: certificates)
 			{
-				if(SecuritySingleton.isProxy(certificate) == false)
+				if(!SecuritySingleton.isProxy(certificate))
 				{
 					return get(
 						request,
@@ -74,14 +74,14 @@ public class Token
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return Response.status(Response.Status.UNAUTHORIZED).build();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@DELETE
 	public Response delete(
@@ -92,13 +92,13 @@ public class Token
 		return Response.status(Response.Status./*-*/OK/*-*/).build();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private Response get(HttpServletRequest request, @Nullable String AMIUser, @Nullable String AMIPass, @Nullable String clientDN, @Nullable String issuerDN, String notBefore, String notAfter)
 	{
-		/*-----------------------------------------------------------------*/
-		/* CHECK CREDENTIALS                                               */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK CREDENTIALS                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
@@ -112,13 +112,13 @@ public class Token
 				        &&
 				        issuerDN != null
 				 ) {
-					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ?# AND `issuerDN` = ?#", clientDN, issuerDN).getAll();
 				}
 				else if(AMIUser != null
 				        &&
 				        AMIPass != null
 				 ) {
-					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?", /* must not be crypted */(AMIUser), SecuritySingleton.encrypt(AMIPass)).getAll();
+					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?#", AMIUser, AMIPass).getAll();
 				}
 				else
 				{
@@ -158,12 +158,12 @@ public class Token
 			notAfter != null ? notAfter : ""
 		));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return Response.ok(session.getId()).build();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

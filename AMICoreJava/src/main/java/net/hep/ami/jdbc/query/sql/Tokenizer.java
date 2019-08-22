@@ -1,242 +1,70 @@
 package net.hep.ami.jdbc.query.sql;
 
-import java.math.*;
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
 
-import net.hep.ami.*;
-import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 public class Tokenizer
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private Tokenizer() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* TOKENIZER                                                                                                      */
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<String> tokenize(String s)
+	public static List<String> tokenize(@NotNull String s) throws Exception
 	{
-		return tokenize(CharStreams.fromString(s));
+		return tokenize(CharStreams.fromString(s.trim()));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<String> tokenize(CharStream charStream)
+	public static List<String> tokenize(@NotNull CharStream charStream) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SQLLexer lexer = new SQLLexer(charStream);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		SQLParser parser = new SQLParser(tokenStream);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return parser.query().tokens;
+		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		List<String> result = parser.query().tokens;
+
+		if(listener.isError())
+		{
+			throw new Exception(listener.toString());
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
-
-	public static String formatStatement(Querier querier, String sql, Object[] args) throws Exception
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		final int l = args.length;
-
-		if(l == 0)
-		{
-			return sql;
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		boolean escape = querier.getBackslashEscapes();
-
-		/*-----------------------------------------------------------------*/
-
-		int i = 0;
-
-		Object arg;
-
-		for(String token: Tokenizer.tokenize(sql))
-		{
-			/**/ if("?#".equals(token))
-			{
-				/*---------------------------------------------------------*/
-
-				if(i >= l)
-				{
-					throw new Exception("not enough arguments");
-				}
-
-				/*---------------------------------------------------------*/
-
-				arg = args[i++];
-
-				/**/ if(arg == null)
-				{
-					stringBuilder.append("NULL");
-				}
-				else
-				{
-					stringBuilder.append(SecuritySingleton.encrypt(arg.toString()));
-				}
-
-				/*---------------------------------------------------------*/
-			}
-			else if("?".equals(token))
-			{
-				/*---------------------------------------------------------*/
-
-				if(i >= l)
-				{
-					throw new Exception("not enough arguments");
-				}
-
-				/*---------------------------------------------------------*/
-
-				arg = args[i++];
-
-				/**/ if(arg == null)
-				{
-					stringBuilder.append("NULL");
-				}
-				else if(arg instanceof Float
-				        ||
-				        arg instanceof Double
-				        ||
-				        arg instanceof Integer
-				        ||
-				        arg instanceof BigInteger
-				 ) {
-					stringBuilder.append(arg.toString());
-				}
-				else if(arg instanceof Boolean)
-				{
-					stringBuilder.append(((Boolean) arg) ? "1" : "0");
-				}
-				else
-				{
-					stringBuilder.append(Utility.textToSqlVal(arg.toString(), escape));
-				}
-
-				/*---------------------------------------------------------*/
-			}
-			else
-			{
-				/*---------------------------------------------------------*/
-
-				stringBuilder.append(token);
-
-				/*---------------------------------------------------------*/
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return stringBuilder.toString();
-	}
-
-	/*---------------------------------------------------------------------*/
-
-	public static Tuple2<String, List<String>> formatPreparedStatement(Querier querier, String sql, Object[] args) throws Exception
-	{
-		List<String> list = new ArrayList<>();
-
-		StringBuilder stringBuilder = new StringBuilder();
-
-		/*-----------------------------------------------------------------*/
-
-		final int l = args.length;
-
-		if(l == 0)
-		{
-			return new Tuple2<String, List<String>>(sql, list);
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		int i;
-
-		for(String token: Tokenizer.tokenize(sql))
-		{
-			/**/ if(token.startsWith("?#"))
-			{
-				/*---------------------------------------------------------*/
-
-				i = Integer.parseInt(token.substring(2));
-
-				/*---------------------------------------------------------*/
-
-				if(i >= l)
-				{
-					throw new Exception("not enough arguments");
-				}
-
-				/*---------------------------------------------------------*/
-
-				list.add(SecuritySingleton.encrypt(args[i].toString()));
-
-				stringBuilder.append("?");
-
-				/*---------------------------------------------------------*/
-			}
-			else if(token.startsWith("?"))
-			{
-				/*---------------------------------------------------------*/
-
-				i = Integer.parseInt(token.substring(1));
-
-				/*---------------------------------------------------------*/
-
-				if(i >= l)
-				{
-					throw new Exception("not enough arguments");
-				}
-
-				/*---------------------------------------------------------*/
-
-				list.add(/*---------------------*/(args[i].toString()));
-
-				stringBuilder.append("?");
-
-				/*---------------------------------------------------------*/
-			}
-			else
-			{
-				/*---------------------------------------------------------*/
-
-				stringBuilder.append(token);
-
-				/*---------------------------------------------------------*/
-			}
-		}
-
-		/*-----------------------------------------------------------------*/
-
-		return new Tuple2<String, List<String>>(stringBuilder.toString(), list);
-
-		/*-----------------------------------------------------------------*/
-	}
-
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final String SELECT = "SELECT";
 	public static final String FROM = "FROM";
 	public static final String WHERE = "WHERE";
 	public static final String GROUP = "GROUP";
+	public static final String HAVING = "HAVING";
 	public static final String ORDER = "ORDER";
 	public static final String WAY = "WAY";
 	public static final String LIMIT = "LIMIT";
 	public static final String OFFSET = "OFFSET";
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Set<String> s_xqlRegions = new HashSet<>();
 
@@ -246,113 +74,104 @@ public class Tokenizer
 		s_xqlRegions.add(FROM);
 		s_xqlRegions.add(WHERE);
 		s_xqlRegions.add(GROUP);
+		s_xqlRegions.add(HAVING);
 		s_xqlRegions.add(ORDER);
 		s_xqlRegions.add(LIMIT);
 		s_xqlRegions.add(OFFSET);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/*   `UNION`   NOT SUPPORTED! */
 	/* `UNION ALL` NOT SUPPORTED! */
 	/* `INTERSECT` NOT SUPPORTED! */
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, String> splitXQL(String xql)
+	@NotNull
+	public static Map<String, List<String>> splitXQL(@NotNull String xql) throws Exception
 	{
-		Map<String, String> result = new HashMap<>();
+		Map<String, List<String>> result = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, false);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		int lock = 0;
 
-		String TOKEN = "";
-		String keyword = "";
+		String TOKEN = null;
+		String keyword = null;
 
-		List<String> tokens = new ArrayList<>();
+		List<String> tokens = null;
 
-		for(String token: Tokenizer.tokenize(xql.trim()))
+		try
 		{
-			/*-------------------------------------------------------------*/
-
-			TOKEN = token.toUpperCase();
-
-			/*-------------------------------------------------------------*/
-
-			/**/ if("(".equals(token))
+			for(String token: Tokenizer.tokenize(xql))
 			{
-				tokens.add("(");
-				lock++;
-			}
-			else if(")".equals(token))
-			{
-				tokens.add(")");
-				lock--;
-			}
+				/*----------------------------------------------------------------------------------------------------*/
 
-			/*-------------------------------------------------------------*/
+				TOKEN = token.toUpperCase();
 
-			else if(lock == 0 && s_xqlRegions.contains(TOKEN))
-			{
-				if(keyword.isEmpty() == false)
+				/*----------------------------------------------------------------------------------------------------*/
+
+				/**/ if("(".equals(token))
 				{
-					result.put(keyword, String.join("", tokens).trim());
+					Objects.requireNonNull(tokens).add("(");
+					lock++;
+				}
+				else if(")".equals(token))
+				{
+					Objects.requireNonNull(tokens).add(")");
+					lock--;
 				}
 
-				tokens.clear();
-				keyword = TOKEN;
-			}
+				/*----------------------------------------------------------------------------------------------------*/
 
-			/*-------------------------------------------------------------*/
-
-			else if(lock == 0)
-			{
-				/**/ if(s_xqlRegions.contains(TOKEN))
+				else if(lock == 0)
 				{
-					if(keyword.isEmpty() == false)
+					/*------------------------------------------------------------------------------------------------*/
+
+					if(s_xqlRegions.contains(TOKEN))
 					{
-						result.put(keyword, String.join("", tokens).trim());
+						result.put(keyword = TOKEN, tokens = new ArrayList<>());
+					}
+					else
+					{
+						/**/ if(ORDER.equals(keyword) && ("ASC".equals(TOKEN) || "DESC".equals(TOKEN)))
+						{
+							result.put(WAY, Collections.singletonList(TOKEN));
+						}
+						else if(!(GROUP.equals(keyword) || ORDER.equals(keyword)) || !"BY".equals(TOKEN))
+						{
+							Objects.requireNonNull(tokens).add(token);
+						}
 					}
 
-					tokens.clear();
-					keyword = TOKEN;
+					/*------------------------------------------------------------------------------------------------*/
 				}
-				else if(ORDER.equals(keyword) == true && ("ASC".equals(TOKEN) || "DESC".equals(TOKEN)) == true)
-				{
-					result.put(WAY, TOKEN);
-				}
-				else if(ORDER.equals(keyword) == false || (/*-------*/ "BY".equals(TOKEN) /*-------*/) == false)
-				{
-					tokens.add(token);
-				}
-			}
-			else
-			{
-				tokens.add(token);
-			}
 
-			/*-------------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+
+				else
+				{
+					Objects.requireNonNull(tokens).add(token);
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
 		}
-
-		/*-----------------------------------------------------------------*/
-
-		if(keyword.isEmpty() == false)
+		catch(NullPointerException e)
 		{
-			result.put(keyword, String.join("", tokens).trim());
+			throw new Exception("invalid SQL syntax");
 		}
 
-		tokens.clear();
-		keyword = null;
-
-		/*-----------------------------------------------------------------*/
-
+		/*------------------------------------------------------------------------------------------------------------*/
+System.out.println(result);
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String backQuotesToDoubleQuotes(String token)
+	@NotNull
+	public static String backQuotesToDoubleQuotes(@NotNull String token)
 	{
 		if(token.startsWith("`")
 		   &&
@@ -367,13 +186,15 @@ public class Tokenizer
 		return token;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Tuple5<Map<QId, QId>, List<Boolean>, Set<QId>, List<Boolean>, Set<QId>> extractAliasInfo(String sql) throws Exception
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> new")
+	public static Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> extractAliasInfo(@NotNull String sql) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* EXTRACT FIELDS AND TABLES                                       */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXTRACT FIELDS AND TABLES                                                                                  */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		int cnt = 0;
 
@@ -386,7 +207,7 @@ public class Tokenizer
 		List<List<String>> fields = new ArrayList<>();
 		List<List<String>> tables = new ArrayList<>();
 
-		for(String token: Tokenizer.tokenize(sql))
+		for(String token: Tokenizer.tokenize(sql.trim()))
 		{
 			/**/ if("(".equals(token)) {
 				cnt++;
@@ -406,13 +227,13 @@ public class Tokenizer
 				inSelect = false;
 				inFrom = false;
 			}
-			else if("DISTINCT".equalsIgnoreCase(token) == false
+			else if(!"DISTINCT".equalsIgnoreCase(token)
 			        &&
-			        ((("AS"))).equalsIgnoreCase(token) == false
+			        !((("AS"))).equalsIgnoreCase(token)
 			 ) {
 				/**/ if(inSelect)
 				{
-					if(",".equals(token) == false)
+					if(!",".equals(token))
 					{
 						if(tmp1 == null)
 						{
@@ -432,7 +253,7 @@ public class Tokenizer
 				}
 				else if(inFrom)
 				{
-					if(",".equals(token) == false)
+					if(!",".equals(token))
 					{
 						if(tmp2 == null)
 						{
@@ -461,16 +282,16 @@ public class Tokenizer
 			tables.add(tmp2);
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* BUILD FIELD-ALIAS AND TABLE-ALIAS MAPS                          */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* BUILD FIELD-ALIAS AND TABLE-ALIAS MAPS                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		int l;
 		int idx;
 
 		String tmp;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Boolean> fieldHasAliasList = new ArrayList<>();
 
@@ -515,7 +336,7 @@ public class Tokenizer
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Boolean> tableHasAliasList = new ArrayList<>();
 
@@ -559,9 +380,9 @@ public class Tokenizer
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/*                                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Map<QId, QId> aliasFieldMap = new HashMap<>();
 
@@ -603,16 +424,16 @@ public class Tokenizer
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new Tuple5<>(
 			aliasFieldMap,
 			fieldHasAliasList,
-			rawFieldAliasMap.keySet(),
+			rawFieldAliasMap,
 			tableHasAliasList,
-			rawTableAliasMap.keySet()
+			rawTableAliasMap
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

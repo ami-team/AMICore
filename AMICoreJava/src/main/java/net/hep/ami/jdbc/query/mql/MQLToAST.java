@@ -5,11 +5,12 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 public class MQLToAST
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private int m_cnt;
 
@@ -18,9 +19,10 @@ public class MQLToAST
 
 	private final List<String> m_ruleNames;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public MQLToAST(String catalog, String entity, List<String> ruleNames)
+	@org.jetbrains.annotations.Contract(pure = true)
+	public MQLToAST(@NotNull String catalog, @NotNull String entity, @NotNull List<String> ruleNames)
 	{
 		m_cnt = 0x00;
 
@@ -30,37 +32,39 @@ public class MQLToAST
 		m_ruleNames = ruleNames;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String parse(String externalCatalog, String entity, String AMIUser, boolean isAdmin, String query) throws Exception
+	@NotNull
+	public static String parse(@NotNull String externalCatalog, @NotNull String entity, @NotNull String AMIUser, boolean isAdmin, @NotNull String query) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		MQLLexer lexer = new MQLLexer(CharStreams.fromString(query));
 
 		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String result = new MQLToAST(externalCatalog, entity, Arrays.asList(parser.getRuleNames())).visitMQLQuery(parser.mqlQuery()).toString();
 
-		if(listener.isSuccess() == false)
+		if(listener.isError())
 		{
 			throw new Exception(listener.toString());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private StringBuilder visitMQLQuery(MQLParser.MqlQueryContext context)
+	@NotNull
+	private StringBuilder visitMQLQuery(@NotNull MQLParser.MqlQueryContext context)
 	{
 		StringBuilder nodes = new StringBuilder();
 		StringBuilder edges = new StringBuilder();
@@ -77,15 +81,15 @@ public class MQLToAST
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private void visit(StringBuilder nodes, StringBuilder edges, ParseTree parseTree, int oldId)
+	private void visit(StringBuilder nodes, StringBuilder edges, @NotNull ParseTree parseTree, int oldId)
 	{
 		int newId = oldId;
 
 		final int nb = parseTree.getChildCount();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(parseTree instanceof TerminalNode)
 		{
@@ -107,15 +111,15 @@ public class MQLToAST
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(int i = 0; i < nb; i++)
 		{
 			visit(nodes, edges, parseTree.getChild(i), newId);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

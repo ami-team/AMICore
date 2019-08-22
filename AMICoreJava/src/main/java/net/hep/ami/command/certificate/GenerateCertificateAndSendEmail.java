@@ -13,56 +13,51 @@ import javax.mail.internet.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_CERT", visible = false, secured = true)
 public class GenerateCertificateAndSendEmail extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GenerateCertificateAndSendEmail(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GenerateCertificateAndSendEmail(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		PrivateKey      caKey;
 		X509Certificate caCrt;
 
-		String country = arguments.get("country");
+		String country = arguments.getOrDefault("country", "").trim();
+		String locality = arguments.getOrDefault("locality", "").trim();
+		String organization = arguments.getOrDefault("organization", "").trim();
+		String organizationalUnit = arguments.getOrDefault("organizationalUnit", "").trim();
+		String commonName = arguments.getOrDefault("commonName", "").trim();
+		String email = arguments.getOrDefault("email", "").trim();
+		String virtOrg = arguments.getOrDefault("virtOrg", "").trim();
+		String password = arguments.getOrDefault("password", "").trim();
 
-		String locality = arguments.get("locality");
-
-		String organization = arguments.get("organization");
-
-		String organizationalUnit = arguments.get("organizationalUnit");
-
-		String commonName = arguments.get("commonName");
-
-		String email = arguments.get("email");
-
-		String virtOrg = arguments.get("virtOrg");
-
-		String password = arguments.get("password");
-
-		if(country == null || country.isEmpty()
+		if(country.isEmpty()
 		   ||
-		   locality == null || locality.isEmpty()
+		   locality.isEmpty()
 		   ||
-		   organization == null || organization.isEmpty()
+		   organization.isEmpty()
 		   ||
-		   organizationalUnit == null || organizationalUnit.isEmpty()
+		   organizationalUnit.isEmpty()
 		   ||
-		   commonName == null || commonName.isEmpty()
+		   commonName.isEmpty()
 		   ||
-		   email == null || email.isEmpty()
+		   email.isEmpty()
 		   ||
-		   virtOrg == null || virtOrg.isEmpty()
+		   virtOrg.isEmpty()
 		   ||
-		   password == null || password.isEmpty()
+		   password.isEmpty()
 		 ) {
 			throw new Exception("invalid usage");
 		}
@@ -85,13 +80,13 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 			validity = 1;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE NEW CERTIFICATE                                          */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE NEW CERTIFICATE                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String fileName = ConfigSingleton.getConfigPathName() + File.separator + "ca.pem";
 
@@ -112,7 +107,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		caKey = ca.privateKeys[0];
 		caCrt = ca.x509Certificates[0];
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCertificate(
 			caKey,
@@ -131,7 +126,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 			validity
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
 		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
@@ -139,20 +134,20 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
 
-		/*-----------------------------------------------------------------*/
-		/* SEND NEW CERTIFICATE                                            */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SEND NEW CERTIFICATE                                                                                       */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try(ByteArrayOutputStream output1 = new ByteArrayOutputStream())
 		{
 			try(ByteArrayOutputStream output2 = new ByteArrayOutputStream())
 			{
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				keyStore_JKS.store(output1, password.toCharArray());
 				keyStore_PKCS12.store(output2, password.toCharArray());
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				BodyPart mainBodyPart1 = new MimeBodyPart();
 
@@ -164,7 +159,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				mainBodyPart1.setFileName(commonName + ".jks");
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				BodyPart mainBodyPart2 = new MimeBodyPart();
 
@@ -176,7 +171,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				mainBodyPart2.setFileName(commonName + ".p12");
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				BodyPart mainBodyPart3 = new MimeBodyPart();
 
@@ -188,17 +183,17 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				mainBodyPart3.setFileName(commonName + ".pem");
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Dear user,\n\nThis is your new AMI certificate. You can install \"" + commonName + ".p12\" in your web browser.\n\nBest regards.", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* REVOKE OLD CERTIFICATE
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* REVOKE OLD CERTIFICATE                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		querier.executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
 			4, /* superseded */
@@ -207,9 +202,9 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 			email
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* SAVE NEW CERTIFICATE                                            */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SAVE NEW CERTIFICATE                                                                                       */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		PreparedStatement preparedStatement = querier.preparedStatement("INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, false, null);
 
@@ -225,24 +220,28 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		preparedStatement.executeUpdate();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Generate a client or server certificates. Default validity: 1 year.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" -email=\"\" -virtOrg=\"\" -password=\"\" (-validity=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

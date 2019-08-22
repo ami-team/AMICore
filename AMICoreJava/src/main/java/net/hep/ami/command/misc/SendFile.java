@@ -5,33 +5,30 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class SendFile extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SendFile(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public SendFile(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String fileName = arguments.containsKey("fileName") ? arguments.get("fileName").trim()
-		                                                  : ""
-		;
+		String fileName = arguments.getOrDefault("fileName", "");
+		String filePath = arguments.getOrDefault("filePath", "");
+		String fileData = arguments.getOrDefault("fileData", "");
 
-		String filePath = arguments.containsKey("filePath") ? arguments.get("filePath").trim()
-		                                                  : ""
-		;
-
-		String fileData = arguments.containsKey("fileData") ? arguments.get("fileData") ////()
-		                                                  : ""
-		;
+		fileName = fileName.trim();
+		filePath = filePath.trim();
 
 		if(fileName.isEmpty()
 		   ||
@@ -57,44 +54,42 @@ public class SendFile extends AbstractCommand
 			throw new Exception("wrong storage root path");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		File absPath = new File(rootPath, filePath);
 
 		absPath.mkdirs();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		OutputStream outputStream = new FileOutputStream(new File(absPath, fileName), false);
-
-		try
+		try(OutputStream outputStream = new FileOutputStream(new File(absPath, fileName), false))
 		{
 			outputStream.write(fileData.getBytes());
 			outputStream.flush();
-		} 
-		finally
-		{
-			outputStream.close();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder("<info><![CDATA[done with success]]></info>");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Send a file on the server.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-fileName=\"\" (-filePath=\"\")? (-fileData=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

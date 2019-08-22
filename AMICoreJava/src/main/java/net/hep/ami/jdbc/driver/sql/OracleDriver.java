@@ -11,18 +11,18 @@ import net.hep.ami.utility.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:oracle",
 	clazz = "oracle.jdbc.driver.OracleDriver",
-	backslashEscapes = false
+	flags = DriverMetadata.FLAG_HAS_DUAL
 )
 
 public class OracleDriver extends AbstractDriver
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final int MAJOR_VERSION;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public OracleDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	public OracleDriver(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @NotNull String user, @NotNull String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 
@@ -31,24 +31,24 @@ public class OracleDriver extends AbstractDriver
 		MAJOR_VERSION = metaData.getDatabaseMajorVersion();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void setupSession(String db, String tz) throws Exception
+	public void setupSession(@NotNull String db, @NotNull String tz) throws Exception
 	{
 		this.m_statement.executeUpdate("ALTER SESSION SET time_zone = '" + tz + "'");
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String patchSQL(String sql) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<String> tokens = Tokenizer.tokenize(sql.trim());
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder result = new StringBuilder();
 
@@ -60,11 +60,11 @@ public class OracleDriver extends AbstractDriver
 
 		if(MAJOR_VERSION >= 12)
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(String token: tokens)
 			{
-				if(";".equals(token) == false)
+				if(!";".equals(token))
 				{
 					/**/ if("(".equals(token))
 					{
@@ -90,7 +90,7 @@ public class OracleDriver extends AbstractDriver
 							}
 							else if("WHERE".equalsIgnoreCase(token) || "LIMIT".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
 							{
-								if(selectFound == true && fromFound == false && xxxFound == false)
+								if(selectFound && !fromFound && !xxxFound)
 								{
 									result.append(" FROM dual ");
 
@@ -106,21 +106,20 @@ public class OracleDriver extends AbstractDriver
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(selectFound == true && fromFound == false && xxxFound == false)
+			if(selectFound && !fromFound && !xxxFound)
 			{
 				result.append(" FROM dual");
 
 				fromFound = true;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		else
 		{
-			/*-------------------------------------------------------------*/
-
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			int limitValue = -1;
 			int offsetValue = 0;
@@ -129,11 +128,11 @@ public class OracleDriver extends AbstractDriver
 
 			for(String token: tokens)
 			{
-				if(";".equals(token) == false)
+				if(!";".equals(token))
 				{
 					/**/ if("LIMIT".equalsIgnoreCase(token))
 					{
-						if(selectFound == true && fromFound == false && xxxFound == false)
+						if(selectFound && !fromFound && !xxxFound)
 						{
 							result.append(" FROM dual ");
 
@@ -152,7 +151,7 @@ public class OracleDriver extends AbstractDriver
 					{
 						try
 						{
-							limitValue = Integer.valueOf(token);
+							limitValue = Integer.parseInt(token);
 							flag = 0;
 						}
 						catch(NumberFormatException e) { /* IGNORE */ }
@@ -161,7 +160,7 @@ public class OracleDriver extends AbstractDriver
 					{
 						try
 						{
-							offsetValue = Integer.valueOf(token);
+							offsetValue = Integer.parseInt(token);
 							flag = 0;
 						}
 						catch(NumberFormatException e) { /* IGNORE */ }
@@ -192,7 +191,7 @@ public class OracleDriver extends AbstractDriver
 								}
 								else if("WHERE".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
 								{
-									if(selectFound == true && fromFound == false && xxxFound == false)
+									if(selectFound && !fromFound && !xxxFound)
 									{
 										result.append(" FROM dual ");
 
@@ -209,29 +208,29 @@ public class OracleDriver extends AbstractDriver
 				}
 			}
 
-			/*-----------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(selectFound == true && fromFound == false && xxxFound == false)
+			if(selectFound && !fromFound && !xxxFound)
 			{
 				result.append(" FROM dual");
 
 				fromFound = true;
 			}
 
-			/*-----------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(limitValue >= 0)
 			{
 				result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM AS ORACLE_ROWNUM FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE ORACLE_ROWNUM >= ").append(offsetValue + 1);
 			}
 
-			/*-----------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result.toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

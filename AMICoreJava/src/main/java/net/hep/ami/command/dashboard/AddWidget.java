@@ -4,21 +4,23 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class AddWidget extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public AddWidget(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public AddWidget(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String control = arguments.get("control");
 		String params = arguments.get("params");
@@ -29,11 +31,11 @@ public class AddWidget extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("INSERT INTO `router_dashboard` (`control`, `params`, `settings`, `transparent`, `autoRefresh`, `owner`, `created`, `modified`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", control, params, settings, arguments.containsKey("transparent"), arguments.containsKey("autoRefresh"), m_AMIUser);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder(
 			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
@@ -41,19 +43,23 @@ public class AddWidget extends AbstractCommand
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Add a new widget in the user dashboard.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-control=\"\" -params=\"\" -settings=\"\" (-transparent)? (-autoRefresh)?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

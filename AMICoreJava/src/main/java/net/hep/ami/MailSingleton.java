@@ -9,20 +9,21 @@ import net.hep.ami.utility.*;
 
 public class MailSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private MailSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, String subject, String text) throws Exception
+	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text) throws Exception
 	{
 		sendMessage(from, to, cc, subject, text, null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, String subject, String text, @Nullable BodyPart[] bodyParts) throws Exception
+	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text, @Nullable BodyPart[] bodyParts) throws Exception
 	{
 		String host = ConfigSingleton.getProperty("email_host");
 		String port = ConfigSingleton.getProperty("email_port");
@@ -43,9 +44,9 @@ public class MailSingleton
 			return;
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE SESSION                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE SESSION                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Properties properties = new Properties();
 
@@ -61,15 +62,17 @@ public class MailSingleton
 			properties.setProperty(  "mail.smtp.starttls.enable"  , /*--------*/ "true" /*--------*/);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Session session = Session.getInstance(properties);
 
-		/*-----------------------------------------------------------------*/
-		/* CREATE MESSAGE                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE MESSAGE                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		MimeMessage mimeMessage = new MimeMessage(session);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		mimeMessage.setFrom(new InternetAddress(from));
 
@@ -83,36 +86,38 @@ public class MailSingleton
 
 		mimeMessage.setSubject(subject);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		BodyPart mainPart = new MimeBodyPart();
+
+		mainPart.setText(text);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Multipart multipart = new MimeMultipart();
+
+		multipart.addBodyPart(mainPart);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(bodyParts != null)
 		{
-			/*-------------------------------------------------------------*/
-
-			BodyPart mainPart = new MimeBodyPart();
-
-			mainPart.setText(text);
-
-			/*-------------------------------------------------------------*/
-
-			Multipart multipart = new MimeMultipart();
-
-			multipart.addBodyPart(mainPart);
 			for(BodyPart bodyPart: bodyParts)
-			multipart.addBodyPart(bodyPart);
-
-			mimeMessage.setContent(multipart);
-
-			/*-------------------------------------------------------------*/
-		}
-		else
-		{
-			mimeMessage.setText(text);
+			{
+				if(bodyPart != null)
+				{
+					multipart.addBodyPart(bodyPart);
+				}
+			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* SEND MESSAGE                                                    */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		mimeMessage.setContent(multipart);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SEND MESSAGE                                                                                               */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Transport transport = session.getTransport("smtp");
 
@@ -127,8 +132,8 @@ public class MailSingleton
 			transport.close();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

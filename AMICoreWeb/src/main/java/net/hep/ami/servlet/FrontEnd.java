@@ -133,9 +133,9 @@ public class FrontEnd extends HttpServlet
 			/* RESOLVE LINK                                            */
 			/*---------------------------------------------------------*/
 
-			if(link.isEmpty() == false)
+			if(!link.isEmpty())
 			{
-				if(link.matches("[0-9]+") == false)
+				if(!link.matches("[0-9]+"))
 				{
 					throw new Exception("invalid link format");
 				}
@@ -193,7 +193,7 @@ public class FrontEnd extends HttpServlet
 
 		String mime;
 
-		if(converter.isEmpty() == false)
+		if(!converter.isEmpty())
 		{
 			StringReader stringReader = new StringReader(data);
 			StringWriter stringWriter = new StringWriter(/**/);
@@ -252,7 +252,7 @@ public class FrontEnd extends HttpServlet
 		{
 			for(X509Certificate certificate: certificates)
 			{
-				if(SecuritySingleton.isProxy(certificate) == false)
+				if(!SecuritySingleton.isProxy(certificate))
 				{
 					return new Tuple4<>(
 						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
@@ -383,7 +383,7 @@ public class FrontEnd extends HttpServlet
 			{
 				String countryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
 
-				if(countryCode.equals(row.getValue(2)) == false)
+				if(!countryCode.equals(row.getValue(2)))
 				{
 					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
 				}
@@ -473,7 +473,7 @@ public class FrontEnd extends HttpServlet
 			{
 				String countryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
 
-				if(countryCode.equals(row.getValue(1)) == false)
+				if(!countryCode.equals(row.getValue(1)))
 				{
 					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
 				}
@@ -545,7 +545,7 @@ public class FrontEnd extends HttpServlet
 		/* UPDATE SESSION                                                  */
 		/*-----------------------------------------------------------------*/
 
-		if(clientDN.isEmpty() == false && issuerDN.isEmpty() == false && noCert == false)
+		if(!clientDN.isEmpty() && !issuerDN.isEmpty() && !noCert)
 		{
 			/*-------------------------------------------------------------*/
 			/* CERTIFICATE LOGIN                                           */
@@ -583,12 +583,12 @@ public class FrontEnd extends HttpServlet
 			/* CREDENTIAL LOGIN                                            */
 			/*-------------------------------------------------------------*/
 
-			String tmpAMIUser = (String) session.getAttribute("AMIUser");
-			String tmpAMIPass = (String) session.getAttribute("AMIPass");
+			@Nullable String tmpAMIUser = (String) session.getAttribute("AMIUser");
+			@Nullable String tmpAMIPass = (String) session.getAttribute("AMIPass");
 
-			if(tmpAMIUser == null || (tmpAMIUser != null && AMIUser != null && tmpAMIUser.equals(AMIUser) == false)
+			if(tmpAMIUser == null || (AMIUser != null && !tmpAMIUser.equals(AMIUser))
 			   ||
-			   tmpAMIPass == null || (tmpAMIPass != null && AMIPass != null && tmpAMIPass.equals(AMIPass) == false)
+			   tmpAMIPass == null || (AMIPass != null && !tmpAMIPass.equals(AMIPass))
 			 ) {
 				Tuple2<String, String> result = resolveUserByUserPass(AMIUser, AMIPass, clientIP);
 
@@ -603,7 +603,7 @@ public class FrontEnd extends HttpServlet
 
 			/*-------------------------------------------------------------*/
 
-			noCert = GUEST_USER.equals(AMIUser) == false;
+			noCert = !GUEST_USER.equals(AMIUser);
 
 			/*-------------------------------------------------------------*/
 		}

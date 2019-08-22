@@ -13,7 +13,7 @@ import net.hep.ami.utility.parser.*;
 
 public final class QId
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public enum Type
 	{
@@ -23,7 +23,7 @@ public final class QId
 		FIELD,
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final int MASK_NONE = 0b0000;
 
@@ -36,43 +36,43 @@ public final class QId
 
 	public static final int MASK_CATALOG_ENTITY_FIELD = 0b0111;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final String WILDCARD = "$";
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private boolean m_exclusion = false;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private String m_catalog = null;
 	private String m_entity = null;
 	private String m_field = null;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final List<QId> m_constraints = new ArrayList<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public QId()
 	{
 		/* DO NOTHING */
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public QId(SchemaSingleton.Column column, boolean isInternal)
+	public QId(@NotNull SchemaSingleton.Column column, boolean isInternal)
 	{
 		setCatalog(isInternal ? column.internalCatalog : column.externalCatalog);
 		setEntity(column.entity);
 		setField(column.field);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public QId(SchemaSingleton.Column column, boolean isInternal, @Nullable Collection<QId> constraints)
+	public QId(@NotNull SchemaSingleton.Column column, boolean isInternal, @Nullable Collection<QId> constraints)
 	{
 		setCatalog(isInternal ? column.internalCatalog : column.externalCatalog);
 		setEntity(column.entity);
@@ -84,7 +84,7 @@ public final class QId
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field)
 	{
@@ -93,7 +93,7 @@ public final class QId
 		setField(field);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public QId(@Nullable String catalog, @Nullable String entity, @Nullable String field, @Nullable Collection<QId> constraints)
 	{
@@ -107,9 +107,10 @@ public final class QId
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static QId parseQId_RuntimeException(String qId)
+	@NotNull
+	public static QId parseQId_RuntimeException(@NotNull String qId)
 	{
 		try
 		{
@@ -121,9 +122,10 @@ public final class QId
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static QId parseQId_RuntimeException(String qId, Type typeForQId)
+	@NotNull
+	public static QId parseQId_RuntimeException(@NotNull String qId, @NotNull Type typeForQId)
 	{
 		try
 		{
@@ -135,9 +137,10 @@ public final class QId
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static QId parseQId_RuntimeException(String qId, Type typeForQId, Type typeForConstraints)
+	@NotNull
+	public static QId parseQId_RuntimeException(@NotNull String qId, @NotNull Type typeForQId, @NotNull Type typeForConstraints)
 	{
 		try
 		{
@@ -149,59 +152,63 @@ public final class QId
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static QId parseQId(String qId) throws Exception
+	@NotNull
+	public static QId parseQId(@NotNull String qId) throws Exception
 	{
 		return parseQId(qId, Type.FIELD, Type.FIELD);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static QId parseQId(String qId, Type typeForQId) throws Exception
+	@NotNull
+	public static QId parseQId(@NotNull String qId, @NotNull Type typeForQId) throws Exception
 	{
 		return parseQId(qId, typeForQId, Type.FIELD);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static QId parseQId(String qId, Type typeForQId, Type typeForConstraints) throws Exception
+	@NotNull
+	public static QId parseQId(@NotNull String qId, @NotNull Type typeForQId, @NotNull Type typeForConstraints) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		MQLLexer lexer = new MQLLexer(CharStreams.fromString(qId));
 
 		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		QId result = visitQId(parser.qId(), typeForQId, typeForConstraints);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(listener.isSuccess() == false)
+		if(listener.isError())
 		{
 			throw new Exception(listener.toString());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static QId visitQId(MQLParser.QIdContext context, Type typeForQId, Type typeForConstraints) throws Exception
+	@NotNull
+	public static QId visitQId(@NotNull MQLParser.QIdContext context, @NotNull Type typeForQId, @NotNull Type typeForConstraints) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		QId result = visitBasicQId(context.m_basicQId, typeForQId);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(typeForConstraints != Type.NONE)
 		{
@@ -211,24 +218,25 @@ public final class QId
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static QId visitBasicQId(MQLParser.BasicQIdContext context, Type typeForQId) throws Exception
+	@NotNull
+	private static QId visitBasicQId(@NotNull MQLParser.BasicQIdContext context, @NotNull Type typeForQId) throws Exception
 	{
 		QId result;
 
 		final int size = context.m_ids.size();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		switch(typeForQId)
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			case FIELD:
 
@@ -263,7 +271,7 @@ public final class QId
 
 				break;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			case ENTITY:
 
@@ -290,7 +298,7 @@ public final class QId
 
 				break;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			case CATALOG:
 
@@ -309,16 +317,16 @@ public final class QId
 
 				break;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			default:
 
 				throw new Exception("invalid type");
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if("*".equals(result.m_catalog)) {
 			throw new Exception("`*` not allowed in `catalog` part");
@@ -328,13 +336,15 @@ public final class QId
 			throw new Exception("`*` not allowed in `entity` part");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> this")
 	public QId setExclusion(boolean exclusion)
 	{
 		m_exclusion = exclusion;
@@ -342,62 +352,80 @@ public final class QId
 		return this;
 	}
 
+	/////////
+	@org.jetbrains.annotations.Contract(pure = true)
 	public boolean getExclusion()
 	{
 		return m_exclusion;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> this")
 	public QId setCatalog(@Nullable String catalog)
 	{
-		m_catalog = Utility.sqlIdToText(catalog);
+		m_catalog = (catalog != null) ? Utility.sqlIdToText(catalog) : null;
 
 		return this;
 	}
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(pure = true)
 	public String getCatalog()
 	{
 		return m_catalog;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> this")
 	public QId setEntity(@Nullable String entity)
 	{
-		m_entity = Utility.sqlIdToText(entity);
+		m_entity = (entity != null) ? Utility.sqlIdToText(entity) : null;
 
 		return this;
 	}
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(pure = true)
 	public String getEntity()
 	{
 		return m_entity;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> this")
 	public QId setField(@Nullable String field)
 	{
-		m_field = Utility.sqlIdToText(field);
+		m_field = (field != null) ? Utility.sqlIdToText(field) : null;
 
 		return this;
 	}
 
+	@Nullable
+	@org.jetbrains.annotations.Contract(pure = true)
 	public String getField()
 	{
 		return m_field;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public List<QId> getConstraints()
 	{
 		return m_constraints;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> new")
 	public QId as(int mask)
 	{
 		return new QId(
@@ -408,8 +436,9 @@ public final class QId
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	public boolean is(int mask)
 	{
 		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
@@ -420,51 +449,56 @@ public final class QId
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean matches(Object object)
+	@org.jetbrains.annotations.Contract("null -> false")
+	public boolean matches(@Nullable Object object)
 	{
-		if(object instanceof QId == false)
+		if(!(object instanceof QId))
 		{
 			return false;
 		}
 
-		return (((QId) this).m_catalog == null || ((QId) object).m_catalog == null || WILDCARD.equals(((QId) this).m_catalog) || WILDCARD.equals(((QId) object).m_catalog) || ((QId) this).m_catalog.equalsIgnoreCase(((QId) object).m_catalog))
+		return (this.m_catalog == null || ((QId) object).m_catalog == null || WILDCARD.equals(this.m_catalog) || WILDCARD.equals(((QId) object).m_catalog) || this.m_catalog.equalsIgnoreCase(((QId) object).m_catalog))
 		       &&
-		       (((QId) this).m_entity == null || ((QId) object).m_entity == null || WILDCARD.equals(((QId) this).m_entity) || WILDCARD.equals(((QId) object).m_entity) || ((QId) this).m_entity.equalsIgnoreCase(((QId) object).m_entity))
+		       (this.m_entity == null || ((QId) object).m_entity == null || WILDCARD.equals(this.m_entity) || WILDCARD.equals(((QId) object).m_entity) || this.m_entity.equalsIgnoreCase(((QId) object).m_entity))
 		       &&
-		       (((QId) this).m_field == null || ((QId) object).m_field == null || WILDCARD.equals(((QId) this).m_field) || WILDCARD.equals(((QId) object).m_field) ||((QId) this). m_field.equalsIgnoreCase(((QId) object).m_field))
+		       (this.m_field == null || ((QId) object).m_field == null || WILDCARD.equals(this.m_field) || WILDCARD.equals(((QId) object).m_field) || this. m_field.equalsIgnoreCase(((QId) object).m_field))
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public boolean equals(Object object)
+	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+	@org.jetbrains.annotations.Contract(value = "null -> false", pure = true)
+	public boolean equals(@Nullable Object object)
 	{
 		return equals(object, MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean equals(Object object, int mask)
+	@org.jetbrains.annotations.Contract("null, _ -> false")
+	public boolean equals(@Nullable Object object, int mask)
 	{
 		return equals(object, mask, MASK_NONE);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean equals(Object object, int mask, int maskForPath)
+	@org.jetbrains.annotations.Contract("null, _, _ -> false")
+	public boolean equals(@Nullable Object object, int mask, int maskForPath)
 	{
-		if(object instanceof QId == false)
+		if(!(object instanceof QId))
 		{
 			return false;
 		}
 
-		return ((QId) this).toString(mask, maskForPath).equals(((QId) object).toString(mask, maskForPath));
+		return this.toString(mask, maskForPath).equals(((QId) object).toString(mask, maskForPath));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public int hashCode()
@@ -472,70 +506,80 @@ public final class QId
 		return toString(MASK_CATALOG_ENTITY_FIELD, MASK_NONE).hashCode();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	/////////
 	public int hashCode(int mask)
 	{
 		return toString(mask, MASK_NONE).hashCode();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	/////////
 	public int hashCode(int mask, int maskForPath)
 	{
 		return toString(mask, maskForPath).hashCode();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public String toString()
 	{
 		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_NONE).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	/////////
 	public String toString(int mask)
 	{
 		return toStringBuilder(mask, MASK_NONE).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	/////////
 	public String toString(int mask, int maskForPath)
 	{
 		return toStringBuilder(mask, maskForPath).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder()
 	{
 		return toStringBuilder(MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder(int mask)
 	{
 		return toStringBuilder(mask, MASK_NONE);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder(int mask, int maskForPath)
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(m_exclusion)
 		{
 			result.append("!");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<String> parts = new ArrayList<>();
 
@@ -553,9 +597,9 @@ public final class QId
 
 		result.append(String.join(".", parts));
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(maskForPath != MASK_NONE && m_constraints.isEmpty() == false)
+		if(maskForPath != MASK_NONE && !m_constraints.isEmpty())
 		{
 			result.append("{")
 			      .append(m_constraints.stream().map(qId -> qId.toString(maskForPath, maskForPath)).collect(Collectors.joining(", ")))
@@ -563,10 +607,10 @@ public final class QId
 			;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

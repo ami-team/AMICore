@@ -2,17 +2,19 @@ package net.hep.ami.utility;
 
 import java.io.*;
 
+import net.hep.ami.utility.parser.*;
+
 /**
  * A 6-tuple.
  */
 
 public class Tuple6<A, B, C, D, E, F> implements Serializable
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 4847864711156867793L;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * x
@@ -50,7 +52,7 @@ public class Tuple6<A, B, C, D, E, F> implements Serializable
 
 	public final F v;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Constructor
@@ -63,6 +65,7 @@ public class Tuple6<A, B, C, D, E, F> implements Serializable
 	 * @param _v v
 	 */
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	public Tuple6(A _x, B _y, C _z, D _t, E _u, F _v)
 	{
 		x = _x;
@@ -73,27 +76,27 @@ public class Tuple6<A, B, C, D, E, F> implements Serializable
 		v = _v;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String toString()
 	{
 		return new StringBuilder().append("[")
-		                          .append(x.toString())
+		                          .append(Utility.object2json(x))
 		                          .append(",")
-		                          .append(y.toString())
+		                          .append(Utility.object2json(y))
 		                          .append(",")
-		                          .append(z.toString())
+		                          .append(Utility.object2json(z))
 		                          .append(",")
-		                          .append(t.toString())
+		                          .append(Utility.object2json(t))
 		                          .append(",")
-		                          .append(u.toString())
+		                          .append(Utility.object2json(u))
 		                          .append(",")
-		                          .append(v.toString())
+		                          .append(Utility.object2json(v))
 		                          .append("]")
 		                          .toString()
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

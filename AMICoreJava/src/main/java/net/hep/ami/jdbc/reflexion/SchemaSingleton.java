@@ -15,7 +15,7 @@ import net.hep.ami.utility.parser.*;
 
 public class SchemaSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class Catalog implements Serializable
 	{
@@ -32,8 +32,6 @@ public class SchemaSingleton
 		public /*-*/ int rank;
 
 		/**/
-
-		public boolean archived = false;
 
 		public String description = "N/A";
 
@@ -52,14 +50,16 @@ public class SchemaSingleton
 			return Objects.hash(internalCatalog);
 		}
 
+		@NotNull
 		@Override
+		@org.jetbrains.annotations.Contract(pure = true)
 		public String toString()
 		{
 			return "`" + internalCatalog + "`";
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class Table implements Serializable
 	{
@@ -87,7 +87,7 @@ public class SchemaSingleton
 
 		/**/
 
-		public Table(String _externalCatalog, String _internalCatalog, String _entity, int _rank)
+		public Table(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, int _rank)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
@@ -101,15 +101,18 @@ public class SchemaSingleton
 			return Objects.hash(internalCatalog, entity);
 		}
 
+		@NotNull
 		@Override
+		@org.jetbrains.annotations.Contract(pure = true)
 		public String toString()
 		{
 			return "`" + internalCatalog + "`.`" + entity + "`";
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@SuppressWarnings("UnusedAssignment")
 	public static final class Column implements Serializable
 	{
 		private static final long serialVersionUID = 9088165113864128126L;
@@ -157,7 +160,7 @@ public class SchemaSingleton
 
 		/**/
 
-		public Column(String _externalCatalog, String _internalCatalog, String _entity, String _field, String _type, int _size, int _digits, String _def, int _rank)
+		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, @NotNull String _type, int _size, int _digits, String _def, int _rank)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
@@ -178,14 +181,16 @@ public class SchemaSingleton
 			return Objects.hash(internalCatalog, entity, field);
 		}
 
+		@NotNull
 		@Override
+		@org.jetbrains.annotations.Contract(pure = true)
 		public String toString()
 		{
 			return "`" + internalCatalog + "`.`" + entity + "`.`" + field + "`";
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class FrgnKey implements Serializable
 	{
@@ -207,7 +212,8 @@ public class SchemaSingleton
 
 		/**/
 
-		public FrgnKey(String _name, String _fkExternalCatalog, String _fkInternalCatalog, String _fkEntity, String _fkField, String _pkExternalCatalog, String _pkInternalCatalog, String _pkEntity, String _pkField)
+		@org.jetbrains.annotations.Contract(pure = true)
+		public FrgnKey(@NotNull String _name, @NotNull String _fkExternalCatalog, @NotNull String _fkInternalCatalog, @NotNull String _fkEntity, @NotNull String _fkField, @NotNull String _pkExternalCatalog, @NotNull String _pkInternalCatalog, @NotNull String _pkEntity, @NotNull String _pkField)
 		{
 			name = _name;
 
@@ -228,14 +234,16 @@ public class SchemaSingleton
 			return Objects.hash(fkInternalCatalog, fkEntity, fkField, pkInternalCatalog, pkEntity, pkField);
 		}
 
+		@NotNull
 		@Override
+		@org.jetbrains.annotations.Contract(pure = true)
 		public String toString()
 		{
 			return "`" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "`";
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class FrgnKeys extends ArrayList<FrgnKey>
 	{
@@ -246,31 +254,32 @@ public class SchemaSingleton
 			super();
 		}
 
-		public FrgnKeys(FrgnKey frgnKey)
+		public FrgnKeys(@NotNull FrgnKey frgnKey)
 		{
 			super(); add(frgnKey);
 		}
 
-		public FrgnKeys(Collection<FrgnKey> frgnKeys)
+		public FrgnKeys(@NotNull Collection<FrgnKey> frgnKeys)
 		{
 			super(); addAll(frgnKeys);
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, true, true);
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, true, true);
+	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, true, true);
+	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, true, true);
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected static final Map<String, Catalog> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURENT_HASH_MAP, false, true);
+	protected static final Map<String, Catalog> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, false, true);
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private SchemaSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static
 	{
@@ -284,52 +293,52 @@ public class SchemaSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void clear()
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_externalCatalogToInternalCatalog.clear();
 		s_internalCatalogToExternalCatalog.clear();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_catalogs.clear();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void addSchema(String externalCatalog, String internalCatalog)
+	public static void addSchema(@NotNull String externalCatalog, @NotNull String internalCatalog)
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
 		s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
-	@SuppressWarnings("unused")
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static class Extractor implements Runnable
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		public static final org.slf4j.Logger m_logger = LogSingleton.getLogger(Extractor.class.getSimpleName(), "INFO");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private final Map<String, String> m_externalCatalogToInternalCatalog;
 		private final Map<String, String> m_internalCatalogToExternalCatalog;
 
 		private final Map<String, Catalog> m_catalogs;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private final String m_externalCatalog;
 		private final String m_internalCatalog;
@@ -340,20 +349,21 @@ public class SchemaSingleton
 
 		private final boolean m_fast;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private Catalog m_catalog = null;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
+		@org.jetbrains.annotations.Contract(pure = true)
 		public Extractor(
-			Map<String, String> externalCatalogToInternalCatalog,
-			Map<String, String> internalCatalogToExternalCatalog,
-			Map<String, Catalog> catalogs,
+			@NotNull Map<String, String> externalCatalogToInternalCatalog,
+			@NotNull Map<String, String> internalCatalogToExternalCatalog,
+			@NotNull Map<String, Catalog> catalogs,
 			/**/
-			String externalCatalog,
-			String internalCatalog,
-			CatalogSingleton.Tuple tuple,
+			@NotNull String externalCatalog,
+			@NotNull String internalCatalog,
+			@NotNull CatalogSingleton.Tuple tuple,
 			/**/
 			int rank,
 			/**/
@@ -380,7 +390,7 @@ public class SchemaSingleton
 			m_fast = fast;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		@Override
 		public void run()
@@ -415,7 +425,7 @@ public class SchemaSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private void apply()
 		{
@@ -424,73 +434,73 @@ public class SchemaSingleton
 			m_catalogs.put(m_externalCatalog, m_catalog);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private void saveSchemaToFiles() throws Exception
 		{
 			m_logger.info("saving to file schema of catalog '{}'", m_externalCatalog);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			File file = new File(basePath);
 
-			if(file.exists() == false)
+			if(!file.exists())
 			{
 				file.mkdirs();
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(basePath + File.separator + m_externalCatalog + ".ser")))
 			{
-				objectOutputStream.writeObject((Catalog) m_catalog);
+				objectOutputStream.writeObject(m_catalog);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private void loadSchemaFromFiles() throws Exception
 		{
 			m_logger.info("for catalog '{}', loading from schema from file...", m_externalCatalog);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			String basePath = ConfigSingleton.getConfigPathName() + File.separator + "cache";
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			File file = new File(basePath);
 
-			if(file.exists() == false)
+			if(!file.exists())
 			{
 				file.mkdirs();
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(basePath + File.separator + m_externalCatalog + ".ser")))
 			{
 				m_catalog = (Catalog) objectInputStream.readObject();
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private void loadSchemaFromDatabase() throws Exception
 		{
 			m_logger.info("for catalog '{}', loading from schema from database...", m_externalCatalog);
 
-			/*-------------------------------------------------------------*/
-			/* CREATE CATALOG                                              */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* CREATE CATALOG                                                                                         */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			m_catalog = new Catalog(m_externalCatalog, m_internalCatalog, m_rank);
 
@@ -498,27 +508,21 @@ public class SchemaSingleton
 			/* CREATE CONNECTION                                           */
 			/*-------------------------------------------------------------*/
 
-			Connection connection = DriverManager.getConnection(
-				m_tuple.t, m_tuple.u, m_tuple.v
-			);
-
-			/*-------------------------------------------------------------*/
-
-			try
+			try(Connection connection = DriverManager.getConnection(m_tuple.t, m_tuple.u, m_tuple.v))
 			{
-				/*---------------------------------------------------------*/
-				/* GET METADATA OBJECT                                     */
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+				/* GET METADATA OBJECT                                                                                */
+				/*----------------------------------------------------------------------------------------------------*/
 
 				DatabaseMetaData metaData = connection.getMetaData();
 
-				/*---------------------------------------------------------*/
-				/* LOAD METADATA FROM DATABASE                             */
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+				/* LOAD METADATA FROM DATABASE                                                                        */
+				/*----------------------------------------------------------------------------------------------------*/
 
 				Set<String> entities = new HashSet<>();
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z, "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
 				{
@@ -532,9 +536,9 @@ public class SchemaSingleton
 
 						if(entity != null
 						   &&
-						   entity.toLowerCase().startsWith("db_") == false
+						   !entity.toLowerCase().startsWith("db_")
 						   &&
-						   entity.toLowerCase().startsWith("x_db_") == false
+						   !entity.toLowerCase().startsWith("x_db_")
 						 ) {
 							m_catalog.tables.put(entity, new Table(m_externalCatalog, m_internalCatalog, entity, rank++));
 
@@ -543,7 +547,7 @@ public class SchemaSingleton
 					}
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				for(String entity: entities)
 				{
@@ -552,27 +556,23 @@ public class SchemaSingleton
 					loadFgnKeyMetadata(metaData, entity);
 				}
 
-				/*---------------------------------------------------------*/
-			}
-			finally
-			{
-				connection.close();
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------------------------------------------*/
 
 		private void loadColumnMetadata(
-			DatabaseMetaData metaData,
-			String _entity
+			@NotNull DatabaseMetaData metaData,
+			@NotNull String _entity
 		 ) throws SQLException {
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			boolean isOracle = metaData.getClass().getName().startsWith("oracle");
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_tuple.z, _entity, "%"))
 			{
@@ -615,7 +615,7 @@ public class SchemaSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
@@ -635,16 +635,16 @@ public class SchemaSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private void loadFgnKeyMetadata(
-			DatabaseMetaData metaData,
-			String _entity
+			@NotNull DatabaseMetaData metaData,
+			@NotNull String _entity
 		 ) throws SQLException {
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _entity))
 			{
@@ -665,9 +665,7 @@ public class SchemaSingleton
 
 					if(fkInternalCatalog != null)
 					{
-						fkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(fkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(fkInternalCatalog)
-						                                                                                      : m_externalCatalog
-						;
+						fkExternalCatalog = m_internalCatalogToExternalCatalog.getOrDefault(fkInternalCatalog, m_externalCatalog);
 					}
 					else
 					{
@@ -677,9 +675,7 @@ public class SchemaSingleton
 
 					if(pkInternalCatalog != null)
 					{
-						pkExternalCatalog = m_internalCatalogToExternalCatalog.containsKey(pkInternalCatalog) ? m_internalCatalogToExternalCatalog.get(pkInternalCatalog)
-						                                                                                      : m_externalCatalog
-						;
+						pkExternalCatalog = m_internalCatalogToExternalCatalog.getOrDefault(pkInternalCatalog, m_externalCatalog);
 					}
 					else
 					{
@@ -687,7 +683,7 @@ public class SchemaSingleton
 						pkInternalCatalog = m_internalCatalog;
 					}
 
-					if(name != null && fkExternalCatalog != null && fkInternalCatalog != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkInternalCatalog != null && pkEntity != null && pkField != null)
+					if(name != null && fkExternalCatalog != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkEntity != null && pkField != null)
 					{
 						table = m_catalog.tables.get(fkEntity);
 
@@ -709,28 +705,29 @@ public class SchemaSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static class Executor implements Runnable
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		public static final org.slf4j.Logger m_logger = LogSingleton.getLogger(Extractor.class.getSimpleName(), "INFO");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private final Map<String, Catalog> m_catalogs;
 
 		private final List<Thread> m_threads;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
+		@org.jetbrains.annotations.Contract(pure = true)
 		public Executor(
 			Map<String, Catalog> catalogs,
 			List<Thread> threads
@@ -740,14 +737,14 @@ public class SchemaSingleton
 			m_threads = threads;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		@Override
 		public void run()
 		{
-			/*-------------------------------------------------------------*/
-			/* START THREADS                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* START THREADS                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(Thread thread: m_threads)
 			{
@@ -761,9 +758,9 @@ public class SchemaSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
-			/* WAIT FOR THREADS                                            */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* WAIT FOR THREADS                                                                                       */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(Thread thread: m_threads)
 			{
@@ -777,9 +774,9 @@ public class SchemaSingleton
 				}
 			}
 
-			/*-------------------------------------------------------------*/
-			/* POST TREATMENT                                              */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* POST TREATMENT                                                                                         */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			FrgnKeys frgnKeys1;
 
@@ -795,7 +792,7 @@ public class SchemaSingleton
 				;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			FrgnKey frgnKey2;
 
@@ -811,23 +808,23 @@ public class SchemaSingleton
 				;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void rebuildSchemas(boolean flush) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		boolean slow = ConfigSingleton.getProperty("rebuild_schema_cache_in_background", false);
 
-		/*-----------------------------------------------------------------*/
-		/* FORCE                                                           */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* FORCE                                                                                                      */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(flush)
 		{
@@ -856,9 +853,9 @@ public class SchemaSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* FAST METHOD                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* FAST METHOD                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(true)
 		{
@@ -884,9 +881,9 @@ public class SchemaSingleton
 			new Executor(s_catalogs, threads).run();
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* SLOW METHOD                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* SLOW METHOD                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(slow)
 		{
@@ -912,32 +909,33 @@ public class SchemaSingleton
 			new Thread(new Executor(s_catalogs, threads)).start();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog_noException(@Nullable String internalCatalog, String value)
+	public static String internalCatalogToExternalCatalog_noException(@Nullable String internalCatalog, @NotNull String value)
 	{
 		String result = s_internalCatalogToExternalCatalog.get(internalCatalog);
 
 		return result != null ? result : value;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog_noException(@Nullable String externalCatalog, String value)
+	public static String externalCatalogToInternalCatalog_noException(@Nullable String externalCatalog, @NotNull String value)
 	{
 		String result =  s_externalCatalogToInternalCatalog.get(externalCatalog);
 
 		return result != null ? result : value;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static String internalCatalogToExternalCatalog(@Nullable String internalCatalog) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String result = s_internalCatalogToExternalCatalog.get(internalCatalog);
 
@@ -946,18 +944,19 @@ public class SchemaSingleton
 			return result;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("internal catalog not found `" + internalCatalog + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static String externalCatalogToInternalCatalog(@Nullable String externalCatalog) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String result = s_externalCatalogToInternalCatalog.get(externalCatalog);
 
@@ -966,18 +965,19 @@ public class SchemaSingleton
 			return result;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("external catalog not found `" + externalCatalog + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Catalog getCatalogInfo(String externalCatalog) throws Exception
+	@NotNull
+	public static Catalog getCatalogInfo(@NotNull String externalCatalog) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Catalog catalog = s_catalogs.get(externalCatalog);
 
@@ -986,18 +986,19 @@ public class SchemaSingleton
 			return catalog;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("catalog not found `" + externalCatalog + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Table getEntityInfo(String externalCatalog, String _entity) throws Exception
+	@NotNull
+	public static Table getEntityInfo(@NotNull String externalCatalog, @NotNull String _entity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Table table = getCatalogInfo(externalCatalog).tables.get(_entity);
 
@@ -1006,18 +1007,19 @@ public class SchemaSingleton
 			return table;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("entity not found `" + externalCatalog + "`.`" + _entity + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Column getFieldInfo(String externalCatalog, String entity, String field) throws Exception
+	@NotNull
+	public static Column getFieldInfo(@NotNull String externalCatalog, @NotNull String entity, @NotNull String field) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Column column = getEntityInfo(externalCatalog, entity).columns.get(field);
 
@@ -1026,18 +1028,19 @@ public class SchemaSingleton
 			return column;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("field not found `" + externalCatalog + "`.`" + entity + "`.`" + field + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKeys> getForwardFKs(String externalCatalog, String entity) throws Exception
+	@NotNull
+	public static Map<String, FrgnKeys> getForwardFKs(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Catalog catalog = s_catalogs.get(externalCatalog);
 
@@ -1051,18 +1054,19 @@ public class SchemaSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, FrgnKeys> getBackwardFKs(String externalCatalog, String entity) throws Exception
+	@NotNull
+	public static Map<String, FrgnKeys> getBackwardFKs(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Catalog catalog = s_catalogs.get(externalCatalog);
 
@@ -1075,15 +1079,17 @@ public class SchemaSingleton
 				return map2;
 			}
 		}
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(" -> new")
 	public static List<String> getInternalCatalogNames()
 	{
 		return new ArrayList<>(
@@ -1091,8 +1097,10 @@ public class SchemaSingleton
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(" -> new")
 	public static List<String> getExternalCatalogNames()
 	{
 		return new ArrayList<>(
@@ -1100,47 +1108,56 @@ public class SchemaSingleton
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<String> getEntityNames(String externalCatalog) throws Exception
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> new")
+	public static List<String> getEntityNames(@NotNull String externalCatalog) throws Exception
 	{
 		return new ArrayList<>(
 			getCatalogInfo(externalCatalog).tables.keySet()
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<String> getFieldNames(String externalCatalog, String entity) throws Exception
+	@NotNull
+	@org.jetbrains.annotations.Contract("_, _ -> new")
+	public static List<String> getFieldNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
 		return new ArrayList<>(
 			getEntityInfo(externalCatalog, entity).columns.keySet()
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Set<String> getForwardFKNames(String externalCatalog, String entity) throws Exception
+	@NotNull
+	@org.jetbrains.annotations.Contract("_, _ -> new")
+	public static Set<String> getForwardFKNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
 		return new LinkedHashSet<>(
 			getForwardFKs(externalCatalog, entity).keySet()
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Set<String> getBackwardFKNames(String externalCatalog, String entity) throws Exception
+	@NotNull
+	@org.jetbrains.annotations.Contract("_, _ -> new")
+	public static Set<String> getBackwardFKNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
 		return new LinkedHashSet<>(
 			getBackwardFKs(externalCatalog, entity).keySet()
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Column getPrimaryKey(String externalCatalog, String entity) throws Exception
+	@NotNull
+	public static Column getPrimaryKey(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(Column column: getEntityInfo(externalCatalog, entity).columns.values())
 		{
@@ -1150,16 +1167,17 @@ public class SchemaSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("primary key not found for `" + externalCatalog + "`.`" + entity + "`");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<QId> getSortedQIds(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
+	@NotNull
+	public static List<QId> getSortedQIds(@NotNull String externalCatalog, @NotNull String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
 		                                                              .sorted((x, y) -> x.rank - y.rank)
@@ -1168,9 +1186,10 @@ public class SchemaSingleton
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<QId> getReadableQIds(String externalCatalog, String entity, @Nullable List<QId> constraints) throws Exception
+	@NotNull
+	public static List<QId> getReadableQIds(@NotNull String externalCatalog, @NotNull String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
 		                                                              .filter(x -> x.readable)
@@ -1179,9 +1198,9 @@ public class SchemaSingleton
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void appendCatalogToStringBuilder(StringBuilder stringBuilder, Catalog catalog)
+	public static void appendCatalogToStringBuilder(@NotNull StringBuilder stringBuilder, @NotNull Catalog catalog)
 	{
 		stringBuilder.append("<row>")
 		             .append("<field name=\"externalCatalog\"><![CDATA[").append(catalog.externalCatalog).append("]]></field>")
@@ -1192,9 +1211,9 @@ public class SchemaSingleton
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void appendTableToStringBuilder(StringBuilder stringBuilder, Table table)
+	public static void appendTableToStringBuilder(@NotNull StringBuilder stringBuilder, @NotNull Table table)
 	{
 		stringBuilder.append("<row>")
 		             .append("<field name=\"externalCatalog\"><![CDATA[").append(table.externalCatalog).append("]]></field>")
@@ -1207,9 +1226,9 @@ public class SchemaSingleton
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void appendColumnToStringBuilder(StringBuilder stringBuilder, Column column)
+	public static void appendColumnToStringBuilder(@NotNull StringBuilder stringBuilder, @NotNull Column column)
 	{
 		stringBuilder.append("<row>")
 		             .append("<field name=\"externalCatalog\"><![CDATA[").append(column.externalCatalog).append("]]></field>")
@@ -1243,9 +1262,9 @@ public class SchemaSingleton
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void appendFrgnKeyToStringBuilder(StringBuilder stringBuilder, FrgnKey frgnKey)
+	public static void appendFrgnKeyToStringBuilder(@NotNull StringBuilder stringBuilder, @NotNull FrgnKey frgnKey)
 	{
 		stringBuilder.append("<row>")
 		             .append("<field name=\"name\"><![CDATA[").append(frgnKey.name).append("]]></field>")
@@ -1261,13 +1280,14 @@ public class SchemaSingleton
 		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static StringBuilder getDBSchemas()
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"catalogs\">");
 
@@ -1278,7 +1298,7 @@ public class SchemaSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"entities\">");
 
@@ -1290,7 +1310,7 @@ public class SchemaSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"fields\">");
 
@@ -1303,7 +1323,7 @@ public class SchemaSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"foreignKeys\">");
 
@@ -1316,10 +1336,10 @@ public class SchemaSingleton
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

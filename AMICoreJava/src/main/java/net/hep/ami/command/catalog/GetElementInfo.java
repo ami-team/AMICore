@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.reflexion.*;
@@ -11,17 +12,18 @@ import net.hep.ami.jdbc.reflexion.*;
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class GetElementInfo extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetElementInfo(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetElementInfo(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
@@ -34,25 +36,25 @@ public class GetElementInfo extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier(catalog, true);
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/*                                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder result = querier.executeMQLQuery(entity, new XQLSelect().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?").toString(), primaryFieldValue).toStringBuilder("element");
 
-		/*-----------------------------------------------------------------*/
-		/*                                                                 */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/*                                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, entity).values();
 
 		Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, entity).values();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"linked_elements\">");
 
@@ -62,17 +64,17 @@ public class GetElementInfo extends AbstractCommand
 
 		result.append("</rowset>");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final int FORWARD = 0;
 	private final int BACKWARD = 1;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private void _getLinkedEntities(StringBuilder result, String catalog, String entity, String primaryFieldName, String primaryFieldValue, Collection<SchemaSingleton.FrgnKeys> list, int mode)
 	{
@@ -85,37 +87,37 @@ public class GetElementInfo extends AbstractCommand
 		for(SchemaSingleton.FrgnKeys frgnKeys: list)
 		 for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			constraints = new ArrayList<>();
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			constraints.add(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField));
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			switch(mode)
 			{
 				case FORWARD:
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					linkedCatalog = frgnKey.pkExternalCatalog;
 					linkedEntity = frgnKey.pkEntity;
 					direction = "forward";
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					break;
 
 				case BACKWARD:
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					linkedCatalog = frgnKey.fkExternalCatalog;
 					linkedEntity = frgnKey.fkEntity;
 					direction = "backward";
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					try
 					{
@@ -129,9 +131,9 @@ public class GetElementInfo extends AbstractCommand
 							{
 								constraints.add(new QId(tmp1.get(0).fkExternalCatalog, tmp1.get(0).fkEntity, tmp1.get(0).fkField));
 
-								if(catalog.equals(tmp1.get(0).pkExternalCatalog) == false
+								if(!catalog.equals(tmp1.get(0).pkExternalCatalog)
 								   ||
-								   entity.equals(tmp1.get(0).pkEntity) == false
+								   !entity.equals(tmp1.get(0).pkEntity)
 								 ) {
 									linkedCatalog = tmp1.get(0).pkExternalCatalog;
 									linkedEntity = tmp1.get(0).pkEntity;
@@ -145,7 +147,7 @@ public class GetElementInfo extends AbstractCommand
 						/* IGNORE */
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					break;
 
@@ -153,7 +155,7 @@ public class GetElementInfo extends AbstractCommand
 					return;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			String sql;
 			String mql;
@@ -182,7 +184,7 @@ public class GetElementInfo extends AbstractCommand
 				count = "N/A";
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			result.append("<row>")
 			      .append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
@@ -195,23 +197,27 @@ public class GetElementInfo extends AbstractCommand
 			      .append("</row>")
 			;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Get the element's information.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" -primaryFieldName=\"\" -primaryFieldValue=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

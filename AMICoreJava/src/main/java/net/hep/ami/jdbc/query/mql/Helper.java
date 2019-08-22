@@ -5,6 +5,7 @@ import java.util.regex.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
+import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.reflexion.*;
 
 import net.hep.ami.utility.*;
@@ -12,17 +13,17 @@ import net.hep.ami.utility.parser.*;
 
 public class Helper
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private Helper() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static Set<String> getFromSetFromResolutionList(QId primaryKey, List<Resolution> resolutionList)
 	{
 		Set<String> result = new LinkedHashSet<>();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.add(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 
@@ -31,34 +32,34 @@ public class Helper
 			result.add(resolution.getInternalQId().toString(QId.MASK_CATALOG_ENTITY));
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static boolean isTrivialQuery(List<Resolution> resolutionList)
 	{
-		if(resolutionList.isEmpty() == false)
+		if(!resolutionList.isEmpty())
 		{
 			int oldPathHashCode = 0;
 			int newPathHashCode = 0;
 
 			for(Resolution resolution: resolutionList)
 			{
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				if(resolution.getPaths().size() > 1)
 				{
 					return false;
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				newPathHashCode = resolution.getPathHashCode();
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				if(newPathHashCode != 1)
 				{
@@ -75,32 +76,32 @@ public class Helper
 					}
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 		}
 
 		return true;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(String catalog, QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
 	{
-		boolean dualNeeded = "jdbc:postgresql".equals(CatalogSingleton.getProto(catalog)) == false;
+		boolean dualNeeded = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_HAS_DUAL) == DriverMetadata.FLAG_HAS_DUAL;
 
- 		/*-----------------------------------------------------------------*/
-		/* BUILD GLOBAL FROM SET                                           */
-		/*-----------------------------------------------------------------*/
+ 		/*------------------------------------------------------------------------------------------------------------*/
+		/* BUILD GLOBAL FROM SET                                                                                      */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> globalFromSet = getFromSetFromResolutionList(primaryKey, resolutionList);
 
-		/*-----------------------------------------------------------------*/
-		/* ISOLATE JOINS                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ISOLATE JOINS                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		Set<String> globalWherSet = new LinkedHashSet<>();
+		Set<String> globalWhereSet = new LinkedHashSet<>();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(isTrivialQuery(resolutionList))
 		{
@@ -122,15 +123,15 @@ public class Helper
 						globalFromSet.add(new QId(frgnKey.fkInternalCatalog, frgnKey.fkEntity, null).toString(QId.MASK_CATALOG_ENTITY));
 						globalFromSet.add(new QId(frgnKey.pkInternalCatalog, frgnKey.pkEntity, null).toString(QId.MASK_CATALOG_ENTITY));
 
-						globalWherSet.add(frgnKey.toString());
+						globalWhereSet.add(frgnKey.toString());
 					}
 				}
 			}
 
-			return new Tuple2<>(globalFromSet, globalWherSet);
+			return new Tuple2<>(globalFromSet, globalWhereSet);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		QId qId;
 
@@ -145,7 +146,7 @@ public class Helper
 				continue;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			Set<String> idSet = new TreeSet<>();
 
@@ -154,11 +155,11 @@ public class Helper
 			Set<String> whereSet1 = new LinkedHashSet<>();
 			Set<String> whereSet2 = new LinkedHashSet<>();
 
-			idSet.add(primaryKey.toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
+			idSet.add(primaryKey.toString(!isFieldNameOnly ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD));
 
 			for(SchemaSingleton.FrgnKeys frgnKeys: resolution.getPaths())
 			{
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				int cnt = 0;
 
@@ -175,60 +176,60 @@ public class Helper
 						continue;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					qId = new QId(frgnKey.fkInternalCatalog, frgnKey.fkEntity, frgnKey.fkField);
 
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
-					if(globalFromSet.contains(tmp) == false)
+					if(!globalFromSet.contains(tmp))
 					{
 						tmpFromSet.add(tmp);
 					}
 					else
 					{
-						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.fkExternalCatalog, frgnKey.fkEntity), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
+						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.fkExternalCatalog, frgnKey.fkEntity), true).toString(!isFieldNameOnly ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
 						idSet.add(tmp);
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					qId = new QId(frgnKey.pkInternalCatalog, frgnKey.pkEntity, frgnKey.pkField);
 
 					tmp = qId.toString(QId.MASK_CATALOG_ENTITY);
 
-					if(globalFromSet.contains(tmp) == false)
+					if(!globalFromSet.contains(tmp))
 					{
 						tmpFromSet.add(tmp);
 					}
 					else
 					{
-						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.pkExternalCatalog, frgnKey.pkEntity), true).toString(isFieldNameOnly == false ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
+						tmp = new QId(SchemaSingleton.getPrimaryKey(frgnKey.pkExternalCatalog, frgnKey.pkEntity), true).toString(!isFieldNameOnly ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_FIELD);
 
 						tmpIdSet.add(tmp);
 						idSet.add(tmp);
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					tmpWhereSet.add(frgnKey.toString());
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
-				if(tmpIdSet.isEmpty() == false)
+				if(!tmpIdSet.isEmpty())
 				{
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					idSignatureSet.add(String.join("~", tmpIdSet));
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
-					if(tmpFromSet.isEmpty() == true)
+					if(tmpFromSet.isEmpty())
 					{
 						if(dualNeeded)
 						{
@@ -236,7 +237,7 @@ public class Helper
 						}
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					query = new XQLSelect().addSelectPart(tmpIdSet)
 					                       .addFromPart(tmpFromSet)
@@ -246,7 +247,7 @@ public class Helper
 
 					whereSet1.add(query);
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					query = new StringBuilder().append("(")
 					                           .append(String.join(", ", tmpIdSet))
@@ -258,17 +259,17 @@ public class Helper
 
 					whereSet2.add(query);
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(whereSet1.isEmpty() == false)
+			if(!whereSet1.isEmpty())
 			{
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				if(idSignatureSet.size() == 1)
 				{
@@ -290,9 +291,9 @@ public class Helper
 					query = selectObj.toString();
 				}
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
-				globalWherSet.add(new StringBuilder().append("(")
+				globalWhereSet.add(new StringBuilder().append("(")
 				                                     .append(String.join(", ", idSet))
 				                                     .append(") IN (")
 				                                     .append(query)
@@ -300,26 +301,26 @@ public class Helper
 				                                     .toString()
 				);
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple2<>(globalFromSet, globalWherSet);
+		return new Tuple2<>(globalFromSet, globalWhereSet);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static String getIsolatedExpression(String catalog, QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean noComp, boolean noEntity, boolean noPrimaryEntity) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* ISOLATE JOINS                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ISOLATE JOINS                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Tuple2<Set<String>, Set<String>> tuple = getIsolatedPath(
 			catalog,
@@ -329,23 +330,23 @@ public class Helper
 			false
 		);
 
-		/*-----------------------------------------------------------------*/
-		/* ISOLATE EXPRESSION                                              */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ISOLATE EXPRESSION                                                                                         */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(noComp || tuple.y.isEmpty() == false)
+		if(noComp || !tuple.y.isEmpty())
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(noPrimaryEntity)
 			{
-				if("jdbc:oracle".equals(CatalogSingleton.getProto(catalog)) == false)
+				if(!"jdbc:oracle".equals(CatalogSingleton.getProto(catalog)))
 				{
 					tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			XQLSelect query = new XQLSelect().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
 			                                 .addFromPart(tuple.x)
@@ -357,9 +358,9 @@ public class Helper
 
 			StringBuilder stringBuilder = new StringBuilder();
 
-			if(noComp == false)
+			if(!noComp)
 			{
-				if(noEntity == false)
+				if(!noEntity)
 				{
 					stringBuilder.append(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(" IN ");
 				}
@@ -374,7 +375,7 @@ public class Helper
 			             .append(")")
 			;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			return stringBuilder.toString();
 		}
@@ -383,14 +384,14 @@ public class Helper
 			return expression.toString();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static Tuple2<List<String>, List<String>> resolve(String catalog, QId primaryKey, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
@@ -402,9 +403,9 @@ public class Helper
 			throw new Exception("internal error");
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* GROUP FIELDS                                                    */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GROUP FIELDS                                                                                               */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String field;
 
@@ -416,7 +417,7 @@ public class Helper
 
 		SchemaSingleton.Column column;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> locked = new HashSet<>();
 
@@ -424,7 +425,7 @@ public class Helper
 
 		Map<String, Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>>> entries = new LinkedHashMap<>();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(int i = 0; i < nb1; i++)
 		{
@@ -433,18 +434,18 @@ public class Helper
 
 			column = resolution.getColumn();
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			/**/ if(column.adminOnly)
 			{
-				if(isAdmin == false)
+				if(!isAdmin)
 				{
 					throw new Exception("user `" + AMIUser + "` not allow to modify admin-only field " + new QId(column, false).toString());
 				}
 			}
 			else if(column.crypted)
 			{
-				if(isAdmin == false)
+				if(!isAdmin)
 				{
 					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
 				}
@@ -470,7 +471,7 @@ public class Helper
 				continue;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(resolution.getMaxPathLen() > 0)
 			{
@@ -483,20 +484,20 @@ public class Helper
 
 				for(SchemaSingleton.FrgnKeys path: resolution.getPaths())
 				{
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
-					if(path.get(0).fkEntity.equals(primaryKey.getEntity()) == false
+					if(!path.get(0).fkEntity.equals(primaryKey.getEntity())
 					   ||
-					   path.get(0).fkInternalCatalog.equals(primaryKey.getCatalog()) == false
+					   !path.get(0).fkInternalCatalog.equals(primaryKey.getCatalog())
 					 ) {
 						continue;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					field = path.get(0).fkField;
 
-					if(locked.contains(field) == false)
+					if(!locked.contains(field))
 					{
 						tmpResolution.addPath(resolution.getExternalQId(), resolution.getColumn(), path);
 					}
@@ -505,7 +506,7 @@ public class Helper
 						continue;
 					}
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
 					tuple = entries.get(field);
 
@@ -525,18 +526,18 @@ public class Helper
 					tuple.z.add(tmpResolution);
 					tuple.t.add(tmpExpression);
 
-					/*-----------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 				}
 			}
 			else
 			{
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				field = resolution.getColumn().field;
 
 				locked.add(field);
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 
 				tuple = entries.get(field);
 
@@ -558,15 +559,15 @@ public class Helper
 
 				tuple.t.add(expression);
 
-				/*---------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* ISOLATE EXPRESSIONS                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ISOLATE EXPRESSIONS                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
@@ -590,13 +591,13 @@ public class Helper
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* FILL RESERVED FIELDS                                            */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* FILL RESERVED FIELDS                                                                                       */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean backslashEscapes = CatalogSingleton.doBackslashEscapes(catalog);
+		boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(catalog, primaryKey.getEntity()).columns.values())
 		{
@@ -617,12 +618,12 @@ public class Helper
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple2<List<String>, List<String>>(X, Y);
+		return new Tuple2<>(X, Y);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

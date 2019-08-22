@@ -2,52 +2,72 @@ package net.hep.ami.utility.parser;
 
 import java.io.*;
 
+import net.hep.ami.utility.*;
+
 import org.antlr.v4.runtime.*;
 
-@SuppressWarnings("unchecked")
 public class JSON
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static <T> T parse(String s, Class<T> clazz) throws Exception
+	@Nullable
+	public static <T> T parse(@NotNull String s, Class<T> clazz, boolean simpleQuotes) throws Exception
 	{
-		return (T) parse(CharStreams.fromString(s), clazz);
+		return parse(CharStreams.fromString(s), clazz, simpleQuotes);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static <T> T parse(InputStream inputStream, Class<T> clazz) throws Exception
+	@Nullable
+	public static <T> T parse(@NotNull InputStream inputStream, Class<T> clazz, boolean simpleQuotes) throws Exception
 	{
-		return (T) parse(CharStreams.fromStream(inputStream), clazz);
+		return parse(CharStreams.fromStream(inputStream), clazz, simpleQuotes);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static <T> T parse(CharStream charStream, Class<T> clazz) throws Exception
+	@Nullable
+	@SuppressWarnings("unchecked")
+	private static <T> T parse(@NotNull CharStream charStream, Class<T> clazz, boolean simpleQuotes) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		JSONLexer lexer = new JSONLexer(charStream);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		JSONParser parser = new JSONParser(tokenStream);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		parser.simpleQuotes = simpleQuotes;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		AMIErrorListener listener = AMIErrorListener.setListener(lexer, parser);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		T result = (T) parser.file().v;
+		@Nullable Object result = parser.file().v;
 
-		if(listener.isSuccess() == false)
+		if(listener.isError())
 		{
 			throw new Exception(listener.toString());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result;
+		if(result == null)
+		{
+			return null;
+		}
+		if(clazz.isAssignableFrom(result.getClass()))
+		{
+			return (T) result.getClass();
+		}
+		else
+		{
+			throw new Exception("invalid cast from `" + result.getClass().getName() + "` to `" + clazz.getName() + "`");
+		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

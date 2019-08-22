@@ -5,21 +5,23 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
 public class ChangePassword extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public ChangePassword(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public ChangePassword(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String amiLogin = arguments.get("amiLogin");
 		String amiPasswordOld = arguments.get("amiPasswordOld");
@@ -30,7 +32,7 @@ public class ChangePassword extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("UPDATE `router_user` SET `AMIPass` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?",
 			SecuritySingleton.encrypt(amiPasswordOld),
@@ -38,7 +40,7 @@ public class ChangePassword extends AbstractCommand
 			SecuritySingleton.encrypt(amiPasswordOld)
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder(
 			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
@@ -46,19 +48,23 @@ public class ChangePassword extends AbstractCommand
 		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Change password.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-amiLogin=\"\" -amiPasswordOld=\"\" -amiPasswordNew=\"\"";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

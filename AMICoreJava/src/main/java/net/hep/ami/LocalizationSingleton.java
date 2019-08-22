@@ -7,59 +7,68 @@ import java.math.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 public class LocalizationSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class Localization
 	{
 		public final String continentCode;
 		public final String countryCode;
 
-		public Localization(String _continentCode, String _countryCode)
+		@org.jetbrains.annotations.Contract(pure = true)
+		public Localization(@NotNull String _continentCode, @NotNull String _countryCode)
 		{
 			continentCode = _continentCode;
 			countryCode = _countryCode;
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@org.jetbrains.annotations.Contract(pure = true)
 	private LocalizationSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static BigInteger toPositiveBigInteger(BigInteger bigInteger, int bitLength)
+	@NotNull
+	private static BigInteger toPositiveBigInteger(@NotNull BigInteger bigInteger, int bitLength)
 	{
-		if(bigInteger.compareTo(BigInteger.ZERO) < 0)
-		{
-			bigInteger = bigInteger.add(BigInteger.ONE.shiftLeft(bitLength));
-		}
-
-		return bigInteger;
+		return bigInteger.compareTo(BigInteger.ZERO) < 0 ? bigInteger
+		                                                       .add(BigInteger.ONE.shiftLeft(bitLength))
+		                                                 : bigInteger
+		;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static BigInteger ipv4ToInteger(String ip) throws UnknownHostException
+	@NotNull
+	private static BigInteger ipv4ToInteger(@NotNull String ip) throws UnknownHostException
 	{
 		return ipv4ToInteger((Inet4Address) InetAddress.getByName(ip));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static BigInteger ipv6ToInteger(String ip) throws UnknownHostException
+	@NotNull
+	private static BigInteger ipv6ToInteger(@NotNull String ip) throws UnknownHostException
 	{
 		return ipv6ToInteger((Inet6Address) InetAddress.getByName(ip));
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static BigInteger ipv4ToInteger(Inet4Address ip) throws UnknownHostException
+	@NotNull
+	private static BigInteger ipv4ToInteger(@NotNull Inet4Address ip)
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		byte[] parts = ip.getAddress();
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		BigInteger result = BigInteger.ZERO;
 
@@ -68,14 +77,23 @@ public class LocalizationSingleton
 			result = result.shiftLeft(8).or(toPositiveBigInteger(BigInteger.valueOf(part), 8));
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		return toPositiveBigInteger(result, 8 * parts.length);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static BigInteger ipv6ToInteger(Inet6Address ip) throws UnknownHostException
+	@NotNull
+	private static BigInteger ipv6ToInteger(@NotNull Inet6Address ip)
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		byte[] parts = ip.getAddress();
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		BigInteger result = BigInteger.ZERO;
 
@@ -84,19 +102,23 @@ public class LocalizationSingleton
 			result = result.shiftLeft(8).or(toPositiveBigInteger(BigInteger.valueOf(part), 8));
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		return toPositiveBigInteger(result, 8 * parts.length);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void importCSVToAMI(Querier querier) throws Exception
+	public static void importCSVToAMI(@NotNull Querier querier) throws Exception
 	{
 		final BigInteger ONE = BigInteger.valueOf(1);
 		final BigInteger TWO = BigInteger.valueOf(2);
 
-		/*-----------------------------------------------------------------*/
-		/* LOCATIONS                                                       */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* LOCATIONS                                                                                                  */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		File locationsEn = new File(
 			ConfigSingleton.getConfigPathName()
@@ -123,8 +145,8 @@ public class LocalizationSingleton
 					countryISOCode = location.get("country_iso_code");
 
 					preparedStatement.setString(1, geonameId);
-					preparedStatement.setString(2, continentCode.isEmpty() == false ? continentCode : "N/A");
-					preparedStatement.setString(3, countryISOCode.isEmpty() == false ? countryISOCode : "N/A");
+					preparedStatement.setString(2, !continentCode.isEmpty() ? continentCode : "N/A");
+					preparedStatement.setString(3, !countryISOCode.isEmpty() ? countryISOCode : "N/A");
 					preparedStatement.addBatch();
 				}
 
@@ -132,9 +154,9 @@ public class LocalizationSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* IPv4 BLOCKS                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* IPv4 BLOCKS                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		File blocksIPv4 = new File(
 			ConfigSingleton.getConfigPathName()
@@ -164,7 +186,7 @@ public class LocalizationSingleton
 
 					index = network.indexOf('/');
 
-					if(index > 0 && geonameId.isEmpty() == false)
+					if(index > 0 && !geonameId.isEmpty())
 					{
 						base = ipv4ToInteger(network.substring(0, index));
 
@@ -180,9 +202,9 @@ public class LocalizationSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* IPv6 BLOCKS                                                     */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* IPv6 BLOCKS                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		File blocksIPv6 = new File(
 			ConfigSingleton.getConfigPathName()
@@ -212,7 +234,7 @@ public class LocalizationSingleton
 
 					index = network.indexOf('/');
 
-					if(index > 0 && geonameId.isEmpty() == false)
+					if(index > 0 && !geonameId.isEmpty())
 					{
 						base = ipv6ToInteger(network.substring(0, index));
 
@@ -228,16 +250,18 @@ public class LocalizationSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Localization localizeIP(Querier querier, String ip) throws Exception
+	@NotNull
+	@org.jetbrains.annotations.Contract("_, _ -> new")
+	public static Localization localizeIP(@NotNull Querier querier, @NotNull String ip) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* PARSE IP                                                        */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* PARSE IP                                                                                                   */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String _ip;
 		String _table;
@@ -260,9 +284,9 @@ public class LocalizationSingleton
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* EXECUTE QUERY                                                   */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXECUTE QUERY                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		RowSet rowSet = querier.executeSQLQuery("router_locations", String.format(
 			"SELECT `L`.`continentCode`, `L`.`countryCode` FROM `%s` AS `B`, `router_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
@@ -270,9 +294,9 @@ public class LocalizationSingleton
 			_ip
 		));
 
-		/*-----------------------------------------------------------------*/
-		/* GET LOCALIZATION                                                */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET LOCALIZATION                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rowList = rowSet.getAll();
 
@@ -283,17 +307,17 @@ public class LocalizationSingleton
 
 		Row row = rowList.get(0);
 
-		/*-----------------------------------------------------------------*/
-		/* RETURN LOCALIZATION                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* RETURN LOCALIZATION                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new Localization(
 			row.getValue(0),
 			row.getValue(1)
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

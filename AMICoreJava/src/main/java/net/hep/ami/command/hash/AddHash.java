@@ -4,21 +4,23 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class AddHash extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public AddHash(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public AddHash(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String name = arguments.get("name");
 		String json = arguments.get("json");
@@ -31,7 +33,7 @@ public class AddHash extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------------------------------------------*/
 
 		long uuid;
 
@@ -51,11 +53,11 @@ public class AddHash extends AbstractCommand
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier("self");
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `name`, `json`, `shared`, `expire`, `owner`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)",
 			hash,
@@ -67,7 +69,7 @@ public class AddHash extends AbstractCommand
 			m_AMIUser
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(update.getNbOfUpdatedRows() == 1)
 		{
@@ -82,21 +84,27 @@ public class AddHash extends AbstractCommand
 		{
 			return new StringBuilder("<error><![CDATA[nothing done]]></error>");
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Add a hash.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-name=\"\" -json=\"\" (-shared=\"\")? (-expire=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

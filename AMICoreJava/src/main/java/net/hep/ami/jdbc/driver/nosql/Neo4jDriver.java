@@ -7,19 +7,19 @@ import net.hep.ami.utility.*;
 	type = DriverMetadata.Type.NoSQL,
 	proto = "jdbc:neo4j",
 	clazz = "org.neo4j.jdbc.Driver",
-	backslashEscapes = false
+	flags = 0
 )
 
 public class Neo4jDriver extends AbstractDriver
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Neo4jDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	public Neo4jDriver(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @NotNull String user, @NotNull String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		super(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public void setupSession(String db, String tz) throws Exception
@@ -27,7 +27,7 @@ public class Neo4jDriver extends AbstractDriver
 		/* TODO */
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public String patchSQL(String sql) throws Exception
@@ -35,5 +35,5 @@ public class Neo4jDriver extends AbstractDriver
 		return sql;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

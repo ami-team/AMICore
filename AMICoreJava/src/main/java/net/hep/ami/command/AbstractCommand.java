@@ -9,7 +9,7 @@ import net.hep.ami.utility.*;
 
 public abstract class AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final String m_AMIUser;
 	protected final String m_AMIPass;
@@ -27,25 +27,25 @@ public abstract class AbstractCommand
 	protected final String m_userSession;
 	protected final String m_userTimeZone;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final Set<String> m_userRoles;
 
 	protected final Map<String, String> m_arguments;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final long m_transactionId;
 
 	 private  final boolean m_transactionBooker;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public AbstractCommand(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public AbstractCommand(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
-		/*-----------------------------------------------------------------*/
-		/* ARGUMENT PARAMETERS                                             */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ARGUMENT PARAMETERS                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : ConfigSingleton.getProperty("guest_user");
 		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : ConfigSingleton.getProperty("guest_pass");
@@ -56,22 +56,22 @@ public abstract class AbstractCommand
 		m_notBefore = arguments.containsKey("notBefore") ? arguments.remove("notBefore") : "";
 		m_notAfter  = arguments.containsKey("notAfter" ) ? arguments.remove("notAfter" ) : "";
 
-		m_isSecure = arguments.containsKey("isSecure") ? "false".equalsIgnoreCase(arguments.remove("isSecure")) == false : false;
-		m_isCached = arguments.containsKey( "cached" ) ? "false".equalsIgnoreCase(arguments.remove( "cached" )) == false : false;
+		m_isSecure = arguments.containsKey("isSecure") && !"false".equalsIgnoreCase(arguments.remove("isSecure"));
+		m_isCached = arguments.containsKey("cached") && !"false".equalsIgnoreCase(arguments.remove("cached"));
 
 		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "N/A";
 		m_userSession = arguments.containsKey("userSession") ? arguments.remove("userSession") : "";
 		m_userTimeZone = arguments.containsKey("userTimeZone") ? arguments.remove("userTimeZone") : ConfigSingleton.getProperty("time_zone");
 
-		/*-----------------------------------------------------------------*/
-		/* CONSTRUCTOR PARAMETERS                                          */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CONSTRUCTOR PARAMETERS                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_userRoles = userRoles;
 
 		m_arguments = arguments;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(transactionId < 0)
 		{
@@ -84,12 +84,13 @@ public abstract class AbstractCommand
 			m_transactionBooker = false;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected Querier getAdminQuerier(String catalog) throws Exception
+	@NotNull
+	protected Querier getAdminQuerier(@NotNull String catalog) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, true, false, m_transactionId);
 
@@ -101,9 +102,10 @@ public abstract class AbstractCommand
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected Querier getAdminQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	@NotNull
+	protected Querier getAdminQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, true, false, m_transactionId);
 
@@ -115,9 +117,10 @@ public abstract class AbstractCommand
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected Querier getQuerier(String catalog) throws Exception
+	@NotNull
+	protected Querier getQuerier(@NotNull String catalog) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
 
@@ -129,9 +132,10 @@ public abstract class AbstractCommand
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected Querier getQuerier(String catalog, boolean links) throws Exception
+	@NotNull
+	protected Querier getQuerier(@NotNull String catalog, boolean links) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
 
@@ -143,9 +147,10 @@ public abstract class AbstractCommand
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected Querier getQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass) throws Exception
+	@NotNull
+	protected Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
 
@@ -157,9 +162,10 @@ public abstract class AbstractCommand
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected Querier getQuerier(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, boolean links) throws Exception
+	@NotNull
+	protected Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, boolean links) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
 
@@ -171,50 +177,53 @@ public abstract class AbstractCommand
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected String executeCommand(String command, boolean checkRoles) throws Exception
+	@NotNull
+	protected String executeCommand(@NotNull String command, boolean checkRoles) throws Exception
 	{
 		return CommandSingleton.executeCommand(command, checkRoles, m_transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected String executeCommand(String command, Map<String, String> arguments, boolean checkRoles) throws Exception
+	@NotNull
+	protected String executeCommand(@NotNull String command, @NotNull Map<String, String> arguments, boolean checkRoles) throws Exception
 	{
 		return CommandSingleton.executeCommand(command, arguments, checkRoles, m_transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public final StringBuilder execute() throws Exception
 	{
 		StringBuilder result;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(m_isCached)
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			String key = new StringBuilder().append(getClass().getSimpleName().toString())
+			String key = new StringBuilder().append(getClass().getSimpleName())
 			                                .append(m_arguments.toString())
 			                                .toString()
 			;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			Object object = CacheSingleton.get(key);
 
 			if(object instanceof StringBuilder)
 			{
 				result = (StringBuilder) ((object));
-				//////////////.put(key, result);
 			}
 			else
 			{
-				result = (StringBuilder) _execute();
-				CacheSingleton.put(key, result);
+				CacheSingleton.put(key,
+					result = _execute()
+				);
 			}
 		}
 		else
@@ -222,12 +231,12 @@ public abstract class AbstractCommand
 			result = _execute();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private StringBuilder _execute() throws Exception
 	{
@@ -235,7 +244,7 @@ public abstract class AbstractCommand
 
 		Exception e1 = null;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
@@ -246,7 +255,7 @@ public abstract class AbstractCommand
 			e1 = e2;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(e1 == null)
 		{
@@ -274,17 +283,20 @@ public abstract class AbstractCommand
 			throw e1;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	public abstract StringBuilder main(Map<String, String> arguments) throws Exception;
+	@NotNull
+	public abstract StringBuilder main(@NotNull Map<String, String> arguments) throws Exception;
 
 	/*---------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "";
@@ -292,6 +304,8 @@ public abstract class AbstractCommand
 
 	/*---------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "";

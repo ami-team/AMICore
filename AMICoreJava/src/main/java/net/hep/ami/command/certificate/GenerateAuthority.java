@@ -4,43 +4,44 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_CERT", visible = false, secured = true)
 public class GenerateAuthority extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GenerateAuthority(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GenerateAuthority(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
-		String country = arguments.containsKey("country") ? arguments.get("country")
-		                                                  : ""
-		;
+		String country = arguments.getOrDefault("country", "").trim();
+		String locality = arguments.getOrDefault("locality", "").trim();
+		String organization = arguments.getOrDefault("organization", "").trim();
+		String organizationalUnit = arguments.getOrDefault("organizationalUnit", "").trim();
+		String commonName = arguments.getOrDefault("commonName", "").trim();
 
-		String locality = arguments.containsKey("locality") ? arguments.get("locality")
-		                                                    : ""
-		;
-
-		String organization = arguments.containsKey("organization") ? arguments.get("organization")
-		                                                            : ""
-		;
-
-		String organizationalUnit = arguments.containsKey("organizationalUnit") ? arguments.get("organizationalUnit")
-		                                                                        : ""
-		;
-
-		String commonName = arguments.containsKey("commonName") ? arguments.get("commonName")
-		                                                        : ""
-		;
+		if(country.isEmpty()
+		   ||
+		   locality.isEmpty()
+		   ||
+		   organization.isEmpty()
+		   ||
+		   organizationalUnit.isEmpty()
+		   ||
+		   commonName.isEmpty()
+		 ) {
+			throw new Exception("invalid usage");
+		}
 
 		int validity;
 
@@ -60,7 +61,7 @@ public class GenerateAuthority extends AbstractCommand
 			validity = 15;
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		SecuritySingleton.PEM pem = SecuritySingleton.PEM.generateCA(
 			4096,
@@ -76,7 +77,7 @@ public class GenerateAuthority extends AbstractCommand
 			validity
 		);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"certificates\">")
 		      .append("<row>")
@@ -88,24 +89,28 @@ public class GenerateAuthority extends AbstractCommand
 		      .append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Generate a CA certificate. Default validity: 15 years.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-validity=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

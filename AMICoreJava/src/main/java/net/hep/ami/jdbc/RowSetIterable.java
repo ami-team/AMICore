@@ -6,76 +6,74 @@ import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+@SuppressWarnings("StatementWithEmptyBody")
 public final class RowSetIterable implements Iterable<Row>
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final RowSet m_rowSet;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final int m_limit;
 	private final int m_offset;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private int m_i = 0;
+	private int m_i;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected RowSetIterable(RowSet rowSet) throws Exception
+	protected RowSetIterable(@NotNull RowSet rowSet) throws Exception
 	{
 		this(rowSet, Integer.MAX_VALUE, 0);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected RowSetIterable(RowSet rowSet, int limit, int offset) throws Exception
+	protected RowSetIterable(@NotNull RowSet rowSet, int limit, int offset) throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-
-		if((m_rowSet = rowSet) == null)
-		{
-			throw new NullPointerException();
-		}
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		rowSet.setLocked();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		m_rowSet = rowSet;
 
 		m_limit = limit;
 		m_offset = offset;
 
 		m_i = 0;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
 	public Iterator<Row> iterator()
 	{
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			while(m_i++ < m_offset && m_rowSet.m_resultSet.next()) { /* DO NOTHING  */ }
+			while(m_i++ < m_offset && m_rowSet.m_resultSet.next()) { /* DO NOTHING */ }
 		}
 		catch(Exception e)
 		{
 			throw new RuntimeException(e);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Iterator<Row>()
+		return new Iterator<>()
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			private boolean m_hasNext = false;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			@Override
 			public boolean hasNext()
@@ -92,8 +90,9 @@ public final class RowSetIterable implements Iterable<Row>
 				}
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
+			@NotNull
 			@Override
 			public Row next()
 			{
@@ -112,34 +111,34 @@ public final class RowSetIterable implements Iterable<Row>
 				throw new NoSuchElementException();
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		};
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<Row> getAll(RowSet rowSet) throws Exception
+	@NotNull
+	public static List<Row> getAll(@NotNull RowSet rowSet) throws Exception
 	{
 		return getAll(rowSet, Integer.MAX_VALUE, 0);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static List<Row> getAll(RowSet rowSet, int limit, int offset) throws Exception
+	@NotNull
+	public static List<Row> getAll(@NotNull RowSet rowSet, int limit, int offset) throws Exception
 	{
 		rowSet.setLocked();
 
 		List<Row> result = new ArrayList<>();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
+		int nb = ConfigSingleton.getProperty("max_number_of_rows", 10000);
 
-		int nb = maxNumberOfRows;
-
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(int i = 0; i < offset && rowSet.m_resultSet.next(); i++)
 		{ /* DO NOTHING */ }
@@ -157,34 +156,37 @@ public final class RowSetIterable implements Iterable<Row>
 			result.add(new Row(rowSet));
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static StringBuilder getStringBuilder(RowSet rowSet) throws Exception
+	@NotNull
+	public static StringBuilder getStringBuilder(@NotNull RowSet rowSet) throws Exception
 	{
 		return getStringBuilder(rowSet, null, null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type) throws Exception
+	@NotNull
+	public static StringBuilder getStringBuilder(@NotNull RowSet rowSet, @Nullable String type) throws Exception
 	{
 		return getStringBuilder(rowSet, type, null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static StringBuilder getStringBuilder(RowSet rowSet, @Nullable String type, @Nullable Integer totalNumberOfRows) throws Exception
+	@NotNull
+	public static StringBuilder getStringBuilder(@NotNull RowSet rowSet, @Nullable String type, @Nullable Integer totalNumberOfRows) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
+		AMIStringBuilder result = new AMIStringBuilder();
 
-		/*-----------------------------------------------------------------*/
-		/* FIELD DESCRIPTIONS                                              */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* FIELD DESCRIPTIONS                                                                                         */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder descrs = new StringBuilder();
 
@@ -240,13 +242,11 @@ public final class RowSetIterable implements Iterable<Row>
 			;
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* ROWSET                                                          */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ROWSET                                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
-
-		;
 
 		/*-----------------------------------------------------------------*/
 
@@ -269,41 +269,27 @@ public final class RowSetIterable implements Iterable<Row>
 			}
 		}
 
-		/*-----------------------------------------------------------------*/
-		/* RESULT                                                          */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* RESULT                                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		rowSet.setLocked();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(type == null)
-		{
-			result.append("<fieldDescriptions>")
-			      .append(descrs)
-			      .append("</fieldDescriptions>")
+		result.append("<fieldDescriptions").appendIf(type != null, " rowset=\"", Utility.escapeHTML(type), "\"").append(">")
+		      .append(descrs)
+		      .append("</fieldDescriptions>")
 
-			      .append("<rowset truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\" totalNumberOfRows=\"").append(totalNumberOfRows).append("\">")
-			      .append(rows)
-			      .append("</rowset>")
-			;
-		}
-		else
-		{
-			result.append("<fieldDescriptions rowset=\"").append(Utility.escapeHTML(type)).append("\">")
-			      .append(descrs)
-			      .append("</fieldDescriptions>")
+		      .append("<rowset").appendIf(type != null, " type=\"", Utility.escapeHTML(type), "\"").append(" truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\"").appendIf(totalNumberOfRows != null, " totalNumberOfRows=\"", totalNumberOfRows, "\"").append(">")
+		      .append(rows)
+		      .append("</rowset>")
+		;
 
-			      .append("<rowset type=\"").append(Utility.escapeHTML(type)).append("\" truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\" totalNumberOfRows=\"").append(totalNumberOfRows).append("\">")
-			      .append(rows)
-			      .append("</rowset>")
-			;
-		}
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		/*-----------------------------------------------------------------*/
-
-		return result;
+		return result.toStringBuilder();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

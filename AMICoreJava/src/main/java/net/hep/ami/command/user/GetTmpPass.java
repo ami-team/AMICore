@@ -5,25 +5,23 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = true)
 public class GetTmpPass extends AbstractCommand
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	static final String s_guest = ConfigSingleton.getProperty("guest_user");
-
-	/*---------------------------------------------------------------------*/
-
-	public GetTmpPass(Set<String> userRoles, Map<String, String> arguments, long transactionId)
+	public GetTmpPass(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	public StringBuilder main(Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String ssoLogin = arguments.get("ssoLogin");
 		String amiLogin = arguments.get("amiLogin");
@@ -34,7 +32,7 @@ public class GetTmpPass extends AbstractCommand
 		        &&
 		        amiLogin == null
 		 ) {
-			if(/*-----------*/ true /*-----------*/ && m_userRoles.contains("AMI_SSO") == false && m_userRoles.contains("AMI_ADMIN") == false)
+			if(/*--------------------------*/ !m_userRoles.contains("AMI_SSO") && !m_userRoles.contains("AMI_ADMIN"))
 			{
 				throw new Exception("wrong role for user `" + m_AMIUser + "`");
 			}
@@ -45,17 +43,15 @@ public class GetTmpPass extends AbstractCommand
 		        &&
 		        amiLogin != null
 		 ) {
-			if(m_AMIUser.equals(amiLogin) == false && m_userRoles.contains("AMI_SSO") == false && m_userRoles.contains("AMI_ADMIN") == false)
+			if(!m_AMIUser.equals(amiLogin) && !m_userRoles.contains("AMI_SSO") && !m_userRoles.contains("AMI_ADMIN"))
 			{
 				throw new Exception("wrong role for user `" + m_AMIUser + "`");
 			}
 
 			mode = 1;
 		}
-		else if(ssoLogin == null
-		        &&
-		        amiLogin == null
-		 ) {
+		else if(ssoLogin == null)
+		{
 			amiLogin = m_AMIUser;
 
 			mode = 1;
@@ -65,7 +61,7 @@ public class GetTmpPass extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rowList;
 
@@ -83,7 +79,7 @@ public class GetTmpPass extends AbstractCommand
 				throw new Exception("internal error");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String tmpUser;
 		String tmpPass;
@@ -100,10 +96,10 @@ public class GetTmpPass extends AbstractCommand
 		else
 		{
 			tmpUser = ConfigSingleton.getProperty("guest_user");
-			tmpPass = ConfigSingleton.getProperty("guest_user");
+			tmpPass = ConfigSingleton.getProperty("guest_pass");
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<rowset>").append("<row>")
 		                          .append("<field name=\"tmpUser\"><![CDATA[").append(tmpUser).append("]]></field>")
@@ -111,22 +107,26 @@ public class GetTmpPass extends AbstractCommand
 		                          .append("</row>").append("</rowset>")
 		;
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String help()
 	{
 		return "Get a temporary password.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public static String usage()
 	{
 		return "(-ssoLogin=\"\" | -amiLogin=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

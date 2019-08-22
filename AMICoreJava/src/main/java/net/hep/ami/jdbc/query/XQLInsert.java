@@ -7,7 +7,7 @@ import net.hep.ami.utility.*;
 
 public final class XQLInsert
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public enum Mode
 	{
@@ -15,11 +15,11 @@ public final class XQLInsert
 		MQL
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final Mode m_mode;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final Set<String> m_insertSet = new LinkedHashSet<>();
 
@@ -27,22 +27,25 @@ public final class XQLInsert
 
 	private final List<String> m_valueList = new ArrayList<>();
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public XQLInsert(Mode mode)
+	public XQLInsert(@NotNull Mode mode)
 	{
 		m_mode = mode;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String _toString(Object x)
+	@NotNull
+	private String _toString(@NotNull Object x)
 	{
 		return (m_mode == Mode.MQL && x instanceof QId) ? ((QId) x).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) : x.toString();
 	}
 
 	/*---------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLInsert addInsertPart(@Nullable CharSequence updatePart)
 	{
 		if(updatePart != null)
@@ -53,18 +56,22 @@ public final class XQLInsert
 		return this;
 	}
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLInsert addInsertPart(@Nullable Collection<?> updatePart)
 	{
 		if(updatePart != null)
 		{
-			m_insertSet.addAll(updatePart.stream().map(x -> x.toString()).collect(Collectors.toSet()));
+			m_insertSet.addAll(updatePart.stream().map(Object::toString).collect(Collectors.toSet()));
 		}
 
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLInsert addFieldValuePart(@Nullable Object fieldPart, @Nullable CharSequence valuePart)
 	{
 		if(fieldPart != null
@@ -78,6 +85,8 @@ public final class XQLInsert
 		return this;
 	}
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLInsert addFieldValuePart(@Nullable Collection<?> fieldPart, @Nullable Collection<?> valuePart) throws Exception
 	{
 		if(fieldPart != null
@@ -89,15 +98,17 @@ public final class XQLInsert
 				throw new Exception("bad number of values");
 			}
 
-			m_fieldList.addAll(fieldPart.stream().map(x -> _toString(x)).collect(Collectors.toList()));
-			m_valueList.addAll(valuePart.stream().map(x -> x.toString()).collect(Collectors.toList()));
+			m_fieldList.addAll(fieldPart.stream().map(this::_toString).collect(Collectors.toList()));
+			m_valueList.addAll(valuePart.stream().map(Object::toString).collect(Collectors.toList()));
 		}
 
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public XQLInsert addWholeQuery(@Nullable XQLInsert query)
 	{
 		if(query != null)
@@ -112,36 +123,44 @@ public final class XQLInsert
 		return this;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public Set<String> getInsertCollection()
 	{
 		return m_insertSet;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public List<String> getFieldCollection()
 	{
 		return m_fieldList;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract(pure = true)
 	public List<String> getValueCollection()
 	{
 		return m_valueList;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getInsertPart()
 	{
 		return String.join(", ", m_insertSet);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String getFieldValuePart()
 	{
 		return new StringBuilder().append("(")
@@ -154,34 +173,38 @@ public final class XQLInsert
 
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String toString()
 	{
 		return toStringBuilder(null).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public String toString(@Nullable CharSequence extra)
 	{
 		return toStringBuilder(extra).toString();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder()
 	{
 		return toStringBuilder(null);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public StringBuilder toStringBuilder(@Nullable CharSequence extra)
 	{
 		StringBuilder result = new StringBuilder();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(m_mode == Mode.MQL)
 		{
@@ -192,17 +215,17 @@ public final class XQLInsert
 			result.append("INSERT INTO ").append(getInsertPart()).append(" ").append(getFieldValuePart());
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(extra != null)
 		{
 			result.append(extra);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }
