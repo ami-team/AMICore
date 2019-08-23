@@ -304,7 +304,7 @@ public class Router implements Querier
 		/* EXECUTE SQL QUERIES                                                                                        */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String query = "";
+		List<String> query = new ArrayList<>();
 
 		try(InputStream inputStream = Router.class.getResourceAsStream(path))
 		{
@@ -314,32 +314,34 @@ public class Router implements Querier
 				   &&
 				   !line.startsWith("-")
 				 ) {
-					query += line + " ";
+					query.add(line);
 
 					if(line.endsWith(";;"))
 					{
 						/*--------------------------------------------------------------------------------------------*/
 
-						query = query.substring(0, query.length() - 2);
+						String sql = String.join(" ", query);
+
+						sql = sql.substring(0, sql.length() - 2);
 
 						/*--------------------------------------------------------------------------------------------*/
 
-						LogSingleton.root.info(query);
+						LogSingleton.root.info(sql);
 
 						/*--------------------------------------------------------------------------------------------*/
 
 						try
 						{
-							m_driver.getStatement().executeUpdate(query);
+							m_driver.getStatement().executeUpdate(sql);
 						}
 						catch(SQLException e)
 						{
-							throw new SQLException(e.getMessage() + " for SQL query: " + query, e);
+							throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
 						}
 
 						/*--------------------------------------------------------------------------------------------*/
 
-						query = "";
+						query.clear();
 
 						/*--------------------------------------------------------------------------------------------*/
 					}

@@ -91,11 +91,13 @@ public class AMICoreTest
 
 				try
 				{
+					System.out.println("init create");
 					db.create();
 
 					db.fill(ConfigSingleton.getProperty("router_schema"));
 
 					db.commitAndRelease();
+					System.out.println("done create");
 				}
 				catch(Exception e)
 				{
@@ -284,7 +286,6 @@ public class AMICoreTest
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
-				System.out.println("xxxxxxxx");
 			}
 
 			try 
