@@ -25,7 +25,7 @@ public class AMICoreTest
 
 	public static void main(String[] args) throws Exception
 	{
-		System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
+		//System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
 
 		System.setProperty("ami.integration", "");
 
@@ -241,7 +241,7 @@ public class AMICoreTest
 
 			try 
 			{
-				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxjson";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params2 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.ID, PROJECT.NAME{test.DATASET.projectFK} AS `PROJECT.NAME` WHERE valid=1 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params3 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} AS `PROJECT.NAME` WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
@@ -254,17 +254,7 @@ public class AMICoreTest
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"valid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"invalid\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params3+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"table\\\").setTitle(\\\"DATASET\\\");"
-									/*
-										+"\\n	webLink.newLinkProperties().setLabel(\\\"search dataset\\\").setCtrl(\\\"search\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\"\\\").setSettings(\\\"{\\\\\\\"name\\\\\\\" : \\\\\\\"Search dataset\\\\\\\",\\\\\\\"defaultCatalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"defaultEntity\\\\\\\": \\\\\\\"DATASET\\\\\\\",\\\\\\\"defaultPrimaryField\\\\\\\": \\\\\\\"id\\\\\\\",\\\\\\\"criterias\\\\\\\": ["
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"type\\\\\\\": 4, \\\\\\\"states\\\\\\\": {\\\\\\\"on\\\\\\\" : \\\\\\\"1\\\\\\\", \\\\\\\"off\\\\\\\": \\\\\\\"ALL\\\\\\\"}, \\\\\\\"select\\\\\\\": \\\\\\\"1\\\\\\\", \\\\\\\"inclusive\\\\\\\": true, \\\\\\\"auto_open\\\\\\\": true},"
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 1, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.size\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"size\\\\\\\", \\\\\\\"type\\\\\\\": 2, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"type\\\\\\\": 3, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"projectFK\\\\\\\"}] }"
-										+ "]}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"Search Datataset\\\");"
-										
-									*/
+
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"test\\\").setCtrl(\\\"search\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\"\\\").setSettings(\\\"{\\\\\\\"name\\\\\\\" : \\\\\\\"Search dataset\\\\\\\",\\\\\\\"defaultCatalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\","
 										+ "\\\\\\\"defaultEntity\\\\\\\": \\\\\\\"DATASET\\\\\\\","
 										+ "\\\\\\\"defaultSelect\\\\\\\": \\\\\\\"name AS test, PROJECT.name{DATASET.projectFK} AS project, DATASET.id, DATASET.valid\\\\\\\","
@@ -277,28 +267,29 @@ public class AMICoreTest
 										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"type\\\\\\\": 3, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
 										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"projectFK\\\\\\\"}] }"
 										+ "]}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"Search Datataset\\\");"
-										
-										
+
 										+"\\n}"
 										+"\\nif(rowSet.isANameOrLabel(\\\"test.PROJECT.id\\\"))"
 										+"\\n{"
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"id test\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n}"
 										+"\\nreturn webLink;";
-				String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
-				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
+				String jsonString = "{\"readable\":true,\"groupable\":true,\"webLinkScript\":\"" + webLinkScript + "\"}";
+				String values = "testxxxxxPROJECTxxxxxnamexxxxxthis is a test descritionxxxxx" + Utility.escapeJavaString(jsonString) +"";
+				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 				CommandSingleton.executeCommand(command, false);
 			}
 			catch (Exception e) 
 			{
 				System.out.println(e.getMessage());
 				testFail = true;
+				System.out.println("xxxxxxxx");
 			}
 
 			try 
 			{
-				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxjson";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"FILE\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE DATASET.id{test.DATASET_FILE_BRIDGE.fileFK}='\\\" + row.getValue(\\\"test.DATASET.id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 
 				String webLinkScript = ""
@@ -322,7 +313,8 @@ public class AMICoreTest
 										+"\\n	}"
 										+"\\n}"
 										+"\\nreturn webLink;";
-				String values = "testxxxxxDATASETxxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
+				String jsonString = "{\"readable\":true,\"groupable\":true,\"webLinkScript\":\"" + webLinkScript + "\"}";
+				String values = "testxxxxxDATASETxxxxxnamexxxxxthis is a test descritionxxxxx" + Utility.escapeJavaString(jsonString) +"";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
@@ -335,7 +327,7 @@ public class AMICoreTest
 
 			try 
 			{
-				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxisReadablexxxxxwebLinkScriptxxxxxisGroupable";
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxjson";
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE FILE.id{test.DATASET_FILE_BRIDGE.datasetFK}='\\\" + row.getValue(\\\"test.FILE.id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 
 				String webLinkScript = ""
@@ -346,7 +338,9 @@ public class AMICoreTest
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"datasets\\\").setCtrl(\\\"table\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"DATASET\\\");"
 										+"\\n}"
 										+"\\nreturn webLink;";
-				String values = "testxxxxxFILExxxxxnamexxxxxthis is a test descritionxxxxx1xxxxx"+webLinkScript+"xxxxx1";
+
+				String jsonString = "{\"readable\":true,\"groupable\":true,\"webLinkScript\":\"" + webLinkScript + "\"}";
+				String values = "testxxxxxFILExxxxxnamexxxxxthis is a test descritionxxxxx" + Utility.escapeJavaString(jsonString) +"";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
@@ -359,7 +353,7 @@ public class AMICoreTest
 
 			try 
 			{
-				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScriptxxxxxisGroupable";
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxjson";
 				String params = "[\\\\\\\"GetServerStatus\\\\\\\"]";
 				params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"PROJECT\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.id='\\\" + row.getValue(\\\"test.DATASET.projectFK\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params2 = "[\\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"PROJECT\\\\\\\",\\\\\\\"id\\\\\\\",\\\\\\\"\\\" + row.getValue(\\\"test.DATASET.projectFK\\\") + \\\"\\\\\\\"]";
@@ -380,7 +374,8 @@ public class AMICoreTest
 										+"\\n	webLink.newLinkProperties().setLabel(label).setCtrl(\\\"elementInfo\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\""+params2+"\\\").setSettings(\\\"{}\\\").setIcon(\\\"arrows-alt\\\").setTitle(\\\"PROJECT\\\");"
 										+"\\n	}"
 										+"\\nreturn webLink;";
-				String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descriptionxxxxx"+webLinkScript+"xxxxx1";
+				String jsonString = "{\"readable\":false,\"groupable\":true,\"webLinkScript\":\"" + webLinkScript + "\"}";
+				String values = "testxxxxxDATASETxxxxxprojectFKxxxxxthis is a test descritionxxxxx" + Utility.escapeJavaString(jsonString) +"";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
@@ -393,12 +388,14 @@ public class AMICoreTest
 
 			try 
 			{
-				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxwebLinkScriptxxxxxisStatable";
+				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxjson";
 				String webLinkScript = ""
 										+"import net.hep.ami.jdbc.WebLink;"
 										+"\\nwebLink = new WebLink().setUnitName(\\\"Byte\\\").setUnitFactor(\\\"\\\").setUnitBase(\\\"1024\\\").setHumanReadable(\\\"true\\\");"
 										+"\\nreturn webLink;";
-				String values = "testxxxxxFILExxxxxsizexxxxxthis is a test descriptionxxxxx"+webLinkScript+"xxxxx1";
+
+				String jsonString = "{\"statable\":true,\"groupable\":false,\"webLinkScript\":\"" + webLinkScript + "\"}";
+				String values = "testxxxxxFILExxxxxsizexxxxxthis is a test descritionxxxxx" + Utility.escapeJavaString(jsonString) +"";
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\"xxxxx\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 				CommandSingleton.executeCommand(command, false);
 			}
@@ -427,8 +424,9 @@ public class AMICoreTest
 			try 
 			{
 				//rank is 0 by default at insertion
-				String fields = "catalog;entity;field;description;isGroupable";
-				String values = "test;DATASET;valid;this is a test description;1";
+				String fields = "catalog;entity;field;description;json";
+				String jsonString = "{\"groupable\":true}";
+				String values = "test;DATASET;valid;this is a test description;" + Utility.escapeJavaString(jsonString);
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
@@ -442,8 +440,9 @@ public class AMICoreTest
 			try 
 			{
 
-				String fields = "catalog;entity;description;isBridge";
-				String values = "test;DATASET_FILE_BRIDGE;this is a test description;1";
+				String fields = "catalog;entity;description;json";
+				String jsonString = "{\"bridge\":true}";
+				String values = "test;DATASET_FILE_BRIDGE;this is a test description;" + Utility.escapeJavaString(jsonString);
 				String command = "AddElement -catalog=\"self\" -entity=\"router_entity\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
@@ -458,8 +457,9 @@ public class AMICoreTest
 			for (int i = 0; i < testTables.length; i++) {
 				try 
 				{
-					String fields = "catalog;entity;field;isCreatedBy";
-					String values = "test;" + testTables[i] +";createdBy;1";
+					String fields = "catalog;entity;field;json";
+					String jsonString = "{\"createdBy\":true}";
+					String values = "test;" + testTables[i] +";createdBy;" + Utility.escapeJavaString(jsonString);
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 					CommandSingleton.executeCommand(command, false);
@@ -472,8 +472,9 @@ public class AMICoreTest
 
 				try 
 				{
-					String fields = "catalog;entity;field;isModifiedBy";
-					String values = "test;" + testTables[i] +";modifiedBy;1";
+					String fields = "catalog;entity;field;json";
+					String jsonString = "{\"modifiedBy\":true}";
+					String values = "test;" + testTables[i] +";modifiedBy;" + Utility.escapeJavaString(jsonString);
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 					CommandSingleton.executeCommand(command, false);
@@ -485,8 +486,9 @@ public class AMICoreTest
 				}
 				try 
 				{
-					String fields = "catalog;entity;field;isCreated";
-					String values = "test;" + testTables[i] +";created;1";
+					String fields = "catalog;entity;field;json";
+					String jsonString = "{\"created\":true}";
+					String values = "test;" + testTables[i] +";created;" + Utility.escapeJavaString(jsonString);
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 					CommandSingleton.executeCommand(command, false);
@@ -499,8 +501,9 @@ public class AMICoreTest
 
 				try 
 				{
-					String fields = "catalog;entity;field;isModified";
-					String values = "test;" + testTables[i] +";modified;1";
+					String fields = "catalog;entity;field;json";
+					String jsonString = "{\"modified\":true}";
+					String values = "test;" + testTables[i] +";modified;" + Utility.escapeJavaString(jsonString);
 					String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 					CommandSingleton.executeCommand(command, false);
@@ -516,8 +519,9 @@ public class AMICoreTest
 			
 			try 
 			{
-				String fields = "catalog;entity;field;isGroupable";
-				String values = "test;DATASET_PARAM;type;1";
+				String fields = "catalog;entity;field;json";
+				String jsonString = "{\"groupable\":true}";
+				String values = "test;DATASET_PARAM;type;" + Utility.escapeJavaString(jsonString);
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
@@ -531,8 +535,9 @@ public class AMICoreTest
 			
 			try 
 			{
-				String fields = "catalog;entity;field;isPrimary";
-				String values = "test;FILE_VIEW;id;1";
+				String fields = "catalog;entity;field;json";
+				String jsonString = "{\"primary\":true}";
+				String values = "test;FILE_VIEW;id;" + Utility.escapeJavaString(jsonString);
 				String command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
 				CommandSingleton.executeCommand(command, false);
