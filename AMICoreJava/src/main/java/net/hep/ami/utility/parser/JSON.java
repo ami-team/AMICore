@@ -61,7 +61,7 @@ public class JSON
 		}
 		if(clazz.isAssignableFrom(result.getClass()))
 		{
-			return (T) result.getClass();
+			return (T) result;
 		}
 		else
 		{
