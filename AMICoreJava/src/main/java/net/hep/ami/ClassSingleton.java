@@ -111,9 +111,9 @@ public class ClassSingleton
 
 			if(files != null)
 			{
-				for(File elif : files)
+				for(File FILE : files)
 				{
-					walk(base, elif, jars);
+					walk(base, FILE, jars);
 				}
 			}
 
