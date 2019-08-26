@@ -261,7 +261,7 @@ public class RowSet
 
 			/* FOR ORACLE */
 
-			if("N/A".equals(m_fieldLabels[i])
+			if(!"N/A".equals(m_fieldLabels[i])
 			   &&
 			   (
 				"N/A".equals(m_fieldCatalogs[i])
