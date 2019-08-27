@@ -104,7 +104,48 @@ public class UpdateElements extends AbstractCommand
 
 		for(int i = 0; i < tuple.y.size(); i++)
 		{
-			statement.setString(i + 1, tuple.y.get(i));
+			String var = tuple.y.get(i);
+			try
+			{
+				String type = statement.getParameterMetaData().getParameterClassName(i + 1);
+
+				if(type.equals("java.sql.Timestamp"))
+				{
+					statement.setTimestamp(i + 1, Timestamp.valueOf(var));
+				}
+				else if(type.equals("java.lang.String"))
+				{
+					statement.setString(i + 1, var);
+				}
+				else if(type.equals("java.lang.Integer"))
+				{
+					statement.setInt(i + 1, Integer.valueOf(var));
+				}
+				else if(type.equals("java.lang.Long"))
+				{
+					statement.setLong(i + 1, Long.valueOf(var));
+				}
+				else if(type.equals("java.lang.Float"))
+				{
+					statement.setFloat(i + 1, Float.valueOf(var));
+				}
+				else if(type.equals("java.lang.Double"))
+				{
+					statement.setDouble(i + 1, Double.valueOf(var));
+				}
+				else if(type.equals("java.math.BigDecimal"))
+				{
+					statement.setBigDecimal(i + 1, new java.math.BigDecimal(var));
+				}
+				else
+				{
+					System.out.println(type);
+				}
+			}
+			catch(SQLException e)
+			{
+				statement.setString(i + 1, var);
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
