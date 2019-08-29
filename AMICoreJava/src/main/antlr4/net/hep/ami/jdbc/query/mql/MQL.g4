@@ -89,7 +89,6 @@ literalTuple
 
 expressionOr
 	: expressionAnd (OR expressionAnd)*
-	| NOT '(' expressionAnd (OR expressionAnd)* ')'
 	;
 
 expressionAnd
