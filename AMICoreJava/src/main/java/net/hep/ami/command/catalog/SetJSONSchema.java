@@ -1,5 +1,6 @@
 package net.hep.ami.command.catalog;
 
+import java.sql.PreparedStatement;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
@@ -34,13 +35,18 @@ public class SetJSONSchema extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("UPDATE `router_catalog` SET `json` = ? WHERE `externalCatalog` = ?", json, catalog);
+		PreparedStatement preparedStatement = getQuerier("self").preparedStatement("UPDATE `router_catalog` SET `json` = ? WHERE `externalCatalog` = ?", false, false, null);
+
+		preparedStatement.setString(1, json);
+		preparedStatement.setString(2, catalog);
+
+		final int nbOfUpdatedRows = preparedStatement.executeUpdate();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder(
-			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
-			                                : "<error><![CDATA[nothing done]]></error>"
+			nbOfUpdatedRows > 0 ? "<info><![CDATA[done with success]]></info>"
+			                    : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 
