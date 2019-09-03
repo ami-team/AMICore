@@ -244,7 +244,7 @@ OR
 
 XOR
 	: X O R
-	| '||' { setText("XOR"); }
+	| '^^' { setText("XOR"); }
 	;
 
 AND
