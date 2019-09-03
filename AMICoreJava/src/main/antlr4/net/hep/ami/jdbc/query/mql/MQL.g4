@@ -105,7 +105,7 @@ expressionNot
 
 expressionComp
 	: expressionAddSub (
-		  (COMP | LIKE | REGEXP) expressionAddSub
+		  COMP expressionAddSub
 		| NOT? (
 			  (LIKE | REGEXP) expressionAddSub
 			| BETWEEN expressionAddSub AND expressionAddSub
