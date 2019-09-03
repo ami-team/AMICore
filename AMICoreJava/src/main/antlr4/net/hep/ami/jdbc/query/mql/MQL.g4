@@ -104,7 +104,14 @@ expressionNot
 	;
 
 expressionComp
-	: expressionAddSub (COMP expressionAddSub | IN literalTuple | IS NOT? NULL)?
+	: expressionAddSub (
+		  (COMP | LIKE | REGEXP | NOT (LIKE | REGEXP)) expressionAddSub
+		| NOT? (
+			  BETWEEN expressionAddSub AND expressionAddSub
+			| IN literalTuple
+		  )
+		| IS NOT? NULL
+	  )?
 	;
 
 expressionAddSub
@@ -245,12 +252,24 @@ AND
 	;
 
 COMP
-	: '=' | '<=>' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | L I K E | R E G E X P
+	: '=' | '<=>' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); }
 	| '<' | '>' | '<=' | '>='
 	;
 
 NOT
 	: N O T
+	;
+
+LIKE
+	: L I K E
+	;
+
+REGEXP
+	: R E G E X P
+	;
+
+BETWEEN
+	: B E T W E E N
 	;
 
 IN
