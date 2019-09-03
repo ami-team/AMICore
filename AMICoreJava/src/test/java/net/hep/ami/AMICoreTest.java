@@ -1,22 +1,12 @@
 package net.hep.ami;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-import java.util.regex.*;
-
-import javax.imageio.ImageIO;
-
 import org.junit.jupiter.api.*;
-
 import net.hep.ami.jdbc.*;
-import net.hep.ami.jdbc.pool.*;
-import net.hep.ami.jdbc.query.sql.*;
-import net.hep.ami.jdbc.reflexion.*;
-
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SuppressWarnings("all")
 public class AMICoreTest
@@ -1437,7 +1427,7 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
-			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
@@ -1503,7 +1493,8 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		String commandTestDev = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * \" -limit=\"10\"";
+		String commandTestDev = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * where name not like '%yyy%' AND not name like '%xxxx'  AND NOT id BETWEEN 100 AND 200 \" -limit=\"10\"";
+		//AND (name REGEXP '[^a-z]')
 		System.out.println(commandTestDev);
 		String data = "";
 		try
@@ -1524,9 +1515,37 @@ public class AMICoreTest
 
 			data = stringWriter.toString();
 			//System.out.println(data);
+			ObjectMapper m_mapper = new ObjectMapper();
+			HashMap test = m_mapper.readValue(data, HashMap.class);
+			System.out.println("test size " + test.size());
+			for(Iterator iterator = test.keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String)iterator.next();
+				HashMap value = (HashMap)test.get(key);
+				//System.out.println(key +  " xxx " + ((ArrayList)value.get("rowset")).toString());
+				ArrayList list = (ArrayList)value.get("rowset");
+				System.out.println("list1 size  " + list.size());
+				for (int cpt = 0; cpt < list.size(); cpt++)
+				{
+					ArrayList fieldsList = (ArrayList)((HashMap)(((ArrayList)((HashMap)list.get(cpt)).get("row")).get(0))).get("field");
+
+					for (int cpt2 = 0; cpt2 < fieldsList.size(); cpt2++) {
+						HashMap field = (HashMap) fieldsList.get(cpt2);
+
+							System.out.println("field  " + field.get("@name"));
+
+					}
+
+					//System.out.println("aaaa " + ((HashMap)(((ArrayList)((HashMap)list.get(cpt)).get("row")).get(0))).toString());
+
+				}
+			}
+			System.out.println("test  " + test.toString());
+
 		}
 		catch(Exception e)
 		{
+			System.out.println("err  " + e.getMessage());
 			data = XMLTemplates.error(
 				e.getMessage()
 			);
