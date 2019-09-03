@@ -114,7 +114,7 @@ public class UpdateElements extends AbstractCommand
 				{
 					statement.setString(i + 1, value);
 				}
-				if(type.equals("java.sql.Timestamp"))
+				else if(type.equals("java.sql.Timestamp"))
 				{
 					statement.setTimestamp(i + 1, Timestamp.valueOf(value));
 				}
