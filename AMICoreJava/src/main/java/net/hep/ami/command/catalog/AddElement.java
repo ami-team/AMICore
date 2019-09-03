@@ -1,7 +1,7 @@
 package net.hep.ami.command.catalog;
 
-import java.math.BigDecimal;
 import java.sql.*;
+import java.math.*;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
@@ -88,37 +88,32 @@ public class AddElement extends AbstractCommand
 			{
 				String type = statement.getParameterMetaData().getParameterClassName(i + 1);
 
-				/**/ if(type.equals("java.lang.String"))
+				switch(type)
 				{
-					statement.setString(i + 1, value);
-				}
-				else if(type.equals("java.sql.Timestamp"))
-				{
-					statement.setTimestamp(i + 1, Timestamp.valueOf(value));
-				}
-				else if(type.equals("java.lang.Integer"))
-				{
-					statement.setInt(i + 1, Integer.parseInt(value));
-				}
-				else if(type.equals("java.lang.Long"))
-				{
-					statement.setLong(i + 1, Long.parseLong(value));
-				}
-				else if(type.equals("java.math.BigDecimal"))
-				{
-					statement.setBigDecimal(i + 1, new java.math.BigDecimal(value));
-				}
-				else if(type.equals("java.lang.Float"))
-				{
-					statement.setFloat(i + 1, Float.parseFloat(value));
-				}
-				else if(type.equals("java.lang.Double"))
-				{
-					statement.setDouble(i + 1, Double.parseDouble(value));
-				}
-				else
-				{
-					System.out.println(type);
+					case "java.lang.String":
+						statement.setString(i + 1, value);
+						break;
+					case "java.sql.Timestamp":
+						statement.setTimestamp(i + 1, Timestamp.valueOf(value));
+						break;
+					case "java.lang.Integer":
+						statement.setInt(i + 1, Integer.parseInt(value));
+						break;
+					case "java.lang.Long":
+						statement.setLong(i + 1, Long.parseLong(value));
+						break;
+					case "java.math.BigDecimal":
+						statement.setBigDecimal(i + 1, new BigDecimal(value));
+						break;
+					case "java.lang.Float":
+						statement.setFloat(i + 1, Float.parseFloat(value));
+						break;
+					case "java.lang.Double":
+						statement.setDouble(i + 1, Double.parseDouble(value));
+						break;
+					default:
+						System.out.println(type);
+						break;
 				}
 			}
 			catch(SQLException e)

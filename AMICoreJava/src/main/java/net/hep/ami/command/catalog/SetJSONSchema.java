@@ -1,9 +1,8 @@
 package net.hep.ami.command.catalog;
 
-import java.sql.PreparedStatement;
+import java.sql.*;
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
