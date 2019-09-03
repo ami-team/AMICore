@@ -105,9 +105,10 @@ expressionNot
 
 expressionComp
 	: expressionAddSub (
-		  (COMP | LIKE | REGEXP | NOT (LIKE | REGEXP)) expressionAddSub
+		  (COMP | LIKE | REGEXP) expressionAddSub
 		| NOT? (
-			  BETWEEN expressionAddSub AND expressionAddSub
+			  (LIKE | REGEXP) expressionAddSub
+			| BETWEEN expressionAddSub AND expressionAddSub
 			| IN literalTuple
 		  )
 		| IS NOT? NULL
