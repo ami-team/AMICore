@@ -111,9 +111,9 @@ public class UpdateElements extends AbstractCommand
 				String type = statement.getParameterMetaData().getParameterClassName(i + 1);
 
 				/**/ if(type.equals("java.lang.String"))
-			{
-				statement.setString(i + 1, value);
-			}
+				{
+					statement.setString(i + 1, value);
+				}
 				if(type.equals("java.sql.Timestamp"))
 				{
 					statement.setTimestamp(i + 1, Timestamp.valueOf(value));
