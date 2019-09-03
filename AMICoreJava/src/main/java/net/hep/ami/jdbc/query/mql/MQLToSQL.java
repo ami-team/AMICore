@@ -20,7 +20,7 @@ public class MQLToSQL
 
 	private static final int NO_STAR = (1 << 0);
 	private static final int STAR_TO_ID = (1 << 1);
-	private static final int IS_MODIF_STM = (1 << 2);
+	private static final int IS_MODIF_STMT = (1 << 2);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -181,8 +181,8 @@ public class MQLToSQL
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_catalog,
 			m_primaryKey,
-			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
-			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
+			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STMT),
+			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STMT),
 			m_AMIUser,
 			m_isAdmin,
 			true
@@ -211,8 +211,8 @@ public class MQLToSQL
 		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
 			m_catalog,
 			m_primaryKey,
-			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STM),
-			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STM),
+			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STMT),
+			visitExpressionTuple(context.m_expressions, null, IS_MODIF_STMT),
 			m_AMIUser,
 			m_isAdmin,
 			false
@@ -232,7 +232,7 @@ public class MQLToSQL
 				m_catalog,
 				m_primaryKey,
 				m_resolutionList,
-				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
+				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STMT),
 				0,
 				false,
 				true,
@@ -264,7 +264,7 @@ public class MQLToSQL
 				m_catalog,
 				m_primaryKey,
 				m_resolutionList,
-				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STM),
+				visitExpressionOr(context.m_expression, m_resolutionList, IS_MODIF_STMT),
 				0,
 				false,
 				true,
@@ -401,13 +401,45 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
+			/**/ if(child instanceof MQLParser.ExpressionXorContext)
+			{
+				result.append(visitExpressionXor((MQLParser.ExpressionXorContext) child, resolutionList, mask));
+			}
+			else if(child instanceof TerminalNode)
+			{
+				result.append(" OR ");
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	private StringBuilder visitExpressionXor(@NotNull MQLParser.ExpressionXorContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		ParseTree child;
+
+		final int nb = context.getChildCount();
+
+		for(int i = 0; i < nb; i++)
+		{
+			child = context.getChild(i);
+
 			/**/ if(child instanceof MQLParser.ExpressionAndContext)
 			{
 				result.append(visitExpressionAnd((MQLParser.ExpressionAndContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
-				result.append(" OR ");
+				result.append(" XOR ");
 			}
 		}
 
@@ -433,13 +465,45 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.ExpressionCompContext)
+			/**/ if(child instanceof MQLParser.ExpressionNotContext)
 			{
-				result.append(visitExpressionComp((MQLParser.ExpressionCompContext ) child, resolutionList, mask));
+				result.append(visitExpressionNot((MQLParser.ExpressionNotContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
 				result.append(" AND ");
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	private StringBuilder visitExpressionNot(@NotNull MQLParser.ExpressionNotContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		ParseTree child;
+
+		final int nb = context.getChildCount();
+
+		for(int i = 0; i < nb; i++)
+		{
+			child = context.getChild(i);
+
+			/**/ if(child instanceof MQLParser.ExpressionCompContext)
+			{
+				result.append(visitExpressionComp((MQLParser.ExpressionCompContext) child, resolutionList, mask));
+			}
+			else if(child instanceof TerminalNode)
+			{
+				result.append("NOT ");
 			}
 		}
 
@@ -465,9 +529,9 @@ public class MQLToSQL
 		{
 			child = context.getChild(i);
 
-			/**/ if(child instanceof MQLParser.ExpressionNotAddSubContext)
+			/**/ if(child instanceof MQLParser.ExpressionAddSubContext)
 			{
-				result.append(visitExpressionAddSub((MQLParser.ExpressionNotAddSubContext) child, resolutionList, mask));
+				result.append(visitExpressionAddSub((MQLParser.ExpressionAddSubContext) child, resolutionList, mask));
 			}
 			else if(child instanceof MQLParser.LiteralTupleContext)
 			{
@@ -493,7 +557,7 @@ public class MQLToSQL
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private StringBuilder visitExpressionAddSub(@NotNull MQLParser.ExpressionNotAddSubContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionAddSub(@NotNull MQLParser.ExpressionAddSubContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -544,7 +608,7 @@ public class MQLToSQL
 
 			/**/ if(child instanceof MQLParser.ExpressionPlusMinusContext)
 			{
-				result.append(visitExpressionNotPlusMinus((MQLParser.ExpressionPlusMinusContext) child, resolutionList, mask));
+				result.append(visitExpressionPlusMinus((MQLParser.ExpressionPlusMinusContext) child, resolutionList, mask));
 			}
 			else if(child instanceof TerminalNode)
 			{
@@ -563,7 +627,7 @@ public class MQLToSQL
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private StringBuilder visitExpressionNotPlusMinus(@NotNull MQLParser.ExpressionPlusMinusContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
+	private StringBuilder visitExpressionPlusMinus(@NotNull MQLParser.ExpressionPlusMinusContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -632,7 +696,7 @@ public class MQLToSQL
 
 		List<Resolution> tmpResolutionList = new ArrayList<>();
 
-		StringBuilder stdExpression = visitExpressionOr(context.m_expression, tmpResolutionList, mask & ~IS_MODIF_STM);
+		StringBuilder stdExpression = visitExpressionOr(context.m_expression, tmpResolutionList, mask & ~IS_MODIF_STMT);
 
 		String isoExpression = Helper.getIsolatedExpression(
 			m_catalog,
@@ -641,7 +705,7 @@ public class MQLToSQL
 			stdExpression,
 			0,
 			false,
-			(mask & IS_MODIF_STM) != 0,
+			(mask & IS_MODIF_STMT) != 0,
 			false
 		);
 
@@ -686,7 +750,7 @@ public class MQLToSQL
 
 		resolutionList.addAll(list = visitQId(context.m_qId, resolutionList, mask));
 
-		return new StringBuilder(list.stream().map(x -> x.getInternalQId().toString((mask & IS_MODIF_STM) == 0 ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
+		return new StringBuilder(list.stream().map(x -> x.getInternalQId().toString((mask & IS_MODIF_STMT) == 0 ? QId.MASK_CATALOG_ENTITY_FIELD : QId.MASK_ENTITY_FIELD)).collect(Collectors.joining(", ")));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

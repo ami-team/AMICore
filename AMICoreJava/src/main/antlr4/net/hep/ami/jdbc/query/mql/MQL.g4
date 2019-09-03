@@ -88,19 +88,27 @@ literalTuple
 /*---------------------------*/
 
 expressionOr
-	: expressionAnd (OR expressionAnd)*
+	: expressionXor (OR expressionXor)*
+	;
+
+expressionXor
+	: expressionAnd (XOR expressionAnd)*
 	;
 
 expressionAnd
-	: expressionComp (AND expressionComp)*
+	: expressionNot (AND expressionNot)*
+	;
+
+expressionNot
+	: NOT* expressionComp
 	;
 
 expressionComp
-	: expressionNotAddSub (COMP expressionNotAddSub | IN literalTuple | IS NOT? NULL)?
+	: expressionAddSub (COMP expressionAddSub | IN literalTuple | IS NOT? NULL)?
 	;
 
-expressionNotAddSub
-	: expressionMulDiv ((NOT | PLUS | MINUS) expressionMulDiv)*
+expressionAddSub
+	: expressionMulDiv ((PLUS | MINUS) expressionMulDiv)*
 	;
 
 expressionMulDiv
@@ -226,13 +234,18 @@ OR
 	| '||' { setText("OR"); }
 	;
 
+XOR
+	: X O R
+	| '||' { setText("XOR"); }
+	;
+
 AND
 	: A N D
 	| '&&' { setText("AND"); }
 	;
 
 COMP
-	: '=' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | L I K E
+	: '=' | '<=>' | '!=' | '^=' { setText("!="); } | '<>' { setText("!="); } | L I K E | R E G E X P
 	| '<' | '>' | '<=' | '>='
 	;
 
