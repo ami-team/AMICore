@@ -28,7 +28,7 @@ public class AMICoreTest
 
 	/*---------------------------------------------------------------------*/
 
-
+	@Test
 	public void databaseTest() throws Exception
 	{
 		boolean testFail = false;
@@ -1511,12 +1511,12 @@ public class AMICoreTest
 		StringReader stringReader = new StringReader(data);
 		StringWriter stringWriter = new StringWriter();
 		try
-		{
+		{	/*
 			ConverterSingleton.convert("AMIXmlToJson.xsl", stringReader, stringWriter);
 
 			data = stringWriter.toString();
 			//System.out.println(data);
-			/*
+
 			ObjectMapper m_mapper = new ObjectMapper();
 			HashMap test = m_mapper.readValue(data, HashMap.class);
 			for(Iterator iterator = test.keySet().iterator(); iterator.hasNext();)
