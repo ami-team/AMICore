@@ -28,7 +28,7 @@ public class AMICoreTest
 
 	/*---------------------------------------------------------------------*/
 
-	@Test
+
 	public void databaseTest() throws Exception
 	{
 		boolean testFail = false;
