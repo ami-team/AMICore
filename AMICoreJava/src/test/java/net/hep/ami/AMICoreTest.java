@@ -1510,8 +1510,9 @@ public class AMICoreTest
 
 		StringReader stringReader = new StringReader(data);
 		StringWriter stringWriter = new StringWriter();
+		/*
 		try
-		{	/*
+		{
 			ConverterSingleton.convert("AMIXmlToJson.xsl", stringReader, stringWriter);
 
 			data = stringWriter.toString();
@@ -1541,7 +1542,7 @@ public class AMICoreTest
 				}
 			}
 			System.out.println("test  " + test.toString());
-		*/
+
 		}
 		catch(Exception e)
 		{
@@ -1551,6 +1552,7 @@ public class AMICoreTest
 			);
 
 		}
+		*/
 
 		//System.out.println(data);
 
