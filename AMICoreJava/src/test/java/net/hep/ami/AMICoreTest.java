@@ -34,7 +34,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = true;
+		boolean doCreateAndFill = false;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -1422,7 +1422,8 @@ public class AMICoreTest
 			testFail = true;
 		}
 
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name, created AS test ORDER BY PROJECT.name DESC\"";
+		//commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name, created AS test ORDER BY PROJECT.name DESC\" -limit=\"10\" ";
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"FILE\" -mql=\"SELECT FILE.name, created AS test ORDER BY FILE.name DESC\" -limit=\"10\" ";
 
 		System.out.println(commandTest);
 		try
@@ -1493,7 +1494,7 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		String commandTestDev = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * where name not like '%yyy%' AND not name like '%xxxx'  AND NOT id BETWEEN 100 AND 200 \" -limit=\"10\"";
+		String commandTestDev = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * where name not like '%yyy%' AND not name like '%xxxx'  AND NOT id BETWEEN 100 AND 200 ORDER BY CREATED DESC \" -limit=\"10\"";
 		//AND (name REGEXP '[^a-z]')
 		System.out.println(commandTestDev);
 		String data = "";
@@ -1517,14 +1518,12 @@ public class AMICoreTest
 			//System.out.println(data);
 			ObjectMapper m_mapper = new ObjectMapper();
 			HashMap test = m_mapper.readValue(data, HashMap.class);
-			System.out.println("test size " + test.size());
 			for(Iterator iterator = test.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String)iterator.next();
 				HashMap value = (HashMap)test.get(key);
 				//System.out.println(key +  " xxx " + ((ArrayList)value.get("rowset")).toString());
 				ArrayList list = (ArrayList)value.get("rowset");
-				System.out.println("list1 size  " + list.size());
 				for (int cpt = 0; cpt < list.size(); cpt++)
 				{
 					ArrayList fieldsList = (ArrayList)((HashMap)(((ArrayList)((HashMap)list.get(cpt)).get("row")).get(0))).get("field");
