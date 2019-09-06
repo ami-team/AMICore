@@ -6,7 +6,7 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.parser.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SuppressWarnings("all")
 public class AMICoreTest
@@ -1516,6 +1516,7 @@ public class AMICoreTest
 
 			data = stringWriter.toString();
 			//System.out.println(data);
+			/*
 			ObjectMapper m_mapper = new ObjectMapper();
 			HashMap test = m_mapper.readValue(data, HashMap.class);
 			for(Iterator iterator = test.keySet().iterator(); iterator.hasNext();)
@@ -1540,7 +1541,7 @@ public class AMICoreTest
 				}
 			}
 			System.out.println("test  " + test.toString());
-
+		*/
 		}
 		catch(Exception e)
 		{
