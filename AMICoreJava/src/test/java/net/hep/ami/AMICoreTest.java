@@ -17,7 +17,7 @@ public class AMICoreTest
 	{
 		//System.setProperty("ami.conffile", "/Users/jodier/AMI_PostgreSQL.xml");
 
-		System.setProperty("ami.integration", "");
+		//System.setProperty("ami.integration", "");
 
 		AMICoreTest test = new AMICoreTest();
 
