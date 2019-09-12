@@ -111,6 +111,9 @@ public class AddElement extends AbstractCommand
 					case "java.lang.Double":
 						statement.setDouble(i + 1, Double.parseDouble(value));
 						break;
+					case "oracle.jdbc.OracleClob":
+						statement.setString(i + 1, value);
+						break;
 					default:
 						System.out.println(type);
 						break;
