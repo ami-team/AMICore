@@ -18,7 +18,8 @@ abstract public class CommandValidator
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	String help()
+	@org.jetbrains.annotations.Contract(pure = true)
+	public static String help()
 	{
 		return "";
 	}
