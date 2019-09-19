@@ -6,6 +6,9 @@ import ch.qos.logback.classic.spi.*;
 
 import net.hep.ami.utility.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class LogSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -49,7 +52,12 @@ public class LogSingleton
 				}
 				catch(Exception e)
 				{
-					root.error("could not send emails", e);
+					StringWriter sw = new StringWriter();
+					PrintWriter pw = new PrintWriter(sw);
+
+					e.printStackTrace(pw);
+
+					root.error("could not send emails:\n" + sw.toString(), e);
 				}
 			}
 		}
