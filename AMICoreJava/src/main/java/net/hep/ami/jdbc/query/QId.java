@@ -365,7 +365,17 @@ public final class QId
 	@org.jetbrains.annotations.Contract("_ -> this")
 	public QId setCatalog(@Nullable String catalog)
 	{
-		m_catalog = (catalog != null) ? Utility.sqlIdToText(catalog) : null;
+		if(catalog != null)
+		{
+			catalog = Utility.sqlIdToText(catalog);
+
+			if(catalog.isEmpty())
+			{
+				catalog = null;
+			}
+		}
+
+		m_catalog = catalog;
 
 		return this;
 	}
@@ -383,7 +393,17 @@ public final class QId
 	@org.jetbrains.annotations.Contract("_ -> this")
 	public QId setEntity(@Nullable String entity)
 	{
-		m_entity = (entity != null) ? Utility.sqlIdToText(entity) : null;
+		if(entity != null)
+		{
+			entity = Utility.sqlIdToText(entity);
+
+			if(entity.isEmpty())
+			{
+				entity = null;
+			}
+		}
+
+		m_entity = entity;
 
 		return this;
 	}
@@ -401,7 +421,17 @@ public final class QId
 	@org.jetbrains.annotations.Contract("_ -> this")
 	public QId setField(@Nullable String field)
 	{
-		m_field = (field != null) ? Utility.sqlIdToText(field) : null;
+		if(field != null)
+		{
+			field = Utility.sqlIdToText(field);
+
+			if(field.isEmpty())
+			{
+				field = null;
+			}
+		}
+
+		m_field = field;
 
 		return this;
 	}

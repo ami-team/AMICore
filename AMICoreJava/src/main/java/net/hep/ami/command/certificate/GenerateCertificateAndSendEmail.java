@@ -44,21 +44,21 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		String password = arguments.getOrDefault("password", "").trim();
 
 		if(country.isEmpty()
-		   ||
-		   locality.isEmpty()
-		   ||
-		   organization.isEmpty()
-		   ||
-		   organizationalUnit.isEmpty()
-		   ||
-		   commonName.isEmpty()
-		   ||
-		   email.isEmpty()
-		   ||
-		   virtOrg.isEmpty()
-		   ||
-		   password.isEmpty()
-		 ) {
+			   ||
+			   locality.isEmpty()
+			   ||
+			   organization.isEmpty()
+			   ||
+			   organizationalUnit.isEmpty()
+			   ||
+			   commonName.isEmpty()
+			   ||
+			   email.isEmpty()
+			   ||
+			   virtOrg.isEmpty()
+			   ||
+			   password.isEmpty()
+		) {
 			throw new Exception("invalid usage");
 		}
 
@@ -149,43 +149,31 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				BodyPart mainBodyPart1 = new MimeBodyPart();
-
-				mainBodyPart1.setDataHandler(
-					new javax.activation.DataHandler(
-						new ByteArrayDataSource(output2.toByteArray(), "application/octet-stream")
-					)
+				MailSingleton.Attachment attachment1 = new MailSingleton.Attachment(
+					commonName + ".jks",
+					"application/octet-stream",
+					output1.toByteArray()
 				);
-
-				mainBodyPart1.setFileName(commonName + ".jks");
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				BodyPart mainBodyPart2 = new MimeBodyPart();
-
-				mainBodyPart2.setDataHandler(
-					new javax.activation.DataHandler(
-						new ByteArrayDataSource(output2.toByteArray(), "application/octet-stream")
-					)
+				MailSingleton.Attachment attachment2 = new MailSingleton.Attachment(
+					commonName + ".p12",
+					"application/x-pkcs12",
+					output2.toByteArray()
 				);
-
-				mainBodyPart2.setFileName(commonName + ".p12");
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				BodyPart mainBodyPart3 = new MimeBodyPart();
-
-				mainBodyPart3.setDataHandler(
-					new javax.activation.DataHandler(
-						new ByteArrayDataSource(pem.toByteArray(), "application/x-pem-file")
-					)
+				MailSingleton.Attachment attachment3 = new MailSingleton.Attachment(
+					commonName + ".p12",
+					"application/x-pem-file",
+					pem.toByteArray()
 				);
-
-				mainBodyPart3.setFileName(commonName + ".pem");
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Dear user,\n\nThis is your new AMI certificate. You can install \"" + commonName + ".p12\" in your web browser.\n\nBest regards.", new BodyPart[] {mainBodyPart1, mainBodyPart2, mainBodyPart3});
+				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, "", "New AMI certificate", "Dear user,\n\nThis is your new AMI certificate. You can install \"" + commonName + ".p12\" in your web browser.\n\nBest regards.", new MailSingleton.Attachment[] {attachment1, attachment2, attachment3});
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}

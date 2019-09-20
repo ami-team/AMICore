@@ -64,7 +64,7 @@ public class Formatter
 				}
 				else
 				{
-					stringBuilder.append(SecuritySingleton.encrypt(arg.toString()));
+					stringBuilder.append(Utility.textToSqlVal(SecuritySingleton.encrypt(arg.toString()), escape));
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/

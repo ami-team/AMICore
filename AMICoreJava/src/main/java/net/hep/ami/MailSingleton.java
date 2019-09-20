@@ -1,14 +1,30 @@
 package net.hep.ami;
 
-import java.util.*;
-
-import javax.mail.*;
-import javax.mail.internet.*;
+import org.simplejavamail.email.*;
+import org.simplejavamail.mailer.*;
+import org.simplejavamail.mailer.config.*;
 
 import net.hep.ami.utility.*;
 
 public class MailSingleton
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static class Attachment
+	{
+		protected final String m_name;
+		protected final String m_mime;
+		protected final byte[] m_data;
+
+		@org.jetbrains.annotations.Contract(pure = true)
+		public Attachment(String name, String mime, byte[] data)
+		{
+			m_name = name;
+			m_mime = mime;
+			m_data = data;
+		}
+	}
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@org.jetbrains.annotations.Contract(pure = true)
@@ -23,7 +39,7 @@ public class MailSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text, @Nullable BodyPart[] bodyParts) throws Exception
+	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text, @Nullable Attachment[] attachments) throws Exception
 	{
 		String host = ConfigSingleton.getProperty("email_host");
 		String port = ConfigSingleton.getProperty("email_port");
@@ -45,92 +61,64 @@ public class MailSingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* CREATE SESSION                                                                                             */
+		/* CREATE MAILER                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Properties properties = new Properties();
+		MailerBuilder.MailerRegularBuilder mailerBuilder = MailerBuilder.withSMTPServer(host, Integer.parseInt(port), user, pass);
 
-		properties.setProperty("mail.smtp.port", port);
-		properties.setProperty("mail.smtp.auth", "true");
-
-		/**/ if("1".equalsIgnoreCase(mode))
-		{
-			properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		/**/ if("0".equalsIgnoreCase(mode)) {
+			mailerBuilder.withTransportStrategy(TransportStrategy.SMTP);
 		}
-		else if("2".equalsIgnoreCase(mode))
-		{
-			properties.setProperty(  "mail.smtp.starttls.enable"  , /*--------*/ "true" /*--------*/);
+		else if("1".equalsIgnoreCase(mode)) {
+			mailerBuilder.withTransportStrategy(TransportStrategy.SMTPS);
+		}
+		else if("2".equalsIgnoreCase(mode)) {
+			mailerBuilder.withTransportStrategy(TransportStrategy.SMTP_TLS);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Session session = Session.getInstance(properties);
+		Mailer mailer = mailerBuilder.buildMailer();
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* CREATE MESSAGE                                                                                             */
+		/* CREATE EMAIL                                                                                               */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		MimeMessage mimeMessage = new MimeMessage(session);
+		EmailPopulatingBuilder emailBuilder = EmailBuilder.startingBlank();
 
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		mimeMessage.setFrom(new InternetAddress(from));
+		emailBuilder.from(from);
 
 		if(to != null) {
-			mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+			emailBuilder.to(to);
 		}
 
 		if(cc != null) {
-			mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+			emailBuilder.cc(cc);
 		}
 
-		mimeMessage.setSubject(subject);
+		emailBuilder.withSubject(subject).withPlainText(text);
 
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		BodyPart mainPart = new MimeBodyPart();
-
-		mainPart.setText(text);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		Multipart multipart = new MimeMultipart();
-
-		multipart.addBodyPart(mainPart);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(bodyParts != null)
+		if(attachments != null)
 		{
-			for(BodyPart bodyPart: bodyParts)
+			for(Attachment attachment: attachments)
 			{
-				if(bodyPart != null)
-				{
-					multipart.addBodyPart(bodyPart);
-				}
+				emailBuilder.withAttachment(
+					attachment.m_name,
+					attachment.m_data,
+					attachment.m_mime
+				);
 			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		mimeMessage.setContent(multipart);
+		Email email = emailBuilder.buildEmail();
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* SEND MESSAGE                                                                                               */
+		/* SEND EMAIL                                                                                                 */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Transport transport = session.getTransport("smtp");
-
-		transport.connect(host, user, pass);
-
-		try
-		{
-			transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-		}
-		finally
-		{
-			transport.close();
-		}
+		mailer.sendMail(email);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

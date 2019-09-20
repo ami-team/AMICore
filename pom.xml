@@ -33,30 +33,6 @@
 		<!--**************************************************************-->
 
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.7</version>
-		</dependency>
-
-		<!--**************************************************************-->
-
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>javax.mail-api</artifactId>
-			<version>1.6.2</version>
-		</dependency>
-
-		<!--**************************************************************-->
-
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>javax.activation-api</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-
-		<!--**************************************************************-->
-
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.26</version>
@@ -76,6 +52,14 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.3</version>
+		</dependency>
+
+		<!--**************************************************************-->
+
+		<dependency>
+			<groupId>org.simplejavamail</groupId>
+			<artifactId>simple-java-mail</artifactId>
+			<version>5.3.0</version>
 		</dependency>
 
 		<!--**************************************************************-->
@@ -123,7 +107,7 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
-			<version>3.0.0-beta-2</version>
+			<version>3.0.0-beta-3</version>
 		</dependency>
 
 		<!--**************************************************************-->
