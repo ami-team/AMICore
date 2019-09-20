@@ -32,14 +32,14 @@ public class MailSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text) throws Exception
+	public static void sendMessage(@NotNull String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text) throws Exception
 	{
 		sendMessage(from, to, cc, subject, text, null);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void sendMessage(String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text, @Nullable Attachment[] attachments) throws Exception
+	public static void sendMessage(@NotNull String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text, @Nullable Attachment[] attachments) throws Exception
 	{
 		String host = ConfigSingleton.getProperty("email_host");
 		String port = ConfigSingleton.getProperty("email_port");
