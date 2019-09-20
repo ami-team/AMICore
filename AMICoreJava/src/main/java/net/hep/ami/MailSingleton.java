@@ -88,11 +88,11 @@ public class MailSingleton
 
 		emailBuilder.from(from);
 
-		if(to != null) {
+		if(to != null && (to = to.trim()).isEmpty() == false) {
 			emailBuilder.to(to);
 		}
 
-		if(cc != null) {
+		if(cc != null && (cc = cc.trim()).isEmpty() == false) {
 			emailBuilder.cc(cc);
 		}
 

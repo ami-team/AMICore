@@ -59,7 +59,7 @@ public abstract class AbstractDriver implements Querier
 	 * @param pass The database password.
 	 */
 
-	public AbstractDriver(@Nullable String externalCatalog, String internalCatalog, String jdbcUrl, String user, String pass, String AMIUser, String timeZone, boolean isAdmin, boolean links) throws Exception
+	public AbstractDriver(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET JDBC ANNOTATION                                                                                        */
@@ -78,7 +78,7 @@ public abstract class AbstractDriver implements Querier
 
 		if(externalCatalog == null)
 		{
-			externalCatalog = SchemaSingleton.internalCatalogToExternalCatalog_noException(internalCatalog, internalCatalog);
+			externalCatalog = "N/A";
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
