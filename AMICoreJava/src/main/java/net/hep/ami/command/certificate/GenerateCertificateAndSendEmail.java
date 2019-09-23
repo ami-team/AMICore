@@ -6,10 +6,6 @@ import java.util.*;
 import java.security.*;
 import java.security.cert.*;
 
-import javax.mail.*;
-import javax.mail.util.*;
-import javax.mail.internet.*;
-
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
