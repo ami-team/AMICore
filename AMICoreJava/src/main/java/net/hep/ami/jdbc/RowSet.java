@@ -112,8 +112,10 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RowSet(@NotNull ResultSet resultSet, @Nullable String defaultCatalog, @Nullable String defaultEntity, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	public RowSet(@NotNull ResultSet resultSet, @Nullable String defaultExternalCatalog, @Nullable String defaultEntity, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
+		String defaultInternalCatalog = SchemaSingleton.externalCatalogToInternalCatalog_noException(defaultExternalCatalog, null);
+
 		m_resultSet = resultSet;
 		m_isAdmin = isAdmin;
 		m_links = links;
@@ -199,13 +201,29 @@ public class RowSet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(defaultCatalog != null && !defaultCatalog.isEmpty()
+			if(defaultInternalCatalog != null && !defaultInternalCatalog.isEmpty()
 			   &&
-			   defaultEntity != null && !defaultEntity.isEmpty()
+			   defaultInternalCatalog.equalsIgnoreCase(internalCatalog)
 			 ) {
+				/*----------------------------------------------------------------------------------------------------*/
+				/* TRIVIAL CASE                                                                                       */
+				/*----------------------------------------------------------------------------------------------------*/
+
+				externalCatalog = defaultExternalCatalog;
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else if(defaultExternalCatalog != null && !defaultExternalCatalog.isEmpty()
+			        &&
+			        ((defaultEntity)) != null && !((defaultEntity)).isEmpty()
+			 ) {
+				/*----------------------------------------------------------------------------------------------------*/
+				/* NON-TRIVIAL CASE                                                                                   */
+				/*----------------------------------------------------------------------------------------------------*/
+
 				try
 				{
-					Resolution resolution = AutoJoinSingleton.resolve(defaultCatalog, defaultEntity, new QId(null, entity, name).toString());
+					Resolution resolution = AutoJoinSingleton.resolve(defaultExternalCatalog, defaultEntity, new QId(null, entity, name).toString());
 
 					if(internalCatalog == null || internalCatalog.isEmpty() || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
 					{
@@ -222,6 +240,8 @@ public class RowSet
 				{
 					externalCatalog = null;
 				}
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 			else
 			{
@@ -249,7 +269,7 @@ public class RowSet
 			if(aliasInfo.y.size() == m_numberOfFields && !aliasInfo.y.get(i)
 			   &&
 			   (
-				   defaultCatalog != null && !defaultCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
+				   defaultExternalCatalog != null && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
 				   ||
 				   defaultEntity != null && !defaultEntity.equalsIgnoreCase(m_fieldEntities[i])
 			   )
@@ -263,7 +283,12 @@ public class RowSet
 			{
 				SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
+				/**/
+
 				m_fieldTypes[i] = column.type;
+
+				/**/
+
 				m_fieldRank[i] = column.rank;
 				m_fieldHidden[i] = column.hidden;
 				m_fieldAdminOnly[i] = column.adminOnly;
@@ -309,7 +334,7 @@ public class RowSet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if("self".equals(defaultCatalog))
+			if("self".equals(defaultExternalCatalog))
 			{
 				m_fieldCrypted[i] = (
 					"paramName".equals(m_fieldNames[i])
