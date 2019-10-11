@@ -88,11 +88,11 @@ public class MailSingleton
 
 		emailBuilder.from(from);
 
-		if(to != null && (to = to.trim()).isEmpty() == false) {
+		if(to != null && !(to = to.trim()).isEmpty()) {
 			emailBuilder.to(to);
 		}
 
-		if(cc != null && (cc = cc.trim()).isEmpty() == false) {
+		if(cc != null && !(cc = cc.trim()).isEmpty()) {
 			emailBuilder.cc(cc);
 		}
 
@@ -102,11 +102,14 @@ public class MailSingleton
 		{
 			for(Attachment attachment: attachments)
 			{
-				emailBuilder.withAttachment(
-					attachment.m_name,
-					attachment.m_data,
-					attachment.m_mime
-				);
+				if(attachment != null)
+				{
+					emailBuilder.withAttachment(
+						attachment.m_name,
+						attachment.m_data,
+						attachment.m_mime
+					);
+				}
 			}
 		}
 
@@ -118,7 +121,14 @@ public class MailSingleton
 		/* SEND EMAIL                                                                                                 */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		mailer.sendMail(email);
+		try
+		{
+			mailer.sendMail(email);
+		}
+		catch(RuntimeException e)
+		{
+			throw new Exception(e);
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

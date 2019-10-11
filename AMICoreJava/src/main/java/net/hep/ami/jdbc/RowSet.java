@@ -88,15 +88,15 @@ public class RowSet
 	{
 		List<String> result = new ArrayList<>();
 
-		if(catalog != null && !"N/A".equals(catalog)) {
+		if(catalog != null && !catalog.isEmpty()) {
 			result.add(catalog);
 		}
 
-		if(entity != null && !"N/A".equals(entity)) {
+		if(entity != null && !entity.isEmpty()) {
 			result.add(entity);
 		}
 
-		if(field != null && !"N/A".equals(field)) {
+		if(field != null && !field.isEmpty()) {
 			result.add(field);
 		}
 
@@ -172,105 +172,69 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		String externalCatalog;
+		String internalCatalog;
+		String entity;
+		String name;
+		String label;
+		String type;
+
 		String m_fieldNames_i;
 
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> aliasInfo = Tokenizer.extractAliasInfo(m_sql);
-
-		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try
-			{
-				m_fieldCatalogs[i] = SchemaSingleton.internalCatalogToExternalCatalog_noException(resultSetMetaData.getCatalogName(i + 1), "N/A");
-			}
-			catch(Exception e1)
-			{
-				m_fieldCatalogs[i] = "N/A";
-			}
+			try { internalCatalog = resultSetMetaData.getCatalogName(i + 1); } catch(Exception e) { internalCatalog = null; }
+
+			try { entity = resultSetMetaData.getTableName(i + 1); } catch(Exception e) { entity = null; }
+
+			try { name = resultSetMetaData.getColumnName(i + 1); } catch(Exception e) { name = null; }
+
+			try { label = resultSetMetaData.getColumnLabel(i + 1); } catch(Exception e) { label = null; }
+
+			try { type = resultSetMetaData.getColumnTypeName(i + 1); } catch(Exception e) { type = null; }
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try
-			{
-				m_fieldEntities[i] = resultSetMetaData.getTableName(i + 1);
-
-				if(m_fieldEntities[i].isEmpty())
-				{
-					m_fieldEntities[i] = "N/A";
-				}
-			}
-			catch(Exception e)
-			{
-				m_fieldEntities[i] = "N/A";
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			try
-			{
-				m_fieldNames[i] = resultSetMetaData.getColumnName(i + 1);
-
-				if(m_fieldNames[i].isEmpty())
-				{
-					m_fieldNames[i] = "N/A";
-				}
-			}
-			catch(Exception e)
-			{
-				m_fieldNames[i] = "N/A";
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			try
-			{
-				m_fieldLabels[i] = resultSetMetaData.getColumnLabel(i + 1);
-
-				if(m_fieldLabels[i].isEmpty())
-				{
-					m_fieldLabels[i] = "N/A";
-				}
-			}
-			catch(Exception e)
-			{
-				m_fieldLabels[i] = "N/A";
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			try
-			{
-				m_fieldTypes[i] = resultSetMetaData.getColumnTypeName(i + 1);
-
-				if(m_fieldTypes[i].isEmpty())
-				{
-					m_fieldTypes[i] = "N/A";
-				}
-			}
-			catch(Exception e)
-			{
-				m_fieldTypes[i] = "N/A";
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			/* FOR ORACLE */
-
-			if(!"N/A".equals(m_fieldLabels[i])
+			if(defaultCatalog != null && !defaultCatalog.isEmpty()
 			   &&
-			   (
-				"N/A".equals(m_fieldCatalogs[i])
-				||
-				"N/A".equals(m_fieldEntities[i])
-			   )
+			   defaultEntity != null && !defaultEntity.isEmpty()
 			 ) {
-				resolveLabel(aliasInfo, defaultCatalog, defaultEntity, i);
+				try
+				{
+					Resolution resolution = AutoJoinSingleton.resolve(defaultCatalog, defaultEntity, new QId(null, entity, name).toString());
+
+					if(internalCatalog == null || internalCatalog.isEmpty() || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
+					{
+						externalCatalog = resolution.getExternalQId().getCatalog();
+						entity = resolution.getExternalQId().getEntity();
+						name = resolution.getExternalQId().getField();
+					}
+					else
+					{
+						externalCatalog = null;
+					}
+				}
+				catch(Exception e)
+				{
+					externalCatalog = null;
+				}
 			}
+			else
+			{
+				externalCatalog = null;
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			m_fieldCatalogs[i] = externalCatalog != null && !externalCatalog.isEmpty() ? externalCatalog : "N/A";
+			m_fieldEntities[i] = entity != null && !entity.isEmpty() ? entity : "N/A";
+			m_fieldNames[i] = name != null && !name.isEmpty() ? name : "N/A";
+			m_fieldLabels[i] = label != null && !label.isEmpty() ? label : "N/A";
+			m_fieldTypes[i] = type != null && !type.isEmpty() ? type : "N/A";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -280,12 +244,14 @@ public class RowSet
 				m_fieldNames[i]
 			);
 
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			if(aliasInfo.y.size() == m_numberOfFields && !aliasInfo.y.get(i)
 			   &&
 			   (
-			       defaultCatalog != null && !defaultCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
-			       ||
-			       defaultEntity != null && !defaultEntity.equalsIgnoreCase(m_fieldEntities[i])
+				   defaultCatalog != null && !defaultCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
+				   ||
+				   defaultEntity != null && !defaultEntity.equalsIgnoreCase(m_fieldEntities[i])
 			   )
 			 ) {
 				m_fieldLabels[i] = m_fieldNames_i;
@@ -376,134 +342,6 @@ public class RowSet
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	private boolean resolveLabel(Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> aliasInfo, @Nullable String defaultCatalog, @Nullable String defaultEntity, int fieldIndex)
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		QId qId;
-
-		try
-		{
-			qId = QId.parseQId(m_fieldLabels[fieldIndex], QId.Type.FIELD);
-
-			for(Map.Entry<QId, QId> entry: aliasInfo.x.entrySet())
-			{
-				if(qId.matches(entry.getKey()))
-				{
-					qId = entry.getValue();
-
-					break;
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			return false;
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(aliasInfo.u.size() == 1
-		   &&
-		   defaultCatalog != null
-		   &&
-		   defaultEntity != null
-		 ) {
-			m_fieldCatalogs[fieldIndex] = defaultCatalog;
-
-			m_fieldEntities[fieldIndex] = defaultEntity;
-
-			m_fieldNames[fieldIndex] = qId.getField();
-
-			return true;
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(qId.is(QId.MASK_CATALOG_ENTITY_FIELD))
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			try
-			{
-				m_fieldCatalogs[fieldIndex] = SchemaSingleton.internalCatalogToExternalCatalog(qId.getCatalog());
-				m_fieldEntities[fieldIndex] = qId.getEntity();
-				m_fieldNames[fieldIndex] = qId.getField();
-
-				return true;
-			}
-			catch(Exception e)
-			{
-				/* IGNORE */
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
-		else if(qId.is(QId.MASK_ENTITY_FIELD))
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			if(defaultCatalog != null)
-			{
-				try
-				{
-					QId resolvedQId = AutoJoinSingleton.resolve(defaultCatalog, qId.getEntity(), qId).getExternalQId();
-
-					m_fieldCatalogs[fieldIndex] = resolvedQId.getCatalog();
-					m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
-					m_fieldNames[fieldIndex] = resolvedQId.getField();
-
-					return true;
-				}
-				catch(Exception e)
-				{
-					/* IGNORE */
-				}
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
-		else if(qId.is(QId.MASK_FIELD))
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			if(defaultCatalog != null)
-			{
-				String newDefaultCatalog;
-				String newDefaultEntity;
-
-				for(QId table: aliasInfo.u.keySet())
-				{
-					newDefaultCatalog = table.getCatalog() != null ? table.getCatalog() : defaultCatalog;
-					newDefaultEntity = table.getEntity() != null ? table.getEntity() : defaultEntity;
-
-					try
-					{
-						QId resolvedQId = AutoJoinSingleton.resolve(newDefaultCatalog, newDefaultEntity, qId).getExternalQId();
-
-						m_fieldCatalogs[fieldIndex] = resolvedQId.getCatalog();
-						m_fieldEntities[fieldIndex] = resolvedQId.getEntity();
-						m_fieldNames[fieldIndex] = resolvedQId.getField();
-
-						return true;
-					}
-					catch(Exception e)
-					{
-						/* IGNORE */
-					}
-				}
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return false;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

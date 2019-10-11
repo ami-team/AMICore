@@ -1176,10 +1176,22 @@ public class MQLParser extends Parser {
 				setState(213);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
+				case BETWEEN:
+					{
+					setState(204);
+					match(BETWEEN);
+					setState(205);
+					expressionAddSub();
+					setState(206);
+					match(AND);
+					setState(207);
+					expressionAddSub();
+					}
+					break;
 				case LIKE:
 				case REGEXP:
 					{
-					setState(204);
+					setState(209);
 					_la = _input.LA(1);
 					if ( !(_la==LIKE || _la==REGEXP) ) {
 					_errHandler.recoverInline(this);
@@ -1189,19 +1201,7 @@ public class MQLParser extends Parser {
 						_errHandler.reportMatch(this);
 						consume();
 					}
-					setState(205);
-					expressionAddSub();
-					}
-					break;
-				case BETWEEN:
-					{
-					setState(206);
-					match(BETWEEN);
-					setState(207);
-					expressionAddSub();
-					setState(208);
-					match(AND);
-					setState(209);
+					setState(210);
 					expressionAddSub();
 					}
 					break;
@@ -1705,7 +1705,7 @@ public class MQLParser extends Parser {
 	public static class BasicQIdContext extends ParserRuleContext {
 		public Token ID;
 		public List<Token> m_ids = new ArrayList<Token>();
-		public Token MUL;
+		public Token s39;
 		public Token s10;
 		public Token _tset689;
 		public Token _tset702;
@@ -1893,9 +1893,9 @@ public class MQLParser extends Parser {
 		"\3\2\2\2\u00c5\u00c3\3\2\2\2\u00c6\u00c7\5\"\22\2\u00c7!\3\2\2\2\u00c8"+
 		"\u00de\5$\23\2\u00c9\u00ca\7 \2\2\u00ca\u00df\5$\23\2\u00cb\u00cd\7!\2"+
 		"\2\u00cc\u00cb\3\2\2\2\u00cc\u00cd\3\2\2\2\u00cd\u00d7\3\2\2\2\u00ce\u00cf"+
-		"\t\3\2\2\u00cf\u00d8\5$\23\2\u00d0\u00d1\7$\2\2\u00d1\u00d2\5$\23\2\u00d2"+
-		"\u00d3\7\37\2\2\u00d3\u00d4\5$\23\2\u00d4\u00d8\3\2\2\2\u00d5\u00d6\7"+
-		"%\2\2\u00d6\u00d8\5\30\r\2\u00d7\u00ce\3\2\2\2\u00d7\u00d0\3\2\2\2\u00d7"+
+		"\7$\2\2\u00cf\u00d0\5$\23\2\u00d0\u00d1\7\37\2\2\u00d1\u00d2\5$\23\2\u00d2"+
+		"\u00d8\3\2\2\2\u00d3\u00d4\t\3\2\2\u00d4\u00d8\5$\23\2\u00d5\u00d6\7%"+
+		"\2\2\u00d6\u00d8\5\30\r\2\u00d7\u00ce\3\2\2\2\u00d7\u00d3\3\2\2\2\u00d7"+
 		"\u00d5\3\2\2\2\u00d8\u00df\3\2\2\2\u00d9\u00db\7&\2\2\u00da\u00dc\7!\2"+
 		"\2\u00db\u00da\3\2\2\2\u00db\u00dc\3\2\2\2\u00dc\u00dd\3\2\2\2\u00dd\u00df"+
 		"\7-\2\2\u00de\u00c9\3\2\2\2\u00de\u00cc\3\2\2\2\u00de\u00d9\3\2\2\2\u00de"+

@@ -175,9 +175,9 @@ public final class QId
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		MQLLexer lexer = new MQLLexer(CharStreams.fromString(qId));
+		QIdLexer lexer = new QIdLexer(CharStreams.fromString(qId));
 
-		MQLParser parser = new MQLParser(new CommonTokenStream(lexer));
+		QIdParser parser = new QIdParser(new CommonTokenStream(lexer));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -202,19 +202,19 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static QId visitQId(@NotNull MQLParser.QIdContext context, @NotNull Type typeForQId, @NotNull Type typeForConstraints) throws Exception
+	private static QId visitQId(@NotNull QIdParser.QIdContext context, @NotNull Type typeForQId, @NotNull Type typeForConstraints) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		QId result = visitBasicQId(context.m_basicQId, typeForQId);
+		QId result = buildBasicQId(context.getText(), context.m_basicQId.m_ids, typeForQId);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(typeForConstraints != Type.NONE)
 		{
-			for(MQLParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
+			for(QIdParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
 			{
-				result.m_constraints.add(visitQId(constraintQIdContext.m_qId, typeForConstraints, typeForConstraints).setExclusion(constraintQIdContext.m_op != null));
+				result.m_constraints.add(buildBasicQId(constraintQIdContext.m_qId.m_basicQId.getText(), constraintQIdContext.m_qId.m_basicQId.m_ids, typeForConstraints).setExclusion(constraintQIdContext.m_op != null));
 			}
 		}
 
@@ -226,11 +226,11 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static QId visitBasicQId(@NotNull MQLParser.BasicQIdContext context, @NotNull Type typeForQId) throws Exception
+	public static QId buildBasicQId(@NotNull String text, @NotNull List<Token> m_ids, @NotNull Type typeForQId) throws Exception
 	{
 		QId result;
 
-		final int size = context.m_ids.size();
+		final int size = m_ids.size();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -243,17 +243,17 @@ public final class QId
 				/**/ if(size == 3)
 				{
 					result = new QId(
-						context.m_ids.get(0).getText(),
-						context.m_ids.get(1).getText(),
-						context.m_ids.get(2).getText()
+						m_ids.get(0).getText(),
+						m_ids.get(1).getText(),
+						m_ids.get(2).getText()
 					);
 				}
 				else if(size == 2)
 				{
 					result = new QId(
 						null,
-						context.m_ids.get(0).getText(),
-						context.m_ids.get(1).getText()
+						m_ids.get(0).getText(),
+						m_ids.get(1).getText()
 					);
 				}
 				else if(size == 1)
@@ -261,12 +261,12 @@ public final class QId
 					result = new QId(
 						null,
 						null,
-						context.m_ids.get(0).getText()
+						m_ids.get(0).getText()
 					);
 				}
 				else
 				{
-					throw new Exception("syntax error for field");
+					throw new Exception("syntax error for field for " + text);
 				}
 
 				break;
@@ -278,8 +278,8 @@ public final class QId
 				/**/ if(size == 2)
 				{
 					result = new QId(
-						context.m_ids.get(0).getText(),
-						context.m_ids.get(1).getText(),
+						m_ids.get(0).getText(),
+						m_ids.get(1).getText(),
 						null
 					);
 				}
@@ -287,13 +287,13 @@ public final class QId
 				{
 					result = new QId(
 						null,
-						context.m_ids.get(0).getText(),
+						m_ids.get(0).getText(),
 						null
 					);
 				}
 				else
 				{
-					throw new Exception("syntax error for entity");
+					throw new Exception("syntax error for entity for " + text);
 				}
 
 				break;
@@ -305,14 +305,14 @@ public final class QId
 				/**/ if(size == 1)
 				{
 					result = new QId(
-						context.m_ids.get(0).getText(),
+						m_ids.get(0).getText(),
 						null,
 						null
 					);
 				}
 				else
 				{
-					throw new Exception("syntax error for catalog");
+					throw new Exception("syntax error for catalog for " + text);
 				}
 
 				break;
@@ -321,7 +321,7 @@ public final class QId
 
 			default:
 
-				throw new Exception("invalid type");
+				throw new Exception("invalid QId type for " + text);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
@@ -329,11 +329,11 @@ public final class QId
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if("*".equals(result.m_catalog)) {
-			throw new Exception("`*` not allowed in `catalog` part");
+			throw new Exception("`*` not allowed in `catalog` part for " + text);
 		}
 
 		if("*".equals(result.m_entity)) {
-			throw new Exception("`*` not allowed in `entity` part");
+			throw new Exception("`*` not allowed in `entity` part for " + text);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

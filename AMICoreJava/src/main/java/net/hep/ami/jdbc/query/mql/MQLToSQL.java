@@ -770,7 +770,14 @@ public class MQLToSQL
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		QId qid = QId.visitQId(context, QId.Type.FIELD, QId.Type.FIELD);
+		QId qid = QId.buildBasicQId(context.m_basicQId.getText(), context.m_basicQId.m_ids, QId.Type.FIELD);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		for(MQLParser.ConstraintQIdContext constraintQIdContext: context.m_constraintQIds)
+		{
+			qid.getConstraints().add(QId.buildBasicQId(constraintQIdContext.m_qId.m_basicQId.getText(), constraintQIdContext.m_qId.m_basicQId.m_ids, QId.Type.FIELD).setExclusion(constraintQIdContext.m_op != null));
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

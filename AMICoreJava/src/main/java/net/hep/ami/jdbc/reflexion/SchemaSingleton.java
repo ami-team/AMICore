@@ -268,7 +268,6 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Map<String, String> s_externalCatalogToInternalCatalog = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, true, true);
-	private static final Map<String, String> s_internalCatalogToExternalCatalog = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, true, true);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -300,7 +299,6 @@ public class SchemaSingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_externalCatalogToInternalCatalog.clear();
-		s_internalCatalogToExternalCatalog.clear();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -316,7 +314,6 @@ public class SchemaSingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_externalCatalogToInternalCatalog.put(externalCatalog, internalCatalog);
-		s_internalCatalogToExternalCatalog.put(internalCatalog, externalCatalog);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -334,7 +331,6 @@ public class SchemaSingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		private final Map<String, String> m_externalCatalogToInternalCatalog;
-		private final Map<String, String> m_internalCatalogToExternalCatalog;
 
 		private final Map<String, Catalog> m_catalogs;
 
@@ -358,7 +354,6 @@ public class SchemaSingleton
 		@org.jetbrains.annotations.Contract(pure = true)
 		public Extractor(
 			@NotNull Map<String, String> externalCatalogToInternalCatalog,
-			@NotNull Map<String, String> internalCatalogToExternalCatalog,
 			@NotNull Map<String, Catalog> catalogs,
 			/**/
 			@NotNull String externalCatalog,
@@ -370,7 +365,6 @@ public class SchemaSingleton
 			boolean fast
 		 ) {
 			m_externalCatalogToInternalCatalog = externalCatalogToInternalCatalog;
-			m_internalCatalogToExternalCatalog = internalCatalogToExternalCatalog;
 
 			m_catalogs = catalogs;
 
@@ -660,30 +654,7 @@ public class SchemaSingleton
 					String pkEntity = resultSet.getString("PKTABLE_NAME");
 					String pkField = resultSet.getString("PKCOLUMN_NAME");
 
-					String fkExternalCatalog;
-					String pkExternalCatalog;
-
-					if(fkInternalCatalog != null)
-					{
-						fkExternalCatalog = m_internalCatalogToExternalCatalog.getOrDefault(fkInternalCatalog, m_externalCatalog);
-					}
-					else
-					{
-						fkExternalCatalog = m_externalCatalog; /* BERK BUT NO OTHER SOLUTION */
-						fkInternalCatalog = m_internalCatalog;
-					}
-
-					if(pkInternalCatalog != null)
-					{
-						pkExternalCatalog = m_internalCatalogToExternalCatalog.getOrDefault(pkInternalCatalog, m_externalCatalog);
-					}
-					else
-					{
-						pkExternalCatalog = m_externalCatalog; /* BERK BUT NO OTHER SOLUTION */
-						pkInternalCatalog = m_internalCatalog;
-					}
-
-					if(name != null && fkExternalCatalog != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkEntity != null && pkField != null)
+					if(name != null && fkEntity != null && fkField != null && pkEntity != null && pkField != null)
 					{
 						table = m_catalog.tables.get(fkEntity);
 
@@ -691,11 +662,11 @@ public class SchemaSingleton
 						{
 							table.forwardFKs.put(fkField, new FrgnKeys(new FrgnKey(
 								name,
-								fkExternalCatalog,
+								m_externalCatalog,
 								fkInternalCatalog,
 								fkEntity,
 								fkField,
-								pkExternalCatalog,
+								m_externalCatalog,
 								pkInternalCatalog,
 								pkEntity,
 								pkField
@@ -867,7 +838,6 @@ public class SchemaSingleton
 			{
 				threads.add(new Thread(new Extractor(
 						s_externalCatalogToInternalCatalog,
-						s_internalCatalogToExternalCatalog,
 						s_catalogs,
 						entry.getKey(),
 						entry.getValue(),
@@ -895,7 +865,6 @@ public class SchemaSingleton
 			{
 				threads.add(new Thread(new Extractor(
 						s_externalCatalogToInternalCatalog,
-						s_internalCatalogToExternalCatalog,
 						s_catalogs,
 						entry.getKey(),
 						entry.getValue(),
@@ -914,41 +883,11 @@ public class SchemaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String internalCatalogToExternalCatalog_noException(@Nullable String internalCatalog, @NotNull String value)
-	{
-		String result = s_internalCatalogToExternalCatalog.get(internalCatalog);
-
-		return result != null ? result : value;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
 	public static String externalCatalogToInternalCatalog_noException(@Nullable String externalCatalog, @NotNull String value)
 	{
 		String result =  s_externalCatalogToInternalCatalog.get(externalCatalog);
 
 		return result != null ? result : value;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	public static String internalCatalogToExternalCatalog(@Nullable String internalCatalog) throws Exception
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		String result = s_internalCatalogToExternalCatalog.get(internalCatalog);
-
-		if(result != null)
-		{
-			return result;
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		throw new Exception("internal catalog not found `" + internalCatalog + "`");
-
-		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1093,7 +1032,7 @@ public class SchemaSingleton
 	public static List<String> getInternalCatalogNames()
 	{
 		return new ArrayList<>(
-			s_internalCatalogToExternalCatalog.keySet()
+			s_externalCatalogToInternalCatalog.values()
 		);
 	}
 
