@@ -263,6 +263,7 @@ public class RowSet
 			{
 				SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
+				m_fieldTypes[i] = column.type;
 				m_fieldRank[i] = column.rank;
 				m_fieldHidden[i] = column.hidden;
 				m_fieldAdminOnly[i] = column.adminOnly;
@@ -285,7 +286,7 @@ public class RowSet
 			}
 			catch(Exception e)
 			{
-				m_fieldRank[i] = 0;
+				m_fieldRank[i] = i;
 				m_fieldHidden[i] = false;
 				m_fieldAdminOnly[i] = false;
 				m_fieldCrypted[i] = false;
