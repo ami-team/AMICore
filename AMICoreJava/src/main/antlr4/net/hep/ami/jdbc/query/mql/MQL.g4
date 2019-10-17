@@ -304,7 +304,7 @@ MOD
 FUNCTION
 	: A B S | A V G | C O N C A T | C O S | C O U N T | L E N G T H
 	| L O G | L O W E R | M A X | M I N | M O D | P O W | R N D | S I N
-	| S Q R T | S T D D E V | S U B S T R | S U M | U P P E R
+	| S Q R T | S T D D E V | S U B S T R | S U M | U P P E R | R O U N D
 
 	| J S O N '_' [a-zA-Z_]+
 	;

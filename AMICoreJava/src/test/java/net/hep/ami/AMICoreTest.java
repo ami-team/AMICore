@@ -1425,7 +1425,7 @@ public class AMICoreTest
 		//commandTest = "BrowseQuery -catalog=\"test\" -entity=\"PROJECT\" -mql=\"SELECT PROJECT.name, created AS test ORDER BY PROJECT.name DESC\" -limit=\"10\" ";
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"FILE\" -mql=\"SELECT FILE.name, created AS test ORDER BY FILE.name DESC\" -limit=\"10\" ";
 
-		commandTest ="UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"json\" -values=\"{xwxwx}\" -keyFields=\"id\" -keyValues=\"1\"";
+		//commandTest ="UpdateElements -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"json\" -values=\"{}\" -keyFields=\"id\" -keyValues=\"1\"";
 
 		System.out.println(commandTest);
 		try
