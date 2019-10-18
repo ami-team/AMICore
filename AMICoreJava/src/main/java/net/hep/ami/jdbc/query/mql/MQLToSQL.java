@@ -764,6 +764,8 @@ public class MQLToSQL
 	@org.jetbrains.annotations.Contract("_, _, _ -> new")
 	private StringBuilder visitFunction(@NotNull MQLParser.FunctionContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		List<StringBuilder> expressions = new ArrayList<>();
 
 		for(MQLParser.ExpressionOrContext child: context.m_expressions)
@@ -771,11 +773,15 @@ public class MQLToSQL
 			expressions.add(visitExpressionOr(child, resolutionList, mask));
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		return new StringBuilder().append(context.m_functionName.getText())
 		                          .append(context.m_distinct != null ? "(DISTINCT " : "(")
 		                          .append(String.join(", ", expressions))
 		                          .append(")")
 		;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
