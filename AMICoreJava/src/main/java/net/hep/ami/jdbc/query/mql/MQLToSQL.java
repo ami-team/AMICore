@@ -770,7 +770,7 @@ public class MQLToSQL
 
 		for(MQLParser.ExpressionOrContext child: context.m_expressions)
 		{
-			expressions.add(visitExpressionOr(child, resolutionList, mask));
+			expressions.add(visitExpressionOr(child, resolutionList, STAR_TO_ID));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
