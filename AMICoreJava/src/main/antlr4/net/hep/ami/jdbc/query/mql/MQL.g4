@@ -128,12 +128,20 @@ expressionPlusMinus
 	;
 
 expressionX
-	: '(' m_expression=expressionOr ')'                        # ExpressionStdGroup
-	| '[' m_expression=expressionOr ']'                        # ExpressionIsoGroup
-	| m_functionName=FUNCTION m_expressions=expressionTuple    # ExpressionFunction
-	| m_qId=qId                                                # ExpressionQId
-	| m_literal=literal                                        # ExpressionLiteral
+	: '(' m_expression=expressionOr ')'    # ExpressionStdGroup
+	| '[' m_expression=expressionOr ']'    # ExpressionIsoGroup
+	| m_function=function                  # ExpressionFunction
+	| m_qId=qId                            # ExpressionQId
+	| m_literal=literal                    # ExpressionLiteral
 	;
+
+/*---------------------------*/
+/* FUNCTION                  */
+/*---------------------------*/
+
+function
+    : m_functionName=FUNCTION '(' (m_distinct=DISTINCT)? m_expressions+=expressionOr (',' m_expressions+=expressionOr)* ')'
+    ;
 
 /*---------------------------*/
 /* QID                       */

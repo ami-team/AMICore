@@ -316,7 +316,6 @@ public class MQLToSQL
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-
 	@NotNull
 	@org.jetbrains.annotations.Contract("_, _, _ -> new")
 	private StringBuilder visitQIdList(@NotNull MQLParser.QIdListContext context, @NotNull List<Resolution> resolutionList, int mask) throws Exception
@@ -724,11 +723,7 @@ public class MQLToSQL
 	@NotNull
 	private StringBuilder visitExpressionFunction(@NotNull MQLParser.ExpressionFunctionContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
-		return new StringBuilder().append(context.m_functionName.getText())
-		                          .append("(")
-		                          .append(String.join(", ", visitExpressionTuple(context.m_expressions, resolutionList, mask | STAR_TO_ID)))
-		                          .append(")")
-		;
+		return visitFunction(context.m_function, resolutionList, mask);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -761,6 +756,26 @@ public class MQLToSQL
 	private StringBuilder visitExpressionLiteral(@NotNull MQLParser.ExpressionLiteralContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
 		return visitLiteral(context.m_literal, resolutionList, mask);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	private StringBuilder visitFunction(@NotNull MQLParser.FunctionContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
+	{
+		List<StringBuilder> expressions = new ArrayList<>();
+
+		for(MQLParser.ExpressionOrContext child: context.m_expressions)
+		{
+			expressions.add(visitExpressionOr(child, resolutionList, mask));
+		}
+
+		return new StringBuilder().append(context.m_functionName.getText())
+		                          .append(context.m_distinct != null ? "(DISTINCT " : "(")
+		                          .append(String.join(", ", expressions))
+		                          .append(")")
+		;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
