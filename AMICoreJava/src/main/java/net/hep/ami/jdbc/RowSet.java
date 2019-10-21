@@ -201,6 +201,41 @@ public class RowSet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			try
+			{
+				QId qId = QId.parseQId(label, QId.Type.FIELD);
+
+				for(Map.Entry<QId, QId> entry: aliasInfo.x.entrySet())
+				{
+					if(qId.matches(entry.getKey()))
+					{
+						/**/ if(entry.getValue().is(QId.MASK_CATALOG_ENTITY_FIELD))
+						{
+							internalCatalog = entry.getValue().getEntity();
+							entity = entry.getValue().getEntity();
+							name = entry.getValue().getField();
+						}
+						else if(entry.getValue().is(QId.MASK_ENTITY_FIELD))
+						{
+							entity = entry.getValue().getEntity();
+							name = entry.getValue().getField();
+						}
+						else if(entry.getValue().is(QId.MASK_FIELD))
+						{
+							name = entry.getValue().getField();
+						}
+
+						break;
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			if(defaultInternalCatalog != null && !defaultInternalCatalog.isEmpty()
 			   &&
 			   defaultInternalCatalog.equalsIgnoreCase(internalCatalog)
