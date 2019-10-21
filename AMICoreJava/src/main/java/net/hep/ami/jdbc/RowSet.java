@@ -125,6 +125,12 @@ public class RowSet
 		m_ast = ast != null ? ast : "";
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* PARSE SQL                                                                                                  */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> aliasInfo = Tokenizer.extractAliasInfo(m_sql);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET METADATA                                                                                               */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -174,19 +180,16 @@ public class RowSet
 		/* FILL DATA STRUCTURES                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String externalCatalog;
-		String internalCatalog;
-		String entity;
-		String name;
-		String label;
-		String type;
+		QId qId;
 
 		String m_fieldNames_i;
 
-		Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> aliasInfo = Tokenizer.extractAliasInfo(m_sql);
+		String externalCatalog, internalCatalog, entity, name, label, type;
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* GET MEDATADA FROM JDBC                                                                                 */
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			try { internalCatalog = resultSetMetaData.getCatalogName(i + 1); } catch(Exception e) { internalCatalog = null; }
@@ -200,40 +203,54 @@ public class RowSet
 			try { type = resultSetMetaData.getColumnTypeName(i + 1); } catch(Exception e) { type = null; }
 
 			/*--------------------------------------------------------------------------------------------------------*/
+			/* RESOLVE ALIASES IF NEEDED                                                                              */
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			try
-			{
-				QId qId = QId.parseQId(label, QId.Type.FIELD);
-
-				for(Map.Entry<QId, QId> entry: aliasInfo.x.entrySet())
+			if(label != null && !label.isEmpty()
+			   &&
+			   (
+				   internalCatalog == null || internalCatalog.isEmpty()
+				   ||
+				   /*-*/entity/*-*/ == null || /*-*/entity/*-*/.isEmpty()
+			   )
+			 ) {
+				try
 				{
-					if(qId.matches(entry.getKey()))
-					{
-						/**/ if(entry.getValue().is(QId.MASK_CATALOG_ENTITY_FIELD))
-						{
-							internalCatalog = entry.getValue().getEntity();
-							entity = entry.getValue().getEntity();
-							name = entry.getValue().getField();
-						}
-						else if(entry.getValue().is(QId.MASK_ENTITY_FIELD))
-						{
-							entity = entry.getValue().getEntity();
-							name = entry.getValue().getField();
-						}
-						else if(entry.getValue().is(QId.MASK_FIELD))
-						{
-							name = entry.getValue().getField();
-						}
+					qId = QId.parseQId(label, QId.Type.FIELD);
 
-						break;
+					for(Map.Entry<QId, QId> entry : aliasInfo.x.entrySet())
+					{
+						if(qId.matches(entry.getKey()))
+						{
+							/**/
+							if(entry.getValue().is(QId.MASK_CATALOG_ENTITY_FIELD))
+							{
+								internalCatalog = entry.getValue().getCatalog();
+								entity = entry.getValue().getEntity();
+								name = entry.getValue().getField();
+							}
+							else if(entry.getValue().is(QId.MASK_ENTITY_FIELD))
+							{
+								entity = entry.getValue().getEntity();
+								name = entry.getValue().getField();
+							}
+							else if(entry.getValue().is(QId.MASK_FIELD))
+							{
+								name = entry.getValue().getField();
+							}
+
+							break;
+						}
 					}
 				}
-			}
-			catch(Exception e)
-			{
-				/* IGNORE */
+				catch(Exception e)
+				{
+					/* IGNORE */
+				}
 			}
 
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* RESOLVE EXTERNAL CATALOG IF NEEDED                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(defaultInternalCatalog != null && !defaultInternalCatalog.isEmpty()
@@ -284,6 +301,8 @@ public class RowSet
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
+			/* SAVE METADATA TO ROWSET                                                                                */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			m_fieldCatalogs[i] = externalCatalog != null && !externalCatalog.isEmpty() ? externalCatalog : "N/A";
 			m_fieldEntities[i] = entity != null && !entity.isEmpty() ? entity : "N/A";
@@ -306,7 +325,7 @@ public class RowSet
 			   (
 				   defaultExternalCatalog != null && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
 				   ||
-				   defaultEntity != null && !defaultEntity.equalsIgnoreCase(m_fieldEntities[i])
+				   /*-*/defaultEntity/*-*/ != null && !/*-*/defaultEntity/*-*/.equalsIgnoreCase(m_fieldEntities[i])
 			   )
 			 ) {
 				m_fieldLabels[i] = m_fieldNames_i;
