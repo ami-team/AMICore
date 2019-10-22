@@ -656,28 +656,28 @@ public class SchemaSingleton
 					String pkEntity = resultSet.getString("PKTABLE_NAME");
 					String pkField = resultSet.getString("PKCOLUMN_NAME");
 
-					Tuple2<String, String> tuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
-
-					String pkExternalCatalog = tuple.x;
-					String pkInternalCatalog = tuple.y;
-
 					if(name != null && fkEntity != null && fkField != null && pkEntity != null && pkField != null)
 					{
-						table = m_catalog.tables.get(fkEntity);
+						Tuple2<String, String> tuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
 
-						if(table != null)
+						if(tuple.x != null && tuple.y != null)
 						{
-							table.forwardFKs.put(fkField, new FrgnKeys(new FrgnKey(
-								name,
-								m_externalCatalog,
-								m_internalCatalog,
-								fkEntity,
-								fkField,
-								pkExternalCatalog,
-								pkInternalCatalog,
-								pkEntity,
-								pkField
-							)));
+							table = m_catalog.tables.get(fkEntity);
+
+							if(table != null)
+							{
+								table.forwardFKs.put(fkField, new FrgnKeys(new FrgnKey(
+									name,
+									m_externalCatalog,
+									m_internalCatalog,
+									fkEntity,
+									fkField,
+									tuple.x,
+									tuple.y,
+									pkEntity,
+									pkField
+								)));
+							}
 						}
 					}
 				}
@@ -690,57 +690,65 @@ public class SchemaSingleton
 
 		@NotNull
 		@Contract("_, _, _, _, _, _ -> new")
-		private Tuple2<String, String> resolvePKExternalCatalog(@Nullable String fkInternalCatalog, @Nullable String fkEntity, @Nullable String fkField, @Nullable String pkInternalCatalog, @Nullable String pkEntity, @Nullable String pkField)
+		private Tuple2<String, String> resolvePKExternalCatalog(@Nullable String fkInternalCatalog, @NotNull String fkEntity, @NotNull String fkField, @Nullable String pkInternalCatalog, @NotNull String pkEntity, @NotNull String pkField)
 		{
-			String result_pkExternalCatalog = null;
-			String result_pkInternalCatalog = null;
+			String result_pkExternalCatalog;
+			String result_pkInternalCatalog;
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(pkInternalCatalog != null)
+			if(pkInternalCatalog == null)
 			{
-				if(pkInternalCatalog.equalsIgnoreCase(fkInternalCatalog))
+				if(!m_catalog.tables.containsKey(pkEntity) || !m_catalog.tables.get(pkEntity).columns.containsKey(pkField))
+				{
+					result_pkExternalCatalog = null;
+					result_pkInternalCatalog = null;
+				}
+				else
 				{
 					result_pkExternalCatalog = m_externalCatalog;
 					result_pkInternalCatalog = m_internalCatalog;
 				}
-				else
+			}
+			else
+			{
+				if(pkInternalCatalog.equalsIgnoreCase(fkInternalCatalog))
 				{
-					int cnt = 0;
-
-					for(Map.Entry<String, String> entry: m_externalCatalogToInternalCatalog.entrySet())
+					if(!m_catalog.tables.containsKey(pkEntity) || !m_catalog.tables.get(pkEntity).columns.containsKey(pkField))
 					{
-						if(pkInternalCatalog.equalsIgnoreCase(entry.getValue()))
-						{
-							result_pkExternalCatalog = entry. getKey ();
-							result_pkInternalCatalog = entry.getValue();
-
-							cnt++;
-						}
+						result_pkExternalCatalog = null;
+						result_pkInternalCatalog = null;
 					}
-
-					if(cnt != 1)
+					else
 					{
 						result_pkExternalCatalog = m_externalCatalog;
 						result_pkInternalCatalog = m_internalCatalog;
 					}
 				}
-			}
-			else
-			{
-				result_pkExternalCatalog = m_externalCatalog;
-				result_pkInternalCatalog = m_internalCatalog;
-			}
+				else
+				{
+					int cnt = 0;
 
-			/*--------------------------------------------------------------------------------------------------------*/
+					result_pkExternalCatalog = null;
+					result_pkInternalCatalog = null;
 
-			try
-			{
-				getFieldInfo(result_pkExternalCatalog, pkEntity, pkField);
-			}
-			catch(Exception e)
-			{
-				LogSingleton.root.error("invalid foreign key `" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + result_pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "`");
+					for(Map.Entry<String, String> entry: m_externalCatalogToInternalCatalog.entrySet())
+					{
+						if(pkInternalCatalog.equalsIgnoreCase(entry.getValue()))
+						{
+							if(cnt++ > 0)
+							{
+								result_pkExternalCatalog = null;
+								result_pkInternalCatalog = null;
+							}
+							else
+							{
+								result_pkExternalCatalog = entry. getKey ();
+								result_pkInternalCatalog = entry.getValue();
+							}
+						}
+					}
+				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
