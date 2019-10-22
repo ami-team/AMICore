@@ -32,7 +32,7 @@ public class FrontEnd extends HttpServlet
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException
+	protected void doGet(HttpServletRequest req, HttpServletResponse res)
 	{
 		doCommand(req, res);
 	}
@@ -40,14 +40,14 @@ public class FrontEnd extends HttpServlet
 	/*---------------------------------------------------------------------*/
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
+	protected void doPost(HttpServletRequest req, HttpServletResponse res)
 	{
 		doCommand(req, res);
 	}
 
 	/*---------------------------------------------------------------------*/
 
-	private void doCommand(HttpServletRequest req, HttpServletResponse res)
+	private void doCommand(@NotNull HttpServletRequest req, @NotNull HttpServletResponse res)
 	{
 		/*-----------------------------------------------------------------*/
 		/* SET UTF-8 AS DEFAULT ENCODING                                   */

@@ -164,6 +164,9 @@ public class MetadataSingleton
 
 			table.bridge = _safeBoolean((Boolean) map.get("bridge"), false);
 
+			table.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
+			table.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
+
 			/*-------------------------------------------------------------*/
 		}
 		catch(Exception e)

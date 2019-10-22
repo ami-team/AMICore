@@ -83,6 +83,9 @@ public class SchemaSingleton
 
 		public boolean bridge = false;
 
+		public boolean hidden = false;
+		public boolean adminOnly = false;
+
 		public String description = "N/A";
 
 		/**/
@@ -1158,6 +1161,8 @@ public class SchemaSingleton
 		             .append("<field name=\"entity\"><![CDATA[").append(table.entity).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
 		             .append("<field name=\"bridge\"><![CDATA[").append(table.bridge).append("]]></field>")
+		             .append("<field name=\"hidden\"><![CDATA[").append(table.hidden).append("]]></field>")
+		             .append("<field name=\"adminOnly\"><![CDATA[").append(table.adminOnly).append("]]></field>")
 		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
 		             .append("</row>")
 		;
