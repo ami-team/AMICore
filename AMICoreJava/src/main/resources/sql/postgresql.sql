@@ -359,6 +359,7 @@ CREATE TABLE "router_search_interface" (
   "id" SERIAL,
   "group" VARCHAR(128) NOT NULL,
   "name" VARCHAR(128) NOT NULL,
+  "rank" INT NOT NULL DEFAULT 0,
   "json" TEXT NOT NULL,
   "archived" SMALLINT NOT NULL DEFAULT 0,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

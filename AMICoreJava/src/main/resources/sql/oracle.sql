@@ -1290,6 +1290,7 @@ CREATE TABLE "router_search_interface" (
   "id" NUMBER(*, 0),
   "group" VARCHAR2(128),
   "name" VARCHAR2(128),
+  "rank" NUMBER(*, 0) DEFAULT 0,
   "json" CLOB,
   "archived" NUMBER(1, 0) DEFAULT 0,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -1319,27 +1320,31 @@ ALTER TABLE "router_search_interface"
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck4_router_search_interface" CHECK("json" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_search_interface" CHECK("rank" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck5_router_search_interface" CHECK("archived" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_search_interface" CHECK("json" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck6_router_search_interface" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_search_interface" CHECK("archived" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck7_router_search_interface" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_search_interface" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck8_router_search_interface" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_search_interface" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck9_router_search_interface" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck9_router_search_interface" CHECK("modified" IS NOT NULL)
+;;
+
+ALTER TABLE "router_search_interface"
+  ADD CONSTRAINT "ck10_router_search_interface" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_search_interface"
