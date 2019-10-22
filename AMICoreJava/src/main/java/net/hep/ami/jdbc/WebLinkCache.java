@@ -26,18 +26,7 @@ public class WebLinkCache
 	@NotNull
 	public String processWebLink(@Nullable String code, @NotNull String catalog, @NotNull String entity, @NotNull String field, @NotNull RowSet rowSet, @NotNull Row row)
 	{
-		if(code != null)
-		{
-			code = code.trim();
-
-			if(code.isEmpty()
-			   ||
-			   "@NULL".equalsIgnoreCase(code)
-			 ) {
-				return "";
-			}
-		}
-		else
+		if(Empty.isBlankEmptyNull(code))
 		{
 			return "";
 		}

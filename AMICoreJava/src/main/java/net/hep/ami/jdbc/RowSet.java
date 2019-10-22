@@ -40,7 +40,6 @@ public class RowSet
 
 	/* From AMI */
 
-	protected final int[] m_fieldRank;
 	protected final boolean[] m_fieldHidden;
 	protected final boolean[] m_fieldAdminOnly;
 	protected final boolean[] m_fieldCrypted;
@@ -156,7 +155,6 @@ public class RowSet
 
 		/* From AMI */
 
-		m_fieldRank = new int[m_numberOfFields];
 		m_fieldHidden = new boolean[m_numberOfFields];
 		m_fieldAdminOnly = new boolean[m_numberOfFields];
 		m_fieldCrypted = new boolean[m_numberOfFields];
@@ -206,12 +204,12 @@ public class RowSet
 			/* RESOLVE ALIASES IF NEEDED                                                                              */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(label != null && !label.isEmpty()
+			if(!Empty.isEmpty(label)
 			   &&
 			   (
-				   internalCatalog == null || internalCatalog.isEmpty()
+				   Empty.isEmpty(internalCatalog)
 				   ||
-				   /*-*/entity/*-*/ == null || /*-*/entity/*-*/.isEmpty()
+				   Empty.isEmpty(/*-*/entity/*-*/)
 			   )
 			 ) {
 				try
@@ -253,10 +251,8 @@ public class RowSet
 			/* RESOLVE EXTERNAL CATALOG IF NEEDED                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(defaultInternalCatalog != null && !defaultInternalCatalog.isEmpty()
-			   &&
-			   defaultInternalCatalog.equalsIgnoreCase(internalCatalog)
-			 ) {
+			/**/ if(!Empty.isEmpty(defaultInternalCatalog) && defaultInternalCatalog.equalsIgnoreCase(internalCatalog))
+			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TRIVIAL CASE                                                                                       */
 				/*----------------------------------------------------------------------------------------------------*/
@@ -265,10 +261,8 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(defaultExternalCatalog != null && !defaultExternalCatalog.isEmpty()
-			        &&
-			        ((defaultEntity)) != null && !((defaultEntity)).isEmpty()
-			 ) {
+			else if(!Empty.isEmpty(defaultExternalCatalog) && !Empty.isEmpty(defaultEntity))
+			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* NON-TRIVIAL CASE                                                                                   */
 				/*----------------------------------------------------------------------------------------------------*/
@@ -277,7 +271,7 @@ public class RowSet
 				{
 					Resolution resolution = AutoJoinSingleton.resolve(defaultExternalCatalog, defaultEntity, new QId(null, entity, name).toString());
 
-					if(internalCatalog == null || internalCatalog.isEmpty() || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
+					if(Empty.isEmpty(internalCatalog) || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
 					{
 						externalCatalog = resolution.getExternalQId().getCatalog();
 						entity = resolution.getExternalQId().getEntity();
@@ -304,11 +298,11 @@ public class RowSet
 			/* SAVE METADATA TO ROWSET                                                                                */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			m_fieldCatalogs[i] = externalCatalog != null && !externalCatalog.isEmpty() ? externalCatalog : "N/A";
-			m_fieldEntities[i] = entity != null && !entity.isEmpty() ? entity : "N/A";
-			m_fieldNames[i] = name != null && !name.isEmpty() ? name : "N/A";
-			m_fieldLabels[i] = label != null && !label.isEmpty() ? label : "N/A";
-			m_fieldTypes[i] = type != null && !type.isEmpty() ? type : "N/A";
+			m_fieldCatalogs[i] = !Empty.isEmpty(externalCatalog) ? externalCatalog : "N/A";
+			m_fieldEntities[i] = !Empty.isEmpty(entity) ? entity : "N/A";
+			m_fieldNames[i] = !Empty.isEmpty(name) ? name : "N/A";
+			m_fieldLabels[i] = !Empty.isEmpty(label) ? label : "N/A";
+			m_fieldTypes[i] = !Empty.isEmpty(type) ? type : "N/A";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -323,9 +317,9 @@ public class RowSet
 			if(aliasInfo.y.size() == m_numberOfFields && !aliasInfo.y.get(i)
 			   &&
 			   (
-				   defaultExternalCatalog != null && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
-				   ||
-				   /*-*/defaultEntity/*-*/ != null && !/*-*/defaultEntity/*-*/.equalsIgnoreCase(m_fieldEntities[i])
+			    	!Empty.isEmpty(defaultExternalCatalog) && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
+			    	||
+			    	!Empty.isEmpty(/*-*/defaultEntity/*-*/) && !/*-*/defaultEntity/*-*/.equalsIgnoreCase(m_fieldEntities[i])
 			   )
 			 ) {
 				m_fieldLabels[i] = m_fieldNames_i;
@@ -337,13 +331,7 @@ public class RowSet
 			{
 				SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
-				/**/
-
 				m_fieldTypes[i] = column.type;
-
-				/**/
-
-				m_fieldRank[i] = column.rank;
 				m_fieldHidden[i] = column.hidden;
 				m_fieldAdminOnly[i] = column.adminOnly;
 				m_fieldCrypted[i] = column.crypted;
@@ -365,7 +353,6 @@ public class RowSet
 			}
 			catch(Exception e)
 			{
-				m_fieldRank[i] = i;
 				m_fieldHidden[i] = false;
 				m_fieldAdminOnly[i] = false;
 				m_fieldCrypted[i] = false;

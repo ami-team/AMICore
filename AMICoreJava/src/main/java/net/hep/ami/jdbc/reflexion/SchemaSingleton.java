@@ -883,11 +883,9 @@ public class SchemaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String externalCatalogToInternalCatalog_noException(@Nullable String externalCatalog, @NotNull String value)
+	public static String externalCatalogToInternalCatalog_noException(@Nullable String externalCatalog, @Nullable String value)
 	{
-		String result =  s_externalCatalogToInternalCatalog.get(externalCatalog);
-
-		return result != null ? result : value;
+		return s_externalCatalogToInternalCatalog.getOrDefault(externalCatalog, value);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
