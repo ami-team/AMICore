@@ -12,6 +12,7 @@ import net.hep.ami.jdbc.query.*;
 
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+import org.jetbrains.annotations.Contract;
 
 public class SchemaSingleton
 {
@@ -655,15 +656,12 @@ public class SchemaSingleton
 					String pkEntity = resultSet.getString("PKTABLE_NAME");
 					String pkField = resultSet.getString("PKCOLUMN_NAME");
 
-					Tuple2<String, String> tuple = resolvePKExternalCatalog(
-						resultSet.getString("FKTABLE_CAT"),
-						resultSet.getString("PKTABLE_CAT")
-					);
+					Tuple2<String, String> tuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
 
 					String pkExternalCatalog = tuple.x;
 					String pkInternalCatalog = tuple.y;
 
-					if(name != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkInternalCatalog != null && pkEntity != null && pkField != null)
+					if(name != null && fkEntity != null && fkField != null && pkEntity != null && pkField != null)
 					{
 						table = m_catalog.tables.get(fkEntity);
 
@@ -688,52 +686,71 @@ public class SchemaSingleton
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*----------------------------------------------------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		private Tuple2<String, String> resolvePKExternalCatalog(String fkInternalCatalog, String pkInternalCatalog)
+		@NotNull
+		@Contract("_, _, _, _, _, _ -> new")
+		private Tuple2<String, String> resolvePKExternalCatalog(@Nullable String fkInternalCatalog, @Nullable String fkEntity, @Nullable String fkField, @Nullable String pkInternalCatalog, @Nullable String pkEntity, @Nullable String pkField)
 		{
-			String pkExternalCatalog = null;
+			String result_pkExternalCatalog = null;
+			String result_pkInternalCatalog = null;
+
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(pkInternalCatalog != null)
 			{
-				if(fkInternalCatalog != null && fkInternalCatalog.equalsIgnoreCase(pkInternalCatalog))
+				if(pkInternalCatalog.equalsIgnoreCase(fkInternalCatalog))
 				{
-					pkExternalCatalog = m_externalCatalog;
-					pkInternalCatalog = m_internalCatalog;
+					result_pkExternalCatalog = m_externalCatalog;
+					result_pkInternalCatalog = m_internalCatalog;
 				}
 				else
 				{
 					int cnt = 0;
 
-					for(Map.Entry<String, String> entry : m_externalCatalogToInternalCatalog.entrySet())
+					for(Map.Entry<String, String> entry: m_externalCatalogToInternalCatalog.entrySet())
 					{
 						if(pkInternalCatalog.equalsIgnoreCase(entry.getValue()))
 						{
-							pkExternalCatalog = entry. getKey ();
-							pkInternalCatalog = entry.getValue();
+							result_pkExternalCatalog = entry. getKey ();
+							result_pkInternalCatalog = entry.getValue();
 
 							cnt++;
 						}
 					}
+
 					if(cnt != 1)
 					{
-						LogSingleton.root.warn("blablabla");
-						pkExternalCatalog = m_externalCatalog;
-						pkInternalCatalog = m_internalCatalog;
+						result_pkExternalCatalog = m_externalCatalog;
+						result_pkInternalCatalog = m_internalCatalog;
 					}
 				}
 			}
 			else
 			{
-				LogSingleton.root.warn("blablabla");
-				pkExternalCatalog = m_externalCatalog;
-				pkInternalCatalog = m_internalCatalog;
+				result_pkExternalCatalog = m_externalCatalog;
+				result_pkInternalCatalog = m_internalCatalog;
 			}
 
-			return new Tuple2<String, String>(
-				pkExternalCatalog,
-				pkInternalCatalog
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			try
+			{
+				getFieldInfo(result_pkExternalCatalog, pkEntity, pkField);
+			}
+			catch(Exception e)
+			{
+				LogSingleton.root.error("invalid foreign key `" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + result_pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "`");
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			return new Tuple2<>(
+				result_pkExternalCatalog,
+				result_pkInternalCatalog
 			);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
