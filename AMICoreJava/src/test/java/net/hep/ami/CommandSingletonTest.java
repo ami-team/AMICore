@@ -30,7 +30,11 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT id\"", false);
+//		CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_role\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\"", false);
+
+		CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT COUNT(`self`.`router_command`.`*`) WHERE `self`.`router_role`.`id`{`self`.`router_command_role`.`commandFK`, `self`.`router_command_role`.`roleFK`} = 1\"", false);
+
+//		CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_catalog\" -mql=\"SELECT id\"", false);
 
 //		CommandSingleton.executeCommand("AddElement -catalog=\"nika2:production\" -entity=\"scan\" -separator=\"§\" -fields=\"scanId§nbSubscans§startTime§endTime§source§type§tau225§receiver§azimuth§elevation§px§py§fx§fy§fz§comment\" -values=\"467465§1§2015-10-13 21:35:22§2015-10-13 21:37:05§Uranus§Lissajous§0.554055§NIKA§125.532975§46.424788§-14.800000§6.600000§0.000000§0.000000§-0.200000§focuslissold (the new one doesn' t work because the FOOFFSET parameter is not filled correctly)\"", false);
 

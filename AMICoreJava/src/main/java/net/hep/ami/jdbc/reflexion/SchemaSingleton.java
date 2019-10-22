@@ -650,14 +650,20 @@ public class SchemaSingleton
 				while(resultSet.next())
 				{
 					String name = resultSet.getString("FK_NAME");
-					String fkInternalCatalog = resultSet.getString("FKTABLE_CAT");
 					String fkEntity = resultSet.getString("FKTABLE_NAME");
 					String fkField = resultSet.getString("FKCOLUMN_NAME");
-					String pkInternalCatalog = resultSet.getString("PKTABLE_CAT");
 					String pkEntity = resultSet.getString("PKTABLE_NAME");
 					String pkField = resultSet.getString("PKCOLUMN_NAME");
 
-					if(name != null && fkEntity != null && fkField != null && pkEntity != null && pkField != null)
+					Tuple2<String, String> tuple = resolvePKExternalCatalog(
+						resultSet.getString("FKTABLE_CAT"),
+						resultSet.getString("PKTABLE_CAT")
+					);
+
+					String pkExternalCatalog = tuple.x;
+					String pkInternalCatalog = tuple.y;
+
+					if(name != null && fkEntity != null && fkField != null && pkExternalCatalog != null && pkInternalCatalog != null && pkEntity != null && pkField != null)
 					{
 						table = m_catalog.tables.get(fkEntity);
 
@@ -666,10 +672,10 @@ public class SchemaSingleton
 							table.forwardFKs.put(fkField, new FrgnKeys(new FrgnKey(
 								name,
 								m_externalCatalog,
-								fkInternalCatalog,
+								m_internalCatalog,
 								fkEntity,
 								fkField,
-								m_externalCatalog,
+								pkExternalCatalog,
 								pkInternalCatalog,
 								pkEntity,
 								pkField
@@ -680,6 +686,54 @@ public class SchemaSingleton
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
+		}
+
+		/*----------------------------------------------------------------------------------------------------------------*/
+
+		private Tuple2<String, String> resolvePKExternalCatalog(String fkInternalCatalog, String pkInternalCatalog)
+		{
+			String pkExternalCatalog = null;
+
+			if(pkInternalCatalog != null)
+			{
+				if(fkInternalCatalog != null && fkInternalCatalog.equalsIgnoreCase(pkInternalCatalog))
+				{
+					pkExternalCatalog = m_externalCatalog;
+					pkInternalCatalog = m_internalCatalog;
+				}
+				else
+				{
+					int cnt = 0;
+
+					for(Map.Entry<String, String> entry : m_externalCatalogToInternalCatalog.entrySet())
+					{
+						if(pkInternalCatalog.equalsIgnoreCase(entry.getValue()))
+						{
+							pkExternalCatalog = entry. getKey ();
+							pkInternalCatalog = entry.getValue();
+
+							cnt++;
+						}
+					}
+					if(cnt != 1)
+					{
+						LogSingleton.root.warn("blablabla");
+						pkExternalCatalog = m_externalCatalog;
+						pkInternalCatalog = m_internalCatalog;
+					}
+				}
+			}
+			else
+			{
+				LogSingleton.root.warn("blablabla");
+				pkExternalCatalog = m_externalCatalog;
+				pkInternalCatalog = m_internalCatalog;
+			}
+
+			return new Tuple2<String, String>(
+				pkExternalCatalog,
+				pkInternalCatalog
+			);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
