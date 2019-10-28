@@ -33,7 +33,7 @@ public class FrontEnd extends HttpServlet
 
 	public void init()
 	{
-		getServletContext().getSessionCookieConfig().setPath(ConfigSingleton.getProperty("cookie_path", "/AMI"));
+		//getServletContext().getSessionCookieConfig().setPath(ConfigSingleton.getProperty("cookie_path", "/AMI"));
 	}
 
 	/*---------------------------------------------------------------------*/
