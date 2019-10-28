@@ -33,7 +33,7 @@ public class FrontEnd extends HttpServlet
 
 	public void init()
 	{
-		//getServletContext().getSessionCookieConfig().setPath(ConfigSingleton.getProperty("cookie_path", "/AMI"));
+		//
 	}
 
 	/*---------------------------------------------------------------------*/
@@ -160,7 +160,7 @@ public class FrontEnd extends HttpServlet
 			Command.CommandTuple tuple = Command.parse(command);
 
 			HttpSession session = req.getSession(true);
-
+			getServletContext().getSessionCookieConfig().setPath(ConfigSingleton.getProperty("cookie_path", "/AMI"));
 			updateSessionAndCommandArgs(
 				tuple.arguments,
 				session,
