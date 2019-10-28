@@ -13,7 +13,6 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
-import org.jetbrains.annotations.Contract;
 
 @WebServlet(
 	name = "FrontEnd",
@@ -245,6 +244,8 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> new")
 	private static Tuple4<String, String, String, String> getDNs(HttpServletRequest req)
 	{
 		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
@@ -279,6 +280,8 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("_ -> new")
 	private Tuple2<String, String> resolveLink(String linkId) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -327,6 +330,8 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@org.jetbrains.annotations.Contract("null, _, _ -> new")
 	private Tuple2<String, String> resolveUserByCertificate(@Nullable String clientDN, @Nullable String issuerDN, String clientIP) throws Exception
 	{
 		if(clientDN == null || clientDN.isEmpty()
@@ -560,7 +565,7 @@ public class FrontEnd extends HttpServlet
 			/* CERTIFICATE LOGIN                                                                                      */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, String> tuple = readSession(session, request);
+			Tuple2<String, String> tuple = readSession(session);
 
 			String tmpAMIUser = tuple.x;
 			String tmpAMIPass = tuple.y;
@@ -594,7 +599,7 @@ public class FrontEnd extends HttpServlet
 			/* CREDENTIAL LOGIN                                                                                       */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, String> tuple = readSession(session, request);
+			Tuple2<String, String> tuple = readSession(session);
 
 			String tmpAMIUser = tuple.x;
 			String tmpAMIPass = tuple.y;
@@ -690,8 +695,8 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("_ -> new")
-	private Tuple2<String, String> readSession(@NotNull HttpSession session, @NotNull HttpServletRequest request)
+	@org.jetbrains.annotations.Contract("_ -> new")
+	private Tuple2<String, String> readSession(@NotNull HttpSession session)
 	{
 		String AMIUser;
 		String AMIPass;
@@ -713,14 +718,14 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		ServletContext sctx = session.getServletContext().getContext(ConfigSingleton.getProperty("context_name"));
+		ServletContext context = session.getServletContext().getContext(ConfigSingleton.getProperty("context_name"));
 
-		if(sctx == null)
+		if(context != null)
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			AMIUser = (String) sctx.getAttribute("AMIUser");
-			AMIPass = (String) sctx.getAttribute("AMIPass");
+			AMIUser = (String) context.getAttribute("AMIUser");
+			AMIPass = (String) context.getAttribute("AMIPass");
 
 			if(AMIUser != null && !AMIUser.isEmpty()
 			   &&
