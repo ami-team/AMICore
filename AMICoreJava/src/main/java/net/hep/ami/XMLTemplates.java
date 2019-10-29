@@ -1,12 +1,12 @@
 package net.hep.ami;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public class XMLTemplates
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private XMLTemplates() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

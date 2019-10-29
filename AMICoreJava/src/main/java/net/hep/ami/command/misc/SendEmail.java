@@ -4,7 +4,8 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class SendEmail extends AbstractCommand
@@ -41,7 +42,7 @@ public class SendEmail extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Send an email.";
@@ -50,7 +51,7 @@ public class SendEmail extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "(-from=\"\")? -to=\"\" (-cc=\"\")? -subject=\"\" -message=\"\"";

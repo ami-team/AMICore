@@ -4,7 +4,8 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class AddHash extends AbstractCommand
@@ -91,7 +92,7 @@ public class AddHash extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Add a hash.";
@@ -100,7 +101,7 @@ public class AddHash extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-name=\"\" -json=\"\" (-shared=\"\")? (-expire=\"\")?";

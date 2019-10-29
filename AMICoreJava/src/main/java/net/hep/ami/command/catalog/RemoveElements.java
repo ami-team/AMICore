@@ -4,8 +4,9 @@ import java.util.*;
 import java.util.regex.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.query.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class RemoveElements extends AbstractCommand
@@ -70,7 +71,7 @@ public class RemoveElements extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Remove one or more elements.";
@@ -79,7 +80,7 @@ public class RemoveElements extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -keyFields=\"\" -keyValues=\"\" (-where=\"\")?";

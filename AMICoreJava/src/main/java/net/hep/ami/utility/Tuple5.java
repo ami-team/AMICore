@@ -4,6 +4,8 @@ import java.io.*;
 
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 /**
  * A 5-tuple.
  */
@@ -57,7 +59,7 @@ public class Tuple5<A, B, C, D, E> implements Serializable
 	 * @param _u u
 	 */
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Tuple5(A _x, B _y, C _z, D _t, E _u)
 	{
 		x = _x;

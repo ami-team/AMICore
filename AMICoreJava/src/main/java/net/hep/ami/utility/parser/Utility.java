@@ -3,7 +3,7 @@ package net.hep.ami.utility.parser;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public class Utility
 {
@@ -12,7 +12,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("null -> null; !null -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String escapeJavaString(@Nullable String s)
 	{
 		return escapeJSONString(s, true);
@@ -21,7 +21,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null, _ -> null; !null, _ -> !null")
 	public static String escapeJSONString(@Nullable String s, boolean simpleQuotes)
 	{
 		if(s == null)
@@ -90,7 +90,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("null -> null; !null -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String unescapeJavaString(@Nullable String s) throws RuntimeException
 	{
 		return unescapeJSONString(s, true);
@@ -99,7 +99,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null, _ -> null; !null, _ -> !null")
 	public static String unescapeJSONString(@Nullable String s, boolean simpleQuotes) throws RuntimeException
 	{
 		if(s == null)
@@ -210,7 +210,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("null -> null; !null -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String javaStringToText(@Nullable String s) throws RuntimeException
 	{
 		return jsonStringToText(s, true);
@@ -219,7 +219,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null, _ -> null; !null, _ -> !null")
 	public static String jsonStringToText(@Nullable String s, boolean simpleQuotes) throws RuntimeException
 	{
 		if(s == null)
@@ -250,7 +250,7 @@ public class Utility
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract("null -> null; !null -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String textToJavaString(@Nullable String s)
 	{
 		return textToJSONString(s, true);
@@ -258,7 +258,7 @@ public class Utility
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null, _ -> null; !null, _ -> !null")
 	public static String textToJSONString(@Nullable String s, boolean simpleQuotes)
 	{
 		if(s == null)
@@ -498,7 +498,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("null -> null; !null -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String escapeHTML(@Nullable String s)
 	{
 		if(s == null)

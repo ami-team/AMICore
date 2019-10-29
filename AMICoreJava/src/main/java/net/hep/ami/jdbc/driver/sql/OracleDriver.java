@@ -5,7 +5,8 @@ import java.util.*;
 
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,

@@ -19,11 +19,13 @@ import net.sf.saxon.expr.*;
 import net.sf.saxon.trans.*;
 import net.sf.saxon.value.*;
 
+import org.jetbrains.annotations.*;
+
 public class XMLFactory
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private XMLFactory() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -147,7 +149,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract("_, _, !null -> !null")
+	@Contract("_, _, !null -> !null")
 	public static String getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable String defaultValue)
 	{
 		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
@@ -163,7 +165,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, _, !null -> !null", pure = true)
+	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Boolean getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Boolean defaultValue)
 	{
 		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
@@ -186,7 +188,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, _, !null -> !null", pure = true)
+	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Integer getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Integer defaultValue)
 	{
 		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
@@ -209,7 +211,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, _, !null -> !null", pure = true)
+	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Float getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Float defaultValue)
 	{
 		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
@@ -232,7 +234,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, _, !null -> !null", pure = true)
+	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Double getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Double defaultValue)
 	{
 		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
@@ -265,7 +267,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static String getNodeContent(@NotNull org.w3c.dom.Node node, @Nullable String defaultValue)
 	{
 		return ConfigSingleton.checkString(node.getTextContent(), defaultValue);
@@ -274,7 +276,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Boolean getNodeContent(@NotNull org.w3c.dom.Node node, Boolean defaultValue)
 	{
 		try
@@ -290,7 +292,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Integer getNodeContent(@NotNull org.w3c.dom.Node node, Integer defaultValue)
 	{
 		try
@@ -306,7 +308,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Float getNodeContent(@NotNull org.w3c.dom.Node node, Float defaultValue)
 	{
 		try
@@ -322,7 +324,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Double getNodeContent(@NotNull org.w3c.dom.Node node, Double defaultValue)
 	{
 		try
@@ -364,7 +366,7 @@ public class XMLFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static Iterable<org.w3c.dom.Node> nodeListToIterable(@NotNull org.w3c.dom.NodeList nodeList)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/

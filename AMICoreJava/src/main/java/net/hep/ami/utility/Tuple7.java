@@ -4,6 +4,8 @@ import java.io.*;
 
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 /**
  * A 7-tuple.
  */
@@ -72,7 +74,7 @@ public class Tuple7<A, B, C, D, E, F, G> implements Serializable
 	 * @param _w w
 	 */
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Tuple7(A _x, B _y, C _z, D _t, E _u, F _v, G _w)
 	{
 		x = _x;

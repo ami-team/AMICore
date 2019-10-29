@@ -4,7 +4,8 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class RemoveCommand extends AbstractCommand
@@ -46,7 +47,7 @@ public class RemoveCommand extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Remove a command.";
@@ -55,7 +56,7 @@ public class RemoveCommand extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-command=\"\"";

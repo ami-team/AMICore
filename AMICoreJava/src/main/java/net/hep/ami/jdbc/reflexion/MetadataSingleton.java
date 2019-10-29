@@ -4,8 +4,9 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 public class MetadataSingleton
 {
@@ -116,19 +117,19 @@ public class MetadataSingleton
 
 	/*---------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
+	@Contract(value = "null, _ -> param2", pure = true)
 	private static int _safeInteger(Integer i, int def)
 	{
 		return i != null ? i : def;
 	}
 
-	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
+	@Contract(value = "null, _ -> param2", pure = true)
 	private static boolean _safeBoolean(Boolean b, boolean def)
 	{
 		return b != null ? b : def;
 	}
 
-	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
+	@Contract(value = "null, _ -> param2", pure = true)
 	private static String _safeString(String s, String def)
 	{
 		return ConfigSingleton.checkString(s, def);

@@ -7,9 +7,9 @@ import org.antlr.v4.runtime.*;
 
 import net.hep.ami.jdbc.query.mql.*;
 import net.hep.ami.jdbc.reflexion.*;
-
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 public final class QId
 {
@@ -344,7 +344,7 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> this")
+	@Contract("_ -> this")
 	public QId setExclusion(boolean exclusion)
 	{
 		m_exclusion = exclusion;
@@ -353,7 +353,7 @@ public final class QId
 	}
 
 	/////////
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public boolean getExclusion()
 	{
 		return m_exclusion;
@@ -362,7 +362,7 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> this")
+	@Contract("_ -> this")
 	public QId setCatalog(@Nullable String catalog)
 	{
 		if(catalog != null)
@@ -381,7 +381,7 @@ public final class QId
 	}
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public String getCatalog()
 	{
 		return m_catalog;
@@ -390,7 +390,7 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> this")
+	@Contract("_ -> this")
 	public QId setEntity(@Nullable String entity)
 	{
 		if(entity != null)
@@ -409,7 +409,7 @@ public final class QId
 	}
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public String getEntity()
 	{
 		return m_entity;
@@ -418,7 +418,7 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> this")
+	@Contract("_ -> this")
 	public QId setField(@Nullable String field)
 	{
 		if(field != null)
@@ -437,7 +437,7 @@ public final class QId
 	}
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public String getField()
 	{
 		return m_field;
@@ -446,7 +446,7 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public List<QId> getConstraints()
 	{
 		return m_constraints;
@@ -455,7 +455,7 @@ public final class QId
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> new")
+	@Contract("_ -> new")
 	public QId as(int mask)
 	{
 		return new QId(
@@ -468,7 +468,7 @@ public final class QId
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public boolean is(int mask)
 	{
 		return (((mask & MASK_CATALOG) != 0) == (m_catalog != null))
@@ -481,7 +481,7 @@ public final class QId
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract("null -> false")
+	@Contract("null -> false")
 	public boolean matches(@Nullable Object object)
 	{
 		if(!(object instanceof QId))
@@ -501,7 +501,7 @@ public final class QId
 
 	@Override
 	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-	@org.jetbrains.annotations.Contract(value = "null -> false", pure = true)
+	@Contract(value = "null -> false", pure = true)
 	public boolean equals(@Nullable Object object)
 	{
 		return equals(object, MASK_CATALOG_ENTITY_FIELD, MASK_NONE);
@@ -509,7 +509,7 @@ public final class QId
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract("null, _ -> false")
+	@Contract("null, _ -> false")
 	public boolean equals(@Nullable Object object, int mask)
 	{
 		return equals(object, mask, MASK_NONE);
@@ -517,7 +517,7 @@ public final class QId
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract("null, _, _ -> false")
+	@Contract("null, _, _ -> false")
 	public boolean equals(@Nullable Object object, int mask, int maskForPath)
 	{
 		if(!(object instanceof QId))

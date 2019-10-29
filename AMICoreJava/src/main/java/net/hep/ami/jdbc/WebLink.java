@@ -3,8 +3,9 @@ package net.hep.ami.jdbc;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 public class WebLink
 {
@@ -27,14 +28,14 @@ public class WebLink
 
 		private final String m_value;
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		Location(@NotNull String value)
 		{
 			m_value = value;
 		}
 
 		@NotNull
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public String toString()
 		{
 			return m_value;

@@ -4,6 +4,8 @@ import java.io.*;
 
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 /**
  * A 3-tuple.
  */
@@ -44,7 +46,7 @@ public class Tuple3<A, B, C> implements Serializable
 	 * @param _z z
 	 */
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Tuple3(A _x, B _y, C _z)
 	{
 		x = _x;

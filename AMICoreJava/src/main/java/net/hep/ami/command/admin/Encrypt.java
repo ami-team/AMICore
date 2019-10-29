@@ -4,7 +4,8 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
 public class Encrypt extends AbstractCommand
@@ -35,7 +36,7 @@ public class Encrypt extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Encrypt a string.";
@@ -44,7 +45,7 @@ public class Encrypt extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-string=\"\"";

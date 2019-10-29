@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class AddUser extends AbstractCommand
@@ -146,7 +147,7 @@ public class AddUser extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Add a user.";
@@ -155,7 +156,7 @@ public class AddUser extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-amiLogin=\"\" (-amiPassword=\"\")? (-clientDN=\"\")? (-issuerDN=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\" -agree";

@@ -12,7 +12,8 @@ import net.hep.ami.jdbc.query.*;
 
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
-import org.jetbrains.annotations.Contract;
+
+import org.jetbrains.annotations.*;
 
 public class SchemaSingleton
 {
@@ -53,7 +54,7 @@ public class SchemaSingleton
 
 		@NotNull
 		@Override
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public String toString()
 		{
 			return "`" + internalCatalog + "`";
@@ -107,7 +108,7 @@ public class SchemaSingleton
 
 		@NotNull
 		@Override
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public String toString()
 		{
 			return "`" + internalCatalog + "`.`" + entity + "`";
@@ -187,7 +188,7 @@ public class SchemaSingleton
 
 		@NotNull
 		@Override
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public String toString()
 		{
 			return "`" + internalCatalog + "`.`" + entity + "`.`" + field + "`";
@@ -216,7 +217,7 @@ public class SchemaSingleton
 
 		/**/
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public FrgnKey(@NotNull String _name, @NotNull String _fkExternalCatalog, @NotNull String _fkInternalCatalog, @NotNull String _fkEntity, @NotNull String _fkField, @NotNull String _pkExternalCatalog, @NotNull String _pkInternalCatalog, @NotNull String _pkEntity, @NotNull String _pkField)
 		{
 			name = _name;
@@ -240,7 +241,7 @@ public class SchemaSingleton
 
 		@NotNull
 		@Override
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public String toString()
 		{
 			return "`" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "`";
@@ -279,7 +280,7 @@ public class SchemaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private SchemaSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -355,7 +356,7 @@ public class SchemaSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public Extractor(
 			@NotNull Map<String, String> externalCatalogToInternalCatalog,
 			@NotNull Map<String, Catalog> catalogs,
@@ -780,7 +781,7 @@ public class SchemaSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public Executor(
 			Map<String, Catalog> catalogs,
 			List<Thread> threads
@@ -1108,7 +1109,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(" -> new")
+	@Contract(" -> new")
 	public static List<String> getInternalCatalogNames()
 	{
 		return new ArrayList<>(
@@ -1119,7 +1120,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(" -> new")
+	@Contract(" -> new")
 	public static List<String> getExternalCatalogNames()
 	{
 		return new ArrayList<>(
@@ -1130,7 +1131,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> new")
+	@Contract("_ -> new")
 	public static List<String> getEntityNames(@NotNull String externalCatalog) throws Exception
 	{
 		return new ArrayList<>(
@@ -1141,7 +1142,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _ -> new")
+	@Contract("_, _ -> new")
 	public static List<String> getFieldNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
 		return new ArrayList<>(
@@ -1152,7 +1153,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _ -> new")
+	@Contract("_, _ -> new")
 	public static Set<String> getForwardFKNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
 		return new LinkedHashSet<>(
@@ -1163,7 +1164,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _ -> new")
+	@Contract("_, _ -> new")
 	public static Set<String> getBackwardFKNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
 	{
 		return new LinkedHashSet<>(

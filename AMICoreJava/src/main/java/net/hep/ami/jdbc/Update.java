@@ -2,6 +2,8 @@ package net.hep.ami.jdbc;
 
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 public class Update
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -16,7 +18,7 @@ public class Update
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Update(int nbOfUpdatedRows)
 	{
 		this(nbOfUpdatedRows, null, null, null);
@@ -24,7 +26,7 @@ public class Update
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Update(int nbOfUpdatedRows, @Nullable String sql, @Nullable String mql, @Nullable String ast)
 	{
 		m_nbOfUpdatedRows = nbOfUpdatedRows;
@@ -38,7 +40,7 @@ public class Update
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Update(int nbOfUpdatedRows, @Nullable String generatedKey, @Nullable String sql, @Nullable String mql, @Nullable String ast)
 	{
 		m_nbOfUpdatedRows = nbOfUpdatedRows;

@@ -5,6 +5,8 @@ import java.util.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.reflexion.SchemaSingleton.*;
 
+import org.jetbrains.annotations.*;
+
 public class Resolution
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

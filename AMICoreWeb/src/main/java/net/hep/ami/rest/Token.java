@@ -11,6 +11,8 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 @Path("/token")
 public class Token
 {
@@ -45,7 +47,7 @@ public class Token
 	@Path("certificate")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getByCertificate(
-		@Context HttpServletRequest request
+		@NotNull @Context HttpServletRequest request
 	 ) {
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -85,7 +87,7 @@ public class Token
 
 	@DELETE
 	public Response delete(
-		@Context HttpServletRequest request
+		@NotNull @Context HttpServletRequest request
 	 ) {
 		request.getSession(true).removeAttribute("token");
 

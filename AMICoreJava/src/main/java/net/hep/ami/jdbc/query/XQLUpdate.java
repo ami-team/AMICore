@@ -3,7 +3,7 @@ package net.hep.ami.jdbc.query;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public final class XQLUpdate
 {
@@ -47,7 +47,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLUpdate addUpdatePart(@Nullable CharSequence updatePart)
 	{
 		if(updatePart != null)
@@ -59,7 +59,7 @@ public final class XQLUpdate
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLUpdate addUpdatePart(@Nullable Collection<?> updatePart)
 	{
 		if(updatePart != null)
@@ -73,7 +73,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLUpdate addFieldValuePart(@Nullable Object fieldPart, @Nullable CharSequence valuePart)
 	{
 		if(fieldPart != null
@@ -88,7 +88,7 @@ public final class XQLUpdate
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLUpdate addFieldValuePart(@Nullable Collection<?> fieldPart, @Nullable Collection<?> valuePart) throws Exception
 	{
 		if(fieldPart != null
@@ -110,7 +110,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLUpdate addWherePart(@Nullable CharSequence wherePart)
 	{
 		if(wherePart != null)
@@ -122,7 +122,7 @@ public final class XQLUpdate
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLUpdate addWherePart(@Nullable Collection<?> wherePart)
 	{
 		if(wherePart != null)
@@ -136,7 +136,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLUpdate addWholeQuery(@Nullable XQLUpdate query)
 	{
 		if(query != null)
@@ -156,7 +156,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Set<String> getUpdateCollection()
 	{
 		return m_updateSet;
@@ -165,7 +165,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public List<String> getFieldCollection()
 	{
 		return m_fieldList;
@@ -174,7 +174,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public List<String> getValueCollection()
 	{
 		return m_valueList;
@@ -183,7 +183,7 @@ public final class XQLUpdate
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Set<String> getWhereCollection()
 	{
 		return m_whereSet;

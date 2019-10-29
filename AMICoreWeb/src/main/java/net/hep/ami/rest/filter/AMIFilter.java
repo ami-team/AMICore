@@ -1,16 +1,16 @@
 package net.hep.ami.rest.filter;
 
-import java.io.*;
-
 import javax.ws.rs.core.*;
 import javax.ws.rs.container.*;
 
+import org.jetbrains.annotations.*;
+
 public class AMIFilter implements ContainerResponseFilter
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException
+	public void filter(@NotNull ContainerRequestContext request, @NotNull ContainerResponseContext response)
 	{
 		String origin = request.getHeaderString("Origin");
 
@@ -24,5 +24,5 @@ public class AMIFilter implements ContainerResponseFilter
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

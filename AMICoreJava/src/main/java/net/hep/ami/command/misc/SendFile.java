@@ -5,7 +5,8 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class SendFile extends AbstractCommand
@@ -76,7 +77,7 @@ public class SendFile extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Send a file on the server.";
@@ -85,7 +86,7 @@ public class SendFile extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-fileName=\"\" (-filePath=\"\")? (-fileData=\"\")?";

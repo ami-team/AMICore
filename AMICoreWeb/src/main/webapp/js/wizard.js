@@ -1,38 +1,49 @@
-/*-------------------------------------------------------------------------*/
+/*!
+ * AMI Core
+ *
+ * Copyright (c) 2014-2019 The AMI Team / LPSC / IN2P3
+ *
+ * This file must be used under the terms of the CeCILL-C:
+ * http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html
+ * http://www.cecill.info/licences/Licence_CeCILL-C_V1-fr.html
+ *
+ */
+
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 var charArray = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 
-/*-------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 function generateEncryptionKey()
 {
-	var encryptionKey = '';
+	var encryptionKey = [];
 
 	for(var i = 0; i < 16; i++)
 	{
-		encryptionKey += charArray.charAt(
+		encryptionKey.push(charArray.charAt(
 			Math.floor(charArray.length * Math.random())
-		);
+		));
 	}
 
-	$('#encryption_key').val(encryptionKey);
+	$('#encryption_key').val(encryptionKey.join(''));
 }
 
-/*-------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 function validateForm()
 {
-	/*-----------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	var error = '';
+	var errors = [];
 
-	var reset = false;
+	var resetDB = false;
 
 	$.each($(':input').serializeArray(), function(index, param) {
 
 		if(param.name === 'router_reset')
 		{
-			reset = true;
+			resetDB = true;
 		}
 
 		if(param.name !== 'router_schema'
@@ -41,47 +52,47 @@ function validateForm()
 		   &&
 		   param.name !== 'class_path'
 		 ) {
-			if(param.value === '')
+			if(!param.value)
 			{
-				error += ' Error, field `' + param.name + '` is empty!';
+				errors.push('Error, field `' + param.name + '` is empty!');
 			}
 		}
 	});
 
-	/*-----------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	if(error)
+	if(errors.length > 0)
 	{
-		error = '<div class="alert alert-danger alert-dismissible">\n'
-		        +
-		        '  <button class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>\n'
-		        +
-		        '  <strong>Error!</strong>' + error + '\n'
-		        +
-		        '</div>'
+		var message = '<div class="alert alert-danger alert-dismissible">\n'
+		              +
+		              '  <button class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>\n'
+		              +
+		              '  <strong>Error!</strong> ' + errors.join(' ') + '\n'
+		              +
+		              '</div>'
 		;
 
-		$('#message').html(error);
+		$('#message').html(message);
 
 		$(document).scrollTop(0);
 
 		return false;
 	}
 
-	/*-----------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
-	if(reset && confirm('Reset the AMI database?') === false)
+	if(resetDB && confirm('Reset the AMI database?') === false)
 	{
 		return false;
 	}
 
-	/*-----------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	$('button[type="submit"]').prop('disabled', true);
 
-	/*-----------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	return true;
 }
 
-/*-------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/

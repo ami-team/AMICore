@@ -5,8 +5,9 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 public class MQLToAST
 {
@@ -21,7 +22,7 @@ public class MQLToAST
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public MQLToAST(@NotNull String catalog, @NotNull String entity, @NotNull List<String> ruleNames)
 	{
 		m_cnt = 0x00;

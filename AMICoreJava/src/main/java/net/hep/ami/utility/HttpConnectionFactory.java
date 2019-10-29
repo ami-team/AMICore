@@ -4,6 +4,8 @@ import java.net.*;
 
 import javax.net.ssl.*;
 
+import org.jetbrains.annotations.*;
+
 public class HttpConnectionFactory
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -12,7 +14,7 @@ public class HttpConnectionFactory
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private HttpConnectionFactory() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

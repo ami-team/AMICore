@@ -7,6 +7,8 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 public class ConfigSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -25,7 +27,7 @@ public class ConfigSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private ConfigSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -87,7 +89,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> new")
+	@Contract("_ -> new")
 	private static File toFile(@NotNull String configPathName)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -311,7 +313,7 @@ public class ConfigSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String getConfigPathName()
 	{
 		return s_configPathName;
@@ -319,7 +321,7 @@ public class ConfigSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String getConfigFileName()
 	{
 		return s_configFileName;
@@ -342,7 +344,7 @@ public class ConfigSingleton
 	/* HELPERS                                                                                                        */
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
+	@Contract(value = "null, _ -> param2", pure = true)
 	public static String checkString(@Nullable String currentValue, @Nullable String defaultValue)
 	{
 		if(currentValue != null)
@@ -396,7 +398,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static String getSystemProperty(@NotNull String key, @Nullable String defaultValue)
 	{
 		return checkString(System.getProperty(key), defaultValue);
@@ -405,7 +407,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Boolean getSystemProperty(@NotNull String key, Boolean defaultValue)
 	{
 		try
@@ -421,7 +423,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Integer getSystemProperty(@NotNull String key, Integer defaultValue)
 	{
 		try
@@ -437,7 +439,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Float getSystemProperty(@NotNull String key, Float defaultValue)
 	{
 		try
@@ -453,7 +455,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Double getSystemProperty(@NotNull String key, Double defaultValue)
 	{
 		try
@@ -504,7 +506,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static String getProperty(@NotNull String key, @Nullable String defaultValue)
 	{
 		return checkString(s_properties.get(key), defaultValue);
@@ -513,7 +515,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Boolean getProperty(@NotNull String key, Boolean defaultValue)
 	{
 		try
@@ -529,7 +531,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Integer getProperty(@NotNull String key, Integer defaultValue)
 	{
 		try
@@ -545,7 +547,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Float getProperty(@NotNull String key, Float defaultValue)
 	{
 		try
@@ -561,7 +563,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public static Double getProperty(@NotNull String key, Double defaultValue)
 	{
 		try

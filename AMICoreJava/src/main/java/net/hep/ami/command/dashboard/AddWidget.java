@@ -4,7 +4,8 @@ import java.util.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class AddWidget extends AbstractCommand
@@ -46,7 +47,7 @@ public class AddWidget extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Add a new widget in the user dashboard.";
@@ -55,7 +56,7 @@ public class AddWidget extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-control=\"\" -params=\"\" -settings=\"\" (-transparent)? (-autoRefresh)?";

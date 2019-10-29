@@ -8,6 +8,8 @@ import java.util.stream.*;
 
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 public class ClassSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -20,7 +22,7 @@ public class ClassSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private ClassSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -13,6 +13,8 @@ import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 @SuppressWarnings({"unused", "SameParameterValue"})
 public class MQLToSQL
 {
@@ -280,7 +282,7 @@ public class MQLToSQL
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	@Contract("_, _, _ -> new")
 	private StringBuilder visitColumnList(@NotNull MQLParser.ColumnListContext context, @NotNull List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<String> result = new ArrayList<>();
@@ -317,7 +319,7 @@ public class MQLToSQL
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	@Contract("_, _, _ -> new")
 	private StringBuilder visitQIdList(@NotNull MQLParser.QIdListContext context, @NotNull List<Resolution> resolutionList, int mask) throws Exception
 	{
 		List<String> result = new ArrayList<>();
@@ -729,7 +731,7 @@ public class MQLToSQL
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	@Contract("_, _, _ -> new")
 	private StringBuilder visitExpressionQId(@NotNull MQLParser.ExpressionQIdContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -761,7 +763,7 @@ public class MQLToSQL
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	@Contract("_, _, _ -> new")
 	private StringBuilder visitFunction(@NotNull MQLParser.FunctionContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -848,7 +850,7 @@ public class MQLToSQL
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	@Contract("_, _, _ -> new")
 	private StringBuilder visitLiteral(@NotNull MQLParser.LiteralContext context, @Nullable List<Resolution> resolutionList, int mask) throws Exception
 	{
 		String literal = context.getText();

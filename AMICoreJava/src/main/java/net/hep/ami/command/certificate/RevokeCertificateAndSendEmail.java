@@ -6,7 +6,8 @@ import java.util.stream.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = false, secured = false)
 public class RevokeCertificateAndSendEmail extends AbstractCommand
@@ -103,7 +104,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Revoke client or server certificate(s).";
@@ -112,7 +113,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-email=\"\" (-vo=\"\" -reason=\"\" -code=\"\")?";

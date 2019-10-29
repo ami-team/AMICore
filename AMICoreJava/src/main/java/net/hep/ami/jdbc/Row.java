@@ -3,6 +3,8 @@ package net.hep.ami.jdbc;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 public class Row
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -75,7 +77,7 @@ public class Row
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(value = "null, _ -> param2", pure = true)
+	@Contract(value = "null, _ -> param2", pure = true)
 	private static String checkString(@Nullable String currentValue, @Nullable String defaultValue)
 	{
 		if(currentValue != null)
@@ -107,7 +109,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public String getValue(int fieldIndex, @Nullable String defaultValue) throws Exception
 	{
 		if(fieldIndex < 0 || fieldIndex >= m_rowSet.m_numberOfFields)
@@ -121,7 +123,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Boolean getValue(int fieldIndex, @Nullable Boolean defaultValue) throws Exception
 	{
 		try
@@ -137,7 +139,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Integer getValue(int fieldIndex, @Nullable Integer defaultValue) throws Exception
 	{
 		try
@@ -153,7 +155,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Float getValue(int fieldIndex, @Nullable Float defaultValue) throws Exception
 	{
 		try
@@ -169,7 +171,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Double getValue(int fieldIndex, @Nullable Double defaultValue) throws Exception
 	{
 		try
@@ -207,7 +209,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public String getValue(String name, @Nullable String defaultValue) throws Exception
 	{
 		if(!m_rowSet.m_labelIndices.containsKey(name))
@@ -230,7 +232,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Boolean getValue(String name, @Nullable Boolean defaultValue) throws Exception
 	{
 		try
@@ -246,7 +248,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Integer getValue(String name, @Nullable Integer defaultValue) throws Exception
 	{
 		try
@@ -262,7 +264,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Float getValue(String name, @Nullable Float defaultValue) throws Exception
 	{
 		try
@@ -278,7 +280,7 @@ public class Row
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@org.jetbrains.annotations.Contract(value = "_, !null -> !null", pure = true)
+	@Contract(value = "_, !null -> !null", pure = true)
 	public Double getValue(String name, @Nullable Double defaultValue) throws Exception
 	{
 		try

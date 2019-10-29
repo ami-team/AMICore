@@ -4,7 +4,7 @@ import org.simplejavamail.email.*;
 import org.simplejavamail.mailer.*;
 import org.simplejavamail.mailer.config.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public class MailSingleton
 {
@@ -16,7 +16,7 @@ public class MailSingleton
 		protected final String m_mime;
 		protected final byte[] m_data;
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public Attachment(String name, String mime, byte[] data)
 		{
 			m_name = name;
@@ -27,7 +27,7 @@ public class MailSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private MailSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

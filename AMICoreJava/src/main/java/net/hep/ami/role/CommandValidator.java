@@ -2,7 +2,7 @@ package net.hep.ami.role;
 
 import java.util.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 abstract public class CommandValidator
 {
@@ -18,7 +18,7 @@ abstract public class CommandValidator
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "";

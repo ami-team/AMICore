@@ -8,6 +8,8 @@ import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class AnalyzeQuery extends AbstractCommand
 {
@@ -59,7 +61,7 @@ public class AnalyzeQuery extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Extract information from a SQL/MQL query.";

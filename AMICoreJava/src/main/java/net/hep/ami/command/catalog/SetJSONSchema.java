@@ -4,7 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class SetJSONSchema extends AbstractCommand
@@ -52,7 +53,7 @@ public class SetJSONSchema extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Set the JSON schema info of the given catalog.";
@@ -61,7 +62,7 @@ public class SetJSONSchema extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -json=\"\"";

@@ -5,8 +5,9 @@ import java.util.*;
 
 import net.spy.memcached.*;
 
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 public class CacheSingleton
 {
@@ -16,7 +17,7 @@ public class CacheSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private CacheSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

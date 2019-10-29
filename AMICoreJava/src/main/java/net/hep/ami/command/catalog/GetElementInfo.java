@@ -4,10 +4,11 @@ import java.util.*;
 import java.util.stream.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.reflexion.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class GetElementInfo extends AbstractCommand
@@ -204,7 +205,7 @@ public class GetElementInfo extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Get the element's information.";
@@ -213,7 +214,7 @@ public class GetElementInfo extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" -primaryFieldName=\"\" -primaryFieldValue=\"\"";

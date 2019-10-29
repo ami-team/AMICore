@@ -3,7 +3,8 @@ package net.hep.ami.command.dashboard;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class UpdateWidget extends AbstractCommand
@@ -42,7 +43,7 @@ public class UpdateWidget extends AbstractCommand
 	/*---------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Update the given widget.";
@@ -51,7 +52,7 @@ public class UpdateWidget extends AbstractCommand
 	/*---------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-id=\"\" -x=\"\"-y=\"\" -width=\"\" -height=\"\"";

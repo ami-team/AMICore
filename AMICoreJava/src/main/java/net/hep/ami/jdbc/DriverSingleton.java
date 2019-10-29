@@ -8,6 +8,8 @@ import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 
+import org.jetbrains.annotations.*;
+
 public class DriverSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -211,7 +213,7 @@ public class DriverSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String getKey(@NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass)
 	{
 		return internalCatalog + "%" + jdbcUrl + "%" + (user == null ? "N/A" : user) + "%" + (pass == null ? "N/A" : pass);

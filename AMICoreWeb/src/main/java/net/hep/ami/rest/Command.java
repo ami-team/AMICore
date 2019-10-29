@@ -1,5 +1,8 @@
 package net.hep.ami.rest;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.core.type.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -8,10 +11,8 @@ import javax.ws.rs.core.*;
 import javax.servlet.http.*;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.core.type.*;
+import org.jetbrains.annotations.*;
 
 @Path("/command")
 public class Command

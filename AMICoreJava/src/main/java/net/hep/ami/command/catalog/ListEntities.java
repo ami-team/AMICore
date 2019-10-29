@@ -3,8 +3,9 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class ListEntities extends AbstractCommand
@@ -50,7 +51,7 @@ public class ListEntities extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "List the entities of the given catalog.";
@@ -59,7 +60,7 @@ public class ListEntities extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\"";
