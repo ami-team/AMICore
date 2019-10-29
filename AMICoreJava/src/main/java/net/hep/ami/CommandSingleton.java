@@ -9,6 +9,8 @@ import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 public class CommandSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -42,7 +44,7 @@ public class CommandSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private CommandSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -375,7 +377,7 @@ public class CommandSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static Set<String> getCommandNames()
 	{
 		return s_commands.keySet();

@@ -8,6 +8,8 @@ import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.reflexion.*;
 
+import org.jetbrains.annotations.*;
+
 public class CatalogSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -28,7 +30,7 @@ public class CatalogSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private CatalogSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

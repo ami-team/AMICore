@@ -4,10 +4,10 @@ import ch.qos.logback.core.*;
 import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.spi.*;
 
-import net.hep.ami.utility.*;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import org.jetbrains.annotations.*;
 
 public class LogSingleton
 {
@@ -21,7 +21,7 @@ public class LogSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private LogSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

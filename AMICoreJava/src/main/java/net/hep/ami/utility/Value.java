@@ -2,6 +2,8 @@ package net.hep.ami.utility;
 
 import java.io.*;
 
+import org.jetbrains.annotations.*;
+
 public class Value<A> implements Serializable
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -14,7 +16,7 @@ public class Value<A> implements Serializable
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Value()
 	{
 		value = null;
@@ -22,7 +24,7 @@ public class Value<A> implements Serializable
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Value(A _value)
 	{
 		value = _value;

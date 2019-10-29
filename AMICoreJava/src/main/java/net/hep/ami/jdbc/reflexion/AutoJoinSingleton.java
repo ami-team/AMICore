@@ -3,14 +3,15 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.query.*;
+
+import org.jetbrains.annotations.*;
 
 public class AutoJoinSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private AutoJoinSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

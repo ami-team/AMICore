@@ -3,7 +3,7 @@ package net.hep.ami.jdbc.query;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public final class XQLSelect
 {
@@ -24,7 +24,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addSelectPart(@Nullable CharSequence selectPart)
 	{
 		if(selectPart != null)
@@ -36,7 +36,7 @@ public final class XQLSelect
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addSelectPart(@Nullable Collection<?> selectPart)
 	{
 		if(selectPart != null)
@@ -50,7 +50,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addFromPart(@Nullable CharSequence fromPart)
 	{
 		if(fromPart != null)
@@ -62,7 +62,7 @@ public final class XQLSelect
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addFromPart(@Nullable Collection<?> fromPart)
 	{
 		if(fromPart != null)
@@ -76,7 +76,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addWherePart(@Nullable CharSequence wherePart)
 	{
 		if(wherePart != null)
@@ -88,7 +88,7 @@ public final class XQLSelect
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addWherePart(@Nullable Collection<?> wherePart)
 	{
 		if(wherePart != null)
@@ -102,7 +102,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addExtraPart(@Nullable CharSequence extraPart)
 	{
 		if(extraPart != null)
@@ -114,7 +114,7 @@ public final class XQLSelect
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addExtraPart(@Nullable Collection<?> extraPart)
 	{
 		if(extraPart != null)
@@ -128,7 +128,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLSelect addWholeQuery(@Nullable XQLSelect query)
 	{
 		if(query != null)
@@ -155,7 +155,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public List<String> getSelectCollection()
 	{
 		return m_selectList;
@@ -164,7 +164,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Set<String> getFromCollection()
 	{
 		return m_fromSet;
@@ -173,7 +173,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Set<String> getWhereCollection()
 	{
 		return m_whereSet;
@@ -182,7 +182,7 @@ public final class XQLSelect
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Set<String> getExtraCollection()
 	{
 		return m_extraSet;

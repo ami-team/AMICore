@@ -26,6 +26,8 @@ import org.bouncycastle.crypto.paddings.*;
 
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 public class SecuritySingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -40,7 +42,7 @@ public class SecuritySingleton
 		public final Integer reason;
 		public final Date date;
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public Revocation(BigInteger _serial, Integer _reason, Date _date)
 		{
 			serial = _serial;
@@ -243,7 +245,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public PEM(@Nullable PrivateKey[] _privateKeys, @Nullable PublicKey[] _publicKeys, @Nullable X509Certificate[] _x509Certificates, @Nullable X509CRL[] _x509CRLs)
 		{
 			privateKeys = _privateKeys;
@@ -414,7 +416,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private SecuritySingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -517,7 +519,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> new")
+	@Contract("_ -> new")
 	public static DERSequence amiVirtOrg(@NotNull String virtOrg)
 	{
 		return new DERSequence(new ASN1Encodable[] {
@@ -1050,7 +1052,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	@Contract("_, _, _ -> new")
 	public static Tuple2<String, String> checkPassword(@NotNull String user, @NotNull String pass_from_user, @NotNull String pass_from_db) throws Exception
 	{
 		if(!pass_from_user.equals(pass_from_db))

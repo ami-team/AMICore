@@ -9,11 +9,13 @@ import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 public class Formatter
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private Formatter() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -128,7 +130,7 @@ public class Formatter
 
 	@NotNull
 	@SuppressWarnings("unused")
-	@org.jetbrains.annotations.Contract("_, _, _ -> new")
+	@Contract("_, _, _ -> new")
 	public static Tuple2<String, List<String>> formatPreparedStatement(@NotNull Querier querier, @NotNull String sql, @NotNull Object[] args) throws Exception
 	{
 		List<String> list = new ArrayList<>();

@@ -7,8 +7,9 @@ import java.math.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 public class LocalizationSingleton
 {
@@ -19,7 +20,7 @@ public class LocalizationSingleton
 		public final String continentCode;
 		public final String countryCode;
 
-		@org.jetbrains.annotations.Contract(pure = true)
+		@Contract(pure = true)
 		public Localization(@NotNull String _continentCode, @NotNull String _countryCode)
 		{
 			continentCode = _continentCode;
@@ -29,7 +30,7 @@ public class LocalizationSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private LocalizationSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -256,7 +257,7 @@ public class LocalizationSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_, _ -> new")
+	@Contract("_, _ -> new")
 	public static Localization localizeIP(@NotNull Querier querier, @NotNull String ip) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/

@@ -4,7 +4,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.servlet.http.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 @Path("/ping")
 public class Ping

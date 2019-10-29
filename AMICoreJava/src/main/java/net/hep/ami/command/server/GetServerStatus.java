@@ -6,8 +6,9 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.shell.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class GetServerStatus extends AbstractCommand
@@ -142,7 +143,7 @@ public class GetServerStatus extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Get the server status.";

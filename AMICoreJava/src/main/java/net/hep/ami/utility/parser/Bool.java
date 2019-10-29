@@ -1,13 +1,13 @@
 package net.hep.ami.utility.parser;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public class Bool
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("null -> fail")
+	@Contract("null -> fail")
 	public static Boolean valueOf(@Nullable String s) throws NumberFormatException
 	{
 		if(s != null)
@@ -41,7 +41,7 @@ public class Bool
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract("null -> fail")
+	@Contract("null -> fail")
 	public static boolean parseBool(@Nullable String s) throws NumberFormatException
 	{
 		if(s != null)

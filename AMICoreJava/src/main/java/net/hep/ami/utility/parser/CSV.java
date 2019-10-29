@@ -3,9 +3,9 @@ package net.hep.ami.utility.parser;
 import java.io.*;
 import java.util.*;
 
-import net.hep.ami.utility.*;
-
 import org.antlr.v4.runtime.*;
+
+import org.jetbrains.annotations.*;
 
 public class CSV
 {

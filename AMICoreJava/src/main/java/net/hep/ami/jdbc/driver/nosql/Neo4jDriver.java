@@ -1,7 +1,8 @@
 package net.hep.ami.jdbc.driver.nosql;
 
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @DriverMetadata(
 	type = DriverMetadata.Type.NoSQL,
@@ -22,7 +23,7 @@ public class Neo4jDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void setupSession(String db, String tz) throws Exception
+	public void setupSession(String db, String tz)
 	{
 		/* TODO */
 	}
@@ -30,7 +31,7 @@ public class Neo4jDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	public String patchSQL(String sql)
 	{
 		return sql;
 	}

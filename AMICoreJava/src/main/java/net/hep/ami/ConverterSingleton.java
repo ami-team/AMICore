@@ -9,6 +9,8 @@ import javax.xml.transform.stream.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 public class ConverterSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -29,7 +31,7 @@ public class ConverterSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private ConverterSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

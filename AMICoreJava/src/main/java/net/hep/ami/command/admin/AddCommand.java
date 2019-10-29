@@ -6,7 +6,8 @@ import java.lang.reflect.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
 public class AddCommand extends AbstractCommand
@@ -114,7 +115,7 @@ public class AddCommand extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Add or update a command.";
@@ -123,7 +124,7 @@ public class AddCommand extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-class=\"\" (-command=\"\")? (-visible=\"1\")? (-secured=\"0\")?";

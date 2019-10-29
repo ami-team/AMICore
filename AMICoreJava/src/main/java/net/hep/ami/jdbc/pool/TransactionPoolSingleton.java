@@ -5,7 +5,8 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 public class TransactionPoolSingleton
 {
@@ -19,7 +20,7 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private TransactionPoolSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

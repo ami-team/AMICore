@@ -4,6 +4,8 @@ import java.io.*;
 
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 /**
  * A 8-tuple.
  */
@@ -79,7 +81,7 @@ public class Tuple8<A, B, C, D, E, F, G, H> implements Serializable
 	 * @param _a a
 	 */
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Tuple8(A _x, B _y, C _z, D _t, E _u, F _v, G _w, H _a)
 	{
 		x = _x;

@@ -4,11 +4,13 @@ import java.io.*;
 import java.util.*;
 import java.nio.charset.*;
 
+import org.jetbrains.annotations.*;
+
 public class TextFile
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private TextFile() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

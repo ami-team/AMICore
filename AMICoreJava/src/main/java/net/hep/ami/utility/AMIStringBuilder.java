@@ -2,6 +2,8 @@ package net.hep.ami.utility;
 
 import java.io.*;
 
+import org.jetbrains.annotations.*;
+
 public class AMIStringBuilder implements Serializable, Comparable<StringBuilder>, CharSequence
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -14,7 +16,7 @@ public class AMIStringBuilder implements Serializable, Comparable<StringBuilder>
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public AMIStringBuilder()
 	{
 		m_underlyingStringBuilder = new StringBuilder(16);
@@ -22,7 +24,7 @@ public class AMIStringBuilder implements Serializable, Comparable<StringBuilder>
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public AMIStringBuilder(int capacity)
 	{
 		m_underlyingStringBuilder = new StringBuilder(capacity);

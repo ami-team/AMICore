@@ -6,7 +6,8 @@ import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.sql.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class SearchQuery extends AbstractCommand
@@ -218,7 +219,7 @@ public class SearchQuery extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Execute a simple raw, SQL or MQL query (select mode). Parameter `catalog` can be a regular expression.";
@@ -227,7 +228,7 @@ public class SearchQuery extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)? (-count)? (-links)?";

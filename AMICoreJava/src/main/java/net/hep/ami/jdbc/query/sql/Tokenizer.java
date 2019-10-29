@@ -8,11 +8,13 @@ import net.hep.ami.jdbc.query.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 public class Tokenizer
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	private Tokenizer() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -189,7 +191,7 @@ public class Tokenizer
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> new")
+	@Contract("_ -> new")
 	public static Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> extractAliasInfo(@NotNull String sql) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/

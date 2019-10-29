@@ -4,7 +4,8 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_CERT", visible = false, secured = true)
 public class GenerateAuthority extends AbstractCommand
@@ -97,7 +98,7 @@ public class GenerateAuthority extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Generate a CA certificate. Default validity: 15 years.";
@@ -106,7 +107,7 @@ public class GenerateAuthority extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-validity=\"\")?";

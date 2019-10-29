@@ -11,6 +11,8 @@ import net.hep.ami.jdbc.query.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 @CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
 {
@@ -171,7 +173,7 @@ public class UpdateElements extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Update one or more elements.";
@@ -180,7 +182,7 @@ public class UpdateElements extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";

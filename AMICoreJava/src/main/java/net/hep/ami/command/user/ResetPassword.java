@@ -6,8 +6,9 @@ import java.nio.charset.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
 public class ResetPassword extends AbstractCommand
@@ -69,7 +70,7 @@ public class ResetPassword extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Reset password.";
@@ -78,7 +79,7 @@ public class ResetPassword extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-amiLogin=\"\"";

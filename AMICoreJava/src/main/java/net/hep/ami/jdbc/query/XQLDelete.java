@@ -3,7 +3,7 @@ package net.hep.ami.jdbc.query;
 import java.util.*;
 import java.util.stream.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public final class XQLDelete
 {
@@ -35,7 +35,7 @@ public final class XQLDelete
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLDelete addDeletePart(@Nullable CharSequence selectPart)
 	{
 		if(selectPart != null)
@@ -47,7 +47,7 @@ public final class XQLDelete
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLDelete addDeletePart(@Nullable Collection<?> selectPart)
 	{
 		if(selectPart != null)
@@ -61,7 +61,7 @@ public final class XQLDelete
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLDelete addWherePart(@Nullable CharSequence wherePart)
 	{
 		if(wherePart != null)
@@ -73,7 +73,7 @@ public final class XQLDelete
 	}
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLDelete addWherePart(@Nullable Collection<?> wherePart)
 	{
 		if(wherePart != null)
@@ -87,7 +87,7 @@ public final class XQLDelete
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public XQLDelete addWholeQuery(@Nullable XQLDelete query)
 	{
 		if(query != null)
@@ -103,7 +103,7 @@ public final class XQLDelete
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Set<String> getDeleteCollection()
 	{
 		return m_deleteSet;
@@ -112,7 +112,7 @@ public final class XQLDelete
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public Set<String> getWhereCollection()
 	{
 		return m_whereSet;

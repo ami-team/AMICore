@@ -3,7 +3,7 @@ package net.hep.ami.rest.filter;
 import javax.ws.rs.core.*;
 import javax.ws.rs.container.*;
 
-import net.hep.ami.utility.*;
+import org.jetbrains.annotations.*;
 
 public class AMIFilter implements ContainerResponseFilter
 {

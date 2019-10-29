@@ -11,15 +11,19 @@ import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
+import org.jetbrains.annotations.*;
+
 public class Helper
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Contract(pure = true)
 	private Helper() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Set<String> getFromSetFromResolutionList(QId primaryKey, List<Resolution> resolutionList)
+	@NotNull
+	public static Set<String> getFromSetFromResolutionList(@NotNull QId primaryKey, @NotNull List<Resolution> resolutionList)
 	{
 		Set<String> result = new LinkedHashSet<>();
 
@@ -39,7 +43,7 @@ public class Helper
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static boolean isTrivialQuery(List<Resolution> resolutionList)
+	private static boolean isTrivialQuery(@NotNull List<Resolution> resolutionList)
 	{
 		if(!resolutionList.isEmpty())
 		{
@@ -85,6 +89,8 @@ public class Helper
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@Contract("_, _, _, _, _ -> new")
 	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(String catalog, QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		boolean dualNeeded = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_HAS_DUAL) == DriverMetadata.FLAG_HAS_DUAL;
@@ -316,6 +322,7 @@ public class Helper
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static String getIsolatedExpression(String catalog, QId primaryKey, List<Resolution> resolutionList, CharSequence expression, int skip, boolean noComp, boolean noEntity, boolean noPrimaryEntity) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -393,7 +400,9 @@ public class Helper
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Tuple2<List<String>, List<String>> resolve(String catalog, QId primaryKey, List<Resolution> resolutionList, List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
+	@NotNull
+	@Contract("_, _, _, _, _, _, _ -> new")
+	public static Tuple2<List<String>, List<String>> resolve(String catalog, QId primaryKey, @NotNull List<Resolution> resolutionList, @NotNull List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();

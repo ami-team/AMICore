@@ -7,7 +7,8 @@ import java.security.cert.*;
 
 import net.hep.ami.*;
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_CERT", visible = false, secured = true)
 public class GenerateCertificate extends AbstractCommand
@@ -156,7 +157,7 @@ public class GenerateCertificate extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Generate a client or server certificate. Default validity: 1 year.";
@@ -165,7 +166,7 @@ public class GenerateCertificate extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-country=\"\" -locality=\"\" -organization=\"\" -organizationalUnit=\"\" -commonName=\"\" (-email=\"\")? (-virtOrg=\"\")? -password=\"\" (-validity=\"\")?";

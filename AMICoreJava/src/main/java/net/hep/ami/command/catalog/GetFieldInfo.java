@@ -3,8 +3,9 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.reflexion.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class GetFieldInfo extends AbstractCommand
@@ -51,7 +52,7 @@ public class GetFieldInfo extends AbstractCommand
 	/*---------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String help()
 	{
 		return "Get the info of the given field.";
@@ -60,7 +61,7 @@ public class GetFieldInfo extends AbstractCommand
 	/*---------------------------------------------------------------------*/
 
 	@NotNull
-	@org.jetbrains.annotations.Contract(pure = true)
+	@Contract(pure = true)
 	public static String usage()
 	{
 		return "-catalog=\"\" -entity=\"\" -field=\"\"";
