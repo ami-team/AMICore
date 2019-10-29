@@ -602,7 +602,7 @@ public class RowSet
 
 		if(precision >= 1 && precision <= 9)
 		{
-			String ms = String.valueOf(Math.ceil(timestamp.getNanos() / Math.pow(10, 9 - precision)));
+			String ms = String.valueOf(java.lang.Math.round(Math.ceil(timestamp.getNanos() / Math.pow(10, 9 - precision))));
 
 			String pad = "0".repeat(Math.max(0, precision - ms.length()));
 
