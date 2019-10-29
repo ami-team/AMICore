@@ -4,20 +4,22 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.servlet.http.*;
 
+import net.hep.ami.utility.*;
+
 @Path("/ping")
 public class Ping
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response ping(
-		@Context HttpServletRequest request
+		@NotNull @Context HttpServletRequest request
 	 ) {
 		request.getSession(true);
 
 		return Response.ok("pong").build();
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -522,7 +522,7 @@ public class FrontEnd extends HttpServlet
 		String AMIPass = arguments.get("AMIPass");
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/*GET SESSION AND CONTEXT                                                                                     */
+		/* GET SESSION AND CONTEXT                                                                                    */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		HttpSession session = request.getSession(true);
@@ -565,10 +565,8 @@ public class FrontEnd extends HttpServlet
 			/* CERTIFICATE LOGIN                                                                                      */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, String> tuple = readSession(session);
-
-			String tmpAMIUser = tuple.x;
-			String tmpAMIPass = tuple.y;
+			String tmpAMIUser = (String) session.getAttribute("AMIUser");
+			String tmpAMIPass = (String) session.getAttribute("AMIPass");
 
 			if(tmpAMIUser == null
 			   ||
@@ -599,10 +597,8 @@ public class FrontEnd extends HttpServlet
 			/* CREDENTIAL LOGIN                                                                                       */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, String> tuple = readSession(session);
-
-			String tmpAMIUser = tuple.x;
-			String tmpAMIPass = tuple.y;
+			String tmpAMIUser = (String) session.getAttribute("AMIUser");
+			String tmpAMIPass = (String) session.getAttribute("AMIPass");
 
 			if(tmpAMIUser == null || (AMIUser != null && !tmpAMIUser.equals(AMIUser))
 			   ||
@@ -688,64 +684,6 @@ public class FrontEnd extends HttpServlet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		arguments.put("userSession", session.getId());
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	@org.jetbrains.annotations.Contract("_ -> new")
-	private Tuple2<String, String> readSession(@NotNull HttpSession session)
-	{
-		String AMIUser;
-		String AMIPass;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		AMIUser = (String) session.getAttribute("AMIUser");
-		AMIPass = (String) session.getAttribute("AMIPass");
-
-		if(AMIUser != null && !AMIUser.isEmpty()
-		   &&
-		   AMIPass != null && !AMIPass.isEmpty()
-		 ) {
-			return new Tuple2<>(
-				AMIUser,
-				AMIPass
-			);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		ServletContext context = session.getServletContext().getContext(ConfigSingleton.getProperty("context_name"));
-
-		if(context != null)
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			AMIUser = (String) context.getAttribute("AMIUser");
-			AMIPass = (String) context.getAttribute("AMIPass");
-
-			if(AMIUser != null && !AMIUser.isEmpty()
-			   &&
-			   AMIPass != null && !AMIPass.isEmpty()
-			 ) {
-				return new Tuple2<>(
-					AMIUser,
-					AMIPass
-				);
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return new Tuple2<>(
-			null,
-			null
-		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

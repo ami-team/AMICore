@@ -45,7 +45,7 @@ public class Token
 	@Path("certificate")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getByCertificate(
-		@Context HttpServletRequest request
+		@NotNull @Context HttpServletRequest request
 	 ) {
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -85,7 +85,7 @@ public class Token
 
 	@DELETE
 	public Response delete(
-		@Context HttpServletRequest request
+		@NotNull @Context HttpServletRequest request
 	 ) {
 		request.getSession(true).removeAttribute("token");
 
