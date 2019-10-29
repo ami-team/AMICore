@@ -34,7 +34,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = false;
+		boolean doCreateAndFill = true;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -1132,12 +1132,22 @@ public class AMICoreTest
 		System.out.println("Testing select commands");
 
 		/*-----------------------------------------------------------------*/
+		//
 
-		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * WHERE id > 0 \" ";
+		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -sql=\"SELECT * FROM `DATASET` WHERE `id` > 0  \" ";
+
+		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -sql=\"SELECT * FROM `DATASET` WHERE `id` > 0 and `created` < STR_TO_DATE('2019-10-28','%Y-%m-%d')  \" ";
+
+		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -sql=\"SELECT * FROM `DATASET` WHERE `id` > 0 and `created` > TIMESTAMP('2019-10-28','YYYY-MM-DD')  \" ";
+
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2019-10-28 13:01:001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
+
+
 		System.out.println(commandTest);
 		try
 		{
-			CommandSingleton.executeCommand(commandTest, false);
+			//CommandSingleton.executeCommand(commandTest, false);
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
 		}
 		catch(Exception e)
 		{

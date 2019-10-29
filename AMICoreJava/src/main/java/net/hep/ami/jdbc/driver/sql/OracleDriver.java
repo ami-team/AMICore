@@ -64,6 +64,11 @@ public class OracleDriver extends AbstractDriver
 
 			for(String token: tokens)
 			{
+				if("TIMESTAMP".equalsIgnoreCase(token))
+				{
+					token = "TO_TIMESTAMP";
+				}
+
 				if(!";".equals(token))
 				{
 					/**/ if("(".equals(token))
@@ -128,6 +133,11 @@ public class OracleDriver extends AbstractDriver
 
 			for(String token: tokens)
 			{
+				if("TIMESTAMP".equalsIgnoreCase(token))
+				{
+					token = "TO_TIMESTAMP";
+				}
+
 				if(!";".equals(token))
 				{
 					/**/ if("LIMIT".equalsIgnoreCase(token))

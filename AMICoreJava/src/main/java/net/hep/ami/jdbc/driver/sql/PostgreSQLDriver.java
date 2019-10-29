@@ -151,6 +151,11 @@ public class PostgreSQLDriver extends AbstractDriver
 				token = "TO_TIMESTAMP";
 			}
 
+			if("TIMESTAMP".equalsIgnoreCase(token))
+			{
+				token = "TO_TIMESTAMP";
+			}
+
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			result.add(token);
