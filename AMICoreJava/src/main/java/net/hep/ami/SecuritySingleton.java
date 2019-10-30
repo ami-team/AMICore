@@ -24,8 +24,6 @@ import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
 
-import net.hep.ami.utility.*;
-
 import org.jetbrains.annotations.*;
 
 public class SecuritySingleton
@@ -1053,7 +1051,7 @@ public class SecuritySingleton
 
 	@NotNull
 	@Contract("_, _, _ -> new")
-	public static Tuple2<String, String> checkPassword(@NotNull String user, @NotNull String pass_from_user, @NotNull String pass_from_db) throws Exception
+	public static String checkPassword(@NotNull String user, @NotNull String pass_from_user, @NotNull String pass_from_db) throws Exception
 	{
 		if(!pass_from_user.equals(pass_from_db))
 		{
@@ -1076,10 +1074,7 @@ public class SecuritySingleton
 			}
 		}
 
-		return new Tuple2<>(
-			/**/user/**/,
-			pass_from_db
-		);
+		return pass_from_db;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

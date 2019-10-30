@@ -116,6 +116,7 @@ public class UpdateElements extends AbstractCommand
 				switch(type)
 				{
 					case "java.lang.String":
+					case "oracle.jdbc.OracleClob":
 						statement.setString(i + 1, value);
 						break;
 					case "java.sql.Timestamp":
@@ -135,9 +136,6 @@ public class UpdateElements extends AbstractCommand
 						break;
 					case "java.lang.Double":
 						statement.setDouble(i + 1, Double.parseDouble(value));
-						break;
-					case "oracle.jdbc.OracleClob":
-						statement.setString(i + 1, value);
 						break;
 					default:
 						System.out.println(type);

@@ -995,7 +995,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Catalog getCatalogInfo(@NotNull String externalCatalog) throws Exception
+	public static Catalog getCatalogInfo(@Nullable String externalCatalog) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1016,11 +1016,11 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Table getEntityInfo(@NotNull String externalCatalog, @NotNull String _entity) throws Exception
+	public static Table getEntityInfo(@Nullable String externalCatalog, @Nullable String entity) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Table table = getCatalogInfo(externalCatalog).tables.get(_entity);
+		Table table = getCatalogInfo(externalCatalog).tables.get(entity);
 
 		if(table != null)
 		{
@@ -1029,7 +1029,7 @@ public class SchemaSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		throw new Exception("entity not found `" + externalCatalog + "`.`" + _entity + "`");
+		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -1037,7 +1037,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Column getFieldInfo(@NotNull String externalCatalog, @NotNull String entity, @NotNull String field) throws Exception
+	public static Column getFieldInfo(@Nullable String externalCatalog, @Nullable String entity, @Nullable String field) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1058,52 +1058,17 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Map<String, FrgnKeys> getForwardFKs(@NotNull String externalCatalog, @NotNull String entity) throws Exception
+	public static Map<String, FrgnKeys> getForwardFKs(@Nullable String externalCatalog, @Nullable String entity) throws Exception
 	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		Catalog catalog = s_catalogs.get(externalCatalog);
-
-		if(catalog != null)
-		{
-			Map<String, FrgnKeys> map2 = catalog.tables.get(entity).forwardFKs;
-
-			if(map2 != null)
-			{
-				return map2;
-			}
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
-
-		/*------------------------------------------------------------------------------------------------------------*/
+		return getEntityInfo(externalCatalog, entity).forwardFKs;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Map<String, FrgnKeys> getBackwardFKs(@NotNull String externalCatalog, @NotNull String entity) throws Exception
+	public static Map<String, FrgnKeys> getBackwardFKs(@Nullable String externalCatalog, @Nullable String entity) throws Exception
 	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		Catalog catalog = s_catalogs.get(externalCatalog);
-
-		if(catalog != null)
-		{
-			Map<String, FrgnKeys> map2 = catalog.tables.get(entity).backwardFKs;
-
-			if(map2 != null)
-			{
-				return map2;
-			}
-		}
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		throw new Exception("entity not found `" + externalCatalog + "`.`" + entity + "`");
-
-		/*------------------------------------------------------------------------------------------------------------*/
+		return getEntityInfo(externalCatalog, entity).backwardFKs;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1132,7 +1097,7 @@ public class SchemaSingleton
 
 	@NotNull
 	@Contract("_ -> new")
-	public static List<String> getEntityNames(@NotNull String externalCatalog) throws Exception
+	public static List<String> getEntityNames(@Nullable String externalCatalog) throws Exception
 	{
 		return new ArrayList<>(
 			getCatalogInfo(externalCatalog).tables.keySet()
@@ -1143,7 +1108,7 @@ public class SchemaSingleton
 
 	@NotNull
 	@Contract("_, _ -> new")
-	public static List<String> getFieldNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
+	public static List<String> getFieldNames(@Nullable String externalCatalog, @Nullable String entity) throws Exception
 	{
 		return new ArrayList<>(
 			getEntityInfo(externalCatalog, entity).columns.keySet()
@@ -1154,7 +1119,7 @@ public class SchemaSingleton
 
 	@NotNull
 	@Contract("_, _ -> new")
-	public static Set<String> getForwardFKNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
+	public static Set<String> getForwardFKNames(@Nullable String externalCatalog, @Nullable String entity) throws Exception
 	{
 		return new LinkedHashSet<>(
 			getForwardFKs(externalCatalog, entity).keySet()
@@ -1165,7 +1130,7 @@ public class SchemaSingleton
 
 	@NotNull
 	@Contract("_, _ -> new")
-	public static Set<String> getBackwardFKNames(@NotNull String externalCatalog, @NotNull String entity) throws Exception
+	public static Set<String> getBackwardFKNames(@Nullable String externalCatalog, @Nullable String entity) throws Exception
 	{
 		return new LinkedHashSet<>(
 			getBackwardFKs(externalCatalog, entity).keySet()
@@ -1175,7 +1140,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Column getPrimaryKey(@NotNull String externalCatalog, @NotNull String entity) throws Exception
+	public static Column getPrimaryKey(@Nullable String externalCatalog, @Nullable String entity) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1197,7 +1162,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static List<QId> getSortedQIds(@NotNull String externalCatalog, @NotNull String entity, @Nullable List<QId> constraints) throws Exception
+	public static List<QId> getSortedQIds(@Nullable String externalCatalog, @Nullable String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
 		                                                              .sorted(Comparator.comparingInt(x -> x.rank))
@@ -1209,7 +1174,7 @@ public class SchemaSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static List<QId> getReadableQIds(@NotNull String externalCatalog, @NotNull String entity, @Nullable List<QId> constraints) throws Exception
+	public static List<QId> getReadableQIds(@Nullable String externalCatalog, @Nullable String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
 		                                                              .filter(x -> x.readable)

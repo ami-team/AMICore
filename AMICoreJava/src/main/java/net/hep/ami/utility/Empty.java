@@ -21,17 +21,12 @@ public class Empty
 		{
 			s = s.trim();
 
-			if(s.isEmpty() /*--------------------------*/)
-			{
-				return true;
-			}
+			return s.isEmpty() /*--------------------------*/;
 		}
 		else
 		{
 			return true;
 		}
-
-		return false;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -43,17 +38,12 @@ public class Empty
 		{
 			s = s.trim();
 
-			if(s.isEmpty() || "@NULL".equalsIgnoreCase(s))
-			{
-				return true;
-			}
+			return s.isEmpty() || "@NULL".equalsIgnoreCase(s);
 		}
 		else
 		{
 			return true;
 		}
-
-		return false;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

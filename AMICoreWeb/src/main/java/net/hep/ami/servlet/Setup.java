@@ -20,7 +20,6 @@ import org.slf4j.*;
 )
 
 @SuppressWarnings("DuplicateExpressions")
-
 public class Setup extends HttpServlet
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

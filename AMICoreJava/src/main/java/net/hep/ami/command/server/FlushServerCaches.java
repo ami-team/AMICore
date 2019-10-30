@@ -21,7 +21,7 @@ public class FlushServerCaches extends AbstractCommand
 
 	@NotNull
 	@Override
-	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments)
 	{
 		long t1 = System.currentTimeMillis();
 		Router.reload(arguments.containsKey("full"));

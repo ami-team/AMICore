@@ -21,7 +21,7 @@ public class FlushCommandCache extends AbstractCommand
 
 	@NotNull
 	@Override
-	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments)
 	{
 		String delay = arguments.get("delay");
 

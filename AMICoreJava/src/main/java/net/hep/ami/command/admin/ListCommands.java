@@ -21,7 +21,7 @@ public class ListCommands extends AbstractCommand
 
 	@NotNull
 	@Override
-	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments)
 	{
 		return CommandSingleton.listCommands();
 	}
