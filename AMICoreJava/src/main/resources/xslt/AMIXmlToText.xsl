@@ -79,7 +79,7 @@
 			<xsl:text> = </xsl:text>
 
 			<xsl:text>"</xsl:text>
-			<xsl:value-of select="ami:replace(., false())" />
+			<xsl:value-of select="ami:replace(node()[1], false())" />
 			<xsl:text>"</xsl:text>
 
 			<xsl:text>&#x0a;</xsl:text>
