@@ -59,7 +59,7 @@
 
 	<xsl:template match="help|usage">
 		<xsl:text>"</xsl:text>
-		<xsl:copy-of select="ami:replace(text(), true())" />
+		<xsl:copy-of select="ami:replace(., true())" />
 		<xsl:text>"</xsl:text>
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
@@ -69,7 +69,7 @@
 
 	<xsl:template match="error|info">
 		<xsl:text>{"$":"</xsl:text>
-		<xsl:copy-of select="ami:replace(text(), true())" />
+		<xsl:copy-of select="ami:replace(., true())" />
 		<xsl:text>"}</xsl:text>
 
 		<xsl:if test="not (position() = last())">,</xsl:if>
@@ -102,7 +102,7 @@
 		</xsl:for-each>
 
 		<xsl:text>"$":"</xsl:text>
-		<xsl:value-of select="ami:replace(text(), true())" />
+		<xsl:value-of select="ami:replace(., true())" />
 		<xsl:text>"</xsl:text>
 
 		<xsl:text>}</xsl:text>
@@ -190,8 +190,7 @@
 		</xsl:for-each>
 
 		<xsl:text>"$":"</xsl:text>
-		<xsl:value-of select="text()" />
-		<!--<xsl:value-of select="ami:replace(text(), true())" />-->
+		<xsl:value-of select="ami:replace(., true())" />
 		<xsl:text>"</xsl:text>
 		<xsl:if test="properties|link">,</xsl:if>
 
