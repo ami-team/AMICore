@@ -75,7 +75,7 @@
 		<xsl:for-each select="field">
 
 			<xsl:text>    -> </xsl:text>
-			<!--<xsl:value-of select="ami:replace(@name, false())" />-->
+			<xsl:value-of select="ami:replace(@name, false())" />
 			<xsl:text> = </xsl:text>
 
 			<xsl:text>"</xsl:text>
