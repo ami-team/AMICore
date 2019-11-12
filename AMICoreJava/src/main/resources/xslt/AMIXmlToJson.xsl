@@ -183,9 +183,9 @@
 
 		<xsl:for-each select="@*">
 			<xsl:text>"@</xsl:text>
-			<!--<xsl:value-of select="ami:replace(name(), true())" />-->
+			<xsl:value-of select="ami:replace(name(), true())" />
 			<xsl:text>":"</xsl:text>
-			<!--<xsl:value-of select="ami:replace(., true())" />-->
+			<xsl:value-of select="ami:replace(., true())" />
 			<xsl:text>",</xsl:text>
 		</xsl:for-each>
 
