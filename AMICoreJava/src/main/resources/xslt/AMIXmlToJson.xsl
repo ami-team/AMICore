@@ -190,7 +190,8 @@
 		</xsl:for-each>
 
 		<xsl:text>"$":"</xsl:text>
-		<xsl:value-of select="ami:replace(text(), true())" />
+		<xsl:value-of select="text()" />
+		<!--<xsl:value-of select="ami:replace(text(), true())" />-->
 		<xsl:text>"</xsl:text>
 		<xsl:if test="properties|link">,</xsl:if>
 
