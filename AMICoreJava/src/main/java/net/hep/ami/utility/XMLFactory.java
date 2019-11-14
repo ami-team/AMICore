@@ -86,7 +86,7 @@ public class XMLFactory
 						return StringValue.makeStringValue(Utility.escapeJSONString(s, false));
 					}
 					else {
-						return StringValue.makeStringValue(s.replace("\n", "\\n").replace("\t", "\\t"));
+						return StringValue.makeStringValue(s.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"));
 					}
 					}
 				};
