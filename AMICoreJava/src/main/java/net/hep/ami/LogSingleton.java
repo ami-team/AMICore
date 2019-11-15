@@ -4,8 +4,7 @@ import ch.qos.logback.core.*;
 import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.spi.*;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 
 import org.jetbrains.annotations.*;
 

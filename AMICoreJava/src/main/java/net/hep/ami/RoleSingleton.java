@@ -362,25 +362,16 @@ public class RoleSingleton
 
 	public static void checkCommand(@Nullable String validatorClass, @NotNull String command, @NotNull Set <String> userRoles, @NotNull Map<String, String> arguments) throws Exception
 	{
-		if(validatorClass == null)
+		if(Empty.isBlankEmptyNull(validatorClass))
 		{
 			return;
-		}
-		else
-		{
-			validatorClass = validatorClass.trim();
-
-			if(validatorClass.isEmpty() || "@NULL".equalsIgnoreCase(validatorClass))
-			{
-				return;
-			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET VALIDATOR                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple1 tuple = s_commandRoleValidators.get(validatorClass);
+		Tuple1 tuple = s_commandRoleValidators.get(validatorClass.trim());
 
 		if(tuple == null)
 		{
@@ -414,25 +405,16 @@ public class RoleSingleton
 
 	public static void checkNewUser(@Nullable String validatorClass, @NotNull String amiLogin, @NotNull String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, @NotNull String firstName, @NotNull String lastName, @NotNull String email) throws Exception
 	{
-		if(validatorClass == null)
+		if(Empty.isBlankEmptyNull(validatorClass))
 		{
 			return;
-		}
-		else
-		{
-			validatorClass = validatorClass.trim();
-
-			if(validatorClass.isEmpty() || "@NULL".equalsIgnoreCase(validatorClass))
-			{
-				return;
-			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET VALIDATOR                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2 tuple = s_newUserRoleValidators.get(validatorClass);
+		Tuple2 tuple = s_newUserRoleValidators.get(validatorClass.trim());
 
 		if(tuple == null)
 		{

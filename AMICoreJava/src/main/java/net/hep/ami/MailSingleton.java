@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import net.hep.ami.utility.*;
+
 import org.simplejavamail.email.*;
 import org.simplejavamail.mailer.*;
 import org.simplejavamail.mailer.config.*;
@@ -47,15 +49,15 @@ public class MailSingleton
 		String user = ConfigSingleton.getProperty("email_user");
 		String pass = ConfigSingleton.getProperty("email_pass");
 
-		if(host.isEmpty()
+		if(Empty.isBlankEmptyNull(host)
 		   ||
-		   port.isEmpty()
+		   Empty.isBlankEmptyNull(port)
 		   ||
-		   mode.isEmpty()
+		   Empty.isBlankEmptyNull(mode)
 		   ||
-		   user.isEmpty()
+		   Empty.isBlankEmptyNull(user)
 		   ||
-		   pass.isEmpty()
+		   Empty.isBlankEmptyNull(pass)
 		 ) {
 			return;
 		}
@@ -66,14 +68,19 @@ public class MailSingleton
 
 		MailerBuilder.MailerRegularBuilder mailerBuilder = MailerBuilder.withSMTPServer(host, Integer.parseInt(port), user, pass);
 
-		/**/ if("0".equalsIgnoreCase(mode)) {
-			mailerBuilder.withTransportStrategy(TransportStrategy.SMTP);
-		}
-		else if("1".equalsIgnoreCase(mode)) {
-			mailerBuilder.withTransportStrategy(TransportStrategy.SMTPS);
-		}
-		else if("2".equalsIgnoreCase(mode)) {
-			mailerBuilder.withTransportStrategy(TransportStrategy.SMTP_TLS);
+		switch(mode.trim())
+		{
+			case "0":
+				mailerBuilder.withTransportStrategy(TransportStrategy.SMTP);
+				break;
+
+			case "1":
+				mailerBuilder.withTransportStrategy(TransportStrategy.SMTPS);
+				break;
+
+			case "2":
+				mailerBuilder.withTransportStrategy(TransportStrategy.SMTP_TLS);
+				break;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -88,12 +95,12 @@ public class MailSingleton
 
 		emailBuilder.from(from);
 
-		if(to != null && !(to = to.trim()).isEmpty()) {
-			emailBuilder.to(to);
+		if(!Empty.isBlankEmptyNull(to)) {
+			emailBuilder.to(to.trim());
 		}
 
-		if(cc != null && !(cc = cc.trim()).isEmpty()) {
-			emailBuilder.cc(cc);
+		if(!Empty.isBlankEmptyNull(cc)) {
+			emailBuilder.cc(cc.trim());
 		}
 
 		emailBuilder.withSubject(subject).withPlainText(text);

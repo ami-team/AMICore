@@ -14,9 +14,10 @@ public class XMLTemplates
 	@NotNull
 	private static Object[] asArray(@NotNull Object arg)
 	{
-		return arg.getClass().isArray() ? (Object[]) arg
-		                                : new Object[] {arg}
-		;
+		return (Object[]) (
+			arg.getClass().isArray() ?  /*--------*/ (arg)
+			                         :  new Object[] {arg}
+		);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

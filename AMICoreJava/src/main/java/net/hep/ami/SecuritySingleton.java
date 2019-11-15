@@ -406,6 +406,13 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	static
+	{
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private static final String BC = org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -416,13 +423,6 @@ public class SecuritySingleton
 
 	@Contract(pure = true)
 	private SecuritySingleton() {}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	static
-	{
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -1005,7 +1005,11 @@ public class SecuritySingleton
 	{
 		String result;
 
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		Calendar calendar;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
