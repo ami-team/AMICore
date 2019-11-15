@@ -16,6 +16,7 @@ import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
 
+
 @WebServlet(
 	name = "FrontEnd",
 	urlPatterns = "/FrontEnd"
@@ -248,7 +249,7 @@ public class FrontEnd extends HttpServlet
 
 	@NotNull
 	@Contract("_ -> new")
-	private static Tuple4<String, String, String, String> getDNs(HttpServletRequest req)
+	private static Tuple4<String, String, String, String> getDNs(@NotNull HttpServletRequest req)
 	{
 		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
@@ -415,6 +416,8 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@Contract("null, _, _ -> new")
 	private Tuple2<String, String> resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP) throws Exception
 	{
 		if(AMIUser == null || AMIUser.isEmpty()
@@ -459,15 +462,13 @@ public class FrontEnd extends HttpServlet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, String> result;
-
 			try
 			{
-				result = SecuritySingleton.checkPassword(AMIUser, AMIPass, SecuritySingleton.decrypt(row.getValue(0)));
+				AMIPass = SecuritySingleton.checkPassword(AMIUser, AMIPass, SecuritySingleton.decrypt(row.getValue(0)));
 			}
 			catch(Exception e)
 			{
-				result = new Tuple2<>(
+				return new Tuple2<>(
 					GUEST_USER,
 					GUEST_PASS
 				);
@@ -483,7 +484,7 @@ public class FrontEnd extends HttpServlet
 
 				if(!countryCode.equals(row.getValue(1)))
 				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
+					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, AMIUser);
 				}
 			}
 			catch(Exception e)
@@ -493,7 +494,10 @@ public class FrontEnd extends HttpServlet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			return result;
+			return new Tuple2<>(
+				AMIUser,
+				AMIPass
+			);
 		}
 		finally
 		{

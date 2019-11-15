@@ -145,7 +145,7 @@ public class Helper
 
 		String query;
 
-		for(Resolution resolution: resolutionList) 
+		for(Resolution resolution: resolutionList)
 		{
 			if(resolution.getMaxPathLen() == 0)
 			{
@@ -402,7 +402,7 @@ public class Helper
 
 	@NotNull
 	@Contract("_, _, _, _, _, _, _ -> new")
-	public static Tuple2<List<String>, List<String>> resolve(String catalog, QId primaryKey, @NotNull List<Resolution> resolutionList, @NotNull List<? extends CharSequence> expressionList, String AMIUser, boolean isAdmin, boolean insert) throws Exception
+	public static Tuple2<List<String>, List<String>> resolve(@NotNull String catalog, @NotNull QId primaryKey, @NotNull List<Resolution> resolutionList, @NotNull List<? extends CharSequence> expressionList, @NotNull String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();

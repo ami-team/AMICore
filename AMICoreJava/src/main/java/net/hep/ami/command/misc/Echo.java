@@ -21,7 +21,7 @@ public class Echo extends AbstractCommand
 
 	@NotNull
 	@Override
-	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments)
 	{
 		StringBuilder result = new StringBuilder();
 
