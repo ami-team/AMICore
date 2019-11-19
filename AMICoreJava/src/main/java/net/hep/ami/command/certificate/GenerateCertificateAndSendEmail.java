@@ -163,7 +163,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 				/*----------------------------------------------------------------------------------------------------*/
 
 				MailSingleton.Attachment attachment3 = new MailSingleton.Attachment(
-					commonName + ".p12",
+					commonName + ".crt",
 					"application/x-pem-file",
 					pem.toByteArray()
 				);
