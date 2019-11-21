@@ -204,7 +204,6 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"arr\": [],")
 		                                        .append(  "\"opt\": []")
 		                                        .append("},")
-		                                        .append("},")
 		                                        .append("\"fArray\": [").append(data.stream().map(x -> x.toString()).collect(Collectors.joining(","))).append("]")
 		                                        .append("}")
 		;
