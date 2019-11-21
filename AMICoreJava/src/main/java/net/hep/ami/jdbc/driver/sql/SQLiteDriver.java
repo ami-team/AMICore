@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:sqlite",
 	clazz = "org.sqlite.JDBC",
-	flags = DriverMetadata.FLAG_HAS_DUAL
+	flags = 0
 )
 
 public class SQLiteDriver extends AbstractDriver
@@ -33,7 +33,9 @@ public class SQLiteDriver extends AbstractDriver
 	@Override
 	public String patchSQL(String sql)
 	{
-		return sql;
+		String result =  sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("TIMESTAMP\\('", "time('").replaceAll(",\\s*'YYYY-MM-DD[^']*'","");
+		//System.out.println(result);
+	return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

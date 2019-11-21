@@ -34,7 +34,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = false;
+		boolean doCreateAndFill = true;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -169,8 +169,11 @@ public class AMICoreTest
 			else if(jdbcUrl.contains("jdbc:postgresql")) {
 				path = "/sql/testDB-postgresql.sql";
 			}
+			else if(jdbcUrl.contains("jdbc:sqlite")) {
+				path = "/sql/testDB-sqlite.sql";
+			}
 			else {
-				throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
+				throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql` and `sqlite` are supported");
 			}
 
 			/*-----------------------------------------------------------------*/
@@ -1140,7 +1143,7 @@ public class AMICoreTest
 
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -sql=\"SELECT * FROM `DATASET` WHERE `id` > 0 and `created` > TIMESTAMP('2019-10-28','YYYY-MM-DD')  \" ";
 
-		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2019-10-28 13:01:001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
 
 
 		System.out.println(commandTest);
@@ -1267,8 +1270,11 @@ public class AMICoreTest
 		else if(jdbcUrl.contains("jdbc:postgresql")) {
 			commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -raw=\"SELECT AMI_TEST('dataset_1');\"";
 		}
+		else if(jdbcUrl.contains("jdbc:sqlite")) {
+			commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -raw=\"SELECT 1 AS AMI_TEST;\"";
+		}
 		else {
-			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
+			throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql` and `sqlite` are supported");
 		}
 		System.out.println(commandTest);
 		try

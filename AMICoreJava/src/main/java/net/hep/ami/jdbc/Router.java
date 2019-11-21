@@ -298,8 +298,11 @@ public class Router implements Querier
 		else if(jdbcUrl.contains("jdbc:postgresql")) {
 			path = "/sql/postgresql.sql";
 		}
+		else if(jdbcUrl.contains("jdbc:sqlite")) {
+			path = "/sql/sqlite.sql";
+		}
 		else {
-			throw new Exception("only `mysql`, `mariadb`, `oracle` and `postgresql` are supported");
+			throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql` and `sqlite` are supported");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -338,6 +341,7 @@ public class Router implements Querier
 						}
 						catch(SQLException e)
 						{
+							System.out.println("erreur: "+e.getMessage());
 							throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
 						}
 
