@@ -1,12 +1,13 @@
 package net.hep.ami.command.root;
 
+import java.util.*;
+import java.util.stream.*;
+
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
-
-import java.util.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
 public class RootH1F extends AbstractCommand
@@ -204,7 +205,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"opt\": []\"")
 		                                        .append("},")
 		                                        .append("},")
-		                                        .append("\"fArray\": [").append(String.join(",")).append("]")
+		                                        .append("\"fArray\": [").append(data.stream().map(x -> x.toString()).collect(Collectors.joining(","))).append("]")
 		                                        .append("}")
 		;
 
