@@ -96,7 +96,7 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		double binSize = (xMax - xMin) / numberOfBins;
+		double binSize = (xMax - xMin) / numberOfBins + 1;
 
 		double[] bins = new double[numberOfBins];
 
