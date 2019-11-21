@@ -210,6 +210,25 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		result.append("<fieldDescription catalog=\"")
+		      .append("N/A")
+		      .append("\" entity=\"")
+		      .append("N/A")
+		      .append("\" field=\"")
+		      .append("json")
+		      .append("\" label=\"")
+		      .append("json")
+		      .append("\" base64=\"")
+		      .append("true")
+		      .append("\" mime=\"")
+		      .append("application/json")
+		      .append("\" ctrl=\"")
+		      .append("RootCtrl")
+		      .append("\"><![CDATA[")
+		      .append("TH1")
+		      .append("]]></fieldDescription>")
+		;
+
 		result.append("<rowset type=\"root_file\">")
 		      .append("<row><field name=\"json\"><![CDATA[").append(json).append("]]></field></row>")
 		      .append("</rowset>")
