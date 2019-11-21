@@ -1,14 +1,10 @@
 package net.hep.ami.command.root;
 
-import net.hep.ami.command.AbstractCommand;
-import net.hep.ami.command.CommandMetadata;
-import net.hep.ami.jdbc.Querier;
-import net.hep.ami.jdbc.Row;
-import net.hep.ami.jdbc.RowSet;
-import net.hep.ami.jdbc.reflexion.SchemaSingleton;
-import net.hep.ami.utility.parser.Utility;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import net.hep.ami.jdbc.*;
+import net.hep.ami.command.*;
+import net.hep.ami.utility.parser.*;
+
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
@@ -54,13 +50,13 @@ public class RootH1F extends AbstractCommand
 		RowSet rowSet;
 
 		/**/ if(mql != null) {
-			rowSet = querier.executeMQLQuery(catalog, mql);
+			rowSet = querier.executeMQLQuery(entity, mql);
 		}
 		else if(sql != null) {
-			rowSet = querier.executeMQLQuery(catalog, sql);
+			rowSet = querier.executeMQLQuery(entity, sql);
 		}
 		else {
-			rowSet = querier.executeRawQuery(catalog, raw);
+			rowSet = querier.executeRawQuery(entity, raw);
 		}
 
 		if(rowSet.getNumberOfFields() != 1)
