@@ -640,18 +640,18 @@ public class RowSet
 				/* TIMESTAMP & DATETIME                                                                               */
 				/*----------------------------------------------------------------------------------------------------*/
 
-			try
-			{
-				date = m_resultSet.getTimestamp(i + 1);
+				try
+				{
+					date = m_resultSet.getTimestamp(i + 1);
 
-				result[i] = (date != null) ? formatTimestamp((java.sql.Timestamp) date)
-				                           : m_resultSet.getString(i + 1)
-				;
-			}
-			catch (Exception e)
-			{
-				result[i] = m_resultSet.getString(i + 1);
-			}
+					result[i] = (date == null) ? m_resultSet.getString(i + 1)
+					                           : formatTimestamp((java.sql.Timestamp) date)
+					;
+				}
+				catch (Exception e)
+				{
+					result[i] = m_resultSet.getString(i + 1);
+				}
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -660,12 +660,13 @@ public class RowSet
 				/*----------------------------------------------------------------------------------------------------*/
 				/* DATE                                                                                               */
 				/*----------------------------------------------------------------------------------------------------*/
+
 				try
 				{
 					date = m_resultSet.getDate(i + 1);
 
-					result[i] = (date != null) ? m_dateFormat.format(date)
-					                           : m_resultSet.getString(i + 1)
+					result[i] = (date == null) ? m_resultSet.getString(i + 1)
+					                           : m_dateFormat.format((java.util.Date ) date)
 					;
 				}
 				catch (Exception e)
@@ -680,12 +681,13 @@ public class RowSet
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TIME                                                                                               */
 				/*----------------------------------------------------------------------------------------------------*/
+
 				try
 				{
 					date = m_resultSet.getTime(i + 1);
 
-					result[i] = (date != null) ? m_timeFormat.format(date)
-					                           : m_resultSet.getString(i + 1)
+					result[i] = (date == null) ? m_resultSet.getString(i + 1)
+					                           : m_timeFormat.format((java.util.Date ) date)
 					;
 				}
 				catch (Exception e)
