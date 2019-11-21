@@ -43,7 +43,7 @@ public class SearchQuery extends AbstractCommand
 		boolean count = arguments.containsKey("count");
 		boolean links = arguments.containsKey("links");
 
-		if(catalog == null || (raw == null && sql == null && (mql == null || entity == null)))
+		if(catalog == null || entity == null || (raw == null && sql == null && mql == null))
 		{
 			throw new Exception("invalid usage");
 		}
