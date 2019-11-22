@@ -103,11 +103,11 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(_xMin != null && xMin < _xMin) {
+		if(_xMin != null) {
 			xMin = _xMin;
 		}
 
-		if(_xMax != null && xMax < _xMax) {
+		if(_xMax != null) {
 			xMax = _xMax;
 		}
 
@@ -150,15 +150,11 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		yMax *= 1.1;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(_yMin != null && yMin < _yMin) {
+		if(_yMin != null) {
 			yMin = _yMin;
 		}
 
-		if(_yMax != null && yMax < _yMax) {
+		if(_yMax != null) {
 			yMax = _yMax;
 		}
 
@@ -223,8 +219,8 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"fXmax\": ").append(yMax).append(",")
 		                                        .append(  "\"fXbins\": [").append("]")
 		                                        .append("},")
-		                                        .append("\"fMinimum\":").append(yMin).append(",")
-		                                        .append("\"fMaximum\":").append(yMax).append(",")
+		                                        .append("\"fMinimum\":").append(1.1 * yMin).append(",")
+		                                        .append("\"fMaximum\":").append(1.1 * yMax).append(",")
 		                                        .append(  "\"fSumw2\": [").append("],")
 		                                        .append("\"fArray\": [").append(Arrays.stream(bins).mapToObj(Double::toString).collect(Collectors.joining(","))).append("]")
 		                                        .append("}")
