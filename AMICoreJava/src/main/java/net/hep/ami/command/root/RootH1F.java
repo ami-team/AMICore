@@ -96,7 +96,7 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		double binSize = Math.ceil(xMax - xMin) / numberOfBins);
+		double binSize = Math.ceil((xMax - xMin) / numberOfBins);
 
 		double[] bins = new double[numberOfBins];
 
