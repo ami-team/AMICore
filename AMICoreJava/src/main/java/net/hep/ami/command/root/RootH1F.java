@@ -37,7 +37,7 @@ public class RootH1F extends AbstractCommand
 		String name = arguments.getOrDefault("name", "???");
 		String title = arguments.getOrDefault("title", "???");
 
-		int numberOfBins = arguments.containsKey("numberOfBins") ? Integer.parseInt(arguments.get("numberOfBins")) : 50;
+		int numberOfBins = arguments.containsKey("numberOfBins") ? Integer.parseInt(arguments.get("numberOfBins")) : 25;
 
 		if(catalog == null || entity == null || (raw == null && sql == null && mql == null))
 		{
@@ -126,6 +126,11 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		xMax *= 0.1;
+		yMax *= 0.1;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		StringBuilder json = new StringBuilder().append("{")
 		                                        .append("\"_typename\":\"TH1F\",")
 		                                        .append("\"fUniqueID\": ").append(0).append(",")
@@ -146,7 +151,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"fUniqueID\": ").append(0).append(",")
 		                                        .append(  "\"fBits\": ").append(50331648).append(",")
 		                                        .append(  "\"fName\": \"").append("xaxis").append("\",")
-		                                        .append(  "\"fTitle\": \"").append("X").append("\",")
+		                                        .append(  "\"fTitle\": \"").append("").append("\",")
 		                                        .append(  "\"fNdivisions\": ").append(numberOfBins).append(",")
 		                                        .append(  "\"fAxisColor\": ").append(1).append(",")
 		                                        .append(  "\"fLabelColor\": ").append(1).append(",")
@@ -161,7 +166,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"fNbins\": ").append(numberOfBins).append(",")
 		                                        .append(  "\"fXmin\": ").append(xMin).append(",")
 		                                        .append(  "\"fXmax\": ").append(xMax).append(",")
-		                                        .append(  "\"fXbins\": ").append("[]").append(",")
+		                                        .append(  "\"fXbins\": [").append("").append("],")
 		                                        .append(  "\"fFirst\": ").append(0).append(",")
 		                                        .append(  "\"fLast\": ").append(0).append(",")
 		                                        .append(  "\"fTimeDisplay\": ").append("false").append(",")
@@ -173,7 +178,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"fUniqueID\": ").append(0).append(",")
 		                                        .append(  "\"fBits\": ").append(50331648).append(",")
 		                                        .append(  "\"fName\": \"").append("yaxis").append("\",")
-		                                        .append(  "\"fTitle\": \"").append("Y").append("\",")
+		                                        .append(  "\"fTitle\": \"").append("").append("\",")
 		                                        .append(  "\"fNdivisions\": ").append(numberOfBins).append(",")
 		                                        .append(  "\"fAxisColor\": ").append(1).append(",")
 		                                        .append(  "\"fLabelColor\": ").append(1).append(",")
@@ -188,7 +193,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"fNbins\": ").append(numberOfBins).append(",")
 		                                        .append(  "\"fXmin\": ").append(yMin).append(",")
 		                                        .append(  "\"fXmax\": ").append(yMax).append(",")
-		                                        .append(  "\"fXbins\": ").append("[]").append(",")
+		                                        .append(  "\"fXbins\": [").append("").append("],")
 		                                        .append(  "\"fFirst\": ").append(0).append(",")
 		                                        .append(  "\"fLast\": ").append(0).append(",")
 		                                        .append(  "\"fTimeDisplay\": ").append("false").append(",")
@@ -202,20 +207,20 @@ public class RootH1F extends AbstractCommand
 		                                        .append("\"fTsumw2\":").append(sum2).append(",")
 		                                        .append("\"fTsumwx\":").append(0.0).append(",")
 		                                        .append("\"fTsumwx2\":").append(0.0).append(",")
-		                                        .append("\"fMaximum\":").append(xMax).append(",")
-		                                        .append("\"fMinimum\":").append(xMin).append(",")
+		                                        .append("\"fMaximum\":").append(yMax).append(",")
+		                                        .append("\"fMinimum\":").append(yMin).append(",")
 		                                        .append("\"fNormFactor\":").append(0.0).append(",")
-		                                        .append(  "\"fContour\": [],")
-		                                        .append(  "\"fSumw2\": [],")
+		                                        .append(  "\"fContour\": [").append("").append("],")
+		                                        .append(  "\"fSumw2\": [").append("").append("],")
 		                                        .append(  "\"fOption\": ").append("\"\"").append(",")
 		                                        .append("\"fFunctions\": {")
 		                                        .append(  "\"_typename\": \"TList\",")
 		                                        .append(  "\"name\": \"TList\",")
-		                                        .append(  "\"arr\": [],")
-		                                        .append(  "\"opt\": []")
+		                                        .append(  "\"arr\": [").append("").append("],")
+		                                        .append(  "\"opt\": [").append("").append("]")
 		                                        .append("},")
 		                                        .append("\"fBufferSize\": ").append(0).append(",")
-		                                        .append("\"fBuffer\": [],")
+		                                        .append("\"fBuffer\": [").append("").append("],")
 		                                        .append("\"fBinStatErrOpt\": ").append(0).append(",")
 		                                        .append("\"fArray\": [").append(Arrays.stream(bins).mapToObj(x -> Double.toString(x)).collect(Collectors.joining(","))).append("]")
 		                                        .append("}")
