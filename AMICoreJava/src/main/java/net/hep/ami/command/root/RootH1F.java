@@ -39,11 +39,11 @@ public class RootH1F extends AbstractCommand
 		String xTitle = arguments.getOrDefault("xTitle", "");
 		String yTitle = arguments.getOrDefault("yTitle", "");
 
-		Integer _xMin = arguments.containsKey("xMin") ? Integer.valueOf(arguments.get("xMin")) : null;
-		Integer _xMax = arguments.containsKey("xMax") ? Integer.valueOf(arguments.get("xMax")) : null;
+		Double _xMin = arguments.containsKey("xMin") ? Double.valueOf(arguments.get("xMin")) : null;
+		Double _xMax = arguments.containsKey("xMax") ? Double.valueOf(arguments.get("xMax")) : null;
 
-		Integer _yMin = arguments.containsKey("yMin") ? Integer.valueOf(arguments.get("yMin")) : null;
-		Integer _yMax = arguments.containsKey("yMax") ? Integer.valueOf(arguments.get("yMax")) : null;
+		Double _yMin = arguments.containsKey("yMin") ? Double.valueOf(arguments.get("yMin")) : null;
+		Double _yMax = arguments.containsKey("yMax") ? Double.valueOf(arguments.get("yMax")) : null;
 
 		int numberOfBins = arguments.containsKey("numberOfBins") ? Integer.parseInt(arguments.get("numberOfBins")) : 25;
 
