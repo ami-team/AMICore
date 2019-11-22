@@ -34,9 +34,6 @@ public class RootH1F extends AbstractCommand
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
-		String name = arguments.getOrDefault("name", "???");
-		String title = arguments.getOrDefault("title", "???");
-
 		int numberOfBins = arguments.containsKey("numberOfBins") ? Integer.parseInt(arguments.get("numberOfBins")) : 25;
 
 		if(catalog == null || entity == null || (raw == null && sql == null && mql == null))
@@ -64,6 +61,11 @@ public class RootH1F extends AbstractCommand
 		{
 			throw new Exception("query must return one field only");
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String name = rowSet.getLabelOfField(0);
+		String title = rowSet.getLabelOfField(0);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
