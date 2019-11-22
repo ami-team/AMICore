@@ -45,7 +45,7 @@ public class RootH1F extends AbstractCommand
 		Double _yMin = arguments.containsKey("yMin") ? Double.valueOf(arguments.get("yMin")) : null;
 		Double _yMax = arguments.containsKey("yMax") ? Double.valueOf(arguments.get("yMax")) : null;
 
-		int numberOfBins = arguments.containsKey("numberOfBins") ? Integer.parseInt(arguments.get("numberOfBins")) : 25;
+		int numberOfBins = arguments.containsKey("numberOfBins") ? Integer.parseInt(arguments.get("numberOfBins")) : 50;
 
 		if(catalog == null || entity == null || (raw == null && sql == null && mql == null))
 		{
