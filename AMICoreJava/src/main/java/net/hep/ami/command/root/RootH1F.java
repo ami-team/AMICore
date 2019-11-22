@@ -127,7 +127,9 @@ public class RootH1F extends AbstractCommand
 			else if(x > xMax) {
 				bins[numberOfBins + 1]++;
 			}
-			bins[(int) ((x - xMin) / binSize) + 1]++;
+			else {
+				bins[(int) ((x - xMin) / binSize) + 1]++;
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
