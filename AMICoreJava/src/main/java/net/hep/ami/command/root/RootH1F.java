@@ -34,6 +34,8 @@ public class RootH1F extends AbstractCommand
 		String sql = arguments.get("sql");
 		String mql = arguments.get("mql");
 
+		String title = arguments.getOrDefault("title", "");
+
 		String xTitle = arguments.getOrDefault("xTitle", "");
 		String yTitle = arguments.getOrDefault("yTitle", "");
 
@@ -46,9 +48,9 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog);
-
 		RowSet rowSet;
+
+		Querier querier = getQuerier(catalog);
 
 		/**/ if(mql != null) {
 			rowSet = querier.executeMQLQuery(entity, mql);
@@ -68,7 +70,6 @@ public class RootH1F extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		String name = rowSet.getLabelOfField(0);
-		String title = rowSet.getLabelOfField(0);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -232,7 +233,7 @@ public class RootH1F extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") -name=\"\" -title=\"\"";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") -name=\"\" (-title=\"\")? (-xTitle=\"\")? (-yTitle=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
