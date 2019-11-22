@@ -39,6 +39,12 @@ public class RootH1F extends AbstractCommand
 		String xTitle = arguments.getOrDefault("xTitle", "");
 		String yTitle = arguments.getOrDefault("yTitle", "");
 
+		Integer _xMin = arguments.containsKey("xMin") ? Integer.valueOf(arguments.get("xMin")) : null;
+		Integer _xMax = arguments.containsKey("xMax") ? Integer.valueOf(arguments.get("xMax")) : null;
+
+		Integer _yMin = arguments.containsKey("yMin") ? Integer.valueOf(arguments.get("yMin")) : null;
+		Integer _yMax = arguments.containsKey("yMax") ? Integer.valueOf(arguments.get("yMax")) : null;
+
 		int numberOfBins = arguments.containsKey("numberOfBins") ? Integer.parseInt(arguments.get("numberOfBins")) : 25;
 
 		if(catalog == null || entity == null || (raw == null && sql == null && mql == null))
@@ -56,7 +62,7 @@ public class RootH1F extends AbstractCommand
 			rowSet = querier.executeMQLQuery(entity, mql);
 		}
 		else if(sql != null) {
-			rowSet = querier.executeMQLQuery(entity, sql);
+			rowSet = querier.executeSQLQuery(entity, sql);
 		}
 		else {
 			rowSet = querier.executeRawQuery(entity, raw);
@@ -97,15 +103,31 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		if(_xMin != null && xMin < _xMin) {
+			xMin = _xMin;
+		}
+
+		if(_xMax != null && xMax < _xMax) {
+			xMax = _xMax;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		double binSize = (xMax - xMin) / numberOfBins + 1;
 
-		double[] bins = new double[numberOfBins];
+		double[] bins = new double[1 + numberOfBins + 1];
 
 		Arrays.fill(bins, 0.0);
 
 		for(double x: data)
 		{
-			bins[(int) ((x - xMin) / binSize)]++;
+			/**/ if(x < xMin) {
+				bins[0x00000000000000]++;
+			}
+			else if(x > xMax) {
+				bins[numberOfBins + 1]++;
+			}
+			bins[(int) ((x - xMin) / binSize) + 1]++;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -122,6 +144,20 @@ public class RootH1F extends AbstractCommand
 			if(yMax < bin) {
 				yMax = bin;
 			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		yMax *= 1.1;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(_yMin != null && yMin < _yMin) {
+			yMin = _yMin;
+		}
+
+		if(_yMax != null && yMax < _yMax) {
+			yMax = _yMax;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -188,7 +224,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append("\"fMinimum\":").append(yMin).append(",")
 		                                        .append("\"fMaximum\":").append(yMax).append(",")
 		                                        .append(  "\"fSumw2\": [").append("],")
-		                                        .append("\"fArray\": [0.0,").append(Arrays.stream(bins).mapToObj(Double::toString).collect(Collectors.joining(","))).append(",0.0]")
+		                                        .append("\"fArray\": [").append(Arrays.stream(bins).mapToObj(Double::toString).collect(Collectors.joining(","))).append("]")
 		                                        .append("}")
 		;
 
@@ -224,7 +260,7 @@ public class RootH1F extends AbstractCommand
 	@Contract(pure = true)
 	public static String help()
 	{
-		return ".";
+		return "Generate a 1-dimension ROOT histogram.";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -233,7 +269,7 @@ public class RootH1F extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") -name=\"\" (-title=\"\")? (-xTitle=\"\")? (-yTitle=\"\")?";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") -name=\"\" (-title=\"\")? (-xTitle=\"\")? (-yTitle=\"\")? (-xMin=\"\") (-xMax=\"\") (-yMin=\"\") (-yMax=\"\") (-numberOfBins=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
