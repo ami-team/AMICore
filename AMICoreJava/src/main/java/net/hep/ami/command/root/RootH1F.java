@@ -184,10 +184,10 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"fXmax\": ").append(yMax).append(",")
 		                                        .append(  "\"fXbins\": [").append("]")
 		                                        .append("},")
-		                                        .append("\"fMaximum\":").append(1.1 * yMax).append(",")
-		                                        .append("\"fMinimum\":").append(1.1 * yMin).append(",")
+		                                        .append("\"fMinimum\":").append(yMin).append(",")
+		                                        .append("\"fMaximum\":").append(yMax).append(",")
 		                                        .append(  "\"fSumw2\": [").append("],")
-		                                        .append("\"fArray\": [0.0,").append(Arrays.stream(bins).mapToObj(x -> Double.toString(x)).collect(Collectors.joining(","))).append(",0.0]")
+		                                        .append("\"fArray\": [0.0,").append(Arrays.stream(bins).mapToObj(Double::toString).collect(Collectors.joining(","))).append(",0.0]")
 		                                        .append("}")
 		;
 
