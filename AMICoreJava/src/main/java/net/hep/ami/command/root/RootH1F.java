@@ -140,7 +140,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append("\"fMarkerColor\": \"").append(1).append("\",")
 		                                        .append("\"fMarkerStyle\": \"").append(1).append("\",")
 		                                        .append("\"fMarkerSize\": \"").append(1.0).append("\",")
-		                                        .append("\"fNcells\": ").append(bins.size()).append(",")
+		                                        .append("\"fNcells\": ").append(bins.length).append(",")
 		                                        .append("\"fXaxis\": {")
 		                                        .append(  "\"_typename\": \"").append("TAxis").append("\",")
 		                                        .append(  "\"fUniqueID\": ").append(0).append(",")
@@ -217,7 +217,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append("\"fBufferSize\": ").append(0).append(",")
 		                                        .append("\"fBuffer\": [],")
 		                                        .append("\"fBinStatErrOpt\": ").append(0).append(",")
-		                                        .append("\"fArray\": [").append(bins.stream().map(x -> x.toString()).collect(Collectors.joining(","))).append("]")
+		                                        .append("\"fArray\": [").append(Arrays.stream(bins).mapToObj(x -> Double.toString(x)).collect(Collectors.joining(","))).append("]")
 		                                        .append("}")
 		;
 
