@@ -128,7 +128,7 @@ public class RootH1F extends AbstractCommand
 				bins[numberOfBins + 1]++;
 			}
 			else {
-				bins[(int) ((x - xMin) / binSize) + 1]++;
+				bins[1 + (int) Math.floor((x - xMin) / binSize)]++;
 			}
 		}
 
