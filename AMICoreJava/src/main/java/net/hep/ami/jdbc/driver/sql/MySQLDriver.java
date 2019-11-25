@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mysql",
 	clazz = "com.mysql.cj.jdbc.Driver",
-	flags = DriverMetadata.FLAG_BACKSLASH_ESCAPE | DriverMetadata.FLAG_HAS_DUAL
+	flags = DriverMetadata.FLAG_BACKSLASH_ESCAPE | DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_DUAL
 )
 
 public class MySQLDriver extends AbstractDriver

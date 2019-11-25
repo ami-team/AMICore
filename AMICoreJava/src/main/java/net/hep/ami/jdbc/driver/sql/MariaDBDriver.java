@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mariadb",
 	clazz = "org.mariadb.jdbc.Driver",
-	flags = DriverMetadata.FLAG_BACKSLASH_ESCAPE | DriverMetadata.FLAG_HAS_DUAL
+	flags = DriverMetadata.FLAG_BACKSLASH_ESCAPE | DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_DUAL
 )
 
 public class MariaDBDriver extends AbstractDriver

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:postgresql",
 	clazz = "org.postgresql.Driver",
-	flags = 0
+	flags = DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_SCHEMA
 )
 
 public class PostgreSQLDriver extends AbstractDriver

@@ -26,7 +26,9 @@ public @interface DriverMetadata
 
 	int FLAG_BACKSLASH_ESCAPE = (1 << 0);
 	int FLAG_QID_IN_MODIF = (1 << 1);
-	int FLAG_HAS_DUAL = (1 << 2);
+	int FLAG_HAS_CATALOG = (1 << 2);
+	int FLAG_HAS_SCHEMA = (1 << 3);
+	int FLAG_HAS_DUAL = (1 << 4);
 
 	/*---------------------------------------------------------------------*/
 
