@@ -228,7 +228,7 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<fieldDescriptions rowset=\"root_file\">")
+		result.append("<fieldDescriptions rowset=\"H1F\">")
 		      .append(  "<fieldDescription")
 		      .append(  " catalog=\"N/A\"")
 		      .append(  " entity=\"N/A\"")
@@ -242,8 +242,15 @@ public class RootH1F extends AbstractCommand
 		      .append("</fieldDescriptions>")
 		;
 
-		result.append("<rowset type=\"root_file\">")
-		      .append("<row><field name=\"json\"><![CDATA[").append(json).append("]]></field></row>")
+		result.append("<rowset type=\"H1F\">")
+		      .append("<row>")
+		      .append("<field name=\"xMin\"><![CDATA[").append(xMin).append("]]></field>")
+		      .append("<field name=\"xMax\"><![CDATA[").append(xMax).append("]]></field>")
+		      .append("<field name=\"yMin\"><![CDATA[").append(yMin).append("]]></field>")
+		      .append("<field name=\"yMax\"><![CDATA[").append(yMax).append("]]></field>")
+		      .append("<field name=\"numberOfBins\"><![CDATA[").append(numberOfBins).append("]]></field>")
+		      .append("<field name=\"json\"><![CDATA[").append(json).append("]]></field>")
+		      .append("</row>")
 		      .append("</rowset>")
 		;
 
