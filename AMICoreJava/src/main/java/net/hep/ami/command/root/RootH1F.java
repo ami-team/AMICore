@@ -174,7 +174,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append("\"fMarkerColor\": \"").append(1).append("\",")
 		                                        .append("\"fMarkerStyle\": \"").append(1).append("\",")
 		                                        .append("\"fMarkerSize\": \"").append(1.0).append("\",")
-		                                        .append("\"fNcells\": ").append(bins.length).append(",")
+		                                        .append("\"fNcells\": ").append(bins.length - 2).append(",")
 		                                        .append("\"fXaxis\": {")
 		                                        .append(  "\"_typename\": \"").append("TAxis").append("\",")
 		                                        .append(  "\"fUniqueID\": ").append(0).append(",")
@@ -221,14 +221,14 @@ public class RootH1F extends AbstractCommand
 		                                        .append("},")
 		                                        .append("\"fMinimum\":").append(1.1 * yMin).append(",")
 		                                        .append("\"fMaximum\":").append(1.1 * yMax).append(",")
-		                                        .append(  "\"fSumw2\": [").append("],")
+		                                        .append("\"fSumw2\": [").append("],")
 		                                        .append("\"fArray\": [").append(Arrays.stream(bins).mapToObj(Double::toString).collect(Collectors.joining(","))).append("]")
 		                                        .append("}")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<fieldDescriptions rowset=\"H1F\">")
+		result.append("<fieldDescriptions rowset=\"hist\">")
 		      .append(  "<fieldDescription")
 		      .append(  " catalog=\"N/A\"")
 		      .append(  " entity=\"N/A\"")
@@ -242,7 +242,7 @@ public class RootH1F extends AbstractCommand
 		      .append("</fieldDescriptions>")
 		;
 
-		result.append("<rowset type=\"H1F\">")
+		result.append("<rowset type=\"hist\">")
 		      .append("<row>")
 		      .append("<field name=\"xMin\"><![CDATA[").append(xMin).append("]]></field>")
 		      .append("<field name=\"xMax\"><![CDATA[").append(xMax).append("]]></field>")
