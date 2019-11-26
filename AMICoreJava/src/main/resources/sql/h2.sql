@@ -28,7 +28,7 @@ CREATE TABLE "router_config" (
 );;
 
 CREATE TABLE "router_catalog" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "externalCatalog" VARCHAR(128) NOT NULL
 ,  "internalCatalog" VARCHAR(128) NOT NULL
 ,  "internalSchema" VARCHAR(128)
@@ -45,7 +45,7 @@ CREATE TABLE "router_catalog" (
 );;
 
 CREATE TABLE "router_entity" (
-   "id" INTEGER PRIMARY KEY
+   "id" INTEGER auto_increment PRIMARY KEY
 ,  "catalog" VARCHAR(128) NOT NULL
 ,  "entity" VARCHAR(128) NOT NULL
 ,  "rank" integer
@@ -58,7 +58,7 @@ CREATE TABLE "router_entity" (
 );;
 
 CREATE TABLE "router_field" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "catalog" VARCHAR(128) NOT NULL
 ,  "entity" VARCHAR(128) NOT NULL
 ,  "field" VARCHAR(128) NOT NULL
@@ -72,7 +72,7 @@ CREATE TABLE "router_field" (
 );;
 
 CREATE TABLE "router_foreign_key" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "name" VARCHAR(128) NOT NULL
 ,  "fkCatalog" VARCHAR(128) NOT NULL
 ,  "fkTable" VARCHAR(128) NOT NULL
@@ -88,19 +88,19 @@ CREATE TABLE "router_foreign_key" (
 );;
 
 CREATE TABLE "router_converter" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "xslt" VARCHAR(128) NOT NULL
 ,  "mime" VARCHAR(128) NOT NULL
 );;
 
 CREATE TABLE "router_role" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "role" VARCHAR(128) NOT NULL
 ,  "description" VARCHAR(512)
 );;
 
 CREATE TABLE "router_command" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "command" VARCHAR(128) NOT NULL
 ,  "class" VARCHAR(256) NOT NULL
 ,  "visible" integer NOT NULL DEFAULT 1
@@ -109,7 +109,7 @@ CREATE TABLE "router_command" (
 );;
 
 CREATE TABLE "router_command_role" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "commandFK" integer NOT NULL
 ,  "roleFK" integer NOT NULL
 ,  UNIQUE  ("commandFK", "roleFK")
@@ -117,7 +117,7 @@ CREATE TABLE "router_command_role" (
 );;
 
 CREATE TABLE "router_user" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "AMIUser" VARCHAR(128) NOT NULL
 ,  "AMIPass" VARCHAR(128) NOT NULL
 ,  "clientDN" VARCHAR(512)
@@ -134,7 +134,7 @@ CREATE TABLE "router_user" (
 );;
 
 CREATE TABLE "router_user_role" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "userFK" integer NOT NULL
 ,  "roleFK" integer NOT NULL
 ,  UNIQUE ("userFK", "roleFK")
@@ -142,7 +142,7 @@ CREATE TABLE "router_user_role" (
 );;
 
 CREATE TABLE "router_short_url" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "hash" VARCHAR(16) NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
 ,  "rank" integer NOT NULL DEFAULT 0
@@ -156,7 +156,7 @@ CREATE TABLE "router_short_url" (
 );;
 
 CREATE TABLE "router_dashboard" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "control" VARCHAR(128) NOT NULL
 ,  "params" TEXT NOT NULL
 ,  "settings" TEXT NOT NULL
@@ -172,7 +172,7 @@ CREATE TABLE "router_dashboard" (
 );;
 
 CREATE TABLE "router_authority" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "vo" VARCHAR(128) NOT NULL DEFAULT 'ami'
 ,  "clientDN" VARCHAR(512) NOT NULL
 ,  "issuerDN" VARCHAR(512) NOT NULL
@@ -188,7 +188,7 @@ CREATE TABLE "router_authority" (
 );;
 
 CREATE TABLE "router_search_interface" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "group" VARCHAR(128) NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
 ,  "rank" integer NOT NULL DEFAULT 0
@@ -201,13 +201,13 @@ CREATE TABLE "router_search_interface" (
 );;
 
 CREATE TABLE "router_locations" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "continentCode" VARCHAR(3) NOT NULL DEFAULT 'N/A'
 ,  "countryCode" VARCHAR(3) NOT NULL DEFAULT 'N/A'
 );;
 
 CREATE TABLE "router_ipv4_blocks" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "network" VARCHAR(32) NOT NULL
 ,  "rangeBegin" DECIMAL(10, 0) NOT NULL
 ,  "rangeEnd" DECIMAL(10, 0) NOT NULL
@@ -216,7 +216,7 @@ CREATE TABLE "router_ipv4_blocks" (
 );;
 
 CREATE TABLE "router_ipv6_blocks" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER auto_increment PRIMARY KEY
 ,  "network" VARCHAR(64) NOT NULL
 ,  "rangeBegin" DECIMAL(38, 0) NOT NULL
 ,  "rangeEnd" DECIMAL(38, 0) NOT NULL

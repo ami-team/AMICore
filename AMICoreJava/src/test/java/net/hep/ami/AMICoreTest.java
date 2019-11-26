@@ -253,14 +253,37 @@ public class AMICoreTest
 										+"\\n	webLink.newLinkProperties().setLabel(\\\"test\\\").setCtrl(\\\"search\\\").setLocation(WebLink.Location.CONTAINER).setParams(\\\"\\\").setSettings(\\\"{\\\\\\\"name\\\\\\\" : \\\\\\\"Search dataset\\\\\\\",\\\\\\\"defaultCatalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\","
 										+ "\\\\\\\"defaultEntity\\\\\\\": \\\\\\\"DATASET\\\\\\\","
 										+ "\\\\\\\"defaultSelect\\\\\\\": \\\\\\\"name AS test, PROJECT.name{DATASET.projectFK} AS project, DATASET.id, DATASET.valid\\\\\\\","
-										+ "\\\\\\\"defaultPrimaryField\\\\\\\": \\\\\\\"id\\\\\\\",\\\\\\\"criterias\\\\\\\": ["
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"type\\\\\\\": 4, \\\\\\\"states\\\\\\\": {\\\\\\\"on\\\\\\\" : \\\\\\\"1\\\\\\\", \\\\\\\"off\\\\\\\": \\\\\\\"ALL\\\\\\\"}, \\\\\\\"select\\\\\\\": \\\\\\\"1\\\\\\\", \\\\\\\"inclusive\\\\\\\": true, \\\\\\\"auto_open\\\\\\\": true},"
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"param\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_PARAM\\\\\\\", \\\\\\\"keyField\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"valueField\\\\\\\": \\\\\\\"type\\\\\\\", \\\\\\\"type\\\\\\\": 6, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\",\\\\\\\"mode\\\\\\\": \\\\\\\"advanced\\\\\\\"}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 1, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.size\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"size\\\\\\\", \\\\\\\"type\\\\\\\": 2, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_FILE_BRIDGE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"datasetFK\\\\\\\"}]}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"type\\\\\\\": 3, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\"}, "
-										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [{\\\\\\\"operator\\\\\\\" : \\\\\\\"\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"projectFK\\\\\\\"}] }"
+										+ "\\\\\\\"defaultPrimaryField\\\\\\\": \\\\\\\"id\\\\\\\",\\\\\\\"more\\\\\\\": {\\\\\\\"summary\\\\\\\": ["
+										+" {\\\\\\\"name\\\\\\\": \\\\\\\"number of files\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"id\\\\\\\", \\\\\\\"constraints\\\\\\\": \\\\\\\"{`test`.`DATASET_FILE_BRIDGE`.`fileFK`}\\\\\\\", \\\\\\\"type\\\\\\\": 0},"
+										+" {\\\\\\\"name\\\\\\\": \\\\\\\"total size\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"size\\\\\\\", \\\\\\\"constraints\\\\\\\": \\\\\\\"{`test`.`DATASET_FILE_BRIDGE`.`fileFK`}\\\\\\\", \\\\\\\"type\\\\\\\": 1},"
+										+" {\\\\\\\"name\\\\\\\": \\\\\\\"average size\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"size\\\\\\\", \\\\\\\"constraints\\\\\\\": \\\\\\\"{`test`.`DATASET_FILE_BRIDGE`.`fileFK`}\\\\\\\", \\\\\\\"type\\\\\\\": 2},"
+										+" {\\\\\\\"name\\\\\\\": \\\\\\\"sum dataset id\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"id\\\\\\\", \\\\\\\"type\\\\\\\": 1}"
+
+										+"]},\\\\\\\"criteria\\\\\\\": ["
+
+
+
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"valid\\\\\\\", \\\\\\\"type\\\\\\\": 4, \\\\\\\"more\\\\\\\":{\\\\\\\"auto_open\\\\\\\": true, \\\\\\\"inclusive\\\\\\\": true, \\\\\\\"simple_search\\\\\\\": false,\\\\\\\"init_value\\\\\\\": \\\\\\\"VALID\\\\\\\", \\\\\\\"off\\\\\\\": [\\\\\\\"ALL\\\\\\\"], \\\\\\\"on\\\\\\\": \\\\\\\"ALL\\\\\\\"}}, "
+
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"more\\\\\\\": {\\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": true, \\\\\\\"order\\\\\\\": \\\\\\\"ASC\\\\\\\"}}, "
+
+
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"param1\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_PARAM\\\\\\\", \\\\\\\"key_field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"stringValue\\\\\\\", \\\\\\\"type\\\\\\\": 7, \\\\\\\"more\\\\\\\": {\\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": true, \\\\\\\"order\\\\\\\": \\\\\\\"ASC\\\\\\\"}}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"param2\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_PARAM\\\\\\\", \\\\\\\"key_field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"type\\\\\\\", \\\\\\\"type\\\\\\\": 9, \\\\\\\"more\\\\\\\": {\\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": true, \\\\\\\"order\\\\\\\": \\\\\\\"ASC\\\\\\\"}}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"param3\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_PARAM\\\\\\\", \\\\\\\"key_field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"stringValue\\\\\\\", \\\\\\\"type\\\\\\\": 8, \\\\\\\"more\\\\\\\": {\\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": true, \\\\\\\"order\\\\\\\": \\\\\\\"ASC\\\\\\\"}}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"param4\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET_PARAM\\\\\\\", \\\\\\\"key_field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"type\\\\\\\", \\\\\\\"type\\\\\\\": 10, \\\\\\\"more\\\\\\\": {\\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": true, \\\\\\\"order\\\\\\\": \\\\\\\"ASC\\\\\\\"}}, "
+
+
+
+
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.name\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 1, \\\\\\\"more\\\\\\\": { \\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": false, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [\\\\\\\"\\\" + catalog + \\\".DATASET_FILE_BRIDGE.datasetFK\\\\\\\"]}}, "
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"FILE.size\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"FILE\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"size\\\\\\\", \\\\\\\"type\\\\\\\": 2, \\\\\\\"more\\\\\\\": { \\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": false, \\\\\\\"order\\\\\\\" : \\\\\\\"ASC\\\\\\\", \\\\\\\"constraints\\\\\\\" : [\\\\\\\"\\\" + catalog + \\\".DATASET_FILE_BRIDGE.datasetFK\\\\\\\"]}}, "
+
+										//todo
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"DATASET\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"created\\\\\\\", \\\\\\\"type\\\\\\\": 3, \\\\\\\"more\\\\\\\": {\\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": true, \\\\\\\"order\\\\\\\": \\\\\\\"ASC\\\\\\\"}}, "
+
+										+ "{\\\\\\\"name\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"catalog\\\\\\\": \\\\\\\"\\\" + catalog + \\\"\\\\\\\", \\\\\\\"entity\\\\\\\": \\\\\\\"PROJECT\\\\\\\", \\\\\\\"field\\\\\\\": \\\\\\\"name\\\\\\\", \\\\\\\"type\\\\\\\": 0, \\\\\\\"more\\\\\\\": {\\\\\\\"auto_open\\\\\\\": false,\\\\\\\"simple_search\\\\\\\": true, \\\\\\\"order\\\\\\\": \\\\\\\"ASC\\\\\\\"}}"
+
 										+ "]}\\\").setIcon(\\\"coffee\\\").setTitle(\\\"Search Datataset\\\");"
 
 										+"\\n}"
@@ -1576,13 +1599,13 @@ public class AMICoreTest
 
 
 
-		System.out.println("Testing GetServerStatus command");
+		System.out.println("Testing GetJSONSchema command");
 
 		/*-----------------------------------------------------------------*/
 
-		CommandSingleton.executeCommand("GetServerStatus",false);
+		//CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false);
 
-		//System.out.println(CommandSingleton.executeCommand("GetServerStatus",false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false).replace(">", ">\n"));
 
 		/*-----------------------------------------------------------------*/
 

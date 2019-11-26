@@ -33,7 +33,7 @@ public class SQLiteDriver extends AbstractDriver
 	@Override
 	public String patchSQL(String sql)
 	{
-		String result =  sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("TIMESTAMP\\('", "time('").replaceAll(",\\s*'YYYY-MM-DD[^']*'","");
+		String result =  sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("TIMESTAMP\\('", "datetime('").replaceAll(",\\s*'YYYY-MM-DD[^']*'","");
 		//System.out.println(result);
 	return result;
 	}

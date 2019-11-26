@@ -33,7 +33,7 @@ public class H2Driver extends AbstractDriver
 	@Override
 	public String patchSQL(String sql)
 	{
-		return sql;
+		return sql.replaceAll("`","\"");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

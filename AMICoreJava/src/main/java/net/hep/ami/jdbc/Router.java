@@ -301,8 +301,11 @@ public class Router implements Querier
 		else if(jdbcUrl.contains("jdbc:sqlite")) {
 			path = "/sql/sqlite.sql";
 		}
+		else if(jdbcUrl.contains("jdbc:h2")) {
+		path = "/sql/h2.sql";
+		}
 		else {
-			throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql` and `sqlite` are supported");
+			throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql`, `sqlite` and `h2` are supported");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

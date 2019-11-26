@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS "DATASET_TYPE";;
 DROP TABLE IF EXISTS "PROJECT";;
 
 CREATE TABLE "PROJECT" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "name" VARCHAR(128) NOT NULL
 ,  "description" VARCHAR(512)
 ,  "created" TIMESTAMP NOT NULL DEFAULT current_timestamp
@@ -21,7 +21,7 @@ CREATE TABLE "PROJECT" (
 );;
 
 CREATE TABLE "DATASET_TYPE" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "projectFK" integer NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
 ,  "description" VARCHAR(512)
@@ -34,7 +34,7 @@ CREATE TABLE "DATASET_TYPE" (
 );;
 
 CREATE TABLE "FILE_TYPE" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "projectFK" integer NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
 ,  "description" VARCHAR(512)
@@ -46,7 +46,7 @@ CREATE TABLE "FILE_TYPE" (
 );;
 
 CREATE TABLE "DATASET" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "projectFK" integer NOT NULL
 ,  "typeFK" integer NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
@@ -61,7 +61,7 @@ CREATE TABLE "DATASET" (
 );;
 
 CREATE TABLE "FILE" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "typeFK" integer NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
 ,  "size" integer
@@ -74,7 +74,7 @@ CREATE TABLE "FILE" (
 );;
 
 CREATE TABLE "DATASET_FILE_BRIDGE" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "datasetFK" integer NOT NULL
 ,  "fileFK" integer NOT NULL
 ,  "comment" VARCHAR(128)
@@ -88,7 +88,7 @@ CREATE TABLE "DATASET_FILE_BRIDGE" (
 );;
 
 CREATE TABLE "DATASET_GRAPH" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "sourceFK" integer NOT NULL
 ,  "destinationFK" integer NOT NULL
 ,  "comment" VARCHAR(128)
@@ -102,7 +102,7 @@ CREATE TABLE "DATASET_GRAPH" (
 );;
 
 CREATE TABLE "DATASET_PARAM" (
-  "id" integer PRIMARY KEY
+  "id" integer auto_increment PRIMARY KEY
 ,  "datasetFK" integer NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
 ,  "type" VARCHAR(128) NOT NULL
