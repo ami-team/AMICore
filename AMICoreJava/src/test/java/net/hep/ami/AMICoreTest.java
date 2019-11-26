@@ -172,8 +172,11 @@ public class AMICoreTest
 			else if(jdbcUrl.contains("jdbc:sqlite")) {
 				path = "/sql/testDB-sqlite.sql";
 			}
+			else if(jdbcUrl.contains("jdbc:h2")) {
+			path = "/sql/testDB-h2.sql";
+			}
 			else {
-				throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql` and `sqlite` are supported");
+				throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql`, `sqlite` and `h2` are supported");
 			}
 
 			/*-----------------------------------------------------------------*/
