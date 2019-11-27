@@ -119,6 +119,9 @@ public class UpdateElements extends AbstractCommand
 					case "oracle.jdbc.OracleClob":
 						statement.setString(i + 1, value);
 						break;
+					case "java.sql.Clob":
+						statement.setString(i + 1, value);
+						break;
 					case "java.sql.Timestamp":
 						statement.setTimestamp(i + 1, Timestamp.valueOf(value));
 						break;

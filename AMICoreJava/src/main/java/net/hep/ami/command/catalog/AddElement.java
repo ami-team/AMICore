@@ -96,6 +96,9 @@ public class AddElement extends AbstractCommand
 					case "oracle.jdbc.OracleClob":
 						statement.setString(i + 1, value);
 						break;
+					case "java.sql.Clob":
+						statement.setString(i + 1, value);
+						break;
 					case "java.sql.Timestamp":
 						statement.setTimestamp(i + 1, Timestamp.valueOf(value));
 						break;
@@ -115,7 +118,7 @@ public class AddElement extends AbstractCommand
 						statement.setDouble(i + 1, Double.parseDouble(value));
 						break;
 					default:
-						System.out.println(type);
+						System.out.println("sql type: " +  type);
 						break;
 				}
 			}
