@@ -9,6 +9,7 @@ import java.util.stream.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
+import net.hep.ami.jdbc.driver.*;
 
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
@@ -344,7 +345,8 @@ public class SchemaSingleton
 		private final String m_externalCatalog;
 		private final String m_internalCatalog;
 
-		private final CatalogSingleton.Tuple m_tuple;
+		private final CatalogSingleton.Tuple m_catalogTuple;
+		private final DriverSingleton.Tuple m_driverTuple;
 
 		private final int m_rank;
 
@@ -363,7 +365,8 @@ public class SchemaSingleton
 			/**/
 			@NotNull String externalCatalog,
 			@NotNull String internalCatalog,
-			@NotNull CatalogSingleton.Tuple tuple,
+			@NotNull CatalogSingleton.Tuple catalogTuple,
+			@NotNull DriverSingleton.Tuple driverTuple,
 			/**/
 			int rank,
 			/**/
@@ -378,7 +381,8 @@ public class SchemaSingleton
 			m_externalCatalog = externalCatalog;
 			m_internalCatalog = internalCatalog;
 
-			m_tuple = tuple;
+			m_catalogTuple = catalogTuple;
+			m_driverTuple = driverTuple;
 
 			/**/
 
@@ -428,7 +432,7 @@ public class SchemaSingleton
 
 		private void apply()
 		{
-			m_catalog.description = m_tuple.w;
+			m_catalog.description = m_catalogTuple.w;
 
 			m_catalogs.put(m_externalCatalog, m_catalog);
 		}
@@ -493,6 +497,26 @@ public class SchemaSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		@Nullable
+		@Contract(pure = true)
+		private String _getCatalogName()
+		{
+			return ((m_driverTuple.t & DriverMetadata.FLAG_HAS_CATALOG) != 0) ? m_internalCatalog
+			                                                                  : null
+			;
+		}
+
+		@Nullable
+		@Contract(pure = true)
+		private String _getSchemaName()
+		{
+			return ((m_driverTuple.t & DriverMetadata.FLAG_HAS_SCHEMA) != 0) ? m_catalogTuple.z
+			                                                                 : null
+			;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		private void loadSchemaFromDatabase() throws Exception
 		{
 			m_logger.info("for catalog '{}', loading from schema from database...", m_externalCatalog);
@@ -507,7 +531,7 @@ public class SchemaSingleton
 			/* CREATE CONNECTION                                           */
 			/*-------------------------------------------------------------*/
 
-			try(Connection connection = DriverManager.getConnection(m_tuple.t, m_tuple.u, m_tuple.v))
+			try(Connection connection = DriverManager.getConnection(m_catalogTuple.t, m_catalogTuple.u, m_catalogTuple.v))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* GET METADATA OBJECT                                                                                */
@@ -523,7 +547,7 @@ public class SchemaSingleton
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(m_internalCatalog, m_tuple.z, "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
+				try(ResultSet resultSet = metaData.getTables(_getCatalogName(), _getSchemaName(), "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
 				{
 					String entity;
 
@@ -573,7 +597,7 @@ public class SchemaSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(m_internalCatalog, m_tuple.z, _entity, "%"))
+			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(), _getSchemaName(), _entity, "%"))
 			{
 				Table table;
 
@@ -616,7 +640,7 @@ public class SchemaSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getPrimaryKeys(m_internalCatalog, m_tuple.z, _entity))
+			try(ResultSet resultSet = metaData.getPrimaryKeys(_getCatalogName(), _getSchemaName(), _entity))
 			{
 				while(resultSet.next())
 				{
@@ -645,7 +669,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getExportedKeys(m_internalCatalog, m_tuple.z, _entity))
+			try(ResultSet resultSet = metaData.getExportedKeys(_getCatalogName(), _getSchemaName(), _entity))
 			{
 				Table table;
 
@@ -915,16 +939,23 @@ public class SchemaSingleton
 		{
 			int rank = 1000;
 
+			CatalogSingleton.Tuple catalogTuple;
+			DriverSingleton.Tuple driverTuple;
+
 			List<Thread> threads = new ArrayList<>();
 
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
+				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
+				driverTuple = DriverSingleton.getTuple(catalogTuple.t);
+
 				threads.add(new Thread(new Extractor(
 						s_externalCatalogToInternalCatalog,
 						s_catalogs,
 						entry.getKey(),
 						entry.getValue(),
-						CatalogSingleton.getTuple(entry.getKey()),
+						catalogTuple,
+						driverTuple,
 						rank++,
 						true // fast
 					), "Fast metadata extractor for '" + entry.getKey() + "'"
@@ -942,16 +973,23 @@ public class SchemaSingleton
 		{
 			int rank = 1000;
 
+			CatalogSingleton.Tuple catalogTuple;
+			DriverSingleton.Tuple driverTuple;
+
 			List<Thread> threads = new ArrayList<>();
 
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
+				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
+				driverTuple = DriverSingleton.getTuple(catalogTuple.t);
+
 				threads.add(new Thread(new Extractor(
 						s_externalCatalogToInternalCatalog,
 						s_catalogs,
 						entry.getKey(),
 						entry.getValue(),
-						CatalogSingleton.getTuple(entry.getKey()),
+						catalogTuple,
+						driverTuple,
 						rank++,
 						false // slow
 					), "Slow metadata extractor for '" + entry.getKey() + "'"

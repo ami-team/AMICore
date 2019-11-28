@@ -12,7 +12,7 @@ import org.jetbrains.annotations.*;
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:oracle",
 	clazz = "oracle.jdbc.driver.OracleDriver",
-	flags =  DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_DUAL
+	flags = DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_SCHEMA | DriverMetadata.FLAG_HAS_DUAL
 )
 
 public class OracleDriver extends AbstractDriver
