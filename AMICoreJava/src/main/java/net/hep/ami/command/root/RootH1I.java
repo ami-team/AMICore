@@ -1,22 +1,25 @@
 package net.hep.ami.command.root;
 
+import net.hep.ami.command.AbstractCommand;
+import net.hep.ami.command.CommandMetadata;
+import net.hep.ami.jdbc.Querier;
+import net.hep.ami.jdbc.Row;
+import net.hep.ami.jdbc.RowSet;
+import net.hep.ami.utility.Stats;
+import net.hep.ami.utility.parser.Utility;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.*;
-
-import net.hep.ami.jdbc.*;
-import net.hep.ami.command.*;
-import net.hep.ami.utility.Stats;
-import net.hep.ami.utility.parser.*;
-
-import org.jetbrains.annotations.*;
+import java.util.stream.Collectors;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
-public class RootH1F extends AbstractCommand
+public class RootH1I extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RootH1F(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
+	public RootH1I(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
@@ -41,11 +44,11 @@ public class RootH1F extends AbstractCommand
 		String xTitle = arguments.getOrDefault("xTitle", "");
 		String yTitle = arguments.getOrDefault("yTitle", "");
 
-		Double _xMin = arguments.containsKey("xMin") ? Double.valueOf(arguments.get("xMin")) : null;
-		Double _xMax = arguments.containsKey("xMax") ? Double.valueOf(arguments.get("xMax")) : null;
+		Integer _xMin = arguments.containsKey("xMin") ? Integer.valueOf(arguments.get("xMin")) : null;
+		Integer _xMax = arguments.containsKey("xMax") ? Integer.valueOf(arguments.get("xMax")) : null;
 
-		Double _yMin = arguments.containsKey("yMin") ? Double.valueOf(arguments.get("yMin")) : null;
-		Double _yMax = arguments.containsKey("yMax") ? Double.valueOf(arguments.get("yMax")) : null;
+		Integer _yMin = arguments.containsKey("yMin") ? Integer.valueOf(arguments.get("yMin")) : null;
+		Integer _yMax = arguments.containsKey("yMax") ? Integer.valueOf(arguments.get("yMax")) : null;
 
 		Double sizeOfBins = arguments.containsKey("sizeOfBins") ? Double.parseDouble(arguments.get("sizeOfBins")) : null;
 
@@ -81,16 +84,16 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		double val;
+		int val;
 
 		double xMin = Double.MAX_VALUE;
 		double xMax = Double.MIN_VALUE;
 
-		List<Double> data = new ArrayList<>();
+		List<Integer> data = new ArrayList<>();
 
 		for(Row row: rowSet.iterate())
 		{
-			val = row.getValue(0, 0.0);
+			val = row.getValue(0, 0);
 
 			if(xMin > val) {
 				xMin = val;
@@ -105,18 +108,11 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(_xMin == null) {
-			xMin = Math.floor(xMin);
-		}
-		else {
+		if(_xMin != null) {
 			xMin = _xMin;
 		}
 
-		if(_xMax == null)
-		{
-			xMax = Math.ceil(xMax);
-		}
-		else {
+		if(_xMax != null) {
 			xMax = _xMax;
 		}
 
@@ -124,26 +120,33 @@ public class RootH1F extends AbstractCommand
 
 		if(sizeOfBins == null)
 		{
-			BigDecimal[] data2 = data.stream().sorted().map(BigDecimal::valueOf).toArray(BigDecimal[]::new);
-
-			double iqr = Stats.quartile3(data2).subtract(Stats.quartile1(data2)).abs().doubleValue();
-
-			/**/ if(iqr > 0.0)
+			if(data.size() < 100)
 			{
-				sizeOfBins = 2.0 * iqr / Math.pow(data2.length, 1.0 / 3.0);
+				BigDecimal[] data2 = data.stream().sorted().map(BigDecimal::valueOf).toArray(BigDecimal[]::new);
 
-				sizeOfBins = Math.ceil(sizeOfBins);
-			}
-			else
-			{
-				if(xMin != xMax)
+				double iqr = Stats.quartile3(data2).subtract(Stats.quartile1(data2)).abs().doubleValue();
+
+				/**/ if(iqr > 0.0)
 				{
-					sizeOfBins = (double) (xMax - xMin) / 80.0;
+					sizeOfBins = 2.0 * iqr / Math.pow(data2.length, 1.0 / 3.0);
+
+					sizeOfBins = Math.ceil(sizeOfBins);
 				}
 				else
 				{
-					sizeOfBins = 1.0;
+					if(xMin != xMax)
+					{
+						sizeOfBins = (double) (xMax - xMin) / 1.0;
+					}
+					else
+					{
+						sizeOfBins = 1.0;
+					}
 				}
+			}
+			else
+			{
+				sizeOfBins = 1.0;
 			}
 		}
 
@@ -170,10 +173,10 @@ public class RootH1F extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		double yMin = 0.0;
-		double yMax = 0.0;
+		int yMin = 0;
+		int yMax = 0;
 
-		for(double bin: bins)
+		for(int bin: bins)
 		{
 			if(yMin > bin) {
 				yMin = bin;
@@ -197,7 +200,7 @@ public class RootH1F extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder json = new StringBuilder().append("{")
-		                                        .append("\"_typename\":\"TH1F\",")
+		                                        .append("\"_typename\":\"TH1I\",")
 		                                        .append("\"fUniqueID\": ").append(0).append(",")
 		                                        .append("\"fBits\": ").append(50331656).append(",")
 		                                        .append("\"fName\": \"").append(Utility.escapeJSONString(name, false)).append("\",")
@@ -229,7 +232,7 @@ public class RootH1F extends AbstractCommand
 		                                        .append(  "\"fTitleColor\": ").append(1).append(",")
 		                                        .append(  "\"fTitleFont\": ").append(42).append(",")
 		                                        .append(  "\"fNbins\": ").append(numberOfBins).append(",")
-		                                        .append(  "\"fXmin\": ").append(xMin + 0.00000000).append(",")
+		                                        .append(  "\"fXmin\": ").append(xMin + 0x00000000).append(",")
 		                                        .append(  "\"fXmax\": ").append(xMax + sizeOfBins).append(",")
 		                                        .append(  "\"fXbins\": [").append("]")
 		                                        .append("},")
@@ -274,7 +277,7 @@ public class RootH1F extends AbstractCommand
 		      .append(  " displayable=\"true\"")
 		      .append(  " base64=\"false\"")
 		      .append(  " mime=\"application/json\"")
-		      .append(  " ctrl=\"Root\"><![CDATA[H1F]]></fieldDescription>")
+		      .append(  " ctrl=\"Root\"><![CDATA[H1I]]></fieldDescription>")
 		      .append("</fieldDescriptions>")
 		;
 
@@ -311,7 +314,7 @@ public class RootH1F extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") -name=\"\" (-title=\"\")? (-xTitle=\"\")? (-yTitle=\"\")? (-xMin=\"\") (-xMax=\"\") (-yMin=\"\") (-yMax=\"\") (-sizeOfBins=\"\")?";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") -name=\"\" (-title=\"\")? (-xTitle=\"\")? (-yTitle=\"\")? (-xMin=\"\") (-xMax=\"\") (-yMin=\"\") (-yMax=\"\") (-numberOfBins=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
