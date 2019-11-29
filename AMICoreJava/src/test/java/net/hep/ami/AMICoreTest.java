@@ -51,7 +51,7 @@ public class AMICoreTest
 			return;
 		}
 
-		if(!(test_catalog.toLowerCase().contains("test_") || test_catalog.toLowerCase().equals("%")))
+		if(!(test_catalog.toLowerCase().contains("test_") || true))
 		{
 			System.out.println("skipping integration not a test router");
 
@@ -689,6 +689,7 @@ public class AMICoreTest
 
 			try
 			{
+				System.out.println("init add dataset type");
 				arguments.clear();
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_TYPE");
@@ -696,6 +697,7 @@ public class AMICoreTest
 				arguments.put("fields", "name;PROJECT.name;description");
 				arguments.put("values", "A;AMI;This is a test");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
+				System.out.println("done add dataset type");
 
 			}
 			catch(Exception e)
@@ -1299,6 +1301,9 @@ public class AMICoreTest
 		else if(jdbcUrl.contains("jdbc:sqlite")) {
 			commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -raw=\"SELECT 1 AS AMI_TEST;\"";
 		}
+		else if(jdbcUrl.contains("jdbc:h2")) {
+			commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -raw=\"SELECT 1 AS AMI_TEST;\"";
+		}
 		else {
 			throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql` and `sqlite` are supported");
 		}
@@ -1609,6 +1614,7 @@ public class AMICoreTest
 		//CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false);
 
 		System.out.println(CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false).replace(">", ">\n"));
+
 
 		/*-----------------------------------------------------------------*/
 
