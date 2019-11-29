@@ -33,7 +33,9 @@ public class H2Driver extends AbstractDriver
 	@Override
 	public String patchSQL(String sql)
 	{
+
 		return sql.replaceAll("TIMESTAMP\\('", "parsedatetime('").replaceAll(",\\s*'YYYY-MM-DD[^']*'",",'YYYY-MM-DD HH:MM:SS.SSSSSS'").replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("`","\"");
+
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
