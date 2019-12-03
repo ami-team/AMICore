@@ -708,6 +708,49 @@ public class AMICoreTest
 
 			try
 			{
+				System.out.println("init add dataset type");
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET_TYPE");
+				arguments.put("separator", ";");
+				arguments.put("keyFields", "name;PROJECT.name");
+				arguments.put("keyValues", "A_1;AMI");
+				arguments.put("fields", "name;PROJECT.name;description");
+				arguments.put("values", "A_1;AMI;This is a test");
+				CommandSingleton.executeCommand("AddUpdateElement", arguments, false);
+				System.out.println("done add dataset type");
+
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+			try
+			{
+				System.out.println("init add dataset type");
+				arguments.clear();
+				arguments.put("catalog", "test");
+				arguments.put("entity", "DATASET_TYPE");
+				arguments.put("separator", ";");
+				arguments.put("keyFields", "name;PROJECT.name");
+				arguments.put("keyValues", "A_1;AMI");
+				arguments.put("fields", "name;PROJECT.name;description");
+				arguments.put("values", "A_1;AMI;This is a test update");
+				CommandSingleton.executeCommand("AddUpdateElement", arguments, false);
+				System.out.println("done add dataset type");
+
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+
+			try
+			{
 				arguments.clear();
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_TYPE");
@@ -1386,6 +1429,20 @@ public class AMICoreTest
 	
 		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT DISTINCT FILE.name{DATASET_FILE_BRIDGE.datasetFK} AS test \"";
 		
+		System.out.println(commandTest);
+		try
+		{
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
+
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT COUNT(DISTINCT(FILE.name{DATASET_FILE_BRIDGE.datasetFK})) \"";
+
 		System.out.println(commandTest);
 		try
 		{
