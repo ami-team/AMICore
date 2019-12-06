@@ -25,6 +25,7 @@ CREATE TABLE "DATASET_TYPE" (
 ,  "projectFK" integer NOT NULL
 ,  "name" VARCHAR(128) NOT NULL
 ,  "description" VARCHAR(512)
+,  "photo" CLOB
 ,  "created" TIMESTAMP NOT NULL DEFAULT current_timestamp
 ,  "createdBy" VARCHAR(128) NOT NULL
 ,  "modified" TIMESTAMP NOT NULL DEFAULT current_timestamp

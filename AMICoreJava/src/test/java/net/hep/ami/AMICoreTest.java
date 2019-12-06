@@ -34,7 +34,7 @@ public class AMICoreTest
 		boolean testFail = false;
 		int cptMax = 10;
 		int cptMax2 = 5;
-		boolean doCreateAndFill = true;
+		boolean doCreateAndFill = false;
 		String path;
 		String test_catalog = ConfigSingleton.getProperty("test_catalog");
 		String test_schema = ConfigSingleton.getProperty("test_schema");
@@ -694,8 +694,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_TYPE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "name;PROJECT.name;description");
-				arguments.put("values", "A;AMI;This is a test");
+				arguments.put("fields", "name;PROJECT.name;description;photo");
+				arguments.put("values", "A;AMI;This is a test;AAAAAAAAAAA");
 				CommandSingleton.executeCommand("AddElement", arguments, false);
 				System.out.println("done add dataset type");
 
@@ -1214,8 +1214,9 @@ public class AMICoreTest
 
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -sql=\"SELECT * FROM `DATASET` WHERE `id` > 0 and `created` > TIMESTAMP('2019-10-28','YYYY-MM-DD')  \" ";
 
-		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
-
+		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
+		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01','YYYY-MM-DD HH24:MI:SS')  \" ";
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SS.FF3')  \" ";
 
 		System.out.println(commandTest);
 		try
@@ -1455,6 +1456,20 @@ public class AMICoreTest
 			testFail = true;
 		}
 
+        commandTest = "BrowseQuery -catalog=\"te.*\" -entity=\"DATASET\" -mql=\"SELECT dataset.name\"";
+
+        System.out.println(commandTest);
+        try
+        {
+            System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+            CommandSingleton.executeCommand(commandTest, false);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            testFail = true;
+        }
+
 		commandTest = "SearchQuery -GUI -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE [`test`.`FILE`.`size`{ `test`.`DATASET_FILE_BRIDGE`.`datasetFK`} < 10 OR `test`.`FILE`.`size`{ `test`.`DATASET_FILE_BRIDGE`.`datasetFK`} > 50]\" -limit=\"10\" -offset=\"0\" ";
 		
 		System.out.println(commandTest);
@@ -1671,6 +1686,22 @@ public class AMICoreTest
 		//CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false);
 
 		System.out.println(CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false).replace(">", ">\n"));
+
+
+
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET_TYPE\" -mql=\"SELECT * WHERE name='A' \"";
+
+		System.out.println(commandTest);
+		try
+		{
+			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			//CommandSingleton.executeCommand(commandTest, false);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			testFail = true;
+		}
 
 
 		/*-----------------------------------------------------------------*/
