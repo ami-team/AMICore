@@ -28,8 +28,8 @@ CREATE TABLE "DATASET_TYPE" (
 ,  "photo" CLOB
 ,  "video" CLOB
 ,  "animation" CLOB
-,  "musique" CLOB
 ,  "transparent" CLOB
+,  "document" CLOB
 ,  "created" TIMESTAMP NOT NULL DEFAULT current_timestamp
 ,  "createdBy" VARCHAR(128) NOT NULL
 ,  "modified" TIMESTAMP NOT NULL DEFAULT current_timestamp

@@ -726,6 +726,19 @@ public class AMICoreTest
 			s = new Scanner(inputStream2).useDelimiter("\\A");
 			videoBase64 = s.hasNext() ? s.next() : "";
 
+			String musicBase64  = "";
+			inputStream2 = Router.class.getResourceAsStream("/base64media/mp3");
+
+			s = new Scanner(inputStream2).useDelimiter("\\A");
+			musicBase64 = s.hasNext() ? s.next() : "";
+
+
+			String documentBase64  = "";
+			inputStream2 = Router.class.getResourceAsStream("/base64media/pdf");
+
+			s = new Scanner(inputStream2).useDelimiter("\\A");
+			documentBase64 = s.hasNext() ? s.next() : "";
+
 
 
 			String photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.jpg\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
@@ -751,7 +764,7 @@ public class AMICoreTest
 
 
 
-			 photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":false,\"base64\":true,\"mime\":\"video/mp4\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			 photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"video/mp4\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 
 
@@ -814,7 +827,23 @@ public class AMICoreTest
 				testFail = true;
 			}
 
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"application/pdf\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
+			try
+			{
+				//rank is 0 by default at insertion
+				String fields = "catalog;entity;field;description;json";
+				String jsonString = photoJson;
+				String values = "test;DATASET_TYPE;document;this is a test description;" + Utility.escapeJavaString(jsonString);
+				command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
 
 
 
@@ -826,8 +855,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_TYPE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "name;PROJECT.name;description;photo;transparent;animation;video");
-				arguments.put("values", "A;AMI;This is a test;" + imageBase64 + ";" + transparentBase64 + ";" +animationBase64 + ";" + videoBase64);
+				arguments.put("fields", "name;PROJECT.name;description;photo;transparent;animation;video;document");
+				arguments.put("values", "A;AMI;This is a test;" + imageBase64 + ";" + transparentBase64 + ";" +animationBase64 + ";" + videoBase64 + ";" + documentBase64);
 				CommandSingleton.executeCommand("AddElement", arguments, false);
 				System.out.println("done add dataset type");
 
