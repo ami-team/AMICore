@@ -25,6 +25,13 @@ public class SearchQuery extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
+		int queryFlags = 0;
+
+		if(arguments.containsKey("disallowBigContent"))
+		{
+			queryFlags = 1;
+		}
+
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
@@ -193,6 +200,8 @@ public class SearchQuery extends AbstractCommand
 				/*----------------------------------------------------------------------------------------------------*/
 
 				RowSet rowSet2;
+
+				querier.setQueryFlags(queryFlags);
 
 				/**/ if(sql != null)
 				{

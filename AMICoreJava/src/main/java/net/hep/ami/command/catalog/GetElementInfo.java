@@ -26,6 +26,13 @@ public class GetElementInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
+		int queryFlags = 0;
+
+		if(arguments.containsKey("disallowBigContent"))
+		{
+			queryFlags = 1;
+		}
+
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
@@ -40,6 +47,8 @@ public class GetElementInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Querier querier = getQuerier(catalog, true);
+
+		querier.setQueryFlags(queryFlags);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/*                                                                                                            */

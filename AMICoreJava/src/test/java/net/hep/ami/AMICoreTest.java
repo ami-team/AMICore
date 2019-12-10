@@ -51,7 +51,7 @@ public class AMICoreTest
 			return;
 		}
 
-		if(!(test_catalog.toLowerCase().contains("test_") || true))
+		if(!(test_catalog.toLowerCase().contains("test")))
 		{
 			System.out.println("skipping integration not a test router");
 
@@ -122,9 +122,18 @@ public class AMICoreTest
 
 			try 
 			{
-				String testCustom = "{\"DATASET\":{\"x\":280,\"y\":40,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_GRAPH\":{\"x\":20,\"y\":40,\"color\":\"#00CC52\"},\"DATASET_PARAM\":{\"x\":20,\"y\":210,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":40,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":470,\"color\":\"#C3DB2E\"}}";
+
+
+
+				String testCustom = "{\"DATASET\":{\"x\":280,\"y\":40,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_GRAPH\":{\"x\":20,\"y\":40,\"color\":\"#00CC52\"},\"DATASET_PARAM\":{\"x\":20,\"y\":210,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":40,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":435,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":435,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":280,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":470,\"color\":\"#C3DB2E\"}}";
+
+
+				String testCustomOld = "{\"DATASET\":{\"x\":280,\"y\":40,\"color\":\"#72DE4C\"},\"DATASET_FILE_BRIDGE\":{\"x\":280,\"y\":240,\"color\":\"#CBCC5A\"},\"DATASET_GRAPH\":{\"x\":20,\"y\":40,\"color\":\"#00CC52\"},\"DATASET_PARAM\":{\"x\":20,\"y\":210,\"color\":\"#00CC01\"},\"DATASET_TYPE\":{\"x\":540,\"y\":40,\"color\":\"#19CE57\"},\"FILE\":{\"x\":280,\"y\":410,\"color\":\"#D4E03F\"},\"FILE_TYPE\":{\"x\":540,\"y\":410,\"color\":\"#E5A44C\"},\"PROJECT\":{\"x\":540,\"y\":240,\"color\":\"#F5743B\"},\"FILE_VIEW\":{\"x\":20,\"y\":470,\"color\":\"#C3DB2E\"}}";
+
 				String fields = "externalCatalog;internalCatalog;internalSchema;jdbcUrl;user;pass;json";
 				String values = "test;" + test_catalog + ";" + test_schema + ";" + test_url + ";" + test_user  + ";" + test_pass + ";" + testCustom.replace("\"", "\\\"");
+
+
 
 				String command = "AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
 
@@ -697,7 +706,31 @@ public class AMICoreTest
 
 
 
+			String transparentBase64  = "";
+			inputStream2 = Router.class.getResourceAsStream("/base64media/png");
+
+			s = new Scanner(inputStream2).useDelimiter("\\A");
+			transparentBase64 = s.hasNext() ? s.next() : "";
+
+
+
+			String animationBase64  = "";
+			inputStream2 = Router.class.getResourceAsStream("/base64media/gif");
+
+			s = new Scanner(inputStream2).useDelimiter("\\A");
+			animationBase64 = s.hasNext() ? s.next() : "";
+
+			String videoBase64  = "";
+			inputStream2 = Router.class.getResourceAsStream("/base64media/mp4");
+
+			s = new Scanner(inputStream2).useDelimiter("\\A");
+			videoBase64 = s.hasNext() ? s.next() : "";
+
+
+
 			String photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.jpg\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+
+
 
 			try
 			{
@@ -716,6 +749,76 @@ public class AMICoreTest
 			}
 
 
+
+
+			 photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":false,\"base64\":true,\"mime\":\"video/mp4\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+
+
+
+			try
+			{
+				//rank is 0 by default at insertion
+				String fields = "catalog;entity;field;description;json";
+				String jsonString = photoJson;
+				String values = "test;DATASET_TYPE;video;this is a test description;" + Utility.escapeJavaString(jsonString);
+				command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+
+
+
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealed.png\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+
+
+
+			try
+			{
+				//rank is 0 by default at insertion
+				String fields = "catalog;entity;field;description;json";
+				String jsonString = photoJson;
+				String values = "test;DATASET_TYPE;transparent;this is a test description;" + Utility.escapeJavaString(jsonString);
+				command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+
+
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.gif\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+
+			try
+			{
+				//rank is 0 by default at insertion
+				String fields = "catalog;entity;field;description;json";
+				String jsonString = photoJson;
+				String values = "test;DATASET_TYPE;animation;this is a test description;" + Utility.escapeJavaString(jsonString);
+				command = "AddElement -catalog=\"self\" -entity=\"router_field\" -separator=\";\" -fields=\"" + fields + "\" -values=\"" + values + "\"";
+
+				CommandSingleton.executeCommand(command, false);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+				testFail = true;
+			}
+
+
+
+
+
+
 			try
 			{
 				System.out.println("init add dataset type");
@@ -723,8 +826,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_TYPE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "name;PROJECT.name;description;photo");
-				arguments.put("values", "A;AMI;This is a test;" + imageBase64);
+				arguments.put("fields", "name;PROJECT.name;description;photo;transparent;animation;video");
+				arguments.put("values", "A;AMI;This is a test;" + imageBase64 + ";" + transparentBase64 + ";" +animationBase64 + ";" + videoBase64);
 				CommandSingleton.executeCommand("AddElement", arguments, false);
 				System.out.println("done add dataset type");
 
@@ -744,8 +847,8 @@ public class AMICoreTest
 				arguments.put("separator", ";");
 				arguments.put("keyFields", "name;PROJECT.name");
 				arguments.put("keyValues", "A_1;AMI");
-				arguments.put("fields", "name;PROJECT.name;description;photo");
-				arguments.put("values", "A_1;AMI;This is a test;" + imageBase64);
+				arguments.put("fields", "name;PROJECT.name;description;photo;transparent;animation;video");
+				arguments.put("values", "A_1;AMI;This is a test;" + imageBase64 + ";" + transparentBase64 + ";" +animationBase64 + ";" + videoBase64);
 				CommandSingleton.executeCommand("AddUpdateElement", arguments, false);
 				System.out.println("done add dataset type");
 
@@ -765,8 +868,8 @@ public class AMICoreTest
 				arguments.put("separator", ";");
 				arguments.put("keyFields", "name;PROJECT.name");
 				arguments.put("keyValues", "A_1;AMI");
-				arguments.put("fields", "name;PROJECT.name;description;photo");
-				arguments.put("values", "A_1;AMI;This is a test update;" + imageBase64);
+				arguments.put("fields", "name;PROJECT.name;description;photo;transparent;animation;video");
+				arguments.put("values", "A_1;AMI;This is a test update;" + imageBase64 + ";" + transparentBase64 + ";" +animationBase64 + ";" + videoBase64);
 				CommandSingleton.executeCommand("AddUpdateElement", arguments, false);
 				System.out.println("done add dataset type");
 
@@ -784,8 +887,8 @@ public class AMICoreTest
 				arguments.put("catalog", "test");
 				arguments.put("entity", "DATASET_TYPE");
 				arguments.put("separator", ";");
-				arguments.put("fields", "name;PROJECT.name;description;photo");
-				arguments.put("values", "B;AMI;This is a test;" + imageBase64);
+				arguments.put("fields", "name;PROJECT.name;description;photo;transparent;animation;video");
+				arguments.put("values", "B;AMI;This is a test;" + imageBase64 + ";" + transparentBase64  + ";" +animationBase64 + ";" + videoBase64);
 				CommandSingleton.executeCommand("AddElement", arguments, false);
 
 			}
@@ -1712,13 +1815,13 @@ public class AMICoreTest
 
 		/*-----------------------------------------------------------------*/
 
-		//CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false);
+		CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false);
 
 		System.out.println(CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"",false).replace(">", ">\n"));
 
 
 
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET_TYPE\" -mql=\"SELECT * WHERE name='A' \"";
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET_TYPE\" -disallowBigContent -mql=\"SELECT * WHERE name='A' \"";
 
 		System.out.println(commandTest);
 		try

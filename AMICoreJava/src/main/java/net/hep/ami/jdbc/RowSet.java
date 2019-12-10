@@ -18,6 +18,8 @@ public class RowSet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final ResultSet m_resultSet;
+	protected int m_flags = 0;
+
 	protected final boolean m_isAdmin;
 	protected final boolean m_links;
 
@@ -42,7 +44,7 @@ public class RowSet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/* From AMI */
-
+	protected final boolean[] m_fieldToSkip;
 	protected final boolean[] m_fieldHidden;
 	protected final boolean[] m_fieldAdminOnly;
 	protected final boolean[] m_fieldCrypted;
@@ -109,15 +111,16 @@ public class RowSet
 
 	public RowSet(@NotNull ResultSet resultSet) throws Exception
 	{
-		this(resultSet, null, null, false, false, null, null, null);
+		this(0, resultSet, null, null, false, false, null, null, null);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RowSet(@NotNull ResultSet resultSet, @Nullable String defaultExternalCatalog, @Nullable String defaultEntity, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	public RowSet(@NotNull int flags, @NotNull ResultSet resultSet, @Nullable String defaultExternalCatalog, @Nullable String defaultEntity, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		String defaultInternalCatalog = SchemaSingleton.externalCatalogToInternalCatalog_noException(defaultExternalCatalog, null);
 
+		m_flags = flags;
 		m_resultSet = resultSet;
 		m_isAdmin = isAdmin;
 		m_links = links;
@@ -157,7 +160,7 @@ public class RowSet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		/* From AMI */
-
+		m_fieldToSkip = new boolean[m_numberOfFields];
 		m_fieldHidden = new boolean[m_numberOfFields];
 		m_fieldAdminOnly = new boolean[m_numberOfFields];
 		m_fieldCrypted = new boolean[m_numberOfFields];
@@ -334,6 +337,7 @@ public class RowSet
 			{
 				SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
+				m_fieldToSkip[i] = false;
 				m_fieldTypes[i] = column.type;
 				m_fieldHidden[i] = column.hidden;
 				m_fieldAdminOnly[i] = column.adminOnly;
@@ -356,6 +360,7 @@ public class RowSet
 			}
 			catch(Exception e)
 			{
+				m_fieldToSkip[i] = false;
 				m_fieldHidden[i] = false;
 				m_fieldAdminOnly[i] = false;
 				m_fieldCrypted[i] = false;
@@ -630,6 +635,27 @@ public class RowSet
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
+			/*--------------------------------------------------------------------------------------------------------*/
+			boolean checkSize = ((m_flags & 1) != 0);
+			int maxLength = 10000;
+
+			if(checkSize) {
+
+				if(m_fieldToSkip[i])
+				{
+					result[i] = "";
+					continue;
+				}
+
+				String testString = m_resultSet.getString(i + 1);
+
+				if (testString != null && testString.length() > maxLength) {
+					m_fieldToSkip[i] = true;
+					result[i] = "";
+					continue;
+				}
+			}
+
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			/**/ if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP")

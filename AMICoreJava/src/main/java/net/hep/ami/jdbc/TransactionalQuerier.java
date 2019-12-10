@@ -241,4 +241,12 @@ public class TransactionalQuerier implements Querier
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public void setQueryFlags(int queryFlags)
+	{
+		m_driver.setQueryFlags(queryFlags);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -20,6 +20,7 @@ public abstract class AbstractDriver implements Querier
 
 	protected final String m_externalCatalog;
 	protected final String m_internalCatalog;
+	protected int m_queryFlags = 0;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -220,7 +221,7 @@ public abstract class AbstractDriver implements Querier
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, entity, m_isAdmin, m_links, SQL, mql, AST);
+			return new RowSet(m_queryFlags, m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, entity, m_isAdmin, m_links, SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -237,7 +238,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			sql = Formatter.formatStatement(this, sql, args);
 
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_isAdmin, m_links, sql, null, null);
+			return new RowSet(m_queryFlags, m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_isAdmin, m_links, sql, null, null);
 		}
 		catch(Exception e)
 		{
@@ -254,7 +255,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			raw = Formatter.formatStatement(this, raw, args);
 
-			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_isAdmin, m_links, raw, null, null);
+			return new RowSet(m_queryFlags, m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_isAdmin, m_links, raw, null, null);
 		}
 		catch(Exception e)
 		{
@@ -536,6 +537,13 @@ public abstract class AbstractDriver implements Querier
 	public String getPass()
 	{
 		return m_pass;
+	}
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public void setQueryFlags(int queryFlags)
+	{
+		m_queryFlags = queryFlags;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
