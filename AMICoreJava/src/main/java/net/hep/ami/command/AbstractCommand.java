@@ -207,10 +207,11 @@ public abstract class AbstractCommand
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String key = new StringBuilder().append(getClass().getSimpleName())
-			                                .append(m_arguments.toString())
-			                                .toString()
-			;
+			String key = SecuritySingleton.md5Sum(
+				new StringBuilder().append(getClass().getSimpleName())
+			                       .append(m_arguments.toString())
+			                       .toString()
+			);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
