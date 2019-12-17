@@ -216,16 +216,16 @@ public abstract class AbstractCommand
 
 			Object object = CacheSingleton.get(key);
 
-			if(object instanceof StringBuilder)
+			if(object instanceof String)
 			{
-				result = (StringBuilder) object;
+				result = new StringBuilder(object.toString());
 
 				result.insert(0, "<cacheOp><![CDATA[GET," + key + "," + (object != null ? object.getClass().getName() : "null") + "]]></cacheOp>");
 			}
 			else
 			{
 				CacheSingleton.put(key,
-					result = _execute()
+					(result = _execute()).toString()
 				);
 
 				result.insert(0, "<cacheOp><![CDATA[SET," + key + "," + (object != null ? object.getClass().getName() : "null") + "]]></cacheOp>");
