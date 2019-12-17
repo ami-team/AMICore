@@ -13,6 +13,7 @@ public class WebLink
 
 	public String m_id = "";
 	public String m_class = "";
+	public String m_style = "";
 	public String m_unitName = "";
 	public String m_unitFactor = "";
 	public String m_unitBase = "";
@@ -53,6 +54,7 @@ public class WebLink
 		public String m_href = "";
 		public String m_target = "";
 		public String m_label = "";
+		public String m_style = "";
 
 		public String m_ctrl = "";
 		public Location m_location = Location.NONE;
@@ -85,6 +87,11 @@ public class WebLink
 
 		public LinkProperties setLabel(@NotNull String label) {
 			m_label = label;
+			return this;
+		}
+
+		public LinkProperties setStyle(@NotNull String style) {
+			m_style = style;
 			return this;
 		}
 
@@ -138,6 +145,7 @@ public class WebLink
 			                          .append(" href=\"").append(Utility.escapeHTML(m_href)).append("\"")
 			                          .append(" target=\"").append(Utility.escapeHTML(m_target)).append("\"")
 			                          .append(" label=\"").append(Utility.escapeHTML(m_label)).append("\"")
+			                          .append(" style=\"").append(Utility.escapeHTML(m_style)).append("\"")
 			                           /**/
 			                          .append(" data-ctrl=\"").append(Utility.escapeHTML(m_ctrl)).append("\"")
 			                          .append(" data-ctrl-location=\"").append(m_location.toString()).append("\"")
@@ -168,6 +176,12 @@ public class WebLink
 	@NotNull
 	public WebLink setClass(@NotNull String clazz) {
 		m_class = clazz;
+		return this;
+	}
+
+	@NotNull
+	public WebLink setStyle(@NotNull String style) {
+		m_style = style;
 		return this;
 	}
 
@@ -216,6 +230,7 @@ public class WebLink
 		return new StringBuilder().append("<properties")
 		                          .append(" id=\"").append(Utility.escapeHTML(m_id)).append("\"")
 		                          .append(" class=\"").append(Utility.escapeHTML(m_class)).append("\"")
+				                  .append(" style=\"").append(Utility.escapeHTML(m_style)).append("\"")
 		                          .append(" unitName=\"").append(Utility.escapeHTML(m_unitName)).append("\"")
 		                          .append(" unitFactor=\"").append(Utility.escapeHTML(m_unitFactor)).append("\"")
 		                          .append(" unitBase=\"").append(Utility.escapeHTML(m_unitBase)).append("\"")
