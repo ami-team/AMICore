@@ -158,6 +158,12 @@ public class CacheSingleton
 				result.append("</row>");
 			}
 		}
+		else
+		{
+			result.append("<row>");
+			result.append("<field name=\"addr\"><![CDATA[]]></field>");
+			result.append("</row>");
+		}
 
 		result.append("</rowset>");
 

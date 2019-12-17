@@ -50,7 +50,7 @@ public class XMLFactory
 			public SequenceType[] getArgumentTypes()
 			{
 				return new SequenceType[] {
-					SequenceType.OPTIONAL_STRING,
+					SequenceType.STRING_SEQUENCE,
 					SequenceType.SINGLE_BOOLEAN,
 				};
 			}
@@ -75,19 +75,18 @@ public class XMLFactory
 
 					public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException
 					{
+						Item arg0 = arguments[0].head();
 
-					Item arg0 = arguments[0].head();
+						String s = (arg0 != null) ? arg0.getStringValue() : "";
 
-					String s = (arg0 != null) ? arg0.getStringValue() : "";
+						boolean q = ((BooleanValue) arguments[1]).getBooleanValue();
 
-					boolean q = ((BooleanValue) arguments[1]).getBooleanValue();
-
-					if(q) {
-						return StringValue.makeStringValue(Utility.escapeJSONString(s, false));
-					}
-					else {
-						return StringValue.makeStringValue(s.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"));
-					}
+						if(q) {
+							return StringValue.makeStringValue(Utility.escapeJSONString(s, false));
+						}
+						else {
+							return StringValue.makeStringValue(s.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"));
+						}
 					}
 				};
 

@@ -22,6 +22,8 @@ public class CommandSingletonTest
 	{
 		System.out.println(ConfigSingleton.getConfigFileName());
 
+		System.out.println(CommandSingleton.executeCommand("Echo -foo=\"foo\" -cached", false).replace(">", ">\n"));
+
 //		CommandSingleton.executeCommand("RemoveElements -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -keyFields=\"catalog|entity|field\" -keyValues=\"self|router_catalog|json\"", false);
 
 //		CommandSingleton.executeCommand("AddElement -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -fields=\"catalog|entity|field|rank|description|webLinkScript|isAdminOnly|isHidden|isCrypted|isPrimary|isCreated|isCreatedBy|isModified|isModifiedBy|isStatable|isGroupable\" -values=\"tasks|router_task|command|N/A|N/A|@NULL|0|1|0|0|0|0|0|0|0|0\"", false);
