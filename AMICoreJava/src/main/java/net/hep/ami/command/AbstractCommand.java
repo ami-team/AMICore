@@ -220,7 +220,7 @@ public abstract class AbstractCommand
 			{
 				result = (StringBuilder) object;
 
-				result.insert(0, "<cacheOp><![CDATA[GET," + key + "," + object.getClass().getName() + "]]></cacheOp>");
+				result.insert(0, "<cacheOp><![CDATA[GET," + key + "," + (object != null ? object.getClass().getName() : "null") + "]]></cacheOp>");
 			}
 			else
 			{
@@ -228,7 +228,7 @@ public abstract class AbstractCommand
 					result = _execute()
 				);
 
-				result.insert(0, "<cacheOp><![CDATA[SET," + key + "," + object.getClass().getName() + "]]></cacheOp>");
+				result.insert(0, "<cacheOp><![CDATA[SET," + key + "," + (object != null ? object.getClass().getName() : "null") + "]]></cacheOp>");
 			}
 		}
 		else
