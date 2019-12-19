@@ -736,19 +736,19 @@ public class Router implements Querier
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		SchemaSingleton.Table router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
-
-		router_short_url.columns.get("owner").createdBy = true;
-		router_short_url.columns.get("modified").modified = true;
-		router_short_url.columns.get("modifiedBy").modifiedBy = true;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		SchemaSingleton.Table router_dashboard = SchemaSingleton.getEntityInfo("self", "router_dashboard");
 
 		router_dashboard.columns.get("owner").createdBy = true;
 		router_dashboard.columns.get("created").created = true;
 		router_dashboard.columns.get("modified").modified = true;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		SchemaSingleton.Table router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
+
+		router_short_url.columns.get("owner").createdBy = true;
+		router_short_url.columns.get("modified").modified = true;
+		router_short_url.columns.get("modified").modified = true;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
