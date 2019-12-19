@@ -1,5 +1,7 @@
 package net.hep.ami.command;
 
+import java.security.*;
+import java.math.*;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -93,7 +95,7 @@ public abstract class AbstractCommand
 	@NotNull
 	protected Querier getAdminQuerier(@NotNull String catalog) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, true, false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, Querier.FLAG_ADMIN, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -108,7 +110,7 @@ public abstract class AbstractCommand
 	@NotNull
 	protected Querier getAdminQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, true, false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, Querier.FLAG_ADMIN, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -123,7 +125,7 @@ public abstract class AbstractCommand
 	@NotNull
 	protected Querier getQuerier(@NotNull String catalog) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN") ? Querier.FLAG_ADMIN : 0x00, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -136,9 +138,18 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getQuerier(@NotNull String catalog, boolean links) throws Exception
+	protected Querier getQuerier(@NotNull String catalog, int flags) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
+		if(m_userRoles.contains("AMI_ADMIN"))
+		{
+			flags |= Querier.FLAG_ADMIN;
+		}
+		else
+		{
+			flags &= ~Querier.FLAG_ADMIN;
+		}
+
+		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, flags, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -153,7 +164,7 @@ public abstract class AbstractCommand
 	@NotNull
 	protected Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), false, m_transactionId);
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN") ? Querier.FLAG_ADMIN : 0x00, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -166,9 +177,18 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, boolean links) throws Exception
+	protected Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, int flags) throws Exception
 	{
-		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN"), links, m_transactionId);
+		if(m_userRoles.contains("AMI_ADMIN"))
+		{
+			flags |= Querier.FLAG_ADMIN;
+		}
+		else
+		{
+			flags &= ~Querier.FLAG_ADMIN;
+		}
+
+		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, flags, m_transactionId);
 
 		if(m_isCached)
 		{
@@ -207,11 +227,15 @@ public abstract class AbstractCommand
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String key = SecuritySingleton.md5Sum(
-				new StringBuilder().append(getClass().getSimpleName())
-			                       .append(m_arguments.toString())
-			                       .toString()
-			);
+			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+			messageDigest.update(getClass().getSimpleName().getBytes());
+
+			messageDigest.update(m_arguments.toString().getBytes());
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			String key = String.format("%032x", new BigInteger(1, messageDigest.digest()));
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -219,24 +243,22 @@ public abstract class AbstractCommand
 
 			if(object instanceof StringBuilder)
 			{
-				result = (StringBuilder) object;
-
-				result.insert(0, "<cacheOp><![CDATA[GET," + key + "]]></cacheOp>");
+				result = new StringBuilder().append("<cacheOp><![CDATA[GET," + key + "]]></cacheOp>")
+				                            .append(/*----------*/ object /*----------*/)
+				;
 			}
 			else
 			{
-				CacheSingleton.put(key,
-					result = _execute()
-				);
-
-				result.insert(0, "<cacheOp><![CDATA[SET," + key + "]]></cacheOp>");
+				result = new StringBuilder().append("<cacheOp><![CDATA[SET," + key + "]]></cacheOp>")
+				                            .append(CacheSingleton.set(key, _execute()))
+				;
 			}
 		}
 		else
 		{
-			result = _execute();
-
-			result.insert(0, "<cacheOp><![CDATA[NONE]]></cacheOp>");
+			result = new StringBuilder().append("<cacheOp><![CDATA[NONE]]></cacheOp>")
+			                            .append(_execute())
+			;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -246,20 +268,25 @@ public abstract class AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	private StringBuilder _execute() throws Exception
 	{
-		StringBuilder result = null;
-
-		Exception e1 = null;
-
 		/*------------------------------------------------------------------------------------------------------------*/
+
+		StringBuilder result;
+
+		Exception e1;
 
 		try
 		{
 			result = main(m_arguments);
+
+			e1 = null;
 		}
 		catch(Exception e2)
 		{
+			result = new StringBuilder();
+
 			e1 = e2;
 		}
 

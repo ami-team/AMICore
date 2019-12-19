@@ -63,13 +63,14 @@ public class CacheSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	public static Object put(@NotNull String key, @Nullable Object value)
+	@Contract("_, _ -> param2")
+	public static Object set(@NotNull String key, @Nullable Object value)
 	{
 		if(s_memcachedClient != null)
 		{
 			try
 			{
-				return s_memcachedClient.set(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value);
+				s_memcachedClient.set(key, ConfigSingleton.getProperty("memcached_expiration", 3600), value);
 			}
 			catch(Exception e)
 			{
@@ -77,7 +78,7 @@ public class CacheSingleton
 			}
 		}
 
-		return null;
+		return value;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

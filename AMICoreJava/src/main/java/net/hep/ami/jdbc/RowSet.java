@@ -10,7 +10,6 @@ import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-import org.bouncycastle.math.ec.ScaleYNegateXPointMap;
 import org.jetbrains.annotations.*;
 
 public class RowSet
@@ -18,10 +17,8 @@ public class RowSet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final ResultSet m_resultSet;
-	protected int m_flags = 0;
 
-	protected final boolean m_isAdmin;
-	protected final boolean m_links;
+	protected final int m_flags;
 
 	protected final String m_sql;
 	protected final String m_mql;
@@ -44,7 +41,6 @@ public class RowSet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/* From AMI */
-	protected final boolean[] m_fieldToSkip;
 	protected final boolean[] m_fieldHidden;
 	protected final boolean[] m_fieldAdminOnly;
 	protected final boolean[] m_fieldCrypted;
@@ -111,19 +107,18 @@ public class RowSet
 
 	public RowSet(@NotNull ResultSet resultSet) throws Exception
 	{
-		this(0, resultSet, null, null, false, false, null, null, null);
+		this(resultSet, null, null, 0x00, null, null, null);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RowSet(@NotNull int flags, @NotNull ResultSet resultSet, @Nullable String defaultExternalCatalog, @Nullable String defaultEntity, boolean isAdmin, boolean links, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
+	public RowSet(@NotNull ResultSet resultSet, @Nullable String defaultExternalCatalog, @Nullable String defaultEntity, int flags, @Nullable String sql, @Nullable String mql, @Nullable String ast) throws Exception
 	{
 		String defaultInternalCatalog = SchemaSingleton.externalCatalogToInternalCatalog_noException(defaultExternalCatalog, null);
 
-		m_flags = flags;
 		m_resultSet = resultSet;
-		m_isAdmin = isAdmin;
-		m_links = links;
+
+		m_flags = flags;
 
 		m_sql = sql != null ? sql : "";
 		m_mql = mql != null ? mql : "";
@@ -160,7 +155,6 @@ public class RowSet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		/* From AMI */
-		m_fieldToSkip = new boolean[m_numberOfFields];
 		m_fieldHidden = new boolean[m_numberOfFields];
 		m_fieldAdminOnly = new boolean[m_numberOfFields];
 		m_fieldCrypted = new boolean[m_numberOfFields];
@@ -337,7 +331,6 @@ public class RowSet
 			{
 				SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(m_fieldCatalogs[i], m_fieldEntities[i], m_fieldNames[i]);
 
-				m_fieldToSkip[i] = false;
 				m_fieldTypes[i] = column.type;
 				m_fieldHidden[i] = column.hidden;
 				m_fieldAdminOnly[i] = column.adminOnly;
@@ -360,7 +353,6 @@ public class RowSet
 			}
 			catch(Exception e)
 			{
-				m_fieldToSkip[i] = false;
 				m_fieldHidden[i] = false;
 				m_fieldAdminOnly[i] = false;
 				m_fieldCrypted[i] = false;
@@ -627,7 +619,7 @@ public class RowSet
 	@NotNull
 	protected String[] getCurrentRow() throws SQLException
 	{
-		java.util.Date date;
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		String[] result = new String[m_numberOfFields];
 
@@ -635,27 +627,6 @@ public class RowSet
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
-			/*--------------------------------------------------------------------------------------------------------*/
-			boolean checkSize = ((m_flags & 1) != 0);
-			int maxLength = 10000;
-
-			if(checkSize) {
-
-				if(m_fieldToSkip[i])
-				{
-					result[i] = "";
-					continue;
-				}
-
-				String testString = m_resultSet.getString(i + 1);
-
-				if (testString != null && testString.length() > maxLength) {
-					m_fieldToSkip[i] = true;
-					result[i] = "";
-					continue;
-				}
-			}
-
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			/**/ if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP")
@@ -668,13 +639,13 @@ public class RowSet
 
 				try
 				{
-					date = m_resultSet.getTimestamp(i + 1);
+					java.sql.Timestamp timestamp = m_resultSet.getTimestamp(i + 1);
 
-					result[i] = (date == null) ? m_resultSet.getString(i + 1)
-					                           : formatTimestamp((java.sql.Timestamp) date)
+					result[i] = (timestamp != null) ? formatTimestamp(timestamp)
+					                                : m_resultSet.getString(i + 1)
 					;
 				}
-				catch (Exception e)
+				catch(SQLException e)
 				{
 					result[i] = m_resultSet.getString(i + 1);
 				}
@@ -689,13 +660,13 @@ public class RowSet
 
 				try
 				{
-					date = m_resultSet.getDate(i + 1);
+					java.sql.Date date = m_resultSet.getDate(i + 1);
 
-					result[i] = (date == null) ? m_resultSet.getString(i + 1)
-					                           : m_dateFormat.format((java.util.Date ) date)
+					result[i] = (date != null) ? m_dateFormat.format(date)
+					                           : m_resultSet.getString(i + 1)
 					;
 				}
-				catch (Exception e)
+				catch(SQLException e)
 				{
 					result[i] = m_resultSet.getString(i + 1);
 				}
@@ -710,13 +681,13 @@ public class RowSet
 
 				try
 				{
-					date = m_resultSet.getTime(i + 1);
+					java.sql.Time time = m_resultSet.getTime(i + 1);
 
-					result[i] = (date == null) ? m_resultSet.getString(i + 1)
-					                           : m_timeFormat.format((java.util.Date ) date)
+					result[i] = (time != null) ? m_timeFormat.format(time)
+					                           : m_resultSet.getString(i + 1)
 					;
 				}
-				catch (Exception e)
+				catch(SQLException e)
 				{
 					result[i] = m_resultSet.getString(i + 1);
 				}
@@ -738,7 +709,7 @@ public class RowSet
 
 			if(m_fieldAdminOnly[i] || m_fieldCrypted[i])
 			{
-				if(m_isAdmin)
+				if((m_flags & Querier.FLAG_ADMIN) != 0)
 				{
 					if(result[i] == null)
 					{
@@ -757,6 +728,11 @@ public class RowSet
 								result[i] = /*---------*/ "@NULL" /*---------*/;
 							}
 						}
+
+						if((m_flags & Querier.FLAG_SHOW_BIG_CONTENT) == 0 && result[i].length() > ConfigSingleton.getProperty("max_value_size", 4096))
+						{
+							result[i] = /*---------*/ "@LONG" /*---------*/;
+						}
 					}
 				}
 				else
@@ -769,6 +745,13 @@ public class RowSet
 				if(result[i] == null)
 				{
 					result[i] = /*---------*/ "@NULL" /*---------*/;
+				}
+				else
+				{
+					if((m_flags & Querier.FLAG_SHOW_BIG_CONTENT) == 0 && result[i].length() > ConfigSingleton.getProperty("max_value_size", 4096))
+					{
+						result[i] = /*---------*/ "@LONG" /*---------*/;
+					}
 				}
 			}
 
@@ -783,7 +766,7 @@ public class RowSet
 	@NotNull
 	protected String processWebLink(int fieldIndex, @NotNull Row row)
 	{
-		if(m_links)
+		if((m_flags & Querier.FLAG_SHOW_LINKS) != 0)
 		{
 			return m_webLinkScripts.processWebLink(
 				m_fieldWebLinkScript[fieldIndex],

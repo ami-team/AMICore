@@ -32,7 +32,7 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public static AbstractDriver getConnection(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -59,7 +59,7 @@ public class TransactionPoolSingleton
 		/**/		{
 		/**/			s_pools.put(transactionId, transaction = new HashMap<>());
 		/**/
-		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links));
+		/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, flags));
 		/**/		}
 		/**/		else
 		/**/		{
@@ -67,7 +67,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/			if(result == null)
 		/**/			{
-		/**/				transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links));
+		/**/				transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, flags));
 		/**/			}
 		/**/		}
 		}
@@ -79,7 +79,7 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(@Nullable String externalCatalog, @NotNull String internalCatalog,  @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public static AbstractDriver getConnection(@Nullable String externalCatalog, @NotNull String internalCatalog,  @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -106,7 +106,7 @@ public class TransactionPoolSingleton
 		/**/		{
 		/**/			s_pools.put(transactionId, transaction = new HashMap<>());
 		/**/
-		/**/			transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links));
+		/**/			transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags));
 		/**/		}
 		/**/		else
 		/**/		{
@@ -114,7 +114,7 @@ public class TransactionPoolSingleton
 		/**/
 		/**/			if(result == null)
 		/**/			{
-		/**/				transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links));
+		/**/				transaction.put(key, result = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags));
 		/**/			}
 		/**/		}
 		}
@@ -126,7 +126,6 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@SuppressWarnings("deprecation")
 	public static void commitAndRelease(long transactionId) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
@@ -211,7 +210,6 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@SuppressWarnings("deprecation")
 	public static void rollbackAndRelease(long transactionId) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;

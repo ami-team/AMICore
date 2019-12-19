@@ -25,13 +25,6 @@ public class SearchQuery extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		int queryFlags = 0;
-
-		if(arguments.containsKey("disallowBigContent"))
-		{
-			queryFlags = 1;
-		}
-
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
@@ -47,8 +40,17 @@ public class SearchQuery extends AbstractCommand
 		String limit = arguments.get("limit");
 		String offset = arguments.get("offset");
 
+		int flags = 0;
+
+		if(arguments.containsKey("bigContent")) {
+			flags |= Querier.FLAG_SHOW_BIG_CONTENT;
+		}
+
+		if(arguments.containsKey("links")) {
+			flags |= Querier.FLAG_SHOW_LINKS;
+		}
+
 		boolean count = arguments.containsKey("count");
-		boolean links = arguments.containsKey("links");
 
 		if(catalog == null || entity == null || (raw == null && sql == null && mql == null))
 		{
@@ -65,7 +67,7 @@ public class SearchQuery extends AbstractCommand
 
 			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
-				result.append(getQuerier(catalog2, links).executeRawQuery(entity, raw).toStringBuilder(catalog2, null));
+				result.append(getQuerier(catalog2, flags).executeRawQuery(entity, raw).toStringBuilder(catalog2, null));
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -169,7 +171,7 @@ public class SearchQuery extends AbstractCommand
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
-				querier = getQuerier(catalog2, links);
+				querier = getQuerier(catalog2, flags);
 
 				/*----------------------------------------------------------------------------------------------------*/
 
@@ -200,8 +202,6 @@ public class SearchQuery extends AbstractCommand
 				/*----------------------------------------------------------------------------------------------------*/
 
 				RowSet rowSet2;
-
-				querier.setQueryFlags(queryFlags);
 
 				/**/ if(sql != null)
 				{
@@ -240,7 +240,7 @@ public class SearchQuery extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)? (-count)? (-links)?";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)? -(bigContent)? (-links)? (-count)?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

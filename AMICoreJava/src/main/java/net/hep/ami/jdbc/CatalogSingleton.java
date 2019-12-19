@@ -187,11 +187,11 @@ public class CatalogSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static AbstractDriver getConnection(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
+	public static AbstractDriver getConnection(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, int flags) throws Exception
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, timeZone, isAdmin, links);
+		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, timeZone, flags);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

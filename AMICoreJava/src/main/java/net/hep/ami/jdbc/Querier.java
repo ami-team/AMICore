@@ -4,8 +4,6 @@ import java.sql.*;
 
 import net.hep.ami.jdbc.driver.*;
 
-import org.jetbrains.annotations.*;
-
 /**
  * AMI Querier Interface
  * 
@@ -13,6 +11,12 @@ import org.jetbrains.annotations.*;
 
 public interface Querier
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	int FLAG_SHOW_BIG_CONTENT = (1 << 0);
+	int FLAG_SHOW_LINKS = (1 << 1);
+	int FLAG_ADMIN = (1 << 2);
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	void setReadOnly(boolean readOnly) throws Exception;
@@ -245,15 +249,6 @@ public interface Querier
 	 */
 
 	String getPass();
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	/**
-	 *
-	 * Set the query flags
-	 */
-
-	void setQueryFlags(int flags);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 }

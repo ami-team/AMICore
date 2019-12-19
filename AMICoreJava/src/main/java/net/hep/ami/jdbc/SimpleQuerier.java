@@ -34,21 +34,21 @@ public class SimpleQuerier implements Querier
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
 		String timeZone = ConfigSingleton.getProperty("time_zone", "UTC");
 
-		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, true, false);
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, 0x00);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SimpleQuerier(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
+	public SimpleQuerier(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, int flags) throws Exception
 	{
-		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links);
+		m_driver = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, flags);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SimpleQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
+	public SimpleQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, int flags) throws Exception
 	{
-		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links);
+		m_driver = DriverSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -270,12 +270,4 @@ public class SimpleQuerier implements Querier
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
-	@Override
-	public void setQueryFlags(int queryFlags)
-	{
-		m_driver.setQueryFlags(queryFlags);
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
 }

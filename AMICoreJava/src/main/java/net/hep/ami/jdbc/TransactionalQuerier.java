@@ -32,16 +32,16 @@ public class TransactionalQuerier implements Querier
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public TransactionalQuerier(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public TransactionalQuerier(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(catalog, AMIUser, timeZone, isAdmin, links, m_transactionId = transactionId);
+		m_driver = TransactionPoolSingleton.getConnection(catalog, AMIUser, timeZone, flags, m_transactionId = transactionId);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public TransactionalQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links, long transactionId) throws Exception
+	public TransactionalQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
 	{
-		m_driver = TransactionPoolSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, isAdmin, links, m_transactionId = transactionId);
+		m_driver = TransactionPoolSingleton.getConnection(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags, m_transactionId = transactionId);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -238,14 +238,6 @@ public class TransactionalQuerier implements Querier
 	public String getPass()
 	{
 		return m_driver.getPass();
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public void setQueryFlags(int queryFlags)
-	{
-		m_driver.setQueryFlags(queryFlags);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -20,7 +20,6 @@ public abstract class AbstractDriver implements Querier
 
 	protected final String m_externalCatalog;
 	protected final String m_internalCatalog;
-	protected int m_queryFlags = 0;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -36,8 +35,7 @@ public abstract class AbstractDriver implements Querier
 
 	protected final String m_AMIUser;
 	protected final String m_timeZone;
-	protected final boolean m_isAdmin;
-	protected final boolean m_links;
+	protected final int m_flags;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -60,7 +58,7 @@ public abstract class AbstractDriver implements Querier
 	 * @param pass The database password.
 	 */
 
-	public AbstractDriver(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, boolean isAdmin, boolean links) throws Exception
+	public AbstractDriver(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, int flags) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET JDBC ANNOTATION                                                                                        */
@@ -101,8 +99,7 @@ public abstract class AbstractDriver implements Querier
 
 		m_AMIUser = AMIUser;
 		m_timeZone = timeZone;
-		m_isAdmin = isAdmin;
-		m_links = links;
+		m_flags = flags;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CREATE CONNECTION                                                                                          */
@@ -183,7 +180,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, entity, m_AMIUser, m_isAdmin, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToSQL.parse(m_externalCatalog, entity, m_AMIUser, (m_flags & Querier.FLAG_ADMIN) != 0, mql);
 		}
 		else
 		{
@@ -198,7 +195,7 @@ public abstract class AbstractDriver implements Querier
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
-			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, entity, m_AMIUser, m_isAdmin, mql);
+			return net.hep.ami.jdbc.query.mql.MQLToAST.parse(m_externalCatalog, entity, m_AMIUser, (m_flags & Querier.FLAG_ADMIN) != 0, mql);
 		}
 		else
 		{
@@ -221,7 +218,7 @@ public abstract class AbstractDriver implements Querier
 			SQL = mqlToSQL(entity, mql);
 			AST = mqlToAST(entity, mql);
 
-			return new RowSet(m_queryFlags, m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, entity, m_isAdmin, m_links, SQL, mql, AST);
+			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, entity, m_flags, SQL, mql, AST);
 		}
 		catch(Exception e)
 		{
@@ -238,7 +235,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			sql = Formatter.formatStatement(this, sql, args);
 
-			return new RowSet(m_queryFlags, m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_isAdmin, m_links, sql, null, null);
+			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_flags, sql, null, null);
 		}
 		catch(Exception e)
 		{
@@ -255,7 +252,7 @@ public abstract class AbstractDriver implements Querier
 		{
 			raw = Formatter.formatStatement(this, raw, args);
 
-			return new RowSet(m_queryFlags, m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_isAdmin, m_links, raw, null, null);
+			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_flags, raw, null, null);
 		}
 		catch(Exception e)
 		{
@@ -458,10 +455,9 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * @deprecated (for internal use only)
+	 * @internal (for internal use only)
 	 */
 
-	@Deprecated
 	public Statement getStatement()
 	{
 		return m_statement;
@@ -537,13 +533,6 @@ public abstract class AbstractDriver implements Querier
 	public String getPass()
 	{
 		return m_pass;
-	}
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public void setQueryFlags(int queryFlags)
-	{
-		m_queryFlags = queryFlags;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

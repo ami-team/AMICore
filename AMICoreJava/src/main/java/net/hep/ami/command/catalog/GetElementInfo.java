@@ -26,18 +26,17 @@ public class GetElementInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		int queryFlags = 0;
-
-		if(arguments.containsKey("disallowBigContent"))
-		{
-			queryFlags = 1;
-		}
-
 		String catalog = arguments.get("catalog");
 		String entity = arguments.get("entity");
 
 		String primaryFieldName = arguments.get("primaryFieldName");
 		String primaryFieldValue = arguments.get("primaryFieldValue");
+
+		int flags = Querier.FLAG_SHOW_LINKS;
+
+		if(arguments.containsKey("bigContent")) {
+			flags |= Querier.FLAG_SHOW_BIG_CONTENT;
+		}
 
 		if(catalog == null || entity == null || primaryFieldName == null || primaryFieldValue == null)
 		{
@@ -46,9 +45,7 @@ public class GetElementInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Querier querier = getQuerier(catalog, true);
-
-		querier.setQueryFlags(queryFlags);
+		Querier querier = getQuerier(catalog, flags);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/*                                                                                                            */
@@ -86,7 +83,7 @@ public class GetElementInfo extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private void _getLinkedEntities(StringBuilder result, String catalog, String entity, String primaryFieldName, String primaryFieldValue, Collection<SchemaSingleton.FrgnKeys> list, int mode)
+	private void _getLinkedEntities(StringBuilder result, String catalog, String entity, String primaryFieldName, String primaryFieldValue, @NotNull Collection<SchemaSingleton.FrgnKeys> list, int mode)
 	{
 		List<QId> constraints;
 
@@ -226,7 +223,7 @@ public class GetElementInfo extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" -primaryFieldName=\"\" -primaryFieldValue=\"\"";
+		return "-catalog=\"\" -entity=\"\" -primaryFieldName=\"\" -primaryFieldValue=\"\" (-bigContent)?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

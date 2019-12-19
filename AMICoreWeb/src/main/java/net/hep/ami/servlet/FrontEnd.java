@@ -545,9 +545,9 @@ public class FrontEnd extends HttpServlet
 		{
 			Boolean attr = (Boolean) session.getAttribute("NoCert");
 
-			noCert = attr != null
+			noCert = (attr != null)
 			         &&
-			         attr != false
+			         (attr != false)
 			;
 		}
 		else

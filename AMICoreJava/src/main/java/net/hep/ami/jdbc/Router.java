@@ -48,8 +48,7 @@ public class Router implements Querier
 			pass,
 			AMIUser,
 			timeZone,
-			true,
-			false
+			Querier.FLAG_ADMIN
 		);
 	}
 
@@ -275,7 +274,6 @@ public class Router implements Querier
 	 * Create the AMI router tables.
 	 */
 
-	@SuppressWarnings("deprecation")
 	public void create() throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -788,13 +786,6 @@ public class Router implements Querier
 
 		CommandSingleton.reload(/**/);
 		ConverterSingleton.reload(/**/);
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-	@Override
-	public void setQueryFlags(int queryFlags)
-	{
-		m_driver.setQueryFlags(queryFlags);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
