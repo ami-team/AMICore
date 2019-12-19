@@ -31,7 +31,6 @@ public class Router implements Querier
 			ConfigSingleton.getProperty("router_pass"),
 			ConfigSingleton.getProperty("time_zone", "UTC")
 		);
-		Objects.hash();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -458,6 +457,12 @@ public class Router implements Querier
 			"INSERT INTO `router_role` (`role`) VALUES" +
 			" ('AMI_SSO')" +
 			";"
+		);
+
+		executeSQLUpdate(
+			"INSERT INTO `router_role` (`role`) VALUES" +
+				" ('AMI_WRITER')" +
+				";"
 		);
 
 		executeSQLUpdate(

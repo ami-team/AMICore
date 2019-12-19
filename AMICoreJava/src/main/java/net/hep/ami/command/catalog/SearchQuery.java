@@ -42,8 +42,8 @@ public class SearchQuery extends AbstractCommand
 
 		int flags = 0;
 
-		if(arguments.containsKey("bigContent")) {
-			flags |= Querier.FLAG_SHOW_BIG_CONTENT;
+		if(arguments.containsKey("hideBigContent")) {
+			flags |= Querier.FLAG_HIDE_BIG_CONTENT;
 		}
 
 		if(arguments.containsKey("links")) {
@@ -240,7 +240,7 @@ public class SearchQuery extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)? -(bigContent)? (-links)? (-count)?";
+		return "-catalog=\"\" -entity=\"\" (-raw=\"\" | -sql=\"\" | -mql=\"\") (-groupBy=\"\")? (-orderBy=\"\" (-orderWay=\"\")?)? (-limit=\"\" (-offset=\"\")?)? -(hideBigContent)? (-links)? (-count)?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

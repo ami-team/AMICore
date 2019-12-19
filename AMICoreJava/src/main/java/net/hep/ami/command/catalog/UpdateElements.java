@@ -13,7 +13,7 @@ import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_ADMIN", visible = true, secured = false)
+@CommandMetadata(role = "AMI_WRITER", visible = true, secured = false)
 public class UpdateElements extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

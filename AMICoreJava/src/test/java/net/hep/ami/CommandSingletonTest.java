@@ -19,9 +19,9 @@ public class CommandSingletonTest
 //		LogSingleton.root.error("Hello World!");
 //		LogSingleton.root.info("Hello World!");
 
-		CommandSingleton.executeCommand("RootH1I -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT `self`.`router_command`.`secured` WHERE 1=1\"", false);
+//		CommandSingleton.executeCommand("RootH1I -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT `self`.`router_command`.`secured` WHERE 1=1\"", false);
 
-		CommandSingleton.executeCommand("RootH1I -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT `self`.`router_command`.`visible` WHERE 1=1\"", false);
+//		CommandSingleton.executeCommand("RootH1I -catalog=\"self\" -entity=\"router_command\" -mql=\"SELECT `self`.`router_command`.`visible` WHERE 1=1\"", false);
 
 //		CommandSingleton.executeCommand("GetElementInfo -catalog=\"self\" -entity=\"router_role\" -primaryFieldName=\"id\" -primaryFieldValue=\"1\"", false);
 

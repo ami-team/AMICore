@@ -34,8 +34,8 @@ public class GetElementInfo extends AbstractCommand
 
 		int flags = Querier.FLAG_SHOW_LINKS;
 
-		if(arguments.containsKey("bigContent")) {
-			flags |= Querier.FLAG_SHOW_BIG_CONTENT;
+		if(arguments.containsKey("hideBigContent")) {
+			flags |= Querier.FLAG_HIDE_BIG_CONTENT;
 		}
 
 		if(catalog == null || entity == null || primaryFieldName == null || primaryFieldValue == null)
@@ -223,7 +223,7 @@ public class GetElementInfo extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" -primaryFieldName=\"\" -primaryFieldValue=\"\" (-bigContent)?";
+		return "-catalog=\"\" -entity=\"\" -primaryFieldName=\"\" -primaryFieldValue=\"\" (-hideBigContent)?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

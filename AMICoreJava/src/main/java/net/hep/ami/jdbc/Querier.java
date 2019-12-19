@@ -13,7 +13,7 @@ public interface Querier
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	int FLAG_SHOW_BIG_CONTENT = (1 << 0);
+	int FLAG_HIDE_BIG_CONTENT = (1 << 0);
 	int FLAG_SHOW_LINKS = (1 << 1);
 	int FLAG_ADMIN = (1 << 2);
 
