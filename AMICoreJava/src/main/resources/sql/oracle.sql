@@ -1040,8 +1040,7 @@ CREATE TABLE "router_short_url" (
   "expire" NUMBER(1, 0) DEFAULT 0,
   "owner" VARCHAR2(128),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128)
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
  );;
 
 ALTER TABLE "router_short_url"
@@ -1086,10 +1085,6 @@ ALTER TABLE "router_short_url"
 
 ALTER TABLE "router_short_url"
   ADD CONSTRAINT "ck9_router_short_url" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck10_router_short_url" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_short_url"

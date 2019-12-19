@@ -152,7 +152,6 @@ CREATE TABLE "router_short_url" (
 ,  "owner" VARCHAR(128) NOT NULL
 ,  "created" TIMESTAMP NOT NULL DEFAULT current_timestamp
 ,  "modified" TIMESTAMP NOT NULL DEFAULT current_timestamp
-,  "modifiedBy" VARCHAR(128) NOT NULL
 );;
 
 CREATE TABLE "router_dashboard" (
