@@ -1,4 +1,4 @@
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS "router_ipv6_blocks";;
 DROP TABLE IF EXISTS "router_ipv4_blocks";;
@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS "router_entity";;
 DROP TABLE IF EXISTS "router_catalog";;
 DROP TABLE IF EXISTS "router_config";;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION UPDATE_MODIFIED_FIELD()
   RETURNS TRIGGER AS $BODY$
@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION UPDATE_MODIFIED_FIELD()
   $BODY$ LANGUAGE 'plpgsql'
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_config" (
   "id" SERIAL,
@@ -55,7 +55,7 @@ CREATE TRIGGER "trig1_router_config"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_catalog" (
   "id" SERIAL,
@@ -85,7 +85,7 @@ CREATE TRIGGER "trig1_router_catalog"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_entity" (
   "id" SERIAL,
@@ -111,7 +111,7 @@ CREATE TRIGGER "trig1_router_entity"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_field" (
   "id" SERIAL,
@@ -138,7 +138,7 @@ CREATE TRIGGER "trig1_router_field"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_foreign_key" (
   "id" SERIAL,
@@ -167,7 +167,7 @@ CREATE TRIGGER "trig1_router_foreign_key"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_converter" (
   "id" SERIAL,
@@ -180,7 +180,7 @@ ALTER TABLE "router_converter"
   ADD CONSTRAINT "uk1_router_converter" UNIQUE ("xslt")
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_role" (
   "id" SERIAL,
@@ -193,7 +193,7 @@ ALTER TABLE "router_role"
   ADD CONSTRAINT "uk1_router_role" UNIQUE ("role")
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_command" (
   "id" SERIAL,
@@ -209,7 +209,7 @@ ALTER TABLE "router_command"
   ADD CONSTRAINT "uk1_router_command" UNIQUE ("command")
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_command_role" (
   "id" SERIAL,
@@ -224,7 +224,7 @@ ALTER TABLE "router_command_role"
   ADD CONSTRAINT "fk2_router_command_role" FOREIGN KEY ("roleFK") REFERENCES "router_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_user" (
   "id" SERIAL,
@@ -254,7 +254,7 @@ CREATE TRIGGER "trig1_router_user"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_user_role" (
   "id" SERIAL,
@@ -269,7 +269,7 @@ ALTER TABLE "router_user_role"
   ADD CONSTRAINT "fk2_router_user_role" FOREIGN KEY ("roleFK") REFERENCES "router_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_short_url" (
   "id" SERIAL,
@@ -295,7 +295,7 @@ CREATE TRIGGER "trig1_router_short_url"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_dashboard" (
   "id" SERIAL,
@@ -323,7 +323,7 @@ CREATE TRIGGER "trig1_router_dashboard"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_authority" (
   "id" SERIAL,
@@ -352,7 +352,7 @@ CREATE TRIGGER "trig1_router_authority"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_search_interface" (
   "id" SERIAL,
@@ -378,7 +378,7 @@ CREATE TRIGGER "trig1_router_search_interface"
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_locations" (
   "id" SERIAL,
@@ -391,7 +391,7 @@ ALTER TABLE "router_locations"
   ADD CONSTRAINT "uk1_router_locations" UNIQUE ("continentCode", "countryCode")
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_ipv4_blocks" (
   "id" SERIAL,
@@ -407,7 +407,7 @@ ALTER TABLE "router_ipv4_blocks"
   ADD CONSTRAINT "fk1_router_ipv4_blocks" FOREIGN KEY ("geoFK") REFERENCES "router_locations" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_ipv6_blocks" (
   "id" SERIAL,
@@ -423,4 +423,4 @@ ALTER TABLE "router_ipv6_blocks"
   ADD CONSTRAINT "fk1_router_ipv6_blocks" FOREIGN KEY ("geoFK") REFERENCES "router_locations" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;;
 
------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------

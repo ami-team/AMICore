@@ -1,6 +1,10 @@
 package net.hep.ami.jdbc.query.sql;
 
 import java.math.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -209,6 +213,46 @@ public class Formatter
 		return new Tuple2<>(stringBuilder.toString(), list);
 
 		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void formatPreparedStatement(@NotNull PreparedStatement statement, @NotNull Tuple2<String, List<String>> tuple) throws Exception
+	{
+		for(int i = 0; i < tuple.y.size(); i++)
+		{
+			String value = tuple.y.get(i);
+
+			try
+			{
+				switch(statement.getParameterMetaData().getParameterClassName(i + 1))
+				{
+					case "java.sql.Clob":
+					case "java.lang.String":
+					case "oracle.jdbc.OracleClob":
+						statement.setString(i + 1, value);
+						break;
+
+					case "java.sql.Timestamp":
+						statement.setTimestamp(i + 1, java.sql.Timestamp.valueOf(value));
+						break;
+
+					case "java.sql.Date":
+						SimpleDateFormat dateFormater = new SimpleDateFormat(ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"), Locale.US);
+						statement.setDate(i + 1, new java.sql.Date(dateFormater.parse(value).getTime()));
+						break;
+
+					case "java.sql.Time":
+						SimpleDateFormat timeFormater = new SimpleDateFormat(ConfigSingleton.getProperty("time_format", "HH:mm:ss"), Locale.US);
+						statement.setTime(i + 1, new java.sql.Time(timeFormater.parse(value).getTime()));
+						break;
+				}
+			}
+			catch(SQLException e)
+			{
+				statement.setString(i + 1, value);
+			}
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -4,6 +4,8 @@ import net.hep.ami.jdbc.driver.*;
 
 import org.jetbrains.annotations.*;
 
+import java.util.List;
+
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:sqlite",
@@ -31,11 +33,9 @@ public class SQLiteDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql)
+	public String patchSQL(String sql) throws Exception
 	{
-		String result =  sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("TIMESTAMP\\('", "datetime('").replaceAll(",\\s*'YYYY-MM-DD[^']*'","");
-		//System.out.println(result);
-	return result;
+		return sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("TIMESTAMP\\('", "datetime('").replaceAll(",\\s*'YYYY-MM-DD[^']*'","");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

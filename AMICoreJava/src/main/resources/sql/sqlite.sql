@@ -53,7 +53,7 @@ CREATE TABLE "router_catalog" (
 ------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_entity" (
-   "id" INTEGER PRIMARY KEY,
+  "id" INTEGER PRIMARY KEY,
   "catalog" VARCHAR(128) NOT NULL,
   "entity" VARCHAR(128) NOT NULL,
   "rank" integer,
