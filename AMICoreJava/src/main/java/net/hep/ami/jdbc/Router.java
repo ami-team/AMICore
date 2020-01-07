@@ -135,9 +135,27 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception
+	public PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String mql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
 	{
-		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames, args);
+		return m_driver.sqlPreparedStatement(entity, mql, returnGeneratedKeys, columnNames, injectArgs, args);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@Override
+	public PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
+	{
+		return m_driver.mqlPreparedStatement(entity, sql, returnGeneratedKeys, columnNames, injectArgs, args);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@Override
+	public PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String raw, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
+	{
+		return m_driver.rawPreparedStatement(entity, raw, returnGeneratedKeys, columnNames, injectArgs, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -290,7 +308,7 @@ public class Router implements Querier
 			path = "/sql/sqlite.sql";
 		}
 		else if(jdbcUrl.contains("jdbc:h2")) {
-		path = "/sql/h2.sql";
+			path = "/sql/h2.sql";
 		}
 		else {
 			throw new Exception("only `mysql`, `mariadb`, `oracle`, `postgresql`, `sqlite` and `h2` are supported");
@@ -512,9 +530,9 @@ public class Router implements Querier
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		try(PreparedStatement statement1 = preparedStatement("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, false, null))
+		try(PreparedStatement statement1 = sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null, false))
 		{
-			try(PreparedStatement statement2 = preparedStatement("INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, false, null))
+			try(PreparedStatement statement2 = sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
 			{
 				String commandName;
 				String commandRole;
@@ -522,19 +540,18 @@ public class Router implements Querier
 				int commandVisible;
 				int commandSecured;
 
-				for(String commandClass : ClassSingleton.findClassNames("net.hep.ami.command"))
+				for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 				{
 					Class<?> clazz = ClassSingleton.forName(commandClass);
 
 					CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
 
 					if(commandMetadata != null
-						   &&
-						   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
-						   &&
-						   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
-					)
-					{
+					   &&
+					   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+					   &&
+					   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
+					 ) {
 						/*------------------------------------------------------------------------------------------------*/
 
 						commandName = clazz.getSimpleName();

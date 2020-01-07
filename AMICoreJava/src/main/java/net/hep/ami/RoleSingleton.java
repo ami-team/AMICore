@@ -141,7 +141,7 @@ public class RoleSingleton
 	{
 		Set<String> result = new HashSet<>();
 
-		try(PreparedStatement statement = querier.preparedStatement(
+		try(PreparedStatement statement = querier.sqlPreparedStatement("router_command",
 			/*--------------------------------------------------------------------------------------------------------*/
 			"SELECT `router_role`.`role` FROM `router_command`, `router_command_role`, `router_role` WHERE" +
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -155,8 +155,8 @@ public class RoleSingleton
 			" AND `router_command_role`.`roleFK`    =  `router_role`  .`id`",
 			/*--------------------------------------------------------------------------------------------------------*/
 			false,
-			false,
 			null,
+			true,
 			command
 		 )) {
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -181,7 +181,7 @@ public class RoleSingleton
 	{
 		Set<String> result = new HashSet<>();
 
-		try(PreparedStatement statement = querier.preparedStatement(
+		try(PreparedStatement statement = querier.sqlPreparedStatement("router_user",
 			/*--------------------------------------------------------------------------------------------------------*/
 			"SELECT `router_role`.`role` FROM `router_user`, `router_user_role`, `router_role` WHERE" +
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -195,8 +195,8 @@ public class RoleSingleton
 			" AND `router_user_role`.`roleFK` = `router_role`.`id`",
 			/*--------------------------------------------------------------------------------------------------------*/
 			false,
-			false,
 			null,
+			true,
 			amiUser,
 			amiPass
 		 )) {
@@ -222,13 +222,13 @@ public class RoleSingleton
 	{
 		String result;
 
-		try(PreparedStatement statement = querier.preparedStatement(
+		try(PreparedStatement statement = querier.sqlPreparedStatement("router_user",
 			/*--------------------------------------------------------------------------------------------------------*/
 			"SELECT `AMIPass` FROM `router_user` WHERE `router_user`.`AMIUser` = ? AND `router_user`.`valid` != 0",
 			/*--------------------------------------------------------------------------------------------------------*/
 			false,
-			false,
 			null,
+			true,
 			amiUser
 		 )) {
 			/*--------------------------------------------------------------------------------------------------------*/

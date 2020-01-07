@@ -135,9 +135,27 @@ public class SimpleQuerier implements Querier
 
 	@NotNull
 	@Override
-	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception
+	public PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String mql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
 	{
-		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames, args);
+		return m_driver.sqlPreparedStatement(entity, mql, returnGeneratedKeys, columnNames, injectArgs, args);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@Override
+	public PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
+	{
+		return m_driver.mqlPreparedStatement(entity, sql, returnGeneratedKeys, columnNames, injectArgs, args);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@Override
+	public PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String raw, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
+	{
+		return m_driver.rawPreparedStatement(entity, raw, returnGeneratedKeys, columnNames, injectArgs, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

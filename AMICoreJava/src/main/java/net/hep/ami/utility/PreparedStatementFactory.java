@@ -23,37 +23,62 @@ public class PreparedStatementFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static PreparedStatement createStatement(@NotNull Map<String, PreparedStatement> statementMap, @NotNull Connection connection, @NotNull String sql, boolean returnGeneratedKeys, String[] columnNames, @Nullable Object[] args) throws Exception
+	public static PreparedStatement createStatement(@NotNull Map<String, PreparedStatement> statementMap, @NotNull Connection connection, @NotNull String sql, boolean returnGeneratedKeys, String[] columnNames, boolean injectArgs, @Nullable Object[] args) throws Exception
 	{
 		PreparedStatement result;
 
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		Tuple2<String, List<Object>> tuple = prepare(sql, args);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		result = statementMap.get(tuple.x);
-
-		if(result == null || result.isClosed())
+		if(injectArgs)
 		{
-			statementMap.put(sql, result = !returnGeneratedKeys ? (
-					connection.prepareStatement(tuple.x)
-				) : (
-					(columnNames == null) ? (
-						connection.prepareStatement(tuple.x, Statement.RETURN_GENERATED_KEYS)
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			Tuple2<String, List<Object>> tuple = prepare(sql, args);
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			result = statementMap.get(tuple.x);
+
+			if(result == null || result.isClosed())
+			{
+				statementMap.put(tuple.x, result = !returnGeneratedKeys ? (
+						connection.prepareStatement(tuple.x)
 					) : (
-						connection.prepareStatement(tuple.x, /*-----*/ columnNames /*-----*/)
+						(columnNames == null) ? (
+							connection.prepareStatement(tuple.x, Statement.RETURN_GENERATED_KEYS)
+						) : (
+							connection.prepareStatement(tuple.x, /*-----*/ columnNames /*-----*/)
+						)
 					)
-				)
-			);
+				);
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			inject(result, tuple);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
+		else
+		{
+			/*--------------------------------------------------------------------------------------------------------*/
 
-		/*------------------------------------------------------------------------------------------------------------*/
+			result = statementMap.get(sql);
 
-		inject(result, tuple);
+			if(result == null || result.isClosed())
+			{
+				statementMap.put(sql, result = !returnGeneratedKeys ? (
+						connection.prepareStatement(sql)
+					) : (
+						(columnNames == null) ? (
+							connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
+						) : (
+							connection.prepareStatement(sql, /*-----*/ columnNames /*-----*/)
+						)
+					)
+				);
+			}
 
-		/*------------------------------------------------------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+		}
 
 		return result;
 	}

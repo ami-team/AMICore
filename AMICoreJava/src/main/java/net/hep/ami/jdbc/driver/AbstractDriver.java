@@ -199,7 +199,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
+	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object[] args) throws Exception
 	{
 		String sql = "";
 		String ast = "";
@@ -209,7 +209,7 @@ public abstract class AbstractDriver implements Querier
 			sql = mqlToSQL(entity, mql);
 			ast = mqlToAST(entity, mql);
 
-			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, true, args);
 
 			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, sql, mql, ast);
 
@@ -224,11 +224,11 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeSQLQuery(@Nullable String entity, @NotNull String sql, @NotNull Object... args) throws Exception
+	public RowSet executeSQLQuery(@Nullable String entity, @NotNull String sql, @NotNull Object[] args) throws Exception
 	{
 		try
 		{
-			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, true, args);
 
 			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, sql, null, null);
 
@@ -243,11 +243,11 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeRawQuery(@Nullable String entity, @NotNull String raw, @NotNull Object... args) throws Exception
+	public RowSet executeRawQuery(@Nullable String entity, @NotNull String raw, @NotNull Object[] args) throws Exception
 	{
 		try
 		{
-			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, /*----*/(raw), false, null, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, /*----*/(raw), false, null, true, args);
 
 			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, raw, null, null);
 		}
@@ -260,7 +260,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object[] args) throws Exception
 	{
 		String sql = "";
 		String ast = "";
@@ -270,7 +270,7 @@ public abstract class AbstractDriver implements Querier
 			sql = mqlToSQL(entity, mql);
 			ast = mqlToAST(entity, mql);
 
-			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, true, args);
 
 			return new Update(statement.executeUpdate(), sql, mql, ast);
 		}
@@ -283,11 +283,11 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
+	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object[] args) throws Exception
 	{
 		try
 		{
-			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, true, args);
 
 			return new Update(statement.executeUpdate(), sql, null, null);
 		}
@@ -300,11 +300,11 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
+	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object[] args) throws Exception
 	{
 		try
 		{
-			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, /*----*/(raw), false, null, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, /*----*/(raw), false, null, true, args);
 
 			return new Update(statement.executeUpdate(), raw, null, null);
 		}
@@ -317,19 +317,49 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception
+	public PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String mql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object[] args) throws Exception
 	{
+		String sql = "";
+
 		try
 		{
-			String SQL = !isRawQuery ? patchSQL(sql)
-			                         : /*----*/(sql)
-			;
+			sql = mqlToSQL(entity, mql);
 
-			return PreparedStatementFactory.createStatement(m_statementMap, m_connection, SQL, returnGeneratedKeys, columnNames, args);
+			return PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(mql), returnGeneratedKeys, columnNames, injectArgs, args);
 		}
 		catch(Exception e)
 		{
-			throw new Exception(e.getMessage() + " for " + (isRawQuery ? "RAW" : "SQL") + " query: " + sql, e);
+			throw new Exception(e.getMessage() + " for MQL query: " + mql + " -> " + sql, e);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object[] args) throws Exception
+	{
+		try
+		{
+			return PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), returnGeneratedKeys, columnNames, injectArgs, args);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String raw, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object[] args) throws Exception
+	{
+		try
+		{
+			return PreparedStatementFactory.createStatement(m_statementMap, m_connection, raw, returnGeneratedKeys, columnNames, injectArgs, args);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for RAW query: " + raw, e);
 		}
 	}
 

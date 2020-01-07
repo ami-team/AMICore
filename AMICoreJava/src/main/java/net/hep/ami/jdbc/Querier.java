@@ -136,18 +136,53 @@ public interface Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Creates a PreparedStatement object for sending parameterized SQL statements to the database.
+	 * Creates a PreparedStatement object for sending parameterized MQL statements to the database.
 	 *
+	 * @param entity The default entity.
 	 * @param sql The SQL query.
-	 * @param isRawQuery Indicates whether sql is a raw query or not.
 	 * @param returnGeneratedKeys Indicates whether auto-generated keys should be returned.
 	 * @param columnNames The list of auto-generated key names or <code>null</code> for getting them all.
+	 * @param injectArgs Indicates whether TODO
 	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
 	 *
 	 * @return The new PreparedStatement object.
 	 */
 
-	PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception;
+	PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	/**
+	 * Creates a PreparedStatement object for sending parameterized SQL statements to the database.
+	 *
+	 * @param entity The default entity.
+	 * @param sql The SQL query.
+	 * @param returnGeneratedKeys Indicates whether auto-generated keys should be returned.
+	 * @param columnNames The list of auto-generated key names or <code>null</code> for getting them all.
+	 * @param injectArgs Indicates whether TODO
+	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
+	 *
+	 * @return The new PreparedStatement object.
+	 */
+
+	PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	/**
+	 * Creates a PreparedStatement object for sending parameterized RAW statements to the database.
+	 *
+	 * @param entity The default entity.
+	 * @param sql The SQL query.
+	 * @param returnGeneratedKeys Indicates whether auto-generated keys should be returned.
+	 * @param columnNames The list of auto-generated key names or <code>null</code> for getting them all.
+	 * @param injectArgs Indicates whether TODO
+	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
+	 *
+	 * @return The new PreparedStatement object.
+	 */
+
+	PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 

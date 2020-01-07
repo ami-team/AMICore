@@ -12,7 +12,7 @@ public class CommandSingletonTest
 	{
 		System.out.println(ConfigSingleton.getConfigFileName());
 
-		System.out.println(CommandSingleton.executeCommand("GetTmpPass", false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("FindNewCommands", false).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("Echo -foo=\"foo\" -cached", false).replace(">", ">\n"));
 

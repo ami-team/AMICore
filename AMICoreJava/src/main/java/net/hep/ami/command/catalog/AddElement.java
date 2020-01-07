@@ -72,39 +72,42 @@ public class AddElement extends AbstractCommand
 		String sql = querier.mqlToSQL(entity, mql);
 		String ast = querier.mqlToAST(entity, mql);
 
-		PreparedStatement statement = querier.preparedStatement(sql,false, true, values);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		final int nbOfUpdatedRows;
-
-		try
+		try(PreparedStatement statement = querier.sqlPreparedStatement(entity, sql, true, null, true, values))
 		{
-			nbOfUpdatedRows = statement.executeUpdate();
-		}
-		catch(SQLException e)
-		{
-			throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
-		}
+			/*--------------------------------------------------------------------------------------------------------*/
 
-		/*------------------------------------------------------------------------------------------------------------*/
+			final int nbOfUpdatedRows;
 
-		ResultSet resultSet = statement.getGeneratedKeys();
-
-		try
-		{
-			if(resultSet.next())
+			try
 			{
-				return new Update(nbOfUpdatedRows, resultSet.getString(1), mql, sql, ast).toStringBuilder();
+				nbOfUpdatedRows = statement.executeUpdate();
 			}
-			else
+			catch(SQLException e)
+			{
+				throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			ResultSet resultSet = statement.getGeneratedKeys();
+
+			try
+			{
+				if(resultSet.next())
+				{
+					return new Update(nbOfUpdatedRows, resultSet.getString(1), mql, sql, ast).toStringBuilder();
+				}
+				else
+				{
+					return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
+				}
+			}
+			catch(SQLException e)
 			{
 				return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
 			}
-		}
-		catch(SQLException e)
-		{
-			return new Update(nbOfUpdatedRows, mql, sql, ast).toStringBuilder();
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
