@@ -35,11 +35,7 @@ public class ChangePassword extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("UPDATE `router_user` SET `AMIPass` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?",
-			SecuritySingleton.encrypt(amiPasswordOld),
-			/*---------------------*/(   amiLogin   ),
-			SecuritySingleton.encrypt(amiPasswordOld)
-		);
+		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?# WHERE `AMIUser` = ? AND `AMIPass` = ?#", amiPasswordOld, amiLogin, amiPasswordOld);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

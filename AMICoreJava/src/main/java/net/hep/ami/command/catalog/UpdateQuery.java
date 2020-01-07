@@ -43,16 +43,13 @@ public class UpdateQuery extends AbstractCommand
 
 		Update result;
 
-		/**/ if(raw != null)
-		{
-			result = querier.executeRawUpdate(raw);
+		/**/ if(raw != null) {
+			result = querier.executeRawUpdate(entity, raw);
 		}
-		else if(sql != null)
-		{
-			result = querier.executeSQLUpdate(sql);
+		else if(sql != null) {
+			result = querier.executeSQLUpdate(entity, sql);
 		}
-		else
-		{
+		else {
 			result = querier.executeMQLUpdate(entity, mql);
 		}
 

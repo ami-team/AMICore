@@ -20,7 +20,7 @@ public class HttpConnectionFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static HttpURLConnection connection(@NotNull String url) throws Exception
+	public static HttpURLConnection openConnection(@NotNull String url) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 

@@ -1,5 +1,6 @@
 package net.hep.ami.jdbc.pool;
 
+import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -158,7 +159,10 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == DriverMetadata.Type.SQL)
 				{
-					driver.getStatement().executeQuery(driver.patchSQL("SELECT 1"));
+					try(Statement statement = driver.getConnection().createStatement())
+					{
+						statement.executeQuery(driver.patchSQL("SELECT 1"));
+					}
 				}
 			}
 
@@ -242,7 +246,10 @@ public class TransactionPoolSingleton
 			{
 				if(driver.getJdbcType() == DriverMetadata.Type.SQL)
 				{
-					driver.getStatement().executeQuery(driver.patchSQL("SELECT 1"));
+					try(Statement statement = driver.getConnection().createStatement())
+					{
+						statement.executeQuery(driver.patchSQL("SELECT 1"));
+					}
 				}
 			}
 

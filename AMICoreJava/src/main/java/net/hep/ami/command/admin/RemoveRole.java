@@ -32,7 +32,7 @@ public class RemoveRole extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("DELETE FROM `router_role` WHERE `role` = ?",
+		Update update = getQuerier("self").executeSQLUpdate("router_role", "DELETE FROM `router_role` WHERE `role` = ?",
 			role
 		);
 

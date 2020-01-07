@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc;
 
 import java.sql.*;
-import java.text.*;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -67,11 +66,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private DateFormat m_datetimeFormat = null;
-	private DateFormat m_dateFormat = null;
-	private DateFormat m_timeFormat = null;
-
-	/*----------------------------------------------------------------------------------------------------------------*/
+	private final DateTime m_amiDateTime = new DateTime();
 
 	private final WebLinkCache m_webLinkScripts = new WebLinkCache();
 
@@ -588,82 +583,6 @@ public class RowSet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private String formatTimestamp(@NotNull java.sql.Timestamp timestamp)
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		final int precision = ConfigSingleton.getProperty("time_precision", 6);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
-
-		if(precision >= 1
-		   &&
-		   precision <= 9
-		 ) {
-			String ms = String.valueOf(java.lang.Math.round(Math.ceil(timestamp.getNanos() / Math.pow(10, 9 - precision))));
-
-			String pad = "0".repeat(Math.max(0, precision - ms.length()));
-
-			result.append(".").append(pad).append(ms);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(m_datetimeFormat == null)
-		{
-			m_datetimeFormat = new SimpleDateFormat(ConfigSingleton.getProperty("timedate_format", "yyyy-MM-dd HH:mm:ss"), Locale.US);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return result.insert(0, m_datetimeFormat.format(timestamp)).toString();
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	private String formatDate(@NotNull java.sql.Date date)
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(m_dateFormat == null)
-		{
-			m_dateFormat = new SimpleDateFormat(ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"), Locale.US);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return m_dateFormat.format(date);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	private String formaTime(@NotNull java.sql.Time time)
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(m_dateFormat == null)
-		{
-			m_dateFormat = new SimpleDateFormat(ConfigSingleton.getProperty("time_format", "HH:mm:ss"), Locale.US);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return m_timeFormat.format(time);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
 	protected String[] getCurrentRow() throws SQLException
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -688,7 +607,7 @@ public class RowSet
 				{
 					java.sql.Timestamp timestamp = m_resultSet.getTimestamp(i + 1);
 
-					result[i] = (timestamp != null) ? formatTimestamp(timestamp)
+					result[i] = (timestamp != null) ? m_amiDateTime.formatTimestamp(timestamp)
 					                                : m_resultSet.getString(i + 1)
 					;
 				}
@@ -709,7 +628,7 @@ public class RowSet
 				{
 					java.sql.Date date = m_resultSet.getDate(i + 1);
 
-					result[i] = (date != null) ? formatDate(date)
+					result[i] = (date != null) ? m_amiDateTime.formatDate(date)
 					                           : m_resultSet.getString(i + 1)
 					;
 				}
@@ -730,7 +649,7 @@ public class RowSet
 				{
 					java.sql.Time time = m_resultSet.getTime(i + 1);
 
-					result[i] = (time != null) ? formaTime(time)
+					result[i] = (time != null) ? m_amiDateTime.formatTime(time)
 					                           : m_resultSet.getString(i + 1)
 					;
 				}

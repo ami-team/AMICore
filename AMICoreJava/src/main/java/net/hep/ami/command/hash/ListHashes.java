@@ -25,11 +25,7 @@ public class ListHashes extends AbstractCommand
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		RowSet rowSet = querier.executeSQLQuery("router_short_url", "SELECT `hash`, `name`, `rank` FROM `router_short_url` WHERE `owner` = ?", m_AMIUser);
+		RowSet rowSet = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `hash`, `name`, `rank` FROM `router_short_url` WHERE `owner` = ?", m_AMIUser);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

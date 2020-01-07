@@ -1,5 +1,8 @@
 package net.hep.ami;
 
+import net.hep.ami.jdbc.Querier;
+import net.hep.ami.jdbc.SimpleQuerier;
+
 @SuppressWarnings("all")
 public class CommandSingletonTest
 {
@@ -9,7 +12,13 @@ public class CommandSingletonTest
 	{
 		System.out.println(ConfigSingleton.getConfigFileName());
 
-		System.out.println(CommandSingleton.executeCommand("Echo -foo=\"foo\" -cached", false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("GetTmpPass", false).replace(">", ">\n"));
+
+//		System.out.println(CommandSingleton.executeCommand("Echo -foo=\"foo\" -cached", false).replace(">", ">\n"));
+
+//		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_role\" -sql=\"SELECT AMI_DATE('2019-10-14')\"", false).replace(">", ">\n"));
+
+//		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_role\" -sql=\"SELECT @@GLOBAL.time_zone, @@SESSION.time_zone;\"", false).replace(">", ">\n"));
 
 //		CommandSingleton.executeCommand("RemoveElements -separator=\"|\" -catalog=\"self\" -entity=\"router_catalog_extra\" -keyFields=\"catalog|entity|field\" -keyValues=\"self|router_catalog|json\"", false);
 

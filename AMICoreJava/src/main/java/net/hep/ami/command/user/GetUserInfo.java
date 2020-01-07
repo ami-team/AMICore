@@ -109,23 +109,18 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
-			amiPassword = SecuritySingleton.encrypt(amiPassword);
-
-			String clientDN = SecuritySingleton.encrypt(m_clientDN);
-			String issuerDN = SecuritySingleton.encrypt(m_issuerDN);
-
 			String sql;
 
 			if(!vomsEnabled)
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?# WHERE `AMIUser` = ? AND `AMIPass` = ?#";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ?, `valid` = '1' WHERE `AMIUser` = ? AND `AMIPass` = ?";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?#, `valid` = '1' WHERE `AMIUser` = ? AND `AMIPass` = ?#";
 			}
 
-			Update update = querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword);
+			Update update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, amiLogin, amiPassword);
 
 			return new StringBuilder(
 				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
@@ -139,23 +134,18 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
-			amiPassword = SecuritySingleton.encrypt(amiPassword);
-
-			String clientDN = SecuritySingleton.encrypt("");
-			String issuerDN = SecuritySingleton.encrypt("");
-
 			String sql;
 
 			if(!vomsEnabled)
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ? WHERE `AMIUser` = ? AND `AMIPass` = ?";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?# WHERE `AMIUser` = ? AND `AMIPass` = ?#";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?, `issuerDN` = ?, `valid` = '0' WHERE `AMIUser` = ? AND `AMIPass` = ?";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?#, `valid` = '0' WHERE `AMIUser` = ? AND `AMIPass` = ?#";
 			}
 
-			Update update = querier.executeSQLUpdate(sql, clientDN, issuerDN, amiLogin, amiPassword);
+			Update update = querier.executeSQLUpdate("router_user", sql, "", "", amiLogin, amiPassword);
 
 			return new StringBuilder(
 				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"

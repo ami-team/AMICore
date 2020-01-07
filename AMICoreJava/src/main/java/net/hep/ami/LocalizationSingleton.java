@@ -131,7 +131,7 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> locations = CSV.parseAsMap(new FileInputStream(locationsEn));
 
-			querier.executeSQLUpdate("DELETE FROM `router_locations`");
+			querier.executeSQLUpdate("router_locations", "DELETE FROM `router_locations`");
 
 			try(PreparedStatement preparedStatement = querier.preparedStatement("INSERT INTO `router_locations` (`id`, `continentCode`, `countryCode`) VALUES (?, ?, ?)", false, false, null))
 			{
@@ -169,7 +169,7 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv4));
 
-			querier.executeSQLUpdate("DELETE FROM `router_ipv4_blocks`");
+			querier.executeSQLUpdate("router_ipv4_blocks", "DELETE FROM `router_ipv4_blocks`");
 
 			try(PreparedStatement preparedStatement = querier.preparedStatement("INSERT INTO `router_ipv4_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)", false, false, null))
 			{
@@ -217,7 +217,7 @@ public class LocalizationSingleton
 		{
 			List<Map<String, String>> blocks = CSV.parseAsMap(new FileInputStream(blocksIPv6));
 
-			querier.executeSQLUpdate("DELETE FROM `router_ipv6_blocks`");
+			querier.executeSQLUpdate("router_ipv6_blocks", "DELETE FROM `router_ipv6_blocks`");
 
 			try(PreparedStatement preparedStatement = querier.preparedStatement("INSERT INTO `router_ipv6_blocks` (`network`, `rangeBegin`, `rangeEnd`, `geoFK`) VALUES (?, ?, ?, ?)", false, false, null))
 			{

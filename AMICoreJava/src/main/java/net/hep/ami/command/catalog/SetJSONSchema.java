@@ -5,6 +5,7 @@ import java.util.*;
 
 import net.hep.ami.command.*;
 
+import net.hep.ami.jdbc.Update;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
@@ -35,18 +36,16 @@ public class SetJSONSchema extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = getQuerier("self").preparedStatement("UPDATE `router_catalog` SET `json` = ? WHERE `externalCatalog` = ?", false, false, null);
-
-		preparedStatement.setString(1, json);
-		preparedStatement.setString(2, catalog);
-
-		final int nbOfUpdatedRows = preparedStatement.executeUpdate();
+		Update update = getQuerier("self").executeMQLUpdate("router_catalog", "UPDATE `router_catalog` SET `json` = ? WHERE `externalCatalog` = ?",
+			json,
+			catalog
+		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder(
-			nbOfUpdatedRows > 0 ? "<info><![CDATA[done with success]]></info>"
-			                    : "<error><![CDATA[nothing done]]></error>"
+			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+			                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 

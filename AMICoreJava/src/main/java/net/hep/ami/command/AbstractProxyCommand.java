@@ -52,7 +52,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		/* EXECUTE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpURLConnection connection = HttpConnectionFactory.connection(ConfigSingleton.getProperty("proxy_command_endpoint"));
+		HttpURLConnection connection = HttpConnectionFactory.openConnection(ConfigSingleton.getProperty("proxy_command_endpoint"));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

@@ -284,11 +284,11 @@ public class ConfigSingleton
 
 		/**/ if(rows.isEmpty())
 		{
-			result = querier.executeSQLUpdate("INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, AMIUser, AMIUser).getNbOfUpdatedRows();
+			result = querier.executeSQLUpdate("router_config", "INSERT INTO `router_config` (`paramName`, `paramValue`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?)", name, value, AMIUser, AMIUser).getNbOfUpdatedRows();
 		}
 		else if(!rows.get(0).getValue(0).equals(value))
 		{
-			result = querier.executeSQLUpdate("UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, AMIUser, name).getNbOfUpdatedRows();
+			result = querier.executeSQLUpdate("router_config", "UPDATE `router_config` SET `paramValue` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `paramName` = ?", value, AMIUser, name).getNbOfUpdatedRows();
 		}
 		else
 		{
@@ -304,11 +304,9 @@ public class ConfigSingleton
 
 	public static int removePropertyInDataBase(@NotNull Querier querier, @NotNull String name) throws Exception
 	{
-		Update update = querier.executeSQLUpdate("DELETE FROM `router_config` WHERE `paramName` = ?",
+		return querier.executeSQLUpdate("router_config", "DELETE FROM `router_config` WHERE `paramName` = ?",
 			SecuritySingleton.encrypt(name)
-		);
-
-		return update.getNbOfUpdatedRows();
+		).getNbOfUpdatedRows();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

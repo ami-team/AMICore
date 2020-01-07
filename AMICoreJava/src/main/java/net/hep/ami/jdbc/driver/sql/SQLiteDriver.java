@@ -35,7 +35,7 @@ public class SQLiteDriver extends AbstractDriver
 	@Override
 	public String patchSQL(String sql) throws Exception
 	{
-		return sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("TIMESTAMP\\('", "datetime('").replaceAll(",\\s*'YYYY-MM-DD[^']*'","");
+		return sql.replaceAll("`" + this.m_internalCatalog + "`.","");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

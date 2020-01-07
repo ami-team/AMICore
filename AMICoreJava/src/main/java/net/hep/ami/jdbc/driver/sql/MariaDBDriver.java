@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc.driver.sql;
 
+import java.sql.*;
+
 import net.hep.ami.jdbc.driver.*;
 
 import org.jetbrains.annotations.*;
@@ -30,11 +32,14 @@ public class MariaDBDriver extends AbstractDriver
 			tz = "+00:00";
 		}
 
-		m_statement.executeQuery("USE `" + db + "`");
+		try(Statement statement = m_connection.createStatement())
+		{
+			statement.executeQuery("USE `" + db + "`");
 
-		m_statement.executeQuery("SET time_zone = '" + tz + "'");
+			statement.executeQuery("SET time_zone = '" + tz + "'");
 
-		m_statement.executeQuery("SET SESSION sql_mode = 'ANSI_QUOTES'");
+			statement.executeQuery("SET sql_mode = 'ANSI_QUOTES'");
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

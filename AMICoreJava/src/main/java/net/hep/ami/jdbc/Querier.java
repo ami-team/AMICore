@@ -3,6 +3,8 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 
 import net.hep.ami.jdbc.driver.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * AMI Querier Interface
@@ -32,7 +34,7 @@ public interface Querier
 	 * @return The generated SQL query.
 	 */
 
-	String mqlToSQL(String entity, String mql) throws Exception;
+	String mqlToSQL(@NotNull String entity, @NotNull String mql) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -45,7 +47,7 @@ public interface Querier
 	 * @return The generated AST.
 	 */
 
-	String mqlToAST(String entity, String mql) throws Exception;
+	String mqlToAST(@NotNull String entity, @NotNull String mql) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -59,33 +61,35 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception;
+	RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Executes a SQL query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
 	 *
+	 * @param entity The default entity.
 	 * @param sql The SQL query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the SQL query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	RowSet executeSQLQuery(String entity, String sql, Object... args) throws Exception;
+	RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Executes a raw query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
 	 *
+	 * @param entity The default entity.
 	 * @param raw The raw query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	RowSet executeRawQuery(String entity, String raw, Object... args) throws Exception;
+	RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -99,33 +103,35 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception;
+	Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Executes a SQL query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
 	 *
+	 * @param entity The default entity.
 	 * @param sql The SQL query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the SQL query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	Update executeSQLUpdate(String sql, Object... args) throws Exception;
+	Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Executes a raw query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
 	 *
+	 * @param entity The default entity.
 	 * @param raw The raw query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
 	 *
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	Update executeRawUpdate(String raw, Object... args) throws Exception;
+	Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -136,29 +142,22 @@ public interface Querier
 	 * @param isRawQuery Indicates whether sql is a raw query or not.
 	 * @param returnGeneratedKeys Indicates whether auto-generated keys should be returned.
 	 * @param columnNames The list of auto-generated key names or <code>null</code> for getting them all.
+	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
 	 *
 	 * @return The new PreparedStatement object.
 	 */
 
-	PreparedStatement preparedStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, String[] columnNames) throws Exception;
+	PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * @deprecated (for internal use only)
+	 * Retrieves the JDBC connection.
+	 *
+	 * @return The JDBC connection.
 	 */
 
-	@Deprecated
 	Connection getConnection();
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	/**
-	 * @deprecated (for internal use only)
-	 */
-
-	@Deprecated
-	Statement getStatement();
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 

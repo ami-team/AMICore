@@ -81,7 +81,7 @@ public class TransactionalQuerier implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeMQLQuery(entity, mql, args);
 	}
@@ -90,7 +90,7 @@ public class TransactionalQuerier implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeSQLQuery(entity, sql, args);
 	}
@@ -99,7 +99,7 @@ public class TransactionalQuerier implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeRawQuery(@NotNull String entity, String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeRawQuery(entity, raw, args);
 	}
@@ -108,7 +108,7 @@ public class TransactionalQuerier implements Querier
 
 	@NotNull
 	@Override
-	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeMQLUpdate(entity, mql, args);
 	}
@@ -117,47 +117,36 @@ public class TransactionalQuerier implements Querier
 
 	@NotNull
 	@Override
-	public Update executeSQLUpdate(@NotNull String sql, Object... args) throws Exception
+	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
 	{
-		return m_driver.executeSQLUpdate(sql, args);
+		return m_driver.executeSQLUpdate(entity, sql, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Override
-	public Update executeRawUpdate(@NotNull String raw, Object... args) throws Exception
+	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
 	{
-		return m_driver.executeRawUpdate(raw, args);
+		return m_driver.executeRawUpdate(entity, raw, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Override
-	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception
 	{
-		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames);
+		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Override
-	@Deprecated
 	public Connection getConnection()
 	{
 		return m_driver.getConnection();
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	@Override
-	@Deprecated
-	public Statement getStatement()
-	{
-		return m_driver.getStatement();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

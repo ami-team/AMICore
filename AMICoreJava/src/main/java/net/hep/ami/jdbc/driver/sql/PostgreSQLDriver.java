@@ -1,5 +1,6 @@
 package net.hep.ami.jdbc.driver.sql;
 
+import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.jdbc.*;
@@ -51,7 +52,10 @@ public class PostgreSQLDriver extends AbstractDriver
 	@Override
 	public void setupSession(@NotNull String db, @NotNull String tz) throws Exception
 	{
-		this.m_statement.executeUpdate("SET TIME ZONE '" + tz + "'");
+		try(Statement statement = m_connection.createStatement())
+		{
+			statement.executeUpdate("SET TIME ZONE '" + tz + "'");
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

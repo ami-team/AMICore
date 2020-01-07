@@ -81,7 +81,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeMQLQuery(entity, mql, args);
 	}
@@ -90,7 +90,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeSQLQuery(entity, sql, args);
 	}
@@ -99,7 +99,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeRawQuery(entity, raw, args);
 	}
@@ -108,7 +108,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
 	{
 		return m_driver.executeMQLUpdate(entity, mql, args);
 	}
@@ -117,27 +117,27 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public Update executeSQLUpdate(@NotNull String sql, Object... args) throws Exception
+	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
 	{
-		return m_driver.executeSQLUpdate(sql, args);
+		return m_driver.executeSQLUpdate(entity, sql, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Override
-	public Update executeRawUpdate(@NotNull String raw, Object... args) throws Exception
+	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
 	{
-		return m_driver.executeRawUpdate(raw, args);
+		return m_driver.executeRawUpdate(entity, raw, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Override
-	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception
 	{
-		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames);
+		return m_driver.preparedStatement(sql, isRawQuery, returnGeneratedKeys, columnNames, args);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -170,20 +170,11 @@ public class Router implements Querier
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
-	@Deprecated
 	public Connection getConnection()
 	{
 		return m_driver.getConnection();
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	@Deprecated
-	public Statement getStatement()
-	{
-		return m_driver.getStatement();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -337,11 +328,13 @@ public class Router implements Querier
 
 						try
 						{
-							m_driver.getStatement().executeUpdate(sql);
+							try(Statement statement = m_driver.getConnection().createStatement())
+							{
+								statement.executeUpdate(sql);
+							}
 						}
 						catch(SQLException e)
 						{
-							System.out.println("erreur: "+e.getMessage());
 							throw new SQLException(e.getMessage() + " for SQL query: " + sql, e);
 						}
 
@@ -395,13 +388,13 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate("INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `json`, `description`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, 'AMI configuration catalog', '0', 'admin', 'admin');",
+		executeSQLUpdate("router_catalog", "INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `json`, `description`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?#, ?#, ?, 'AMI configuration catalog', '0', 'admin', 'admin');",
 			getExternalCatalog(),
 			getInternalCatalog(),
 			(schema != null) ? schema : "",
 			getJdbcUrl(),
-			SecuritySingleton.encrypt(getUser()),
-			SecuritySingleton.encrypt(getPass()),
+			getUser(),
+			getPass(),
 			"{\"router_authority\":{\"x\":250,\"y\":370,\"color\":\"#1494CC\"},\"router_catalog\":{\"x\":0,\"y\":0,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":0,\"y\":370,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":0,\"y\":270,\"color\":\"#0066CC\"},\"router_config\":{\"x\":750,\"y\":240,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":750,\"y\":400,\"color\":\"#FF0000\"},\"router_dashboard\":{\"x\":0,\"y\":640,\"color\":\"#CCCC33\"},\"router_entity\":{\"x\":250,\"y\":0,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":500,\"y\":0,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":750,\"y\":0,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":0,\"y\":890,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":500,\"y\":890,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":250,\"y\":905,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":250,\"y\":270,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":500,\"y\":640,\"color\":\"#CCCC33\"},\"router_short_url\":{\"x\":250,\"y\":640,\"color\":\"#CCCC33\"},\"router_user\":{\"x\":500,\"y\":370,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":500,\"y\":270,\"color\":\"#0066CC\"}}"
 		);
 
@@ -411,29 +404,13 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup converters...");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
-			" ('/xslt/AMIXmlToText.xsl', 'text/plain')" +
-			";"
-		);
+		executeSQLUpdate("router_converter", "INSERT INTO `router_converter` (`xslt`, `mime`) VALUES ('/xslt/AMIXmlToText.xsl', 'text/plain')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
-			" ('/xslt/AMIXmlToCsv.xsl', 'text/csv')" +
-			";"
-		);
+		executeSQLUpdate("router_converter", "INSERT INTO `router_converter` (`xslt`, `mime`) VALUES ('/xslt/AMIXmlToCsv.xsl', 'text/csv')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
-			" ('/xslt/AMIXmlToJson.xsl', 'application/json')" +
-			";"
-		);
+		executeSQLUpdate("router_converter", "INSERT INTO `router_converter` (`xslt`, `mime`) VALUES ('/xslt/AMIXmlToJson.xsl', 'application/json')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_converter` (`xslt`, `mime`) VALUES" +
-			" ('/xslt/AMIXmlToXml.xsl', 'application/xml')" +
-			";"
-		);
+		executeSQLUpdate("router_converter", "INSERT INTO `router_converter` (`xslt`, `mime`) VALUES ('/xslt/AMIXmlToXml.xsl', 'application/xml')");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* ROLES                                                                                                      */
@@ -441,47 +418,19 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup roles...");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_ADMIN')" +
-			";"
-		);
+		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_ADMIN')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_SUDOER')" +
-			";"
-		);
+		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_SUDOER')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_SSO')" +
-			";"
-		);
+		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_SSO')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-				" ('AMI_WRITER')" +
-				";"
-		);
+		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_CERT')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_CERT')" +
-			";"
-		);
+		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_WRITER')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_USER')" +
-			";"
-		);
+		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_USER')");
 
-		executeSQLUpdate(
-			"INSERT INTO `router_role` (`role`) VALUES" +
-			" ('AMI_GUEST')" +
-			";"
-		);
+		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_GUEST')");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* USERS                                                                                                      */
@@ -491,37 +440,33 @@ public class Router implements Querier
 
 		/**/
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
 			admin_user,
-			SecuritySingleton.encrypt(admin_pass),
+			admin_pass,
 			admin_user,
 			admin_user,
 			admin_email
 		);
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
 			sudoer_user,
-			SecuritySingleton.encrypt(sudoer_pass),
+			sudoer_pass,
 			sudoer_user,
 			sudoer_user,
 			admin_email
 		);
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
 			sso_user,
-			SecuritySingleton.encrypt(sso_pass),
+			sso_pass,
 			sso_user,
 			sso_user,
 			admin_email
 		);
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
 			guest_user,
-			SecuritySingleton.encrypt(guest_pass),
+			guest_pass,
 			guest_user,
 			guest_user,
 			admin_email
@@ -529,38 +474,32 @@ public class Router implements Querier
 
 		/**/
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			admin_user,
 			"AMI_ADMIN"
 		);
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			sudoer_user,
 			"AMI_USER"
 		);
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			sudoer_user,
 			"AMI_SUDOER"
 		);
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
-			sso_user,
-			"AMI_USER"
-		);
-
-		executeSQLUpdate(
-			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			sso_user,
 			"AMI_SSO"
 		);
 
-		executeSQLUpdate(
-			"INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+			sso_user,
+			"AMI_USER"
+		);
+
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
 			guest_user,
 			"AMI_GUEST"
 		);

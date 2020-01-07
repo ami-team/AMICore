@@ -180,7 +180,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* REVOKE OLD CERTIFICATE                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		querier.executeSQLUpdate("UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
+		querier.executeSQLUpdate("router_authority", "UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
 			4, /* superseded */
 			m_AMIUser,
 			virtOrg,
@@ -191,17 +191,20 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* SAVE NEW CERTIFICATE                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = querier.preparedStatement("INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", false, false, null);
-
-		preparedStatement.setString(1, virtOrg);
-		preparedStatement.setString(2, SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()));
-		preparedStatement.setString(3, SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()));
-		preparedStatement.setDate(4, new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()));
-		preparedStatement.setDate(5, new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()));
-		preparedStatement.setString(6, pem.x509Certificates[0].getSerialNumber().toString(10));
-		preparedStatement.setString(7, email);
-		preparedStatement.setString(8, m_AMIUser);
-		preparedStatement.setString(9, m_AMIUser);
+		PreparedStatement preparedStatement = querier.preparedStatement("INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)",
+			false,
+			false,
+			null,
+			virtOrg,
+			SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()),
+			SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()),
+			new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()),
+			new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()),
+			pem.x509Certificates[0].getSerialNumber().toString(10),
+			email,
+			m_AMIUser,
+			m_AMIUser
+		);
 
 		preparedStatement.executeUpdate();
 

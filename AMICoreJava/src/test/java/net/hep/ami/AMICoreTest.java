@@ -220,7 +220,10 @@ public class AMICoreTest
 							try
 							{
 								//System.out.println("Query " + query.replace(";;", ""));
-								testDB.getStatement().execute(query.replace(";;", ""));
+								try(Statement statement = testDB.getConnection().createStatement())
+								{
+									statement.execute(query.replace(";;", ""));
+								}
 							}
 							catch(SQLException e)
 							{

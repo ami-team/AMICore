@@ -6,7 +6,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.pool.*;
-import net.hep.ami.jdbc.query.sql.Formatter;
+import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
@@ -40,11 +40,10 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	protected final Connection m_connection;
-	protected final Statement m_statement;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private final Map<String, Statement> m_statementMap = new HashMap<>();
+	private final Map<String, PreparedStatement> m_statementMap = new HashMap<>();
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -125,16 +124,10 @@ public abstract class AbstractDriver implements Querier
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* CREATE STATEMENT                                                                                           */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		m_statementMap.put("@", m_statement = m_connection.createStatement());
-
-		/*------------------------------------------------------------------------------------------------------------*/
 		/* SETUP SESSION                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		setupSession(internalCatalog, timeZone);
+		setupSession(m_internalCatalog, m_timeZone);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -176,7 +169,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToSQL(String entity, String mql) throws Exception
+	public String mqlToSQL(@NotNull String entity, @NotNull String mql) throws Exception
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
@@ -191,7 +184,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String mqlToAST(String entity, String mql) throws Exception
+	public String mqlToAST(@NotNull String entity, @NotNull String mql) throws Exception
 	{
 		if(m_jdbcType == DriverMetadata.Type.SQL)
 		{
@@ -206,76 +199,21 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public RowSet executeMQLQuery(String entity, String mql, Object... args) throws Exception
-	{
-		String SQL = "";
-		String AST = "";
-
-		try
-		{
-			mql = Formatter.formatStatement(this, mql, args);
-
-			SQL = mqlToSQL(entity, mql);
-			AST = mqlToAST(entity, mql);
-
-			return new RowSet(m_statement.executeQuery(patchSQL(SQL)), m_externalCatalog, entity, m_flags, SQL, mql, AST);
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for MQL query: " + mql + " -> " + SQL, e);
-		}
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public RowSet executeSQLQuery(@Nullable String entity, String sql, Object... args) throws Exception
-	{
-		try
-		{
-			sql = Formatter.formatStatement(this, sql, args);
-
-			return new RowSet(m_statement.executeQuery(patchSQL(sql)), m_externalCatalog, entity, m_flags, sql, null, null);
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
-		}
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public RowSet executeRawQuery(@Nullable String entity, String raw, Object... args) throws Exception
-	{
-		try
-		{
-			raw = Formatter.formatStatement(this, raw, args);
-
-			return new RowSet(m_statement.executeQuery(/*----*/(raw)), m_externalCatalog, entity, m_flags, raw, null, null);
-		}
-		catch(Exception e)
-		{
-			throw new Exception(e.getMessage() + " for RAW query: " + raw, e);
-		}
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public Update executeMQLUpdate(String entity, String mql, Object... args) throws Exception
+	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
 	{
 		String sql = "";
 		String ast = "";
 
 		try
 		{
-			mql = Formatter.formatStatement(this, mql, args);
-
 			sql = mqlToSQL(entity, mql);
 			ast = mqlToAST(entity, mql);
 
-			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, mql, ast);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
+
+			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, sql, mql, ast);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
@@ -286,13 +224,15 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeSQLUpdate(String sql, Object... args) throws Exception
+	public RowSet executeSQLQuery(@Nullable String entity, @NotNull String sql, @NotNull Object... args) throws Exception
 	{
 		try
 		{
-			sql = Formatter.formatStatement(this, sql, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
 
-			return new Update(m_statement.executeUpdate(patchSQL(sql)), sql, null, null);
+			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, sql, null, null);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
@@ -303,13 +243,13 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeRawUpdate(String raw, Object... args) throws Exception
+	public RowSet executeRawQuery(@Nullable String entity, @NotNull String raw, @NotNull Object... args) throws Exception
 	{
 		try
 		{
-			raw = Formatter.formatStatement(this, raw, args);
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, /*----*/(raw), false, null, args);
 
-			return new Update(m_statement.executeUpdate(/*----*/(raw)), raw, null, null);
+			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, raw, null, null);
 		}
 		catch(Exception e)
 		{
@@ -320,7 +260,64 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement preparedStatement(String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
+	{
+		String sql = "";
+		String ast = "";
+
+		try
+		{
+			sql = mqlToSQL(entity, mql);
+			ast = mqlToAST(entity, mql);
+
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
+
+			return new Update(statement.executeUpdate(), sql, mql, ast);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for MQL query: " + mql + " -> " + sql, e);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
+	{
+		try
+		{
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, args);
+
+			return new Update(statement.executeUpdate(), sql, null, null);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for SQL query: " + sql, e);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
+	{
+		try
+		{
+			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, /*----*/(raw), false, null, args);
+
+			return new Update(statement.executeUpdate(), raw, null, null);
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " for RAW query: " + raw, e);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public PreparedStatement preparedStatement(@NotNull String sql, boolean isRawQuery, boolean returnGeneratedKeys, @Nullable String[] columnNames, @NotNull Object... args) throws Exception
 	{
 		try
 		{
@@ -328,23 +325,7 @@ public abstract class AbstractDriver implements Querier
 			                         : /*----*/(sql)
 			;
 
-			PreparedStatement result = (PreparedStatement) m_statementMap.get(SQL);
-
-			if(result == null || result.isClosed())
-			{
-				m_statementMap.put(SQL, result = !returnGeneratedKeys ? (
-						m_connection.prepareStatement(SQL)
-					) : (
-						(columnNames == null) ? (
-							m_connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)
-						) : (
-							m_connection.prepareStatement(SQL, /*-----*/ columnNames /*-----*/)
-						)
-					)
-				);
-			}
-
-			return result;
+			return PreparedStatementFactory.createStatement(m_statementMap, m_connection, SQL, returnGeneratedKeys, columnNames, args);
 		}
 		catch(Exception e)
 		{
@@ -442,25 +423,10 @@ public abstract class AbstractDriver implements Querier
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	/**
-	 * @deprecated (for internal use only)
-	 */
-
-	@Deprecated
+	@Override
 	public Connection getConnection()
 	{
 		return m_connection;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	/**
-	 * @internal (for internal use only)
-	 */
-
-	public Statement getStatement()
-	{
-		return m_statement;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

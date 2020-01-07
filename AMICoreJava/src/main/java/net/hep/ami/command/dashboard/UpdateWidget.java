@@ -35,7 +35,7 @@ public class UpdateWidget extends AbstractCommand
 
 		/*-----------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLUpdate("UPDATE `router_dashboard` SET `x` = ?, `y` = ?, `width` = ?, `height` = ? WHERE `id` = ?", x, y, width, height, id).toStringBuilder();
+		return getQuerier("self").executeSQLUpdate("router_dashboard", "UPDATE `router_dashboard` SET `x` = ?, `y` = ?, `width` = ?, `height` = ? WHERE `id` = ?", x, y, width, height, id).toStringBuilder();
 
 		/*-----------------------------------------------------------------*/
 	}

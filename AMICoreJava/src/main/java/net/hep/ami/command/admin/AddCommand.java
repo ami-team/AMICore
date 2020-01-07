@@ -87,7 +87,7 @@ public class AddCommand extends AbstractCommand
 
 		try
 		{
-			update = querier.executeSQLUpdate("INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)",
+			update = querier.executeSQLUpdate("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)",
 				commandName,
 				commandClass,
 				commandVisible,
@@ -96,7 +96,7 @@ public class AddCommand extends AbstractCommand
 		}
 		catch(Exception e)
 		{
-			update = querier.executeSQLUpdate("UPDATE `router_command` SET `class` = ?, `visible` = ?, `secured` = ? WHERE `command` = ?",
+			update = querier.executeSQLUpdate("router_command", "UPDATE `router_command` SET `class` = ?, `visible` = ?, `secured` = ? WHERE `command` = ?",
 				commandClass,
 				commandName,
 				commandVisible,

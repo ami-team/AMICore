@@ -67,7 +67,7 @@ public class AddUserRole extends AbstractCommand
 		/* ADD ROLE                                                                                                   */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES (?, ?)",
+		Update update = querier.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES (?, ?)",
 			userID,
 			roleID
 		);

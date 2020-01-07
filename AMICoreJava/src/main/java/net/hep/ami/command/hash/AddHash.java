@@ -56,11 +56,7 @@ public class AddHash extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		Update update = querier.executeSQLUpdate("INSERT INTO `router_short_url` (`hash`, `name`, `json`, `shared`, `expire`, `owner`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)",
+		Update update = getQuerier("self").executeSQLUpdate("router_short_url", "INSERT INTO `router_short_url` (`hash`, `name`, `json`, `shared`, `expire`, `owner`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)",
 			hash,
 			name,
 			json,

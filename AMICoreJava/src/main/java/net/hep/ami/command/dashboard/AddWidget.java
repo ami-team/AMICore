@@ -34,7 +34,7 @@ public class AddWidget extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("INSERT INTO `router_dashboard` (`control`, `params`, `settings`, `transparent`, `autoRefresh`, `owner`, `created`, `modified`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", control, params, settings, arguments.containsKey("transparent"), arguments.containsKey("autoRefresh"), m_AMIUser);
+		Update update = getQuerier("self").executeSQLUpdate("router_dashboard", "INSERT INTO `router_dashboard` (`control`, `params`, `settings`, `transparent`, `autoRefresh`, `owner`, `created`, `modified`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", control, params, settings, arguments.containsKey("transparent"), arguments.containsKey("autoRefresh"), m_AMIUser);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

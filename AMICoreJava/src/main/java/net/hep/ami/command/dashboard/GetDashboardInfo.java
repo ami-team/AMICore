@@ -25,11 +25,7 @@ public class GetDashboardInfo extends AbstractCommand
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		RowSet rowSet = querier.executeSQLQuery("router_dashboard", "SELECT `id`, `control`, `params`, `settings`, `transparent`, `autoRefresh`, `x`, `y`, `width`, `height` FROM `router_dashboard` WHERE `owner` = ?", m_AMIUser);
+		RowSet rowSet = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `control`, `params`, `settings`, `transparent`, `autoRefresh`, `x`, `y`, `width`, `height` FROM `router_dashboard` WHERE `owner` = ?", m_AMIUser);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
