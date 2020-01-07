@@ -31,7 +31,7 @@ public class PreparedStatementFactory
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, List<Object>> tuple = prepare(sql, args);
+			Tuple2<String, List<Object>> tuple = prepare(sql, args.length == 1 && args[0].getClass().isArray() ? (Object[]) args[0] : args);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 

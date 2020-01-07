@@ -1,12 +1,10 @@
 package net.hep.ami.command.catalog;
 
-import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 
 import org.jetbrains.annotations.*;
@@ -88,7 +86,7 @@ public class UpdateElements extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return getQuerier(catalog).executeMQLUpdate(entity, query.toString(), values).toStringBuilder();
+		return getQuerier(catalog).executeMQLUpdate(entity, query.toString(), (Object) values).toStringBuilder();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
