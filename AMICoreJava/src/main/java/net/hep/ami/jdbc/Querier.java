@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * AMI Querier Interface
- * 
+ *
  */
 
 public interface Querier
@@ -61,7 +61,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception;
+	RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -75,7 +75,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception;
+	RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -89,7 +89,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
 	 */
 
-	RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception;
+	RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -103,7 +103,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception;
+	Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -117,7 +117,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception;
+	Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -131,7 +131,7 @@ public interface Querier
 	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
 	 */
 
-	Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception;
+	Update executeRawUpdate(@NotNull String entity, @NotNull String raw, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -148,7 +148,7 @@ public interface Querier
 	 * @return The new PreparedStatement object.
 	 */
 
-	PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception;
+	PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -165,7 +165,7 @@ public interface Querier
 	 * @return The new PreparedStatement object.
 	 */
 
-	PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception;
+	PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -182,7 +182,7 @@ public interface Querier
 	 * @return The new PreparedStatement object.
 	 */
 
-	PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception;
+	PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, Object... args) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 

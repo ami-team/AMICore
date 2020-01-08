@@ -243,13 +243,13 @@ public abstract class AbstractCommand
 
 			if(object instanceof StringBuilder)
 			{
-				result = new StringBuilder().append("<cacheOp><![CDATA[GET," + key + "]]></cacheOp>")
+				result = new StringBuilder().append("<cacheOp><![CDATA[GET,").append(key).append("]]></cacheOp>")
 				                            .append(/*----------*/ object /*----------*/)
 				;
 			}
 			else
 			{
-				result = new StringBuilder().append("<cacheOp><![CDATA[SET," + key + "]]></cacheOp>")
+				result = new StringBuilder().append("<cacheOp><![CDATA[SET,").append(key).append("]]></cacheOp>")
 				                            .append(CacheSingleton.set(key, _execute()))
 				;
 			}

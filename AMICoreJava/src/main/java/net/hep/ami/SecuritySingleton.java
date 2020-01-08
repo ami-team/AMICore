@@ -893,22 +893,32 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
+	@Nullable
+	@Contract("null -> null; !null -> !null")
 	public static String encrypt(@Nullable String s) throws Exception
 	{
-		return s != null && !s.isEmpty() ? new String(
-			org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes(StandardCharsets.UTF_8)))
-		, StandardCharsets.UTF_8) : "";
+		if(s == null) {
+			return null;
+		}
+
+		return !s.isEmpty() ? new String(org.bouncycastle.util.encoders.Base64.encode(encrypt(s.getBytes(StandardCharsets.UTF_8))), StandardCharsets.UTF_8)
+		                    : ""
+		;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
+	@Nullable
+	@Contract("null -> null; !null -> !null")
 	public static String decrypt(@Nullable String s) throws Exception
 	{
-		return s != null && !s.isEmpty() ? new String(
-			decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8)))
-		, StandardCharsets.UTF_8) : "";
+		if(s == null) {
+			return null;
+		}
+
+		return !s.isEmpty() ? new String(decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8))), StandardCharsets.UTF_8)
+		                    : ""
+		;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

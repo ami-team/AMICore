@@ -138,7 +138,7 @@ public class RootH1F extends AbstractCommand
 			{
 				if(xMin != xMax)
 				{
-					sizeOfBins = (double) (xMax - xMin) / 80.0;
+					sizeOfBins = (xMax - xMin) / 80.0;
 				}
 				else
 				{

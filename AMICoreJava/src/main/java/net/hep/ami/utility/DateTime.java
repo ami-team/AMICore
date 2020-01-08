@@ -19,7 +19,7 @@ public class DateTime
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private SimpleDateFormat getDateTimeFormater()
+	private SimpleDateFormat getDateTimeFormat()
 	{
 		if(m_datetimeFormater == null)
 		{
@@ -31,7 +31,7 @@ public class DateTime
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private SimpleDateFormat getDateFormater()
+	private SimpleDateFormat getDateFormat()
 	{
 		if(m_dateFormater == null)
 		{
@@ -43,7 +43,7 @@ public class DateTime
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private SimpleDateFormat getTimeFormater()
+	private SimpleDateFormat getTimeFormat()
 	{
 		if(m_timeFormater == null)
 		{
@@ -79,7 +79,7 @@ public class DateTime
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result.insert(0, getDateTimeFormater().format(timestamp)).toString();
+		return result.insert(0, getDateTimeFormat().format(timestamp)).toString();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -89,7 +89,7 @@ public class DateTime
 	@NotNull
 	public String formatDateTime(@NotNull java.sql.Timestamp dateTime)
 	{
-		return getDateTimeFormater().format(dateTime);
+		return getDateTimeFormat().format(dateTime);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -97,7 +97,7 @@ public class DateTime
 	@NotNull
 	public String formatDate(@NotNull java.sql.Date date)
 	{
-		return getDateFormater().format(date);
+		return getDateFormat().format(date);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -105,7 +105,7 @@ public class DateTime
 	@NotNull
 	public String formatTime(@NotNull java.sql.Time time)
 	{
-		return getDateFormater().format(time);
+		return getDateFormat().format(time);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -146,7 +146,7 @@ public class DateTime
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		long ms = getDateTimeFormater().parse(timestamp).getTime();
+		long ms = getDateTimeFormat().parse(timestamp).getTime();
 
 		while(ns > 1000000)
 		{
@@ -171,7 +171,7 @@ public class DateTime
 	@Contract("_ -> new")
 	public java.sql.Timestamp parseDateTime(@NotNull String dateTime) throws ParseException
 	{
-		return new java.sql.Timestamp(getDateTimeFormater().parse(dateTime).getTime());
+		return new java.sql.Timestamp(getDateTimeFormat().parse(dateTime).getTime());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -180,7 +180,7 @@ public class DateTime
 	@Contract("_ -> new")
 	public java.sql.Date parseDate(@NotNull String date) throws ParseException
 	{
-		return new java.sql.Date(getDateFormater().parse(date).getTime());
+		return new java.sql.Date(getDateFormat().parse(date).getTime());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -189,7 +189,7 @@ public class DateTime
 	@Contract("_ -> new")
 	public java.sql.Time parseTime(@NotNull String time) throws ParseException
 	{
-		return new java.sql.Time(getTimeFormater().parse(time).getTime());
+		return new java.sql.Time(getTimeFormat().parse(time).getTime());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

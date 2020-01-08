@@ -1,7 +1,6 @@
 package net.hep.ami.jdbc.query.mql;
 
 import java.util.*;
-import java.util.regex.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;

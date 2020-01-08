@@ -23,7 +23,7 @@ public class H2Driver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void setupSession(String db, String tz)
+	public void setupSession(@NotNull String db, @NotNull String tz)
 	{
 		/* DO NOTHING */
 	}
@@ -31,7 +31,7 @@ public class H2Driver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql)
+	public String patchSQL(@NotNull String sql)
 	{
 		return sql.replace("`" + this.m_internalCatalog + "`.","")/*BERK*/.replace("`","\"");
 	}

@@ -45,7 +45,7 @@ public class MySQLDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql)
+	public String patchSQL(@NotNull String sql)
 	{
 		return sql; /* MySQL/MariaDB is the default */
 	}

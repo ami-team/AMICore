@@ -29,7 +29,7 @@ public class Stats
 		{
 			result = /*------*/(bigDecimalNumbers[start + (size) / 2 - 1]);
 			result = result.add(bigDecimalNumbers[start + (size) / 2 - 0]);
-			result = result.divide(BigDecimal.valueOf(2));
+			result = result.divide(BigDecimal.valueOf(2), 3, RoundingMode.UNNECESSARY);
 		}
 
 		return result;

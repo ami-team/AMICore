@@ -1,6 +1,5 @@
 package net.hep.ami.command.catalog;
 
-import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.command.*;

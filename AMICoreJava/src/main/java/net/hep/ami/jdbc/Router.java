@@ -81,7 +81,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
+	public RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
 	{
 		return m_driver.executeMQLQuery(entity, mql, args);
 	}
@@ -90,7 +90,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
+	public RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLQuery(entity, sql, args);
 	}
@@ -99,7 +99,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
+	public RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, Object... args) throws Exception
 	{
 		return m_driver.executeRawQuery(entity, raw, args);
 	}
@@ -108,7 +108,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object... args) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, Object... args) throws Exception
 	{
 		return m_driver.executeMQLUpdate(entity, mql, args);
 	}
@@ -117,7 +117,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object... args) throws Exception
+	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, Object... args) throws Exception
 	{
 		return m_driver.executeSQLUpdate(entity, sql, args);
 	}
@@ -126,7 +126,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object... args) throws Exception
+	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, Object... args) throws Exception
 	{
 		return m_driver.executeRawUpdate(entity, raw, args);
 	}
@@ -135,7 +135,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String mql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
+	public PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String mql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, Object... args) throws Exception
 	{
 		return m_driver.sqlPreparedStatement(entity, mql, returnGeneratedKeys, columnNames, injectArgs, args);
 	}
@@ -144,7 +144,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
+	public PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, Object... args) throws Exception
 	{
 		return m_driver.mqlPreparedStatement(entity, sql, returnGeneratedKeys, columnNames, injectArgs, args);
 	}
@@ -153,7 +153,7 @@ public class Router implements Querier
 
 	@NotNull
 	@Override
-	public PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String raw, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object... args) throws Exception
+	public PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String raw, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, Object... args) throws Exception
 	{
 		return m_driver.rawPreparedStatement(entity, raw, returnGeneratedKeys, columnNames, injectArgs, args);
 	}

@@ -154,17 +154,17 @@ public abstract class AbstractDriver implements Querier
 	 * @param tz The time zone.
 	 */
 
-	public abstract void setupSession(String db, String tz) throws Exception;
+	public abstract void setupSession(@NotNull String db, @NotNull String tz) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Patches the given SQL.
-	 * 
+	 *
 	 * @return The patched SQL;
 	 */
 
-	public abstract String patchSQL(String sql) throws Exception;
+	public abstract String patchSQL(@NotNull String sql) throws Exception;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -260,7 +260,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @NotNull Object[] args) throws Exception
+	public Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, @Nullable Object[] args) throws Exception
 	{
 		String sql = "";
 		String ast = "";
@@ -283,7 +283,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @NotNull Object[] args) throws Exception
+	public Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, @Nullable Object[] args) throws Exception
 	{
 		try
 		{
@@ -300,7 +300,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @NotNull Object[] args) throws Exception
+	public Update executeRawUpdate(@NotNull String entity, @NotNull String raw, @Nullable Object[] args) throws Exception
 	{
 		try
 		{
@@ -317,7 +317,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String mql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object[] args) throws Exception
+	public PreparedStatement mqlPreparedStatement(@NotNull String entity, @NotNull String mql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @Nullable Object[] args) throws Exception
 	{
 		String sql = "";
 
@@ -336,7 +336,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object[] args) throws Exception
+	public PreparedStatement sqlPreparedStatement(@NotNull String entity, @NotNull String sql, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @Nullable Object[] args) throws Exception
 	{
 		try
 		{
@@ -351,7 +351,7 @@ public abstract class AbstractDriver implements Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String raw, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @NotNull Object[] args) throws Exception
+	public PreparedStatement rawPreparedStatement(@NotNull String entity, @NotNull String raw, boolean returnGeneratedKeys, @Nullable String[] columnNames, boolean injectArgs, @Nullable Object[] args) throws Exception
 	{
 		try
 		{

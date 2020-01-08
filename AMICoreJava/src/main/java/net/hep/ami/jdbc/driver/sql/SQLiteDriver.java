@@ -4,8 +4,6 @@ import net.hep.ami.jdbc.driver.*;
 
 import org.jetbrains.annotations.*;
 
-import java.util.List;
-
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:sqlite",
@@ -33,7 +31,7 @@ public class SQLiteDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	public String patchSQL(@NotNull String sql) throws Exception
 	{
 		return sql.replaceAll("`" + this.m_internalCatalog + "`.","");
 	}

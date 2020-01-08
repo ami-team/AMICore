@@ -136,7 +136,7 @@ public class RootH1I extends AbstractCommand
 				{
 					if(xMin != xMax)
 					{
-						sizeOfBins = (double) (xMax - xMin) / 1.0;
+						sizeOfBins = (xMax - xMin) / 1.0;
 					}
 					else
 					{

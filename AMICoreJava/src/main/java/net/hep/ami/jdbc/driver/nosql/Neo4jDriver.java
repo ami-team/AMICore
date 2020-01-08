@@ -23,7 +23,7 @@ public class Neo4jDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void setupSession(String db, String tz)
+	public void setupSession(@NotNull String db, @NotNull String tz)
 	{
 		/* TODO */
 	}
@@ -31,7 +31,7 @@ public class Neo4jDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql)
+	public String patchSQL(@NotNull String sql)
 	{
 		return sql;
 	}

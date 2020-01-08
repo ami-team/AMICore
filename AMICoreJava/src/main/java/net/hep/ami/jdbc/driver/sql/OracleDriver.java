@@ -46,7 +46,7 @@ public class OracleDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(String sql) throws Exception
+	public String patchSQL(@NotNull String sql) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 

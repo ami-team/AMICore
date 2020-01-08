@@ -27,11 +27,11 @@ public class PreparedStatementFactory
 	{
 		PreparedStatement result;
 
-		if(injectArgs)
+		if(injectArgs && args != null)
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, List<Object>> tuple = prepare(sql, args.length == 1 && args[0].getClass().isArray() ? (Object[]) args[0] : args);
+			Tuple2<String, List<Object>> tuple = prepare(sql, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -122,9 +122,11 @@ public class PreparedStatementFactory
 				}
 				/*----------------------------------------------------------------------------------------------------*/
 
-				list.add(SecuritySingleton.encrypt((String) args[i++]));
+				list.add(args[i] != null ? SecuritySingleton.encrypt(args[i].toString()) : null);
 
 				stringBuilder.append("?");
+
+				i++;
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -139,9 +141,11 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				list.add(args[i++]);
+				list.add(/*---------------------------*/ args[i] /*---------------------------*/);
 
 				stringBuilder.append("?");
+
+				i++;
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -176,15 +180,15 @@ public class PreparedStatementFactory
 							switch(mode)
 							{
 								case 1:
-									list.add(m_amiDateTime.parseTimestamp(value));
+									list.add(value != null ? m_amiDateTime.parseTimestamp(value) : null);
 									break;
 
 								case 2:
-									list.add(m_amiDateTime.parseDate(value));
+									list.add(value != null ? m_amiDateTime.parseDate(value) : null);
 									break;
 
 								case 3:
-									list.add(m_amiDateTime.parseTime(value));
+									list.add(value != null ? m_amiDateTime.parseTime(value) : null);
 									break;
 							}
 
@@ -241,16 +245,16 @@ public class PreparedStatementFactory
 					statement.setLong(i + 1, (java.lang.Long) value);
 					break;
 
-				case "java.math.BigDecimal":
-					statement.setBigDecimal(i + 1, (java.math.BigDecimal) value);
-					break;
-
 				case "java.lang.Float":
 					statement.setFloat(i + 1, (java.lang.Float) value);
 					break;
 
 				case "java.lang.Double":
 					statement.setDouble(i + 1, (java.lang.Double) value);
+					break;
+
+				case "java.math.BigDecimal":
+					statement.setBigDecimal(i + 1, (java.math.BigDecimal) value);
 					break;
 
 				case "java.sql.Timestamp":
@@ -279,16 +283,16 @@ public class PreparedStatementFactory
 								statement.setLong(i + 1, Long.parseLong(value.toString()));
 								break;
 
-							case "java.math.BigDecimal":
-								statement.setBigDecimal(i + 1, new BigDecimal(value.toString()));
-								break;
-
 							case "java.lang.Float":
 								statement.setFloat(i + 1, Float.parseFloat(value.toString()));
 								break;
 
 							case "java.lang.Double":
 								statement.setDouble(i + 1, Double.parseDouble(value.toString()));
+								break;
+
+							case "java.math.BigDecimal":
+								statement.setBigDecimal(i + 1, new BigDecimal(value.toString()));
 								break;
 
 							case "java.sql.Timestamp":
