@@ -51,10 +51,10 @@ public class WebLink
 
 		public String m_id = "";
 		public String m_class = "";
+		public String m_style = "";
 		public String m_href = "";
 		public String m_target = "";
 		public String m_label = "";
-		public String m_style = "";
 
 		public String m_ctrl = "";
 		public Location m_location = Location.NONE;
@@ -75,6 +75,11 @@ public class WebLink
 			return this;
 		}
 
+		public LinkProperties setStyle(@NotNull String style) {
+			m_style = style;
+			return this;
+		}
+
 		public LinkProperties setHRef(@NotNull String href) {
 			m_href = href;
 			return this;
@@ -87,11 +92,6 @@ public class WebLink
 
 		public LinkProperties setLabel(@NotNull String label) {
 			m_label = label;
-			return this;
-		}
-
-		public LinkProperties setStyle(@NotNull String style) {
-			m_style = style;
 			return this;
 		}
 
@@ -142,10 +142,10 @@ public class WebLink
 			return new StringBuilder().append("<link")
 			                          .append(" id=\"").append(Utility.escapeHTML(m_id)).append("\"")
 			                          .append(" class=\"").append(Utility.escapeHTML(m_class)).append("\"")
+			                          .append(" style=\"").append(Utility.escapeHTML(m_style)).append("\"")
 			                          .append(" href=\"").append(Utility.escapeHTML(m_href)).append("\"")
 			                          .append(" target=\"").append(Utility.escapeHTML(m_target)).append("\"")
 			                          .append(" label=\"").append(Utility.escapeHTML(m_label)).append("\"")
-			                          .append(" style=\"").append(Utility.escapeHTML(m_style)).append("\"")
 			                           /**/
 			                          .append(" data-ctrl=\"").append(Utility.escapeHTML(m_ctrl)).append("\"")
 			                          .append(" data-ctrl-location=\"").append(m_location.toString()).append("\"")
