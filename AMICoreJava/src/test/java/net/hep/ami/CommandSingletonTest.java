@@ -12,7 +12,9 @@ public class CommandSingletonTest
 	{
 		System.out.println(ConfigSingleton.getConfigFileName());
 
-		System.out.println(CommandSingleton.executeCommand("FindNewCommands", false).replace(">", ">\n"));
+		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_role\" -separator=\"§\" -fields=\"role§description\" -values=\"AMI_GUEST2§N/A\"", false).replace(">", ">\n"));
+
+//		System.out.println(CommandSingleton.executeCommand("FindNewCommands", false).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("Echo -foo=\"foo\" -cached", false).replace(">", ">\n"));
 
