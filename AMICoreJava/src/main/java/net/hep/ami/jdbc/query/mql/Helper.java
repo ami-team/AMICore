@@ -396,10 +396,6 @@ public class Helper
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
 	@NotNull
 	@Contract("_, _, _, _, _, _, _ -> new")
 	public static Tuple2<List<String>, List<String>> resolve(@NotNull String catalog, @NotNull QId primaryKey, @NotNull List<Resolution> resolutionList, @NotNull List<? extends CharSequence> expressionList, @NotNull String AMIUser, boolean isAdmin, boolean insert) throws Exception
@@ -459,9 +455,9 @@ public class Helper
 					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
 				}
 
-				if(HHH.matcher(expression).matches())
+				if(expression.length() == 1 && "?".equals(expression.toString()))
 				{
-					expression = "?#" + expression.toString().substring(1);
+					expression = "?#";
 				}
 			}
 
