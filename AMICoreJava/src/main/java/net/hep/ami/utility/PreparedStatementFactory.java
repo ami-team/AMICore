@@ -112,9 +112,11 @@ public class PreparedStatementFactory
 
 		for(String token: Tokenizer.tokenize(sql))
 		{
-			/**/ if("?#".equals(token))
+			/**/ if(token.startsWith("?#"))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
+
+				i = Integer.parseInt(token.substring(2));
 
 				if(i >= l)
 				{
@@ -126,13 +128,13 @@ public class PreparedStatementFactory
 
 				stringBuilder.append("?");
 
-				i++;
-
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if("?".equals(token))
+			else if(token.startsWith("?"))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
+
+				i = Integer.parseInt(token.substring(1));
 
 				if(i >= l)
 				{

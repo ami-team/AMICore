@@ -180,7 +180,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* REVOKE OLD CERTIFICATE                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		querier.executeSQLUpdate("router_authority", "UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
+		querier.executeSQLUpdate("router_authority", "UPDATE `router_authority` SET `reason` = ?0, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?1 WHERE `vo` = ?2 AND `email` = ?3 AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
 			4, /* superseded */
 			m_AMIUser,
 			virtOrg,
@@ -191,10 +191,7 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 		/* SAVE NEW CERTIFICATE                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		PreparedStatement preparedStatement = querier.sqlPreparedStatement("router_authority", "INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)",
-			false,
-			null,
-			true,
+		querier.executeSQLUpdate("router_authority", "INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, CURRENT_TIMESTAMP, ?7, CURRENT_TIMESTAMP, ?7)",
 			virtOrg,
 			SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()),
 			SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()),
@@ -202,11 +199,8 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 			new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()),
 			pem.x509Certificates[0].getSerialNumber().toString(10),
 			email,
-			m_AMIUser,
 			m_AMIUser
 		);
-
-		preparedStatement.executeUpdate();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

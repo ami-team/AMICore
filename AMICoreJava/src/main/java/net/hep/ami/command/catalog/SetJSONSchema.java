@@ -35,7 +35,7 @@ public class SetJSONSchema extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeMQLUpdate("router_catalog", "UPDATE `router_catalog` SET `json` = ? WHERE `externalCatalog` = ?",
+		Update update = getQuerier("self").executeMQLUpdate("router_catalog", "UPDATE `router_catalog` SET `json` = ?0 WHERE `externalCatalog` = ?1",
 			json,
 			catalog
 		);

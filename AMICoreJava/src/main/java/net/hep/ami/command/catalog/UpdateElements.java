@@ -64,7 +64,7 @@ public class UpdateElements extends AbstractCommand
 			query = new XQLUpdate(XQLUpdate.Mode.MQL).addUpdatePart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                                         .addFieldValuePart(
 															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-															Arrays.stream(values).map(x -> "?").collect(Collectors.toList())
+															IntStream.range(0, values.length).mapToObj(i -> "?" + i).collect(Collectors.toList())
 			                                          )
 			;
 		}

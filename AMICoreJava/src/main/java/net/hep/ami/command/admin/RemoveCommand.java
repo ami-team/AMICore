@@ -32,7 +32,7 @@ public class RemoveCommand extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?",
+		Update update = getQuerier("self").executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?0",
 			command
 		);
 

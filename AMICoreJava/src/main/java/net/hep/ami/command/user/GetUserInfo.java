@@ -52,7 +52,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER INFO                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?", amiLogin).getAll(10, 0);
+		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?0", amiLogin).getAll(10, 0);
 
 		String AMIUser;
 		String clientDNInAMI;
@@ -113,11 +113,11 @@ public class GetUserInfo extends AbstractCommand
 
 			if(!vomsEnabled)
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?# WHERE `AMIUser` = ? AND `AMIPass` = ?#";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?#, `valid` = '1' WHERE `AMIUser` = ? AND `AMIPass` = ?#";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '1' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
 
 			Update update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, amiLogin, amiPassword);
@@ -138,11 +138,11 @@ public class GetUserInfo extends AbstractCommand
 
 			if(!vomsEnabled)
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?# WHERE `AMIUser` = ? AND `AMIPass` = ?#";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#, `issuerDN` = ?#, `valid` = '0' WHERE `AMIUser` = ? AND `AMIPass` = ?#";
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '0' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
 
 			Update update = querier.executeSQLUpdate("router_user", sql, "", "", amiLogin, amiPassword);
@@ -157,7 +157,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER ROLES                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RowSet rowSet2 = querier.executeSQLQuery("router_role", "SELECT `router_role`.`role`, `router_role`.`description` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?", amiLogin);
+		RowSet rowSet2 = querier.executeSQLQuery("router_role", "SELECT `router_role`.`role`, `router_role`.`description` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?0", amiLogin);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET OTHER INFO                                                                                             */

@@ -32,9 +32,7 @@ public class RemoveUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_user", "DELETE FROM `router_user` WHERE `AMIUser` = ?",
-			amiLogin
-		);
+		Update update = getQuerier("self").executeSQLUpdate("router_user", "DELETE FROM `router_user` WHERE `AMIUser` = ?0", amiLogin);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

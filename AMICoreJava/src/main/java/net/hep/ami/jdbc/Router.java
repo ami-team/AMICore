@@ -406,14 +406,15 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup catalogs...");
 
-		executeSQLUpdate("router_catalog", "INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `json`, `description`, `archived`, `createdBy`, `modifiedBy`) VALUES (?, ?, ?, ?, ?#, ?#, ?, 'AMI configuration catalog', '0', 'admin', 'admin');",
+		executeSQLUpdate("router_catalog", "INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `json`, `description`, `archived`, `createdBy`, `modifiedBy`) VALUES (?0, ?1, ?2, ?3, ?#4, ?#5, ?6, 'AMI configuration catalog', '0', ?7, ?7);",
 			getExternalCatalog(),
 			getInternalCatalog(),
 			(schema != null) ? schema : "",
 			getJdbcUrl(),
 			getUser(),
 			getPass(),
-			"{\"router_authority\":{\"x\":250,\"y\":370,\"color\":\"#1494CC\"},\"router_catalog\":{\"x\":0,\"y\":0,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":0,\"y\":370,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":0,\"y\":270,\"color\":\"#0066CC\"},\"router_config\":{\"x\":750,\"y\":240,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":750,\"y\":400,\"color\":\"#FF0000\"},\"router_dashboard\":{\"x\":0,\"y\":640,\"color\":\"#CCCC33\"},\"router_entity\":{\"x\":250,\"y\":0,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":500,\"y\":0,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":750,\"y\":0,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":0,\"y\":890,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":500,\"y\":890,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":250,\"y\":905,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":250,\"y\":270,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":500,\"y\":640,\"color\":\"#CCCC33\"},\"router_short_url\":{\"x\":250,\"y\":640,\"color\":\"#CCCC33\"},\"router_user\":{\"x\":500,\"y\":370,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":500,\"y\":270,\"color\":\"#0066CC\"}}"
+			"{\"router_authority\":{\"x\":250,\"y\":370,\"color\":\"#1494CC\"},\"router_catalog\":{\"x\":0,\"y\":0,\"color\":\"#2BBB88\"},\"router_command\":{\"x\":0,\"y\":370,\"color\":\"#0066CC\"},\"router_command_role\":{\"x\":0,\"y\":270,\"color\":\"#0066CC\"},\"router_config\":{\"x\":750,\"y\":240,\"color\":\"#FF0000\"},\"router_converter\":{\"x\":750,\"y\":400,\"color\":\"#FF0000\"},\"router_dashboard\":{\"x\":0,\"y\":640,\"color\":\"#CCCC33\"},\"router_entity\":{\"x\":250,\"y\":0,\"color\":\"#2BBB88\"},\"router_field\":{\"x\":500,\"y\":0,\"color\":\"#2BBB88\"},\"router_foreign_key\":{\"x\":750,\"y\":0,\"color\":\"#2BBB88\"},\"router_ipv4_blocks\":{\"x\":0,\"y\":890,\"color\":\"#CCAC81\"},\"router_ipv6_blocks\":{\"x\":500,\"y\":890,\"color\":\"#CCAA88\"},\"router_locations\":{\"x\":250,\"y\":905,\"color\":\"#CCAA88\"},\"router_role\":{\"x\":250,\"y\":270,\"color\":\"#0066CC\"},\"router_search_interface\":{\"x\":500,\"y\":640,\"color\":\"#CCCC33\"},\"router_short_url\":{\"x\":250,\"y\":640,\"color\":\"#CCCC33\"},\"router_user\":{\"x\":500,\"y\":370,\"color\":\"#0066CC\"},\"router_user_role\":{\"x\":500,\"y\":270,\"color\":\"#0066CC\"}}",
+			admin_user
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -458,66 +459,58 @@ public class Router implements Querier
 
 		/**/
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
 			admin_user,
 			admin_pass,
-			admin_user,
-			admin_user,
 			admin_email
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
 			sudoer_user,
 			sudoer_pass,
-			sudoer_user,
-			sudoer_user,
 			admin_email
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
 			sso_user,
 			sso_pass,
-			sso_user,
-			sso_user,
 			admin_email
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?, ?#, ?, ?, ?, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
 			guest_user,
 			guest_pass,
-			guest_user,
-			guest_user,
 			admin_email
 		);
 
 		/**/
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
 			admin_user,
 			"AMI_ADMIN"
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
 			sudoer_user,
 			"AMI_USER"
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
 			sudoer_user,
 			"AMI_SUDOER"
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
 			sso_user,
 			"AMI_SSO"
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
 			sso_user,
 			"AMI_USER"
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?));",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
 			guest_user,
 			"AMI_GUEST"
 		);
@@ -530,9 +523,9 @@ public class Router implements Querier
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		try(PreparedStatement statement1 = sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null, false))
+		try(PreparedStatement statement1 = sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?0, ?1, ?2, ?3)", false, null, false))
 		{
-			try(PreparedStatement statement2 = sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
+			try(PreparedStatement statement2 = sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))", false, null, false))
 			{
 				String commandName;
 				String commandRole;

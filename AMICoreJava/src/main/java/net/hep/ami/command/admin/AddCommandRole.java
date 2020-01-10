@@ -41,7 +41,7 @@ public class AddCommandRole extends AbstractCommand
 		/* GET COMMAND ID                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList1 = querier.executeSQLQuery("router_command", "SELECT `id` FROM `router_command` WHERE `command` = ?", command).getAll();
+		List<Row> rowList1 = querier.executeSQLQuery("router_command", "SELECT `id` FROM `router_command` WHERE `command` = ?0", command).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -54,7 +54,7 @@ public class AddCommandRole extends AbstractCommand
 		/* GET ROLE ID                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList2 = querier.executeSQLQuery("router_role", "SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
+		List<Row> rowList2 = querier.executeSQLQuery("router_role", "SELECT `id` FROM `router_role` WHERE `role` = ?0", role).getAll();
 
 		if(rowList2.size() != 1)
 		{
@@ -67,7 +67,7 @@ public class AddCommandRole extends AbstractCommand
 		/* ADD ROLE                                                                                                   */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES (?, ?)",
+		Update update = querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES (?0, ?1)",
 			commandID,
 			roleID
 		);

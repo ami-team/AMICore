@@ -35,7 +35,7 @@ public class RemoveCommandRole extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?) AND `roleFK` = (SELECT `id` FROM `router_role` WHERE `role` = ?)",
+		Update update = getQuerier("self").executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?0) AND `roleFK` = (SELECT `id` FROM `router_role` WHERE `role` = ?1)",
 			command,
 			role
 		);

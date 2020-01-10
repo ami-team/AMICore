@@ -41,7 +41,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rows = getQuerier("self").executeSQLQuery("router_authority", "SELECT `clientDN`, `serial` FROM `router_authority` WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", virtOrg, email).getAll();
+		List<Row> rows = getQuerier("self").executeSQLQuery("router_authority", "SELECT `clientDN`, `serial` FROM `router_authority` WHERE `vo` = ?0 AND `email` = ?1 AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL", virtOrg, email).getAll();
 
 		if(rows.size() == 0)
 		{
@@ -83,7 +83,7 @@ public class RevokeCertificateAndSendEmail extends AbstractCommand
 			{
 				MailSingleton.sendMessage(ConfigSingleton.getProperty("admin_email"), email, null, "AMI certificate revocation", "Dear user,\n\nThe following certificate(s) is(are) revoked:\n\n" + dns + "\n\nBest regards.");
 
-				getQuerier("self").executeSQLUpdate("router_authority", "UPDATE `router_authority` SET `reason` = ?, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ? WHERE `vo` = ? AND `email` = ? AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
+				getQuerier("self").executeSQLUpdate("router_authority", "UPDATE `router_authority` SET `reason` = ?0, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?1 WHERE `vo` = ?2 AND `email` = ?3 AND `notAfter` > CURRENT_TIMESTAMP AND `reason` IS NULL",
 					reason,
 					m_AMIUser,
 					virtOrg,

@@ -54,7 +54,7 @@ public class AddElement extends AbstractCommand
 			query = new XQLInsert(XQLInsert.Mode.MQL).addInsertPart(new QId(catalog, entity, null).toString(QId.MASK_CATALOG_ENTITY))
 			                                         .addFieldValuePart(
 															Arrays.stream(fields).map(QId::parseQId_RuntimeException).collect(Collectors.toList()),
-															Arrays.stream(values).map(x -> "?").collect(Collectors.toList())
+															IntStream.range(0, values.length).mapToObj(i -> "?" + i).collect(Collectors.toList())
 			                                          )
 			;
 		}

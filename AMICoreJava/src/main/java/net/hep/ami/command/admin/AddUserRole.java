@@ -41,7 +41,7 @@ public class AddUserRole extends AbstractCommand
 		/* GET USER ID                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList1 = querier.executeSQLQuery("router_user", "SELECT `id` FROM `router_user` WHERE `AMIUser` = ?", user).getAll();
+		List<Row> rowList1 = querier.executeSQLQuery("router_user", "SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0", user).getAll();
 
 		if(rowList1.size() != 1)
 		{
@@ -54,7 +54,7 @@ public class AddUserRole extends AbstractCommand
 		/* GET ROLE ID                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList2 = querier.executeSQLQuery("router_role", "SELECT `id` FROM `router_role` WHERE `role` = ?", role).getAll();
+		List<Row> rowList2 = querier.executeSQLQuery("router_role", "SELECT `id` FROM `router_role` WHERE `role` = ?0", role).getAll();
 
 		if(rowList2.size() != 1)
 		{
@@ -67,7 +67,7 @@ public class AddUserRole extends AbstractCommand
 		/* ADD ROLE                                                                                                   */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES (?, ?)",
+		Update update = querier.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES (?0, ?1)",
 			userID,
 			roleID
 		);

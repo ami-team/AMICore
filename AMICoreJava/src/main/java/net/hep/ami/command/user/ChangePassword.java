@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.Empty;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
@@ -27,14 +28,18 @@ public class ChangePassword extends AbstractCommand
 		String amiPasswordOld = arguments.get("amiPasswordOld");
 		String amiPasswordNew = arguments.get("amiPasswordNew");
 
-		if(amiLogin == null || amiPasswordOld == null || amiPasswordNew == null)
+		if(amiLogin == null || Empty.isBlankEmptyNull(amiPasswordOld) || Empty.isBlankEmptyNull(amiPasswordNew))
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?# WHERE `AMIUser` = ? AND `AMIPass` = ?#", amiPasswordOld, amiLogin, amiPasswordOld);
+		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#2 WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1",
+			amiLogin,
+			amiPasswordOld,
+			amiPasswordNew
+		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

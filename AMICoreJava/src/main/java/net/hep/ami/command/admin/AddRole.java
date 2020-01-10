@@ -36,7 +36,7 @@ public class AddRole extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`, `description`, `validatorClass`) VALUES (?, ?, ?)",
+		Update update = getQuerier("self").executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`, `description`, `validatorClass`) VALUES (?0, ?1, ?2)",
 			role,
 			description,
 			roleValidatorClass

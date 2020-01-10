@@ -31,7 +31,7 @@ public class GetJSONSchema extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLQuery("router_catalog", "SELECT `json` FROM `router_catalog` WHERE `externalCatalog` = ?", catalog).toStringBuilder();
+		return getQuerier("self").executeSQLQuery("router_catalog", "SELECT `json` FROM `router_catalog` WHERE `externalCatalog` = ?0", catalog).toStringBuilder();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

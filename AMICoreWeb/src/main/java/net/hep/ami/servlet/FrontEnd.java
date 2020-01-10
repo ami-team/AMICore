@@ -301,7 +301,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("router_link", "SELECT `command`, `converter` FROM `router_link` WHERE `id` = ?", linkId).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_link", "SELECT `command`, `converter` FROM `router_link` WHERE `id` = ?0", linkId).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET LINK                                                                                               */
@@ -361,7 +361,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `clientDN` = ? AND `issuerDN` = ?", SecuritySingleton.encrypt(clientDN), SecuritySingleton.encrypt(issuerDN)).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET CREDENTIALS                                                                                        */
@@ -394,7 +394,7 @@ public class FrontEnd extends HttpServlet
 
 				if(!countryCode.equals(row.getValue(2)))
 				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, result.x);
+					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ?0 WHERE `AMIUser` = ?1", countryCode, result.x);
 				}
 			}
 			catch(Exception e)
@@ -444,7 +444,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?", AMIUser).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0", AMIUser).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET CREDENTIALS                                                                                        */
@@ -484,7 +484,7 @@ public class FrontEnd extends HttpServlet
 
 				if(!countryCode.equals(row.getValue(1)))
 				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ? WHERE `AMIUser` = ?", countryCode, AMIUser);
+					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ?0 WHERE `AMIUser` = ?1", countryCode, AMIUser);
 				}
 			}
 			catch(Exception e)

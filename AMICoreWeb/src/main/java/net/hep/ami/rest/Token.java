@@ -114,13 +114,13 @@ public class Token
 				        &&
 				        issuerDN != null
 				 ) {
-					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ?# AND `issuerDN` = ?#", clientDN, issuerDN).getAll();
+					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
 				}
 				else if(AMIUser != null
 				        &&
 				        AMIPass != null
 				 ) {
-					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ? AND `AMIPass` = ?#", AMIUser, AMIPass).getAll();
+					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", AMIUser, AMIPass).getAll();
 				}
 				else
 				{
