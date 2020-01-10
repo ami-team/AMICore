@@ -124,7 +124,9 @@ public class DateTime
 
 		if(idx > 0)
 		{
-			timestamp = timestamp.substring(0, idx + 0);
+			double hhh = Double.parseDouble(timestamp.substring(idx + 1));
+
+			timestamp = timestamp.substring(0, idx);
 
 			int precision = ConfigSingleton.getProperty("time_precision", 6);
 
@@ -132,7 +134,7 @@ public class DateTime
 			   &&
 			   precision <= 9
 			 ) {
-				ns = (long) (Double.parseDouble(timestamp.substring(idx + 1)) * Math.pow(10, 9 - precision));
+				ns = (long) (hhh * Math.pow(10, 9 - precision));
 			}
 			else
 			{
