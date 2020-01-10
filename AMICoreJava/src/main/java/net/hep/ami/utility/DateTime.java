@@ -135,7 +135,6 @@ public class DateTime
 			   precision <= 9
 			 ) {
 				ns = (long) (hhh * Math.pow(10, 9 - precision));
-				System.out.println(ns);
 			}
 			else
 			{
