@@ -1380,7 +1380,7 @@ public class AMICoreTest
 
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01','YYYY-MM-DD HH24:MI:SS')  \" ";
-		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SS.FF3')  \" ";
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > AMI_TIMESTAMP('2017-10-28 13:01:01.001')  \" ";
 
 		System.out.println(commandTest);
 		try
@@ -1858,8 +1858,8 @@ public class AMICoreTest
 		System.out.println(commandTest);
 		try
 		{
-			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
-			//CommandSingleton.executeCommand(commandTest, false);
+			//System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+			CommandSingleton.executeCommand(commandTest, false);
 		}
 		catch(Exception e)
 		{
