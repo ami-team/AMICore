@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import net.hep.ami.jdbc.Querier;
+import net.hep.ami.jdbc.Router;
 import net.hep.ami.jdbc.SimpleQuerier;
 
 @SuppressWarnings("all")
@@ -10,9 +11,17 @@ public class CommandSingletonTest
 
 	public static void main(String[] args) throws Exception
 	{
-		System.out.println(ConfigSingleton.getConfigFileName());
+		//System.out.println(ConfigSingleton.getConfigFileName());
 
-		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\"§\" -fields=\"externalCatalog§internalCatalog§internalSchema§jdbcUrl§user§pass§json§description§archived\" -values=\"self2§router§@NULL§jdbc:mysql://localhost:3306/router?serverTimezone=UTC&useSSL=false§root§root§{\\\"router_authority\\\":{\\\"x\\\":250,\\\"y\\\":370,\\\"color\\\":\\\"#1494CC\\\"},\\\"router_catalog\\\":{\\\"x\\\":0,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_command\\\":{\\\"x\\\":0,\\\"y\\\":370,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_command_role\\\":{\\\"x\\\":0,\\\"y\\\":270,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_config\\\":{\\\"x\\\":750,\\\"y\\\":240,\\\"color\\\":\\\"#FF0000\\\"},\\\"router_converter\\\":{\\\"x\\\":750,\\\"y\\\":400,\\\"color\\\":\\\"#FF0000\\\"},\\\"router_dashboard\\\":{\\\"x\\\":0,\\\"y\\\":640,\\\"color\\\":\\\"#CCCC33\\\"},\\\"router_entity\\\":{\\\"x\\\":250,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_field\\\":{\\\"x\\\":500,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_foreign_key\\\":{\\\"x\\\":750,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_ipv4_blocks\\\":{\\\"x\\\":0,\\\"y\\\":890,\\\"color\\\":\\\"#CCAC81\\\"},\\\"router_ipv6_blocks\\\":{\\\"x\\\":500,\\\"y\\\":890,\\\"color\\\":\\\"#CCAA88\\\"},\\\"router_locations\\\":{\\\"x\\\":250,\\\"y\\\":905,\\\"color\\\":\\\"#CCAA88\\\"},\\\"router_role\\\":{\\\"x\\\":250,\\\"y\\\":270,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_search_interface\\\":{\\\"x\\\":500,\\\"y\\\":640,\\\"color\\\":\\\"#CCCC33\\\"},\\\"router_short_url\\\":{\\\"x\\\":250,\\\"y\\\":640,\\\"color\\\":\\\"#CCCC33\\\"},\\\"router_user\\\":{\\\"x\\\":500,\\\"y\\\":370,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_user_role\\\":{\\\"x\\\":500,\\\"y\\\":270,\\\"color\\\":\\\"#0066CC\\\"}}§AMI configuration catalog§0\"", false).replace(">", ">\n"));
+		Router querier = new Router();
+
+		querier.create();
+		querier.fill();
+		querier.commit();
+
+		System.out.println(querier.executeSQLQuery("N/A","SELECT ?0", "hello").toStringBuilder().toString().replace(">", ">\n"));
+
+//		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog\" -separator=\"§\" -fields=\"externalCatalog§internalCatalog§internalSchema§jdbcUrl§user§pass§json§description§archived\" -values=\"self2§router§@NULL§jdbc:mysql://localhost:3306/router?serverTimezone=UTC&useSSL=false§root§root§{\\\"router_authority\\\":{\\\"x\\\":250,\\\"y\\\":370,\\\"color\\\":\\\"#1494CC\\\"},\\\"router_catalog\\\":{\\\"x\\\":0,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_command\\\":{\\\"x\\\":0,\\\"y\\\":370,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_command_role\\\":{\\\"x\\\":0,\\\"y\\\":270,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_config\\\":{\\\"x\\\":750,\\\"y\\\":240,\\\"color\\\":\\\"#FF0000\\\"},\\\"router_converter\\\":{\\\"x\\\":750,\\\"y\\\":400,\\\"color\\\":\\\"#FF0000\\\"},\\\"router_dashboard\\\":{\\\"x\\\":0,\\\"y\\\":640,\\\"color\\\":\\\"#CCCC33\\\"},\\\"router_entity\\\":{\\\"x\\\":250,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_field\\\":{\\\"x\\\":500,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_foreign_key\\\":{\\\"x\\\":750,\\\"y\\\":0,\\\"color\\\":\\\"#2BBB88\\\"},\\\"router_ipv4_blocks\\\":{\\\"x\\\":0,\\\"y\\\":890,\\\"color\\\":\\\"#CCAC81\\\"},\\\"router_ipv6_blocks\\\":{\\\"x\\\":500,\\\"y\\\":890,\\\"color\\\":\\\"#CCAA88\\\"},\\\"router_locations\\\":{\\\"x\\\":250,\\\"y\\\":905,\\\"color\\\":\\\"#CCAA88\\\"},\\\"router_role\\\":{\\\"x\\\":250,\\\"y\\\":270,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_search_interface\\\":{\\\"x\\\":500,\\\"y\\\":640,\\\"color\\\":\\\"#CCCC33\\\"},\\\"router_short_url\\\":{\\\"x\\\":250,\\\"y\\\":640,\\\"color\\\":\\\"#CCCC33\\\"},\\\"router_user\\\":{\\\"x\\\":500,\\\"y\\\":370,\\\"color\\\":\\\"#0066CC\\\"},\\\"router_user_role\\\":{\\\"x\\\":500,\\\"y\\\":270,\\\"color\\\":\\\"#0066CC\\\"}}§AMI configuration catalog§0\"", false).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("FindNewCommands", false).replace(">", ">\n"));
 
