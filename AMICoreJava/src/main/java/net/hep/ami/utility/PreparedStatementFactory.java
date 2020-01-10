@@ -147,8 +147,6 @@ public class PreparedStatementFactory
 
 				stringBuilder.append("?");
 
-				i++;
-
 				/*----------------------------------------------------------------------------------------------------*/
 			}
 			else if("AMI_TIMESTAMP".equalsIgnoreCase(token))
