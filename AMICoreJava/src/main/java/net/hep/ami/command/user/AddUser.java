@@ -6,6 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
@@ -56,17 +57,11 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean generatedPassword;
+		boolean generatedPassword = Empty.isBlankEmptyNull(amiPassword);
 
-		if(amiPassword == null || (amiPassword = amiPassword.trim()).isEmpty())
+		if(generatedPassword)
 		{
 			amiPassword = SecuritySingleton.generatePassword();
-
-			generatedPassword = true;
-		}
-		else
-		{
-			generatedPassword = false;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -107,8 +102,8 @@ public class AddUser extends AbstractCommand
 		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6)",
 			amiLogin,
 			amiPassword,
-			!clientDN.isEmpty() ? clientDN : null,
-			!issuerDN.isEmpty() ? issuerDN : null,
+			!Empty.isBlankEmptyNull(clientDN) ? clientDN : null,
+			!Empty.isBlankEmptyNull(issuerDN) ? issuerDN : null,
 			firstName,
 			lastName,
 			email

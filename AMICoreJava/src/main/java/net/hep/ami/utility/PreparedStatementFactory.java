@@ -6,6 +6,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.query.sql.*;
+import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
 
@@ -102,7 +103,7 @@ public class PreparedStatementFactory
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		int i = 0;
+		int i;
 		int cnt = 0;
 		int mode = 0;
 
@@ -231,12 +232,18 @@ public class PreparedStatementFactory
 
 	private static void inject(@NotNull PreparedStatement statement, @NotNull Tuple2<String, List<Object>> tuple) throws Exception
 	{
+		ParameterMetaData metaData = statement.getParameterMetaData();
+
 		for(int i = 0; i < tuple.y.size(); i++)
 		{
 			Object value = tuple.y.get(i);
 
-			switch(value.getClass().getName())
+			switch(value != null ? value.getClass().getName() : "null")
 			{
+				case "java.lang.Boolean":
+					statement.setBoolean(i + 1, (java.lang.Boolean) value);
+					break;
+
 				case "java.lang.Integer":
 					statement.setInt(i + 1, (java.lang.Integer) value);
 					break;
@@ -273,48 +280,68 @@ public class PreparedStatementFactory
 
 					try
 					{
-						switch(statement.getParameterMetaData().getParameterClassName(i + 1))
+						if(value == null)
 						{
-							case "java.lang.Integer":
-								statement.setInt(i + 1, Integer.parseInt(value.toString()));
-								break;
+							statement.setNull(
+								i + 1,
+								metaData.getParameterType(
+									i + 1
+								)
+							);
+						}
+						else
+						{
+							switch(metaData.getParameterClassName(i + 1))
+							{
+								case "java.lang.Boolean":
+									statement.setBoolean(i + 1, Bool.parseBool(value.toString()));
+									break;
 
-							case "java.lang.Long":
-								statement.setLong(i + 1, Long.parseLong(value.toString()));
-								break;
+								case "java.lang.Integer":
+									statement.setInt(i + 1, Integer.parseInt(value.toString()));
+									break;
 
-							case "java.lang.Float":
-								statement.setFloat(i + 1, Float.parseFloat(value.toString()));
-								break;
+								case "java.lang.Long":
+									statement.setLong(i + 1, Long.parseLong(value.toString()));
+									break;
 
-							case "java.lang.Double":
-								statement.setDouble(i + 1, Double.parseDouble(value.toString()));
-								break;
+								case "java.lang.Float":
+									statement.setFloat(i + 1, Float.parseFloat(value.toString()));
+									break;
 
-							case "java.math.BigDecimal":
-								statement.setBigDecimal(i + 1, new BigDecimal(value.toString()));
-								break;
+								case "java.lang.Double":
+									statement.setDouble(i + 1, Double.parseDouble(value.toString()));
+									break;
 
-							case "java.sql.Timestamp":
-								statement.setTimestamp(i + 1, m_amiDateTime.parseTimestamp(value.toString()));
-								break;
+								case "java.math.BigDecimal":
+									statement.setBigDecimal(i + 1, new BigDecimal(value.toString()));
+									break;
 
-							case "java.sql.Date":
-								statement.setDate(i + 1, m_amiDateTime.parseDate(value.toString()));
-								break;
+								case "java.sql.Timestamp":
+									statement.setTimestamp(i + 1, m_amiDateTime.parseTimestamp(value.toString()));
+									break;
 
-							case "java.sql.Time":
-								statement.setTime(i + 1, m_amiDateTime.parseTime(value.toString()));
-								break;
+								case "java.sql.Date":
+									statement.setDate(i + 1, m_amiDateTime.parseDate(value.toString()));
+									break;
 
-							default:
-								statement.setString(i + 1, value.toString());
-								break;
+								case "java.sql.Time":
+									statement.setTime(i + 1, m_amiDateTime.parseTime(value.toString()));
+									break;
+
+								default:
+									statement.setString(i + 1, value.toString());
+									break;
+							}
 						}
 					}
 					catch(SQLException e)
 					{
-						statement.setString(i + 1, value.toString());
+						if(value == null) {
+							statement.setNull(i + 1, Types.VARCHAR);
+						} else {
+							statement.setString(i + 1, value.toString());
+						}
 					}
 
 					break;
