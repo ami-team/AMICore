@@ -76,7 +76,7 @@ public class DateTime
 
 			result.append(".").append(pad).append(frac);
 		}
-
+System.out.println(result);
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result.insert(0, getDateTimeFormat().format(timestamp)).toString();
@@ -155,7 +155,8 @@ public class DateTime
 			ms +=    1   ;
 			ns -= 1000000;
 		}
-
+System.out.println(ms);
+System.out.println(ns);
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		java.sql.Timestamp result = new java.sql.Timestamp(ms);
