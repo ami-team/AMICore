@@ -6,6 +6,7 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
@@ -56,17 +57,11 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean generatedPassword;
+		boolean generatedPassword = Empty.isBlankEmptyNull(amiPassword);
 
-		if(amiPassword == null || (amiPassword = amiPassword.trim()).isEmpty())
+		if(generatedPassword)
 		{
 			amiPassword = SecuritySingleton.generatePassword();
-
-			generatedPassword = true;
-		}
-		else
-		{
-			generatedPassword = false;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
