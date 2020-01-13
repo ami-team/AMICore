@@ -35,7 +35,7 @@ public class RowSet
 	protected final String[] m_fieldEntities;
 	protected final String[] m_fieldNames;
 	protected final String[] m_fieldLabels;
-	protected final String[] m_fieldTypes;
+	protected final Integer[] m_fieldTypes;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -145,7 +145,7 @@ public class RowSet
 		m_fieldEntities = new String[m_numberOfFields];
 		m_fieldNames = new String[m_numberOfFields];
 		m_fieldLabels = new String[m_numberOfFields];
-		m_fieldTypes = new String[m_numberOfFields];
+		m_fieldTypes = new Integer[m_numberOfFields];
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -177,7 +177,9 @@ public class RowSet
 
 		String m_fieldNames_i;
 
-		String externalCatalog, internalCatalog, entity, name, label, type;
+		String externalCatalog, internalCatalog, entity, name, label;
+
+		Integer type;
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
@@ -193,7 +195,7 @@ public class RowSet
 
 			try { label = resultSetMetaData.getColumnLabel(i + 1); } catch(Exception e) { label = null; }
 
-			try { type = resultSetMetaData.getColumnTypeName(i + 1); } catch(Exception e) { type = null; }
+			try { type = resultSetMetaData.getColumnType(i + 1); } catch(Exception e) { type = null; }
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* RESOLVE ALIASES IF NEEDED                                                                              */
@@ -297,7 +299,7 @@ public class RowSet
 			m_fieldEntities[i] = !Empty.isEmpty(entity) ? entity : "N/A";
 			m_fieldNames[i] = !Empty.isEmpty(name) ? name : "N/A";
 			m_fieldLabels[i] = !Empty.isEmpty(label) ? label : "N/A";
-			m_fieldTypes[i] = !Empty.isEmpty(type) ? type : "N/A";
+			m_fieldTypes[i] = type != null ? type : Types.VARCHAR;
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -472,9 +474,9 @@ public class RowSet
 
 	public boolean isAField(String fieldName)
 	{
-		for(String field: m_fieldNames)
+		for(String name: m_fieldNames)
 		{
-			if(field.equalsIgnoreCase(fieldName))
+			if(name.equalsIgnoreCase(fieldName))
 			{
 				return true;
 			}
@@ -485,11 +487,26 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isAType(String typeName)
+	public boolean isALabel(String fieldLabel)
 	{
-		for(String type: m_fieldTypes)
+		for(String label: m_fieldLabels)
 		{
-			if(type.equalsIgnoreCase(typeName))
+			if(label.equalsIgnoreCase(fieldLabel))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public boolean isAType(int fieldType)
+	{
+		for(int type: m_fieldTypes)
+		{
+			if(type == fieldType)
 			{
 				return true;
 			}
@@ -569,8 +586,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
-	public String getTypeOfField(int fieldIndex) throws Exception
+	public int getTypeOfField(int fieldIndex) throws Exception
 	{
 		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
 		{
@@ -595,9 +611,9 @@ public class RowSet
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			/**/ if(m_fieldTypes[i].toUpperCase().startsWith("TIMESTAMP")
+			/**/ if(m_fieldTypes[i] == Types./*---*/TIMESTAMP/*---*/
 			        ||
-			        m_fieldTypes[i].toUpperCase().startsWith("DATETIME")
+			        m_fieldTypes[i] == Types.TIMESTAMP_WITH_TIMEZONE
 			 ) {
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TIMESTAMP & DATETIME                                                                               */
@@ -618,7 +634,7 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if("DATE".equalsIgnoreCase(m_fieldTypes[i]))
+			else if(m_fieldTypes[i] == Types.DATE)
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* DATE                                                                                               */
@@ -639,8 +655,10 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if("TIME".equalsIgnoreCase(m_fieldTypes[i]))
-			{
+			else if(m_fieldTypes[i] == Types./*---*/TIME/*---*/
+			        ||
+			        m_fieldTypes[i] == Types.TIME_WITH_TIMEZONE
+			 ) {
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TIME                                                                                               */
 				/*----------------------------------------------------------------------------------------------------*/

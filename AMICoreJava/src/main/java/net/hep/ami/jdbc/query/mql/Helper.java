@@ -397,6 +397,7 @@ public class Helper
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
+	private static final Pattern III = Pattern.compile("^\\s*\\?\\#[0-9]+\\s*$");
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -445,29 +446,7 @@ public class Helper
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			/**/ if(column.adminOnly)
-			{
-				if(!isAdmin)
-				{
-					throw new Exception("user `" + AMIUser + "` not allow to modify admin-only field " + new QId(column, false).toString());
-				}
-			}
-			else if(column.crypted)
-			{
-				if(!isAdmin)
-				{
-					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
-				}
-
-				if(HHH.matcher(expression).matches())
-				{
-					expression = "?#" + expression.toString().substring(1);
-				}
-			}
-
-			/**/
-
-			else if(column.automatic
+			/**/ if(column.automatic
 			        ||
 			        column.created
 			        ||
@@ -478,6 +457,49 @@ public class Helper
 			        column.modifiedBy
 			 ) {
 				continue;
+			}
+			else if(column.adminOnly)
+			{
+				if(!isAdmin)
+				{
+					throw new Exception("user `" + AMIUser + "` not allow to modify admin-only field " + new QId(column, false).toString());
+				}
+
+				/**/ if(HHH.matcher(expression).matches())
+				{
+					expression = "?<" + column.type + ">" + expression.toString().substring(1);
+				}
+				else if(III.matcher(expression).matches())
+				{
+					expression = "?#<" + column.type + ">" + expression.toString().substring(2);
+				}
+			}
+			else if(column.crypted)
+			{
+				if(!isAdmin)
+				{
+					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
+				}
+
+				/**/ if(HHH.matcher(expression).matches())
+				{
+					expression = "?#<" + column.type + ">" + expression.toString().substring(1);
+				}
+				else if(III.matcher(expression).matches())
+				{
+					expression = "?#<" + column.type + ">" + expression.toString().substring(2);
+				}
+			}
+			else
+			{
+				/**/ if(HHH.matcher(expression).matches())
+				{
+					expression = "?<" + column.type + ">" + expression.toString().substring(1);
+				}
+				else if(III.matcher(expression).matches())
+				{
+					expression = "?#<" + column.type + ">" + expression.toString().substring(2);
+				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/

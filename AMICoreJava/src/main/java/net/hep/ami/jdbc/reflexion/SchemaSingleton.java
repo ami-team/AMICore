@@ -3,7 +3,6 @@ package net.hep.ami.jdbc.reflexion;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-import java.util.regex.*;
 import java.util.stream.*;
 
 import net.hep.ami.*;
@@ -125,15 +124,11 @@ public class SchemaSingleton
 
 		/**/
 
-		private static final Pattern s_numberPattern = Pattern.compile(".*(?:BIT|INT|FLOAT|DOUBLE|SERIAL|DECIMAL|NUMBER).*", Pattern.CASE_INSENSITIVE);
-
-		/**/
-
 		public final String externalCatalog;
 		public final String internalCatalog;
 		public final String entity;
 		public final String field;
-		public final String type;
+		public final int type;
 		public final int size;
 		public final int digits;
 		public final String def;
@@ -166,7 +161,7 @@ public class SchemaSingleton
 
 		/**/
 
-		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, @NotNull String _type, int _size, int _digits, String _def, int _rank)
+		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, int _type, int _size, int _digits, String _def, int _rank)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
@@ -178,7 +173,27 @@ public class SchemaSingleton
 			def = _def;
 			rank = _rank;
 
-			statable = s_numberPattern.matcher(type).matches();
+			statable = _type == Types.BIT
+			           ||
+			           _type == Types.TINYINT
+			           ||
+			           _type == Types.SMALLINT
+			           ||
+			           _type == Types.INTEGER
+			           ||
+			           _type == Types.BIGINT
+			           ||
+			           _type == Types.FLOAT
+			           ||
+			           _type == Types.DOUBLE
+			           ||
+			           _type == Types.REAL
+			           ||
+			           _type == Types.NUMERIC
+			           ||
+			           _type == Types.DECIMAL
+			;
+
 		}
 
 		@Override
@@ -607,13 +622,13 @@ public class SchemaSingleton
 				{
 					String entity = resultSet.getString("TABLE_NAME");
 					String field = resultSet.getString("COLUMN_NAME");
-					String type = resultSet.getString("TYPE_NAME");
+					int type = resultSet.getInt("DATA_TYPE");
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
 					boolean nullable = resultSet.getBoolean("NULLABLE");
 
-					if(entity != null && field != null && type != null)
+					if(entity != null && field != null)
 					{
 						table = m_catalog.tables.get(entity);
 

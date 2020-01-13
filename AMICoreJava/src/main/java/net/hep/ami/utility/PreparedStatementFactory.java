@@ -32,7 +32,7 @@ public class PreparedStatementFactory
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple2<String, List<Object>> tuple = prepare(sql, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
+			Tuple3<String, List<String>, List<Object>> tuple = prepare(sql, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -88,9 +88,10 @@ public class PreparedStatementFactory
 
 	@NotNull
 	@Contract("_, _ -> new")
-	private static Tuple2<String, List<Object>> prepare(@NotNull String sql, @Nullable Object[] args) throws Exception
+	private static Tuple3<String, List<String>, List<Object>> prepare(@NotNull String sql, @Nullable Object[] args) throws Exception
 	{
-		List<Object> list = new ArrayList<>();
+		List<String> typeList = new ArrayList<>();
+		List<Object> valueList = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -98,12 +99,14 @@ public class PreparedStatementFactory
 
 		if(args == null)
 		{
-			return new Tuple2<>(sql, list);
+			return new Tuple3<>(sql, typeList, valueList);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		int i;
+		int idx;
+
 		int cnt = 0;
 		int mode = 0;
 
@@ -113,7 +116,46 @@ public class PreparedStatementFactory
 
 		for(String token: Tokenizer.tokenize(sql))
 		{
-			/**/ if(token.startsWith("?#"))
+			/**/ if(token.startsWith("?#<"))
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				idx = token.indexOf('>');
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(idx > 3)
+				{
+					i = Integer.parseInt(token.substring(idx + 1));
+
+					if(i >= l)
+					{
+						throw new Exception("not enough arguments");
+					}
+				}
+				else
+				{
+					throw new Exception("invalid parameter");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(args[i] != null)
+				{
+					typeList.add("parse::" + token.substring(3, idx).toLowerCase());
+
+					valueList.add(SecuritySingleton.encrypt(args[i].toString()));
+
+					stringBuilder.append("?");
+				}
+				else
+				{
+					stringBuilder.append("NULL");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else if(token.startsWith("?#"))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
@@ -123,11 +165,60 @@ public class PreparedStatementFactory
 				{
 					throw new Exception("not enough arguments");
 				}
+
 				/*----------------------------------------------------------------------------------------------------*/
 
-				list.add(args[i] != null ? SecuritySingleton.encrypt(args[i].toString()) : null);
+				if(args[i] != null)
+				{
+					typeList.add("java.lang.String");
 
-				stringBuilder.append("?");
+					valueList.add(SecuritySingleton.encrypt(args[i].toString()));
+
+					stringBuilder.append("?");
+				}
+				else
+				{
+					stringBuilder.append("NULL");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else if(token.startsWith("?<"))
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				idx = token.indexOf('>');
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(idx > 2)
+				{
+					i = Integer.parseInt(token.substring(idx + 1));
+
+					if(i >= l)
+					{
+						throw new Exception("not enough arguments");
+					}
+				}
+				else
+				{
+					throw new Exception("invalid parameter");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(args[i] != null)
+				{
+					typeList.add("parse::" + token.substring(2, idx).toLowerCase());
+
+					valueList.add(/*--------------*/ args[i] /*--------------*/);
+
+					stringBuilder.append("?");
+				}
+				else
+				{
+					stringBuilder.append("NULL");
+				}
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -144,9 +235,18 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				list.add(/*---------------------------*/ args[i] /*---------------------------*/);
+				if(args[i] != null)
+				{
+					typeList.add(args[i].getClass().getName());
 
-				stringBuilder.append("?");
+					valueList.add(/*--------------*/ args[i] /*--------------*/);
+
+					stringBuilder.append("?");
+				}
+				else
+				{
+					stringBuilder.append("NULL");
+				}
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -181,15 +281,18 @@ public class PreparedStatementFactory
 							switch(mode)
 							{
 								case 1:
-									list.add(value != null ? m_amiDateTime.parseTimestamp(value) : null);
+									typeList.add("java.sql.Timestamp");
+									valueList.add(value != null ? m_amiDateTime.parseTimestamp(value) : null);
 									break;
 
 								case 2:
-									list.add(value != null ? m_amiDateTime.parseDate(value) : null);
+									typeList.add("java.sql.Date");
+									valueList.add(value != null ? m_amiDateTime.parseDate(value) : null);
 									break;
 
 								case 3:
-									list.add(value != null ? m_amiDateTime.parseTime(value) : null);
+									typeList.add("java.sql.Time");
+									valueList.add(value != null ? m_amiDateTime.parseTime(value) : null);
 									break;
 							}
 
@@ -223,128 +326,114 @@ public class PreparedStatementFactory
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple2<>(stringBuilder.toString(), list);
+		return new Tuple3<>(stringBuilder.toString(), typeList, valueList);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void inject(@NotNull PreparedStatement statement, @NotNull Tuple2<String, List<Object>> tuple) throws Exception
+	private static void inject(@NotNull PreparedStatement statement, @NotNull Tuple3<String, List<String>, List<Object>> tuple) throws Exception
 	{
-		ParameterMetaData metaData = statement.getParameterMetaData();
-
 		for(int i = 0; i < tuple.y.size(); i++)
 		{
-			Object value = tuple.y.get(i);
+			String type = tuple.y.get(i);
+			Object value = tuple.z.get(i);
 
-			switch(value != null ? value.getClass().getName() : "null")
+			if(type.startsWith("parse::"))
 			{
-				case "java.lang.Boolean":
-					statement.setBoolean(i + 1, (java.lang.Boolean) value);
-					break;
+				/*----------------------------------------------------------------------------------------------------*/
 
-				case "java.lang.Integer":
-					statement.setInt(i + 1, (java.lang.Integer) value);
-					break;
+				switch(Integer.parseInt(type.substring(7)))
+				{
+					case Types.BIT:
+						statement.setBoolean(i + 1, Bool.parseBool(value.toString()));
+						break;
 
-				case "java.lang.Long":
-					statement.setLong(i + 1, (java.lang.Long) value);
-					break;
+					case Types.INTEGER:
+						statement.setInt(i + 1, Integer.parseInt(value.toString()));
+						break;
 
-				case "java.lang.Float":
-					statement.setFloat(i + 1, (java.lang.Float) value);
-					break;
+					case Types.FLOAT:
+						statement.setFloat(i + 1, Float.parseFloat(value.toString()));
+						break;
 
-				case "java.lang.Double":
-					statement.setDouble(i + 1, (java.lang.Double) value);
-					break;
+					case Types.DOUBLE:
+						statement.setDouble(i + 1, Double.parseDouble(value.toString()));
+						break;
 
-				case "java.math.BigDecimal":
-					statement.setBigDecimal(i + 1, (java.math.BigDecimal) value);
-					break;
+					case Types.NUMERIC:
+					case Types.DECIMAL:
+						statement.setBigDecimal(i + 1, new BigDecimal(value.toString()));
+						break;
 
-				case "java.sql.Timestamp":
-					statement.setTimestamp(i + 1, (java.sql.Timestamp) value);
-					break;
+					case Types.TIMESTAMP:
+						statement.setTimestamp(i + 1, m_amiDateTime.parseTimestamp(value.toString()));
+						break;
 
-				case "java.sql.Date":
-					statement.setDate(i + 1, (java.sql.Date) value);
-					break;
+					case Types.DATE:
+						statement.setDate(i + 1, m_amiDateTime.parseDate(value.toString()));
+						break;
 
-				case "java.sql.Time":
-					statement.setTime(i + 1, (java.sql.Time) value);
-					break;
+					case Types.TIME:
+						statement.setTime(i + 1, m_amiDateTime.parseTime(value.toString()));
+						break;
 
-				default:
+					default:
+						statement.setString(i + 1, value.toString());
+						break;
+				}
 
-					try
-					{
-						if(value == null)
-						{
-							statement.setNull(
-								i + 1,
-								metaData.getParameterType(
-									i + 1
-								)
-							);
-						}
-						else
-						{
-							switch(metaData.getParameterClassName(i + 1))
-							{
-								case "java.lang.Boolean":
-									statement.setBoolean(i + 1, Bool.parseBool(value.toString()));
-									break;
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else
+			{
+				/*----------------------------------------------------------------------------------------------------*/
 
-								case "java.lang.Integer":
-									statement.setInt(i + 1, Integer.parseInt(value.toString()));
-									break;
+				switch(type)
+				{
+					case "java.lang.Boolean":
+						statement.setBoolean(i + 1, (java.lang.Boolean) value);
+						break;
 
-								case "java.lang.Long":
-									statement.setLong(i + 1, Long.parseLong(value.toString()));
-									break;
+					case "java.lang.Integer":
+						statement.setInt(i + 1, (java.lang.Integer) value);
+						break;
 
-								case "java.lang.Float":
-									statement.setFloat(i + 1, Float.parseFloat(value.toString()));
-									break;
+					case "java.lang.Long":
+						statement.setLong(i + 1, (java.lang.Long) value);
+						break;
 
-								case "java.lang.Double":
-									statement.setDouble(i + 1, Double.parseDouble(value.toString()));
-									break;
+					case "java.lang.Float":
+						statement.setFloat(i + 1, (java.lang.Float) value);
+						break;
 
-								case "java.math.BigDecimal":
-									statement.setBigDecimal(i + 1, new BigDecimal(value.toString()));
-									break;
+					case "java.lang.Double":
+						statement.setDouble(i + 1, (java.lang.Double) value);
+						break;
 
-								case "java.sql.Timestamp":
-									statement.setTimestamp(i + 1, m_amiDateTime.parseTimestamp(value.toString()));
-									break;
+					case "java.math.BigDecimal":
+						statement.setBigDecimal(i + 1, (java.math.BigDecimal) value);
+						break;
 
-								case "java.sql.Date":
-									statement.setDate(i + 1, m_amiDateTime.parseDate(value.toString()));
-									break;
+					case "java.sql.Timestamp":
+						statement.setTimestamp(i + 1, (java.sql.Timestamp) value);
+						break;
 
-								case "java.sql.Time":
-									statement.setTime(i + 1, m_amiDateTime.parseTime(value.toString()));
-									break;
+					case "java.sql.Date":
+						statement.setDate(i + 1, (java.sql.Date) value);
+						break;
 
-								default:
-									statement.setString(i + 1, value.toString());
-									break;
-							}
-						}
-					}
-					catch(SQLException e)
-					{
-						if(value == null) {
-							statement.setNull(i + 1, Types.VARCHAR);
-						} else {
-							statement.setString(i + 1, value.toString());
-						}
-					}
+					case "java.sql.Time":
+						statement.setTime(i + 1, (java.sql.Time) value);
+						break;
 
-					break;
+					default:
+						statement.setString(i + 1, value.toString());
+						break;
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 		}
 	}
