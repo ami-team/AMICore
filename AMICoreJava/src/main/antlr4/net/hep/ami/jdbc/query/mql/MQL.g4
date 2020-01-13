@@ -335,10 +335,10 @@ STRING
 	;
 
 PARAMETER
-	: '?#' INT		/* CRYPTED LABELED PARAMETER */
-	| '?' INT		/* LABELED PARAMETER */
-	| '?#'			/* CRYPTED PARAMETER */
-	| '?'			/* PARAMETER */
+	: '?#<' (~'>')+ '>' INT		/* TYPED CRYPTED LABELED PARAMETER */
+	| '?<' (~'>')+ '>' INT		/* TYPED LABELED PARAMETER */
+	| '?#' INT					/* CRYPTED LABELED PARAMETER */
+	| '?' INT					/* LABELED PARAMETER */
 	;
 
 NUMBER
