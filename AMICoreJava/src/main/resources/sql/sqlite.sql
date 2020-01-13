@@ -234,7 +234,7 @@ CREATE TABLE "router_search_interface" (
 ------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "router_locations" (
-  "id" INTEGER PRIMARY KEY
+  "id" INTEGER PRIMARY KEY,
   "continentCode" VARCHAR(3) NOT NULL DEFAULT 'N/A',
   "countryCode" VARCHAR(3) NOT NULL DEFAULT 'N/A'
 );;
