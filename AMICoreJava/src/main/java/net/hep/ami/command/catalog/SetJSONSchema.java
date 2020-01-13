@@ -2,9 +2,9 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
+import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
-import net.hep.ami.jdbc.Update;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
