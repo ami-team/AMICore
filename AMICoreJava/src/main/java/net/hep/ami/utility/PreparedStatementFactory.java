@@ -350,6 +350,8 @@ public class PreparedStatementFactory
 						statement.setBoolean(i + 1, Bool.parseBool(value.toString()));
 						break;
 
+					case Types.TINYINT:
+					case Types.SMALLINT:
 					case Types.INTEGER:
 						statement.setInt(i + 1, Integer.parseInt(value.toString()));
 						break;
