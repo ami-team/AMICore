@@ -69,7 +69,7 @@ public class Row
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public int getType(int fieldIndex) throws Exception
+	public String getType(int fieldIndex) throws Exception
 	{
 		return m_rowSet.getTypeOfField(fieldIndex);
 	}

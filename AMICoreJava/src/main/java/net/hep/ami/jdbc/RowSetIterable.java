@@ -203,7 +203,7 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append("\" label=\"")
 			      .append(Utility.escapeHTML(rowSet.m_fieldLabels[i]))
 			      .append("\" type=\"")
-			      .append(rowSet.m_fieldTypes[i])
+			      .append(Utility.escapeHTML(rowSet.m_fieldTypes[i]))
 			      .append("\" hidden=\"")
 			      .append(rowSet.m_fieldHidden[i] ? "true" : "false")
 			      .append("\" adminOnly=\"")

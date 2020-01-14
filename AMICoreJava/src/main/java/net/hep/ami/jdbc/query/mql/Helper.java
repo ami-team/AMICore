@@ -467,11 +467,11 @@ public class Helper
 
 				/**/ if(HHH.matcher(expression).matches())
 				{
-					expression = "?<" + column.type + ">" + expression.toString().substring(1);
+					expression = "?<" + column.jdbcType + ">" + expression.toString().substring(1);
 				}
 				else if(III.matcher(expression).matches())
 				{
-					expression = "?#<" + column.type + ">" + expression.toString().substring(2);
+					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(2);
 				}
 			}
 			else if(column.crypted)
@@ -483,22 +483,22 @@ public class Helper
 
 				/**/ if(HHH.matcher(expression).matches())
 				{
-					expression = "?#<" + column.type + ">" + expression.toString().substring(1);
+					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(1);
 				}
 				else if(III.matcher(expression).matches())
 				{
-					expression = "?#<" + column.type + ">" + expression.toString().substring(2);
+					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(2);
 				}
 			}
 			else
 			{
 				/**/ if(HHH.matcher(expression).matches())
 				{
-					expression = "?<" + column.type + ">" + expression.toString().substring(1);
+					expression = "?<" + column.jdbcType + ">" + expression.toString().substring(1);
 				}
 				else if(III.matcher(expression).matches())
 				{
-					expression = "?#<" + column.type + ">" + expression.toString().substring(2);
+					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(2);
 				}
 			}
 

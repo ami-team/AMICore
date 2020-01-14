@@ -128,7 +128,9 @@ public class SchemaSingleton
 		public final String internalCatalog;
 		public final String entity;
 		public final String field;
-		public final int type;
+		public final String type;
+		public final String nativeType;
+		public final int jdbcType;
 		public final int size;
 		public final int digits;
 		public final String def;
@@ -161,39 +163,25 @@ public class SchemaSingleton
 
 		/**/
 
-		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, int _type, int _size, int _digits, String _def, int _rank)
+		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, @NotNull String _nativeType, int _jdbcType, int _size, int _digits, String _def, int _rank)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
 			entity = _entity;
 			field = _field;
-			type = _type;
+
+			type = jdbcTypesToAMITypes(_nativeType, _jdbcType);
+			nativeType = _nativeType;
+			jdbcType = _jdbcType;
 			size = _size;
 			digits = _digits;
 			def = _def;
 			rank = _rank;
 
-			statable = _type == Types.BIT
+			statable = "INT".equals(type)
 			           ||
-			           _type == Types.TINYINT
-			           ||
-			           _type == Types.SMALLINT
-			           ||
-			           _type == Types.INTEGER
-			           ||
-			           _type == Types.BIGINT
-			           ||
-			           _type == Types.FLOAT
-			           ||
-			           _type == Types.DOUBLE
-			           ||
-			           _type == Types.REAL
-			           ||
-			           _type == Types.NUMERIC
-			           ||
-			           _type == Types.DECIMAL
+			           "REAL".equals(type)
 			;
-
 		}
 
 		@Override
@@ -600,7 +588,7 @@ public class SchemaSingleton
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*----------------------------------------------------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		private void loadColumnMetadata(
 			@NotNull DatabaseMetaData metaData,
@@ -608,7 +596,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			boolean isOracle = metaData.getClass().getName().startsWith("oracle");
+			boolean isMySQL = metaData.getClass().getName().contains("mysql");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -622,7 +610,8 @@ public class SchemaSingleton
 				{
 					String entity = resultSet.getString("TABLE_NAME");
 					String field = resultSet.getString("COLUMN_NAME");
-					int type = resultSet.getInt("DATA_TYPE");
+					String nativeType = resultSet.getString("TYPE_NAME");
+					int jdbcType = resultSet.getInt("DATA_TYPE");
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
@@ -634,18 +623,23 @@ public class SchemaSingleton
 
 						if(table != null)
 						{
+							if(isMySQL && "ENUM".equalsIgnoreCase(nativeType))
+							{
+								/* TODO */
+							}
+
 							table.columns.put(field, new Column(
 								m_externalCatalog,
 								m_internalCatalog,
 								entity,
 								field,
-								type,
+								nativeType,
+								jdbcType,
 								size,
 								digits,
 								def == null ? (nullable ? "@NULL" : "")
 								            : (def.toUpperCase().contains("CURRENT_TIMESTAMP") ? "@CURRENT_TIMESTAMP"
-								                                                               : (isOracle ? Utility.sqlValToText(def, false) : def)
-								              ),
+								                                                               : Utility.sqlValToText(def, false)),
 								rank++
 							));
 						}
@@ -1019,6 +1013,86 @@ public class SchemaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
+	@Contract(pure = true)
+	public static String jdbcTypesToAMITypes(@Nullable String nativeType, int jdbcType)
+	{
+		if("ENUM".equalsIgnoreCase(nativeType))
+		{
+			return "ENUM";
+		}
+		else switch(jdbcType)
+		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			case Types.ROWID:
+				return "ROWID";
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			case Types.BIT:
+			case Types.BOOLEAN:
+				return "BOOL";
+
+			case Types.TINYINT:
+			case Types.SMALLINT:
+			case Types.INTEGER:
+			case Types.BIGINT:
+				return "INT";
+
+			case Types.REAL:
+			case Types.FLOAT:
+			case Types.DOUBLE:
+			case Types.NUMERIC:
+			case Types.DECIMAL:
+				return "REAL";
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			case Types.CHAR:
+			case Types.NCHAR:
+			case Types.VARCHAR:
+			case Types.NVARCHAR:
+				return "TEXT";
+
+			case Types.CLOB:
+			case Types.NCLOB:
+			case Types.LONGVARCHAR:
+			case Types.LONGNVARCHAR:
+				return "LONGTEXT";
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			case Types.BLOB:
+			case Types.BINARY:
+			case Types.VARBINARY:
+			case Types.LONGVARBINARY:
+				return "BIN";
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			case Types.TIMESTAMP:
+			case Types.TIMESTAMP_WITH_TIMEZONE:
+				return "TIMESTAMP";
+
+			case Types.DATE:
+				return "DATE";
+
+			case Types.TIME:
+			case Types.TIME_WITH_TIMEZONE:
+				return "TIME";
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			default:
+				return "OTHER";
+
+			/*--------------------------------------------------------------------------------------------------------*/
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public static String externalCatalogToInternalCatalog_noException(@Nullable String externalCatalog, @Nullable String value)
 	{
 		return s_externalCatalogToInternalCatalog.getOrDefault(externalCatalog, value);
@@ -1276,6 +1350,8 @@ public class SchemaSingleton
 		             .append("<field name=\"entity\"><![CDATA[").append(column.entity).append("]]></field>")
 		             .append("<field name=\"field\"><![CDATA[").append(column.field).append("]]></field>")
 		             .append("<field name=\"type\"><![CDATA[").append(column.type).append("]]></field>")
+		             .append("<field name=\"nativeType\"><![CDATA[").append(column.nativeType).append("]]></field>")
+		             .append("<field name=\"jdbcType\"><![CDATA[").append(column.jdbcType).append("]]></field>")
 		             .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
 		             .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
 		             .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")

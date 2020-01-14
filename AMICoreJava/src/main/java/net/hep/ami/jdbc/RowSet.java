@@ -35,7 +35,7 @@ public class RowSet
 	protected final String[] m_fieldEntities;
 	protected final String[] m_fieldNames;
 	protected final String[] m_fieldLabels;
-	protected final Integer[] m_fieldTypes;
+	protected final String[] m_fieldTypes;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -145,7 +145,7 @@ public class RowSet
 		m_fieldEntities = new String[m_numberOfFields];
 		m_fieldNames = new String[m_numberOfFields];
 		m_fieldLabels = new String[m_numberOfFields];
-		m_fieldTypes = new Integer[m_numberOfFields];
+		m_fieldTypes = new String[m_numberOfFields];
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -177,9 +177,7 @@ public class RowSet
 
 		String m_fieldNames_i;
 
-		String externalCatalog, internalCatalog, entity, name, label;
-
-		Integer type;
+		String externalCatalog, internalCatalog, entity, name, label, type;
 
 		for(int i = 0; i < m_numberOfFields; i++)
 		{
@@ -195,7 +193,11 @@ public class RowSet
 
 			try { label = resultSetMetaData.getColumnLabel(i + 1); } catch(Exception e) { label = null; }
 
-			try { type = resultSetMetaData.getColumnType(i + 1); } catch(Exception e) { type = null; }
+			try { type = SchemaSingleton.jdbcTypesToAMITypes(
+			      	resultSetMetaData.getColumnTypeName(i + 1),
+			      	resultSetMetaData.getColumnType(i + 1)
+			      );
+			} catch(Exception e) { type = null; }
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* RESOLVE ALIASES IF NEEDED                                                                              */
@@ -299,7 +301,7 @@ public class RowSet
 			m_fieldEntities[i] = !Empty.isEmpty(entity) ? entity : "N/A";
 			m_fieldNames[i] = !Empty.isEmpty(name) ? name : "N/A";
 			m_fieldLabels[i] = !Empty.isEmpty(label) ? label : "N/A";
-			m_fieldTypes[i] = type != null ? type : Types.VARCHAR;
+			m_fieldTypes[i] = !Empty.isEmpty(type) ? type : "N/A";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -442,7 +444,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isACatalog(String catalogName)
+	public boolean isACatalog(@Nullable String catalogName)
 	{
 		for(String catalog: m_fieldCatalogs)
 		{
@@ -457,7 +459,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isAnEntity(String entityName)
+	public boolean isAnEntity(@Nullable String entityName)
 	{
 		for(String entity: m_fieldEntities)
 		{
@@ -472,7 +474,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isAField(String fieldName)
+	public boolean isAField(@Nullable String fieldName)
 	{
 		for(String name: m_fieldNames)
 		{
@@ -487,7 +489,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isALabel(String fieldLabel)
+	public boolean isALabel(@Nullable String fieldLabel)
 	{
 		for(String label: m_fieldLabels)
 		{
@@ -502,11 +504,11 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isAType(int fieldType)
+	public boolean isAType(@Nullable String fieldType)
 	{
-		for(int type: m_fieldTypes)
+		for(String type: m_fieldTypes)
 		{
-			if(type == fieldType)
+			if(type.equalsIgnoreCase(fieldType))
 			{
 				return true;
 			}
@@ -517,7 +519,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public boolean isANameOrLabel(String name)
+	public boolean isANameOrLabel(@Nullable String name)
 	{
 		return m_nameIndices.containsKey(name)
 		       ||
@@ -586,7 +588,7 @@ public class RowSet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public int getTypeOfField(int fieldIndex) throws Exception
+	public String getTypeOfField(int fieldIndex) throws Exception
 	{
 		if(fieldIndex < 0 || fieldIndex >= m_numberOfFields)
 		{
@@ -611,10 +613,8 @@ public class RowSet
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			/**/ if(m_fieldTypes[i] == Types./*---*/TIMESTAMP/*---*/
-			        ||
-			        m_fieldTypes[i] == Types.TIMESTAMP_WITH_TIMEZONE
-			 ) {
+			/**/ if("TIMESTAMP".equals(m_fieldTypes[i]))
+			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TIMESTAMP & DATETIME                                                                               */
 				/*----------------------------------------------------------------------------------------------------*/
@@ -634,7 +634,7 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(m_fieldTypes[i] == Types.DATE)
+			else if("DATE".equals(m_fieldTypes[i]))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* DATE                                                                                               */
@@ -655,10 +655,8 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(m_fieldTypes[i] == Types./*---*/TIME/*---*/
-			        ||
-			        m_fieldTypes[i] == Types.TIME_WITH_TIMEZONE
-			 ) {
+			else if("TIME".equals(m_fieldTypes[i]))
+			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TIME                                                                                               */
 				/*----------------------------------------------------------------------------------------------------*/
