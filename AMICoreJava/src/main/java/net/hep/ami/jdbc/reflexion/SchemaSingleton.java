@@ -163,6 +163,86 @@ public class SchemaSingleton
 
 		/**/
 
+		@NotNull
+		@Contract(pure = true)
+		public static String jdbcTypesToAMITypes(@Nullable String nativeType, int jdbcType)
+		{
+			if("ENUM".equalsIgnoreCase(nativeType))
+			{
+				return "ENUM";
+			}
+			else switch(jdbcType)
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				case Types.ROWID:
+					return "ROWID";
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				case Types.BIT:
+				case Types.BOOLEAN:
+					return "BOOL";
+
+				case Types.TINYINT:
+				case Types.SMALLINT:
+				case Types.INTEGER:
+				case Types.BIGINT:
+					return "INT";
+
+				case Types.REAL:
+				case Types.FLOAT:
+				case Types.DOUBLE:
+				case Types.NUMERIC:
+				case Types.DECIMAL:
+					return "REAL";
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				case Types.CHAR:
+				case Types.NCHAR:
+				case Types.VARCHAR:
+				case Types.NVARCHAR:
+					return "TEXT";
+
+				case Types.CLOB:
+				case Types.NCLOB:
+				case Types.LONGVARCHAR:
+				case Types.LONGNVARCHAR:
+					return "LONGTEXT";
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				case Types.BLOB:
+				case Types.BINARY:
+				case Types.VARBINARY:
+				case Types.LONGVARBINARY:
+					return "BIN";
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				case Types.TIMESTAMP:
+				case Types.TIMESTAMP_WITH_TIMEZONE:
+					return "TIMESTAMP";
+
+				case Types.DATE:
+					return "DATE";
+
+				case Types.TIME:
+				case Types.TIME_WITH_TIMEZONE:
+					return "TIME";
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				default:
+					return "OTHER";
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+		}
+
+		/**/
+
 		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, @NotNull String _nativeType, int _jdbcType, int _size, int _digits, String _def, int _rank)
 		{
 			externalCatalog = _externalCatalog;
@@ -1009,86 +1089,6 @@ public class SchemaSingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	@Contract(pure = true)
-	public static String jdbcTypesToAMITypes(@Nullable String nativeType, int jdbcType)
-	{
-		if("ENUM".equalsIgnoreCase(nativeType))
-		{
-			return "ENUM";
-		}
-		else switch(jdbcType)
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			case Types.ROWID:
-				return "ROWID";
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			case Types.BIT:
-			case Types.BOOLEAN:
-				return "BOOL";
-
-			case Types.TINYINT:
-			case Types.SMALLINT:
-			case Types.INTEGER:
-			case Types.BIGINT:
-				return "INT";
-
-			case Types.REAL:
-			case Types.FLOAT:
-			case Types.DOUBLE:
-			case Types.NUMERIC:
-			case Types.DECIMAL:
-				return "REAL";
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			case Types.CHAR:
-			case Types.NCHAR:
-			case Types.VARCHAR:
-			case Types.NVARCHAR:
-				return "TEXT";
-
-			case Types.CLOB:
-			case Types.NCLOB:
-			case Types.LONGVARCHAR:
-			case Types.LONGNVARCHAR:
-				return "LONGTEXT";
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			case Types.BLOB:
-			case Types.BINARY:
-			case Types.VARBINARY:
-			case Types.LONGVARBINARY:
-				return "BIN";
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			case Types.TIMESTAMP:
-			case Types.TIMESTAMP_WITH_TIMEZONE:
-				return "TIMESTAMP";
-
-			case Types.DATE:
-				return "DATE";
-
-			case Types.TIME:
-			case Types.TIME_WITH_TIMEZONE:
-				return "TIME";
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			default:
-				return "OTHER";
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

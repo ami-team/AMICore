@@ -13,7 +13,7 @@ public class CommandSingletonTest
 	public static void main(String[] args) throws Exception
 	{
 		//System.out.println(ConfigSingleton.getConfigFileName());
-/*
+
 		Router querier = new Router();
 
 		querier.create();
@@ -23,7 +23,7 @@ public class CommandSingletonTest
 		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_TIMESTAMP('2020-01-10 12:52:04.1')").toStringBuilder().toString().replace(">", ">\n"));
 
 		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_TIMESTAMP('2020-01-10 12:52:04.1234')").toStringBuilder().toString().replace(">", ">\n"));
-*/
+
 //		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_DATE('2020-01-10')").toStringBuilder().toString().replace(">", ">\n"));
 
 //		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_TIME('12:52:04')").toStringBuilder().toString().replace(">", ">\n"));

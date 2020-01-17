@@ -193,7 +193,7 @@ public class RowSet
 
 			try { label = resultSetMetaData.getColumnLabel(i + 1); } catch(Exception e) { label = null; }
 
-			try { type = SchemaSingleton.jdbcTypesToAMITypes(
+			try { type = SchemaSingleton.Column.jdbcTypesToAMITypes(
 			      	resultSetMetaData.getColumnTypeName(i + 1),
 			      	resultSetMetaData.getColumnType(i + 1)
 			      );
