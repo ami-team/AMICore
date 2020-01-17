@@ -340,10 +340,6 @@ public class Router implements Querier
 
 						/*--------------------------------------------------------------------------------------------*/
 
-						LogSingleton.root.info(sql);
-
-						/*--------------------------------------------------------------------------------------------*/
-
 						try
 						{
 							try(Statement statement = m_driver.getConnection().createStatement())

@@ -133,7 +133,8 @@ CREATE TABLE "router_command_role" (
   "commandFK" integer NOT NULL,
   "roleFK" integer NOT NULL,
   UNIQUE  ("commandFK", "roleFK"),
-  FOREIGN KEY ("commandFK") REFERENCES "router_command" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY ("commandFK") REFERENCES "router_command" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("roleFK") REFERENCES "router_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -162,7 +163,8 @@ CREATE TABLE "router_user_role" (
   "userFK" integer NOT NULL,
   "roleFK" integer NOT NULL,
   UNIQUE ("userFK", "roleFK"),
-  FOREIGN KEY ("userFK") REFERENCES "router_user" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY ("userFK") REFERENCES "router_user" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("roleFK") REFERENCES "router_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -247,7 +249,8 @@ CREATE TABLE "router_ipv4_blocks" (
   "rangeBegin" DECIMAL(10, 0) NOT NULL,
   "rangeEnd" DECIMAL(10, 0) NOT NULL,
   "geoFK" integer NOT NULL,
-  UNIQUE ("network")
+  UNIQUE ("network"),
+  FOREIGN KEY ("geoFK") REFERENCES "router_locations" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -258,7 +261,8 @@ CREATE TABLE "router_ipv6_blocks" (
   "rangeBegin" DECIMAL(38, 0) NOT NULL,
   "rangeEnd" DECIMAL(38, 0) NOT NULL,
   "geoFK" integer NOT NULL,
-  UNIQUE ("network")
+  UNIQUE ("network"),
+  FOREIGN KEY ("geoFK") REFERENCES "router_locations" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
