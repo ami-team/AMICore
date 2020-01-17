@@ -167,7 +167,11 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		public static String jdbcTypesToAMITypes(@Nullable String nativeType, int jdbcType)
 		{
-			if("ENUM".equalsIgnoreCase(nativeType))
+			/**/ if("SET".equalsIgnoreCase(nativeType))
+			{
+				return "SET";
+			}
+			else if("ENUM".equalsIgnoreCase(nativeType))
 			{
 				return "ENUM";
 			}
@@ -676,10 +680,6 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			boolean isMySQL = metaData.getClass().getName().contains("mysql");
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
 			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(), _getSchemaName(), _entity, "%"))
 			{
 				Table table;
@@ -703,11 +703,6 @@ public class SchemaSingleton
 
 						if(table != null)
 						{
-							if(isMySQL && "ENUM".equalsIgnoreCase(nativeType))
-							{
-								/* TODO */
-							}
-
 							table.columns.put(field, new Column(
 								m_externalCatalog,
 								m_internalCatalog,
@@ -1024,7 +1019,7 @@ public class SchemaSingleton
 		/* FAST METHOD                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(true)
+		/*----*/
 		{
 			int rank = 1000;
 
