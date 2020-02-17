@@ -59,6 +59,10 @@ public class SearchQuery extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		int nbSuccess = 0;
+
+		List<String> messages = new ArrayList<>();
+
 		StringBuilder result = new StringBuilder();
 
 		if(raw != null)
@@ -67,7 +71,16 @@ public class SearchQuery extends AbstractCommand
 
 			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
-				result.append(getQuerier(catalog2, flags).executeRawQuery(entity, raw).toStringBuilder(catalog2, null));
+				try
+				{
+					result.append(getQuerier(catalog2, flags).executeRawQuery(entity, raw).toStringBuilder(catalog2, null));
+
+					nbSuccess++;
+				}
+				catch(Exception e)
+				{
+					messages.add(e.getMessage());
+				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -169,57 +182,75 @@ public class SearchQuery extends AbstractCommand
 
 			for(String catalog2: CatalogSingleton.resolve(catalog))
 			{
-				/*----------------------------------------------------------------------------------------------------*/
-
-				querier = getQuerier(catalog2, flags);
-
-				/*----------------------------------------------------------------------------------------------------*/
-
-				Integer totalNumberOfRows = null;
-
-				if(count)
+				try
 				{
 					/*------------------------------------------------------------------------------------------------*/
 
-					RowSet rowSet1;
+					querier = getQuerier(catalog2, flags);
 
-					/**/ if(sql != null)
+					/*------------------------------------------------------------------------------------------------*/
+
+					Integer totalNumberOfRows = null;
+
+					if(count)
 					{
-						rowSet1 = querier.executeSQLQuery(entity, xqlSelect1.toString());
+						/*--------------------------------------------------------------------------------------------*/
+
+						RowSet rowSet1;
+
+						/**/
+						if(sql != null)
+						{
+							rowSet1 = querier.executeSQLQuery(entity, xqlSelect1.toString());
+						}
+						else
+						{
+							rowSet1 = querier.executeMQLQuery(entity, xqlSelect1.toString());
+						}
+
+						/*--------------------------------------------------------------------------------------------*/
+
+						totalNumberOfRows = rowSet1.getAll().get(0).getValue(0, (Integer) null);
+
+						/*--------------------------------------------------------------------------------------------*/
+					}
+
+					/*------------------------------------------------------------------------------------------------*/
+
+					RowSet rowSet2;
+
+					/**/
+					if(sql != null)
+					{
+						rowSet2 = querier.executeSQLQuery(entity, xqlSelect2.toString());
 					}
 					else
 					{
-						rowSet1 = querier.executeMQLQuery(entity, xqlSelect1.toString());
+						rowSet2 = querier.executeMQLQuery(entity, xqlSelect2.toString());
 					}
 
 					/*------------------------------------------------------------------------------------------------*/
 
-					totalNumberOfRows = rowSet1.getAll().get(0).getValue(0, (Integer) null);
+					result.append(rowSet2.toStringBuilder(catalog2, totalNumberOfRows));
+
+					/*------------------------------------------------------------------------------------------------*/
+
+					nbSuccess++;
 
 					/*------------------------------------------------------------------------------------------------*/
 				}
-
-				/*----------------------------------------------------------------------------------------------------*/
-
-				RowSet rowSet2;
-
-				/**/ if(sql != null)
+				catch(Exception e)
 				{
-					rowSet2 = querier.executeSQLQuery(entity, xqlSelect2.toString());
+					messages.add(e.getMessage());
 				}
-				else
-				{
-					rowSet2 = querier.executeMQLQuery(entity, xqlSelect2.toString());
-				}
-
-				/*----------------------------------------------------------------------------------------------------*/
-
-				result.append(rowSet2.toStringBuilder(catalog2, totalNumberOfRows));
-
-				/*----------------------------------------------------------------------------------------------------*/
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
+		}
+
+		if(nbSuccess == 0 && messages.size() > 0)
+		{
+			throw new Exception(String.join(". ", messages));
 		}
 
 		return result;
