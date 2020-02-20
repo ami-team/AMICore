@@ -353,7 +353,7 @@ public class RoleSingleton
 
 	public static void checkCommand(@Nullable String validatorClass, @NotNull String command, @NotNull Set <String> userRoles, @NotNull Map<String, String> arguments) throws Exception
 	{
-		if(Empty.isBlankEmptyNull(validatorClass))
+		if(Empty.is(validatorClass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK))
 		{
 			return;
 		}
@@ -396,7 +396,7 @@ public class RoleSingleton
 
 	public static void checkNewUser(@Nullable String validatorClass, @NotNull String amiLogin, @NotNull String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, @NotNull String firstName, @NotNull String lastName, @NotNull String email) throws Exception
 	{
-		if(Empty.isBlankEmptyNull(validatorClass))
+		if(Empty.is(validatorClass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK))
 		{
 			return;
 		}

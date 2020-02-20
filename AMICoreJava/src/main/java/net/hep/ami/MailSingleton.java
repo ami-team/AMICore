@@ -49,15 +49,15 @@ public class MailSingleton
 		String user = ConfigSingleton.getProperty("email_user");
 		String pass = ConfigSingleton.getProperty("email_pass");
 
-		if(Empty.isBlankEmptyNull(host)
+		if(Empty.is(host, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.isBlankEmptyNull(port)
+		   Empty.is(port, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.isBlankEmptyNull(mode)
+		   Empty.is(mode, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.isBlankEmptyNull(user)
+		   Empty.is(user, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.isBlankEmptyNull(pass)
+		   Empty.is(pass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		 ) {
 			return;
 		}
@@ -95,11 +95,11 @@ public class MailSingleton
 
 		emailBuilder.from(from);
 
-		if(!Empty.isBlankEmptyNull(to)) {
+		if(!Empty.is(to, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)) {
 			emailBuilder.to(to.trim());
 		}
 
-		if(!Empty.isBlankEmptyNull(cc)) {
+		if(!Empty.is(cc, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)) {
 			emailBuilder.cc(cc.trim());
 		}
 

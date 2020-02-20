@@ -140,7 +140,7 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				if(args[i] != null)
+				if(!Empty.is(args[i], Empty.STRING_AMI_NULL))
 				{
 					typeList.add("parse::" + token.substring(3, idx).toLowerCase());
 
@@ -168,7 +168,7 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				if(args[i] != null)
+				if(!Empty.is(args[i], Empty.STRING_AMI_NULL))
 				{
 					typeList.add("java.lang.String");
 
@@ -207,7 +207,7 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				if(args[i] != null)
+				if(!Empty.is(args[i], Empty.STRING_AMI_NULL))
 				{
 					typeList.add("parse::" + token.substring(2, idx).toLowerCase());
 
@@ -235,7 +235,7 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				if(args[i] != null)
+				if(!Empty.is(args[i], Empty.STRING_AMI_NULL))
 				{
 					typeList.add(args[i].getClass().getName());
 
@@ -281,22 +281,48 @@ public class PreparedStatementFactory
 							switch(mode)
 							{
 								case 1:
-									typeList.add("java.sql.Timestamp");
-									valueList.add(value != null ? m_amiDateTime.parseTimestamp(value) : null);
+									if(!Empty.is(value, Empty.STRING_AMI_NULL))
+									{
+										typeList.add("java.sql.Timestamp");
+										valueList.add(m_amiDateTime.parseTimestamp(value));
+
+										stringBuilder.append("?");
+									}
+									else
+									{
+										stringBuilder.append("NULL");
+									}
 									break;
 
 								case 2:
-									typeList.add("java.sql.Date");
-									valueList.add(value != null ? m_amiDateTime.parseDate(value) : null);
+									if(!Empty.is(value, Empty.STRING_AMI_NULL))
+									{
+										typeList.add("java.sql.Date");
+										valueList.add(m_amiDateTime.parseDate(value));
+
+										stringBuilder.append("?");
+									}
+									else
+									{
+										stringBuilder.append("NULL");
+									}
 									break;
 
 								case 3:
-									typeList.add("java.sql.Time");
-									valueList.add(value != null ? m_amiDateTime.parseTime(value) : null);
+									if(!Empty.is(value, Empty.STRING_AMI_NULL))
+									{
+										typeList.add("java.sql.Time");
+										valueList.add(m_amiDateTime.parseTime(value));
+
+										stringBuilder.append("?");
+									}
+									else
+									{
+										stringBuilder.append("NULL");
+									}
 									break;
 							}
 
-							stringBuilder.append("?");
 
 							mode = 0;
 						}

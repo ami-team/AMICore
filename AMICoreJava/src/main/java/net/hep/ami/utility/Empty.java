@@ -6,44 +6,48 @@ public class Empty
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Contract(value = "null -> true", pure = true)
-	public static boolean isEmpty(@Nullable String s)
-	{
-		return s == null || s.isEmpty();
-	}
+	public static final int STRING_JAVA_NULL = (1 << 0);
+	public static final int STRING_AMI_NULL = (1 << 1);
+	public static final int STRING_EMPTY = (1 << 2);
+	public static final int STRING_BLANK = (1 << 3);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Contract(value = "null -> true", pure = true)
-	public static boolean isBlankEmpty(@Nullable String s)
+	public static boolean is(@Nullable Object o, int mask)
 	{
-		if(s != null)
-		{
-			s = s.trim();
+		/*------------------------------------------------------------------------------------------------------------*/
 
-			return s.isEmpty() /*--------------------------*/;
-		}
-		else
+		if(((mask & STRING_JAVA_NULL) != 0 || (mask & STRING_AMI_NULL) != 0) && o == null)
 		{
 			return true;
 		}
-	}
 
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Contract(value = "null -> true", pure = true)
-	public static boolean isBlankEmptyNull(@Nullable String s)
-	{
-		if(s != null)
+		if(o instanceof String == false)
 		{
-			s = s.trim();
-
-			return s.isEmpty() || "@NULL".equalsIgnoreCase(s);
+			return false;
 		}
-		else
+
+		String s = o.toString();
+		String S = s.trim();
+
+		if((mask & STRING_AMI_NULL) != 0 && "@NULL".equalsIgnoreCase(S))
 		{
 			return true;
 		}
+
+		if((mask & STRING_EMPTY) != 0 && s.isEmpty())
+		{
+			return true;
+		}
+
+		if((mask & STRING_BLANK) != 0 && S.isEmpty())
+		{
+			return true;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return false;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

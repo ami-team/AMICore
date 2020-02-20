@@ -28,7 +28,7 @@ public class WebLinkCache
 	@NotNull
 	public String processWebLink(@Nullable String code, @NotNull String catalog, @NotNull String entity, @NotNull String field, @NotNull RowSet rowSet, @NotNull Row row)
 	{
-		if(Empty.isBlankEmptyNull(code))
+		if(Empty.is(code, Empty.STRING_AMI_NULL | Empty.STRING_BLANK))
 		{
 			return "";
 		}

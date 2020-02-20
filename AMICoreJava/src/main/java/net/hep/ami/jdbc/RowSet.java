@@ -203,12 +203,12 @@ public class RowSet
 			/* RESOLVE ALIASES IF NEEDED                                                                              */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(!Empty.isEmpty(label)
+			if(!Empty.is(label, Empty.STRING_EMPTY)
 			   &&
 			   (
-				   Empty.isEmpty(internalCatalog)
+				   Empty.is(internalCatalog, Empty.STRING_EMPTY)
 				   ||
-				   Empty.isEmpty(/*-*/entity/*-*/)
+				   Empty.is(/*-*/entity/*-*/, Empty.STRING_EMPTY)
 			   )
 			 ) {
 				try
@@ -250,7 +250,7 @@ public class RowSet
 			/* RESOLVE EXTERNAL CATALOG IF NEEDED                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			/**/ if(!Empty.isEmpty(defaultInternalCatalog) && defaultInternalCatalog.equalsIgnoreCase(internalCatalog))
+			/**/ if(!Empty.is(defaultInternalCatalog, Empty.STRING_EMPTY) && defaultInternalCatalog.equalsIgnoreCase(internalCatalog))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TRIVIAL CASE                                                                                       */
@@ -260,7 +260,7 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(!Empty.isEmpty(defaultExternalCatalog) && !Empty.isEmpty(defaultEntity))
+			else if(!Empty.is(defaultExternalCatalog, Empty.STRING_EMPTY) && !Empty.is(defaultEntity, Empty.STRING_EMPTY))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* NON-TRIVIAL CASE                                                                                   */
@@ -270,7 +270,7 @@ public class RowSet
 				{
 					Resolution resolution = AutoJoinSingleton.resolve(defaultExternalCatalog, defaultEntity, new QId(null, entity, name).toString());
 
-					if(Empty.isEmpty(internalCatalog) || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
+					if(Empty.is(internalCatalog, Empty.STRING_EMPTY) || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
 					{
 						externalCatalog = resolution.getExternalQId().getCatalog();
 						entity = resolution.getExternalQId().getEntity();
@@ -297,11 +297,11 @@ public class RowSet
 			/* SAVE METADATA TO ROWSET                                                                                */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			m_fieldCatalogs[i] = !Empty.isEmpty(externalCatalog) ? externalCatalog : "N/A";
-			m_fieldEntities[i] = !Empty.isEmpty(entity) ? entity : "N/A";
-			m_fieldNames[i] = !Empty.isEmpty(name) ? name : "N/A";
-			m_fieldLabels[i] = !Empty.isEmpty(label) ? label : "N/A";
-			m_fieldTypes[i] = !Empty.isEmpty(type) ? type : "N/A";
+			m_fieldCatalogs[i] = !Empty.is(externalCatalog, Empty.STRING_EMPTY) ? externalCatalog : "N/A";
+			m_fieldEntities[i] = !Empty.is(entity, Empty.STRING_EMPTY) ? entity : "N/A";
+			m_fieldNames[i] = !Empty.is(name, Empty.STRING_EMPTY) ? name : "N/A";
+			m_fieldLabels[i] = !Empty.is(label, Empty.STRING_EMPTY) ? label : "N/A";
+			m_fieldTypes[i] = !Empty.is(type, Empty.STRING_EMPTY) ? type : "N/A";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -316,9 +316,9 @@ public class RowSet
 			if(aliasInfo.y.size() == m_numberOfFields && !aliasInfo.y.get(i)
 			   &&
 			   (
-			    	!Empty.isEmpty(defaultExternalCatalog) && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
+			    	!Empty.is(defaultExternalCatalog, Empty.STRING_EMPTY) && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
 			    	||
-			    	!Empty.isEmpty(/*-*/defaultEntity/*-*/) && !/*-*/defaultEntity/*-*/.equalsIgnoreCase(m_fieldEntities[i])
+			    	!Empty.is(/*-*/defaultEntity/*-*/, Empty.STRING_EMPTY) && !/*-*/defaultEntity/*-*/.equalsIgnoreCase(m_fieldEntities[i])
 			   )
 			 ) {
 				m_fieldLabels[i] = m_fieldNames_i;
