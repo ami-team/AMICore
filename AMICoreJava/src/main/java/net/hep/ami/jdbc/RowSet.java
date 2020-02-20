@@ -250,7 +250,7 @@ public class RowSet
 			/* RESOLVE EXTERNAL CATALOG IF NEEDED                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			/**/ if(!Empty.is(defaultInternalCatalog, Empty.STRING_EMPTY) && defaultInternalCatalog.equalsIgnoreCase(internalCatalog))
+			/**/ if(!Empty.is(defaultInternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) && defaultInternalCatalog.equalsIgnoreCase(internalCatalog))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TRIVIAL CASE                                                                                       */
@@ -260,7 +260,7 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(!Empty.is(defaultExternalCatalog, Empty.STRING_EMPTY) && !Empty.is(defaultEntity, Empty.STRING_EMPTY))
+			else if(!Empty.is(defaultExternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) && !Empty.is(defaultEntity, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* NON-TRIVIAL CASE                                                                                   */
@@ -270,7 +270,7 @@ public class RowSet
 				{
 					Resolution resolution = AutoJoinSingleton.resolve(defaultExternalCatalog, defaultEntity, new QId(null, entity, name).toString());
 
-					if(Empty.is(internalCatalog, Empty.STRING_EMPTY) || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
+					if(Empty.is(internalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) || internalCatalog.equals(resolution.getInternalQId().getCatalog()))
 					{
 						externalCatalog = resolution.getExternalQId().getCatalog();
 						entity = resolution.getExternalQId().getEntity();

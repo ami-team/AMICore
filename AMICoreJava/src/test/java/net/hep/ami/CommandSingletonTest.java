@@ -14,15 +14,15 @@ public class CommandSingletonTest
 	{
 		//System.out.println(ConfigSingleton.getConfigFileName());
 
-		Router querier = new Router();
+//		Router querier = new Router();
 
-		querier.create();
-		querier.fill();
-		querier.commit();
+//		querier.create();
+//		querier.fill();
+//		querier.commit();
 
-		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_TIMESTAMP('2020-01-10 12:52:04.1')").toStringBuilder().toString().replace(">", ">\n"));
+//		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_TIMESTAMP('2020-01-10 12:52:04.1')").toStringBuilder().toString().replace(">", ">\n"));
 
-		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_TIMESTAMP('2020-01-10 12:52:04.1234')").toStringBuilder().toString().replace(">", ">\n"));
+//		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_TIMESTAMP('2020-01-10 12:52:04.1234')").toStringBuilder().toString().replace(">", ">\n"));
 
 //		System.out.println(querier.executeSQLQuery("N/A","SELECT AMI_DATE('2020-01-10')").toStringBuilder().toString().replace(">", ">\n"));
 
