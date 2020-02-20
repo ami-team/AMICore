@@ -51,7 +51,7 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		StringBuilder result = querier.executeMQLQuery(entity, new XQLSelect().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?").toString(), primaryFieldValue).toStringBuilder("element");
+		StringBuilder result = querier.executeMQLQuery(entity, new XQLSelect().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?0").toString(), primaryFieldValue).toStringBuilder("element");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/*                                                                                                            */
@@ -172,7 +172,7 @@ public class GetElementInfo extends AbstractCommand
 			{
 
 				String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
-				                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?")
+				                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?0")
 				                              .toString()
 				;
 
