@@ -200,7 +200,7 @@ public class SchemaSingleton
 
 				case Types.NUMERIC:
 				case Types.DECIMAL:
-					return digits == 0 ? "INT" : "REAL";
+					return digits <= 0 ? "INT" : "REAL";
 
 				/*----------------------------------------------------------------------------------------------------*/
 
