@@ -443,27 +443,23 @@ ALTER TABLE "router_catalog"
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck7_router_catalog" CHECK("description" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_catalog" CHECK("archived" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck8_router_catalog" CHECK("archived" IS NOT NULL)
+  ADD CONSTRAINT "ck8_router_catalog" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck9_router_catalog" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck9_router_catalog" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck10_router_catalog" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck10_router_catalog" CHECK("modified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck11_router_catalog" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_catalog"
-  ADD CONSTRAINT "ck12_router_catalog" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck11_router_catalog" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_catalog"
@@ -518,23 +514,19 @@ ALTER TABLE "router_entity"
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck3_router_entity" CHECK("description" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_entity" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck4_router_entity" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_entity" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck5_router_entity" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_entity" CHECK("modified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck6_router_entity" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_entity"
-  ADD CONSTRAINT "ck7_router_entity" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_entity" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_entity"
@@ -594,23 +586,19 @@ ALTER TABLE "router_field"
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck4_router_field" CHECK("description" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_field" CHECK("created" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck5_router_field" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_field" CHECK("createdBy" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck6_router_field" CHECK("createdBy" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_field" CHECK("modified" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck7_router_field" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_field"
-  ADD CONSTRAINT "ck8_router_field" CHECK("modifiedBy" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_field" CHECK("modifiedBy" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_field"
