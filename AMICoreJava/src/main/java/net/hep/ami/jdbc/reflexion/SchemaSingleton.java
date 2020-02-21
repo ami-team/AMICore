@@ -165,7 +165,7 @@ public class SchemaSingleton
 
 		@NotNull
 		@Contract(pure = true)
-		public static String jdbcTypesToAMITypes(@Nullable String nativeType, int jdbcType)
+		public static String jdbcTypesToAMITypes(@Nullable String nativeType, int jdbcType, int digits)
 		{
 			/**/ if("SET".equalsIgnoreCase(nativeType))
 			{
@@ -196,9 +196,11 @@ public class SchemaSingleton
 				case Types.REAL:
 				case Types.FLOAT:
 				case Types.DOUBLE:
+					return "REAL";
+
 				case Types.NUMERIC:
 				case Types.DECIMAL:
-					return "REAL";
+					return digits == 0 ? "INT" : "REAL";
 
 				/*----------------------------------------------------------------------------------------------------*/
 
@@ -254,7 +256,7 @@ public class SchemaSingleton
 			entity = _entity;
 			field = _field;
 
-			type = jdbcTypesToAMITypes(_nativeType, _jdbcType);
+			type = jdbcTypesToAMITypes(_nativeType, _jdbcType, _digits);
 			nativeType = _nativeType;
 			jdbcType = _jdbcType;
 			size = _size;
