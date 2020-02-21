@@ -148,7 +148,7 @@ function
 /*---------------------------*/
 
 qId
-	: m_basicQId=basicQId ('{' m_constraintQIds+=constraintQId (',' m_constraintQIds+=constraintQId)* '}')?
+	: m_basicQId=basicQId ('{' m_constraintQIds+=constraintQId ((',' | '|') m_constraintQIds+=constraintQId)* '}')?
 	;
 
 /*---------------------------*/
