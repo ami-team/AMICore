@@ -28,8 +28,12 @@ public class ChangePassword extends AbstractCommand
 		String amiPasswordOld = arguments.get("amiPasswordOld");
 		String amiPasswordNew = arguments.get("amiPasswordNew");
 
-		if(amiLogin == null || Empty.is(amiPasswordOld, Empty.STRING_AMI_NULL | Empty.STRING_BLANK) || Empty.is(amiPasswordNew, Empty.STRING_AMI_NULL | Empty.STRING_BLANK))
-		{
+		if(Empty.is(amiLogin, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		   ||
+		   Empty.is(amiPasswordOld, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		   ||
+		   Empty.is(amiPasswordNew, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		 ) {
 			throw new Exception("invalid usage");
 		}
 

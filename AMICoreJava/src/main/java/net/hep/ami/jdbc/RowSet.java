@@ -203,12 +203,12 @@ public class RowSet
 			/* RESOLVE ALIASES IF NEEDED                                                                              */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(!Empty.is(label, Empty.STRING_EMPTY)
+			if(!Empty.is(label, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY)
 			   &&
 			   (
-				   Empty.is(internalCatalog, Empty.STRING_EMPTY)
+				   Empty.is(internalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY)
 				   ||
-				   Empty.is(/*-*/entity/*-*/, Empty.STRING_EMPTY)
+				   Empty.is(/*-*/entity/*-*/, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY)
 			   )
 			 ) {
 				try
@@ -297,11 +297,11 @@ public class RowSet
 			/* SAVE METADATA TO ROWSET                                                                                */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			m_fieldCatalogs[i] = !Empty.is(externalCatalog, Empty.STRING_EMPTY) ? externalCatalog : "N/A";
-			m_fieldEntities[i] = !Empty.is(entity, Empty.STRING_EMPTY) ? entity : "N/A";
-			m_fieldNames[i] = !Empty.is(name, Empty.STRING_EMPTY) ? name : "N/A";
-			m_fieldLabels[i] = !Empty.is(label, Empty.STRING_EMPTY) ? label : "N/A";
-			m_fieldTypes[i] = !Empty.is(type, Empty.STRING_EMPTY) ? type : "N/A";
+			m_fieldCatalogs[i] = !Empty.is(externalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) ? externalCatalog : "N/A";
+			m_fieldEntities[i] = !Empty.is(entity, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) ? entity : "N/A";
+			m_fieldNames[i] = !Empty.is(name, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) ? name : "N/A";
+			m_fieldLabels[i] = !Empty.is(label, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) ? label : "N/A";
+			m_fieldTypes[i] = !Empty.is(type, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) ? type : "N/A";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -316,9 +316,9 @@ public class RowSet
 			if(aliasInfo.y.size() == m_numberOfFields && !aliasInfo.y.get(i)
 			   &&
 			   (
-			    	!Empty.is(defaultExternalCatalog, Empty.STRING_EMPTY) && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
+			    	!Empty.is(defaultExternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
 			    	||
-			    	!Empty.is(/*-*/defaultEntity/*-*/, Empty.STRING_EMPTY) && !/*-*/defaultEntity/*-*/.equalsIgnoreCase(m_fieldEntities[i])
+			    	!Empty.is(/*-*/defaultEntity/*-*/, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) && !/*-*/defaultEntity/*-*/.equalsIgnoreCase(m_fieldEntities[i])
 			   )
 			 ) {
 				m_fieldLabels[i] = m_fieldNames_i;

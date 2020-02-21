@@ -175,8 +175,7 @@ public class SchemaSingleton
 			{
 				return "ENUM";
 			}
-			else switch(jdbcType)
-			{
+			else switch(jdbcType) {
 				/*----------------------------------------------------------------------------------------------------*/
 
 				case Types.ROWID:
@@ -227,6 +226,7 @@ public class SchemaSingleton
 
 				case Types.TIMESTAMP:
 				case Types.TIMESTAMP_WITH_TIMEZONE:
+				case -101 /* Oracle timestamp with time zone */:
 					return "TIMESTAMP";
 
 				case Types.DATE:
