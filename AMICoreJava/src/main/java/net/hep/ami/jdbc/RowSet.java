@@ -195,7 +195,8 @@ public class RowSet
 
 			try { type = SchemaSingleton.Column.jdbcTypesToAMITypes(
 			      	resultSetMetaData.getColumnTypeName(i + 1),
-			      	resultSetMetaData.getColumnType(i + 1)
+			      	resultSetMetaData.getColumnType(i + 1),
+					resultSetMetaData.getPrecision(i + 1)
 			      );
 			} catch(Exception e) { type = null; }
 
