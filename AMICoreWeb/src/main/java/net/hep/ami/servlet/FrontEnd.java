@@ -5,7 +5,6 @@ import java.text.*;
 import java.util.*;
 import java.security.cert.*;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
@@ -15,7 +14,6 @@ import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
-
 
 @WebServlet(
 	name = "FrontEnd",
@@ -523,17 +521,18 @@ public class FrontEnd extends HttpServlet
 		String notAfter = dns.t;
 
 		/*------------------------------------------------------------------------------------------------------------*/
-
-		String AMIUser = arguments.get("AMIUser");
-		String AMIPass = arguments.get("AMIPass");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* GET SESSION AND CONTEXT                                                                                    */
+		/* GET ARGUMENT AND SESSION PARAMETERS                                                                        */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		HttpSession session = request.getSession(true);
 
-		ServletContext context = session.getServletContext();
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String AMIUser = arguments.get("AMIUser");
+		String AMIPass = arguments.get("AMIPass");
+
+		String tmpAMIUser = (String) session.getAttribute("AMIUser");
+		String tmpAMIPass = (String) session.getAttribute("AMIPass");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET NOCERT FLAG                                                                                            */
@@ -571,9 +570,6 @@ public class FrontEnd extends HttpServlet
 			/* CERTIFICATE LOGIN                                                                                      */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String tmpAMIUser = (String) session.getAttribute("AMIUser");
-			String tmpAMIPass = (String) session.getAttribute("AMIPass");
-
 			if(tmpAMIUser == null
 			   ||
 			   GUEST_USER.equals(tmpAMIUser)
@@ -603,9 +599,6 @@ public class FrontEnd extends HttpServlet
 			/* CREDENTIAL LOGIN                                                                                       */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String tmpAMIUser = (String) session.getAttribute("AMIUser");
-			String tmpAMIPass = (String) session.getAttribute("AMIPass");
-
 			if(tmpAMIUser == null || (AMIUser != null && !tmpAMIUser.equals(AMIUser))
 			   ||
 			   tmpAMIPass == null || (AMIPass != null && !tmpAMIPass.equals(AMIPass))
@@ -627,15 +620,6 @@ public class FrontEnd extends HttpServlet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* UPDATE CONTEXT                                                                                             */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		context.setAttribute("AMIUser", AMIUser);
-		context.setAttribute("AMIPass", AMIPass);
-
-		context.setAttribute("NoCert", noCert);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* UPDATE SESSION                                                                                             */
