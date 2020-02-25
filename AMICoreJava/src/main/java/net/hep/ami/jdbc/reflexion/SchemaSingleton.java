@@ -79,6 +79,7 @@ public class SchemaSingleton
 		public final String externalCatalog;
 		public final String internalCatalog;
 		public final String entity;
+		public final String type;
 		public /*-*/ int rank;
 
 		/**/
@@ -92,11 +93,12 @@ public class SchemaSingleton
 
 		/**/
 
-		public Table(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, int _rank)
+		public Table(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _type, int _rank)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
 			entity = _entity;
+			type = _type;
 			rank = _rank;
 		}
 
@@ -588,19 +590,19 @@ public class SchemaSingleton
 
 		@Nullable
 		@Contract(pure = true)
-		private String _getCatalogName()
+		private String _getCatalogName(@Nullable String type)
 		{
-			return ((m_driverTuple.t & DriverMetadata.FLAG_HAS_CATALOG) != 0) ? m_internalCatalog
-			                                                                  : null
+			return (!"SYNONYM".equals(type) && (m_driverTuple.t & DriverMetadata.FLAG_HAS_CATALOG) != 0) ? m_internalCatalog
+			                                                                                             : null
 			;
 		}
 
 		@Nullable
 		@Contract(pure = true)
-		private String _getSchemaName()
+		private String _getSchemaName(@Nullable String type)
 		{
-			return ((m_driverTuple.t & DriverMetadata.FLAG_HAS_SCHEMA) != 0) ? m_catalogTuple.z
-			                                                                 : null
+			return (!"SYNONYM".equals(type) && (m_driverTuple.t & DriverMetadata.FLAG_HAS_SCHEMA) != 0) ? m_catalogTuple.z
+			                                                                                            : null
 			;
 		}
 
@@ -632,18 +634,20 @@ public class SchemaSingleton
 				/* LOAD METADATA FROM DATABASE                                                                        */
 				/*----------------------------------------------------------------------------------------------------*/
 
-				Set<String> entities = new HashSet<>();
+				Map<String, String> entities = new HashMap<>();
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(_getCatalogName(), _getSchemaName(), "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
+				try(ResultSet resultSet = metaData.getTables(_getCatalogName(null), _getSchemaName(null), "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
 				{
+					String type;
 					String entity;
 
 					int rank = 1000;
 
 					while(resultSet.next())
 					{
+						type = resultSet.getString("TABLE_TYPE");
 						entity = resultSet.getString("TABLE_NAME");
 
 						if(entity != null
@@ -652,20 +656,20 @@ public class SchemaSingleton
 						   &&
 						   !entity.toLowerCase().startsWith("x_db_")
 						 ) {
-							m_catalog.tables.put(entity, new Table(m_externalCatalog, m_internalCatalog, entity, rank++));
+							m_catalog.tables.put(entity, new Table(m_externalCatalog, m_internalCatalog, entity, type, rank++));
 
-							entities.add(entity);
+							entities.put(entity, type);
 						}
 					}
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				for(String entity: entities)
+				for(Map.Entry<String, String> entry: entities.entrySet())
 				{
-					loadColumnMetadata(metaData, entity);
+					loadColumnMetadata(metaData, entry.getKey(), entry.getValue());
 
-					loadFgnKeyMetadata(metaData, entity);
+					loadFgnKeyMetadata(metaData, entry.getKey(), entry.getValue());
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
@@ -678,11 +682,12 @@ public class SchemaSingleton
 
 		private void loadColumnMetadata(
 			@NotNull DatabaseMetaData metaData,
-			@NotNull String _entity
+			@NotNull String _entity,
+			@NotNull String _type
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(), _getSchemaName(), _entity, "%"))
+			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(_type), _getSchemaName(_type), _entity, "%"))
 			{
 				Table table;
 
@@ -726,7 +731,7 @@ public class SchemaSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getPrimaryKeys(_getCatalogName(), _getSchemaName(), _entity))
+			try(ResultSet resultSet = metaData.getPrimaryKeys(_getCatalogName(_type), _getSchemaName(_type), _entity))
 			{
 				while(resultSet.next())
 				{
@@ -751,11 +756,12 @@ public class SchemaSingleton
 
 		private void loadFgnKeyMetadata(
 			@NotNull DatabaseMetaData metaData,
-			@NotNull String _entity
+			@NotNull String _entity,
+			@NotNull String _type
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getExportedKeys(_getCatalogName(), _getSchemaName(), _entity))
+			try(ResultSet resultSet = metaData.getExportedKeys(_getCatalogName(_type), _getSchemaName(_type), _entity))
 			{
 				Table table;
 
@@ -1328,6 +1334,7 @@ public class SchemaSingleton
 		             .append("<field name=\"externalCatalog\"><![CDATA[").append(table.externalCatalog).append("]]></field>")
 		             .append("<field name=\"internalCatalog\"><![CDATA[").append(table.internalCatalog).append("]]></field>")
 		             .append("<field name=\"entity\"><![CDATA[").append(table.entity).append("]]></field>")
+		             .append("<field name=\"type\"><![CDATA[").append(table.type).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
 		             .append("<field name=\"bridge\"><![CDATA[").append(table.bridge).append("]]></field>")
 		             .append("<field name=\"hidden\"><![CDATA[").append(table.hidden).append("]]></field>")
