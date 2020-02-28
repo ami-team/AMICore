@@ -335,9 +335,9 @@ public class FrontEnd extends HttpServlet
 	@Contract("null, _, _ -> new")
 	private Tuple2<String, String> resolveUserByCertificate(@Nullable String clientDN, @Nullable String issuerDN, String clientIP) throws Exception
 	{
-		if(clientDN == null || clientDN.isEmpty()
+		if(Empty.is(clientDN, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		   ||
-		   issuerDN == null || issuerDN.isEmpty()
+		   Empty.is(issuerDN, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		 ) {
 			return new Tuple2<>(
 				GUEST_USER,
@@ -418,9 +418,9 @@ public class FrontEnd extends HttpServlet
 	@Contract("null, _, _ -> new")
 	private Tuple2<String, String> resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP) throws Exception
 	{
-		if(AMIUser == null || AMIUser.isEmpty()
+		if(Empty.is(AMIUser, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		   ||
-		   AMIPass == null || AMIPass.isEmpty()
+		   Empty.is(AMIPass, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		 ) {
 			return new Tuple2<>(
 				GUEST_USER,

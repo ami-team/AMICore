@@ -70,7 +70,7 @@ public class DateTime
 		   &&
 		   precision <= 9
 		 ) {
-			String frac = String.valueOf((long) Math.round(timestamp.getNanos() / Math.pow(10, 9 - precision)));
+			String frac = String.valueOf(Math.round(timestamp.getNanos() / Math.pow(10, 9 - precision)));
 
 			String pad = "0".repeat(Math.max(0, precision - frac.length()));
 

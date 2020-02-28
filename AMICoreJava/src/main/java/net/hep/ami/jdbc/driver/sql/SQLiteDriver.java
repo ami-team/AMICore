@@ -31,7 +31,7 @@ public class SQLiteDriver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public String patchSQL(@NotNull String sql) throws Exception
+	public String patchSQL(@NotNull String sql)
 	{
 		return sql.replaceAll("`" + this.m_internalCatalog + "`.","");
 	}

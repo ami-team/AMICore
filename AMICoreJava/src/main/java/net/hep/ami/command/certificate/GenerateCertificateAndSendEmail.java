@@ -1,7 +1,6 @@
 package net.hep.ami.command.certificate;
 
 import java.io.*;
-import java.sql.*;
 import java.util.*;
 import java.security.*;
 import java.security.cert.*;

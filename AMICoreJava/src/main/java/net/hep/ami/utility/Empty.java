@@ -13,6 +13,7 @@ public class Empty
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Contract("null, _ -> true")
 	public static boolean is(@Nullable Object o, int mask)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -22,13 +23,13 @@ public class Empty
 			return true;
 		}
 
-		if(o instanceof String == false)
+		if(!(o instanceof String))
 		{
 			return false;
 		}
 
 		String s = o.toString();
-		String S = s.trim();
+		String S = s.  trim  ();
 
 		if((mask & STRING_AMI_NULL) != 0 && "@NULL".equalsIgnoreCase(S))
 		{
