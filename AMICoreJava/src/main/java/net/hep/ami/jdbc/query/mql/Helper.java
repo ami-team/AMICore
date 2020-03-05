@@ -398,6 +398,7 @@ public class Helper
 
 	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
 	private static final Pattern III = Pattern.compile("^\\s*\\?\\#[0-9]+\\s*$");
+	private static final Pattern KKK = Pattern.compile("^\\s*'(''|[^'])'\\s*$");
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -412,6 +413,8 @@ public class Helper
 		{
 			throw new Exception("internal error");
 		}
+
+		boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GROUP FIELDS                                                                                               */
@@ -488,6 +491,20 @@ public class Helper
 				else if(III.matcher(expression).matches())
 				{
 					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(2);
+				}
+				else if(KKK.matcher(expression).matches())
+				{
+					String s;
+
+					s = expression.toString().trim();
+
+					s = s.substring(0 + 1, s.length() - 1);
+
+					s = backslashEscapes ? Utility.escapeJavaString(s)
+					                     : s.replace("'", "''")
+					;
+
+					expression = "'" + s + "'";
 				}
 			}
 			else
@@ -624,10 +641,6 @@ public class Helper
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* FILL RESERVED FIELDS                                                                                       */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(SchemaSingleton.Column tmp: SchemaSingleton.getEntityInfo(catalog, primaryKey.getEntity()).columns.values())
