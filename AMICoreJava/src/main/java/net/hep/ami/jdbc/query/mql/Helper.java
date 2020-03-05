@@ -398,7 +398,7 @@ public class Helper
 
 	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
 	private static final Pattern III = Pattern.compile("^\\s*\\?\\#[0-9]+\\s*$");
-	private static final Pattern KKK = Pattern.compile("^\\s*'(''|[^'])'\\s*$");
+	private static final Pattern KKK = Pattern.compile("^\\s*'(''|[^'])*'\\s*$");
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
