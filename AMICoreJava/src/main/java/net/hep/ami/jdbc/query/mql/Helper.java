@@ -494,17 +494,10 @@ public class Helper
 				}
 				else if(KKK.matcher(expression).matches())
 				{
-					String s;
-
-					s = expression.toString().trim();
-
-					s = s.substring(0 + 1, s.length() - 1);
-
-					s = backslashEscapes ? Utility.escapeJavaString(s)
-					                     : s.replace("'", "''")
-					;
-
-					expression = "'" + s + "'";
+					expression = Utility.textToSqlVal(
+						expression.toString(),
+						backslashEscapes
+					);
 				}
 			}
 			else
