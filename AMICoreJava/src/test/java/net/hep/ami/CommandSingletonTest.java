@@ -34,7 +34,10 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("FindNewCommands", false).replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("Echo -foo=\"foo\" -cached", false).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("Echo -foo=\"foo\" -cached", false).replace(">", ">\n"));
+
+		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_search_interface\" -sql=\"SELECT `id`, `group`, `name`, `rank`, `json` FROM `router_search_interface` WHERE `archived` = 0 ORDER BY `rank` ASC, `group` ASC, `name`\"", false).replace(">", ">\n"));
+
 
 //		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_role\" -sql=\"SELECT AMI_DATE('2019-10-14')\"", false).replace(">", ">\n"));
 

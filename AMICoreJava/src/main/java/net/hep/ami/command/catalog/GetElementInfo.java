@@ -171,12 +171,18 @@ public class GetElementInfo extends AbstractCommand
 			try
 			{
 
-				String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+				/*String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
 				                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = ?0")
 				                              .toString()
+				;*/
+
+				String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+						.addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + primaryFieldValue + "'")
+						.toString()
 				;
 
-				RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, query, primaryFieldValue);
+				//RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, query, primaryFieldValue);
+				RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, query);
 
 				sql = rowSet.getSQL();
 				mql = rowSet.getMQL();
