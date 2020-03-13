@@ -5,9 +5,11 @@ import java.util.stream.*;
 
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.driver.DriverMetadata;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.reflexion.*;
 
+import net.hep.ami.utility.parser.Utility;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -170,10 +172,11 @@ public class GetElementInfo extends AbstractCommand
 
 			try
 			{
+				boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
 
 				String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
-						.addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = '" + primaryFieldValue + "'")
-						.toString()
+				                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = " + Utility.textToSqlVal(primaryFieldValue, backslashEscapes))
+				                              .toString()
 				;
 
 				RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, query);
