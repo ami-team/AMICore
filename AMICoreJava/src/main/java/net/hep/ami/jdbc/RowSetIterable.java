@@ -229,7 +229,7 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append("\" groupable=\"")
 			      .append(rowSet.m_fieldGroupable[i] ? "true" : "false")
 			      .append("\" displayable=\"")
-			      .append(rowSet.m_fieldDisplayable[i] ? "true" : "false")
+			      .append(Utility.escapeHTML(rowSet.m_fieldDisplayQuery[i]))
 			      .append("\" base64=\"")
 			      .append(rowSet.m_fieldBase64[i] ? "true" : "false")
 			      .append("\" mime=\"")

@@ -52,7 +52,7 @@ public class RowSet
 	protected final boolean[] m_fieldModifiedBy;
 	protected final boolean[] m_fieldStatable;
 	protected final boolean[] m_fieldGroupable;
-	protected final boolean[] m_fieldDisplayable;
+	protected final String[] m_fieldDisplayQuery;
 	protected final boolean[] m_fieldBase64;
 	protected final String[] m_fieldMIME;
 	protected final String[] m_fieldCtrl;
@@ -162,7 +162,7 @@ public class RowSet
 		m_fieldModifiedBy = new boolean[m_numberOfFields];
 		m_fieldStatable = new boolean[m_numberOfFields];
 		m_fieldGroupable = new boolean[m_numberOfFields];
-		m_fieldDisplayable = new boolean[m_numberOfFields];
+		m_fieldDisplayQuery = new String[m_numberOfFields];
 		m_fieldBase64 = new boolean[m_numberOfFields];
 		m_fieldMIME = new String[m_numberOfFields];
 		m_fieldCtrl = new String[m_numberOfFields];
@@ -344,7 +344,7 @@ public class RowSet
 				m_fieldModifiedBy[i] = column.modifiedBy;
 				m_fieldStatable[i] = column.statable;
 				m_fieldGroupable[i] = column.groupable;
-				m_fieldDisplayable[i] = column.displayable;
+				m_fieldDisplayQuery[i] = column.displayQuery;
 				m_fieldBase64[i] = column.base64;
 				m_fieldMIME[i] = column.mime;
 				m_fieldCtrl[i] = column.ctrl;
@@ -365,7 +365,7 @@ public class RowSet
 				m_fieldModifiedBy[i] = false;
 				m_fieldStatable[i] = false;
 				m_fieldGroupable[i] = false;
-				m_fieldDisplayable[i] = false;
+				m_fieldDisplayQuery[i] = "@NULL";
 				m_fieldBase64[i] = false;
 				m_fieldMIME[i] = "@NULL";
 				m_fieldCtrl[i] = "@NULL";

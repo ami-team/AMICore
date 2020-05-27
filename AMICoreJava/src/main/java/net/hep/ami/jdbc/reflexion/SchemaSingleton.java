@@ -155,7 +155,8 @@ public class SchemaSingleton
 		public boolean statable = false;
 		public boolean groupable = false;
 
-		public boolean displayable = false;
+		public String displayQuery = "@NULL";
+
 		public boolean base64 = false;
 		public String mime = "@NULL";
 		public String ctrl = "@NULL";
@@ -1372,7 +1373,7 @@ public class SchemaSingleton
 		             .append("<field name=\"modifiedBy\"><![CDATA[").append(column.modifiedBy).append("]]></field>")
 		             .append("<field name=\"statable\"><![CDATA[").append(column.statable).append("]]></field>")
 		             .append("<field name=\"groupable\"><![CDATA[").append(column.groupable).append("]]></field>")
-		             .append("<field name=\"displayable\"><![CDATA[").append(column.displayable).append("]]></field>")
+		             .append("<field name=\"displayQuery\"><![CDATA[").append(column.displayQuery).append("]]></field>")
 		             .append("<field name=\"base64\"><![CDATA[").append(column.base64).append("]]></field>")
 		             .append("<field name=\"mime\"><![CDATA[").append(column.mime).append("]]></field>")
 		             .append("<field name=\"ctrl\"><![CDATA[").append(column.ctrl).append("]]></field>")
