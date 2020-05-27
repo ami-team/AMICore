@@ -50,6 +50,7 @@ public class RowSet
 	protected final boolean[] m_fieldCreatedBy;
 	protected final boolean[] m_fieldModified;
 	protected final boolean[] m_fieldModifiedBy;
+	/**/
 	protected final boolean[] m_fieldStatable;
 	protected final boolean[] m_fieldGroupable;
 	/**/
@@ -163,6 +164,7 @@ public class RowSet
 		m_fieldCreatedBy = new boolean[m_numberOfFields];
 		m_fieldModified = new boolean[m_numberOfFields];
 		m_fieldModifiedBy = new boolean[m_numberOfFields];
+		/**/
 		m_fieldStatable = new boolean[m_numberOfFields];
 		m_fieldGroupable = new boolean[m_numberOfFields];
 		/**/
@@ -349,6 +351,7 @@ public class RowSet
 				m_fieldCreatedBy[i] = column.createdBy;
 				m_fieldModified[i] = column.modified;
 				m_fieldModifiedBy[i] = column.modifiedBy;
+				/**/
 				m_fieldStatable[i] = column.statable;
 				m_fieldGroupable[i] = column.groupable;
 				/**/
@@ -373,6 +376,7 @@ public class RowSet
 				m_fieldCreatedBy[i] = false;
 				m_fieldModified[i] = false;
 				m_fieldModifiedBy[i] = false;
+				/**/
 				m_fieldStatable[i] = false;
 				m_fieldGroupable[i] = false;
 				/**/

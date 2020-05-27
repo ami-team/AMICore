@@ -220,12 +220,14 @@ public class MetadataSingleton
 			column.statable = _safeBoolean((Boolean) map.get("statable"), false);
 			column.groupable = _safeBoolean((Boolean) map.get("groupable"), false);
 
-			column.displayable =_safeBoolean((Boolean) map.get("displayable"), false);
+			column.displayQuery = _safeString((String) map.get("displayQuery"), "@NULL");
+
+			column.webLinkScript = _safeString((String) map.get("webLinkScript"), "@NULL");
+
+			column.media =_safeBoolean((Boolean) map.get("media"), false);
 			column.base64 = _safeBoolean((Boolean) map.get("base64"), false);
 			column.mime = _safeString((String) map.get("mime"), "@NULL");
 			column.ctrl = _safeString((String) map.get("ctrl"), "@NULL");
-
-			column.webLinkScript = _safeString((String) map.get("webLinkScript"), "@NULL");
 
 			/*-------------------------------------------------------------*/
 		}
