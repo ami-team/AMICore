@@ -157,12 +157,14 @@ public class SchemaSingleton
 
 		public String displayQuery = "@NULL";
 
+		public String webLinkScript = "@NULL";
+
+		public boolean media = false;
 		public boolean base64 = false;
 		public String mime = "@NULL";
 		public String ctrl = "@NULL";
 
 		public String description = "N/A";
-		public String webLinkScript = "@NULL";
 
 		/**/
 
@@ -1337,9 +1339,11 @@ public class SchemaSingleton
 		             .append("<field name=\"entity\"><![CDATA[").append(table.entity).append("]]></field>")
 		             .append("<field name=\"type\"><![CDATA[").append(table.type).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
+		             /**/
 		             .append("<field name=\"bridge\"><![CDATA[").append(table.bridge).append("]]></field>")
 		             .append("<field name=\"hidden\"><![CDATA[").append(table.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(table.adminOnly).append("]]></field>")
+		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
 		             .append("</row>")
 		;
@@ -1361,6 +1365,7 @@ public class SchemaSingleton
 		             .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
 		             .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
+		             /**/
 		             .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
 		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
@@ -1373,12 +1378,17 @@ public class SchemaSingleton
 		             .append("<field name=\"modifiedBy\"><![CDATA[").append(column.modifiedBy).append("]]></field>")
 		             .append("<field name=\"statable\"><![CDATA[").append(column.statable).append("]]></field>")
 		             .append("<field name=\"groupable\"><![CDATA[").append(column.groupable).append("]]></field>")
+		             /**/
 		             .append("<field name=\"displayQuery\"><![CDATA[").append(column.displayQuery).append("]]></field>")
+		             /**/
+		             .append("<field name=\"webLinkScript\"><![CDATA[").append(column.webLinkScript).append("]]></field>")
+		             /**/
+		             .append("<field name=\"media\"><![CDATA[").append(column.media).append("]]></field>")
 		             .append("<field name=\"base64\"><![CDATA[").append(column.base64).append("]]></field>")
 		             .append("<field name=\"mime\"><![CDATA[").append(column.mime).append("]]></field>")
 		             .append("<field name=\"ctrl\"><![CDATA[").append(column.ctrl).append("]]></field>")
+		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(column.description).append("]]></field>")
-		             .append("<field name=\"webLinkScript\"><![CDATA[").append(column.webLinkScript).append("]]></field>")
 		             .append("</row>")
 		;
 	}
