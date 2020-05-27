@@ -144,7 +144,7 @@ public class SchemaSingleton
 		public boolean adminOnly = false;
 		public boolean crypted = false;
 		public boolean primary = false;
-		public boolean readable = false;
+		public boolean json = false;
 
 		public boolean automatic = false;
 		public boolean created = false;
@@ -1310,7 +1310,7 @@ public class SchemaSingleton
 	public static List<QId> getReadableQIds(@Nullable String externalCatalog, @Nullable String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
-		                                                              .filter(x -> x.readable)
+		                                                              .filter(x -> Empty.is(x.displayQuery, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
 		                                                              .map(x -> new QId(x, false, constraints))
 		                                                              .collect(Collectors.toList())
 		;
@@ -1370,7 +1370,7 @@ public class SchemaSingleton
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
 		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 		             .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
-		             .append("<field name=\"readable\"><![CDATA[").append(column.readable).append("]]></field>")
+		             .append("<field name=\"json\"><![CDATA[").append(column.json).append("]]></field>")
 		             .append("<field name=\"automatic\"><![CDATA[").append(column.automatic).append("]]></field>")
 		             .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
 		             .append("<field name=\"createdBy\"><![CDATA[").append(column.createdBy).append("]]></field>")

@@ -44,7 +44,7 @@ public class RowSet
 	protected final boolean[] m_fieldAdminOnly;
 	protected final boolean[] m_fieldCrypted;
 	protected final boolean[] m_fieldPrimary;
-	protected final boolean[] m_fieldReadable;
+	protected final boolean[] m_fieldJson;
 	protected final boolean[] m_fieldAutomatic;
 	protected final boolean[] m_fieldCreated;
 	protected final boolean[] m_fieldCreatedBy;
@@ -158,7 +158,7 @@ public class RowSet
 		m_fieldAdminOnly = new boolean[m_numberOfFields];
 		m_fieldCrypted = new boolean[m_numberOfFields];
 		m_fieldPrimary = new boolean[m_numberOfFields];
-		m_fieldReadable = new boolean[m_numberOfFields];
+		m_fieldJson = new boolean[m_numberOfFields];
 		m_fieldAutomatic = new boolean[m_numberOfFields];
 		m_fieldCreated = new boolean[m_numberOfFields];
 		m_fieldCreatedBy = new boolean[m_numberOfFields];
@@ -345,7 +345,7 @@ public class RowSet
 				m_fieldAdminOnly[i] = column.adminOnly;
 				m_fieldCrypted[i] = column.crypted;
 				m_fieldPrimary[i] = column.primary;
-				m_fieldReadable[i] = column.readable;
+				m_fieldJson[i] = column.json;
 				m_fieldAutomatic[i] = column.automatic;
 				m_fieldCreated[i] = column.created;
 				m_fieldCreatedBy[i] = column.createdBy;
@@ -370,7 +370,7 @@ public class RowSet
 				m_fieldAdminOnly[i] = false;
 				m_fieldCrypted[i] = false;
 				m_fieldPrimary[i] = false;
-				m_fieldReadable[i] = false;
+				m_fieldJson[i] = false;
 				m_fieldAutomatic[i] = false;
 				m_fieldCreated[i] = false;
 				m_fieldCreatedBy[i] = false;
