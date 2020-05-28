@@ -184,7 +184,7 @@ public class MetadataSingleton
 	{
 		try
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(catalog, entity, field);
 

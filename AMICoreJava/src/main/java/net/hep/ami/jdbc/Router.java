@@ -613,6 +613,7 @@ public class Router implements Querier
 		router_catalog.columns.get("jdbcUrl").adminOnly = true;
 		router_catalog.columns.get("user").crypted = true;
 		router_catalog.columns.get("pass").crypted = true;
+		router_catalog.columns.get("json").json = true;
 		router_catalog.columns.get("archived").groupable = true;
 		router_catalog.columns.get("created").created = true;
 		router_catalog.columns.get("createdBy").createdBy = true;
@@ -623,6 +624,7 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_entity = SchemaSingleton.getEntityInfo("self", "router_entity");
 
+		router_entity.columns.get("json").json = true;
 		router_entity.columns.get("created").created = true;
 		router_entity.columns.get("createdBy").createdBy = true;
 		router_entity.columns.get("modified").modified = true;
@@ -632,6 +634,7 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_field = SchemaSingleton.getEntityInfo("self", "router_field");
 
+		router_field.columns.get("json").json = true;
 		router_field.columns.get("created").created = true;
 		router_field.columns.get("createdBy").createdBy = true;
 		router_field.columns.get("modified").modified = true;
@@ -675,6 +678,7 @@ public class Router implements Querier
 		router_user.columns.get("country").adminOnly = true;
 		router_user.columns.get("ssoUser").adminOnly = true;
 		router_user.columns.get("json").adminOnly = true;
+		router_user.columns.get("json").json = true;
 		router_user.columns.get("valid").groupable = true;
 		router_user.columns.get("created").created = true;
 		router_user.columns.get("modified").modified = true;
@@ -683,6 +687,7 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_dashboard = SchemaSingleton.getEntityInfo("self", "router_dashboard");
 
+		router_dashboard.columns.get("settings").json = true;
 		router_dashboard.columns.get("owner").createdBy = true;
 		router_dashboard.columns.get("created").created = true;
 		router_dashboard.columns.get("modified").modified = true;
@@ -691,8 +696,9 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_short_url = SchemaSingleton.getEntityInfo("self", "router_short_url");
 
+		router_short_url.columns.get("json").json = true;
 		router_short_url.columns.get("owner").createdBy = true;
-		router_short_url.columns.get("modified").modified = true;
+		router_short_url.columns.get("created").created = true;
 		router_short_url.columns.get("modified").modified = true;
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -715,6 +721,7 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_search_interface = SchemaSingleton.getEntityInfo("self", "router_search_interface");
 
+		router_search_interface.columns.get("json").json = true;
 		router_search_interface.columns.get("archived").groupable = true;
 		router_search_interface.columns.get("created").created = true;
 		router_search_interface.columns.get("createdBy").createdBy = true;
