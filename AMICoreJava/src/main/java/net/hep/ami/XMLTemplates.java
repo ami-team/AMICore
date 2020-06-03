@@ -12,7 +12,7 @@ public class XMLTemplates
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static Object[] asArray(@NotNull Object arg)
+	private static Object[] asArray(@Nullable Object arg)
 	{
 		if(arg == null)
 		{
