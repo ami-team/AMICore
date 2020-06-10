@@ -287,19 +287,19 @@ public class RowSet
 					}
 					else
 					{
-						externalCatalog = null;
+						externalCatalog = defaultExternalCatalog;
 					}
 				}
 				catch(Exception e)
 				{
-					externalCatalog = null;
+					externalCatalog = defaultExternalCatalog;
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
 			else
 			{
-				externalCatalog = null;
+				externalCatalog = defaultExternalCatalog;
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
