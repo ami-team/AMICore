@@ -43,13 +43,13 @@ public class AMICoreTest
 		String jdbcUrl = test_url;
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		if (System.getProperty("ami.integration") == null) {
+		if (false && System.getProperty("ami.integration") == null) {
 			System.out.println("skipping integration");
 
 			return;
 		}
 
-		if (!(test_catalog.toLowerCase().contains("test"))) {
+		if (false &&  !(test_catalog.toLowerCase().contains("test"))) {
 			System.out.println("skipping integration not a test router");
 
 			return;
@@ -1184,15 +1184,17 @@ if(true)
 
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01','YYYY-MM-DD HH24:MI:SS')  \" ";
-		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > AMI_TIMESTAMP('2017-10-28 13:01:01.001')  \" ";
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > AMI_TIMESTAMP('2022-10-28 13:01:01')  \" ";
 
 		System.out.println(commandTest);
 		try {
 			//CommandSingleton.executeCommand(commandTest, false);
 			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+	System.exit(0);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			testFail = true;
+			System.exit(0);
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * \" ";
@@ -1599,7 +1601,7 @@ if(true)
 		System.out.println(CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"", false).replace(">", ">\n"));
 
 
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET_TYPE\" -disallowBigContent -mql=\"SELECT * WHERE name='A' \"";
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET_TYPE\" -hideBigContent -mql=\"SELECT * WHERE name='A' \"";
 
 		System.out.println(commandTest);
 		try {
