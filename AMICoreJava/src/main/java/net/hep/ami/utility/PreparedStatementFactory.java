@@ -32,7 +32,7 @@ public class PreparedStatementFactory
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple3<String, List<String>, List<Object>> tuple = prepare(sql, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
+			Tuple3<String, List<String>, List<Object>> tuple = prepare(sql, connection, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -88,7 +88,7 @@ public class PreparedStatementFactory
 
 	@NotNull
 	@Contract("_, _ -> new")
-	private static Tuple3<String, List<String>, List<Object>> prepare(@NotNull String sql, @Nullable Object[] args) throws Exception
+	private static Tuple3<String, List<String>, List<Object>> prepare(@NotNull String sql, Connection connexion, @Nullable Object[] args) throws Exception
 	{
 		List<String> typeList = new ArrayList<>();
 		List<Object> valueList = new ArrayList<>();
@@ -283,8 +283,23 @@ public class PreparedStatementFactory
 								case 1:
 									if(!Empty.is(value, Empty.STRING_AMI_NULL))
 									{
-										typeList.add("java.sql.Timestamp");
-										valueList.add(m_amiDateTime.parseTimestamp(value));
+										if(connexion.getMetaData().getDriverName().contains("SQLite"))
+										{
+											typeList.add("java.lang.String");
+											String tmpValue = m_amiDateTime.parseTimestamp(value).toString();
+											if(tmpValue.endsWith(".0"))
+											{
+												tmpValue = tmpValue.substring(0,tmpValue.length()-2);
+											}
+											valueList.add(tmpValue);
+										}
+										else
+										{
+											typeList.add("java.sql.Timestamp");
+											valueList.add(m_amiDateTime.parseTimestamp(value));
+
+										}
+
 
 										stringBuilder.append("?");
 									}
@@ -445,7 +460,8 @@ public class PreparedStatementFactory
 						break;
 
 					case "java.sql.Timestamp":
-						statement.setTimestamp(i + 1, (java.sql.Timestamp) value);
+						//statement.setString(i + 1, value.toString().replace(".0",""));
+						statement.setTimestamp(i + 1, (java.sql.Timestamp) value) ;
 						break;
 
 					case "java.sql.Date":
