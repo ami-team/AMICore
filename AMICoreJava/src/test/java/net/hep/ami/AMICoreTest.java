@@ -43,13 +43,13 @@ public class AMICoreTest
 		String jdbcUrl = test_url;
 		Map<String, String> arguments = new HashMap<String, String>();
 
-		if (false && System.getProperty("ami.integration") == null) {
+		if (System.getProperty("ami.integration") == null) {
 			System.out.println("skipping integration");
 
 			return;
 		}
 
-		if (false &&  !(test_catalog.toLowerCase().contains("test"))) {
+		if (!(test_catalog.toLowerCase().contains("test"))) {
 			System.out.println("skipping integration not a test router");
 
 			return;
