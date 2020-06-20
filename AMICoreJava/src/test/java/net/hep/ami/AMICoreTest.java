@@ -49,7 +49,7 @@ public class AMICoreTest
 			return;
 		}
 
-		if (!(test_catalog.toLowerCase().contains("test"))) {
+		if ((test_catalog.toLowerCase().contains("test"))) {
 			System.out.println("skipping integration not a test router");
 
 			return;
@@ -647,7 +647,7 @@ if(true)
 			documentBase64 = s.hasNext() ? s.next() : "";
 
 
-			String photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.jpg\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			String photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true:true,\"mime\":\"image/vnd.sealedmedia.softseal.jpg\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 
 			try {
@@ -664,7 +664,7 @@ if(true)
 			}
 
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"video/mp4\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"media\":true, \"base64\":true,\"mime\":\"video/mp4\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 
 			try {
@@ -681,7 +681,7 @@ if(true)
 			}
 
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealed.png\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true,\"mime\":\"image/vnd.sealed.png\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 
 			try {
@@ -698,7 +698,7 @@ if(true)
 			}
 
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.gif\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.gif\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 			try {
 				//rank is 0 by default at insertion
@@ -713,7 +713,7 @@ if(true)
 				testFail = true;
 			}
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"application/pdf\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true,\"mime\":\"application/pdf\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 			try {
 				//rank is 0 by default at insertion
