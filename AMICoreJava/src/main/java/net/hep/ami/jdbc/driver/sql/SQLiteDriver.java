@@ -33,7 +33,7 @@ public class SQLiteDriver extends AbstractDriver
 	@Override
 	public String patchSQL(@NotNull String sql)
 	{
-		return sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("STDDEV","!");
+		return sql.replaceAll("`" + this.m_internalCatalog + "`.","").replaceAll("STDDEV","MAX");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
