@@ -300,7 +300,6 @@ public class PreparedStatementFactory
 
 										}
 
-
 										stringBuilder.append("?");
 									}
 									else
