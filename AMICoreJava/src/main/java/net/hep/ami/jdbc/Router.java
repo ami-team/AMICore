@@ -700,8 +700,8 @@ public class Router implements Querier
 		SchemaSingleton.Table router_authority = SchemaSingleton.getEntityInfo("self", "router_authority");
 
 		router_authority.columns.get("vo").adminOnly = true;
-		router_authority.columns.get("clientDN").adminOnly = true;
-		router_authority.columns.get("issuerDN").adminOnly = true;
+		router_authority.columns.get("clientDN").crypted = true;
+		router_authority.columns.get("issuerDN").crypted = true;
 		router_authority.columns.get("notBefore").adminOnly = true;
 		router_authority.columns.get("notAfter").adminOnly = true;
 		router_authority.columns.get("email").adminOnly = true;
