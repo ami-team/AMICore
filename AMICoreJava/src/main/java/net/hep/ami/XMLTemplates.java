@@ -12,12 +12,16 @@ public class XMLTemplates
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static Object[] asArray(@NotNull Object arg)
+	private static Object[] asArray(@Nullable Object arg)
 	{
-		return (Object[]) (
-			arg.getClass().isArray() ?  /*--------*/ (arg)
-			                         :  new Object[] {arg}
-		);
+		if(arg == null)
+		{
+			return new Object[] {"null"};
+		}
+
+		return arg.getClass().isArray() ? ( Object[] ) (arg)
+			                            : new Object[] {arg}
+		;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

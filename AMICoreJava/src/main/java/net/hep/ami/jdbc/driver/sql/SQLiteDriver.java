@@ -4,6 +4,11 @@ import net.hep.ami.jdbc.driver.*;
 
 import org.jetbrains.annotations.*;
 
+import org.sqlite.Function;
+import org.sqlite.SQLiteConnection;
+
+import java.sql.SQLException;
+
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:sqlite",
@@ -25,7 +30,42 @@ public class SQLiteDriver extends AbstractDriver
 	@Override
 	public void setupSession(@NotNull String db, @NotNull String tz)
 	{
-		/* DO NOTHING */
+		try
+		{
+
+			Function.create(this.m_connection.unwrap(SQLiteConnection.class),
+					"CONCAT",
+					new Function() {
+						@Override
+						protected void xFunc() throws SQLException {
+							result(value_text(0)+value_text(1));
+						}
+					}
+			);
+		}
+		catch (Exception e)
+		{
+ 			//System.out.println("error "+ e.getMessage());
+		}
+
+		try
+		{
+
+			Function.create(this.m_connection.unwrap(SQLiteConnection.class),
+					"STDDEV",
+					new Function() {
+						@Override
+						protected void xFunc() throws SQLException {
+							result("N/A");
+						}
+					}
+			);
+		}
+		catch (Exception e)
+		{
+			//System.out.println("error "+ e.getMessage());
+		}
+
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

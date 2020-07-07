@@ -10,34 +10,34 @@ import org.jetbrains.annotations.*;
 
 public class MetadataSingleton
 {
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Contract(pure = true)
 	private MetadataSingleton() {}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void patchSchemaSingleton() throws Exception
 	{
-		/*-----------------------------------------------------------------*/
-		/* CREATE QUERIER                                                  */
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE QUERIER                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Router router = new Router();
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* EXECUTE QUERY                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			RowSet rowSet1 = router.executeSQLQuery("router_entity", "SELECT `catalog`, `entity`, `rank`, `json`, `description` FROM `router_entity`");
 
-			/*-------------------------------------------------------------*/
-			/* UPDATE ENTITIES                                             */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* UPDATE ENTITIES                                                                                        */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(Row row: rowSet1.iterate())
 			{
@@ -50,15 +50,15 @@ public class MetadataSingleton
 				);
 			}
 
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* EXECUTE QUERY                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			RowSet rowSet2 = router.executeSQLQuery("router_field", "SELECT `catalog`, `entity`, `field`, `rank`, `json`, `description` FROM `router_field`");
 
-			/*-------------------------------------------------------------*/
-			/* UPDATE COLUMNS                                              */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* UPDATE COLUMNS                                                                                         */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(Row row: rowSet2.iterate())
 			{
@@ -72,15 +72,15 @@ public class MetadataSingleton
 				);
 			}
 
-			/*-------------------------------------------------------------*/
-			/* EXECUTE QUERY                                               */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* EXECUTE QUERY                                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			RowSet rowSet3 = router.executeSQLQuery("router_foreign_key", "SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
 
-			/*-------------------------------------------------------------*/
-			/* UPDATE FOREIGN KEYS                                         */
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* UPDATE FOREIGN KEYS                                                                                    */
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			for(Row row: rowSet3.iterate())
 			{
@@ -95,14 +95,14 @@ public class MetadataSingleton
 				);
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		finally
 		{
 			router.rollbackAndRelease();
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
@@ -113,10 +113,10 @@ public class MetadataSingleton
 			LogSingleton.root.error(LogSingleton.FATAL, "the AMI database is not properly setup", e);
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Contract(value = "null, _ -> param2", pure = true)
 	private static int _safeInteger(Integer i, int def)
@@ -136,18 +136,18 @@ public class MetadataSingleton
 		return ConfigSingleton.checkString(s, def);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@SuppressWarnings("unchecked")
 	public static void updateEntity(String catalog, String entity, Integer rank, String json, String description)
 	{
 		try
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			SchemaSingleton.Table table = SchemaSingleton.getEntityInfo(catalog, entity);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class, false);
 
@@ -156,20 +156,20 @@ public class MetadataSingleton
 				return;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			table.rank = _safeInteger(rank, table.rank);
 
 			table.description = _safeString(description, "N∕A");
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			table.bridge = _safeBoolean((Boolean) map.get("bridge"), false);
 
 			table.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
 			table.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
@@ -177,18 +177,18 @@ public class MetadataSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@SuppressWarnings("unchecked")
 	public static void updateColumn(String catalog, String entity, String field, @Nullable Integer rank, String json, String description)
 	{
 		try
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			SchemaSingleton.Column column = SchemaSingleton.getFieldInfo(catalog, entity, field);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			Map<String, ?> map = (Map<String, ?>) JSON.parse(_safeString(json, "{}"), Map.class, false);
 
@@ -197,19 +197,19 @@ public class MetadataSingleton
 				return;
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			column.rank = _safeInteger(rank, column.rank);
 
 			column.description = _safeString(description, "N∕A");
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			column.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
 			column.crypted = _safeBoolean((Boolean) map.get("crypted"), false);
 			column.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
 			column.primary = _safeBoolean((Boolean) map.get("primary"), false);
-			column.readable = _safeBoolean((Boolean) map.get("readable"), false);
+			column.json = _safeBoolean((Boolean) map.get("json"), false);
 
 			column.automatic = _safeBoolean((Boolean) map.get("automatic"), false);
 			column.created = _safeBoolean((Boolean) map.get("created"), false);
@@ -220,14 +220,16 @@ public class MetadataSingleton
 			column.statable = _safeBoolean((Boolean) map.get("statable"), false);
 			column.groupable = _safeBoolean((Boolean) map.get("groupable"), false);
 
-			column.displayable =_safeBoolean((Boolean) map.get("displayable"), false);
+			column.displayQuery = _safeString((String) map.get("displayQuery"), "@NULL");
+
+			column.webLinkScript = _safeString((String) map.get("webLinkScript"), "@NULL");
+
+			column.media =_safeBoolean((Boolean) map.get("media"), false);
 			column.base64 = _safeBoolean((Boolean) map.get("base64"), false);
 			column.mime = _safeString((String) map.get("mime"), "@NULL");
 			column.ctrl = _safeString((String) map.get("ctrl"), "@NULL");
 
-			column.webLinkScript = _safeString((String) map.get("webLinkScript"), "@NULL");
-
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
@@ -235,18 +237,18 @@ public class MetadataSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void updateForeignKeys(String name, String fkCatalog, String fkEntity, String fkField, String pkCatalog, String pkEntity, String pkField)
 	{
 		try
 		{
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			SchemaSingleton.Column fkColumn = SchemaSingleton.getFieldInfo(fkCatalog, fkEntity, fkField);
 			SchemaSingleton.Column pkColumn = SchemaSingleton.getFieldInfo(pkCatalog, pkEntity, pkField);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			SchemaSingleton.FrgnKey frgnKey = new SchemaSingleton.FrgnKey(
 				name,
@@ -260,7 +262,7 @@ public class MetadataSingleton
 				pkColumn.field
 			);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			Map<String, SchemaSingleton.FrgnKeys> forwardFKs = SchemaSingleton.s_catalogs.get(fkColumn.externalCatalog)
 			                                                                  .tables.get(fkColumn.entity)
@@ -272,7 +274,7 @@ public class MetadataSingleton
 			                                                                   .backwardFKs
 			;
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			SchemaSingleton.FrgnKeys a = forwardFKs.get(fkColumn.field);
 
@@ -286,12 +288,12 @@ public class MetadataSingleton
 				backwardFKs.put(pkColumn.field, b = new SchemaSingleton.FrgnKeys());
 			}
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			a.add(frgnKey);
 			b.add(frgnKey);
 
-			/*-------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
@@ -299,5 +301,5 @@ public class MetadataSingleton
 		}
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

@@ -49,7 +49,7 @@ public class AMICoreTest
 			return;
 		}
 
-		if (!(test_catalog.toLowerCase().contains("test"))) {
+		if ((test_catalog.toLowerCase().contains("test"))) {
 			System.out.println("skipping integration not a test router");
 
 			return;
@@ -647,7 +647,7 @@ if(true)
 			documentBase64 = s.hasNext() ? s.next() : "";
 
 
-			String photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.jpg\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			String photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true:true,\"mime\":\"image/vnd.sealedmedia.softseal.jpg\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 
 			try {
@@ -664,7 +664,7 @@ if(true)
 			}
 
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"video/mp4\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"media\":true, \"base64\":true,\"mime\":\"video/mp4\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 
 			try {
@@ -681,7 +681,7 @@ if(true)
 			}
 
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealed.png\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true,\"mime\":\"image/vnd.sealed.png\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 
 			try {
@@ -698,7 +698,7 @@ if(true)
 			}
 
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.gif\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true,\"mime\":\"image/vnd.sealedmedia.softseal.gif\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 			try {
 				//rank is 0 by default at insertion
@@ -713,7 +713,7 @@ if(true)
 				testFail = true;
 			}
 
-			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"base64\":true,\"mime\":\"application/pdf\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
+			photoJson = "{\"hidden\":false,\"adminOnly\":false,\"crypted\":false,\"primary\":false,\"readable\":false,\"automatic\":false,\"created\":false,\"createdBy\":false,\"modified\":false,\"modifiedBy\":false,\"statable\":false,\"groupable\":false,\"displayable\":true,\"media\":true, \"base64\":true,\"mime\":\"application/pdf\",\"ctrl\":\"mediaviewer\",\"webLinkScript\":null}";
 
 			try {
 				//rank is 0 by default at insertion
@@ -1184,15 +1184,17 @@ if(true)
 
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01.001','YYYY-MM-DD HH24:MI:SSFF3')  \" ";
 		//String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > TIMESTAMP('2017-10-28 13:01:01','YYYY-MM-DD HH24:MI:SS')  \" ";
-		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT * WHERE `id` > 0 and `created` > AMI_TIMESTAMP('2017-10-28 13:01:01.001')  \" ";
+		String commandTest = "SearchQuery -catalog=\"test\" -entity=\"DATASET\" -mql=\"SELECT CONCAT(`id`,`created`) WHERE `id` > 0 and `created` > AMI_TIMESTAMP('2019-10-28 14:01:01')  \" ";
 
 		System.out.println(commandTest);
 		try {
 			//CommandSingleton.executeCommand(commandTest, false);
 			System.out.println(CommandSingleton.executeCommand(commandTest, false).replace(">", ">\n"));
+
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			testFail = true;
+
 		}
 
 		commandTest = "SearchQuery -catalog=\"test\" -entity=\"FILE_VIEW\" -mql=\"SELECT * \" ";
@@ -1599,7 +1601,7 @@ if(true)
 		System.out.println(CommandSingleton.executeCommand("GetJSONSchema -catalog=\"test\"", false).replace(">", ">\n"));
 
 
-		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET_TYPE\" -disallowBigContent -mql=\"SELECT * WHERE name='A' \"";
+		commandTest = "BrowseQuery -catalog=\"test\" -entity=\"DATASET_TYPE\" -hideBigContent -mql=\"SELECT * WHERE name='A' \"";
 
 		System.out.println(commandTest);
 		try {

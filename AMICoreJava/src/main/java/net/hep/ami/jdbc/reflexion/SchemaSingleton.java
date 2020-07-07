@@ -144,7 +144,7 @@ public class SchemaSingleton
 		public boolean adminOnly = false;
 		public boolean crypted = false;
 		public boolean primary = false;
-		public boolean readable = false;
+		public boolean json = false;
 
 		public boolean automatic = false;
 		public boolean created = false;
@@ -155,13 +155,16 @@ public class SchemaSingleton
 		public boolean statable = false;
 		public boolean groupable = false;
 
-		public boolean displayable = false;
+		public String displayQuery = "@NULL";
+
+		public String webLinkScript = "@NULL";
+
+		public boolean media = false;
 		public boolean base64 = false;
 		public String mime = "@NULL";
 		public String ctrl = "@NULL";
 
 		public String description = "N/A";
-		public String webLinkScript = "@NULL";
 
 		/**/
 
@@ -1307,7 +1310,7 @@ public class SchemaSingleton
 	public static List<QId> getReadableQIds(@Nullable String externalCatalog, @Nullable String entity, @Nullable List<QId> constraints) throws Exception
 	{
 		return getEntityInfo(externalCatalog, entity).columns.values().stream()
-		                                                              .filter(x -> x.readable)
+		                                                              .filter(x -> Empty.is(x.displayQuery, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
 		                                                              .map(x -> new QId(x, false, constraints))
 		                                                              .collect(Collectors.toList())
 		;
@@ -1336,9 +1339,11 @@ public class SchemaSingleton
 		             .append("<field name=\"entity\"><![CDATA[").append(table.entity).append("]]></field>")
 		             .append("<field name=\"type\"><![CDATA[").append(table.type).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
+		             /**/
 		             .append("<field name=\"bridge\"><![CDATA[").append(table.bridge).append("]]></field>")
 		             .append("<field name=\"hidden\"><![CDATA[").append(table.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(table.adminOnly).append("]]></field>")
+		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
 		             .append("</row>")
 		;
@@ -1360,24 +1365,31 @@ public class SchemaSingleton
 		             .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
 		             .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
+		             /**/
 		             .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
 		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 		             .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
-		             .append("<field name=\"readable\"><![CDATA[").append(column.readable).append("]]></field>")
+		             .append("<field name=\"json\"><![CDATA[").append(column.json).append("]]></field>")
 		             .append("<field name=\"automatic\"><![CDATA[").append(column.automatic).append("]]></field>")
 		             .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
 		             .append("<field name=\"createdBy\"><![CDATA[").append(column.createdBy).append("]]></field>")
 		             .append("<field name=\"modified\"><![CDATA[").append(column.modified).append("]]></field>")
 		             .append("<field name=\"modifiedBy\"><![CDATA[").append(column.modifiedBy).append("]]></field>")
+		             /**/
 		             .append("<field name=\"statable\"><![CDATA[").append(column.statable).append("]]></field>")
 		             .append("<field name=\"groupable\"><![CDATA[").append(column.groupable).append("]]></field>")
-		             .append("<field name=\"displayable\"><![CDATA[").append(column.displayable).append("]]></field>")
+		             /**/
+		             .append("<field name=\"displayQuery\"><![CDATA[").append(column.displayQuery).append("]]></field>")
+		             /**/
+		             .append("<field name=\"webLinkScript\"><![CDATA[").append(column.webLinkScript).append("]]></field>")
+		             /**/
+		             .append("<field name=\"media\"><![CDATA[").append(column.media).append("]]></field>")
 		             .append("<field name=\"base64\"><![CDATA[").append(column.base64).append("]]></field>")
 		             .append("<field name=\"mime\"><![CDATA[").append(column.mime).append("]]></field>")
 		             .append("<field name=\"ctrl\"><![CDATA[").append(column.ctrl).append("]]></field>")
+		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(column.description).append("]]></field>")
-		             .append("<field name=\"webLinkScript\"><![CDATA[").append(column.webLinkScript).append("]]></field>")
 		             .append("</row>")
 		;
 	}
