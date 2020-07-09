@@ -150,12 +150,6 @@ public class DateTime
 
 		long ms = getDateTimeFormat().parse(timestamp).getTime();
 
-		while(ns > 1000000)
-		{
-			ms +=    1   ;
-			ns -= 1000000;
-		}
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		java.sql.Timestamp result = new java.sql.Timestamp(ms);
