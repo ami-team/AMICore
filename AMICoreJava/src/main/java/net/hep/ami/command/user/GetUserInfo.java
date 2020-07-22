@@ -52,7 +52,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER INFO                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `clientDN`, `issuerDN`, `lastName`, `firstName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?0", amiLogin).getAll(10, 0);
+		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?0", amiLogin).getAll(10, 0);
 
 		String AMIUser;
 		String clientDNInAMI;
