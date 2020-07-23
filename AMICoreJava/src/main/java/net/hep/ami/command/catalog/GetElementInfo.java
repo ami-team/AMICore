@@ -1,5 +1,6 @@
 package net.hep.ami.command.catalog;
 
+import java.sql.Types;
 import java.util.*;
 import java.util.stream.*;
 
@@ -52,8 +53,20 @@ public class GetElementInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 		/*                                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
+		int jdbcType = SchemaSingleton.getFieldInfo(catalog, entity, primaryFieldName).jdbcType;
 
-		StringBuilder result = querier.executeMQLQuery(entity, new XQLSelect().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?0").toString(), Integer.parseInt(primaryFieldValue)).toStringBuilder("element");
+		Object primaryFieldValueObject;
+
+		if(jdbcType == Types.TINYINT || jdbcType == Types.SMALLINT || jdbcType == Types.INTEGER)
+		{
+			primaryFieldValueObject = Integer.parseInt(primaryFieldValue);
+		}
+		else
+		{
+			primaryFieldValueObject = primaryFieldValue;
+		}
+
+		StringBuilder result = querier.executeMQLQuery(entity, new XQLSelect().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?0").toString(), primaryFieldValueObject).toStringBuilder("element");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/*                                                                                                            */
