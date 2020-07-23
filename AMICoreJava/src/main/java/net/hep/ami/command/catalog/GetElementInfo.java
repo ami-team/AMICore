@@ -53,9 +53,10 @@ public class GetElementInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 		/*                                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
-		int jdbcType = SchemaSingleton.getFieldInfo(catalog, entity, primaryFieldName).jdbcType;
 
 		Object primaryFieldValueObject;
+
+		int jdbcType = SchemaSingleton.getFieldInfo(catalog, entity, primaryFieldName).jdbcType;
 
 		if(jdbcType == Types.TINYINT || jdbcType == Types.SMALLINT || jdbcType == Types.INTEGER)
 		{
@@ -65,6 +66,8 @@ public class GetElementInfo extends AbstractCommand
 		{
 			primaryFieldValueObject = primaryFieldValue;
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder result = querier.executeMQLQuery(entity, new XQLSelect().addSelectPart("*").addWherePart(new QId(catalog, entity, primaryFieldName).toString() + " = ?0").toString(), primaryFieldValueObject).toStringBuilder("element");
 
