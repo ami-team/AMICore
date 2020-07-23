@@ -65,7 +65,7 @@ public class GetElementInfo extends AbstractCommand
 		}
 		else
 		{
-			primaryFieldValueObject = primaryFieldValue;
+			primaryFieldValueObject = /*------------*/(primaryFieldValue);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
