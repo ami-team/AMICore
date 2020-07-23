@@ -459,7 +459,6 @@ public class PreparedStatementFactory
 						break;
 
 					case "java.sql.Timestamp":
-						//statement.setString(i + 1, value.toString().replace(".0",""));
 						statement.setTimestamp(i + 1, (java.sql.Timestamp) value) ;
 						break;
 

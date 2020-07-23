@@ -37,7 +37,8 @@ public class GetElementInfo extends AbstractCommand
 
 		int flags = Querier.FLAG_SHOW_LINKS;
 
-		if(arguments.containsKey("hideBigContent")) {
+		if(arguments.containsKey("hideBigContent"))
+		{
 			flags |= Querier.FLAG_HIDE_BIG_CONTENT;
 		}
 
