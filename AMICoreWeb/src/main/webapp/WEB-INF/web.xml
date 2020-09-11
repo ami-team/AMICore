@@ -76,7 +76,7 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Disable unneeded HTTP methods by 403 Forbidden them</web-resource-name>
-			<url-pattern>*</url-pattern>
+			<url-pattern>/*</url-pattern>
 			<http-method-omission>GET</http-method-omission>
 			<http-method-omission>POST</http-method-omission>
 		</web-resource-collection>
