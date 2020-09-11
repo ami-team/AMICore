@@ -2,6 +2,7 @@ package net.hep.ami.servlet;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -63,6 +64,19 @@ public class Setup extends HttpServlet
 		catch(UnsupportedEncodingException e)
 		{
 			/* IGNORE */
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK IPS                                                                                                  */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Set<String> ips = Arrays.stream(ConfigSingleton.getProperty("authorized_ips").split(";", -1)).map(x -> x.trim()).collect(Collectors.toSet());
+
+		if(!ips.isEmpty() && !ips.contains(req.getRemoteAddr()))
+		{
+			res.setStatus(404);
+
+			return;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
