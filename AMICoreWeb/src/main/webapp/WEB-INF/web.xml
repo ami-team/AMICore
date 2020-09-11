@@ -73,7 +73,7 @@
 
 	<!--*************************************************************************************************************-->
 
-	<!--<security-constraint>
+	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name><strong>restricted methods</strong></web-resource-name>
 			<url-pattern>/*</url-pattern>
@@ -83,7 +83,7 @@
 			<http-method>DELETE</http-method>
 		</web-resource-collection>
 		<auth-constraint />
-	</security-constraint>-->
+	</security-constraint>
 
 	<!--*************************************************************************************************************-->
 
