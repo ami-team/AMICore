@@ -70,7 +70,7 @@ public class Setup extends HttpServlet
 		/* CHECK IPS                                                                                                  */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Set<String> ips = Arrays.stream(ConfigSingleton.getProperty("authorized_ips").split(";", -1)).map(x -> x.trim()).collect(Collectors.toSet());
+		Set<String> ips = Arrays.stream(ConfigSingleton.getProperty("authorized_ips").split(",", -1)).map(x -> x.trim()).collect(Collectors.toSet());
 
 		if(!ips.isEmpty() && !ips.contains(req.getRemoteAddr()))
 		{
