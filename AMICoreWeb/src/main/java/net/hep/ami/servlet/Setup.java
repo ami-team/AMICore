@@ -203,6 +203,11 @@ public class Setup extends HttpServlet
 		                                          : ConfigSingleton.getProperty("encryption_key")
 		;
 
+		String authorized_ips = req.getParameter("authorized_ips");
+		authorized_ips = (authorized_ips != null) ? authorized_ips.trim()
+		                                          : ConfigSingleton.getProperty("authorized_ips")
+		;
+
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET/POST VARIABLES (AMI DATABASE)                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -266,7 +271,9 @@ public class Setup extends HttpServlet
 		                    .replace("{{ADMIN_USER}}", admin_user)
 		                    .replace("{{ADMIN_PASS}}", admin_pass)
 		                    .replace("{{ADMIN_EMAIL}}", admin_email)
+		                    /**/
 		                    .replace("{{ENCRYPTION_KEY}}", encryption_key)
+		                    .replace("{{AUTHORIZED_IPS}}", authorized_ips)
 		                    /**/
 		                    .replace("{{ROUTER_CATALOG}}", router_catalog)
 		                    .replace("{{ROUTER_SCHEMA}}", router_schema)
@@ -309,6 +316,9 @@ public class Setup extends HttpServlet
 
 		String encryption_key = req.getParameter("encryption_key");
 		encryption_key = (encryption_key != null) ? encryption_key.trim() : "";
+
+		String authorized_ips = req.getParameter("authorized_ips");
+		authorized_ips = (authorized_ips != null) ? authorized_ips.trim() : "";
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET/POST VARIABLES (AMI DATABASE)                                                                          */
@@ -364,6 +374,7 @@ public class Setup extends HttpServlet
 		              .append("  <property name=\"admin_email\"><![CDATA[").append(admin_email).append("]]></property>\n")
 		              .append("\n")
 		              .append("  <property name=\"encryption_key\"><![CDATA[").append(encryption_key).append("]]></property>\n")
+		              .append("  <property name=\"authorized_ips\"><![CDATA[").append(authorized_ips).append("]]></property>\n")
 		              .append("\n")
 		              .append("  <property name=\"router_catalog\"><![CDATA[").append(router_catalog).append("]]></property>\n")
 		              .append("  <property name=\"router_schema\"><![CDATA[").append(router_schema).append("]]></property>\n")
@@ -476,6 +487,7 @@ public class Setup extends HttpServlet
 			                     .replace("{{ADMIN_EMAIL}}", admin_email)
 			                     /**/
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
+			                     .replace("{{AUTHORIZED_IPS}}", authorized_ips)
 			                     /**/
 			                     .replace("{{ROUTER_CATALOG}}", router_catalog)
 			                     .replace("{{ROUTER_SCHEMA}}", router_schema)
@@ -519,6 +531,7 @@ public class Setup extends HttpServlet
 			                     .replace("{{ADMIN_EMAIL}}", admin_email)
 			                     /**/
 			                     .replace("{{ENCRYPTION_KEY}}", encryption_key)
+			                     .replace("{{AUTHORIZED_IPS}}", authorized_ips)
 			                     /**/
 			                     .replace("{{ROUTER_CATALOG}}", router_catalog)
 			                     .replace("{{ROUTER_SCHEMA}}", router_schema)
