@@ -27,8 +27,8 @@
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.7.2" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.groovy:groovy:3.0.0-beta-3" level="project" />
     <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.55" level="project" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.17" level="project" />
-    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.6.1" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.21" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.11.4" level="project" />
     <orderEntry type="library" name="Maven: com.oracle.jdbc:ojdbc8:18.3.0.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.2.8" level="project" />
     <orderEntry type="library" name="Maven: com.h2database:h2:1.4.199" level="project" />

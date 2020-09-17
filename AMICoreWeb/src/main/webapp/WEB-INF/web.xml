@@ -73,4 +73,19 @@
 
 	<!--*************************************************************************************************************-->
 
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Disable unneeded HTTP methods by 403 Forbidden them</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method-omission>HEAD</http-method-omission>
+			<http-method-omission>GET</http-method-omission>
+			<http-method-omission>POST</http-method-omission>
+			<http-method-omission>PUT</http-method-omission>
+			<http-method-omission>DELETE</http-method-omission>
+		</web-resource-collection>
+		<auth-constraint />
+	</security-constraint>
+
+	<!--*************************************************************************************************************-->
+
 </web-app>
