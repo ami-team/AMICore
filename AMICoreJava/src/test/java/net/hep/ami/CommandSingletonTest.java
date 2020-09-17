@@ -40,6 +40,8 @@ public class CommandSingletonTest
 
 		System.out.println(CommandSingleton.executeCommand("FlushCommandCache", false).replace(">", ">\n"));
 
+		System.out.println(CommandSingleton.executeCommand("GetAMITagInfo -amiTag=\"f1068\"", false).replace(">", ">\n"));
+
 //		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_role\" -sql=\"SELECT AMI_DATE('2019-10-14')\"", false).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_role\" -sql=\"SELECT @@GLOBAL.time_zone, @@SESSION.time_zone;\"", false).replace(">", ">\n"));
