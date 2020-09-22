@@ -176,7 +176,7 @@ public class Command
 		}
 		catch(Exception e)
 		{
-			return Response.ok(e.getMessage()).status(Response.Status.FORBIDDEN).build();
+			return Response.status(Response.Status.FORBIDDEN).build();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
