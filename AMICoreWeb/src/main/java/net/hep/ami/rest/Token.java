@@ -89,7 +89,7 @@ public class Token
 	public Response delete(
 		@NotNull @Context HttpServletRequest request
 	 ) {
-		request.getSession(true).removeAttribute("token");
+		//request.getSession(true).removeAttribute("token");
 
 		return Response.status(Response.Status./*-*/OK/*-*/).build();
 	}
