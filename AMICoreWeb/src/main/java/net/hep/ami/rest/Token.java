@@ -163,14 +163,6 @@ public class Token
 			notAfter != null ? notAfter : ""
 		));
 
-		try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream( "/opt/AMI/current/temp/" + session.getId() + ".token")))
-		{
-			objectOutputStream.writeObject(session.getAttribute("token"));
-		}catch (Exception e)
-		{
-			Response.ok("failed").build();
-		}
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return Response.ok(session.getId()).build();
