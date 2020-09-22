@@ -161,9 +161,12 @@ public class Token
 			notAfter != null ? notAfter : ""
 		));
 
+		Tuple test = ((Tuple) session.getAttribute("token"));
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return Response.ok(session.getId()).build();
+		//return Response.ok(session.getId()).build();
+		return Response.ok(test).build();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
