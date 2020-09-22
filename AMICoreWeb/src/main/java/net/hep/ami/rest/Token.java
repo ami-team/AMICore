@@ -161,20 +161,9 @@ public class Token
 			notAfter != null ? notAfter : ""
 		));
 
-		String test = "blabla";
-
-		try {
-			test = ((Tuple) session.getAttribute("token")).toString();
-		} catch (Exception e)
-		{
-			/* DO NOTHING*/
-		}
-
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		//return Response.ok(session.getId()).build();
-		return Response.ok(test).build();
+		return Response.ok(session.getId()).build();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
