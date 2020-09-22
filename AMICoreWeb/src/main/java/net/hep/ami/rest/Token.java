@@ -163,7 +163,7 @@ public class Token
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return Response.ok(session.getId() + " | " + session.getAttribute("token")).build();
+		return Response.ok(session.getId() + " | " + ((Token.Tuple) session.getAttribute("token")).toString()).build();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
