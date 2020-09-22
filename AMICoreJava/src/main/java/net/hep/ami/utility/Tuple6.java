@@ -80,7 +80,7 @@ public class Tuple6<A, B, C, D, E, F> implements Serializable
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Override
+	/*@Override
 	public String toString()
 	{
 		return new StringBuilder().append("[")
@@ -98,7 +98,7 @@ public class Tuple6<A, B, C, D, E, F> implements Serializable
 		                          .append("]")
 		                          .toString()
 		;
-	}
+	}*/
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 }
