@@ -18,8 +18,6 @@ public class Ping
 	 ) {
 		HttpSession session = request.getSession(true);
 
-		session.setMaxInactiveInterval(3600);
-
 		return Response.ok("pong").build();
 	}
 
