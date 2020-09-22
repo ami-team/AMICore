@@ -150,6 +150,7 @@ public class Token
 		/*-----------------------------------------------------------------*/
 
 		HttpSession session = request.getSession(true);
+		session.setMaxInactiveInterval(7200);
 
 		session.setAttribute("token", new Tuple(
 			AMIUser,
