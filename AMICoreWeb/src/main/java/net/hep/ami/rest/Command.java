@@ -156,8 +156,7 @@ public class Command
 		/* GET SESSION OF REQUEST                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		//HttpSession session = request.getSession(true);
-		HttpSession session = request.getSession(false);
+		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(7200);
 
 		/*------------------------------------------------------------------------------------------------------------*/
