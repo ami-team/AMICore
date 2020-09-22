@@ -171,12 +171,12 @@ public class Command
 
 			if(tuple == null)
 			{
-				return Response.status(Response.Status.FORBIDDEN).build();
+				return Response.ok("no token").status(Response.Status.FORBIDDEN).build();
 			}
 		}
 		catch(Exception e)
 		{
-			return Response.status(Response.Status.FORBIDDEN).build();
+			return Response.ok(e.getMessage()).status(Response.Status.FORBIDDEN).build();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
