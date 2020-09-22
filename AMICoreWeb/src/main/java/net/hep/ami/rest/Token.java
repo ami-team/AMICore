@@ -163,12 +163,13 @@ public class Token
 			notAfter != null ? notAfter : ""
 		));
 
-		try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream( "/opt/AMI/current/temp/" + session.getId() + ".token")))
+		//DEBUG
+		/*try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream( "/opt/AMI/current/temp/" + session.getId() + ".token")))
 		{
 		}catch (Exception e)
 		{
 			Response.ok("failed").build();
-		}
+		}*/
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
