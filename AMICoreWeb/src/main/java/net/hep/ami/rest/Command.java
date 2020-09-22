@@ -159,14 +159,6 @@ public class Command
 		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(7200);
 
-		//DEBUG
-		/*try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream( "/opt/AMI/current/temp/" + session.getId() + ".command")))
-		{
-		}catch (Exception e)
-		{
-			Response.ok("failed").build();
-		}*/
-
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CHECK CREDENTIALS                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/

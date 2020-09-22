@@ -1,7 +1,5 @@
 package net.hep.ami.rest;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.text.*;
 import java.util.*;
 
@@ -162,14 +160,6 @@ public class Token
 			notBefore != null ? notBefore : "",
 			notAfter != null ? notAfter : ""
 		));
-
-		//DEBUG
-		/*try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream( "/opt/AMI/current/temp/" + session.getId() + ".token")))
-		{
-		}catch (Exception e)
-		{
-			Response.ok("failed").build();
-		}*/
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
