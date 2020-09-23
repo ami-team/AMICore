@@ -163,13 +163,16 @@ public class Command
 		/* CHECK CREDENTIALS                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Token.Tuple tuple;
+		//Token.Tuple tuple;
+		ArrayList<String> token = null;
 
 		try
 		{
-			tuple = (Token.Tuple) session.getAttribute("token");
+			//tuple = (Token.Tuple) session.getAttribute("token");
+			token = (ArrayList<String>) session.getAttribute("token");
 
-			if(tuple == null)
+			//if(tuple == null)
+			if(token == null)
 			{
 				return Response.ok("no token").status(Response.Status.FORBIDDEN).build();
 			}
@@ -183,6 +186,7 @@ public class Command
 		/* EXECUTE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		/*
 		arguments.put("AMIUser", tuple.x);
 		arguments.put("AMIPass", tuple.y);
 
@@ -190,6 +194,15 @@ public class Command
 		arguments.put("issuerDN", tuple.t);
 		arguments.put("notBefore", tuple.u);
 		arguments.put("notAfter", tuple.v);
+		*/
+
+		arguments.put("AMIUser", token.get(0));
+		arguments.put("AMIPass", token.get(1));
+
+		arguments.put("clientDN", token.get(2));
+		arguments.put("issuerDN", token.get(3));
+		arguments.put("notBefore", token.get(4));
+		arguments.put("notAfter", token.get(5));
 
 		/**/
 

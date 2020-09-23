@@ -1,5 +1,6 @@
 package net.hep.ami.rest;
 
+import java.io.Serializable;
 import java.text.*;
 import java.util.*;
 
@@ -18,7 +19,7 @@ public class Token
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected static final class Tuple extends Tuple6<String, String, String, String, String, String>
+	/*protected static final class Tuple extends Tuple6<String, String, String, String, String, String>
 	{
 		private static final long serialVersionUID = -8015590076924252736L;
 
@@ -26,7 +27,7 @@ public class Token
 		{
 			super(_x, _y, _z, _t, _u, _v);
 		}
-	}
+	}*/
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -152,14 +153,25 @@ public class Token
 		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(7200);
 
-		session.setAttribute("token", new Tuple(
+		/*session.setAttribute("token", new Tuple(
 			AMIUser,
 			AMIPass,
 			clientDN != null ? clientDN : "",
 			issuerDN != null ? issuerDN : "",
 			notBefore != null ? notBefore : "",
 			notAfter != null ? notAfter : ""
-		));
+		));*/
+
+		ArrayList<String> token = new ArrayList<>();
+
+		token.add(AMIUser);
+		token.add(AMIPass);
+		token.add(clientDN != null ? clientDN : "");
+		token.add(issuerDN != null ? issuerDN : "");
+		token.add(notBefore != null ? notBefore : "");
+		token.add(notAfter != null ? notAfter : "");
+
+		session.setAttribute("token", token);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
