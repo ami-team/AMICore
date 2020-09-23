@@ -17,6 +17,7 @@ public class Ping
 		@NotNull @Context HttpServletRequest request
 	 ) {
 		HttpSession session = request.getSession(true);
+
 		session.setMaxInactiveInterval(7200);
 
 		return Response.ok("pong").build();

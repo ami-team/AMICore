@@ -157,21 +157,19 @@ public class Command
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		HttpSession session = request.getSession(true);
+
 		session.setMaxInactiveInterval(7200);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CHECK CREDENTIALS                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		//Token.Tuple tuple;
-		ArrayList<String> token = null;
+		Map<String, String> token;
 
 		try
 		{
-			//tuple = (Token.Tuple) session.getAttribute("token");
-			token = (ArrayList<String>) session.getAttribute("token");
+			token = (Map<String, String>) session.getAttribute("token");
 
-			//if(tuple == null)
 			if(token == null)
 			{
 				return Response.ok("no token").status(Response.Status.FORBIDDEN).build();
@@ -186,23 +184,10 @@ public class Command
 		/* EXECUTE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		/*
-		arguments.put("AMIUser", tuple.x);
-		arguments.put("AMIPass", tuple.y);
-
-		arguments.put("clientDN", tuple.z);
-		arguments.put("issuerDN", tuple.t);
-		arguments.put("notBefore", tuple.u);
-		arguments.put("notAfter", tuple.v);
-		*/
-
-		arguments.put("AMIUser", token.get(0));
-		arguments.put("AMIPass", token.get(1));
-
-		arguments.put("clientDN", token.get(2));
-		arguments.put("issuerDN", token.get(3));
-		arguments.put("notBefore", token.get(4));
-		arguments.put("notAfter", token.get(5));
+		for(Map.Entry<String, String> entry: token.entrySet())
+		{
+			arguments.put(entry.getKey(), entry.getValue());
+		}
 
 		/**/
 

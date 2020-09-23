@@ -419,7 +419,7 @@ public class SchemaSingleton
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
+	@SuppressWarnings("FieldCanBeLocal")
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static class Extractor implements Runnable
