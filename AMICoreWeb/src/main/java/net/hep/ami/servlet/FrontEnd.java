@@ -534,6 +534,16 @@ public class FrontEnd extends HttpServlet
 		String tmpAMIUser = (String) session.getAttribute("AMIUser");
 		String tmpAMIPass = (String) session.getAttribute("AMIPass");
 
+		/*test*/
+		String tmpAMIUser2 = (String) session.getServletContext().getContext(session.getId()).getAttribute("AMIUser");
+		String tmpAMIPass2 = (String) session.getServletContext().getContext(session.getId()).getAttribute("AMIPass");
+
+		if(tmpAMIUser2 != null && tmpAMIPass2 != null)
+		{
+			tmpAMIUser = tmpAMIUser2;
+			tmpAMIPass = tmpAMIPass2;
+		}
+
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET NOCERT FLAG                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -627,6 +637,10 @@ public class FrontEnd extends HttpServlet
 
 		session.setAttribute("AMIUser", AMIUser);
 		session.setAttribute("AMIPass", AMIPass);
+
+		/* TEST */
+		session.getServletContext().getContext(session.getId()).setAttribute("AMIUser", AMIUser);
+		session.getServletContext().getContext(session.getId()).setAttribute("AMIPass", AMIPass);
 
 		session.setAttribute("NoCert", noCert);
 
