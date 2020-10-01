@@ -15,7 +15,7 @@ public class SessionListener implements HttpSessionAttributeListener
 		System.out.println("V2 -> Attribute added : " + attributeName + " : " + attributeValue);
 
 		HttpSession session = event.getSession();
-		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> Session" + s + " : " + session.getAttribute(s));});
+		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> " + s + " : " + session.getAttribute(s));});
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class SessionListener implements HttpSessionAttributeListener
 		System.out.println("V2 -> Attribute removed : " + attributeName + " : " + attributeValue);
 
 		HttpSession session = event.getSession();
-		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> Session" + s + " : " + session.getAttribute(s));});
+		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> " + s + " : " + session.getAttribute(s));});
 
 	}
 
@@ -38,6 +38,6 @@ public class SessionListener implements HttpSessionAttributeListener
 		System.out.println("V2 -> Attribute replaced : " + attributeName + " : " + attributeValue);
 
 		HttpSession session = event.getSession();
-		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> Session" + s + " : " + session.getAttribute(s));});
+		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> " + s + " : " + session.getAttribute(s));});
 	}
 }
