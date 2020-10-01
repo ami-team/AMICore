@@ -12,10 +12,10 @@ public class SessionListener implements HttpSessionAttributeListener
 	{
 		String attributeName = event.getName();
 		Object attributeValue = event.getValue();
-		HttpSession session = event.getSession();
-
 		System.out.println("V2 -> Attribute added : " + attributeName + " : " + attributeValue);
-		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println(s + " : " + session.getAttribute(s));});
+
+		HttpSession session = event.getSession();
+		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> Session" + s + " : " + session.getAttribute(s));});
 	}
 
 	@Override
@@ -23,10 +23,10 @@ public class SessionListener implements HttpSessionAttributeListener
 	{
 		String attributeName = event.getName();
 		Object attributeValue = event.getValue();
-		HttpSession session = event.getSession();
-
 		System.out.println("V2 -> Attribute removed : " + attributeName + " : " + attributeValue);
-		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println(s + " : " + session.getAttribute(s));});
+
+		HttpSession session = event.getSession();
+		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> Session" + s + " : " + session.getAttribute(s));});
 
 	}
 
@@ -35,9 +35,9 @@ public class SessionListener implements HttpSessionAttributeListener
 	{
 		String attributeName = event.getName();
 		Object attributeValue = event.getValue();
-		HttpSession session = event.getSession();
-
 		System.out.println("V2 -> Attribute replaced : " + attributeName + " : " + attributeValue);
-		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println(s + " : " + session.getAttribute(s));});
+
+		HttpSession session = event.getSession();
+		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> Session" + s + " : " + session.getAttribute(s));});
 	}
 }
