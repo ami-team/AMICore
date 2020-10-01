@@ -10,7 +10,7 @@ public class SessionListener implements HttpSessionAttributeListener
 	{
 		String attributeName = event.getName();
 		Object attributeValue = event.getValue();
-		System.out.println("Attribute added : " + attributeName + " : " + attributeValue);
+		System.out.println("V2 -> Attribute added : " + attributeName + " : " + attributeValue);
 	}
 
 	@Override
@@ -18,7 +18,7 @@ public class SessionListener implements HttpSessionAttributeListener
 	{
 		String attributeName = event.getName();
 		Object attributeValue = event.getValue();
-		System.out.println("Attribute removed : " + attributeName + " : " + attributeValue);
+		System.out.println("V2 -> Attribute removed : " + attributeName + " : " + attributeValue);
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public class SessionListener implements HttpSessionAttributeListener
 	{
 		String attributeName = event.getName();
 		Object attributeValue = event.getValue();
-		System.out.println("Attribute replaced : " + attributeName + " : " + attributeValue);
+		System.out.println("V2 -> Attribute replaced : " + attributeName + " : " + attributeValue);
 	}
 }
