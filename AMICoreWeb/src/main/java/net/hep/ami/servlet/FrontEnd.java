@@ -526,6 +526,9 @@ public class FrontEnd extends HttpServlet
 
 		HttpSession session = request.getSession(true);
 
+		//DEBUG
+		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2Front -> " + s + " : " + session.getAttribute(s));});
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		String AMIUser = arguments.get("AMIUser");
