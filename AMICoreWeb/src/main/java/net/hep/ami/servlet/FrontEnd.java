@@ -442,7 +442,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0", AMIUser).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0)", AMIUser).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET CREDENTIALS                                                                                        */
@@ -462,7 +462,8 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				AMIPass = SecuritySingleton.checkPassword(AMIUser, AMIPass, SecuritySingleton.decrypt(row.getValue(0)));
+				AMIUser = row.getValue(0);
+				AMIPass = SecuritySingleton.checkPassword(AMIUser, AMIPass, SecuritySingleton.decrypt(row.getValue(1)));
 			}
 			catch(Exception e)
 			{
