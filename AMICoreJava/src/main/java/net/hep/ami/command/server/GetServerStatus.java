@@ -15,6 +15,44 @@ public class GetServerStatus extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final String s_buildVersion = System.getProperty("java.version");
+
+	private static final String s_hostName;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	static
+	{
+		String hostName;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		SimpleShell simpleShell = new SimpleShell();
+
+		try
+		{
+			simpleShell.connect();
+			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname"});
+			simpleShell.disconnect();
+
+			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
+					: "N/A"
+			;
+		}
+		catch(Exception e)
+		{
+			hostName = "N/A";
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		s_hostName = hostName;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public GetServerStatus(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
@@ -30,11 +68,9 @@ public class GetServerStatus extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String version = System.getProperty("java.version");
-
 		result.append("<rowset type=\"java\">")
 		      .append("<row>")
-		      .append("<field name=\"buildVersion\"><![CDATA[").append(version).append("]]></field>")
+		      .append("<field name=\"buildVersion\"><![CDATA[").append(s_buildVersion).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")
 		;
@@ -99,16 +135,6 @@ public class GetServerStatus extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		SimpleShell simpleShell = new SimpleShell();
-
-		simpleShell.connect();
-		SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname"});
-		simpleShell.disconnect();
-
-		String hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim() : "N/A";
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		Runtime runtime = java.lang.Runtime.getRuntime();
 
 		File file = new File(System.getProperty("catalina.base", GetServerStatus.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
@@ -117,7 +143,7 @@ public class GetServerStatus extends AbstractCommand
 
 		result.append("<rowset type=\"system\">")
 		      .append("<row>")
-		      .append("<field name=\"hostName\"><![CDATA[").append(hostName).append("]]></field>")
+		      .append("<field name=\"hostName\"><![CDATA[").append(s_hostName).append("]]></field>")
 		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
 		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
 		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")

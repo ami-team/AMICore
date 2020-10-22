@@ -1,24 +1,22 @@
 package net.hep.ami.command.server;
 
-import net.hep.ami.CacheSingleton;
+import net.hep.ami.ConfigSingleton;
 import net.hep.ami.command.AbstractCommand;
 import net.hep.ami.command.CommandMetadata;
+import net.hep.ami.jdbc.Querier;
 import net.hep.ami.jdbc.Row;
 import net.hep.ami.jdbc.RowSet;
-import net.hep.ami.jdbc.pool.ConnectionPoolSingleton;
+import net.hep.ami.jdbc.Update;
 import net.hep.ami.utility.shell.SimpleShell;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
-public class GetNodeStatus extends AbstractCommand
+public class PingNode extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -41,7 +39,7 @@ public class GetNodeStatus extends AbstractCommand
 			simpleShell.disconnect();
 
 			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
-					: "N/A"
+			                                       : "N/A"
 			;
 		}
 		catch(Exception e)
@@ -58,7 +56,7 @@ public class GetNodeStatus extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetNodeStatus(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
+	public PingNode(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
@@ -71,30 +69,19 @@ public class GetNodeStatus extends AbstractCommand
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RowSet rowSet = getQuerier("self").executeSQLQuery("router_monitoring", "SELECT `node`, `service`, `frequency`, `modified` FROM `router_monitoring` WHERE `node` = ?0", s_hostName);
+		Querier querier = getQuerier("self");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		StringBuilder result = new StringBuilder();
+		List<Row> rows = querier.executeSQLQuery("router_monitoring", "SELECT `id` FROM `router_monitoring` WHERE `node` = ?0", s_hostName).getAll();
 
-		result.append("<rowset>");
-
-		for(Row row: rowSet.iterate())
-		{
-			result.append("<row>")
-			      .append("<field name=\"node\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
-			      .append("<field name=\"service\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
-			      .append("<field name=\"frequency\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
-			      .append("<field name=\"modified\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
-			      .append("</row>")
-			;
-		}
-
-		result.append("</rowset>");
+		Update update = (rows.size() == 1) ? querier.executeSQLUpdate("router_monitoring", "UPDATE `router_monitoring` SET `modified` = CURRENT_TIMESTAMP WHERE `id` = ?0", rows.get(0).getValue(0))
+		                                   : querier.executeSQLUpdate("router_monitoring", "INSERT INTO `router_monitoring` (`node`, `service`, `frequency`) VALUES (?0, 'web', ?1)", s_hostName, ConfigSingleton.getProperty("monitoring_frequency", 30))
+		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result;
+		return update.toStringBuilder();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
