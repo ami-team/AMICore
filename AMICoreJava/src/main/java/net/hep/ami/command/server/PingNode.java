@@ -26,7 +26,7 @@ public class PingNode extends AbstractCommand
 
 	static
 	{
-		String shell_hostName;
+		String hostName;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -38,18 +38,18 @@ public class PingNode extends AbstractCommand
 			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
 			simpleShell.disconnect();
 
-			shell_hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
+			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
 			                                       : "N/A"
 			;
 		}
 		catch(Exception e)
 		{
-			shell_hostName = "N/A";
+			hostName = "N/A";
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		s_hostName = shell_hostName;
+		s_hostName = hostName;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
