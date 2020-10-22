@@ -22,42 +22,6 @@ public class GetNodeStatus extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final String s_hostName;
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	static
-	{
-		String hostName;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		SimpleShell simpleShell = new SimpleShell();
-
-		try
-		{
-			simpleShell.connect();
-			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
-			simpleShell.disconnect();
-
-			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
-					: "N/A"
-			;
-		}
-		catch(Exception e)
-		{
-			hostName = "N/A";
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		s_hostName = hostName;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
 	public GetNodeStatus(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
@@ -71,7 +35,7 @@ public class GetNodeStatus extends AbstractCommand
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RowSet rowSet = getQuerier("self").executeSQLQuery("router_monitoring", "SELECT `node`, `service`, `frequency`, `modified` FROM `router_monitoring` WHERE `node` = ?0", s_hostName);
+		RowSet rowSet = getQuerier("self").executeSQLQuery("router_monitoring", "SELECT `node`, `service`, `frequency`, `modified` FROM `router_monitoring`");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
