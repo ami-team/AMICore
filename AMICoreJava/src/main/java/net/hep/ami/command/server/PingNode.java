@@ -35,7 +35,7 @@ public class PingNode extends AbstractCommand
 		try
 		{
 			simpleShell.connect();
-			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname"});
+			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
 			simpleShell.disconnect();
 
 			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
