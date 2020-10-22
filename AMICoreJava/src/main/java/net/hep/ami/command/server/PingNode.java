@@ -69,14 +69,18 @@ public class PingNode extends AbstractCommand
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		String hostName = arguments.getOrDefault("hostName", s_hostName);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		Querier querier = getQuerier("self");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rows = querier.executeSQLQuery("router_monitoring", "SELECT `id` FROM `router_monitoring` WHERE `node` = ?0", s_hostName).getAll();
+		List<Row> rows = querier.executeSQLQuery("router_monitoring", "SELECT `id` FROM `router_monitoring` WHERE `node` = ?0", hostName).getAll();
 
 		Update update = (rows.size() == 1) ? querier.executeSQLUpdate("router_monitoring", "UPDATE `router_monitoring` SET `modified` = CURRENT_TIMESTAMP WHERE `id` = ?0", rows.get(0).getValue(0))
-		                                   : querier.executeSQLUpdate("router_monitoring", "INSERT INTO `router_monitoring` (`node`, `service`, `frequency`) VALUES (?0, 'web', ?1)", s_hostName, ConfigSingleton.getProperty("monitoring_frequency", 30))
+		                                   : querier.executeSQLUpdate("router_monitoring", "INSERT INTO `router_monitoring` (`node`, `service`, `frequency`) VALUES (?0, 'web', ?1)", hostName, ConfigSingleton.getProperty("monitoring_frequency", 30))
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -91,6 +95,15 @@ public class PingNode extends AbstractCommand
 	public static String help()
 	{
 		return "Get the status of each node.";
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@Contract(pure = true)
+	public static String usage()
+	{
+		return "(-hostName=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
