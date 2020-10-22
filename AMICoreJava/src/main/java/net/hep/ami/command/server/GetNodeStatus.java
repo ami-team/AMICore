@@ -28,7 +28,7 @@ public class GetNodeStatus extends AbstractCommand
 
 	static
 	{
-		String hostName;
+		String shell_hostName;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -40,18 +40,18 @@ public class GetNodeStatus extends AbstractCommand
 			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
 			simpleShell.disconnect();
 
-			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
+			shell_hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
 					: "N/A"
 			;
 		}
 		catch(Exception e)
 		{
-			hostName = "N/A";
+			shell_hostName = "N/A";
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		s_hostName = hostName;
+		s_hostName = shell_hostName;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
