@@ -28,6 +28,15 @@ END;
 ;;
 
 BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_monitoring"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE "router_search_interface"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -185,6 +194,15 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_locations"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_monitoring"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -1344,6 +1362,64 @@ CREATE TRIGGER "trig1_router_search_interface"
 
 CREATE TRIGGER "trig2_router_search_interface"
   BEFORE UPDATE ON "router_search_interface"
+  FOR EACH ROW
+  BEGIN
+    :NEW."modified" := SYSDATE;
+  END;
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_monitoring" (
+  "id" NUMBER(*, 0),
+  "node" VARCHAR2(128),
+  "service" VARCHAR2(128),
+  "frequency" NUMBER(*, 0) DEFAULT 30,
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+);;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "pk1_router_monitoring" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "uk1_router_monitoring" UNIQUE ("node")
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck1_router_monitoring" CHECK("id" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck2_router_monitoring" CHECK("node" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck3_router_monitoring" CHECK("service" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck4_router_monitoring" CHECK("frequency" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck5_router_monitoring" CHECK("modified" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_monitoring"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_monitoring"
+  BEFORE INSERT ON "router_monitoring"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_monitoring".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+CREATE TRIGGER "trig2_router_monitoring"
+  BEFORE UPDATE ON "router_monitoring"
   FOR EACH ROW
   BEGIN
     :NEW."modified" := SYSDATE;
