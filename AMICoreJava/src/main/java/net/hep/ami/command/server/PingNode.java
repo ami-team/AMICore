@@ -83,8 +83,6 @@ public class PingNode extends AbstractCommand
 		                                   : querier.executeSQLUpdate("router_monitoring", "INSERT INTO `router_monitoring` (`node`, `service`, `frequency`) VALUES (?0, 'web', ?1)", hostName, ConfigSingleton.getProperty("monitoring_frequency", 30))
 		;
 
-		querier.getConnection().commit();
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return update.toStringBuilder();
