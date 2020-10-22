@@ -1374,7 +1374,7 @@ CREATE TABLE "router_monitoring" (
   "node" VARCHAR2(128),
   "service" VARCHAR2(128),
   "frequency" NUMBER(*, 0) DEFAULT 30,
-  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );;
 
 ALTER TABLE "router_monitoring"
