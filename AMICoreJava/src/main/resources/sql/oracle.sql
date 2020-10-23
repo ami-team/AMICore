@@ -1373,7 +1373,7 @@ CREATE TABLE "router_monitoring" (
   "id" NUMBER(*, 0),
   "node" VARCHAR2(128),
   "service" VARCHAR2(128),
-  "frequency" NUMBER(*, 0) DEFAULT 30,
+  "frequency" NUMBER(*, 0) DEFAULT 60,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );;
 
