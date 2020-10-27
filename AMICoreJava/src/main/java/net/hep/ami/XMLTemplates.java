@@ -50,7 +50,7 @@ public class XMLTemplates
 		                          .append("<AMIMessage>")
 		                          .append(xml)
 		                          .append("<node><![CDATA[").append(CommandSingleton.HOSTNAME).append("]]></node>")
-		                          .append("<executionTime><![CDATA[0.0]]></executionTime>")
+		                          .append("<executionTime><![CDATA[0.000]]></executionTime>")
 		                          .append("</AMIMessage>")
 		                          .toString()
 		;
