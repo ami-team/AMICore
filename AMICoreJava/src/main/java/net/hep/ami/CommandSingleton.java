@@ -7,6 +7,7 @@ import java.lang.reflect.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
+import net.hep.ami.utility.shell.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -41,6 +42,47 @@ public class CommandSingleton
 		+ "\uD800\uDC00-\uDBFF\uDFFF"
 		+ "]+"
 	);
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final String HOSTNAME;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	static
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String hostName;
+
+		try
+		{
+			SimpleShell simpleShell = new SimpleShell();
+
+			simpleShell.connect();
+			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
+			simpleShell.disconnect();
+
+			if(shellTuple.errorCode == 0)
+			{
+				hostName = shellTuple.inputStringBuilder.toString().trim();
+			}
+			else
+			{
+				hostName = "N/A";
+			}
+		}
+		catch(Exception e)
+		{
+			hostName = "N/A";
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		HOSTNAME = hostName;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -341,7 +383,8 @@ public class CommandSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			stringBuilder.append("<executionTime>").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("</executionTime>")
+			stringBuilder.append("<hostName><![CDATA[").append(HOSTNAME).append("]]></hostName>")
+			             .append("<executionTime><![CDATA[").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("]]></executionTime>")
 			             .append(s_xml10Pattern.matcher(content).replaceAll("?"))
 			;
 
@@ -351,7 +394,8 @@ public class CommandSingleton
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			stringBuilder.append("<executionTime>0.000</executionTime>")
+			stringBuilder.append("<hostName><![CDATA[").append(HOSTNAME).append("]]></hostName>")
+			             .append("<executionTime>0.000</executionTime>")
 
 			             .append("<help><![CDATA[")
 			             .append((tuple.y != null) ? s_xml10Pattern.matcher(tuple.y).replaceAll("?") : "")
