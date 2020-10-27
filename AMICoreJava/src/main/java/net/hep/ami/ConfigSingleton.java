@@ -275,7 +275,7 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rows = querier.executeSQLQuery("router_config", "SELECT `id`, `paramValue` FROM `router_config` WHERE `paramName` = ?0", name).getAll();
+		List<Row> rows = querier.executeSQLQuery("router_config", "SELECT `id`, `paramValue` FROM `router_config` WHERE `paramName` = ?#0", name).getAll();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
