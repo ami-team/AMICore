@@ -383,7 +383,7 @@ public class CommandSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			stringBuilder.append("<hostName><![CDATA[").append(HOSTNAME).append("]]></hostName>")
+			stringBuilder.append("<node><![CDATA[").append(HOSTNAME).append("]]></node>")
 			             .append("<executionTime><![CDATA[").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("]]></executionTime>")
 			             .append(s_xml10Pattern.matcher(content).replaceAll("?"))
 			;
@@ -394,7 +394,7 @@ public class CommandSingleton
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			stringBuilder.append("<hostName><![CDATA[").append(HOSTNAME).append("]]></hostName>")
+			stringBuilder.append("<node><![CDATA[").append(HOSTNAME).append("]]></node>")
 			             .append("<executionTime>0.000</executionTime>")
 
 			             .append("<help><![CDATA[")
