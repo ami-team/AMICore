@@ -275,7 +275,7 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rows = querier.executeSQLQuery("router_config", "SELECT `paramValue` FROM `router_config` WHERE `paramName` = ?0", name).getAll();
+		List<Row> rows = querier.executeSQLQuery("router_config", "SELECT `id`, `paramValue` FROM `router_config` WHERE `paramName` = ?0", name).getAll();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -287,17 +287,23 @@ public class ConfigSingleton
 				AMIUser
 			).getNbOfUpdatedRows();
 		}
-		else if(!rows.get(0).getValue(0).equals(value))
-		{
-			result = querier.executeSQLUpdate("router_config", "UPDATE `router_config` SET `paramValue` = ?#1, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?2 WHERE `paramName` = ?#0",
-				name,
-				value,
-				AMIUser
-			).getNbOfUpdatedRows();
-		}
 		else
 		{
-			result = 0;
+			String id = rows.get(0).getValue(0);
+			String eulav = rows.get(0).getValue(1);
+
+			if(!SecuritySingleton.encrypt(eulav).equals(value))
+			{
+				result = querier.executeSQLUpdate("router_config", "UPDATE `router_config` SET `paramValue` = ?#1, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?2 WHERE `id` = ?0",
+					id,
+					value,
+					AMIUser
+				).getNbOfUpdatedRows();
+			}
+			else
+			{
+				result = 0;
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
