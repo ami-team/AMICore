@@ -395,7 +395,7 @@ public class CommandSingleton
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			stringBuilder.append("<node><![CDATA[").append(HOSTNAME).append("]]></node>")
-			             .append("<executionTime>0.000</executionTime>")
+			             .append("<executionTime><![CDATA[0.000]]></executionTime>")
 
 			             .append("<help><![CDATA[")
 			             .append((tuple.y != null) ? s_xml10Pattern.matcher(tuple.y).replaceAll("?") : "")

@@ -47,7 +47,11 @@ public class XMLTemplates
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-		                          .append("<AMIMessage>").append(xml).append("<executionTime>0.0</executionTime></AMIMessage>")
+		                          .append("<AMIMessage>")
+		                          .append(xml)
+		                          .append("<node><![CDATA[").append(CommandSingleton.HOSTNAME).append("]]></node>")
+		                          .append("<executionTime><![CDATA[0.0]]></executionTime>")
+		                          .append("</AMIMessage>")
 		                          .toString()
 		;
 
