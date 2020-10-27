@@ -1,59 +1,16 @@
 package net.hep.ami.command.server;
 
-import net.hep.ami.ConfigSingleton;
-import net.hep.ami.command.AbstractCommand;
-import net.hep.ami.command.CommandMetadata;
-import net.hep.ami.jdbc.Querier;
-import net.hep.ami.jdbc.Row;
-import net.hep.ami.jdbc.RowSet;
-import net.hep.ami.jdbc.Update;
-import net.hep.ami.utility.shell.SimpleShell;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import java.util.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import net.hep.ami.*;
+import net.hep.ami.jdbc.*;
+import net.hep.ami.command.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
 public class PingNode extends AbstractCommand
 {
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	private static final String s_hostName;
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	static
-	{
-		String hostName;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		SimpleShell simpleShell = new SimpleShell();
-
-		try
-		{
-			simpleShell.connect();
-			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
-			simpleShell.disconnect();
-
-			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
-			                                       : "N/A"
-			;
-		}
-		catch(Exception e)
-		{
-			hostName = "N/A";
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		s_hostName = hostName;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public PingNode(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
@@ -69,7 +26,7 @@ public class PingNode extends AbstractCommand
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String hostName = arguments.getOrDefault("hostName", s_hostName);
+		String hostName = arguments.getOrDefault("hostName", CommandSingleton.HOSTNAME);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -94,7 +51,7 @@ public class PingNode extends AbstractCommand
 	@Contract(pure = true)
 	public static String help()
 	{
-		return "Get the status of each node.";
+		return "Ping an AMI node.";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

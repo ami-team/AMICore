@@ -6,7 +6,6 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.pool.*;
-import net.hep.ami.utility.shell.*;
 
 import org.jetbrains.annotations.*;
 
@@ -15,41 +14,7 @@ public class GetServerStatus extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final String s_buildVersion = System.getProperty("java.version");
-
-	private static final String s_hostName;
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	static
-	{
-		String hostName;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		SimpleShell simpleShell = new SimpleShell();
-
-		try
-		{
-			simpleShell.connect();
-			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
-			simpleShell.disconnect();
-
-			hostName = (shellTuple.errorCode == 0) ? shellTuple.inputStringBuilder.toString().trim()
-					: "N/A"
-			;
-		}
-		catch(Exception e)
-		{
-			hostName = "N/A";
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		s_hostName = hostName;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
+	private static final String BUILD_VERSION = System.getProperty("java.version");
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -70,7 +35,7 @@ public class GetServerStatus extends AbstractCommand
 
 		result.append("<rowset type=\"java\">")
 		      .append("<row>")
-		      .append("<field name=\"buildVersion\"><![CDATA[").append(s_buildVersion).append("]]></field>")
+		      .append("<field name=\"buildVersion\"><![CDATA[").append(BUILD_VERSION).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")
 		;
@@ -143,7 +108,7 @@ public class GetServerStatus extends AbstractCommand
 
 		result.append("<rowset type=\"system\">")
 		      .append("<row>")
-		      .append("<field name=\"hostName\"><![CDATA[").append(s_hostName).append("]]></field>")
+		      .append("<field name=\"hostName\"><![CDATA[").append(CommandSingleton.HOSTNAME).append("]]></field>")
 		      .append("<field name=\"nbOfCores\"><![CDATA[").append(runtime.availableProcessors()).append("]]></field>")
 		      .append("<field name=\"freeDisk\"><![CDATA[").append(file.getFreeSpace()).append("]]></field>")
 		      .append("<field name=\"totalDisk\"><![CDATA[").append(file.getTotalSpace()).append("]]></field>")
