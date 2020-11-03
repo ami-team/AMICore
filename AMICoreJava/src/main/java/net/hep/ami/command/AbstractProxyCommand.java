@@ -2,7 +2,6 @@ package net.hep.ami.command;
 
 import java.io.*;
 import java.net.*;
-import java.sql.SQLException;
 import java.util.*;
 import java.nio.charset.*;
 
@@ -79,7 +78,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				try (OutputStream outputStream = connection.getOutputStream())
+				try(OutputStream outputStream = connection.getOutputStream())
 				{
 					TextFile.write(outputStream, input);
 				}
