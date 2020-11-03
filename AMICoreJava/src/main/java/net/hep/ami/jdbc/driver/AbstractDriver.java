@@ -104,13 +104,20 @@ public abstract class AbstractDriver implements Querier
 		/* CREATE CONNECTION                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		m_connection = ConnectionPoolSingleton.getConnection(
-			m_externalCatalog,
-			m_jdbcClass,
-			m_jdbcUrl,
-			m_user,
-			m_pass
-		);
+		try
+		{
+			m_connection = ConnectionPoolSingleton.getConnection(
+				m_externalCatalog,
+				m_jdbcClass,
+				m_jdbcUrl,
+				m_user,
+				m_pass
+			);
+		}
+		catch(SQLException e)
+		{
+			throw new SQLException(e.getMessage() + " (DD79E02F_E3F5_C0BF_350D_7AB71C194639)", e);
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

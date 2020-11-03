@@ -42,7 +42,7 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("GetAMITagInfo -amiTag=\"f1068\"", false).replace(">", ">\n"));
 
-		System.out.println(CommandSingleton.executeCommand("PingNode -hostName=\"aiami02.cern.ch\"", false).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("PingNode -hostName=\"aiami02.cern.ch\"", false).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_role\" -sql=\"SELECT AMI_DATE('2019-10-14')\"", false).replace(">", ">\n"));
 
@@ -414,6 +414,11 @@ public class CommandSingletonTest
 
 //			System.out.println(new QId("A.B.C{D.E.#}"));
 //			System.out.println(new QId("A.B.#{D.E.F,!G.H.*}"));
+
+
+			System.out.println(System.getProperty("os.name").startsWith("Windows"));
+
+			System.out.println(System.getProperty("java.io.tmpdir"));
 
 			//System.out.println("done.");
 		}
