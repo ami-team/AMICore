@@ -2,6 +2,7 @@ package net.hep.ami.command;
 
 import java.io.*;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.*;
 import java.nio.charset.*;
 
@@ -60,36 +61,43 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		try
 		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF");
-			connection.setRequestProperty("Content-Length", String.valueOf(input.length()));
-
-			connection.setRequestProperty("Connection", "Close");
-
-			connection.setRequestProperty("User-Agent", m_userAgent);
-
-			connection.setConnectTimeout(ConfigSingleton.getProperty("proxy_command_connect_timeout", 60000));
-			connection.setReadTimeout(ConfigSingleton.getProperty("proxy_command_read_timeout", 60000));
-			connection.setDoOutput(true);
-			connection.setDoInput(true);
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			try(OutputStream outputStream = connection.getOutputStream())
+			try
 			{
-				TextFile.write(outputStream, input);
+				/*----------------------------------------------------------------------------------------------------*/
+
+				connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF");
+				connection.setRequestProperty("Content-Length", String.valueOf(input.length()));
+
+				connection.setRequestProperty("Connection", "Close");
+
+				connection.setRequestProperty("User-Agent", m_userAgent);
+
+				connection.setConnectTimeout(ConfigSingleton.getProperty("proxy_command_connect_timeout", 60000));
+				connection.setReadTimeout(ConfigSingleton.getProperty("proxy_command_read_timeout", 60000));
+				connection.setDoOutput(true);
+				connection.setDoInput(true);
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				try (OutputStream outputStream = connection.getOutputStream())
+				{
+					TextFile.write(outputStream, input);
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				document = XMLFactory.newDocument(connection.getInputStream());
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			document = XMLFactory.newDocument(connection.getInputStream());
-
-			/*--------------------------------------------------------------------------------------------------------*/
+			finally
+			{
+				connection.disconnect();
+			}
 		}
-		finally
+		catch(IOException e)
 		{
-			connection.disconnect();
+			throw new IOException(e.getMessage() + " (DD79E02F_E3F5_C0BF_350D_7AB71C194639)", e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
