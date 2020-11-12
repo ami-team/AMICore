@@ -32,7 +32,7 @@ public class GetHashInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json` FROM `router_short_url` WHERE `hash` = ?0 AND (`shared` = 1 OR `owner` = ?1)", hash, m_AMIUser).getAll();
+		List<Row> rowList = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `hash` = ?0 AND (`shared` = 1 OR `owner` = ?1)", hash, m_AMIUser).getAll();
 
 		if(rowList.size() != 1)
 		{
@@ -48,6 +48,8 @@ public class GetHashInfo extends AbstractCommand
 		                          .append("<field name=\"name\"><![CDATA[").append(rowList.get(0).getValue(2)).append("]]></field>")
 		                          .append("<field name=\"rank\"><![CDATA[").append(rowList.get(0).getValue(3)).append("]]></field>")
 		                          .append("<field name=\"json\"><![CDATA[").append(rowList.get(0).getValue(4)).append("]]></field>")
+		                          .append("<field name=\"shared\"><![CDATA[").append(rowList.get(0).getValue(5)).append("]]></field>")
+		                          .append("<field name=\"expire\"><![CDATA[").append(rowList.get(0).getValue(6)).append("]]></field>")
 		                          .append("</row>")
 		                          .append("</rowset>")
 		;
