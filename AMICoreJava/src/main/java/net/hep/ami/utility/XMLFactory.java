@@ -66,14 +66,13 @@ public class XMLFactory
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			@Override
-			@SuppressWarnings("rawtypes")
 			public ExtensionFunctionCall makeCallExpression()
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
 				return new ExtensionFunctionCall() {
 
-					public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException
+					public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException
 					{
 						Item arg0 = arguments[0].head();
 
