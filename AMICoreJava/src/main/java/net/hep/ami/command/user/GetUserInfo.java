@@ -160,6 +160,12 @@ public class GetUserInfo extends AbstractCommand
 		RowSet rowSet2 = querier.executeSQLQuery("router_role", "SELECT `router_role`.`role`, `router_role`.`description` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?0", amiLogin);
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET USER BOOKMARKS                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		RowSet rowSet3 = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `owner` = ?0", amiLogin);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET OTHER INFO                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -170,7 +176,7 @@ public class GetUserInfo extends AbstractCommand
 		String ssoURL = ConfigSingleton.getProperty("sso_url", "N/A");
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* USER                                                                                                       */
+		/* USER INFO                                                                                                  */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"user\">")
@@ -206,6 +212,28 @@ public class GetUserInfo extends AbstractCommand
 			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue(0)).append("]]></field>")
 			      .append("<field name=\"description\"><![CDATA[").append(row2.getValue(1)).append("]]></field>")
 			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* BOOKMARKS                                                                                                  */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"bookmark\">");
+
+		for(Row row: rowSet3.iterate())
+		{
+			result.append("<row>")
+					.append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
+					.append("<field name=\"hash\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
+					.append("<field name=\"name\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
+					.append("<field name=\"rank\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
+					.append("<field name=\"json\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
+					.append("<field name=\"shared\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
+					.append("<field name=\"expire\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
+					.append("</row>")
 			;
 		}
 
