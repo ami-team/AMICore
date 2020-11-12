@@ -1,4 +1,4 @@
-// Generated from /home/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/jdbc/query/mql/QId.g4 by ANTLR 4.7.2
+// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/jdbc/query/mql/QId.g4 by ANTLR 4.8
 package net.hep.ami.jdbc.query.mql;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,13 +11,14 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class QIdParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, ID=8, WS=9;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, ID=9, 
+		WS=10;
 	public static final int
 		RULE_qId = 0, RULE_constraintQId = 1, RULE_basicQId = 2;
 	private static String[] makeRuleNames() {
@@ -29,13 +30,13 @@ public class QIdParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'{'", "','", "'}'", "'!'", "'*'", "'#'", "'.'"
+			null, "'{'", "','", "'|'", "'}'", "'!'", "'*'", "'#'", "'.'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, "ID", "WS"
+			null, null, null, null, null, null, null, null, null, "ID", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -130,11 +131,19 @@ public class QIdParser extends Parser {
 				setState(13);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while (_la==T__1) {
+				while (_la==T__1 || _la==T__2) {
 					{
 					{
 					setState(9);
-					match(T__1);
+					_la = _input.LA(1);
+					if ( !(_la==T__1 || _la==T__2) ) {
+					_errHandler.recoverInline(this);
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
+						consume();
+					}
 					setState(10);
 					((QIdContext)_localctx).constraintQId = constraintQId();
 					((QIdContext)_localctx).m_constraintQIds.add(((QIdContext)_localctx).constraintQId);
@@ -145,7 +154,7 @@ public class QIdParser extends Parser {
 					_la = _input.LA(1);
 				}
 				setState(16);
-				match(T__2);
+				match(T__3);
 				}
 			}
 
@@ -184,10 +193,10 @@ public class QIdParser extends Parser {
 			setState(21);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__3) {
+			if (_la==T__4) {
 				{
 				setState(20);
-				((ConstraintQIdContext)_localctx).m_op = match(T__3);
+				((ConstraintQIdContext)_localctx).m_op = match(T__4);
 				}
 			}
 
@@ -209,10 +218,10 @@ public class QIdParser extends Parser {
 	public static class BasicQIdContext extends ParserRuleContext {
 		public Token ID;
 		public List<Token> m_ids = new ArrayList<Token>();
-		public Token s5;
 		public Token s6;
-		public Token _tset81;
-		public Token _tset94;
+		public Token s7;
+		public Token _tset87;
+		public Token _tset100;
 		public List<TerminalNode> ID() { return getTokens(QIdParser.ID); }
 		public TerminalNode ID(int i) {
 			return getToken(QIdParser.ID, i);
@@ -231,37 +240,37 @@ public class QIdParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(25);
-			((BasicQIdContext)_localctx)._tset81 = _input.LT(1);
+			((BasicQIdContext)_localctx)._tset87 = _input.LT(1);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__4) | (1L << T__5) | (1L << ID))) != 0)) ) {
-				((BasicQIdContext)_localctx)._tset81 = (Token)_errHandler.recoverInline(this);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << ID))) != 0)) ) {
+				((BasicQIdContext)_localctx)._tset87 = (Token)_errHandler.recoverInline(this);
 			}
 			else {
 				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			((BasicQIdContext)_localctx).m_ids.add(((BasicQIdContext)_localctx)._tset81);
+			((BasicQIdContext)_localctx).m_ids.add(((BasicQIdContext)_localctx)._tset87);
 			setState(30);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__6) {
+			while (_la==T__7) {
 				{
 				{
 				setState(26);
-				match(T__6);
+				match(T__7);
 				setState(27);
-				((BasicQIdContext)_localctx)._tset94 = _input.LT(1);
+				((BasicQIdContext)_localctx)._tset100 = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__4) | (1L << T__5) | (1L << ID))) != 0)) ) {
-					((BasicQIdContext)_localctx)._tset94 = (Token)_errHandler.recoverInline(this);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << ID))) != 0)) ) {
+					((BasicQIdContext)_localctx)._tset100 = (Token)_errHandler.recoverInline(this);
 				}
 				else {
 					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				((BasicQIdContext)_localctx).m_ids.add(((BasicQIdContext)_localctx)._tset94);
+				((BasicQIdContext)_localctx).m_ids.add(((BasicQIdContext)_localctx)._tset100);
 				}
 				}
 				setState(32);
@@ -282,17 +291,17 @@ public class QIdParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13$\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\f$\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\3\2\3\2\3\2\3\2\3\2\7\2\16\n\2\f\2\16\2\21\13\2\3\2\3\2\5\2"+
 		"\25\n\2\3\3\5\3\30\n\3\3\3\3\3\3\4\3\4\3\4\7\4\37\n\4\f\4\16\4\"\13\4"+
-		"\3\4\2\2\5\2\4\6\2\3\4\2\7\b\n\n\2$\2\b\3\2\2\2\4\27\3\2\2\2\6\33\3\2"+
-		"\2\2\b\24\5\6\4\2\t\n\7\3\2\2\n\17\5\4\3\2\13\f\7\4\2\2\f\16\5\4\3\2\r"+
-		"\13\3\2\2\2\16\21\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\22\3\2\2\2\21"+
-		"\17\3\2\2\2\22\23\7\5\2\2\23\25\3\2\2\2\24\t\3\2\2\2\24\25\3\2\2\2\25"+
-		"\3\3\2\2\2\26\30\7\6\2\2\27\26\3\2\2\2\27\30\3\2\2\2\30\31\3\2\2\2\31"+
-		"\32\5\2\2\2\32\5\3\2\2\2\33 \t\2\2\2\34\35\7\t\2\2\35\37\t\2\2\2\36\34"+
-		"\3\2\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!\7\3\2\2\2\" \3\2\2\2\6\17"+
-		"\24\27 ";
+		"\3\4\2\2\5\2\4\6\2\4\3\2\4\5\4\2\b\t\13\13\2$\2\b\3\2\2\2\4\27\3\2\2\2"+
+		"\6\33\3\2\2\2\b\24\5\6\4\2\t\n\7\3\2\2\n\17\5\4\3\2\13\f\t\2\2\2\f\16"+
+		"\5\4\3\2\r\13\3\2\2\2\16\21\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\22\3"+
+		"\2\2\2\21\17\3\2\2\2\22\23\7\6\2\2\23\25\3\2\2\2\24\t\3\2\2\2\24\25\3"+
+		"\2\2\2\25\3\3\2\2\2\26\30\7\7\2\2\27\26\3\2\2\2\27\30\3\2\2\2\30\31\3"+
+		"\2\2\2\31\32\5\2\2\2\32\5\3\2\2\2\33 \t\3\2\2\34\35\7\n\2\2\35\37\t\3"+
+		"\2\2\36\34\3\2\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!\7\3\2\2\2\" \3"+
+		"\2\2\2\6\17\24\27 ";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
