@@ -1089,7 +1089,11 @@ ALTER TABLE "router_short_url"
 ;;
 
 ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck9_router_short_url" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck9_router_short_url" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck10_router_short_url" CHECK("modified" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_short_url"
