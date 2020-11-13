@@ -163,7 +163,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER BOOKMARKS                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RowSet rowSet3 = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `owner` = ?0", amiLogin);
+		RowSet rowSet3 = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `owner` = ?0 ORDER BY `rank`", amiLogin);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET OTHER INFO                                                                                             */
