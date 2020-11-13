@@ -23,21 +23,43 @@ public class GetHashInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String hash = arguments.get("hash");
+		List<Row> rowList;
 
-		if(hash == null)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String id = arguments.get("id");
+
+		if(id != null)
 		{
-			throw new Exception("invalid usage");
+			rowList = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `id` = ?0 AND (`shared` = 1 OR `owner` = ?1)", id, m_AMIUser).getAll();
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("undefined id `" + id + "`");
+			}
+		}
+		else
+		{
+			String hash = arguments.get("hash");
+
+			if(hash != null)
+			{
+				rowList = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `hash` = ?0 AND (`shared` = 1 OR `owner` = ?1)", hash, m_AMIUser).getAll();
+
+				if(rowList.size() != 1)
+				{
+					throw new Exception("undefined hash `" + hash + "`");
+				}
+			}
+			else
+			{
+				throw new Exception("invalid usage");
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `hash` = ?0 AND (`shared` = 1 OR `owner` = ?1)", hash, m_AMIUser).getAll();
 
-		if(rowList.size() != 1)
-		{
-				throw new Exception("undefined hash `" + hash + "`");
-		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -72,7 +94,7 @@ public class GetHashInfo extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-hash=\"\"";
+		return "(-id=\"\" | -hash=\"\")";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
