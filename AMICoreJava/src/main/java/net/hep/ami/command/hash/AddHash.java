@@ -26,8 +26,8 @@ public class AddHash extends AbstractCommand
 		String name = arguments.get("name");
 		String json = arguments.get("json");
 
-		boolean shared = arguments.containsKey("shared");
-		boolean expire = arguments.containsKey("expire");
+		String shared = arguments.getOrDefault("shared", "0");
+		String expire = arguments.getOrDefault("expire", "0");
 
 		if(json == null)
 		{
@@ -60,8 +60,8 @@ public class AddHash extends AbstractCommand
 			hash,
 			name,
 			json,
-			shared ? 1 : 0,
-			expire ? 1 : 0,
+			shared,
+			expire,
 			m_AMIUser
 		);
 
@@ -69,7 +69,8 @@ public class AddHash extends AbstractCommand
 
 		if(update.getNbOfUpdatedRows() == 1)
 		{
-			return new StringBuilder().append("<rowset>")
+			return new StringBuilder().append("<info><![CDATA[done with success]]></info>")
+			                          .append("<rowset>")
 			                          .append("<row>")
 			                          .append("<field name=\"hash\"><![CDATA[").append(hash).append("]]></field>")
 			                          .append("</row>")
