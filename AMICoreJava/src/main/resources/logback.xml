@@ -12,16 +12,8 @@
 		</encoder>
 	</appender>
 
-	<appender name="APACHE" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder class="org.apache.juli.logging.ch.qos.logback.core.ConsoleAppender">
-			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
-		</encoder>
-	</appender>
-
 	<root level="WARN">
 		<appender-ref ref="AMIFATAL" />
-
-		<appender-ref ref="APACHE" />
 
 		<appender-ref ref="STDOUT" />
 	</root>
