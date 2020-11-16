@@ -28,7 +28,7 @@
 		<appender-ref ref="STDOUT" />
 	</root>
 
-	<logger name="com.zaxxer.hikari" level="OFF">
+	<logger name="com.zaxxer.hikari" level="debug" additivity="false">
 	</logger>
 
 	<logger name="net.spy.memcached" level="OFF">
