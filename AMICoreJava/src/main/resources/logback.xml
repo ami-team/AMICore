@@ -11,24 +11,22 @@
 			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
 		</encoder>
 	</appender>
-<!--
-	<appender name="LOGFILE" class="ch.qos.logback.core.FileAppender">
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+	<appender name="APACHE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="org.apache.juli.logging.ch.qos.logback.core.ConsoleAppender">
 			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
 		</encoder>
-		<file>ami.log</file>
-		<append>true</append>
 	</appender>
--->
+
 	<root level="WARN">
 		<appender-ref ref="AMIFATAL" />
-<!--
-		<appender-ref ref="LOGFILE" />
--->
+
+		<appender-ref ref="APACHE" />
+
 		<appender-ref ref="STDOUT" />
 	</root>
 
-	<logger name="com.zaxxer.hikari" level="debug" additivity="false">
+	<logger name="com.zaxxer.hikari" level="DEBUG">
 	</logger>
 
 	<logger name="net.spy.memcached" level="OFF">
