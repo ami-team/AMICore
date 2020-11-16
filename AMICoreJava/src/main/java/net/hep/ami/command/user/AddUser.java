@@ -5,8 +5,8 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
-
 import net.hep.ami.utility.*;
+
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
@@ -31,6 +31,15 @@ public class AddUser extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
+		String commandName = ConfigSingleton.getProperty("user_override_add");
+
+		if(!Empty.is(commandName, Empty.STRING_EMPTY | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+		{
+			return executeCommand(commandName, arguments);
+		}
+
+		/**/
+
 		String amiLogin = arguments.get("amiLogin");
 		String amiPassword = arguments.get("amiPassword");
 		String firstName = arguments.get("firstName");

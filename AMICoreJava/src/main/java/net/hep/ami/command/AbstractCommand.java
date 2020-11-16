@@ -201,17 +201,17 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected String executeCommand(@NotNull String command, boolean checkRoles) throws Exception
+	protected StringBuilder executeCommand(@NotNull String command) throws Exception
 	{
-		return CommandSingleton.executeCommand(command, checkRoles, m_transactionId);
+		return CommandSingleton.chainCommand(command, m_userRoles, m_arguments, m_transactionId);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected String executeCommand(@NotNull String command, @NotNull Map<String, String> arguments, boolean checkRoles) throws Exception
+	protected StringBuilder executeCommand(@NotNull String command, @NotNull Map<String, String> arguments) throws Exception
 	{
-		return CommandSingleton.executeCommand(command, arguments, checkRoles, m_transactionId);
+		return CommandSingleton.chainCommand(command, m_userRoles, arguments, m_transactionId);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

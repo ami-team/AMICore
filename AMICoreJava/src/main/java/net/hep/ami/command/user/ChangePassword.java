@@ -2,6 +2,7 @@ package net.hep.ami.command.user;
 
 import java.util.*;
 
+import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
@@ -24,6 +25,15 @@ public class ChangePassword extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
+		String commandName = ConfigSingleton.getProperty("user_override_change_password");
+
+		if(!Empty.is(commandName, Empty.STRING_EMPTY | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+		{
+			return executeCommand(commandName, arguments);
+		}
+
+		/**/
+
 		String amiLogin = arguments.get("amiLogin");
 		String amiPasswordOld = arguments.get("amiPasswordOld");
 		String amiPasswordNew = arguments.get("amiPasswordNew");

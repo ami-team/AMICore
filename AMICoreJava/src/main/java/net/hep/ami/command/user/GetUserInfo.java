@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
@@ -109,6 +110,15 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
+			String commandName = ConfigSingleton.getProperty("user_override_change_certificat");
+
+			if(!Empty.is(commandName, Empty.STRING_EMPTY | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			{
+				return executeCommand(commandName, arguments);
+			}
+
+			/**/
+
 			String sql;
 
 			if(!vomsEnabled)
@@ -134,6 +144,15 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
+			String commandName = ConfigSingleton.getProperty("user_override_change_certificat");
+
+			if(!Empty.is(commandName, Empty.STRING_EMPTY | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			{
+				return executeCommand(commandName, arguments);
+			}
+
+			/**/
+
 			String sql;
 
 			if(!vomsEnabled)
