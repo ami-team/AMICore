@@ -83,7 +83,7 @@ public class LogSingleton
 			name = logger.getName().toLowerCase();
 
 			/**/ if(name.contains("hikari")) {
-				logger.setLevel(Level.OFF);
+				//logger.setLevel(Level.OFF);
 			}
 			else if(name.contains("memcached")) {
 				logger.setLevel(Level.OFF);
