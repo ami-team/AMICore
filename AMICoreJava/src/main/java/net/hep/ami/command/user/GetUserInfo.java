@@ -110,9 +110,9 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
-			String commandName = ConfigSingleton.getProperty("user_override_change_certificat");
+			String commandName = ConfigSingleton.getProperty("user_override_info");
 
-			if(!Empty.is(commandName, Empty.STRING_EMPTY | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			if(!Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
 			{
 				return executeCommand(commandName, arguments);
 			}
@@ -144,9 +144,9 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
-			String commandName = ConfigSingleton.getProperty("user_override_change_certificat");
+			String commandName = ConfigSingleton.getProperty("user_override_info");
 
-			if(!Empty.is(commandName, Empty.STRING_EMPTY | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			if(!Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
 			{
 				return executeCommand(commandName, arguments);
 			}

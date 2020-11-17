@@ -33,7 +33,7 @@ public class AddUser extends AbstractCommand
 	{
 		String commandName = ConfigSingleton.getProperty("user_override_add");
 
-		if(!Empty.is(commandName, Empty.STRING_EMPTY | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+		if(!Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
 		{
 			return executeCommand(commandName, arguments);
 		}
