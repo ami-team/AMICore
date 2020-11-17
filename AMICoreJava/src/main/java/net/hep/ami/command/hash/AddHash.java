@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.Empty;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -58,7 +59,7 @@ public class AddHash extends AbstractCommand
 
 		String rank = getQuerier("self").executeSQLQuery("router_short_url", "SELECT max(`rank`) + 1 FROM `router_short_url` WHERE `owner` = ?0", m_AMIUser).getAll().get(0).getValue(0);
 
-		if("@NULL".equals(rank))
+		if(Empty.is(rank, Empty.STRING_AMI_NULL))
 		{
 			rank = "0";
 		}
