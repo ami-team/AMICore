@@ -247,8 +247,35 @@ public class FrontEnd extends HttpServlet
 
 	@NotNull
 	@Contract("_ -> new")
-	private static Tuple4<String, String, String, String> getDNs(@NotNull HttpServletRequest req)
+	private static Tuple4<String, String, String, String> getDNs(@NotNull Map<String, String> arguments, @NotNull HttpServletRequest req)
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(arguments.containsKey("clientDN")
+		   &&
+		   arguments.containsKey("issuerDN")
+		   &&
+		   arguments.containsKey("notBefore")
+		   &&
+		   arguments.containsKey("notAfter")
+		 ) {
+			try
+			{
+				return new Tuple4<>(
+					SecuritySingleton.decrypt(arguments.get("clientDN")),
+					SecuritySingleton.decrypt(arguments.get("issuerDN")),
+					SecuritySingleton.decrypt(arguments.get("notBefore")),
+					SecuritySingleton.decrypt(arguments.get("notAfter"))
+				);
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
 		if(certificates != null)
@@ -270,6 +297,8 @@ public class FrontEnd extends HttpServlet
 				}
 			}
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new Tuple4<>(
 			"",
@@ -514,7 +543,7 @@ public class FrontEnd extends HttpServlet
 		/* GET CLIENT_DN, ISSUER_DN, AMI_USER, AMI_PASS                                                               */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple4<String, String, String, String> dns = getDNs(request);
+		Tuple4<String, String, String, String> dns = getDNs(arguments, request);
 
 		String clientDN = dns.x;
 		String issuerDN = dns.y;
