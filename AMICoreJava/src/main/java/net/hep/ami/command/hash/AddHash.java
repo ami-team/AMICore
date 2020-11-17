@@ -58,6 +58,11 @@ public class AddHash extends AbstractCommand
 
 		String rank = getQuerier("self").executeSQLQuery("router_short_url", "SELECT max(`rank`) + 1 FROM `router_short_url` WHERE `owner` = ?0", m_AMIUser).getAll().get(0).getValue(0);
 
+		if("@NULL".equals(rank))
+		{
+			rank = "0";
+		}
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("router_short_url", "INSERT INTO `router_short_url` (`hash`, `name`, `rank`, `json`, `shared`, `expire`, `owner`, `created`, `modified`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
