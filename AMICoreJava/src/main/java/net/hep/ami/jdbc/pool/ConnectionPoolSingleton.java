@@ -88,7 +88,9 @@ public class ConnectionPoolSingleton
 		/**/			config.setPoolName(catalog.replace(":", "|"));
 		/**/		}
 		/**/
-		/**/		config.setMaximumPoolSize(ConfigSingleton.getProperty("pool_size", 10));
+		/**/		config.setMinimumIdle(ConfigSingleton.getProperty("pool_min_idle", 10));
+		/**/
+		/**/		config.setMaximumPoolSize(ConfigSingleton.getProperty("pool_max_size", 50));
 		/**/
 		/**/		config.setConnectionTimeout(ConfigSingleton.getProperty("pool_conn_timeout", 30000));
 		/**/
