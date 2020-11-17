@@ -70,23 +70,29 @@ public class LogSingleton
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Level level = Level.toLevel(ConfigSingleton.getProperty("log_level", defaultLogLevel));
+		boolean devMode = ConfigSingleton.getProperty("dev_mode", false);
+
+		String logLevel = ConfigSingleton.getProperty("log_level", defaultLogLevel);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		String name;
+
+		Level level = Level.toLevel(logLevel);
 
 		for(Logger logger: context.getLoggerList())
 		{
 			name = logger.getName().toLowerCase();
 
 			/**/ if(name.contains("hikari")) {
-				//logger.setLevel(Level.OFF);
+				logger.setLevel(devMode ? Level.DEBUG : Level.OFF);
 			}
 			else if(name.contains("memcached")) {
-				logger.setLevel(Level.OFF);
+				logger.setLevel(devMode ? Level.DEBUG : Level.OFF);
 			}
 			else {
 				logger.setLevel(level);
