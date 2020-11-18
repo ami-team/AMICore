@@ -1,8 +1,8 @@
 package net.hep.ami.command;
 
-import java.security.*;
 import java.math.*;
 import java.util.*;
+import java.security.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
@@ -19,7 +19,6 @@ public abstract class AbstractCommand
 
 	protected final String m_clientDN;
 	protected final String m_issuerDN;
-
 	protected final String m_notBefore;
 	protected final String m_notAfter;
 
@@ -55,7 +54,6 @@ public abstract class AbstractCommand
 
 		m_clientDN = arguments.containsKey("clientDN") ? arguments.remove("clientDN") : "";
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
-
 		m_notBefore = arguments.containsKey("notBefore") ? arguments.remove("notBefore") : "";
 		m_notAfter  = arguments.containsKey("notAfter" ) ? arguments.remove("notAfter" ) : "";
 
@@ -323,12 +321,12 @@ public abstract class AbstractCommand
 		return result;
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	public abstract StringBuilder main(@NotNull Map<String, String> arguments) throws Exception;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Contract(pure = true)
@@ -337,7 +335,7 @@ public abstract class AbstractCommand
 		return "";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Contract(pure = true)
@@ -346,5 +344,5 @@ public abstract class AbstractCommand
 		return "";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }
