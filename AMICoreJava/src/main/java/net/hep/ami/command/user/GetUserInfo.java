@@ -59,9 +59,13 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
-			if(!m_isSecure)
-			{
-				throw new Exception("You must connect using https");
+			if(!m_isSecure
+			   ||
+			   Empty.is(m_clientDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
+			   ||
+			   Empty.is(m_issuerDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
+			 ) {
+				throw new Exception("You must connect using https and provide a certificate");
 			}
 
 			String commandName = ConfigSingleton.getProperty("user_override_info");
@@ -98,11 +102,6 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
-			if(!m_isSecure)
-			{
-				throw new Exception("You must connect using https");
-			}
-
 			String commandName = ConfigSingleton.getProperty("user_override_info");
 
 			if(Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
