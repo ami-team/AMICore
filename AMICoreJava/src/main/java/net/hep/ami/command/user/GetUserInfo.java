@@ -343,7 +343,7 @@ public class GetUserInfo extends AbstractCommand
 			}
 			else
 			{
-				foo = "no change"
+				foo = "no change";
 			}
 
 			/*----------------------------------------------------------------------------------------------------*/
