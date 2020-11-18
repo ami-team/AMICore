@@ -262,7 +262,7 @@ public class GetUserInfo extends AbstractCommand
 	private String changeCert(Querier querier, String amiLogin, String amiPassword, boolean vomsEnabled, int mode) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
-
+		String foo = "";
 		if(mode == MODE_ATTACH)
 		{
 			if(!m_isSecure
@@ -336,7 +336,7 @@ public class GetUserInfo extends AbstractCommand
 			}
 
 			/*----------------------------------------------------------------------------------------------------*/
-
+			foo = update.getSQL();
 			if(update.getNbOfUpdatedRows() != 1)
 			{
 				return "<error><![CDATA[nothing done]]></error>";
@@ -347,7 +347,7 @@ public class GetUserInfo extends AbstractCommand
 
 		/*--------------------------------------------------------------------------------------------------------*/
 
-		return "<info><![CDATA[done with success]]></info>";
+		return "<info><![CDATA[" + foo + " done with success]]></info>";
 
 		/*--------------------------------------------------------------------------------------------------------*/
 	}
