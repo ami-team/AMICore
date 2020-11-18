@@ -65,7 +65,7 @@ public class GetUserInfo extends AbstractCommand
 			   ||
 			   Empty.is(m_issuerDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
 			 ) {
-				throw new Exception("You must connect using https and provide a certificate");
+				throw new Exception("You must connect using https and provide a valid certificate");
 			}
 
 			String commandName = ConfigSingleton.getProperty("user_override_info");
