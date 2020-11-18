@@ -390,30 +390,29 @@ public class RoleSingleton
 
 		if(tuple == null)
 		{
-			throw new Exception("could not find command validator `" + validatorClass + "`");
+			throw new Exception("could not find role validator `" + validatorClass + "`");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean isOk;
+		CommandValidator validator;
 
 		try
 		{
-			isOk = tuple.z.newInstance().check(command, userRoles, arguments);
+			validator = tuple.z.newInstance();
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute command validator `" + validatorClass + "`", e);
+			throw new Exception("could not instanciate role validator `" + validatorClass + "`", e);
 		}
 
-		if(!isOk)
-		{
-			throw new Exception("operation not authorized");
-		}
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		/*-----------------------------------------------------------------*/
+		validator.check(command, userRoles, arguments);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -433,28 +432,27 @@ public class RoleSingleton
 
 		if(tuple == null)
 		{
-			throw new Exception("could not find new user validator `" + validatorClass + "`");
+			throw new Exception("could not find role validator `" + validatorClass + "`");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean isOk;
+		NewUserValidator validator;
 
 		try
 		{
-			isOk = tuple.z.newInstance().check(amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
+			validator = tuple.z.newInstance();
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute user validator `" + validatorClass + "`", e);
+			throw new Exception("could not instanciate role validator `" + validatorClass + "`", e);
 		}
 
-		if(!isOk)
-		{
-			throw new Exception("operation not authorized");
-		}
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		validator.check(amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -476,28 +474,27 @@ public class RoleSingleton
 
 		if(tuple == null)
 		{
-			throw new Exception("could not find cert only validator `" + validatorClass + "`");
+			throw new Exception("could not find role validator `" + validatorClass + "`");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean isOk;
+		CertOnlyValidator validator;
 
 		try
 		{
-			isOk = tuple.z.newInstance().check(amiLogin, amiPassword, clientDN, issuerDN);
+			validator = tuple.z.newInstance();
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not execute user validator `" + validatorClass + "`", e);
+			throw new Exception("could not instanciate role validator `" + validatorClass + "`", e);
 		}
 
-		if(!isOk)
-		{
-			throw new Exception("operation not authorized");
-		}
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		validator.check(amiLogin, amiPassword, clientDN, issuerDN);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
