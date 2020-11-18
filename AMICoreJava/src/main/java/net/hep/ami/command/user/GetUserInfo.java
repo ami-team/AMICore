@@ -70,20 +70,20 @@ public class GetUserInfo extends AbstractCommand
 				throw new Exception("You must connect using https and provide a valid certificate");
 			}
 
+			RoleSingleton.checkCertOnly(
+				ConfigSingleton.getProperty("cert_validator_class"),
+				amiLogin,
+				amiPassword,
+				m_clientDN,
+				m_issuerDN
+			);
+
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			String sql;
 
 			if(vomsEnabled)
 			{
-				RoleSingleton.checkCertOnly(
-					ConfigSingleton.getProperty("cert_validator_class"),
-					amiLogin,
-					amiPassword,
-					m_clientDN,
-					m_issuerDN
-				);
-
 				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '1' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
 			else
