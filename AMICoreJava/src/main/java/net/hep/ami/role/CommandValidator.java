@@ -8,7 +8,7 @@ abstract public class CommandValidator
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	abstract public boolean check(
+	abstract public void check(
 		@NotNull String command,
 		@NotNull Set<String> userRoles,
 		@NotNull Map<String, String> arguments

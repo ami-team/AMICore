@@ -6,7 +6,7 @@ abstract public class NewUserValidator
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	abstract public boolean check(
+	abstract public void check(
 		@NotNull String amiLogin,
 		@NotNull String amiPassword,
 		@Nullable String clientDN,
