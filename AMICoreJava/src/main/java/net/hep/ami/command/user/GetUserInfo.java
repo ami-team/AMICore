@@ -115,34 +115,32 @@ public class GetUserInfo extends AbstractCommand
 				throw new Exception("You must connect using https");
 			}
 
-			/**/
-
 			String commandName = ConfigSingleton.getProperty("user_override_info");
 
-			if(!Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			if(Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
 			{
-				return executeCommand(commandName, arguments);
-			}
+				String sql;
 
-			/**/
+				if(!vomsEnabled)
+				{
+					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				}
+				else
+				{
+					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '1' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				}
 
-			String sql;
+				Update update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, amiLogin, amiPassword);
 
-			if(!vomsEnabled)
-			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				return new StringBuilder(
+					update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
+					                                 : "<error><![CDATA[nothing done]]></error>"
+				);
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '1' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				return executeCommand(commandName, arguments);
 			}
-
-			Update update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, amiLogin, amiPassword);
-
-			return new StringBuilder(
-				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
-				                                 : "<error><![CDATA[nothing done]]></error>"
-			);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -156,34 +154,32 @@ public class GetUserInfo extends AbstractCommand
 				throw new Exception("You must connect using https");
 			}
 
-			/**/
-
 			String commandName = ConfigSingleton.getProperty("user_override_info");
 
-			if(!Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			if(Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
 			{
-				return executeCommand(commandName, arguments);
-			}
+				String sql;
 
-			/**/
+				if(!vomsEnabled)
+				{
+					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				}
+				else
+				{
+					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '0' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				}
 
-			String sql;
+				Update update = querier.executeSQLUpdate("router_user", sql, "", "", amiLogin, amiPassword);
 
-			if(!vomsEnabled)
-			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				return new StringBuilder(
+					update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
+					                                 : "<error><![CDATA[nothing done]]></error>"
+				);
 			}
 			else
 			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '0' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
+				return executeCommand(commandName, arguments);
 			}
-
-			Update update = querier.executeSQLUpdate("router_user", sql, "", "", amiLogin, amiPassword);
-
-			return new StringBuilder(
-				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
-				                                 : "<error><![CDATA[nothing done]]></error>"
-			);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
