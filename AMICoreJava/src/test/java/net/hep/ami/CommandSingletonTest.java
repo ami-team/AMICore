@@ -415,6 +415,7 @@ public class CommandSingletonTest
 //			System.out.println(new QId("A.B.C{D.E.#}"));
 //			System.out.println(new QId("A.B.#{D.E.F,!G.H.*}"));
 
+			System.out.println(CommandSingleton.executeCommand("GetSessionInfo", false).replace(">", ">\n"));
 
 			System.out.println(System.getProperty("os.name").startsWith("Windows"));
 
