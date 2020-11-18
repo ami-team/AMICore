@@ -290,7 +290,7 @@ public class CommandSingleton
 
 		try
 		{
-			userRoles = RoleSingleton.checkRoles(router, command, arguments, tuple.w, checkRoles);
+			userRoles = RoleSingleton.checkRoles(router, tuple.x, arguments, tuple.w, checkRoles);
 		}
 		finally
 		{
@@ -308,7 +308,7 @@ public class CommandSingleton
 		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		             .append("\n")
 		             .append("<AMIMessage>")
-		             .append("<command><![CDATA[").append(command).append("]]></command>")
+		             .append("<command><![CDATA[").append(tuple.x).append("]]></command>")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
