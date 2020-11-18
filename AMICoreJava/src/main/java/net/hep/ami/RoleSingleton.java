@@ -14,11 +14,11 @@ public class RoleSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class Tuple1 extends Tuple3<String, String, Constructor<CommandValidator>>
+	private static final class CommandValidatorTuple extends Tuple3<String, String, Constructor<CommandValidator>>
 	{
 		private static final long serialVersionUID = -5126479111138460006L;
 
-		private Tuple1(@NotNull String _x, @NotNull String _y, @NotNull Constructor<CommandValidator> _z)
+		private CommandValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<CommandValidator> _z)
 		{
 			super(_x, _y, _z);
 		}
@@ -26,11 +26,11 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class Tuple2 extends Tuple3<String, String, Constructor<NewUserValidator>>
+	private static final class NewUserValidatorTuple extends Tuple3<String, String, Constructor<NewUserValidator>>
 	{
 		private static final long serialVersionUID = 6410545925675367511L;
 
-		private Tuple2(@NotNull String _x, @NotNull String _y, @NotNull Constructor<NewUserValidator> _z)
+		private NewUserValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<NewUserValidator> _z)
 		{
 			super(_x, _y, _z);
 		}
@@ -38,8 +38,21 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple1> s_commandRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
-	private static final Map<String, Tuple2> s_newUserRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final class CertOnlyValidatorTuple extends Tuple3<String, String, Constructor<CertOnlyValidator>>
+	{
+		private static final long serialVersionUID = 3958820883667798463L;
+
+		private CertOnlyValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<CertOnlyValidator> _z)
+		{
+			super(_x, _y, _z);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final Map<String, CommandValidatorTuple> s_commandRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, NewUserValidatorTuple> s_newUserRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, CertOnlyValidatorTuple> s_certOnlyRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -112,7 +125,7 @@ public class RoleSingleton
 		{
 			s_commandRoleValidators.put(
 				className,
-				new Tuple1(
+				new CommandValidatorTuple(
 					className,
 					clazz.getMethod("help").invoke(null).toString(),
 					(Constructor<CommandValidator>) clazz.getConstructor()
@@ -123,10 +136,21 @@ public class RoleSingleton
 		{
 			s_newUserRoleValidators.put(
 				className,
-				new Tuple2(
+				new NewUserValidatorTuple(
 					className,
 					clazz.getMethod("help").invoke(null).toString(),
 					(Constructor<NewUserValidator>) clazz.getConstructor()
+				)
+			);
+		}
+		else if(ClassSingleton.extendsClass(clazz, CertOnlyValidator.class))
+		{
+			s_certOnlyRoleValidators.put(
+				className,
+				new CertOnlyValidatorTuple(
+					className,
+					clazz.getMethod("help").invoke(null).toString(),
+					(Constructor<CertOnlyValidator>) clazz.getConstructor()
 				)
 			);
 		}
@@ -362,7 +386,7 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple1 tuple = s_commandRoleValidators.get(validatorClass.trim());
+		CommandValidatorTuple tuple = s_commandRoleValidators.get(validatorClass.trim());
 
 		if(tuple == null)
 		{
@@ -405,11 +429,11 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2 tuple = s_newUserRoleValidators.get(validatorClass.trim());
+		NewUserValidatorTuple tuple = s_newUserRoleValidators.get(validatorClass.trim());
 
 		if(tuple == null)
 		{
-			throw new Exception("could not find user validator `" + validatorClass + "`");
+			throw new Exception("could not find new user validator `" + validatorClass + "`");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -437,6 +461,49 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public static void checkCertOnly(@Nullable String validatorClass, @NotNull String amiLogin, @NotNull String amiPassword, @Nullable String clientDN, @Nullable String issuerDN) throws Exception
+	{
+		if(Empty.is(validatorClass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK))
+		{
+			return;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET VALIDATOR                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		CertOnlyValidatorTuple tuple = s_certOnlyRoleValidators.get(validatorClass.trim());
+
+		if(tuple == null)
+		{
+			throw new Exception("could not find cert only validator `" + validatorClass + "`");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* EXECUTE VALIDATOR                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean isOk;
+
+		try
+		{
+			isOk = tuple.z.newInstance().check(amiLogin, amiPassword, clientDN, issuerDN);
+		}
+		catch(Exception e)
+		{
+			throw new Exception("could not execute user validator `" + validatorClass + "`", e);
+		}
+
+		if(!isOk)
+		{
+			throw new Exception("operation not authorized");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@NotNull
 	public static StringBuilder listRoleValidator()
 	{
@@ -446,7 +513,7 @@ public class RoleSingleton
 
 		result.append("<rowset type=\"commandRoleValidator\">");
 
-		for(Tuple1 tuple: s_commandRoleValidators.values())
+		for(CommandValidatorTuple tuple: s_commandRoleValidators.values())
 		{
 			result.append("<row>")
 			     .append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
@@ -461,12 +528,27 @@ public class RoleSingleton
 
 		result.append("<rowset type=\"newUserRoleValidator\">");
 
-		for(Tuple2 tuple: s_newUserRoleValidators.values())
+		for(NewUserValidatorTuple tuple: s_newUserRoleValidators.values())
 		{
 			result.append("<row>")
 			      .append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
 			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
 			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"certOnlyRoleValidator\">");
+
+		for(CertOnlyValidatorTuple tuple: s_certOnlyRoleValidators.values())
+		{
+			result.append("<row>")
+					.append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
+					.append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
+					.append("</row>")
 			;
 		}
 

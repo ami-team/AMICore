@@ -59,6 +59,8 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			if(!m_isSecure
 			   ||
 			   Empty.is(m_clientDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
@@ -68,32 +70,35 @@ public class GetUserInfo extends AbstractCommand
 				throw new Exception("You must connect using https and provide a valid certificate");
 			}
 
-			String commandName = ConfigSingleton.getProperty("user_override_info");
+			RoleSingleton.checkCertOnly(
+				ConfigSingleton.getProperty("cert_validator_class"),
+				amiLogin,
+				amiPassword,
+				m_clientDN,
+				m_issuerDN
+			);
 
-			if(Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			String sql;
+
+			if(!vomsEnabled)
 			{
-				String sql;
-
-				if(!vomsEnabled)
-				{
-					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-				}
-				else
-				{
-					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '1' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-				}
-
-				Update update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, amiLogin, amiPassword);
-
-				return new StringBuilder(
-					update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
-					                                 : "<error><![CDATA[nothing done]]></error>"
-				);
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
 			else
 			{
-				return executeCommand(commandName, arguments);
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '1' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
+
+			Update update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, amiLogin, amiPassword);
+
+			return new StringBuilder(
+				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
+												 : "<error><![CDATA[nothing done]]></error>"
+			);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -102,32 +107,27 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
-			String commandName = ConfigSingleton.getProperty("user_override_info");
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+			String sql;
+
+			if(!vomsEnabled)
 			{
-				String sql;
-
-				if(!vomsEnabled)
-				{
-					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-				}
-				else
-				{
-					sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '0' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-				}
-
-				Update update = querier.executeSQLUpdate("router_user", sql, "", "", amiLogin, amiPassword);
-
-				return new StringBuilder(
-					update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
-					                                 : "<error><![CDATA[nothing done]]></error>"
-				);
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
 			else
 			{
-				return executeCommand(commandName, arguments);
+				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '0' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
 			}
+
+			Update update = querier.executeSQLUpdate("router_user", sql, "", "", amiLogin, amiPassword);
+
+			return new StringBuilder(
+				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
+												 : "<error><![CDATA[nothing done]]></error>"
+			);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
