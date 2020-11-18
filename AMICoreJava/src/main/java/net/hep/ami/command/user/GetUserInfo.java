@@ -267,9 +267,9 @@ public class GetUserInfo extends AbstractCommand
 		{
 			if(!m_isSecure
 			   ||
-			   Empty.is(m_clientDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
+			   Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
 			   ||
-			   Empty.is(m_issuerDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
+			   Empty.is(m_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
 			 ) {
 				throw new Exception("You must connect using https and provide a valid certificate");
 			}
@@ -332,7 +332,7 @@ public class GetUserInfo extends AbstractCommand
 			}
 			else
 			{
-				throw new Exception("Internl error");
+				throw new Exception("Internal error");
 			}
 
 			/*----------------------------------------------------------------------------------------------------*/

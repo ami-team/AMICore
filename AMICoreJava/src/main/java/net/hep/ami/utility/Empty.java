@@ -13,6 +13,10 @@ public class Empty
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public static final int STRING_NULL_EMPTY_BLANK = STRING_JAVA_NULL | STRING_AMI_NULL | STRING_EMPTY | STRING_BLANK;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Contract("null, _ -> true")
 	public static boolean is(@Nullable Object o, int mask)
 	{

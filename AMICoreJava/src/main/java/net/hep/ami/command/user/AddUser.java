@@ -33,7 +33,7 @@ public class AddUser extends AbstractCommand
 	{
 		String commandName = ConfigSingleton.getProperty("user_override_add");
 
-		if(!Empty.is(commandName, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK))
+		if(!Empty.is(commandName, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			return executeCommand(commandName, arguments);
 		}
@@ -66,7 +66,7 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean generatedPassword = Empty.is(amiPassword, Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK);
+		boolean generatedPassword = Empty.is(amiPassword, Empty.STRING_NULL_EMPTY_BLANK);
 
 		if(generatedPassword)
 		{
@@ -111,8 +111,8 @@ public class AddUser extends AbstractCommand
 		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6)",
 			amiLogin,
 			amiPassword,
-			!Empty.is(clientDN, Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK) ? clientDN : null,
-			!Empty.is(issuerDN, Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK) ? issuerDN : null,
+			!Empty.is(clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? clientDN : null,
+			!Empty.is(issuerDN, Empty.STRING_NULL_EMPTY_BLANK) ? issuerDN : null,
 			firstName,
 			lastName,
 			email
