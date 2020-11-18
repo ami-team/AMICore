@@ -47,62 +47,11 @@ public class GetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Querier querier = getAdminQuerier("self");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* GET USER INFO                                                                                              */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?0", amiLogin).getAll(10, 0);
-
-		String AMIUser;
-		String clientDNInAMI;
-		String issuerDNInAMI;
-		String firstName;
-		String lastName;
-		String email;
-		String country;
-		boolean valid;
-
-		if(rowList.size() == 1)
-		{
-			Row row1 = rowList.get(0);
-
-			AMIUser = row1.getValue(0);
-			clientDNInAMI = row1.getValue(1);
-			issuerDNInAMI = row1.getValue(2);
-			firstName = row1.getValue(3);
-			lastName = row1.getValue(4);
-			email = row1.getValue(5);
-			country = row1.getValue(6);
-			valid = row1.getValue(7, false);
-		}
-		else
-		{
-			if(exception)
-			{
-				throw new Exception("invalid user `" + amiLogin + "`");
-			}
-
-			AMIUser = GUEST_USER;
-			clientDNInAMI = "";
-			issuerDNInAMI = "";
-			firstName = GUEST_USER;
-			lastName = GUEST_USER;
-			email = "N/A";
-			country = "N/A";
-			valid = true;
-		}
-
-		if("@NULL".equals(clientDNInAMI)) {
-			clientDNInAMI = "";
-		}
-
-		if("@NULL".equals(issuerDNInAMI)) {
-			issuerDNInAMI = "";
-		}
-
 		boolean vomsEnabled = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Querier querier = getAdminQuerier("self");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* ATTACH CERTIFICATE                                                                                         */
@@ -180,6 +129,59 @@ public class GetUserInfo extends AbstractCommand
 			{
 				return executeCommand(commandName, arguments);
 			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET USER INFO                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `country`, `valid` FROM `router_user` WHERE `AMIUser` = ?0", amiLogin).getAll(10, 0);
+
+		String AMIUser;
+		String clientDNInAMI;
+		String issuerDNInAMI;
+		String firstName;
+		String lastName;
+		String email;
+		String country;
+		boolean valid;
+
+		if(rowList.size() == 1)
+		{
+			Row row1 = rowList.get(0);
+
+			AMIUser = row1.getValue(0);
+			clientDNInAMI = row1.getValue(1);
+			issuerDNInAMI = row1.getValue(2);
+			firstName = row1.getValue(3);
+			lastName = row1.getValue(4);
+			email = row1.getValue(5);
+			country = row1.getValue(6);
+			valid = row1.getValue(7, false);
+		}
+		else
+		{
+			if(exception)
+			{
+				throw new Exception("invalid user `" + amiLogin + "`");
+			}
+
+			AMIUser = GUEST_USER;
+			clientDNInAMI = "";
+			issuerDNInAMI = "";
+			firstName = GUEST_USER;
+			lastName = GUEST_USER;
+			email = "N/A";
+			country = "N/A";
+			valid = true;
+		}
+
+		if("@NULL".equals(clientDNInAMI)) {
+			clientDNInAMI = "";
+		}
+
+		if("@NULL".equals(issuerDNInAMI)) {
+			issuerDNInAMI = "";
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
