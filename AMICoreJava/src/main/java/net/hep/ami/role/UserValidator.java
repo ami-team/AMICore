@@ -6,7 +6,16 @@ abstract public class UserValidator
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public enum Mode {
+		ADD,
+		ATTACH,
+		DETACH,
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	abstract public void check(
+		@NotNull Mode mode,
 		@NotNull String amiLogin,
 		@NotNull String amiPassword,
 		@Nullable String clientDN,

@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
@@ -15,11 +16,6 @@ public class GetUserInfo extends AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	static final int MODE_ATTACH = 0;
-	static final int MODE_DETACH = 1;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -64,7 +60,7 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
-			return new StringBuilder(changeCert(querier, amiLogin, amiPassword, vomsEnabled, MODE_ATTACH));
+			return new StringBuilder(changeCert(querier, UserValidator.Mode.ATTACH, amiLogin, amiPassword, vomsEnabled));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -73,7 +69,7 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
-			return new StringBuilder(changeCert(querier, amiLogin, amiPassword, vomsEnabled, MODE_DETACH));
+			return new StringBuilder(changeCert(querier, UserValidator.Mode.DETACH, amiLogin, amiPassword, vomsEnabled));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -259,11 +255,11 @@ public class GetUserInfo extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String changeCert(Querier querier, String amiLogin, String amiPassword, boolean vomsEnabled, int mode) throws Exception
+	private String changeCert(Querier querier, UserValidator.Mode mode, String amiLogin, String amiPassword, boolean vomsEnabled) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(mode == MODE_ATTACH)
+		if(mode == UserValidator.Mode.ATTACH)
 		{
 			if(!m_isSecure
 			   ||
@@ -279,7 +275,7 @@ public class GetUserInfo extends AbstractCommand
 
 		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
 
-		/*--------------------------------------------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(rowList.size() != 1)
 		{
@@ -293,24 +289,25 @@ public class GetUserInfo extends AbstractCommand
 		String _lastName = rowList.get(0).getValue(4);
 		String _email = rowList.get(0).getValue(5);
 
-		/*--------------------------------------------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(mode == MODE_ATTACH && (
+		if(mode == UserValidator.Mode.ATTACH && (
 			!_clientDN.equals(m_clientDN)
 			||
 			!_issuerDN.equals(m_issuerDN)
 		   )
 		   ||
-		   mode == MODE_DETACH && (
+		   mode == UserValidator.Mode.DETACH && (
 			!Empty.is(_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
 			||
 			!Empty.is(_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
 		   )
 		 ) {
-			/*----------------------------------------------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			RoleSingleton.checkUser(
 				ConfigSingleton.getProperty("user_validator_class"),
+				mode,
 				amiLogin,
 				amiPassword,
 				m_clientDN,
@@ -320,44 +317,45 @@ public class GetUserInfo extends AbstractCommand
 				_email
 			);
 
-			/*----------------------------------------------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			String sql = vomsEnabled ? "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = ?2 WHERE `id` = ?3"
 			                         : "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `id` = ?3"
 			;
 
-			/*----------------------------------------------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			Update update;
 
-			/**/ if(mode == MODE_ATTACH)
+			switch(mode)
 			{
-				update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, 1, _id);
-			}
-			else if(mode == MODE_DETACH)
-			{
-				update = querier.executeSQLUpdate("router_user", sql, null, null, 0, _id);
-			}
-			else
-			{
-				throw new Exception("Internal error");
+				case ATTACH:
+					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, 1, _id);
+					break;
+
+				case DETACH:
+					update = querier.executeSQLUpdate("router_user", sql, null, null, 0, _id);
+					break;
+
+				default:
+					throw new Exception("Internal error");
 			}
 
-			/*----------------------------------------------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			if(update.getNbOfUpdatedRows() != 1)
 			{
 				return "<error><![CDATA[nothing done]]></error>";
 			}
 
-			/*----------------------------------------------------------------------------------------------------*/
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
-		/*--------------------------------------------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return "<info><![CDATA[done with success]]></info>";
 
-		/*--------------------------------------------------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

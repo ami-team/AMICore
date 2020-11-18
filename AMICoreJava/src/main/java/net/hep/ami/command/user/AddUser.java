@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.role.UserValidator;
 import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
@@ -93,6 +94,7 @@ public class AddUser extends AbstractCommand
 
 		RoleSingleton.checkUser(
 			ConfigSingleton.getProperty("new_user_validator_class"),
+			UserValidator.Mode.ADD,
 			amiLogin,
 			amiPassword,
 			clientDN,
