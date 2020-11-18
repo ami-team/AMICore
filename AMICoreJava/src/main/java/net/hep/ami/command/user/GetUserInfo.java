@@ -18,6 +18,11 @@ public class GetUserInfo extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	static final int MODE_ATTACH = 0;
+	static final int MODE_DETACH = 1;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public GetUserInfo(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
@@ -59,46 +64,7 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			if(!m_isSecure
-			   ||
-			   Empty.is(m_clientDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
-			   ||
-			   Empty.is(m_issuerDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
-			 ) {
-				throw new Exception("You must connect using https and provide a valid certificate");
-			}
-
-			RoleSingleton.checkCertOnly(
-				ConfigSingleton.getProperty("cert_validator_class"),
-				amiLogin,
-				amiPassword,
-				m_clientDN,
-				m_issuerDN
-			);
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			String sql;
-
-			if(vomsEnabled)
-			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '1' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-			}
-			else
-			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-			}
-
-			Update update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, amiLogin, amiPassword);
-
-			return new StringBuilder(
-				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
-												 : "<error><![CDATA[nothing done]]></error>"
-			);
-
-			/*--------------------------------------------------------------------------------------------------------*/
+			return new StringBuilder(changeCert(querier, amiLogin, amiPassword, vomsEnabled, MODE_ATTACH));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -107,27 +73,7 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			String sql;
-
-			if(!vomsEnabled)
-			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = '0' WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-			}
-			else
-			{
-				sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `AMIUser` = ?2 AND `AMIPass` = ?#3";
-			}
-
-			Update update = querier.executeSQLUpdate("router_user", sql, "", "", amiLogin, amiPassword);
-
-			return new StringBuilder(
-				update.getNbOfUpdatedRows() == 1 ? "<info><![CDATA[done with success]]></info>"
-												 : "<error><![CDATA[nothing done]]></error>"
-			);
-
-			/*--------------------------------------------------------------------------------------------------------*/
+			return new StringBuilder(changeCert(querier, amiLogin, amiPassword, vomsEnabled, MODE_DETACH));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -309,6 +255,101 @@ public class GetUserInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return result;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private String changeCert(Querier querier, String amiLogin, String amiPassword, boolean vomsEnabled, int mode) throws Exception
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(mode == MODE_ATTACH)
+		{
+			if(!m_isSecure
+			   ||
+			   Empty.is(m_clientDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
+			   ||
+			   Empty.is(m_issuerDN, Empty.STRING_JAVA_NULL | Empty.STRING_AMI_NULL | Empty.STRING_EMPTY | Empty.STRING_BLANK)
+			 ) {
+				throw new Exception("You must connect using https and provide a valid certificate");
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
+
+		/*--------------------------------------------------------------------------------------------------------*/
+
+		if(rowList.size() != 1)
+		{
+			throw new Exception("Bad login and/or password");
+		}
+
+		String _id = rowList.get(0).getValue(0);
+		String _clientDN = rowList.get(0).getValue(1);
+		String _issuerDN = rowList.get(0).getValue(2);
+		String _firstName = rowList.get(0).getValue(3);
+		String _lastName = rowList.get(0).getValue(4);
+		String _email = rowList.get(0).getValue(5);
+
+		/*--------------------------------------------------------------------------------------------------------*/
+
+		if(!_clientDN.equals(m_clientDN)
+		   &&
+		   !_issuerDN.equals(m_issuerDN)
+		 ) {
+			/*----------------------------------------------------------------------------------------------------*/
+
+			RoleSingleton.checkUser(
+				ConfigSingleton.getProperty("user_validator_class"),
+				amiLogin,
+				amiPassword,
+				m_clientDN,
+				m_issuerDN,
+				_firstName,
+				_lastName,
+				_email
+			);
+
+			/*----------------------------------------------------------------------------------------------------*/
+
+			String sql = vomsEnabled ? "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = ?2 WHERE `id` = ?3"
+			                         : "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `id` = ?3"
+			;
+
+			/*----------------------------------------------------------------------------------------------------*/
+
+			Update update;
+
+			/**/ if(mode == MODE_ATTACH)
+			{
+				update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, 1, _id);
+			}
+			else if(mode == MODE_DETACH)
+			{
+				update = querier.executeSQLUpdate("router_user", sql, null, null, 0, _id);
+			}
+			else
+			{
+				throw new Exception("Internl error");
+			}
+
+			/*----------------------------------------------------------------------------------------------------*/
+
+			if(update.getNbOfUpdatedRows() != 1)
+			{
+				return "<error><![CDATA[nothing done]]></error>";
+			}
+
+			/*----------------------------------------------------------------------------------------------------*/
+		}
+
+		/*--------------------------------------------------------------------------------------------------------*/
+
+		return "<info><![CDATA[done with success]]></info>";
+
+		/*--------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

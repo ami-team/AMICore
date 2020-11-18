@@ -26,23 +26,11 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class NewUserValidatorTuple extends Tuple3<String, String, Constructor<NewUserValidator>>
+	private static final class UserValidatorTuple extends Tuple3<String, String, Constructor<UserValidator>>
 	{
 		private static final long serialVersionUID = 6410545925675367511L;
 
-		private NewUserValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<NewUserValidator> _z)
-		{
-			super(_x, _y, _z);
-		}
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	private static final class CertOnlyValidatorTuple extends Tuple3<String, String, Constructor<CertOnlyValidator>>
-	{
-		private static final long serialVersionUID = 3958820883667798463L;
-
-		private CertOnlyValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<CertOnlyValidator> _z)
+		private UserValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<UserValidator> _z)
 		{
 			super(_x, _y, _z);
 		}
@@ -51,8 +39,7 @@ public class RoleSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Map<String, CommandValidatorTuple> s_commandRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
-	private static final Map<String, NewUserValidatorTuple> s_newUserRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
-	private static final Map<String, CertOnlyValidatorTuple> s_certOnlyRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, UserValidatorTuple> s_userRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -79,7 +66,7 @@ public class RoleSingleton
 	public static void reload()
 	{
 		s_commandRoleValidators.clear();
-		s_newUserRoleValidators.clear();
+		s_userRoleValidators.clear();
 
 		addRoleValidators();
 	}
@@ -132,25 +119,14 @@ public class RoleSingleton
 				)
 			);
 		}
-		else if(ClassSingleton.extendsClass(clazz, NewUserValidator.class))
+		else if(ClassSingleton.extendsClass(clazz, UserValidator.class))
 		{
-			s_newUserRoleValidators.put(
+			s_userRoleValidators.put(
 				className,
-				new NewUserValidatorTuple(
+				new UserValidatorTuple(
 					className,
 					clazz.getMethod("help").invoke(null).toString(),
-					(Constructor<NewUserValidator>) clazz.getConstructor()
-				)
-			);
-		}
-		else if(ClassSingleton.extendsClass(clazz, CertOnlyValidator.class))
-		{
-			s_certOnlyRoleValidators.put(
-				className,
-				new CertOnlyValidatorTuple(
-					className,
-					clazz.getMethod("help").invoke(null).toString(),
-					(Constructor<CertOnlyValidator>) clazz.getConstructor()
+					(Constructor<UserValidator>) clazz.getConstructor()
 				)
 			);
 		}
@@ -390,7 +366,7 @@ public class RoleSingleton
 
 		if(tuple == null)
 		{
-			throw new Exception("could not find role validator `" + validatorClass + "`");
+			throw new Exception("could not find command role validator `" + validatorClass + "`");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -405,7 +381,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not instanciate role validator `" + validatorClass + "`", e);
+			throw new Exception("could not instanciate command role validator `" + validatorClass + "`", e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -417,7 +393,7 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkNewUser(@Nullable String validatorClass, @NotNull String amiLogin, @NotNull String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, @NotNull String firstName, @NotNull String lastName, @NotNull String email) throws Exception
+	public static void checkUser(@Nullable String validatorClass, @NotNull String amiLogin, @NotNull String amiPassword, @Nullable String clientDN, @Nullable String issuerDN, @NotNull String firstName, @NotNull String lastName, @NotNull String email) throws Exception
 	{
 		if(Empty.is(validatorClass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK))
 		{
@@ -428,18 +404,18 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		NewUserValidatorTuple tuple = s_newUserRoleValidators.get(validatorClass.trim());
+		UserValidatorTuple tuple = s_userRoleValidators.get(validatorClass.trim());
 
 		if(tuple == null)
 		{
-			throw new Exception("could not find role validator `" + validatorClass + "`");
+			throw new Exception("could not find user role validator `" + validatorClass + "`");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* EXECUTE VALIDATOR                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		NewUserValidator validator;
+		UserValidator validator;
 
 		try
 		{
@@ -447,54 +423,12 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not instanciate role validator `" + validatorClass + "`", e);
+			throw new Exception("could not instanciate user role validator `" + validatorClass + "`", e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		validator.check(amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public static void checkCertOnly(@Nullable String validatorClass, @NotNull String amiLogin, @NotNull String amiPassword, @Nullable String clientDN, @Nullable String issuerDN) throws Exception
-	{
-		if(Empty.is(validatorClass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK))
-		{
-			return;
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* GET VALIDATOR                                                                                              */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		CertOnlyValidatorTuple tuple = s_certOnlyRoleValidators.get(validatorClass.trim());
-
-		if(tuple == null)
-		{
-			throw new Exception("could not find role validator `" + validatorClass + "`");
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* EXECUTE VALIDATOR                                                                                          */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		CertOnlyValidator validator;
-
-		try
-		{
-			validator = tuple.z.newInstance();
-		}
-		catch(Exception e)
-		{
-			throw new Exception("could not instanciate role validator `" + validatorClass + "`", e);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		validator.check(amiLogin, amiPassword, clientDN, issuerDN);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -523,24 +457,9 @@ public class RoleSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<rowset type=\"newUserRoleValidator\">");
+		result.append("<rowset type=\"UserRoleValidator\">");
 
-		for(NewUserValidatorTuple tuple: s_newUserRoleValidators.values())
-		{
-			result.append("<row>")
-			      .append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
-			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
-			      .append("</row>")
-			;
-		}
-
-		result.append("</rowset>");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		result.append("<rowset type=\"certOnlyRoleValidator\">");
-
-		for(CertOnlyValidatorTuple tuple: s_certOnlyRoleValidators.values())
+		for(UserValidatorTuple tuple: s_userRoleValidators.values())
 		{
 			result.append("<row>")
 					.append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
