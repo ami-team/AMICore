@@ -262,7 +262,7 @@ public class GetUserInfo extends AbstractCommand
 	private String changeCert(Querier querier, String amiLogin, String amiPassword, boolean vomsEnabled, int mode) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
-		String foo = "";
+
 		if(mode == MODE_ATTACH)
 		{
 			if(!m_isSecure
@@ -295,9 +295,17 @@ public class GetUserInfo extends AbstractCommand
 
 		/*--------------------------------------------------------------------------------------------------------*/
 
-		if(!_clientDN.equals(m_clientDN)
+		if(mode == MODE_ATTACH && (
+			!_clientDN.equals(m_clientDN)
+			||
+			!_issuerDN.equals(m_issuerDN)
+		   )
 		   ||
-		   !_issuerDN.equals(m_issuerDN)
+		   mode == MODE_DETACH && (
+			!Empty.is(_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
+			||
+			!Empty.is(_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
+		   )
 		 ) {
 			/*----------------------------------------------------------------------------------------------------*/
 
@@ -336,7 +344,7 @@ public class GetUserInfo extends AbstractCommand
 			}
 
 			/*----------------------------------------------------------------------------------------------------*/
-			foo = update.getSQL();
+
 			if(update.getNbOfUpdatedRows() != 1)
 			{
 				return "<error><![CDATA[nothing done]]></error>";
@@ -344,16 +352,10 @@ public class GetUserInfo extends AbstractCommand
 
 			/*----------------------------------------------------------------------------------------------------*/
 		}
-		else
-		{
-			foo = "no change";
-		}
 
 		/*--------------------------------------------------------------------------------------------------------*/
 
-		foo += _clientDN + "|" + m_clientDN + "|" + _issuerDN + "|" + m_issuerDN;
-
-		return "<info><![CDATA[" + foo + "|done with success]]></info>";
+		return "<info><![CDATA[done with success]]></info>";
 
 		/*--------------------------------------------------------------------------------------------------------*/
 	}
