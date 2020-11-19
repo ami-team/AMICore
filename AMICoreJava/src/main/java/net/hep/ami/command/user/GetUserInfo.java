@@ -262,6 +262,8 @@ public class GetUserInfo extends AbstractCommand
 	@SuppressWarnings("unchecked")
 	private String changeCert(Querier querier, UserValidator.Mode mode, String amiLogin, String amiPassword) throws Exception
 	{
+		ObjectMapper objectMapper = new ObjectMapper();
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(mode == UserValidator.Mode.ATTACH)
@@ -311,7 +313,7 @@ public class GetUserInfo extends AbstractCommand
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Map<String, String> json = (Map<String, String>) new ObjectMapper().readValue(_json, Map.class);
+			Map<String, String> json = (Map<String, String>) objectMapper.readValue(_json, Map.class);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -340,11 +342,11 @@ public class GetUserInfo extends AbstractCommand
 			switch(mode)
 			{
 				case ATTACH:
-					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, valid ? 1 : 0, json, _id);
+					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, valid ? 1 : 0, objectMapper.writeValueAsString(json), _id);
 					break;
 
 				case DETACH:
-					update = querier.executeSQLUpdate("router_user", sql, null, null, 0, json, _id);
+					update = querier.executeSQLUpdate("router_user", sql, null, null, 0, objectMapper.writeValueAsString(json), _id);
 					break;
 
 				default:
