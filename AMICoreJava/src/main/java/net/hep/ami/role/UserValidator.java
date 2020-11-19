@@ -21,7 +21,8 @@ abstract public class UserValidator
 	abstract public boolean check(
 		@NotNull Mode mode,
 		@NotNull String amiLogin,
-		@NotNull String amiPassword,
+		@NotNull String amiPasswordOld,
+		@NotNull String amiPasswordNew,
 		@NotNull String clientDN,
 		@NotNull String issuerDN,
 		@NotNull String firstName,

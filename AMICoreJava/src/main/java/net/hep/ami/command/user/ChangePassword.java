@@ -45,6 +45,7 @@ public class ChangePassword extends AbstractCommand
 			ConfigSingleton.getProperty("user_password_validator_class"),
 			UserValidator.Mode.PASSWORD,
 			amiLogin,
+			amiPasswordOld,
 			amiPasswordNew,
 			m_clientDN,
 			m_issuerDN,

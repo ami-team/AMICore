@@ -393,7 +393,7 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static boolean checkUser(@Nullable String validatorClass, @NotNull UserValidator.Mode mode, @NotNull String amiLogin, @NotNull String amiPassword, @NotNull String clientDN, @NotNull String issuerDN, @NotNull String firstName, @NotNull String lastName, @NotNull String email, @Nullable Map<String, String> json) throws Exception
+	public static boolean checkUser(@Nullable String validatorClass, @NotNull UserValidator.Mode mode, @NotNull String amiLogin, @NotNull String amiPasswordOld, @NotNull String amiPasswordNew, @NotNull String clientDN, @NotNull String issuerDN, @NotNull String firstName, @NotNull String lastName, @NotNull String email, @Nullable Map<String, String> json) throws Exception
 	{
 		if(Empty.is(validatorClass, Empty.STRING_NULL_EMPTY_BLANK))
 		{
@@ -428,7 +428,7 @@ public class RoleSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return validator.check(mode, amiLogin, amiPassword, clientDN, issuerDN, firstName, lastName, email, json);
+		return validator.check(mode, amiLogin, amiPasswordOld, amiPasswordNew, clientDN, issuerDN, firstName, lastName, email, json);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

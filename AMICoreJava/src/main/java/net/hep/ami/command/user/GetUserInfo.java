@@ -312,6 +312,7 @@ public class GetUserInfo extends AbstractCommand
 				mode,
 				amiLogin,
 				amiPassword,
+				amiPassword,
 				m_clientDN,
 				m_issuerDN,
 				_firstName,

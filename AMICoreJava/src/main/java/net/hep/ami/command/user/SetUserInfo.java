@@ -26,14 +26,11 @@ public class SetUserInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String amiLogin = arguments.getOrDefault("amiLogin", m_AMIUser);
 		String firstName = arguments.get("firstName");
 		String lastName = arguments.get("lastName");
 		String email = arguments.get("email");
 
-		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK)
-		   ||
-		   Empty.is(firstName, Empty.STRING_NULL_EMPTY_BLANK)
+		if(Empty.is(firstName, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
 		   Empty.is(lastName, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
@@ -42,18 +39,14 @@ public class SetUserInfo extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		if(amiLogin != m_AMIUser || !m_userRoles.contains("AMI_ADMIN"))
-		{
-			throw new Exception("");
-		}
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		boolean valid = RoleSingleton.checkUser(
 			ConfigSingleton.getProperty("user_info_validator_class"),
 			UserValidator.Mode.INFO,
-			amiLogin,
-			"N/A",
+			m_AMIUser,
+			m_AMIPass,
+			m_AMIPass,
 			m_clientDN,
 			m_issuerDN,
 			firstName,
@@ -65,7 +58,7 @@ public class SetUserInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `firstName` = ?1, `lastName` = ?2, `email` = ?3, `valid` = ?4 WHERE `AMIUser` = ?0",
-			amiLogin,
+			m_AMIUser,
 			firstName,
 			lastName,
 			email,
@@ -95,7 +88,7 @@ public class SetUserInfo extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-amiLogin=\"\" -firstName=\"\" -lastName=\"\" -email=\"\"";
+		return "-firstName=\"\" -lastName=\"\" -email=\"\"";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

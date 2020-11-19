@@ -92,6 +92,7 @@ public class AddUser extends AbstractCommand
 			UserValidator.Mode.ADD,
 			amiLogin,
 			amiPassword,
+			amiPassword,
 			clientDN,
 			issuerDN,
 			firstName,
