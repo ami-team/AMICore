@@ -8,6 +8,8 @@ import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
+import com.fasterxml.jackson.databind.*;
+
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -257,6 +259,7 @@ public class GetUserInfo extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@SuppressWarnings("unchecked")
 	private String changeCert(Querier querier, UserValidator.Mode mode, String amiLogin, String amiPassword) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -275,7 +278,7 @@ public class GetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
+		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -290,6 +293,7 @@ public class GetUserInfo extends AbstractCommand
 		String _firstName = rowList.get(0).getValue(3);
 		String _lastName = rowList.get(0).getValue(4);
 		String _email = rowList.get(0).getValue(5);
+		String _json = rowList.get(0).getValue(6);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -307,6 +311,10 @@ public class GetUserInfo extends AbstractCommand
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			Map<String, String> json = (Map<String, String>) new ObjectMapper().readValue(_json, Map.class);
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			boolean valid = RoleSingleton.checkUser(
 				ConfigSingleton.getProperty("user_cert_validator_class"),
 				mode,
@@ -318,12 +326,12 @@ public class GetUserInfo extends AbstractCommand
 				_firstName,
 				_lastName,
 				_email,
-				null
+				json
 			);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = ?2 WHERE `id` = ?3";
+			String sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = ?2, `json` = ?3 WHERE `id` = ?4";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -332,11 +340,11 @@ public class GetUserInfo extends AbstractCommand
 			switch(mode)
 			{
 				case ATTACH:
-					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, valid ? 1 : 0, _id);
+					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, valid ? 1 : 0, json, _id);
 					break;
 
 				case DETACH:
-					update = querier.executeSQLUpdate("router_user", sql, null, null, 0, _id);
+					update = querier.executeSQLUpdate("router_user", sql, null, null, 0, json, _id);
 					break;
 
 				default:

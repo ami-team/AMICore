@@ -87,6 +87,8 @@ public class AddUser extends AbstractCommand
 
 		Map<String, String> json = new HashMap<>();
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		Boolean valid = RoleSingleton.checkUser(
 			ConfigSingleton.getProperty("new_user_validator_class"),
 			UserValidator.Mode.ADD,
