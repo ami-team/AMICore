@@ -306,7 +306,7 @@ public class GetUserInfo extends AbstractCommand
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			RoleSingleton.checkUser(
-				ConfigSingleton.getProperty("user_validator_class"),
+				ConfigSingleton.getProperty("user_cert_validator_class"),
 				mode,
 				amiLogin,
 				amiPassword,

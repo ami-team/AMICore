@@ -10,11 +10,13 @@ abstract public class UserValidator
 		ADD,
 		ATTACH,
 		DETACH,
+		PASSWORD,
+		INFO,
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	abstract public void check(
+	abstract public boolean check(
 		@NotNull Mode mode,
 		@NotNull String amiLogin,
 		@NotNull String amiPassword,

@@ -32,15 +32,6 @@ public class AddUser extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String commandName = ConfigSingleton.getProperty("user_override_add");
-
-		if(!Empty.is(commandName, Empty.STRING_NULL_EMPTY_BLANK))
-		{
-			return executeCommand(commandName, arguments);
-		}
-
-		/**/
-
 		String amiLogin = arguments.get("amiLogin");
 		String amiPassword = arguments.get("amiPassword");
 		String firstName = arguments.get("firstName");
