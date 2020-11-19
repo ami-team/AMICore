@@ -45,9 +45,9 @@ public class ResetPassword extends AbstractCommand
 		{
 			Row row = rowList.get(0);
 
-			String tmpUser = /*---------------------*/(row.getValue(0));
-			String tmpPass = SecuritySingleton.decrypt(row.getValue(1));
-			String  email  = /*---------------------*/(row.getValue(2));
+			String tmpUser = row.getValue(0);
+			String tmpPass = row.getValue(1);
+			String  email  = row.getValue(2);
 
 			String userdata = "{\"user\": \"" + Utility.escapeJavaString(tmpUser) + "\", \"old_pass\": \"" + SecuritySingleton.buildTmpPassword(tmpUser, tmpPass) + "\"}";
 
