@@ -58,7 +58,8 @@ public class SetUserInfo extends AbstractCommand
 			m_issuerDN,
 			firstName,
 			lastName,
-			email
+			email,
+			null
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/

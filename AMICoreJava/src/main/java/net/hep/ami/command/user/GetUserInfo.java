@@ -316,7 +316,8 @@ public class GetUserInfo extends AbstractCommand
 				m_issuerDN,
 				_firstName,
 				_lastName,
-				_email
+				_email,
+				null
 			);
 
 			/*--------------------------------------------------------------------------------------------------------*/

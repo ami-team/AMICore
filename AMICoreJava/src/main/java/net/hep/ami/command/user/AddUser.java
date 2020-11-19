@@ -4,9 +4,11 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.role.*;
 import net.hep.ami.command.*;
-import net.hep.ami.role.UserValidator;
 import net.hep.ami.utility.*;
+
+import com.fasterxml.jackson.databind.*;
 
 import org.jetbrains.annotations.*;
 
@@ -83,6 +85,8 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		Map<String, String> json = new HashMap<>();
+
 		Boolean valid = RoleSingleton.checkUser(
 			ConfigSingleton.getProperty("new_user_validator_class"),
 			UserValidator.Mode.ADD,
@@ -92,7 +96,8 @@ public class AddUser extends AbstractCommand
 			issuerDN,
 			firstName,
 			lastName,
-			email
+			email,
+			json
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -101,7 +106,7 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7)",
+		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `valid`, `json`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7)",
 			amiLogin,
 			amiPassword,
 			!Empty.is(clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? clientDN : null,
@@ -109,7 +114,8 @@ public class AddUser extends AbstractCommand
 			firstName,
 			lastName,
 			email,
-			valid ? 1 : 0
+			valid ? 1 : 0,
+			new ObjectMapper().writeValueAsString(json)
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/

@@ -4,8 +4,8 @@ import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.role.*;
 import net.hep.ami.command.*;
-import net.hep.ami.role.UserValidator;
 import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
@@ -50,7 +50,8 @@ public class ChangePassword extends AbstractCommand
 			m_issuerDN,
 			"N/A",
 			"N/A",
-			"N/A"
+			"N/A",
+			null
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/

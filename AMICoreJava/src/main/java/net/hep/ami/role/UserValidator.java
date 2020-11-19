@@ -1,5 +1,7 @@
 package net.hep.ami.role;
 
+import java.util.*;
+
 import org.jetbrains.annotations.*;
 
 abstract public class UserValidator
@@ -20,11 +22,12 @@ abstract public class UserValidator
 		@NotNull Mode mode,
 		@NotNull String amiLogin,
 		@NotNull String amiPassword,
-		@Nullable String clientDN,
-		@Nullable String issuerDN,
+		@NotNull String clientDN,
+		@NotNull String issuerDN,
 		@NotNull String firstName,
 		@NotNull String lastName,
-		@NotNull String email
+		@NotNull String email,
+		@Nullable Map<String, String> json
 
 	) throws Exception;
 
