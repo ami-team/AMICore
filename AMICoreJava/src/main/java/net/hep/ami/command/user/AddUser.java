@@ -89,7 +89,7 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Boolean valid = RoleSingleton.checkUser(
+		boolean valid = RoleSingleton.checkUser(
 			ConfigSingleton.getProperty("new_user_validator_class"),
 			UserValidator.Mode.ADD,
 			amiLogin,
