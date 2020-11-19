@@ -83,7 +83,7 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RoleSingleton.checkUser(
+		Boolean valid = RoleSingleton.checkUser(
 			ConfigSingleton.getProperty("new_user_validator_class"),
 			UserValidator.Mode.ADD,
 			amiLogin,
@@ -101,14 +101,15 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6)",
+		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7)",
 			amiLogin,
 			amiPassword,
 			!Empty.is(clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? clientDN : null,
 			!Empty.is(issuerDN, Empty.STRING_NULL_EMPTY_BLANK) ? issuerDN : null,
 			firstName,
 			lastName,
-			email
+			email,
+			valid ? 1 : 0
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/

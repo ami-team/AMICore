@@ -49,7 +49,7 @@ public class SetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RoleSingleton.checkUser(
+		boolean valid = RoleSingleton.checkUser(
 			ConfigSingleton.getProperty("user_info_validator_class"),
 			UserValidator.Mode.INFO,
 			amiLogin,
@@ -63,11 +63,12 @@ public class SetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `firstName` = ?1, `lastName` = ?2, `email` = ?3 WHERE `AMIUser` = ?0",
+		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `firstName` = ?1, `lastName` = ?2, `email` = ?3, `valid` = ?4 WHERE `AMIUser` = ?0",
 			amiLogin,
 			firstName,
 			lastName,
-			email
+			email,
+			valid ? 1 : 0
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/

@@ -48,10 +48,6 @@ public class GetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean vomsEnabled = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		Querier querier = getAdminQuerier("self");
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -60,7 +56,7 @@ public class GetUserInfo extends AbstractCommand
 
 		if(attachCert)
 		{
-			return new StringBuilder(changeCert(querier, UserValidator.Mode.ATTACH, amiLogin, amiPassword, vomsEnabled));
+			return new StringBuilder(changeCert(querier, UserValidator.Mode.ATTACH, amiLogin, amiPassword));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -69,7 +65,7 @@ public class GetUserInfo extends AbstractCommand
 
 		if(detachCert)
 		{
-			return new StringBuilder(changeCert(querier, UserValidator.Mode.DETACH, amiLogin, amiPassword, vomsEnabled));
+			return new StringBuilder(changeCert(querier, UserValidator.Mode.DETACH, amiLogin, amiPassword));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -117,6 +113,8 @@ public class GetUserInfo extends AbstractCommand
 			valid = true;
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		if("@NULL".equals(clientDNInAMI)) {
 			clientDNInAMI = "";
 		}
@@ -124,6 +122,10 @@ public class GetUserInfo extends AbstractCommand
 		if("@NULL".equals(issuerDNInAMI)) {
 			issuerDNInAMI = "";
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean vomsEnabled = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET USER ROLES                                                                                             */
@@ -255,7 +257,7 @@ public class GetUserInfo extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String changeCert(Querier querier, UserValidator.Mode mode, String amiLogin, String amiPassword, boolean vomsEnabled) throws Exception
+	private String changeCert(Querier querier, UserValidator.Mode mode, String amiLogin, String amiPassword) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -305,7 +307,7 @@ public class GetUserInfo extends AbstractCommand
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RoleSingleton.checkUser(
+			boolean valid = RoleSingleton.checkUser(
 				ConfigSingleton.getProperty("user_cert_validator_class"),
 				mode,
 				amiLogin,
@@ -319,9 +321,7 @@ public class GetUserInfo extends AbstractCommand
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String sql = vomsEnabled ? "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = ?2 WHERE `id` = ?3"
-			                         : "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1 WHERE `id` = ?3"
-			;
+			String sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = ?2 WHERE `id` = ?3";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -330,7 +330,7 @@ public class GetUserInfo extends AbstractCommand
 			switch(mode)
 			{
 				case ATTACH:
-					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, 1, _id);
+					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, valid ? 1 : 0, _id);
 					break;
 
 				case DETACH:
