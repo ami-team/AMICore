@@ -41,8 +41,15 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
-		argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
+		if(!Empty.is(m_AMIUser, Empty.STRING_NULL_EMPTY_BLANK)
+		   &&
+		   !Empty.is(m_AMIPass, Empty.STRING_NULL_EMPTY_BLANK)
+		 ) {
+			argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
+			argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(!Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
 		   &&
