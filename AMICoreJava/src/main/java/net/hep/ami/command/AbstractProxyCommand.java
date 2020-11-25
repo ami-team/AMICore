@@ -43,12 +43,21 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
 		argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
-/*
-		argumentString.append(" -clientDN=\"").append(SecuritySingleton.encrypt(m_clientDN)).append("\"");
-		argumentString.append(" -issuerDN=\"").append(SecuritySingleton.encrypt(m_issuerDN)).append("\"");
-		argumentString.append(" -notBefore=\"").append(SecuritySingleton.encrypt(m_notBefore)).append("\"");
-		argumentString.append(" -notAfter=\"").append(SecuritySingleton.encrypt(m_notAfter)).append("\"");
-*/
+
+		if(!Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
+		   &&
+		   !Empty.is(m_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
+		   &&
+		   !Empty.is(m_notBefore, Empty.STRING_NULL_EMPTY_BLANK)
+		   &&
+		   !Empty.is(m_notAfter, Empty.STRING_NULL_EMPTY_BLANK)
+		 ) {
+			argumentString.append(" -clientDN=\"").append(SecuritySingleton.encrypt(m_clientDN)).append("\"");
+			argumentString.append(" -issuerDN=\"").append(SecuritySingleton.encrypt(m_issuerDN)).append("\"");
+			argumentString.append(" -notBefore=\"").append(SecuritySingleton.encrypt(m_notBefore)).append("\"");
+			argumentString.append(" -notAfter=\"").append(SecuritySingleton.encrypt(m_notAfter)).append("\"");
+		}
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder input = new StringBuilder().append("Command=").append(command()).append(URLEncoder.encode(argumentString.toString(), StandardCharsets.UTF_8));
