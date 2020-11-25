@@ -68,7 +68,7 @@ public class ChangePassword extends AbstractCommand
 
 		return new StringBuilder(
 			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
-			                                : "<error><![CDATA[bad user or password]]></error>"
+			                                : "<error><![CDATA[bad user and/or password]]></error>"
 		);
 	}
 
