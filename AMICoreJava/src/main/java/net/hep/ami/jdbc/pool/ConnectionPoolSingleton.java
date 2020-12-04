@@ -139,7 +139,8 @@ public class ConnectionPoolSingleton
 		{
 			result.append("<row>")
 			      .append("<field name=\"poolName\">").append(value.x.getPoolName()).append("</field>")
-			      .append("<field name=\"poolSize\">").append(value.x.getMaximumPoolSize()).append("</field>")
+			      .append("<field name=\"minIdle\">").append(value.x.getMinimumIdle()).append("</field>")
+			      .append("<field name=\"maxSize\">").append(value.x.getMaximumPoolSize()).append("</field>")
 			      .append("<field name=\"numIdle\">").append(value.y.getIdleConnections()).append("</field>")
 			      .append("<field name=\"numActive\">").append(value.y.getActiveConnections()).append("</field>")
 			      .append("<field name=\"connTimeout\">").append(value.x.getConnectionTimeout()).append("</field>")
