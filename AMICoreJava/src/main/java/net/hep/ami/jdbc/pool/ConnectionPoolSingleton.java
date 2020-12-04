@@ -138,7 +138,7 @@ public class ConnectionPoolSingleton
 		for(Tuple value: s_pools.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"poolName\">").append(value.x.getPoolName()).append("</field>")
+			      .append("<field name=\"name\">").append(value.x.getPoolName()).append("</field>")
 			      .append("<field name=\"minIdle\">").append(value.x.getMinimumIdle()).append("</field>")
 			      .append("<field name=\"maxSize\">").append(value.x.getMaximumPoolSize()).append("</field>")
 			      .append("<field name=\"numIdle\">").append(value.y.getIdleConnections()).append("</field>")
