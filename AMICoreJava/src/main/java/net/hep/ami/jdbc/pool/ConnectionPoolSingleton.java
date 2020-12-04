@@ -1,12 +1,12 @@
 package net.hep.ami.jdbc.pool;
 
-import com.zaxxer.hikari.*;
-
 import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
+
+import com.zaxxer.hikari.*;
 
 import org.jetbrains.annotations.*;
 
