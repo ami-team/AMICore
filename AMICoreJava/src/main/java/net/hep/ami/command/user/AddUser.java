@@ -109,7 +109,7 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `valid`, `json`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7)",
+		Update update = querier.executeSQLUpdate("router_user","INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `valid`, `json`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8)",
 			amiLogin,
 			amiPassword,
 			!Empty.is(clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? clientDN : null,
