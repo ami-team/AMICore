@@ -12,7 +12,7 @@ public class CommandSingletonTest
 
 	public static void main(String[] args) throws Exception
 	{
-		//System.out.println(ConfigSingleton.getConfigFileName());
+//		System.out.println(ConfigSingleton.getConfigFileName());
 
 //		Router querier = new Router();
 
@@ -415,11 +415,12 @@ public class CommandSingletonTest
 //			System.out.println(new QId("A.B.C{D.E.#}"));
 //			System.out.println(new QId("A.B.#{D.E.F,!G.H.*}"));
 
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo -detachCert -amiLogin=\"admin\" -amiPassword=\"insider\"", false).replace(">", ">\n"));
+/*			System.out.println(CommandSingleton.executeCommand("GetSessionInfo -detachCert -amiLogin=\"admin\" -amiPassword=\"insider\"", false).replace(">", ">\n"));
 
 			System.out.println(System.getProperty("os.name").startsWith("Windows"));
 
-			System.out.println(System.getProperty("java.io.tmpdir"));
+			System.out.println(System.getProperty("java.io.tmpdir"));*/
+
 
 			//System.out.println("done.");
 		}
