@@ -423,6 +423,10 @@ public class CommandSingletonTest
 
 
 			//System.out.println("done.");
+
+			SecuritySingleton.init("jANvVELbngjYqT8E");
+			System.out.println(SecuritySingleton.decrypt("tp4oAOKmtUvYW4HVUyVuiIv+Rki5AUoB8hHUhTsQJ1Krp572Uq0oSCMGkVGSrvtdWs+6aaSUgiAJEUrHtw+V3IKMtWBnTRUSSZbC5oah9aA="));
+
 		}
 		catch(Exception e)
 		{
