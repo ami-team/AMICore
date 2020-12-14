@@ -52,7 +52,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if("AMIAddUser".equals(command())){
-			throw new Exception(arguments.toString());
+			throw new Exception(m_clientDN + " | " + m_issuerDN);
 		}
 
 		if(!Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
