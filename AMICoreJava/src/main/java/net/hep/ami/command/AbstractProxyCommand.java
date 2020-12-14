@@ -51,9 +51,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(arguments.containsKey("attachCert")
-		   &&
-		   !Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
+		if(!Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
 		   &&
 		   !Empty.is(m_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
 		   &&
