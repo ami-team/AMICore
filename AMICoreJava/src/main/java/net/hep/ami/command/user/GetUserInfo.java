@@ -8,8 +8,6 @@ import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-import com.fasterxml.jackson.databind.*;
-
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -259,11 +257,8 @@ public class GetUserInfo extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@SuppressWarnings("unchecked")
 	private String changeCert(Querier querier, UserValidator.Mode mode, String amiLogin, String amiPassword) throws Exception
 	{
-		ObjectMapper objectMapper = new ObjectMapper();
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(mode == UserValidator.Mode.ATTACH)
@@ -280,7 +275,7 @@ public class GetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
+		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -290,50 +285,45 @@ public class GetUserInfo extends AbstractCommand
 		}
 
 		String _id = rowList.get(0).getValue(0);
-		String _clientDN = rowList.get(0).getValue(1);
-		String _issuerDN = rowList.get(0).getValue(2);
-		String _firstName = rowList.get(0).getValue(3);
-		String _lastName = rowList.get(0).getValue(4);
-		String _email = rowList.get(0).getValue(5);
-		String _json = rowList.get(0).getValue(6);
+
+		UserValidator.Bean bean = new UserValidator.Bean(
+			amiLogin,
+			amiPassword,
+			amiPassword,
+			rowList.get(0).getValue(1),
+			rowList.get(0).getValue(2),
+			rowList.get(0).getValue(3),
+			rowList.get(0).getValue(4),
+			rowList.get(0).getValue(5),
+			rowList.get(0).getValue(6),
+			rowList.get(0).getValue(7)
+		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(mode == UserValidator.Mode.ATTACH && (
-			!_clientDN.equals(m_clientDN)
+			!m_clientDN.equals(bean.clientDN)
 			||
-			!_issuerDN.equals(m_issuerDN)
+			!m_issuerDN.equals(bean.issuerDN)
 		   )
 		   ||
 		   mode == UserValidator.Mode.DETACH && (
-			!Empty.is(_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
+			!Empty.is(bean.clientDN, Empty.STRING_NULL_EMPTY_BLANK)
 			||
-			!Empty.is(_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
+			!Empty.is(bean.issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
 		   )
 		 ) {
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			Map<String, String> json = (Map<String, String>) objectMapper.readValue(_json, Map.class);
-
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			boolean valid = RoleSingleton.checkUser(
 				ConfigSingleton.getProperty("user_cert_validator_class"),
 				mode,
-				amiLogin,
-				amiPassword,
-				amiPassword,
-				m_clientDN,
-				m_issuerDN,
-				_firstName,
-				_lastName,
-				_email,
-				json
+				bean
 			);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String sql = "UPDATE `router_user` SET `clientDN` = ?#0, `issuerDN` = ?#1, `valid` = ?2, `json` = ?3 WHERE `id` = ?4";
+			String sql = "UPDATE `router_user` SET `clientDN` = ?#1, `issuerDN` = ?#2, `ssoUser` = ?3, `json` = ?4, `valid` = ?5 WHERE `id` = ?0";
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -342,11 +332,11 @@ public class GetUserInfo extends AbstractCommand
 			switch(mode)
 			{
 				case ATTACH:
-					update = querier.executeSQLUpdate("router_user", sql, m_clientDN, m_issuerDN, valid ? 1 : 0, objectMapper.writeValueAsString(json), _id);
+					update = querier.executeSQLUpdate("router_user", sql, _id, bean.clientDN, bean.issuerDN, bean.ssoUser, bean.json, valid ? 1 : 0);
 					break;
 
 				case DETACH:
-					update = querier.executeSQLUpdate("router_user", sql, null, null, 0, objectMapper.writeValueAsString(json), _id);
+					update = querier.executeSQLUpdate("router_user", sql, _id, null, null, bean.ssoUser, bean.json, 0);
 					break;
 
 				default:

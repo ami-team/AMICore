@@ -41,26 +41,31 @@ public class ChangePassword extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean valid = RoleSingleton.checkUser(
-			ConfigSingleton.getProperty("user_password_validator_class"),
-			UserValidator.Mode.PASSWORD,
+		UserValidator.Bean bean = new UserValidator.Bean(
 			amiLogin,
 			amiPasswordOld,
 			amiPasswordNew,
 			m_clientDN,
 			m_issuerDN,
-			"N/A",
-			"N/A",
-			"N/A",
+			null,
+			null,
+			null,
+			null,
 			null
+		);
+
+		boolean valid = RoleSingleton.checkUser(
+			ConfigSingleton.getProperty("user_password_validator_class"),
+			UserValidator.Mode.PASSWORD,
+			bean
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#2, `valid` = ?3 WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1",
-			amiLogin,
-			amiPasswordOld,
-			amiPasswordNew,
+			bean.amiLogin,
+			bean.amiPasswordOld,
+			bean.amiPasswordNew,
 			valid ? 1 : 0
 		);
 

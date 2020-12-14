@@ -8,8 +8,6 @@ import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
 
-import com.fasterxml.jackson.databind.*;
-
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
@@ -72,7 +70,7 @@ public class AddUser extends AbstractCommand
 		String clientDN;
 		String issuerDN;
 
-		if(arguments.containsKey("attach"))
+		if(arguments.containsKey("attachCert"))
 		{
 			clientDN = m_clientDN;
 			issuerDN = m_issuerDN;
@@ -85,13 +83,7 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Map<String, String> json = new HashMap<>();
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		boolean valid = RoleSingleton.checkUser(
-			ConfigSingleton.getProperty("new_user_validator_class"),
-			UserValidator.Mode.ADD,
+		UserValidator.Bean bean = new UserValidator.Bean(
 			amiLogin,
 			amiPassword,
 			amiPassword,
@@ -100,7 +92,16 @@ public class AddUser extends AbstractCommand
 			firstName,
 			lastName,
 			email,
-			json
+			null,
+			"{}"
+		);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean valid = RoleSingleton.checkUser(
+			ConfigSingleton.getProperty("new_user_validator_class"),
+			UserValidator.Mode.ADD,
+			bean
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -109,22 +110,23 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `valid`, `json`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8)",
-			amiLogin,
-			amiPassword,
-			!Empty.is(clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? clientDN : null,
-			!Empty.is(issuerDN, Empty.STRING_NULL_EMPTY_BLANK) ? issuerDN : null,
-			firstName,
-			lastName,
-			email,
-			valid ? 1 : 0,
-			new ObjectMapper().writeValueAsString(json)
+		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8, ?9)",
+			bean.amiLogin,
+			bean.amiPasswordNew,
+			!Empty.is(bean.clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? bean.clientDN : null,
+			!Empty.is(bean.issuerDN, Empty.STRING_NULL_EMPTY_BLANK) ? bean.issuerDN : null,
+			bean.firstName,
+			bean.lastName,
+			bean.email,
+			bean.ssoUser,
+			bean.json,
+			valid ? 1 : 0
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		querier.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
-			amiLogin,
+			bean.amiLogin,
 			"AMI_USER"
 		);
 
@@ -134,11 +136,11 @@ public class AddUser extends AbstractCommand
 		{
 			MailSingleton.sendMessage(
 				ConfigSingleton.getProperty("admin_email"),
-				email,
+				bean.email,
 				null,
 				"New AMI account",
-				!generatedPassword ? String.format(SHORT_EMAIL, /*-*/ amiLogin /*-*/)
-				                   : String.format(LONG_EMAIL, amiLogin, amiPassword)
+				!generatedPassword ? String.format(SHORT_EMAIL, /*-----*/ bean.amiLogin /*-----*/)
+				                   : String.format(LONG_EMAIL, bean.amiLogin, bean.amiPasswordNew)
 			);
 		}
 		catch(Exception e)
@@ -169,7 +171,7 @@ public class AddUser extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-amiLogin=\"\" (-amiPassword=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\" -agree";
+		return "-amiLogin=\"\" (-amiPassword=\"\")? -firstName=\"\" -lastName=\"\" -email=\"\" (-attachCert)? -agree";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
