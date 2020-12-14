@@ -85,6 +85,8 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
+				connection.setRequestMethod("POST");
+
 				connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF");
 				connection.setRequestProperty("Content-Length", String.valueOf(input.length()));
 
