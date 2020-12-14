@@ -54,15 +54,11 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		if(!Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
 		   &&
 		   !Empty.is(m_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
-		   &&
-		   !Empty.is(m_notBefore, Empty.STRING_NULL_EMPTY_BLANK)
-		   &&
-		   !Empty.is(m_notAfter, Empty.STRING_NULL_EMPTY_BLANK)
 		 ) {
 			argumentString.append(" -clientDN=\"").append(SecuritySingleton.encrypt(m_clientDN)).append("\"");
 			argumentString.append(" -issuerDN=\"").append(SecuritySingleton.encrypt(m_issuerDN)).append("\"");
-			argumentString.append(" -notBefore=\"").append(SecuritySingleton.encrypt(m_notBefore)).append("\"");
-			argumentString.append(" -notAfter=\"").append(SecuritySingleton.encrypt(m_notAfter)).append("\"");
+			argumentString.append(" -notBefore=\"").append(!Empty.is(m_notBefore, Empty.STRING_NULL_EMPTY_BLANK) ? SecuritySingleton.encrypt(m_notBefore) : "").append("\"");
+			argumentString.append(" -notAfter=\"").append(!Empty.is(m_notAfter, Empty.STRING_NULL_EMPTY_BLANK) ? SecuritySingleton.encrypt(m_notAfter) : "").append("\"");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
