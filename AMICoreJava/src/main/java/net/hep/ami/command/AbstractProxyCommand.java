@@ -51,7 +51,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if("AddUser".equals(command())){
+		if("AMIAddUser".equals(command())){
 			throw new Exception(arguments.toString());
 		}
 
