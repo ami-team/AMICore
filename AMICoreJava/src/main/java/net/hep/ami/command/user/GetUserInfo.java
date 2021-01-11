@@ -315,6 +315,9 @@ public class GetUserInfo extends AbstractCommand
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			bean.clientDN = m_clientDN;
+			bean.issuerDN = m_issuerDN;
+
 			boolean valid = RoleSingleton.checkUser(
 				ConfigSingleton.getProperty("user_cert_validator_class"),
 				mode,
