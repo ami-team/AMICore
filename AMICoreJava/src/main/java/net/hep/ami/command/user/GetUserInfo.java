@@ -315,36 +315,40 @@ public class GetUserInfo extends AbstractCommand
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			bean.clientDN = m_clientDN;
-			bean.issuerDN = m_issuerDN;
-
-			boolean valid = RoleSingleton.checkUser(
-				ConfigSingleton.getProperty("user_cert_validator_class"),
-				mode,
-				bean
-			);
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			String sql = "UPDATE `router_user` SET `clientDN` = ?#1, `issuerDN` = ?#2, `ssoUser` = ?3, `json` = ?4, `valid` = ?5 WHERE `id` = ?0";
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			Update update;
-
 			switch(mode)
 			{
 				case ATTACH:
-					update = querier.executeSQLUpdate("router_user", sql, _id, bean.clientDN, bean.issuerDN, bean.ssoUser, bean.json, valid ? 1 : 0);
+					bean.clientDN = m_clientDN;
+					bean.issuerDN = m_issuerDN;
 					break;
 
 				case DETACH:
-					update = querier.executeSQLUpdate("router_user", sql, _id, null, null, bean.ssoUser, bean.json, 0);
+					bean.clientDN = null;
+					bean.issuerDN = null;
 					break;
 
 				default:
 					throw new Exception("Internal error");
 			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			boolean valid = RoleSingleton.checkUser(
+					ConfigSingleton.getProperty("user_cert_validator_class"),
+					mode,
+					bean
+			);
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			Update update = querier.executeSQLUpdate("router_user", "UPDATE `router_user` SET `clientDN` = ?#1, `issuerDN` = ?#2, `ssoUser` = ?3, `json` = ?4, `valid` = ?5 WHERE `id` = ?0",
+				_id,
+				bean.clientDN,
+				bean.issuerDN,
+				bean.ssoUser,
+				bean.json,
+				valid ? 1 : 0
+			);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
