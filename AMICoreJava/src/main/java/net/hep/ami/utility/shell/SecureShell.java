@@ -133,6 +133,10 @@ public class SecureShell extends AbstractShell
 
 			channel.exit();
 		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " (" + fpath + "/" + fname + ")", e);
+		}
 		finally
 		{
 			channel.disconnect();
@@ -158,6 +162,10 @@ public class SecureShell extends AbstractShell
 			}
 
 			channel.exit();
+		}
+		catch(Exception e)
+		{
+			throw new Exception(e.getMessage() + " (" + fpath + "/" + fname + ")", e);
 		}
 		finally
 		{
