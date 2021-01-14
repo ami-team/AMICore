@@ -70,6 +70,28 @@ public class SecureShell extends AbstractShell
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public String getHomeDirectory() throws Exception
+	{
+		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
+
+		channel.connect();
+
+		String result;
+
+		try
+		{
+			result = channel.getHome();
+		}
+		finally
+		{
+			channel.disconnect();
+		}
+
+		return result;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Override
 	public ShellTuple exec(String[] args) throws Exception
 	{

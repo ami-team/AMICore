@@ -45,6 +45,13 @@ public class SimpleShell extends AbstractShell
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public String getHomeDirectory()
+	{
+		return System.getProperty("user.home");
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Override
 	public void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
 	{
