@@ -284,6 +284,8 @@ public class GetUserInfo extends AbstractCommand
 			throw new Exception("Bad login and/or password");
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		String _id = rowList.get(0).getValue(0);
 
 		UserValidator.Bean bean = new UserValidator.Bean(
