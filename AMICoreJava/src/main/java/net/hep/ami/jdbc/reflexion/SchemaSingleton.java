@@ -135,6 +135,7 @@ public class SchemaSingleton
 		public final int jdbcType;
 		public final int size;
 		public final int digits;
+		public final boolean nullable;
 		public final String def;
 		public /*-*/ int rank;
 
@@ -254,7 +255,7 @@ public class SchemaSingleton
 
 		/**/
 
-		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, @NotNull String _nativeType, int _jdbcType, int _size, int _digits, String _def, int _rank)
+		public Column(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _field, @NotNull String _nativeType, int _jdbcType, int _size, int _digits, boolean _nullable, String _def, int _rank)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
@@ -266,6 +267,7 @@ public class SchemaSingleton
 			jdbcType = _jdbcType;
 			size = _size;
 			digits = _digits;
+			nullable = _nullable;
 			def = _def;
 			rank = _rank;
 
@@ -722,6 +724,7 @@ public class SchemaSingleton
 								jdbcType,
 								size,
 								digits,
+								nullable,
 								def == null ? (nullable ? "@NULL" : "")
 								            : (def.toUpperCase().contains("CURRENT_TIMESTAMP") ? "@CURRENT_TIMESTAMP"
 								                                                               : Utility.sqlValToText(def, false)),
@@ -1363,6 +1366,7 @@ public class SchemaSingleton
 		             .append("<field name=\"jdbcType\"><![CDATA[").append(column.jdbcType).append("]]></field>")
 		             .append("<field name=\"size\"><![CDATA[").append(column.size).append("]]></field>")
 		             .append("<field name=\"digits\"><![CDATA[").append(column.digits).append("]]></field>")
+		             .append("<field name=\"nullable\"><![CDATA[").append(column.nullable).append("]]></field>")
 		             .append("<field name=\"def\"><![CDATA[").append(column.def).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(column.rank).append("]]></field>")
 		             /**/
