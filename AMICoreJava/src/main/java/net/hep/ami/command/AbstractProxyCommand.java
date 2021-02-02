@@ -69,7 +69,8 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		/* EXECUTE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpURLConnection connection = HttpConnectionFactory.openConnection(ConfigSingleton.getProperty("proxy_command_endpoint"));
+		//HttpURLConnection connection = HttpConnectionFactory.openConnection(ConfigSingleton.getProperty("proxy_command_endpoint"));
+		HttpURLConnection connection = HttpConnectionFactory.openConnection("https://ami-dev.in2p3.fr/AMI/servlet/net.hep.atlas.Database.Bookkeeping.AMI.Servlet.FrontEnd");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
