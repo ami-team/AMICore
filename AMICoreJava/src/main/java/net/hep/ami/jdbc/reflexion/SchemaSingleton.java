@@ -707,7 +707,10 @@ public class SchemaSingleton
 					int size = resultSet.getInt("COLUMN_SIZE");
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
-					boolean nullable = resultSet.getInt("NULLABLE") == DatabaseMetaData.columnNullable;
+					boolean nullable = resultSet.getShort("NULLABLE")
+					                   ==
+					                   DatabaseMetaData.columnNullable
+					;
 
 					if(entity != null && field != null)
 					{
