@@ -708,10 +708,11 @@ public class SchemaSingleton
 					int digits = resultSet.getInt("DECIMAL_DIGITS");
 					String def = resultSet.getString("COLUMN_DEF");
 
-					boolean nullable = //resultSet.getShort("NULLABLE") == DatabaseMetaData.columnNullable
-					                   //||
-					                   "YES".equalsIgnoreCase(resultSet.getString("is_nullable"))
-					;
+					boolean nullable = def == null;
+
+					// resultSet.getShort("NULLABLE") == DatabaseMetaData.columnNullable
+					// ||
+					// "YES".equalsIgnoreCase(resultSet.getString("is_nullable"))
 
 					if(entity != null && field != null)
 					{
