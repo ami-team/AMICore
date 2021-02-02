@@ -65,6 +65,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		StringBuilder input = new StringBuilder().append("Command=").append(command()).append(URLEncoder.encode(argumentString.toString(), StandardCharsets.UTF_8));
 
+		System.out.println("input command string : " + input);
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* EXECUTE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
