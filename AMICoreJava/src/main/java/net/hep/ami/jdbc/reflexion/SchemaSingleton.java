@@ -710,7 +710,7 @@ public class SchemaSingleton
 
 					boolean nullable = //resultSet.getShort("NULLABLE") == DatabaseMetaData.columnNullable
 					                   //||
-					                   "YES".equalsIgnoreCase(resultSet.getString("IS_NULLABLE"))
+					                   "YES".equalsIgnoreCase(resultSet.getString("is_nullable"))
 					;
 
 					if(entity != null && field != null)
