@@ -396,6 +396,14 @@ public class CommandSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
+	public static StringBuilder chainCommand(@NotNull String command, @NotNull Set<String> userRoles, @NotNull Map<String, String> arguments) throws Exception
+	{
+		return chainCommand(command, userRoles, arguments, -1);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
 	public static StringBuilder chainCommand(@NotNull String command, @NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
