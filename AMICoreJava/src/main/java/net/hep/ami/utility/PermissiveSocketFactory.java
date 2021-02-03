@@ -12,8 +12,8 @@ public class PermissiveSocketFactory
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final String SSL_PROTOCOL = "SSLv3";
-	private static final String TLS_PROTOCOL = "TLSv1.2";
+	private static final String NEW_TLS_PROTOCOL = "TLSv1.3";
+	private static final String OLD_TLS_PROTOCOL = "TLSv1.2";
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -41,8 +41,8 @@ public class PermissiveSocketFactory
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private final SSLSocketFactory m_sslSocketFactory;
-	private final SSLSocketFactory m_tlsSocketFactory;
+	private final SSLSocketFactory m_newTLSSocketFactory;
+	private final SSLSocketFactory m_oldTLSSocketFactory;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -58,7 +58,7 @@ public class PermissiveSocketFactory
 		SSLSocketFactory tmp;
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* SSL                                                                                                        */
+		/* NEW TLS                                                                                                    */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
@@ -67,7 +67,7 @@ public class PermissiveSocketFactory
 			/* CREATE CONTEXT                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			SSLContext sslContext = SSLContext.getInstance(SSL_PROTOCOL);
+			SSLContext sslContext = SSLContext.getInstance(NEW_TLS_PROTOCOL);
 
 			sslContext.init(keyManagers, new TrustManager[] {
 					new PermissiveX509TrustManager()
@@ -84,15 +84,15 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error("could not initialize SSL context", e);
+			LogSingleton.root.error("could not initialize " + NEW_TLS_PROTOCOL + " context", e);
 
 			tmp = null;
 		}
 
-		m_sslSocketFactory = tmp;
+		m_newTLSSocketFactory = tmp;
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* TLS                                                                                                        */
+		/* OLD TLS                                                                                                    */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
@@ -101,7 +101,7 @@ public class PermissiveSocketFactory
 			/* CREATE CONTEXT                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			SSLContext tlsContext = SSLContext.getInstance(TLS_PROTOCOL);
+			SSLContext tlsContext = SSLContext.getInstance(OLD_TLS_PROTOCOL);
 
 			tlsContext.init(keyManagers, new TrustManager[] {
 					new PermissiveX509TrustManager()
@@ -118,12 +118,12 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error("could not initialize TLS context", e);
+			LogSingleton.root.error("could not initialize " + OLD_TLS_PROTOCOL + " context", e);
 
 			tmp = null;
 		}
 
-		m_tlsSocketFactory = tmp;
+		m_oldTLSSocketFactory = tmp;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -131,17 +131,17 @@ public class PermissiveSocketFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	public SSLSocketFactory getSSLSocketFactory()
+	public SSLSocketFactory getNewTLSSocketFactory()
 	{
-		return m_sslSocketFactory;
+		return m_newTLSSocketFactory;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	public SSLSocketFactory getTLSSocketFactory()
+	public SSLSocketFactory getOldTLSSocketFactory()
 	{
-		return m_tlsSocketFactory;
+		return m_oldTLSSocketFactory;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -34,11 +34,11 @@ public class HttpConnectionFactory
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			socketFactory = s_socketFactory.getTLSSocketFactory();
+			socketFactory = s_socketFactory.getOldTLSSocketFactory();
 
 			if(socketFactory == null)
 			{
-				socketFactory = s_socketFactory.getSSLSocketFactory();
+				socketFactory = s_socketFactory.getNewTLSSocketFactory();
 
 				if(socketFactory == null)
 				{
