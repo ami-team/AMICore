@@ -13,7 +13,7 @@ public class PermissiveSocketFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final String SSL_PROTOCOL = "SSLv3";
-	private static final String TLS_PROTOCOL = "TLSv1";
+	private static final String TLS_PROTOCOL = "TLSv1.2";
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
