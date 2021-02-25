@@ -60,97 +60,105 @@ public class OracleDriver extends AbstractDriver
 		boolean fromFound = false;
 		boolean xxxFound = false;
 
-		int limitValue = -1;
-		int offsetValue = 0;
-
-		int flag = 0;
 		int cnt = 0;
 
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		for(String token: tokens)
+		if(false)
 		{
-			if("TIMESTAMP".equalsIgnoreCase(token))
+
+		}
+		else
+		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			int limitValue = -1;
+			int offsetValue = 0;
+
+			int flag = 0;
+
+			for(String token: tokens)
 			{
-				token = "TO_TIMESTAMP";
-			}
-
-			if(!";".equals(token))
-			{
-				/**/ if("LIMIT".equalsIgnoreCase(token))
+				if("TIMESTAMP".equalsIgnoreCase(token))
 				{
-					if(selectFound && !fromFound && !xxxFound)
-					{
-						result.append(" FROM dual ");
-
-						fromFound = true;
-					}
-
-					xxxFound = true;
-
-					flag = 1;
+					token = "TO_TIMESTAMP";
 				}
-				else if("OFFSET".equalsIgnoreCase(token))
+
+				if(!";".equals(token))
 				{
-					flag = 2;
-				}
-				else if(flag == 1)
-				{
-					try
+					/**/ if("LIMIT".equalsIgnoreCase(token))
 					{
-						limitValue = Integer.parseInt(token);
-						flag = 0;
+						if(selectFound && !fromFound && !xxxFound)
+						{
+							result.append(" FROM dual ");
+
+							fromFound = true;
+						}
+
+						xxxFound = true;
+
+						flag = 1;
 					}
-					catch(NumberFormatException e) { /* IGNORE */ }
-				}
-				else if(flag == 2)
-				{
-					try
+					else if("OFFSET".equalsIgnoreCase(token))
 					{
-						offsetValue = Integer.parseInt(token);
-						flag = 0;
+						flag = 2;
 					}
-					catch(NumberFormatException e) { /* IGNORE */ }
-				}
-				else
-				{
-					/**/ if("(".equals(token))
+					else if(flag == 1)
 					{
-						cnt++;
+						try
+						{
+							limitValue = Integer.parseInt(token);
+							flag = 0;
+						}
+						catch(NumberFormatException e) { /* IGNORE */ }
 					}
-					else if(")".equals(token))
+					else if(flag == 2)
 					{
-						cnt--;
+						try
+						{
+							offsetValue = Integer.parseInt(token);
+							flag = 0;
+						}
+						catch(NumberFormatException e) { /* IGNORE */ }
 					}
 					else
 					{
-						if(cnt == 0)
+						/**/ if("(".equals(token))
 						{
-							/**/ if("SELECT".equalsIgnoreCase(token))
+							cnt++;
+						}
+						else if(")".equals(token))
+						{
+							cnt--;
+						}
+						else
+						{
+							if(cnt == 0)
 							{
-								selectFound = true;
-								fromFound = false;
-								xxxFound = false;
-							}
-							else if("FROM".equalsIgnoreCase(token))
-							{
-								fromFound = true;
-							}
-							else if("WHERE".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
-							{
-								if(selectFound && !fromFound && !xxxFound)
+								/**/ if("SELECT".equalsIgnoreCase(token))
 								{
-									result.append(" FROM dual ");
-
+									selectFound = true;
+									fromFound = false;
+									xxxFound = false;
+								}
+								else if("FROM".equalsIgnoreCase(token))
+								{
 									fromFound = true;
 								}
+								else if("WHERE".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
+								{
+									if(selectFound && !fromFound && !xxxFound)
+									{
+										result.append(" FROM dual ");
 
-								xxxFound = true;
+										fromFound = true;
+									}
+
+									xxxFound = true;
+								}
 							}
 						}
-					}
 
-					result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+						result.append(Tokenizer.backQuotesToDoubleQuotes(token));
+					}
 				}
 			}
 
