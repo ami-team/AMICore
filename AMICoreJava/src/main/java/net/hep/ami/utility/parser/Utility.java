@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 public class Utility
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
-	/* JAVA & JSON STRINGS                                                                                            */
+	/* JAVA, JSON & BASH STRINGS                                                                                      */
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
@@ -74,6 +74,51 @@ public class Utility
 
 				case '\'':
 					result.append(simpleQuotes ? "\\\'" : "\'");
+					break;
+
+				default:
+					result.append(c);
+					break;
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result.toString();
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@Contract("null, _ -> null; !null, _ -> !null")
+	public static String escapeBashString(@Nullable String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		StringBuilder result = new StringBuilder(s.length());
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/*-*/ int i = 0x00000000;
+		final int l = s.length();
+
+		char c;
+
+		while(i < l)
+		{
+			c = s.charAt(i++);
+
+			switch(c)
+			{
+				case '\\':
+					result.append("\\\\");
+					break;
+
+				case '\"':
+					result.append("\\\"");
 					break;
 
 				default:
@@ -210,6 +255,58 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
+	@Contract("null, _ -> null; !null, _ -> !null")
+	public static String unescapeBashString(@Nullable String s) throws RuntimeException
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		StringBuilder result = new StringBuilder(s.length());
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/*-*/ int i = 0x00000000;
+		final int l = s.length();
+
+		String code;
+		char c;
+
+		while(i < l)
+		{
+			c = s.charAt(i++);
+
+			if(c == '\\' && i < l)
+			{
+				c = s.charAt(i++);
+
+				switch(c)
+				{
+					case '\\':
+						c = '\\';
+						break;
+
+					case '\"':
+						c = '\"';
+						break;
+
+					default:
+						result.append('\\');
+				}
+			}
+
+			result.append(c);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result.toString();
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
 	@Contract("null -> null; !null -> !null")
 	public static String javaStringToText(@Nullable String s) throws RuntimeException
 	{
@@ -238,8 +335,38 @@ public class Utility
 			if((/*-----------*/ tmp.charAt(0 + 0) == '\"' && tmp.charAt(l - 1) == '\"')
 			   ||
 			   (simpleQuotes && tmp.charAt(0 + 0) == '\'' && tmp.charAt(l - 1) == '\'')
-			 ){
+			 ) {
 				s = unescapeJSONString(tmp.substring(0 + 1, l - 1), simpleQuotes);
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return s;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@Contract("null, _ -> null; !null, _ -> !null")
+	public static String bashStringToText(@Nullable String s) throws RuntimeException
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		final String tmp = s.trim();
+
+		final int l = tmp.length();
+
+		if(l >= 2)
+		{
+			if(tmp.charAt(0 + 0) == '\"' && tmp.charAt(l - 1) == '\"')
+			{
+				s = unescapeBashString(tmp.substring(0 + 1, l - 1));
 			}
 		}
 
@@ -270,6 +397,27 @@ public class Utility
 
 		return new StringBuilder().append("\"")
 		                          .append(escapeJSONString(s, simpleQuotes))
+		                          .append("\"")
+		                          .toString()
+		;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Contract("null, _ -> null; !null, _ -> !null")
+	public static String textToBashString(@Nullable String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return new StringBuilder().append("\"")
+		                          .append(escapeBashString(s))
 		                          .append("\"")
 		                          .toString()
 		;
