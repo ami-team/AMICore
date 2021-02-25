@@ -60,20 +60,59 @@ public class OracleDriver extends AbstractDriver
 		boolean fromFound = false;
 		boolean xxxFound = false;
 
+		int limitValue = -1;
+		int offsetValue = 0;
+
+		int flag = 0;
 		int cnt = 0;
 
-		if(MAJOR_VERSION >= 120)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		for(String token: tokens)
 		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			for(String token: tokens)
+			if("TIMESTAMP".equalsIgnoreCase(token))
 			{
-				if("TIMESTAMP".equalsIgnoreCase(token))
-				{
-					token = "TO_TIMESTAMP";
-				}
+				token = "TO_TIMESTAMP";
+			}
 
-				if(!";".equals(token))
+			if(!";".equals(token))
+			{
+				/**/ if("LIMIT".equalsIgnoreCase(token))
+				{
+					if(selectFound && !fromFound && !xxxFound)
+					{
+						result.append(" FROM dual ");
+
+						fromFound = true;
+					}
+
+					xxxFound = true;
+
+					flag = 1;
+				}
+				else if("OFFSET".equalsIgnoreCase(token))
+				{
+					flag = 2;
+				}
+				else if(flag == 1)
+				{
+					try
+					{
+						limitValue = Integer.parseInt(token);
+						flag = 0;
+					}
+					catch(NumberFormatException e) { /* IGNORE */ }
+				}
+				else if(flag == 2)
+				{
+					try
+					{
+						offsetValue = Integer.parseInt(token);
+						flag = 0;
+					}
+					catch(NumberFormatException e) { /* IGNORE */ }
+				}
+				else
 				{
 					/**/ if("(".equals(token))
 					{
@@ -97,7 +136,7 @@ public class OracleDriver extends AbstractDriver
 							{
 								fromFound = true;
 							}
-							else if("WHERE".equalsIgnoreCase(token) || "LIMIT".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
+							else if("WHERE".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
 							{
 								if(selectFound && !fromFound && !xxxFound)
 								{
@@ -112,113 +151,6 @@ public class OracleDriver extends AbstractDriver
 					}
 
 					result.append(Tokenizer.backQuotesToDoubleQuotes(token));
-				}
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			if(selectFound && !fromFound && !xxxFound)
-			{
-				result.append(" FROM dual");
-
-				fromFound = true;
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
-		else
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			int limitValue = -1;
-			int offsetValue = 0;
-
-			int flag = 0;
-
-			for(String token: tokens)
-			{
-				if("TIMESTAMP".equalsIgnoreCase(token))
-				{
-					token = "TO_TIMESTAMP";
-				}
-
-				if(!";".equals(token))
-				{
-					/**/ if("LIMIT".equalsIgnoreCase(token))
-					{
-						if(selectFound && !fromFound && !xxxFound)
-						{
-							result.append(" FROM dual ");
-
-							fromFound = true;
-						}
-
-						xxxFound = true;
-
-						flag = 1;
-					}
-					else if("OFFSET".equalsIgnoreCase(token))
-					{
-						flag = 2;
-					}
-					else if(flag == 1)
-					{
-						try
-						{
-							limitValue = Integer.parseInt(token);
-							flag = 0;
-						}
-						catch(NumberFormatException e) { /* IGNORE */ }
-					}
-					else if(flag == 2)
-					{
-						try
-						{
-							offsetValue = Integer.parseInt(token);
-							flag = 0;
-						}
-						catch(NumberFormatException e) { /* IGNORE */ }
-					}
-					else
-					{
-						/**/ if("(".equals(token))
-						{
-							cnt++;
-						}
-						else if(")".equals(token))
-						{
-							cnt--;
-						}
-						else
-						{
-							if(cnt == 0)
-							{
-								/**/ if("SELECT".equalsIgnoreCase(token))
-								{
-									selectFound = true;
-									fromFound = false;
-									xxxFound = false;
-								}
-								else if("FROM".equalsIgnoreCase(token))
-								{
-									fromFound = true;
-								}
-								else if("WHERE".equalsIgnoreCase(token) || "ORDER".equalsIgnoreCase(token))
-								{
-									if(selectFound && !fromFound && !xxxFound)
-									{
-										result.append(" FROM dual ");
-
-										fromFound = true;
-									}
-
-									xxxFound = true;
-								}
-							}
-						}
-
-						result.append(Tokenizer.backQuotesToDoubleQuotes(token));
-					}
 				}
 			}
 
