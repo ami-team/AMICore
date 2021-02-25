@@ -60,14 +60,13 @@ public class OracleDriver extends AbstractDriver
 		boolean fromFound = false;
 		boolean xxxFound = false;
 
-		int cnt = 0;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		int limitValue = -1;
 		int offsetValue = 0;
 
 		int flag = 0;
+		int cnt = 0;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(String token: tokens)
 		{
