@@ -62,11 +62,7 @@ public class OracleDriver extends AbstractDriver
 
 		int cnt = 0;
 
-		if(false)
-		{
-
-		}
-		else
+		if(true)
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
