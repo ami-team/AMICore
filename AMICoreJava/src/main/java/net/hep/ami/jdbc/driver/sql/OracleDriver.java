@@ -168,7 +168,7 @@ public class OracleDriver extends AbstractDriver
 			if(limitValue >= 0)
 			{
 				if(MAJOR_VERSION >= 12) {
-					result = new StringBuilder().append(result).append("OFFSET ").append(offsetValue).append(" ROWS FETCH NEXT ").append(limitValue).append(" ROWS ONLY");
+					result = new StringBuilder().append(result).append(" OFFSET ").append(offsetValue).append(" ROWS FETCH NEXT ").append(limitValue).append(" ROWS ONLY");
 				}
 				else {
 					result = new StringBuilder().append("SELECT * FROM (SELECT a.*, ROWNUM AS ORACLE_ROWNUM FROM (").append(result).append(") a WHERE ROWNUM <= ").append(limitValue + offsetValue).append(") WHERE ORACLE_ROWNUM >= ").append(offsetValue + 1).append(" ORDER BY ORACLE_ROWNUM");
