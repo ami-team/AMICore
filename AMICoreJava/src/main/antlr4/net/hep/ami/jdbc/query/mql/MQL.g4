@@ -17,7 +17,7 @@ mqlQuery
 	| (m_select=selectStatement | m_insert=insertStatement | m_update=updateStatement | m_delete=deleteStatement) ';'?
 	;
 
-/*-------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 selectStatement
 	: SELECT (m_distinct=DISTINCT)? m_columns=columnList (WHERE m_expression=expressionOr)? (GROUP BY m_groupBy=qIdList)? (ORDER BY m_orderBy=qIdList (m_orderWay=(ASC|DESC))?)? (LIMIT m_limit=NUMBER (OFFSET m_offset=NUMBER)?)?
@@ -315,7 +315,7 @@ FUNCTION
 	| L O G | L O W E R | M A X | M I N | M O D | P O W | R A N D
 	| R O U N D | S I N | S Q R T | S T D D E V | S U B S T R
 	| S U M | T I M E S T A M P | U P P E R
-	| J S O N '_' [a-zA-Z_]+
+	| J S O N '_' [a-zA-Z0-9_]+
 	;
 
 /*---------------------------*/
