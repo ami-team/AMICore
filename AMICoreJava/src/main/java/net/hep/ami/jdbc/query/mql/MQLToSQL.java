@@ -779,9 +779,9 @@ public class MQLToSQL
 
 		final String functionName = context.m_functionName.getText();
 
-		/**/ if("JSON_PATHS".equalsIgnoreCase(functionName)
-		        ||
-		        "JSON_VALUES".equalsIgnoreCase(functionName)
+		if("JSON_PATHS".equalsIgnoreCase(functionName)
+		   ||
+		   "JSON_VALUES".equalsIgnoreCase(functionName)
 		 ) {
 			/**/ if(expressions.size() == 1)
 			{
