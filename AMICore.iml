@@ -24,7 +24,7 @@
     <orderEntry type="library" name="Maven: net.sf.saxon:Saxon-HE:10.3" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.67" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.67" level="project" />
-    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.8-1" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.9.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.groovy:groovy:3.0.6" level="project" />
     <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.55" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.22" level="project" />
