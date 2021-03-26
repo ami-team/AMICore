@@ -777,11 +777,33 @@ public class MQLToSQL
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new StringBuilder().append(context.m_functionName.getText())
-		                          .append(context.m_distinct != null ? "(DISTINCT " : "(")
-		                          .append(String.join(", ", expressions))
-		                          .append(")")
-		;
+		final String functionName = context.m_functionName.getText();
+
+		/**/ if("JSON_PATHS".equalsIgnoreCase(functionName)
+		        ||
+		        "JSON_VALUES".equalsIgnoreCase(functionName)
+		 ) {
+			/**/ if(expressions.size() == 1)
+			{
+				return new StringBuilder().append("{%").append(functionName).append(",").append(m_primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(",").append(expressions.get(0)).append(",").append("$").append("%}");
+			}
+			else if(expressions.size() == 2)
+			{
+				return new StringBuilder().append("{%").append(functionName).append(",").append(m_primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(",").append(expressions.get(0)).append(",").append(expressions.get(1)).append("%}");
+			}
+			else
+			{
+				throw new Exception("invalid usage for function `" + functionName + "`");
+			}
+		}
+		else
+		{
+			return new StringBuilder().append(functionName)
+			                          .append(context.m_distinct != null ? "(DISTINCT " : "(")
+			                          .append(String.join(", ", expressions))
+			                          .append(")")
+			;
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
