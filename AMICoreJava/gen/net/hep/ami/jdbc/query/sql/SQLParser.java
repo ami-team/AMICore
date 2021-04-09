@@ -1,4 +1,4 @@
-// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/jdbc/query/sql/SQL.g4 by ANTLR 4.9.1
+// Generated from /home/lambert/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/jdbc/query/sql/SQL.g4 by ANTLR 4.9.1
 package net.hep.ami.jdbc.query.sql;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -17,7 +17,7 @@ public class SQLParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		SPACES=1, STRING=2, PARAMETER=3, OTHERS=4;
+		SPACES=1, SPECIAL=2, STRING=3, PARAMETER=4, OTHERS=5;
 	public static final int
 		RULE_query = 0, RULE_token = 1;
 	private static String[] makeRuleNames() {
@@ -34,7 +34,7 @@ public class SQLParser extends Parser {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "SPACES", "STRING", "PARAMETER", "OTHERS"
+			null, "SPACES", "SPECIAL", "STRING", "PARAMETER", "OTHERS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -114,7 +114,7 @@ public class SQLParser extends Parser {
 			setState(9);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SPACES) | (1L << STRING) | (1L << PARAMETER) | (1L << OTHERS))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SPACES) | (1L << SPECIAL) | (1L << STRING) | (1L << PARAMETER) | (1L << OTHERS))) != 0)) {
 				{
 				{
 				setState(4);
@@ -142,10 +142,12 @@ public class SQLParser extends Parser {
 	public static class TokenContext extends ParserRuleContext {
 		public String v;
 		public Token SPACES;
+		public Token SPECIAL;
 		public Token STRING;
 		public Token PARAMETER;
 		public Token OTHERS;
 		public TerminalNode SPACES() { return getToken(SQLParser.SPACES, 0); }
+		public TerminalNode SPECIAL() { return getToken(SQLParser.SPECIAL, 0); }
 		public TerminalNode STRING() { return getToken(SQLParser.STRING, 0); }
 		public TerminalNode PARAMETER() { return getToken(SQLParser.PARAMETER, 0); }
 		public TerminalNode OTHERS() { return getToken(SQLParser.OTHERS, 0); }
@@ -159,7 +161,7 @@ public class SQLParser extends Parser {
 		TokenContext _localctx = new TokenContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_token);
 		try {
-			setState(20);
+			setState(22);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SPACES:
@@ -170,26 +172,34 @@ public class SQLParser extends Parser {
 				 ((TokenContext)_localctx).v =  ((TokenContext)_localctx).SPACES.getText(); 
 				}
 				break;
-			case STRING:
+			case SPECIAL:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(14);
+				((TokenContext)_localctx).SPECIAL = match(SPECIAL);
+				 ((TokenContext)_localctx).v =  ((TokenContext)_localctx).SPECIAL.getText(); 
+				}
+				break;
+			case STRING:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(16);
 				((TokenContext)_localctx).STRING = match(STRING);
 				 ((TokenContext)_localctx).v =  ((TokenContext)_localctx).STRING.getText(); 
 				}
 				break;
 			case PARAMETER:
-				enterOuterAlt(_localctx, 3);
+				enterOuterAlt(_localctx, 4);
 				{
-				setState(16);
+				setState(18);
 				((TokenContext)_localctx).PARAMETER = match(PARAMETER);
 				 ((TokenContext)_localctx).v =  ((TokenContext)_localctx).PARAMETER.getText(); 
 				}
 				break;
 			case OTHERS:
-				enterOuterAlt(_localctx, 4);
+				enterOuterAlt(_localctx, 5);
 				{
-				setState(18);
+				setState(20);
 				((TokenContext)_localctx).OTHERS = match(OTHERS);
 				 ((TokenContext)_localctx).v =  ((TokenContext)_localctx).OTHERS.getText(); 
 				}
@@ -210,14 +220,14 @@ public class SQLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\6\31\4\2\t\2\4\3"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\7\33\4\2\t\2\4\3"+
 		"\t\3\3\2\3\2\3\2\7\2\n\n\2\f\2\16\2\r\13\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
-		"\3\3\5\3\27\n\3\3\3\2\2\4\2\4\2\2\2\32\2\13\3\2\2\2\4\26\3\2\2\2\6\7\5"+
-		"\4\3\2\7\b\b\2\1\2\b\n\3\2\2\2\t\6\3\2\2\2\n\r\3\2\2\2\13\t\3\2\2\2\13"+
-		"\f\3\2\2\2\f\3\3\2\2\2\r\13\3\2\2\2\16\17\7\3\2\2\17\27\b\3\1\2\20\21"+
-		"\7\4\2\2\21\27\b\3\1\2\22\23\7\5\2\2\23\27\b\3\1\2\24\25\7\6\2\2\25\27"+
-		"\b\3\1\2\26\16\3\2\2\2\26\20\3\2\2\2\26\22\3\2\2\2\26\24\3\2\2\2\27\5"+
-		"\3\2\2\2\4\13\26";
+		"\3\3\3\3\3\3\5\3\31\n\3\3\3\2\2\4\2\4\2\2\2\35\2\13\3\2\2\2\4\30\3\2\2"+
+		"\2\6\7\5\4\3\2\7\b\b\2\1\2\b\n\3\2\2\2\t\6\3\2\2\2\n\r\3\2\2\2\13\t\3"+
+		"\2\2\2\13\f\3\2\2\2\f\3\3\2\2\2\r\13\3\2\2\2\16\17\7\3\2\2\17\31\b\3\1"+
+		"\2\20\21\7\4\2\2\21\31\b\3\1\2\22\23\7\5\2\2\23\31\b\3\1\2\24\25\7\6\2"+
+		"\2\25\31\b\3\1\2\26\27\7\7\2\2\27\31\b\3\1\2\30\16\3\2\2\2\30\20\3\2\2"+
+		"\2\30\22\3\2\2\2\30\24\3\2\2\2\30\26\3\2\2\2\31\5\3\2\2\2\4\13\30";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
