@@ -1,22 +1,57 @@
 package net.hep.ami.jdbc.driver.sql;
 
+import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.util.regex.*;
 
+import lombok.extern.slf4j.*;
+
+import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
 import org.jetbrains.annotations.*;
 
+@Slf4j
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:oracle",
 	clazz = "oracle.jdbc.driver.OracleDriver",
 	flags = DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_SCHEMA | DriverMetadata.FLAG_HAS_DUAL
 )
-
 public class OracleDriver extends AbstractDriver
 {
+	static final String JSON_PATHS_TEMPLATE;
+	static final String JSON_VALUES_TEMPLATE;
+
+	static
+	{
+		StringBuilder stringBuilder1 = new StringBuilder();
+		StringBuilder stringBuilder2 = new StringBuilder();
+
+		try(InputStream inputStream = AbstractDriver.class.getResourceAsStream("/sql/oracle/json_paths.sql"))
+		{
+			TextFile.read(stringBuilder1, inputStream);
+		}
+		catch(Exception e)
+		{
+			log.error(e.getMessage(), e);
+		}
+
+		try(InputStream inputStream = AbstractDriver.class.getResourceAsStream("/sql/oracle/json_values.sql"))
+		{
+			TextFile.read(stringBuilder2, inputStream);
+		}
+		catch(Exception e)
+		{
+			log.error(e.getMessage(), e);
+		}
+
+		JSON_PATHS_TEMPLATE = stringBuilder1.toString();
+		JSON_VALUES_TEMPLATE = stringBuilder2.toString();
+	}
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private final int MAJOR_VERSION;
@@ -45,9 +80,74 @@ public class OracleDriver extends AbstractDriver
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final Pattern JSON_PATHS_SUBSTITUTION = Pattern.compile("\\{%JSON_PATHS,(.*),(.*),(.*)%\\}");
+	private static final Pattern JSON_VALUES_SUBSTITUTION = Pattern.compile("\\{%JSON_VALUES,(.*),(.*),(.*)%\\}");
+
 	@Override
 	public String patchSQL(@NotNull String sql) throws Exception
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Matcher m;
+
+		/**/ if((m = JSON_PATHS_SUBSTITUTION.matcher(sql)).find())
+		{
+			String primaryKey = m.group(1);
+			String field = m.group(2);
+			String path = m.group(3);
+
+			Tokenizer.XQLParts partInfo = Tokenizer.splitXQL(sql);
+
+			List<String> select = partInfo.getSelect();
+			List<String> from = partInfo.getFrom();
+			List<String> where = partInfo.getWhere();
+
+			sql = JSON_PATHS_TEMPLATE.replace("{%primaryKey%}", primaryKey)
+					.replace("{%field%}", field)
+					.replace("{%path%}", path)
+					.replace("{%select%}", String.join("", select).replace(m.group(), "1"))
+					.replace("{%from%}", String.join("", from))
+					.replace("{%where%}", String.join("", where))
+			;
+		}
+		else if((m = JSON_VALUES_SUBSTITUTION.matcher(sql)).find())
+		{
+			String primaryKey = m.group(1);
+			String field = m.group(2);
+			String path = m.group(3);
+			String pathStart;
+			String pathEnd;
+
+			int idx = path.lastIndexOf("[*]");
+
+			if(idx > 0)
+			{
+				pathStart = path.substring(0, idx);
+				pathEnd = "$" + path.substring(idx);
+			}
+			else
+			{
+				pathStart = path;
+				pathEnd = "$[*]";
+			}
+
+			Tokenizer.XQLParts partInfo = Tokenizer.splitXQL(sql);
+
+			List<String> select = partInfo.getSelect();
+			List<String> from = partInfo.getFrom();
+			List<String> where = partInfo.getWhere();
+
+			sql = JSON_VALUES_TEMPLATE.replace("{%primaryKey%}", primaryKey)
+					.replace("{%field%}", field)
+					.replace("{%path%}", path)
+					.replace("{%pathStart%}", pathStart)
+					.replace("{%pathEnd%}", pathEnd)
+					.replace("{%select%}", String.join("", select).replace(m.group(), "1"))
+					.replace("{%from%}", String.join("", from))
+					.replace("{%where%}", String.join("", where))
+			;
+		}
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<String> tokens = Tokenizer.tokenize(sql.trim());
@@ -162,6 +262,13 @@ public class OracleDriver extends AbstractDriver
 			result.append(" FROM dual");
 
 			fromFound = true;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(!fromFound)
+		{
+			throw new Exception("Internal error");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

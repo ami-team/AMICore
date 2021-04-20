@@ -40,6 +40,10 @@ public class MQLToSQL
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private boolean injectTempTable = false;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private MQLToSQL(@NotNull String catalog, @NotNull String entity, @NotNull String AMIUser, boolean isAdmin) throws Exception
 	{
 		m_primaryKey = new QId(SchemaSingleton.getPrimaryKey(catalog, entity), true);
@@ -783,13 +787,25 @@ public class MQLToSQL
 		   ||
 		   "JSON_VALUES".equalsIgnoreCase(functionName)
 		 ) {
+
+			StringBuilder expression = expressions.get(0);
+			//QId qId = QId.parseQId(expression.toString());
+			//QId primaryKey = new QId(SchemaSingleton.getPrimaryKey(qId.getCatalog(), qId.getEntity()), true);
+
+			if(injectTempTable)
+			{
+				throw new Exception("Multiple JSON_PATHS/JSON_VALUES functions not allowed");
+			}
+
+			injectTempTable = true;
+
 			/**/ if(expressions.size() == 1)
 			{
-				return new StringBuilder().append("{%").append(functionName).append(",").append(m_primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(",").append(expressions.get(0)).append(",").append("$").append("%}");
+				return new StringBuilder().append("{%").append(functionName).append(",").append(m_primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(",").append(expression).append(",").append("$").append("%}");
 			}
 			else if(expressions.size() == 2)
 			{
-				return new StringBuilder().append("{%").append(functionName).append(",").append(m_primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(",").append(expressions.get(0)).append(",").append(expressions.get(1)).append("%}");
+				return new StringBuilder().append("{%").append(functionName).append(",").append(m_primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD)).append(",").append(expression).append(",").append(Utility.sqlValToText(expressions.get(1).toString(), false)).append("%}");
 			}
 			else
 			{

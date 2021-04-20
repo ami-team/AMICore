@@ -35,7 +35,7 @@ public class AnalyzeQuery extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Map<String, List<String>> partInfo = Tokenizer.splitXQL(xql);
+		Tokenizer.XQLParts partInfo = Tokenizer.splitXQL(xql);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

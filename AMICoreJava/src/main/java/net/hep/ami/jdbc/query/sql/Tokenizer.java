@@ -2,6 +2,8 @@ package net.hep.ami.jdbc.query.sql;
 
 import java.util.*;
 
+import lombok.*;
+
 import org.antlr.v4.runtime.*;
 
 import net.hep.ami.jdbc.query.*;
@@ -68,6 +70,58 @@ public class Tokenizer
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@ToString
+	public static class XQLParts
+	{
+		private List<String> select;
+		private List<String> from;
+		private List<String> where;
+		private List<String> group;
+		private List<String> having;
+		private List<String> order;
+		private List<String> way;
+		private List<String> limit;
+		private List<String> offset;
+
+		public void put(String statement, List<String> list)
+		{
+			switch(statement)
+			{
+				case SELECT:
+					select = list;
+					break;
+				case FROM:
+					from = list;
+					break;
+				case WHERE:
+					where = list;
+					break;
+				case GROUP:
+					group = list;
+					break;
+				case HAVING:
+					having = list;
+					break;
+				case ORDER:
+					order = list;
+					break;
+				case WAY:
+					way = list;
+					break;
+				case LIMIT:
+					limit = list;
+					break;
+				case OFFSET:
+					offset = list;
+					break;
+			}
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private static final Set<String> s_xqlRegions = new HashSet<>();
 
 	static
@@ -91,9 +145,9 @@ public class Tokenizer
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Map<String, List<String>> splitXQL(@NotNull String xql) throws Exception
+	public static XQLParts splitXQL(@NotNull String xql) throws Exception
 	{
-		Map<String, List<String>> result = new AMIMap<>(AMIMap.Type.LINKED_HASH_MAP, false, false);
+		XQLParts result = new XQLParts();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
