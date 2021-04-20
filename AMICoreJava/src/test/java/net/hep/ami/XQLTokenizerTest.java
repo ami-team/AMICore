@@ -9,7 +9,8 @@ public class XQLTokenizerTest
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@org.junit.jupiter.api.Test @Disabled
+	@Disabled
+	@org.junit.jupiter.api.Test
 	public void test_splitXQL() throws Exception
 	{
 		assertEquals(Tokenizer.splitXQL("SELECT foo, bar FROM qux GROUP BY foo HAVING SUM(foo) > 10 ORDER BY bar ASC").toString(), "{\"SELECT\":[\" \",\"foo\",\",\",\" \",\"bar\",\" \"],\"FROM\":[\" \",\"qux\",\" \"],\"GROUP\":[\" \",\" \",\"foo\",\" \"],\"HAVING\":[\" \",\"SUM\",\"(\",\"foo\",\")\",\" \",\">\",\" \",\"10\",\" \"],\"ORDER\":[\" \",\" \",\"bar\",\" \"],\"WAY\":[\"ASC\"]}");
