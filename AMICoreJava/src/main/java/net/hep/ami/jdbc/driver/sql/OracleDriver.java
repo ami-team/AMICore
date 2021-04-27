@@ -268,7 +268,7 @@ public class OracleDriver extends AbstractDriver
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(!fromFound)
+		if(selectFound && !fromFound)
 		{
 			throw new Exception("Internal error");
 		}
