@@ -105,9 +105,11 @@ public class OracleDriver extends AbstractDriver
 			sql = JSON_PATHS_TEMPLATE.replace("{%primaryKey%}", primaryKey)
 					.replace("{%field%}", field)
 					.replace("{%path%}", path)
-					.replace("{%select%}", String.join("", select).replace(m.group(), "1"))
+					.replace("{%select1%}", String.join("", select).replace(m.group(), "a.\"JPATH\" AS \"PATH\""))
+					.replace("{%select2%}", String.join("", select).replace(m.group(), "CONCAT(a.\"JPATH\",'[*]') AS \"PATH\""))
+					.replace("{%select3%}", String.join("", select).replace(m.group(), "REPLACE(a.\"JPATH\",b.\"JPATH\",CONCAT(b.\"JPATH\",'[*]')) AS \"PATH\""))
 					.replace("{%from%}", String.join("", from))
-					.replace("{%where%}", String.join("", where))
+					.replace("{%where%}", where != null ? String.join("", where) : "1 = 1")
 			;
 		}
 		else if((m = JSON_VALUES_SUBSTITUTION.matcher(sql)).find())
@@ -142,9 +144,9 @@ public class OracleDriver extends AbstractDriver
 					.replace("{%path%}", path)
 					.replace("{%pathStart%}", pathStart)
 					.replace("{%pathEnd%}", pathEnd)
-					.replace("{%select%}", String.join("", select).replace(m.group(), "1"))
+					.replace("{%select%}", String.join("", select).replace(m.group(), "a.\"JVALUE\" AS VALUE"))
 					.replace("{%from%}", String.join("", from))
-					.replace("{%where%}", String.join("", where))
+					.replace("{%where%}", where != null ? String.join("", where) : "1 = 1")
 			;
 		}
 

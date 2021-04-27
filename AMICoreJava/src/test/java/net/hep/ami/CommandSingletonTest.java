@@ -427,7 +427,7 @@ public class CommandSingletonTest
 
 			//System.out.println(CommandSingleton.executeCommand("AnalyzeQuery -xql=\"SELECT JSON_PATHS(AUXILIARYPARAMS,'$') WHERE TAGNAME LIKE 'z%'\"", false).replace(">", ">\n"));
 
-			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"AMITags2021:production\" -entity=\"T_TAGS\"  -mql=\"SELECT JSON_PATHS(AUXILIARYPARAMS,'$.test') WHERE TAGNAME LIKE 'z%'\"", false).replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"AMITags2021:production\" -entity=\"T_TAGS\"  -mql=\"SELECT 5, JSON_PATHS(AUXILIARYPARAMS,'$'), 6 \"", false).replace(">", ">\n"));
 
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"AMITags2021:production\" -entity=\"T_TAGS\"  -mql=\"SELECT JSON_VALUES(AUXILIARYPARAMS,'$.test.bar') WHERE TAGNAME LIKE 'z%'\"", false).replace(">", ">\n"));
 

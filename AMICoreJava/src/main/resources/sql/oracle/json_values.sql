@@ -58,7 +58,7 @@ ALL_VALUES AS
 	) "ami_json_values_table"
 	WHERE "ami_json_values_table"."JVALUE" IS NOT NULL
 )
-SELECT DISTINCT a."JVALUE" AS VALUE
+SELECT DISTINCT {%select%}
 FROM "ALL_VALUES" a, {%from%}
 WHERE
 	a."JVALUE" IS NOT NULL
