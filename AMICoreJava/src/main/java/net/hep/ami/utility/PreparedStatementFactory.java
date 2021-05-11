@@ -87,7 +87,7 @@ public class PreparedStatementFactory
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("_, _ -> new")
+	@Contract("_, _, _ -> new")
 	private static Tuple3<String, List<String>, List<Object>> prepare(@NotNull String sql, Connection connexion, @Nullable Object[] args) throws Exception
 	{
 		List<String> typeList = new ArrayList<>();
