@@ -78,7 +78,8 @@ public class CommandSingletonTest
 
 //		System.out.println(CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT `*` WHERE 1=1\" -count", false));
 
-//		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"mc16_001:production\" -entity=\"dataset\" -mql=\"SELECT * WHERE `mc16_001:production`.`dataset`.`AMIStatus` = \'VALID\'\" -limit=\"20\" -offset=\"0\" -count", false));
+		//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"mc16_001:production\" -entity=\"dataset\" -mql=\"SELECT * WHERE `mc16_001:production`.`dataset`.`AMIStatus` = \'VALID\'\" -limit=\"20\" -offset=\"0\" -count", false));
+//		System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"mc16_001:production\" -entity=\"dataset\" -mql=\"SELECT * WHERE (`mc16_001:production`.`DATASET`.`AMISTATUS` = 'VALID') and (`mc16_001:production`.`DATASET`.`DATATYPE` = 'AOD') LIMIT 10 OFFSET 0\"", false));
 
 //		CommandSingleton.executeCommand("BrowseQuery -catalog=\"self\" -entity=\"router_role\" -mql=\"SELECT id, id AS toto, router_user.id AS id WHERE 1=1 ORDER BY id ASC LIMIT 1 OFFSET 2\"", false);
 
@@ -424,8 +425,18 @@ public class CommandSingletonTest
 
 			//System.out.println("done.");
 
-			SecuritySingleton.init("jANvVELbngjYqT8E");
-			System.out.println(SecuritySingleton.decrypt("tp4oAOKmtUvYW4HVUyVuiIv+Rki5AUoB8hHUhTsQJ1Krp572Uq0oSCMGkVGSrvtdWs+6aaSUgiAJEUrHtw+V3IKMtWBnTRUSSZbC5oah9aA="));
+			//System.out.println(CommandSingleton.executeCommand("AnalyzeQuery -xql=\"SELECT JSON_PATHS(AUXILIARYPARAMS,'$') WHERE TAGNAME LIKE 'z%'\"", false).replace(">", ">\n"));
+
+			System.out.println(CommandSingleton.executeCommand("PingNode -hostName=\"ccami021.in2p3.fr\"", false).replace(">", ">\n"));
+
+
+			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"AMITags2021:production\" -entity=\"T_TAGS\"  -mql=\"SELECT 5, JSON_PATHS(AUXILIARYPARAMS,'$'), 6 \"", false).replace(">", ">\n"));
+
+			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"AMITags2021:production\" -entity=\"T_TAGS\"  -mql=\"SELECT JSON_VALUES(AUXILIARYPARAMS,'$.test.bar') WHERE TAGNAME LIKE 'z%'\"", false).replace(">", ">\n"));
+
+			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_PATHS(ancillaryData,'$') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_VALUES(ancillaryData,'$.test') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
+
 
 		}
 		catch(Exception e)

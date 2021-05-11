@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import net.hep.ami.jdbc.query.sql.*;
+import org.junit.jupiter.api.Disabled;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,6 +9,7 @@ public class XQLTokenizerTest
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Disabled
 	@org.junit.jupiter.api.Test
 	public void test_splitXQL() throws Exception
 	{

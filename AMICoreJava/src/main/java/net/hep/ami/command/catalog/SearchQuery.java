@@ -89,26 +89,26 @@ public class SearchQuery extends AbstractCommand
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Map<String, List<String>> parts = Tokenizer.splitXQL((mql != null) ? mql : sql);
+			Tokenizer.XQLParts parts = Tokenizer.splitXQL((mql != null) ? mql : sql);
 
 			XQLSelect xqlSelect1 = new XQLSelect().addSelectPart(/*---------------*/ "COUNT(*)" /*---------------*/);
 
-			XQLSelect xqlSelect2 = new XQLSelect().addSelectPart(String.join("", parts.get(Tokenizer.SELECT)).trim());
+			XQLSelect xqlSelect2 = new XQLSelect().addSelectPart(String.join("", parts.getSelect()).trim());
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<String> from = parts.get(Tokenizer.FROM);
+			List<String> from = parts.getFrom();
 			if(from != null)
 			{
-				String _from = String.join("", parts.get(Tokenizer.FROM)).trim();
+				String _from = String.join("", parts.getFrom()).trim();
 				xqlSelect1.addFromPart(_from);
 				xqlSelect2.addFromPart(_from);
 			}
 
-			List<String> where = parts.get(Tokenizer.WHERE);
+			List<String> where = parts.getWhere();
 			if(where != null)
 			{
-				String _where = String.join("", parts.get(Tokenizer.WHERE)).trim();
+				String _where = String.join("", parts.getWhere()).trim();
 
 				xqlSelect1.addWherePart(_where);
 				xqlSelect2.addWherePart(_where);
@@ -117,27 +117,27 @@ public class SearchQuery extends AbstractCommand
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<String> groupBy2 = parts.get(Tokenizer.GROUP);
+			List<String> groupBy2 = parts.getGroup();
 			if(groupBy == null && groupBy2 != null) {
 				groupBy = String.join("", groupBy2).trim();
 			}
 
-			List<String> orderBy2 = parts.get(Tokenizer.ORDER);
+			List<String> orderBy2 = parts.getOrder();
 			if(orderBy == null && orderBy2 != null) {
 				orderBy = String.join("", orderBy2).trim();
 			}
 
-			List<String> orderWay2 = parts.get(Tokenizer.WAY);
+			List<String> orderWay2 = parts.getWay();
 			if(orderWay == null && orderWay2 != null) {
 				orderWay = String.join("", orderWay2).trim();
 			}
 
-			List<String> limit2 = parts.get(Tokenizer.LIMIT);
+			List<String> limit2 = parts.getLimit();
 			if(limit == null && limit2 != null) {
 				limit = String.join("", limit2).trim();
 			}
 
-			List<String> offset2 = parts.get(Tokenizer.OFFSET);
+			List<String> offset2 = parts.getOffset();
 			if(offset == null && offset2 != null) {
 				offset = String.join("", offset2).trim();
 			}

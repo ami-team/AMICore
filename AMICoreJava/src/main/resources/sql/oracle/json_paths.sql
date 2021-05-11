@@ -19,7 +19,7 @@ WITH ALL_PATHS AS (
 		)  ami_json_table
 )
 
-SELECT DISTINCT a."JPATH" AS "PATH" , {%select%}
+SELECT DISTINCT {%select1%}
 FROM
 	ALL_PATHS a, {%from%}
 WHERE
@@ -46,7 +46,7 @@ WHERE
 
 UNION
 
-SELECT DISTINCT CONCAT(a."JPATH",'[*]') AS "PATH", {%select%}
+SELECT DISTINCT {%select2%}
 FROM
 	ALL_PATHS a , {%from%}
 WHERE
@@ -57,7 +57,7 @@ WHERE
 
 UNION
 
-SELECT DISTINCT REPLACE(a."JPATH",b."JPATH",CONCAT(b."JPATH",'[*]')) AS "PATH", {%select%}
+SELECT DISTINCT {%select3%}
 FROM
 	ALL_PATHS a, ALL_PATHS b, {%from%}
 WHERE
