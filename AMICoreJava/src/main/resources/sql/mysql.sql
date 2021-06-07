@@ -3,20 +3,22 @@
 DROP TABLE IF EXISTS `router_ipv6_blocks`;;
 DROP TABLE IF EXISTS `router_ipv4_blocks`;;
 DROP TABLE IF EXISTS `router_locations`;;
-DROP TABLE IF EXISTS `router_search_interface`;;
 DROP TABLE IF EXISTS `router_authority`;;
-DROP TABLE IF EXISTS `router_dashboard`;;
+DROP TABLE IF EXISTS `router_markdown`;;
 DROP TABLE IF EXISTS `router_short_url`;;
+DROP TABLE IF EXISTS `router_search_interface`;;
+DROP TABLE IF EXISTS `router_dashboard`;;
 DROP TABLE IF EXISTS `router_user_role`;;
 DROP TABLE IF EXISTS `router_user`;;
 DROP TABLE IF EXISTS `router_command_role`;;
 DROP TABLE IF EXISTS `router_command`;;
 DROP TABLE IF EXISTS `router_role`;;
-DROP TABLE IF EXISTS `router_converter`;;
 DROP TABLE IF EXISTS `router_foreign_key`;;
 DROP TABLE IF EXISTS `router_field`;;
 DROP TABLE IF EXISTS `router_entity`;;
 DROP TABLE IF EXISTS `router_catalog`;;
+DROP TABLE IF EXISTS `router_monitoring`;;
+DROP TABLE IF EXISTS `router_converter`;;
 DROP TABLE IF EXISTS `router_config`;;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -38,6 +40,44 @@ ALTER TABLE `router_config`
 ;;
 
 ALTER TABLE `router_config`
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `router_converter` (
+  `id` INT NOT NULL,
+  `xslt` VARCHAR(128) NOT NULL,
+  `mime` VARCHAR(128) NOT NULL
+
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
+
+ALTER TABLE `router_converter`
+  ADD CONSTRAINT `pk1_router_converter` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_converter` UNIQUE KEY (`xslt`)
+;;
+
+ALTER TABLE `router_converter`
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `router_monitoring` (
+  `id` INT NOT NULL,
+  `node` VARCHAR(128) NOT NULL,
+  `service` VARCHAR(128) NOT NULL,
+  `frequency` INT DEFAULT 10,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
+
+ALTER TABLE `router_monitoring`
+  ADD CONSTRAINT `pk1_router_monitoring` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_monitoring` UNIQUE KEY (`node`)
+;;
+
+ALTER TABLE `router_monitoring`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
@@ -151,24 +191,6 @@ ALTER TABLE `router_foreign_key`
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE `router_converter` (
-  `id` INT NOT NULL,
-  `xslt` VARCHAR(128) NOT NULL,
-  `mime` VARCHAR(128) NOT NULL
-
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
-
-ALTER TABLE `router_converter`
-  ADD CONSTRAINT `pk1_router_converter` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_converter` UNIQUE KEY (`xslt`)
-;;
-
-ALTER TABLE `router_converter`
-  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
 CREATE TABLE `router_role` (
   `id` INT NOT NULL,
   `role` VARCHAR(128) NOT NULL,
@@ -277,6 +299,58 @@ ALTER TABLE `router_user_role`
 
 ------------------------------------------------------------------------------------------------------------------------
 
+CREATE TABLE `router_dashboard` (
+  `id` INT NOT NULL,
+  `control` VARCHAR(128) NOT NULL,
+  `params` TEXT NOT NULL,
+  `settings` TEXT NOT NULL,
+  `transparent` TINYINT(1) NOT NULL DEFAULT 0,
+  `autoRefresh` TINYINT(1) NOT NULL DEFAULT 1,
+  `x` INT NOT NULL DEFAULT 0,
+  `y` INT NOT NULL DEFAULT 0,
+  `width` INT NOT NULL DEFAULT 0,
+  `height` INT NOT NULL DEFAULT 0,
+  `owner` VARCHAR(128) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
+
+ALTER TABLE `router_dashboard`
+  ADD CONSTRAINT `pk1_router_dashboard` PRIMARY KEY (`id`)
+;;
+
+ALTER TABLE `router_dashboard`
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `router_search_interface` (
+  `id` INT NOT NULL,
+  `group` VARCHAR(128) NOT NULL,
+  `name` VARCHAR(128) NOT NULL,
+  `rank` INT NOT NULL DEFAULT 0,
+  `json` TEXT NOT NULL,
+  `archived` TINYINT(1) NOT NULL DEFAULT 0,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
+
+) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
+
+ALTER TABLE `router_search_interface`
+  ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`group`, `name`)
+;;
+
+ALTER TABLE `router_search_interface`
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE `router_short_url` (
   `id` INT NOT NULL,
   `hash` VARCHAR(16) NOT NULL,
@@ -302,28 +376,25 @@ ALTER TABLE `router_short_url`
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE `router_dashboard` (
+CREATE TABLE `router_markdown` (
   `id` INT NOT NULL,
-  `control` VARCHAR(128) NOT NULL,
-  `params` TEXT NOT NULL,
-  `settings` TEXT NOT NULL,
-  `transparent` TINYINT(1) NOT NULL DEFAULT 0,
-  `autoRefresh` TINYINT(1) NOT NULL DEFAULT 1,
-  `x` INT NOT NULL DEFAULT 0,
-  `y` INT NOT NULL DEFAULT 0,
-  `width` INT NOT NULL DEFAULT 0,
-  `height` INT NOT NULL DEFAULT 0,
-  `owner` VARCHAR(128) NOT NULL,
+  `name` VARCHAR(128) NOT NULL,
+  `title` VARCHAR(128) NOT NULL,
+  `body` TEXT NOT NULL,
+  `archived` TINYINT(1) NOT NULL DEFAULT 0,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `createdBy` VARCHAR(128) NOT NULL,
+  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modifiedBy` VARCHAR(128) NOT NULL
 
 ) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
 
-ALTER TABLE `router_dashboard`
-  ADD CONSTRAINT `pk1_router_dashboard` PRIMARY KEY (`id`)
+ALTER TABLE `router_markdown`
+  ADD CONSTRAINT `pk1_router_markdown` PRIMARY KEY (`id`),
+  ADD CONSTRAINT `uk1_router_markdown` UNIQUE KEY (`name`)
 ;;
 
-ALTER TABLE `router_dashboard`
+ALTER TABLE `router_markdown`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
@@ -352,31 +423,6 @@ ALTER TABLE `router_authority`
 ;;
 
 ALTER TABLE `router_authority`
-  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE `router_search_interface` (
-  `id` INT NOT NULL,
-  `group` VARCHAR(128) NOT NULL,
-  `name` VARCHAR(128) NOT NULL,
-  `rank` INT NOT NULL DEFAULT 0,
-  `json` TEXT NOT NULL,
-  `archived` TINYINT(1) NOT NULL DEFAULT 0,
-  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `createdBy` VARCHAR(128) NOT NULL,
-  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `modifiedBy` VARCHAR(128) NOT NULL
-
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
-
-ALTER TABLE `router_search_interface`
-  ADD CONSTRAINT `pk1_router_search_interface` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `uk1_router_search_interface` UNIQUE KEY (`group`, `name`)
-;;
-
-ALTER TABLE `router_search_interface`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 

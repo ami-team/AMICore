@@ -3,20 +3,22 @@
 DROP TABLE IF EXISTS "router_ipv6_blocks";;
 DROP TABLE IF EXISTS "router_ipv4_blocks";;
 DROP TABLE IF EXISTS "router_locations";;
-DROP TABLE IF EXISTS "router_search_interface";;
 DROP TABLE IF EXISTS "router_authority";;
-DROP TABLE IF EXISTS "router_dashboard";;
+DROP TABLE IF EXISTS `router_markdown`;;
 DROP TABLE IF EXISTS "router_short_url";;
+DROP TABLE IF EXISTS "router_search_interface";;
+DROP TABLE IF EXISTS "router_dashboard";;
 DROP TABLE IF EXISTS "router_user_role";;
 DROP TABLE IF EXISTS "router_user";;
 DROP TABLE IF EXISTS "router_command_role";;
 DROP TABLE IF EXISTS "router_command";;
 DROP TABLE IF EXISTS "router_role";;
-DROP TABLE IF EXISTS "router_converter";;
 DROP TABLE IF EXISTS "router_foreign_key";;
 DROP TABLE IF EXISTS "router_field";;
 DROP TABLE IF EXISTS "router_entity";;
 DROP TABLE IF EXISTS "router_catalog";;
+DROP TABLE IF EXISTS `router_monitoring`;;
+DROP TABLE IF EXISTS "router_converter";;
 DROP TABLE IF EXISTS "router_config";;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -51,6 +53,40 @@ ALTER TABLE "router_config"
 
 CREATE TRIGGER "trig1_router_config"
   BEFORE UPDATE ON "router_config"
+  FOR EACH ROW
+    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_converter" (
+  "id" SERIAL,
+  "xslt" VARCHAR(128) NOT NULL,
+  "mime" VARCHAR(128) NOT NULL
+);;
+
+ALTER TABLE "router_converter"
+  ADD CONSTRAINT "pk1_router_converter" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_converter" UNIQUE ("xslt")
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `router_monitoring` (
+  "id" SERIAL,
+  "node" VARCHAR(128) NOT NULL,
+  "service" VARCHAR(128) NOT NULL,
+  "frequency" INT DEFAULT 10,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "pk1_router_monitoring" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_monitoring" UNIQUE ("node")
+;;
+
+CREATE TRIGGER "trig1_router_monitoring"
+  BEFORE UPDATE ON "router_monitoring"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
@@ -169,19 +205,6 @@ CREATE TRIGGER "trig1_router_foreign_key"
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE "router_converter" (
-  "id" SERIAL,
-  "xslt" VARCHAR(128) NOT NULL,
-  "mime" VARCHAR(128) NOT NULL
-);;
-
-ALTER TABLE "router_converter"
-  ADD CONSTRAINT "pk1_router_converter" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "uk1_router_converter" UNIQUE ("xslt")
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
 CREATE TABLE "router_role" (
   "id" SERIAL,
   "role" VARCHAR(128) NOT NULL,
@@ -271,6 +294,60 @@ ALTER TABLE "router_user_role"
 
 ------------------------------------------------------------------------------------------------------------------------
 
+CREATE TABLE "router_dashboard" (
+  "id" SERIAL,
+  "control" VARCHAR(128) NOT NULL,
+  "params" TEXT NOT NULL,
+  "settings" TEXT NOT NULL,
+  "transparent" SMALLINT NOT NULL DEFAULT 0,
+  "autoRefresh" SMALLINT NOT NULL DEFAULT 1,
+  "x" INT NOT NULL DEFAULT 0,
+  "y" INT NOT NULL DEFAULT 0,
+  "width" INT NOT NULL DEFAULT 0,
+  "height" INT NOT NULL DEFAULT 0,
+  "owner" VARCHAR(128) NOT NULL,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
+;;
+
+CREATE TRIGGER "trig1_router_dashboard"
+  BEFORE UPDATE ON "router_dashboard"
+  FOR EACH ROW
+    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_search_interface" (
+  "id" SERIAL,
+  "group" VARCHAR(128) NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
+  "rank" INT NOT NULL DEFAULT 0,
+  "json" TEXT NOT NULL,
+  "archived" SMALLINT NOT NULL DEFAULT 0,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR(128) NOT NULL,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR(128) NOT NULL
+);;
+
+ALTER TABLE "router_search_interface"
+  ADD CONSTRAINT "pk1_router_search_interface" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("group", "name")
+;;
+
+CREATE TRIGGER "trig1_router_search_interface"
+  BEFORE UPDATE ON "router_search_interface"
+  FOR EACH ROW
+    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE "router_short_url" (
   "id" SERIAL,
   "hash" VARCHAR(16) NOT NULL,
@@ -297,28 +374,25 @@ CREATE TRIGGER "trig1_router_short_url"
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE "router_dashboard" (
+CREATE TABLE `router_markdown` (
   "id" SERIAL,
-  "control" VARCHAR(128) NOT NULL,
-  "params" TEXT NOT NULL,
-  "settings" TEXT NOT NULL,
-  "transparent" SMALLINT NOT NULL DEFAULT 0,
-  "autoRefresh" SMALLINT NOT NULL DEFAULT 1,
-  "x" INT NOT NULL DEFAULT 0,
-  "y" INT NOT NULL DEFAULT 0,
-  "width" INT NOT NULL DEFAULT 0,
-  "height" INT NOT NULL DEFAULT 0,
-  "owner" VARCHAR(128) NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
+  "title" VARCHAR(128) NOT NULL,
+  "body" TEXT NOT NULL,
+  "archived" TINYINT(1) NOT NULL DEFAULT 0,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "createdBy" VARCHAR(128) NOT NULL,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR(128) NOT NULL
 );;
 
-ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "pk1_router_markdown" PRIMARY KEY ("id"),
+  ADD CONSTRAINT "uk1_router_markdown" UNIQUE ("name")
 ;;
 
-CREATE TRIGGER "trig1_router_dashboard"
-  BEFORE UPDATE ON "router_dashboard"
+CREATE TRIGGER "trig1_router_markdown"
+  BEFORE UPDATE ON "router_markdown"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
@@ -348,32 +422,6 @@ ALTER TABLE "router_authority"
 
 CREATE TRIGGER "trig1_router_authority"
   BEFORE UPDATE ON "router_authority"
-  FOR EACH ROW
-    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE "router_search_interface" (
-  "id" SERIAL,
-  "group" VARCHAR(128) NOT NULL,
-  "name" VARCHAR(128) NOT NULL,
-  "rank" INT NOT NULL DEFAULT 0,
-  "json" TEXT NOT NULL,
-  "archived" SMALLINT NOT NULL DEFAULT 0,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR(128) NOT NULL,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
-);;
-
-ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "pk1_router_search_interface" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "uk1_router_search_interface" UNIQUE ("group", "name")
-;;
-
-CREATE TRIGGER "trig1_router_search_interface"
-  BEFORE UPDATE ON "router_search_interface"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;

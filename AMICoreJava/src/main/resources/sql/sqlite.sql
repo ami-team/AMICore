@@ -3,20 +3,22 @@
 DROP TABLE IF EXISTS "router_ipv6_blocks";;
 DROP TABLE IF EXISTS "router_ipv4_blocks";;
 DROP TABLE IF EXISTS "router_locations";;
-DROP TABLE IF EXISTS "router_search_interface";;
 DROP TABLE IF EXISTS "router_authority";;
-DROP TABLE IF EXISTS "router_dashboard";;
+DROP TABLE IF EXISTS `router_markdown`;;
 DROP TABLE IF EXISTS "router_short_url";;
+DROP TABLE IF EXISTS "router_search_interface";;
+DROP TABLE IF EXISTS "router_dashboard";;
 DROP TABLE IF EXISTS "router_user_role";;
 DROP TABLE IF EXISTS "router_user";;
 DROP TABLE IF EXISTS "router_command_role";;
 DROP TABLE IF EXISTS "router_command";;
 DROP TABLE IF EXISTS "router_role";;
-DROP TABLE IF EXISTS "router_converter";;
 DROP TABLE IF EXISTS "router_foreign_key";;
 DROP TABLE IF EXISTS "router_field";;
 DROP TABLE IF EXISTS "router_entity";;
 DROP TABLE IF EXISTS "router_catalog";;
+DROP TABLE IF EXISTS `router_monitoring`;;
+DROP TABLE IF EXISTS "router_converter";;
 DROP TABLE IF EXISTS "router_config";;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +30,28 @@ CREATE TABLE "router_config" (
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR(128) NOT NULL,
+  UNIQUE ("paramName")
+);;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_converter" (
+  "id" INTEGER PRIMARY KEY,
+  "xslt" VARCHAR(128) NOT NULL,
+  "mime" VARCHAR(128) NOT NULL,
+  UNIQUE ("xslt")
+);;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `router_monitoring` (
+  "id" INTEGER PRIMARY KEY,
+  "node" VARCHAR(128) NOT NULL,
+  "service" VARCHAR(128) NOT NULL,
+  "frequency" INT DEFAULT 10,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE ("node")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -47,7 +70,8 @@ CREATE TABLE "router_catalog" (
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR(128) NOT NULL,
+  UNIQUE ("externalCatalog")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -62,7 +86,8 @@ CREATE TABLE "router_entity" (
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR(128) NOT NULL,
+  UNIQUE ("catalog", "entity")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -78,7 +103,8 @@ CREATE TABLE "router_field" (
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR(128) NOT NULL,
+  UNIQUE ("catalog", "entity", "field")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -96,15 +122,8 @@ CREATE TABLE "router_foreign_key" (
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "modifiedBy" VARCHAR(128) NOT NULL,
-  UNIQUE ("name")
-);;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE "router_converter" (
-  "id" INTEGER PRIMARY KEY,
-  "xslt" VARCHAR(128) NOT NULL,
-  "mime" VARCHAR(128) NOT NULL
+  UNIQUE ("name"),
+  UNIQUE ("fkCatalog", "fkTable", "fkColumn", "pkCatalog", "pkTable", "pkColumn")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -112,7 +131,8 @@ CREATE TABLE "router_converter" (
 CREATE TABLE "router_role" (
   "id" INTEGER PRIMARY KEY,
   "role" VARCHAR(128) NOT NULL,
-  "description" VARCHAR(512)
+  "description" VARCHAR(512),
+  UNIQUE ("role")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -123,7 +143,8 @@ CREATE TABLE "router_command" (
   "class" VARCHAR(256) NOT NULL,
   "visible" integer NOT NULL DEFAULT 1,
   "secured" integer NOT NULL DEFAULT 0,
-  "roleValidatorClass" VARCHAR(256)
+  "roleValidatorClass" VARCHAR(256),
+  UNIQUE ("command")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -132,7 +153,7 @@ CREATE TABLE "router_command_role" (
   "id" INTEGER PRIMARY KEY,
   "commandFK" integer NOT NULL,
   "roleFK" integer NOT NULL,
-  UNIQUE  ("commandFK", "roleFK"),
+  UNIQUE ("commandFK", "roleFK"),
   FOREIGN KEY ("commandFK") REFERENCES "router_command" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY ("roleFK") REFERENCES "router_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );;
@@ -153,7 +174,8 @@ CREATE TABLE "router_user" (
   "json" TEXT,
   "valid" integer NOT NULL DEFAULT 1,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE ("AMIUser")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -165,21 +187,6 @@ CREATE TABLE "router_user_role" (
   UNIQUE ("userFK", "roleFK"),
   FOREIGN KEY ("userFK") REFERENCES "router_user" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY ("roleFK") REFERENCES "router_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
-);;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE "router_short_url" (
-  "id" INTEGER PRIMARY KEY,
-  "hash" VARCHAR(16) NOT NULL,
-  "name" VARCHAR(128) NOT NULL,
-  "rank" integer NOT NULL DEFAULT 0,
-  "json" TEXT NOT NULL,
-  "shared" integer NOT NULL DEFAULT 0,
-  "expire" integer NOT NULL DEFAULT 0,
-  "owner" VARCHAR(128) NOT NULL,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -202,6 +209,53 @@ CREATE TABLE "router_dashboard" (
 
 ------------------------------------------------------------------------------------------------------------------------
 
+CREATE TABLE "router_search_interface" (
+  "id" INTEGER PRIMARY KEY,
+  "group" VARCHAR(128) NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
+  "rank" integer NOT NULL DEFAULT 0,
+  "json" TEXT NOT NULL,
+  "archived" integer NOT NULL DEFAULT 0,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR(128) NOT NULL,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR(128) NOT NULL,
+  UNIQUE ("group", "name")
+);;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_short_url" (
+  "id" INTEGER PRIMARY KEY,
+  "hash" VARCHAR(16) NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
+  "rank" integer NOT NULL DEFAULT 0,
+  "json" TEXT NOT NULL,
+  "shared" integer NOT NULL DEFAULT 0,
+  "expire" integer NOT NULL DEFAULT 0,
+  "owner" VARCHAR(128) NOT NULL,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE ("hash")
+);;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `router_markdown` (
+  "id" INTEGER PRIMARY KEY,
+  "name" VARCHAR(128) NOT NULL,
+  "title" VARCHAR(128) NOT NULL,
+  "body" TEXT NOT NULL,
+  "archived" TINYINT(1) NOT NULL DEFAULT 0,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR(128) NOT NULL,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR(128) NOT NULL,
+  UNIQUE ("name")
+);;
+
+------------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE "router_authority" (
   "id" INTEGER PRIMARY KEY,
   "vo" VARCHAR(128) NOT NULL DEFAULT 'ami',
@@ -215,22 +269,8 @@ CREATE TABLE "router_authority" (
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdBy" VARCHAR(128) NOT NULL,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
-);;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE "router_search_interface" (
-  "id" INTEGER PRIMARY KEY,
-  "group" VARCHAR(128) NOT NULL,
-  "name" VARCHAR(128) NOT NULL,
-  "rank" integer NOT NULL DEFAULT 0,
-  "json" TEXT NOT NULL,
-  "archived" integer NOT NULL DEFAULT 0,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR(128) NOT NULL,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR(128) NOT NULL
+  "modifiedBy" VARCHAR(128) NOT NULL,
+  UNIQUE ("serial")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -238,7 +278,8 @@ CREATE TABLE "router_search_interface" (
 CREATE TABLE "router_locations" (
   "id" INTEGER PRIMARY KEY,
   "continentCode" VARCHAR(3) NOT NULL DEFAULT 'N/A',
-  "countryCode" VARCHAR(3) NOT NULL DEFAULT 'N/A'
+  "countryCode" VARCHAR(3) NOT NULL DEFAULT 'N/A',
+  UNIQUE ("continentCode", "countryCode")
 );;
 
 ------------------------------------------------------------------------------------------------------------------------

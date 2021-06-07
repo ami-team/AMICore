@@ -28,7 +28,25 @@ END;
 ;;
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE "router_monitoring"';
+  EXECUTE IMMEDIATE 'DROP TABLE "router_authority"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_markdown"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_short_url"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
     RAISE;
@@ -46,25 +64,7 @@ END;
 ;;
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE "router_authority"';
-EXCEPTION
-  WHEN OTHERS THEN IF SQLCODE != -942 THEN
-    RAISE;
-  END IF;
-END;
-;;
-
-BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE "router_dashboard"';
-EXCEPTION
-  WHEN OTHERS THEN IF SQLCODE != -942 THEN
-    RAISE;
-  END IF;
-END;
-;;
-
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE "router_short_url"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
     RAISE;
@@ -118,15 +118,6 @@ END;
 ;;
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE "router_converter"';
-EXCEPTION
-  WHEN OTHERS THEN IF SQLCODE != -942 THEN
-    RAISE;
-  END IF;
-END;
-;;
-
-BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE "router_foreign_key"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
@@ -155,6 +146,24 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE "router_catalog"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_monitoring"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -942 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE "router_converter"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -942 THEN
     RAISE;
@@ -201,7 +210,25 @@ END;
 ;;
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_monitoring"';
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_authority"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_markdown"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_short_url"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -219,25 +246,7 @@ END;
 ;;
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_authority"';
-EXCEPTION
-  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
-    RAISE;
-  END IF;
-END;
-;;
-
-BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_dashboard"';
-EXCEPTION
-  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
-    RAISE;
-  END IF;
-END;
-;;
-
-BEGIN
-  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_short_url"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -291,15 +300,6 @@ END;
 ;;
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_converter"';
-EXCEPTION
-  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
-    RAISE;
-  END IF;
-END;
-;;
-
-BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_foreign_key"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
@@ -328,6 +328,24 @@ END;
 
 BEGIN
   EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_catalog"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_monitoring"';
+EXCEPTION
+  WHEN OTHERS THEN IF SQLCODE != -2289 THEN
+    RAISE;
+  END IF;
+END;
+;;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE "seq_router_converter"';
 EXCEPTION
   WHEN OTHERS THEN IF SQLCODE != -2289 THEN
     RAISE;
@@ -402,6 +420,104 @@ CREATE TRIGGER "trig1_router_config"
 
 CREATE TRIGGER "trig2_router_config"
   BEFORE UPDATE ON "router_config"
+  FOR EACH ROW
+  BEGIN
+    :NEW."modified" := SYSDATE;
+  END;
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_converter" (
+  "id" NUMBER(*, 0),
+  "xslt" VARCHAR2(128),
+  "mime" VARCHAR2(128)
+);;
+
+ALTER TABLE "router_converter"
+  ADD CONSTRAINT "pk1_router_converter" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_converter"
+  ADD CONSTRAINT "uk1_router_converter" UNIQUE ("xslt")
+;;
+
+ALTER TABLE "router_converter"
+  ADD CONSTRAINT "ck1_router_converter" CHECK("id" IS NOT NULL)
+;;
+
+ALTER TABLE "router_converter"
+  ADD CONSTRAINT "ck2_router_converter" CHECK("xslt" IS NOT NULL)
+;;
+
+ALTER TABLE "router_converter"
+  ADD CONSTRAINT "ck3_router_converter" CHECK("mime" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_converter"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_converter"
+  BEFORE INSERT ON "router_converter"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_converter".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_monitoring" (
+  "id" NUMBER(*, 0),
+  "node" VARCHAR2(128),
+  "service" VARCHAR2(128),
+  "frequency" NUMBER(*, 0) DEFAULT 10,
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "pk1_router_monitoring" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "uk1_router_monitoring" UNIQUE ("node")
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck1_router_monitoring" CHECK("id" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck2_router_monitoring" CHECK("node" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck3_router_monitoring" CHECK("service" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck4_router_monitoring" CHECK("frequency" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck5_router_monitoring" CHECK("modified" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_monitoring"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_monitoring"
+  BEFORE INSERT ON "router_monitoring"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_monitoring".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+CREATE TRIGGER "trig2_router_monitoring"
+  BEFORE UPDATE ON "router_monitoring"
   FOR EACH ROW
   BEGIN
     :NEW."modified" := SYSDATE;
@@ -729,46 +845,6 @@ CREATE TRIGGER "trig2_router_foreign_key"
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE "router_converter" (
-  "id" NUMBER(*, 0),
-  "xslt" VARCHAR2(128),
-  "mime" VARCHAR2(128)
-);;
-
-ALTER TABLE "router_converter"
-  ADD CONSTRAINT "pk1_router_converter" PRIMARY KEY ("id")
-;;
-
-ALTER TABLE "router_converter"
-  ADD CONSTRAINT "uk1_router_converter" UNIQUE ("xslt")
-;;
-
-ALTER TABLE "router_converter"
-  ADD CONSTRAINT "ck1_router_converter" CHECK("id" IS NOT NULL)
-;;
-
-ALTER TABLE "router_converter"
-  ADD CONSTRAINT "ck2_router_converter" CHECK("xslt" IS NOT NULL)
-;;
-
-ALTER TABLE "router_converter"
-  ADD CONSTRAINT "ck3_router_converter" CHECK("mime" IS NOT NULL)
-;;
-
-CREATE SEQUENCE "seq_router_converter"
-  START WITH 1 INCREMENT BY 1 CACHE 10
-;;
-
-CREATE TRIGGER "trig1_router_converter"
-  BEFORE INSERT ON "router_converter"
-  FOR EACH ROW
-  BEGIN
-    SELECT "seq_router_converter".NEXTVAL INTO :NEW."id" FROM dual;
-  END;
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
 CREATE TABLE "router_role" (
   "id" NUMBER(*, 0),
   "role" VARCHAR2(128),
@@ -1035,89 +1111,6 @@ CREATE TRIGGER "trig1_router_user_role"
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE "router_short_url" (
-  "id" NUMBER(*, 0),
-  "hash" VARCHAR2(16),
-  "name" VARCHAR2(128),
-  "rank" NUMBER(*, 0) DEFAULT 0,
-  "json" CLOB,
-  "shared" NUMBER(1, 0) DEFAULT 0,
-  "expire" NUMBER(1, 0) DEFAULT 0,
-  "owner" VARCHAR2(128),
-  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
- );;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "pk1_router_short_url" PRIMARY KEY ("id")
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "uk1_router_short_url" UNIQUE ("hash")
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck1_router_short_url" CHECK("id" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck2_router_short_url" CHECK("hash" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck3_router_short_url" CHECK("name" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck4_router_short_url" CHECK("rank" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck5_router_short_url" CHECK("json" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck6_router_short_url" CHECK("shared" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck7_router_short_url" CHECK("expire" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck8_router_short_url" CHECK("owner" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck9_router_short_url" CHECK("created" IS NOT NULL)
-;;
-
-ALTER TABLE "router_short_url"
-  ADD CONSTRAINT "ck10_router_short_url" CHECK("modified" IS NOT NULL)
-;;
-
-CREATE SEQUENCE "seq_router_short_url"
-  START WITH 1 INCREMENT BY 1 CACHE 10
-;;
-
-CREATE TRIGGER "trig1_router_short_url"
-  BEFORE INSERT ON "router_short_url"
-  FOR EACH ROW
-  BEGIN
-    SELECT "seq_router_short_url".NEXTVAL INTO :NEW."id" FROM dual;
-  END;
-;;
-
-CREATE TRIGGER "trig2_router_short_url"
-  BEFORE UPDATE ON "router_short_url"
-  FOR EACH ROW
-  BEGIN
-    :NEW."modified" := SYSDATE;
-  END;
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
 CREATE TABLE "router_dashboard" (
   "id" NUMBER(*, 0),
   "control" VARCHAR2(128),
@@ -1212,84 +1205,6 @@ CREATE TRIGGER "trig2_router_dashboard"
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE "router_authority" (
-  "id" NUMBER(*, 0),
-  "vo" VARCHAR2(128) DEFAULT 'ami',
-  "clientDN" VARCHAR2(512),
-  "issuerDN" VARCHAR2(512),
-  "notBefore" DATE,
-  "notAfter" DATE,
-  "serial" VARCHAR2(128),
-  "email" VARCHAR2(128),
-  "reason" NUMBER(5, 0),
-  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "createdBy" VARCHAR2(128),
-  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modifiedBy" VARCHAR2(128)
-);;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "pk1_router_authority" PRIMARY KEY ("id")
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "uk1_router_authority" UNIQUE ("serial")
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck1_router_authority" CHECK("id" IS NOT NULL)
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck2_router_authority" CHECK("vo" IS NOT NULL)
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck3_router_authority" CHECK("clientDN" IS NOT NULL)
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck4_router_authority" CHECK("issuerDN" IS NOT NULL)
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck5_router_authority" CHECK("notBefore" IS NOT NULL)
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck6_router_authority" CHECK("notAfter" IS NOT NULL)
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck7_router_authority" CHECK("serial" IS NOT NULL)
-;;
-
-ALTER TABLE "router_authority"
-  ADD CONSTRAINT "ck8_router_authority" CHECK("email" IS NOT NULL)
-;;
-
-CREATE SEQUENCE "seq_router_authority"
-  START WITH 1 INCREMENT BY 1 CACHE 10
-;;
-
-CREATE TRIGGER "trig1_router_authority"
-  BEFORE INSERT ON "router_authority"
-  FOR EACH ROW
-  BEGIN
-    SELECT "seq_router_authority".NEXTVAL INTO :NEW."id" FROM dual;
-  END;
-;;
-
-CREATE TRIGGER "trig2_router_authority"
-  BEFORE UPDATE ON "router_authority"
-  FOR EACH ROW
-  BEGIN
-    :NEW."modified" := SYSDATE;
-  END;
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
 CREATE TABLE "router_search_interface" (
   "id" NUMBER(*, 0),
   "group" VARCHAR2(128),
@@ -1373,56 +1288,237 @@ CREATE TRIGGER "trig2_router_search_interface"
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE "router_monitoring" (
+CREATE TABLE "router_short_url" (
   "id" NUMBER(*, 0),
-  "node" VARCHAR2(128),
-  "service" VARCHAR2(128),
-  "frequency" NUMBER(*, 0) DEFAULT 10,
+  "hash" VARCHAR2(16),
+  "name" VARCHAR2(128),
+  "rank" NUMBER(*, 0) DEFAULT 0,
+  "json" CLOB,
+  "shared" NUMBER(1, 0) DEFAULT 0,
+  "expire" NUMBER(1, 0) DEFAULT 0,
+  "owner" VARCHAR2(128),
+  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);;
+ );;
 
-ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "pk1_router_monitoring" PRIMARY KEY ("id")
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "pk1_router_short_url" PRIMARY KEY ("id")
 ;;
 
-ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "uk1_router_monitoring" UNIQUE ("node")
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "uk1_router_short_url" UNIQUE ("hash")
 ;;
 
-ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck1_router_monitoring" CHECK("id" IS NOT NULL)
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck1_router_short_url" CHECK("id" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck2_router_monitoring" CHECK("node" IS NOT NULL)
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck2_router_short_url" CHECK("hash" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck3_router_monitoring" CHECK("service" IS NOT NULL)
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck3_router_short_url" CHECK("name" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck4_router_monitoring" CHECK("frequency" IS NOT NULL)
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck4_router_short_url" CHECK("rank" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck5_router_monitoring" CHECK("modified" IS NOT NULL)
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck5_router_short_url" CHECK("json" IS NOT NULL)
 ;;
 
-CREATE SEQUENCE "seq_router_monitoring"
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck6_router_short_url" CHECK("shared" IS NOT NULL)
+;;
+
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck7_router_short_url" CHECK("expire" IS NOT NULL)
+;;
+
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck8_router_short_url" CHECK("owner" IS NOT NULL)
+;;
+
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck9_router_short_url" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck10_router_short_url" CHECK("modified" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_short_url"
   START WITH 1 INCREMENT BY 1 CACHE 10
 ;;
 
-CREATE TRIGGER "trig1_router_monitoring"
-  BEFORE INSERT ON "router_monitoring"
+CREATE TRIGGER "trig1_router_short_url"
+  BEFORE INSERT ON "router_short_url"
   FOR EACH ROW
   BEGIN
-    SELECT "seq_router_monitoring".NEXTVAL INTO :NEW."id" FROM dual;
+    SELECT "seq_router_short_url".NEXTVAL INTO :NEW."id" FROM dual;
   END;
 ;;
 
-CREATE TRIGGER "trig2_router_monitoring"
-  BEFORE UPDATE ON "router_monitoring"
+CREATE TRIGGER "trig2_router_short_url"
+  BEFORE UPDATE ON "router_short_url"
+  FOR EACH ROW
+  BEGIN
+    :NEW."modified" := SYSDATE;
+  END;
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_markdown" (
+  "id" NUMBER(*, 0),
+  "name" VARCHAR2(128),
+  "title" VARCHAR2(128),
+  "body" CLOB,
+  "archived" NUMBER(1, 0) DEFAULT 0,
+  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR2(128),
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR2(128)
+);;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "pk1_router_markdown" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "uk1_router_markdown" UNIQUE ("name")
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck1_router_markdown" CHECK("id" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck2_router_markdown" CHECK("name" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck3_router_markdown" CHECK("title" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck4_router_markdown" CHECK("body" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck5_router_markdown" CHECK("archived" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck6_router_markdown" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck7_router_markdown" CHECK("createdBy" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck8_router_markdown" CHECK("modified" IS NOT NULL)
+;;
+
+ALTER TABLE "router_markdown"
+  ADD CONSTRAINT "ck9_router_markdown" CHECK("modifiedBy" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_markdown"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_markdown"
+  BEFORE INSERT ON "router_markdown"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_markdown".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+CREATE TRIGGER "trig2_router_markdown"
+  BEFORE UPDATE ON "router_markdown"
+  FOR EACH ROW
+  BEGIN
+    :NEW."modified" := SYSDATE;
+  END;
+;;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_authority" (
+  "id" NUMBER(*, 0),
+  "vo" VARCHAR2(128) DEFAULT 'ami',
+  "clientDN" VARCHAR2(512),
+  "issuerDN" VARCHAR2(512),
+  "notBefore" DATE,
+  "notAfter" DATE,
+  "serial" VARCHAR2(128),
+  "email" VARCHAR2(128),
+  "reason" NUMBER(5, 0),
+  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "createdBy" VARCHAR2(128),
+  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "modifiedBy" VARCHAR2(128)
+);;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "pk1_router_authority" PRIMARY KEY ("id")
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "uk1_router_authority" UNIQUE ("serial")
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck1_router_authority" CHECK("id" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck2_router_authority" CHECK("vo" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck3_router_authority" CHECK("clientDN" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck4_router_authority" CHECK("issuerDN" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck5_router_authority" CHECK("notBefore" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck6_router_authority" CHECK("notAfter" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck7_router_authority" CHECK("serial" IS NOT NULL)
+;;
+
+ALTER TABLE "router_authority"
+  ADD CONSTRAINT "ck8_router_authority" CHECK("email" IS NOT NULL)
+;;
+
+CREATE SEQUENCE "seq_router_authority"
+  START WITH 1 INCREMENT BY 1 CACHE 10
+;;
+
+CREATE TRIGGER "trig1_router_authority"
+  BEFORE INSERT ON "router_authority"
+  FOR EACH ROW
+  BEGIN
+    SELECT "seq_router_authority".NEXTVAL INTO :NEW."id" FROM dual;
+  END;
+;;
+
+CREATE TRIGGER "trig2_router_authority"
+  BEFORE UPDATE ON "router_authority"
   FOR EACH ROW
   BEGIN
     :NEW."modified" := SYSDATE;
