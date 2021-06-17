@@ -37,14 +37,20 @@ public class AddUser extends AbstractCommand
 		String firstName = arguments.get("firstName");
 		String lastName = arguments.get("lastName");
 		String email = arguments.get("email");
+		String captchaHash = arguments.get("captchaHash");
+		String captchaText = arguments.get("captchaText");
 
-		if(amiLogin == null || (amiLogin = amiLogin.trim()).isEmpty()
+		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
-		   firstName == null || (firstName = firstName.trim()).isEmpty()
+		   Empty.is(firstName, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
-		   lastName == null || (lastName = lastName.trim()).isEmpty()
+		   Empty.is(lastName, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
-		   email == null || (email = email.trim()).isEmpty()
+		   Empty.is(email, Empty.STRING_NULL_EMPTY_BLANK)
+		   ||
+		   Empty.is(captchaHash, Empty.STRING_NULL_EMPTY_BLANK)
+		   ||
+		   Empty.is(captchaText, Empty.STRING_NULL_EMPTY_BLANK)
 		 ) {
 			throw new Exception("invalid usage");
 		}
@@ -54,6 +60,13 @@ public class AddUser extends AbstractCommand
 		if(!arguments.containsKey("agree"))
 		{
 			throw new Exception("you must accept the terms and conditions");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(!CaptchaSingleton.checkCaptcha(captchaHash, captchaText))
+		{
+			throw new Exception("invalid captcha verification");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

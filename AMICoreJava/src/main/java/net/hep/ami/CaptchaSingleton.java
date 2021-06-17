@@ -107,11 +107,15 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkCaptcha(String hash, String text) throws Exception
+	public static boolean checkCaptcha(String hash, String text)
 	{
-		if(!hash.equals(SecuritySingleton.md5Sum(SecuritySingleton.encrypt(text))))
+		try
 		{
-			throw new Exception("captcha validation error");
+			return hash.equals(SecuritySingleton.md5Sum(SecuritySingleton.encrypt(text)));
+		}
+		catch(Exception e)
+		{
+			return false;
 		}
 	}
 
