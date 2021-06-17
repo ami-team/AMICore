@@ -6,6 +6,7 @@ import java.nio.charset.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -31,10 +32,23 @@ public class ResetPassword extends AbstractCommand
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String amiLogin = arguments.get("amiLogin");
+		String captchaHash = arguments.get("captchaHash");
+		String captchaText = arguments.get("captchaText");
 
-		if(amiLogin == null)
-		{
+		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK)
+		   ||
+		   Empty.is(captchaHash, Empty.STRING_NULL_EMPTY_BLANK)
+		   ||
+		   Empty.is(captchaText, Empty.STRING_NULL_EMPTY_BLANK)
+		 ) {
 			throw new Exception("invalid usage");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(!CaptchaSingleton.checkCaptcha(captchaHash, captchaText))
+		{
+			throw new Exception("invalid captcha verification");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
