@@ -7,12 +7,12 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_GUEST", visible = true, secured = true)
-public class GetCaptcha extends AbstractCommand
+@CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
+public class GenerateCaptcha extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetCaptcha(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
+	public GenerateCaptcha(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
