@@ -63,7 +63,7 @@ public class CaptchaSingleton
 
 		for(int i = 0; i < bytes.length; i++)
 		{
-			g.setColor(new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+			g.setColor(new Color(random.nextInt(128), random.nextInt(128), random.nextInt(128)));
 
 			g.drawString(new String(new byte[] {bytes[i]}), 10 + (i * 20), (int) (Math.random() * 20 + 20));
 		}
