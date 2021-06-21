@@ -38,6 +38,10 @@ public class CaptchaSingleton
 
 	public static String generateImage(String text) throws Exception
 	{
+		Random random = new Random();
+
+		byte[] bytes = text.getBytes();
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		BufferedImage image = new BufferedImage(CAPTCHA_WIDTH, CAPTCH_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -49,17 +53,11 @@ public class CaptchaSingleton
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		g.setColor(Color.white);
 		g.setFont(new Font("Serif", Font.PLAIN, 26));
 		g.fillRect(0, 0, CAPTCHA_WIDTH, CAPTCH_HEIGHT);
 
 		/*------------------------------------------------------------------------------------------------------------*/
-
-		Random random = new Random();
-
-		byte[] bytes = text.getBytes();
 
 		for(int i = 0; i < bytes.length; i++)
 		{
@@ -69,8 +67,6 @@ public class CaptchaSingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-
-//		g.setColor(Color.white);
 
 		for(int i = 0; i < 8; i++)
 		{
