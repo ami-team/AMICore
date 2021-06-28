@@ -97,7 +97,7 @@ public class AddUpdateElement extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
+		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? (-single)? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

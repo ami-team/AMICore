@@ -32,13 +32,25 @@ public class UpdateElements extends AbstractCommand
 		                                                      : ","
 		;
 
-		String[] fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
-		                                                  : new String[] {}
-		;
+		String[] fields;
+		String[] values;
 
-		String[] values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
-		                                                  : new String[] {}
-		;
+		if(arguments.containsKey("single"))
+		{
+			fields = new String[] {arguments.get("fields")};
+
+			values = new String[] {arguments.get("values")};
+		}
+		else
+		{
+			fields = arguments.containsKey("fields") ? arguments.get("fields").split(separator, -1)
+			                                         : new String[] {}
+			;
+
+			values = arguments.containsKey("values") ? arguments.get("values").split(separator, -1)
+			                                         : new String[] {}
+			;
+		}
 
 		String[] keyFields = arguments.containsKey("keyFields") ? arguments.get("keyFields").split(separator, -1)
 		                                                        : new String[] {}
@@ -106,7 +118,7 @@ public class UpdateElements extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
+		return "-catalog=\"\" -entity=\"\" (-separator=\",\")? (-single)? -fields=\"\" -values=\"\" (-keyFields=\"\" -keyValues=\"\")? (-where=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
