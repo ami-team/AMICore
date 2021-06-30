@@ -248,6 +248,7 @@ public class GetUserInfo extends AbstractCommand
 			      .append("<field name=\"label\"><![CDATA[").append(ssoLabel).append("]]></field>")
 			      .append("<field name=\"signInURL\"><![CDATA[").append(ssoSignInURL).append("]]></field>")
 			      .append("<field name=\"signOutURL\"><![CDATA[").append(ssoSignOutURL).append("]]></field>")
+			      .append("</row>")
 			;
 		}
 
