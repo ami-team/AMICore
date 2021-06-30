@@ -147,7 +147,8 @@ public class GetUserInfo extends AbstractCommand
 
 		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
 
-		String ssoURL = ConfigSingleton.getProperty("sso_url", "N/A");
+		String ssoSignInURL = ConfigSingleton.getProperty("sso_sign_in_url", "N/A");
+		String ssoSignOutURL = ConfigSingleton.getProperty("sso_sign_out_url", "N/A");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* USER INFO                                                                                                  */
@@ -237,14 +238,16 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("<rowset type=\"sso\">");
 
-		if(!ssoURL.isEmpty()
+		if(!ssoLabel.isEmpty()
 		   &&
-		   !"N/A".equals(ssoURL)
+		   !"N/A".equals(ssoSignInURL)
+		   &&
+		   !"N/A".equals(ssoSignOutURL)
 		 ) {
 			result.append("<row>")
 			      .append("<field name=\"label\"><![CDATA[").append(ssoLabel).append("]]></field>")
-			      .append("<field name=\"url\"><![CDATA[").append(ssoURL).append("]]></field>")
-			      .append("</row>")
+			      .append("<field name=\"signInURL\"><![CDATA[").append(ssoSignInURL).append("]]></field>")
+			      .append("<field name=\"signOutURL\"><![CDATA[").append(ssoSignOutURL).append("]]></field>")
 			;
 		}
 
