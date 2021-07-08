@@ -91,7 +91,7 @@ public class SearchQuery extends AbstractCommand
 
 			Tokenizer.XQLParts parts = Tokenizer.splitXQL((mql != null) ? mql : sql);
 
-			XQLSelect xqlSelect1 = new XQLSelect().addSelectPart(/*---------------*/ "COUNT(*)" /*---------------*/);
+			XQLSelect xqlSelect1 = new XQLSelect().addSelectPart(/*-----------*/ "COUNT(*)" /*-----------*/);
 
 			XQLSelect xqlSelect2 = new XQLSelect().addSelectPart(String.join("", parts.getSelect()).trim());
 
@@ -113,7 +113,6 @@ public class SearchQuery extends AbstractCommand
 				xqlSelect1.addWherePart(_where);
 				xqlSelect2.addWherePart(_where);
 			}
-			/*--------------------------------------------------------------------------------------------------------*/
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
