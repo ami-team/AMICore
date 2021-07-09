@@ -230,7 +230,11 @@ public class SearchQuery extends AbstractCommand
 
 					/*------------------------------------------------------------------------------------------------*/
 
-					result.append(rowSet2.toStringBuilder(catalog2, totalNumberOfRows));
+					//result.append(rowSet2.toStringBuilder(catalog2, totalNumberOfRows));
+					if(count && totalNumberOfRows > 0)
+					{
+						result.append(rowSet2.toStringBuilder(catalog2, totalNumberOfRows));
+					}
 
 					/*------------------------------------------------------------------------------------------------*/
 
