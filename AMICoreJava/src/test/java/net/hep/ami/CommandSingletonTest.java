@@ -2,8 +2,12 @@ package net.hep.ami;
 
 import net.hep.ami.jdbc.Querier;
 import net.hep.ami.jdbc.Router;
+import net.hep.ami.jdbc.Row;
 import net.hep.ami.jdbc.SimpleQuerier;
 import net.hep.ami.jdbc.query.sql.Tokenizer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @SuppressWarnings("all")
 public class CommandSingletonTest
@@ -427,7 +431,7 @@ public class CommandSingletonTest
 
 			//System.out.println(CommandSingleton.executeCommand("AnalyzeQuery -xql=\"SELECT JSON_PATHS(AUXILIARYPARAMS,'$') WHERE TAGNAME LIKE 'z%'\"", false).replace(">", ">\n"));
 
-			System.out.println(CommandSingleton.executeCommand("PingNode -hostName=\"ccami021.in2p3.fr\"", false).replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand("PingNode -hostName=\"ccami021.in2p3.fr\"", false).replace(">", ">\n"));
 
 
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"AMITags2021:production\" -entity=\"T_TAGS\"  -mql=\"SELECT 5, JSON_PATHS(AUXILIARYPARAMS,'$'), 6 \"", false).replace(">", ">\n"));
@@ -437,6 +441,21 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_PATHS(ancillaryData,'$') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_VALUES(ancillaryData,'$.test') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
 
+			Querier querier = new Router();
+
+			@NotNull List<Row> rows = querier.executeSQLQuery("router_catalog", "SELECT * FROM \"router_catalog\" WHERE \"jdbcUrl\" LIKE '%in2p3%' AND \"internalCatalog\" LIKE 'ATLAS_AMI%'").getAll();
+
+			for(Row row : rows)
+			{
+				System.out.println(
+						"UPDATE \"router_catalog\" SET " +
+								"\"internalCatalog\" = '" + row.getValue("internalCatalog") + "_W', " +
+								"\"internalSchema\" = '" + row.getValue("internalSchema") + "_W', " +
+								"\"jdbcUrl\" = 'the new url', " +
+								"\"user\" = '" + SecuritySingleton.encrypt(row.getValue("internalSchema") + "_W") + "' " +
+						"WHERE \"id\" = " + row.getValue("id") + ";"
+				);
+			}
 
 		}
 		catch(Exception e)
