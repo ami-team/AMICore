@@ -493,15 +493,19 @@ ALTER TABLE "router_monitoring"
 ;;
 
 ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck3_router_monitoring" CHECK("service" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_monitoring" CHECK("endpoint" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck4_router_monitoring" CHECK("frequency" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_monitoring" CHECK("service" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_monitoring"
-  ADD CONSTRAINT "ck5_router_monitoring" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_monitoring" CHECK("frequency" IS NOT NULL)
+;;
+
+ALTER TABLE "router_monitoring"
+  ADD CONSTRAINT "ck6_router_monitoring" CHECK("modified" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_monitoring"
