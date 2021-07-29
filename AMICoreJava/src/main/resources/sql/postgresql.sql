@@ -75,7 +75,7 @@ ALTER TABLE "router_converter"
 CREATE TABLE `router_monitoring` (
   "id" SERIAL,
   "node" VARCHAR(128) NOT NULL,
-  "endpoint" VARCHAR(256) NOT NULL,
+  "endpoint" VARCHAR(512) NOT NULL,
   "service" VARCHAR(128) NOT NULL,
   "frequency" INT DEFAULT 10,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

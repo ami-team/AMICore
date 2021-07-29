@@ -471,6 +471,7 @@ CREATE TRIGGER "trig1_router_converter"
 CREATE TABLE "router_monitoring" (
   "id" NUMBER(*, 0),
   "node" VARCHAR2(128),
+  "endpoint" VARCHAR2(512),
   "service" VARCHAR2(128),
   "frequency" NUMBER(*, 0) DEFAULT 10,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
