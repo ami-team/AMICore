@@ -110,7 +110,7 @@ public class CommandParser extends Parser {
 	}
 
 	public static class CommandContext extends ParserRuleContext {
-		public Command.CommandTuple commandTuple;
+		public Command.Tuple tuple;
 		public IdentifierContext identifier;
 		public ParameterListContext parameterList;
 		public IdentifierContext identifier() {
@@ -138,7 +138,7 @@ public class CommandParser extends Parser {
 			((CommandContext)_localctx).parameterList = parameterList();
 			setState(12);
 			match(EOF);
-			 ((CommandContext)_localctx).commandTuple =  new Command.CommandTuple(((CommandContext)_localctx).identifier.v, ((CommandContext)_localctx).parameterList.v); 
+			 ((CommandContext)_localctx).tuple =  new Command.Tuple(((CommandContext)_localctx).identifier.v, ((CommandContext)_localctx).parameterList.v); 
 			}
 		}
 		catch (RecognitionException re) {

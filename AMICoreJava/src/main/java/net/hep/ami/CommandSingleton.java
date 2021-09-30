@@ -228,7 +228,7 @@ public class CommandSingleton
 	@NotNull
 	public static String executeCommand(@NotNull String command) throws Exception
 	{
-		Command.CommandTuple tuple = Command.parse(command);
+		Command.Tuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments);
 	}
@@ -238,7 +238,7 @@ public class CommandSingleton
 	@NotNull
 	public static String executeCommand(@NotNull String command, boolean checkRoles) throws Exception
 	{
-		Command.CommandTuple tuple = Command.parse(command);
+		Command.Tuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles);
 	}
@@ -248,7 +248,7 @@ public class CommandSingleton
 	@NotNull
 	public static String executeCommand(@NotNull String command, boolean checkRoles, long transactionId) throws Exception
 	{
-		Command.CommandTuple tuple = Command.parse(command);
+		Command.Tuple tuple = Command.parse(command);
 
 		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles, transactionId);
 	}
