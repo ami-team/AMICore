@@ -11,7 +11,7 @@ public class Command
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static class CommandTuple
+	public static class Tuple
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -22,7 +22,7 @@ public class Command
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		@Contract(pure = true)
-		public CommandTuple(@NotNull String _command, @NotNull Map<String, String> _arguments)
+		public Tuple(@NotNull String _command, @NotNull Map<String, String> _arguments)
 		{
 			command = _command;
 
@@ -35,7 +35,7 @@ public class Command
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static CommandTuple parse(@NotNull String s) throws Exception
+	public static Command.Tuple parse(@NotNull String s) throws Exception
 	{
 		return parse(CharStreams.fromString(s));
 	}
@@ -43,7 +43,7 @@ public class Command
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static CommandTuple parse(@NotNull InputStream inputStream) throws Exception
+	public static Command.Tuple parse(@NotNull InputStream inputStream) throws Exception
 	{
 		return parse(CharStreams.fromStream(inputStream));
 	}
@@ -51,7 +51,7 @@ public class Command
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static CommandTuple parse(@NotNull CharStream charStream) throws Exception
+	private static Command.Tuple parse(@NotNull CharStream charStream) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -65,7 +65,7 @@ public class Command
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		CommandTuple result = parser.command().commandTuple;
+		Tuple result = parser.command().tuple;
 
 		if(listener.isError())
 		{

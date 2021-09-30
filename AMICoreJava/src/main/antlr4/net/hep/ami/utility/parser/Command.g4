@@ -33,8 +33,8 @@ options {
 /* COMMAND PARSER                                                                                                     */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-command returns [ Command.CommandTuple commandTuple ]
-	: identifier parameterList EOF { $commandTuple = new Command.CommandTuple($identifier.v, $parameterList.v); }
+command returns [ Command.Tuple tuple ]
+	: identifier parameterList EOF { $tuple = new Command.Tuple($identifier.v, $parameterList.v); }
 	;
 
 /*--------------------------------------------------------------------------------------------------------------------*/

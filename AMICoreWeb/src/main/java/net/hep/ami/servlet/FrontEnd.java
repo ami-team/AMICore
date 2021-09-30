@@ -121,7 +121,7 @@ public class FrontEnd extends HttpServlet
 			/* PARSE COMMAND                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Command.CommandTuple tuple = Command.parse(command);
+			Command.Tuple tuple = Command.parse(command);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
