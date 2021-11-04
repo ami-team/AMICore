@@ -151,14 +151,16 @@ public class GetUserInfo extends AbstractCommand
 		String ssoSignInURL = ConfigSingleton.getProperty("sso_sign_in_url", "N/A");
 		String ssoSignOutURL = ConfigSingleton.getProperty("sso_sign_out_url", "N/A");
 
-		Map<String, String> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 
 		map.put("certEnabled", m_isSecure ? "true" : "false");
 		map.put("vomsEnabled", vomsEnabled ? "true" : "false");
 
+		map.put("datetimePrecision", ConfigSingleton.getProperty("datetime_precision", 6));
 		map.put("datetimeFormat", ConfigSingleton.getProperty("datetime_format", "yyyy-MM-dd HH:mm:ss"));
-		map.put("timePrecision", ConfigSingleton.getProperty("time_precision", "6"));
 		map.put("dateFormat", ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"));
+
+		map.put("timePrecision", ConfigSingleton.getProperty("time_precision", 6));
 		map.put("timeFormatHMS", ConfigSingleton.getProperty("time_format_hms", "HH:mm:ss"));
 		map.put("timeFormatHM", ConfigSingleton.getProperty("time_format_hm", "HH:mm"));
 
