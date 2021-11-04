@@ -159,7 +159,6 @@ public class Utility
 		/*-*/ int i = 0x00000000;
 		final int l = s.length();
 
-		String code;
 		char c;
 
 		while(i < l)
@@ -215,7 +214,7 @@ public class Utility
 
 						int j = Math.min(4, l - i);
 
-						code = s.substring(i, i = i + j);
+						String code = s.substring(i, i = i + j);
 
 						/*--------------------------------------------------------------------------------------------*/
 
