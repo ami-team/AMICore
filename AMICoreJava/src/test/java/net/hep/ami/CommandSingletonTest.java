@@ -441,7 +441,9 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_PATHS(ancillaryData,'$') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_VALUES(ancillaryData,'$.test') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
 
-			Querier querier = new Router();
+			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"DatasetWB:production\" -entity=\"WB_HASHTAGS\"  -mql=\"SELECT DISTINCT \\\"DATASETFK\\\" AS \\\"id\\\", \\\"DATASETCATALOG\\\" AS \\\"catalog\\\", \\\"DATASETNAME\\\" AS \\\"ldn\\\" WHERE \\\"SCOPE\\\" = 'PMGL1' AND \\\"NAME\\\" = 'Exotics'\"", false).replace(">", ">\n"));
+
+			/*Querier querier = new Router();
 
 			@NotNull List<Row> rows = querier.executeSQLQuery("router_catalog", "SELECT * FROM \"router_catalog\" WHERE \"jdbcUrl\" LIKE '%in2p3%' AND \"internalCatalog\" LIKE 'ATLAS_AMI%'").getAll();
 
@@ -455,7 +457,7 @@ public class CommandSingletonTest
 								"\"user\" = '" + SecuritySingleton.encrypt(row.getValue("internalSchema") + "_W") + "' " +
 						"WHERE \"id\" = " + row.getValue("id") + ";"
 				);
-			}
+			}*/
 
 		}
 		catch(Exception e)
