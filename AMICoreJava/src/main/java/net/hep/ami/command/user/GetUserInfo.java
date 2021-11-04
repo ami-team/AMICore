@@ -2,6 +2,7 @@ package net.hep.ami.command.user;
 
 import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
@@ -146,9 +147,27 @@ public class GetUserInfo extends AbstractCommand
 		String termsAndConditions = ConfigSingleton.getProperty("terms_and_conditions", "N/A");
 
 		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
-
 		String ssoSignInURL = ConfigSingleton.getProperty("sso_sign_in_url", "N/A");
 		String ssoSignOutURL = ConfigSingleton.getProperty("sso_sign_out_url", "N/A");
+
+		Map<String, String> map = new HashMap<>();
+
+		map.put("certEnabled", m_isSecure ? "true" : "false");
+		map.put("vomsEnabled", vomsEnabled ? "true" : "false");
+
+		map.put("datetimeFormat", ConfigSingleton.getProperty("datetime_format", "yyyy-MM-dd HH:mm:ss"));
+		map.put("timePrecision", ConfigSingleton.getProperty("time_precision", "6"));
+		map.put("dateFormat", ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"));
+		map.put("timeFormatHMS", ConfigSingleton.getProperty("time_format_hms", "HH:mm:ss"));
+		map.put("timeFormatHM", ConfigSingleton.getProperty("time_format_hm", "HH:mm"));
+
+		map.put("ssoLabel", ConfigSingleton.getProperty("sso_label", "SSO"));
+		map.put("ssoSignInURL", ConfigSingleton.getProperty("sso_sign_in_url", "N/A"));
+		map.put("ssoSignOutURL", ConfigSingleton.getProperty("sso_sign_out_url", "N/A"));
+
+		map.put("termsAndConditions", ConfigSingleton.getProperty("terms_and_conditions", "N/A"));
+
+		String config = Base64.getEncoder().encodeToString(new ObjectMapper().writeValueAsBytes(map));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* USER INFO                                                                                                  */
@@ -211,6 +230,19 @@ public class GetUserInfo extends AbstractCommand
 					.append("</row>")
 			;
 		}
+
+		result.append("</rowset>");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CONFIG                                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"config\">");
+
+		result.append("<row>")
+		      .append("<field name=\"config\"><![CDATA[").append(config).append("]]></field>")
+		      .append("</row>")
+		;
 
 		result.append("</rowset>");
 
