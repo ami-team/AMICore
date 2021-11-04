@@ -3,6 +3,7 @@
 .settings
 .classpath
 *.log
+*.iml
 ojdbc*.jar
 AMICoreJava/bin/
 AMICoreWeb/bin/
