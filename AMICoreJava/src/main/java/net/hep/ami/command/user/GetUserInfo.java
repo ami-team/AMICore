@@ -168,7 +168,7 @@ public class GetUserInfo extends AbstractCommand
 
 		map.put("termsAndConditions", ConfigSingleton.getProperty("terms_and_conditions", "N/A"));
 
-		String config = Base64.getEncoder().encodeToString(new ObjectMapper().writeValueAsBytes(map));
+		String config = Base64.getUrlEncoder().encodeToString(new ObjectMapper().writeValueAsBytes(map));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* USER INFO                                                                                                  */
