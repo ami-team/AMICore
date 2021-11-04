@@ -157,8 +157,8 @@ public class GetUserInfo extends AbstractCommand
 		map.put("vomsEnabled", vomsEnabled ? "true" : "false");
 
 		map.put("datetimePrecision", ConfigSingleton.getProperty("datetime_precision", 6));
-		map.put("datetimeFormat", ConfigSingleton.getProperty("datetime_format", "yyyy-MM-dd HH:mm:ss"));
-		map.put("dateFormat", ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"));
+		map.put("datetimeFormat", ConfigSingleton.getProperty("datetime_format", "yyyy-MM-DD HH:mm:ss"));
+		map.put("dateFormat", ConfigSingleton.getProperty("date_format", "yyyy-MM-DD"));
 
 		map.put("timePrecision", ConfigSingleton.getProperty("time_precision", 6));
 		map.put("timeFormatHMS", ConfigSingleton.getProperty("time_format_hms", "HH:mm:ss"));
