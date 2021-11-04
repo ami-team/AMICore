@@ -238,7 +238,7 @@ public class GetUserInfo extends AbstractCommand
 		/* CONFIG                                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<rowset type=\"config\">");
+		result.append("<rowset type=\"awf\">");
 
 		result.append("<row>")
 		      .append("<field name=\"config\"><![CDATA[").append(config).append("]]></field>")
