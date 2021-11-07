@@ -4,7 +4,7 @@
 *.log
 *.iml
 ojdbc*.jar
-/.idea/
+.idea/
 AMICoreJava/bin/
 AMICoreWeb/bin/
 AMICoreJava/target/
