@@ -1,10 +1,10 @@
-.idea
 .DS_Store
 .settings
 .classpath
 *.log
 *.iml
 ojdbc*.jar
+/.idea/
 AMICoreJava/bin/
 AMICoreWeb/bin/
 AMICoreJava/target/
