@@ -1,5 +1,6 @@
 package net.hep.ami.command.user;
 
+import java.io.*;
 import java.util.*;
 
 import net.hep.ami.*;
@@ -145,6 +146,50 @@ public class GetUserInfo extends AbstractCommand
 		/* GET OTHER INFO                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		String tags;
+		String buildVersion;
+		String branch;
+		String commitId;
+		String commitIdAbbrev;
+		String remoteOriginURL;
+
+		try(final InputStream inputStream = GetUserInfo.class.getClassLoader().getResourceAsStream("/git.properties"))
+		{
+			if(inputStream != null)
+			{
+				Properties properties = new Properties();
+
+				properties.load(inputStream);
+
+				tags = properties.getProperty("git.tags");
+				buildVersion = properties.getProperty("git.build.version");
+				branch = properties.getProperty("git.branch");
+				commitId = properties.getProperty("git.commit.id");
+				commitIdAbbrev = properties.getProperty("git.commit.id.abbrev");
+				remoteOriginURL = properties.getProperty("git.remote.origin.url");
+			}
+			else
+			{
+				tags = "N/A";
+				buildVersion = "N/A";
+				branch = "N/A";
+				commitId = "N/A";
+				commitIdAbbrev = "N/A";
+				remoteOriginURL = "N/A";
+			}
+		}
+		catch(Exception e)
+		{
+			tags = "N/A";
+			buildVersion = "N/A";
+			branch = "N/A";
+			commitId = "N/A";
+			commitIdAbbrev = "N/A";
+			remoteOriginURL = "N/A";
+		}
+
+
+
 		String termsAndConditions = ConfigSingleton.getProperty("terms_and_conditions", "N/A");
 
 		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
@@ -152,6 +197,13 @@ public class GetUserInfo extends AbstractCommand
 		String ssoSignOutURL = ConfigSingleton.getProperty("sso_sign_out_url", "N/A");
 
 		Map<String, Object> map = new HashMap<>();
+
+		map.put("tags", tags);
+		map.put("buildVersion", buildVersion);
+		map.put("branch", branch);
+		map.put("commitId", commitId);
+		map.put("commitIdAbbrev", commitIdAbbrev);
+		map.put("remoteOriginURL", remoteOriginURL);
 
 		map.put("certEnabled", m_isSecure ? "true" : "false");
 		map.put("vomsEnabled", vomsEnabled ? "true" : "false");
