@@ -220,7 +220,7 @@ public class GetUserInfo extends AbstractCommand
 
 		map.put("termsAndConditions", ConfigSingleton.getProperty("terms_and_conditions", "N/A"));
 
-		map.put("nodeRedUrl", ConfigSingleton.getProperty("node_red_url", "N/A"));
+		map.put("nodeRedURL", ConfigSingleton.getProperty("node_red_url", "N/A"));
 
 		String config = Base64.getUrlEncoder().encodeToString(new ObjectMapper().writeValueAsBytes(map));
 
