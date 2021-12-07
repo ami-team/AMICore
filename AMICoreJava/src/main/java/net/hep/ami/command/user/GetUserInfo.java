@@ -188,8 +188,6 @@ public class GetUserInfo extends AbstractCommand
 			remoteOriginURL = "N/A";
 		}
 
-
-
 		String termsAndConditions = ConfigSingleton.getProperty("terms_and_conditions", "N/A");
 
 		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
@@ -221,6 +219,8 @@ public class GetUserInfo extends AbstractCommand
 		map.put("ssoSignOutURL", ConfigSingleton.getProperty("sso_sign_out_url", "N/A"));
 
 		map.put("termsAndConditions", ConfigSingleton.getProperty("terms_and_conditions", "N/A"));
+
+		map.put("nodeRedUrl", ConfigSingleton.getProperty("node_red_url", "N/A"));
 
 		String config = Base64.getUrlEncoder().encodeToString(new ObjectMapper().writeValueAsBytes(map));
 
