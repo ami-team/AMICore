@@ -729,7 +729,7 @@ public class RowSet
 							}
 						}
 
-						if((m_flags & Querier.FLAG_HIDE_BIG_CONTENT) != 0 && result[i].length() > ConfigSingleton.getProperty("max_value_size", 4096))
+						if((m_flags & Querier.FLAG_HIDE_BIG_CONTENT) != 0 && result[i].length() > ConfigSingleton.getProperty("max_value_length", 4096))
 						{
 							result[i] = /*---------*/ "@LONG" /*---------*/;
 						}
@@ -748,7 +748,7 @@ public class RowSet
 				}
 				else
 				{
-					if((m_flags & Querier.FLAG_HIDE_BIG_CONTENT) != 0 && result[i].length() > ConfigSingleton.getProperty("max_value_size", 4096))
+					if((m_flags & Querier.FLAG_HIDE_BIG_CONTENT) != 0 && result[i].length() > ConfigSingleton.getProperty("max_value_length", 4096))
 					{
 						result[i] = /*---------*/ "@LONG" /*---------*/;
 					}
