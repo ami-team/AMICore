@@ -1052,17 +1052,20 @@ public class SchemaSingleton
 				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
 				driverTuple = DriverSingleton.getTuple(catalogTuple.t);
 
-				threads.add(new Thread(new Extractor(
-						s_externalCatalogToInternalCatalog,
-						s_catalogs,
-						entry.getKey(),
-						entry.getValue(),
-						catalogTuple,
-						driverTuple,
-						rank++,
-						true // fast
-					), "Fast metadata extractor for '" + entry.getKey() + "'"
-				));
+				threads.add(
+					new Thread(
+						new Extractor(
+							s_externalCatalogToInternalCatalog,
+							s_catalogs,
+							entry.getKey(),
+							entry.getValue(),
+							catalogTuple,
+							driverTuple,
+							rank++,
+							true // fast
+						), "Fast metadata extractor for '" + entry.getKey() + "'"
+					)
+				);
 			}
 
 			new Executor(s_catalogs, threads).run();
@@ -1086,17 +1089,20 @@ public class SchemaSingleton
 				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
 				driverTuple = DriverSingleton.getTuple(catalogTuple.t);
 
-				threads.add(new Thread(new Extractor(
-						s_externalCatalogToInternalCatalog,
-						s_catalogs,
-						entry.getKey(),
-						entry.getValue(),
-						catalogTuple,
-						driverTuple,
-						rank++,
-						false // slow
-					), "Slow metadata extractor for '" + entry.getKey() + "'"
-				));
+				threads.add(
+					new Thread(
+						new Extractor(
+							s_externalCatalogToInternalCatalog,
+							s_catalogs,
+							entry.getKey(),
+							entry.getValue(),
+							catalogTuple,
+							driverTuple,
+							rank++,
+							false // slow
+						), "Slow metadata extractor for '" + entry.getKey() + "'"
+					)
+				);
 			}
 
 			new Thread(new Executor(s_catalogs, threads)).start();
