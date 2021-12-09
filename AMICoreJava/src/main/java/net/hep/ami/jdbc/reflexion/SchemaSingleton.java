@@ -597,7 +597,7 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getCatalogName(@Nullable String type)
 		{
-			return (/*!"SYNONYM".equals(type) &&*/ (m_driverTuple.t & DriverMetadata.FLAG_HAS_CATALOG) != 0) ? m_internalCatalog
+			return (/*!"SYNONYM".equals(type) &&*/ (m_driverTuple.t & DriverMetadata.FLAG_HAS_CATALOG) != 0) ? m_internalCatalog.replace("_W", "")
 			                                                                                             : null
 			;
 		}
@@ -606,7 +606,7 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getSchemaName(@Nullable String type)
 		{
-			return (/*!"SYNONYM".equals(type) &&*/ (m_driverTuple.t & DriverMetadata.FLAG_HAS_SCHEMA) != 0) ? m_catalogTuple.z
+			return (/*!"SYNONYM".equals(type) &&*/ (m_driverTuple.t & DriverMetadata.FLAG_HAS_SCHEMA) != 0) ? m_catalogTuple.z.replace("_W", "")
 			                                                                                            : null
 			;
 		}
