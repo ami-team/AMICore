@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import java.io.*;
+import java.net.*;
 import java.math.*;
 import java.util.*;
 import java.nio.charset.*;
@@ -23,6 +24,8 @@ import org.bouncycastle.operator.jcajce.*;
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
+
+import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
@@ -1118,11 +1121,15 @@ public class SecuritySingleton
 				 ) {
 					throw new Exception("invalid password");
 				}
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 			else
 			{
 				throw new Exception("invalid password");
 			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 
 		return passFromDB;
