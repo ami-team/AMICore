@@ -33,6 +33,10 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOGGER = LogSingleton.getLogger(FrontEnd.class.getSimpleName(), "INFO");
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
 	{
@@ -414,6 +418,8 @@ public class FrontEnd extends HttpServlet
 			}
 			catch(Exception e)
 			{
+				LOGGER.error("connection error: ", e);
+
 				return new Tuple2<>(
 					GUEST_USER,
 					GUEST_PASS

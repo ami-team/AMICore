@@ -1080,6 +1080,8 @@ public class SecuritySingleton
 				/* OIDC TOKEN                                                                                         */
 				/*----------------------------------------------------------------------------------------------------*/
 
+				StringBuilder stringBuilder = new StringBuilder();
+
 				HttpURLConnection urlConnection = HttpConnectionFactory.openConnection(ssoCheckURL);
 
 				try
@@ -1088,7 +1090,7 @@ public class SecuritySingleton
 
 					try(InputStream inputStream = urlConnection.getInputStream())
 					{
-						TextFile.read(new StringBuilder(), inputStream);
+						TextFile.read(stringBuilder, inputStream);
 					}
 				}
 				finally
@@ -1100,7 +1102,7 @@ public class SecuritySingleton
 
 				if(urlConnection.getResponseCode() != 200)
 				{
-					throw new Exception("invalid token");
+					throw new Exception(stringBuilder.toString());
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
