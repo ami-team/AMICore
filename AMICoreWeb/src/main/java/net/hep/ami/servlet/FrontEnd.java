@@ -312,7 +312,7 @@ public class FrontEnd extends HttpServlet
 			/* GET CREDENTIALS                                                                                        */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(rowList.isEmpty())
+			if(rowList.size() != 1)
 			{
 				return new Tuple2<>(
 					GUEST_USER,
@@ -395,7 +395,7 @@ public class FrontEnd extends HttpServlet
 			/* GET CREDENTIALS                                                                                        */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(rowList.isEmpty())
+			if(rowList.size() != 1)
 			{
 				return new Tuple2<>(
 					GUEST_USER,

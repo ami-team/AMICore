@@ -1065,15 +1065,52 @@ public class SecuritySingleton
 
 	@NotNull
 	@Contract("_, _, _ -> new")
-	public static String checkPassword(@NotNull String user, @NotNull String pass_from_user, @NotNull String pass_from_db) throws Exception
+	public static String checkPassword(@NotNull String user, @NotNull String passFromUser, @NotNull String passFromDB) throws Exception
 	{
-		if(!pass_from_user.equals(pass_from_db))
+		if(!passFromUser.equals(passFromDB))
 		{
-			if(pass_from_user.length() == 32)
+			String ssoCheckURL = ConfigSingleton.getProperty("sso_check_url");
+
+			/**/ if(!Empty.is(ssoCheckURL, Empty.STRING_NULL_EMPTY_BLANK) && passFromUser.startsWith("Bearer "))
 			{
-				String a = /**/ pass_from_user /**/.substring(0, 16);
-				String b = /**/ pass_from_user /**/.substring(16, 32);
-				String c = generateTmpPassword(user, pass_from_db, false);
+				/*----------------------------------------------------------------------------------------------------*/
+				/* OIDC TOKEN                                                                                         */
+				/*----------------------------------------------------------------------------------------------------*/
+
+				HttpURLConnection urlConnection = HttpConnectionFactory.openConnection(ssoCheckURL);
+
+				try
+				{
+					urlConnection.setRequestProperty("Authorization", passFromUser);
+
+					try(InputStream inputStream = urlConnection.getInputStream())
+					{
+						TextFile.read(new StringBuilder(), inputStream);
+					}
+				}
+				finally
+				{
+					urlConnection.disconnect();
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(urlConnection.getResponseCode() != 200)
+				{
+					throw new Exception("invalid token");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else if(passFromUser.length() == 32)
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+				/* AMI TOKEN                                                                                          */
+				/*----------------------------------------------------------------------------------------------------*/
+
+				String a = /**/ passFromUser /**/.substring(0, 16);
+				String b = /**/ passFromUser /**/.substring(16, 32);
+				String c = generateTmpPassword(user, passFromDB, false);
 
 				if(!a.equals(c)
 				   &&
@@ -1088,7 +1125,7 @@ public class SecuritySingleton
 			}
 		}
 
-		return pass_from_db;
+		return passFromDB;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
