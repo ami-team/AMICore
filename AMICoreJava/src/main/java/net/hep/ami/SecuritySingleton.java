@@ -4,11 +4,12 @@ import java.io.*;
 import java.net.*;
 import java.math.*;
 import java.util.*;
-import java.nio.charset.*;
-
 import java.security.*;
 import java.security.cert.*;
 import java.security.spec.*;
+import java.nio.charset.*;
+
+import javax.net.ssl.*;
 
 /* CERTIFICATES */
 
@@ -24,8 +25,6 @@ import org.bouncycastle.operator.jcajce.*;
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
-
-import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
@@ -1072,37 +1071,19 @@ public class SecuritySingleton
 	{
 		if(!passFromUser.equals(passFromDB))
 		{
-			String ssoCheckURL = ConfigSingleton.getProperty("sso_check_url");
-
-			/**/ if(!Empty.is(ssoCheckURL, Empty.STRING_NULL_EMPTY_BLANK) && passFromUser.startsWith("Bearer "))
+			/**/ if(passFromUser.startsWith("Bearer "))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* OIDC TOKEN                                                                                         */
 				/*----------------------------------------------------------------------------------------------------*/
 
-				StringBuilder stringBuilder = new StringBuilder();
-
-				HttpURLConnection urlConnection = HttpConnectionFactory.openConnection(ssoCheckURL);
-
 				try
 				{
-					urlConnection.setRequestProperty("Authorization", passFromUser);
-
-					try(InputStream inputStream = urlConnection.getInputStream())
-					{
-						TextFile.read(stringBuilder, inputStream);
-					}
+					validateToken(passFromUser);
 				}
-				finally
+				catch(Exception e)
 				{
-					urlConnection.disconnect();
-				}
-
-				/*----------------------------------------------------------------------------------------------------*/
-
-				if(urlConnection.getResponseCode() != 200)
-				{
-					throw new Exception(stringBuilder.toString());
+					throw new Exception("invalid token");
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
@@ -1135,6 +1116,58 @@ public class SecuritySingleton
 		}
 
 		return passFromDB;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static String validateToken(String token) throws Exception
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String ssoCheckURL = ConfigSingleton.getProperty("sso_check_url");
+
+		if(!ssoCheckURL.isEmpty())
+		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(ssoCheckURL).openConnection();
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			try
+			{
+				urlConnection.setRequestProperty("Authorization", token);
+
+				try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8)))
+				{
+					for(String line; (line = bufferedReader.readLine()) != null; )
+					{
+						result.append(line)
+						      .append('\n')
+						;
+					}
+				}
+			}
+			finally
+			{
+				urlConnection.disconnect();
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			if(urlConnection.getResponseCode() != 200)
+			{
+				throw new Exception(result.toString());
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result.toString();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

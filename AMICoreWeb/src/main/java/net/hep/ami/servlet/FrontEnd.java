@@ -147,7 +147,7 @@ public class FrontEnd extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			if(ConfigSingleton.getProperty("dev_mode", false))
+			if(true || ConfigSingleton.getProperty("dev_mode", false))
 			{
 				data = XMLTemplates.error(
 					e.getMessage(), e.getStackTrace()
@@ -393,7 +393,13 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0)", AMIUser).getAll();
+			boolean token = AMIPass.startsWith("Bearer ");
+
+			String sql = token ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE LOWER(`ssoUser`) = LOWER(?0)"
+			                   : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0)"
+			;
+
+			List<Row> rowList = router.executeSQLQuery("router_user", sql, AMIUser).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET CREDENTIALS                                                                                        */
@@ -401,6 +407,56 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() != 1)
 			{
+				if(token)
+				{
+					String json = SecuritySingleton.validateToken(AMIPass);
+
+					System.out.println(json);
+
+					AMIPass = SecuritySingleton.generateTmpPassword(AMIUser, AMIUser, false);
+
+					Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8, ?9)",
+						AMIUser,
+						AMIPass,
+						null,
+						null,
+						"Unknown",
+						"Unknown",
+						"unknown@unknown.unknown",
+						AMIUser,
+						"{}",
+						1
+					);
+
+					if(update.getNbOfUpdatedRows() == 1)
+					{
+						Update update2 = router.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
+							AMIUser,
+							"AMI_USER"
+						);
+
+						if(update2.getNbOfUpdatedRows() == 1)
+						{
+							router.commit();
+
+							System.out.println(AMIUser + " >>>><<<< " + AMIPass);
+
+							return new Tuple2<>(
+								AMIUser,
+								AMIPass
+							);
+						}
+						else
+						{
+							router.rollback();
+						}
+					}
+					else
+					{
+						router.rollback();
+					}
+				}
+
 				return new Tuple2<>(
 					GUEST_USER,
 					GUEST_PASS
@@ -418,8 +474,6 @@ public class FrontEnd extends HttpServlet
 			}
 			catch(Exception e)
 			{
-				LOGGER.error("connection error: ", e);
-
 				return new Tuple2<>(
 					GUEST_USER,
 					GUEST_PASS

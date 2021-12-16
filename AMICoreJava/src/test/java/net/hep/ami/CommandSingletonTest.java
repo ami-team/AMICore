@@ -459,6 +459,8 @@ public class CommandSingletonTest
 				);
 			}*/
 
+			System.out.println(CommandSingleton.executeCommand("GetSessionInfo").replace(">", ">\n"));
+
 		}
 		catch(Exception e)
 		{
