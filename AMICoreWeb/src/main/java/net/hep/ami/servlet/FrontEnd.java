@@ -439,8 +439,6 @@ public class FrontEnd extends HttpServlet
 						{
 							router.commit();
 
-							System.out.println(AMIUser + " >>>><<<< " + AMIPass);
-
 							return new Tuple2<>(
 								AMIUser,
 								AMIPass
