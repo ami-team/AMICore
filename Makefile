@@ -26,32 +26,32 @@ update-versions:
 #############################################################################
 
 deploy:
-	rm -fr tomcat/webapps/AMI/
+	rm -fr ~/workspace/tomcat/webapps/AMI/
 
-	unzip AMICoreWeb/target/AMICoreWeb-*.war -d tomcat/webapps/AMI/
+	unzip AMICoreWeb/target/AMICoreWeb-*.war -d ~/workspace/tomcat/webapps/AMI/
 
 #############################################################################
 
 stop:
-	./tomcat/bin/catalina.sh stop &> /dev/null
+	~/workspace/tomcat/bin/catalina.sh stop &> /dev/null
 
-	rm -fr tomcat/logs/*
+	rm -fr ~/workspace/tomcat/logs/*
 
 #############################################################################
 
 start:
-	rm -fr tomcat/logs/*
+	rm -fr ~/workspace/tomcat/logs/*
 
-	./tomcat/bin/catalina.sh start
+	~/workspace/tomcat/bin/catalina.sh start
 
 #############################################################################
 
 restart:
-	./tomcat/bin/catalina.sh stop &> /dev/null
+	~/workspace/tomcat/bin/catalina.sh stop &> /dev/null
 
-	rm -fr tomcat/logs/* ; sleep 2
+	rm -fr ~/workspace/tomcat/logs/* ; sleep 2
 
-	./tomcat/bin/catalina.sh start
+	~/workspace/tomcat/bin/catalina.sh start
 
 #############################################################################
 
