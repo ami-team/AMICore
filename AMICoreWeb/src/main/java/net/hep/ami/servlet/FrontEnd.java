@@ -435,12 +435,12 @@ public class FrontEnd extends HttpServlet
 
 					Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
 						bean.getAmiLogin(),
-						bean.getAmiPasswordNew(),
-						bean.getClientDN(),
-						bean.getIssuerDN(),
-						bean.getFirstName() != null ? SecuritySingleton.encrypt(bean.getFirstName()) : "Unknown",
-						bean.getLastName() != null ? SecuritySingleton.encrypt(bean.getLastName()) : "Unknown",
-						bean.getEmail() != null ? SecuritySingleton.encrypt(bean.getEmail()) : "x@y.z",
+						SecuritySingleton.encrypt(bean.getAmiPasswordNew()),
+						SecuritySingleton.encrypt(bean.getClientDN()),
+						SecuritySingleton.encrypt(bean.getIssuerDN()),
+						bean.getFirstName() != null ? bean.getFirstName() : "Unknown",
+						bean.getLastName() != null ? bean.getLastName() : "Unknown",
+						bean.getEmail() != null ? bean.getEmail() : "x@y.z",
 						bean.getSsoUser(),
 						bean.getJson(),
 						1
