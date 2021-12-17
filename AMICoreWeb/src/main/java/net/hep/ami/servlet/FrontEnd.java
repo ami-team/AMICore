@@ -10,6 +10,7 @@ import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.role.UserValidator;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -409,22 +410,39 @@ public class FrontEnd extends HttpServlet
 			{
 				if(token)
 				{
-					String json = SecuritySingleton.validateToken(AMIPass);
+					String json = SecuritySingleton.validateOIDCToken(AMIPass);
 
-					System.out.println(json);
+					UserValidator.Bean bean = new UserValidator.Bean(
+						AMIUser,
+						AMIPass,
+						AMIPass,
+						null,
+						null,
+						null,
+						null,
+						null,
+						AMIUser,
+						json
+					);
+
+					RoleSingleton.checkUser(
+						ConfigSingleton.getProperty("new_user_validator_class"),
+						UserValidator.Mode.ADD,
+						bean
+					);
 
 					AMIPass = SecuritySingleton.generateTmpPassword(AMIUser, AMIUser, false);
 
 					Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8, ?9)",
-						AMIUser,
-						AMIPass,
-						null,
-						null,
-						"Unknown",
-						"Unknown",
-						"unknown@unknown.unknown",
-						AMIUser,
-						"{}",
+						bean.getAmiLogin(),
+						bean.getAmiPasswordNew(),
+						bean.getClientDN(),
+						bean.getIssuerDN(),
+						bean.getFirstName() != null ? bean.getFirstName() : "Unknown",
+						bean.getLastName() != null ? bean.getLastName() : "Unknown",
+						bean.getEmail() != null ? bean.getEmail() : "Unknown",
+						bean.getSsoUser(),
+						bean.getJson(),
 						1
 					);
 

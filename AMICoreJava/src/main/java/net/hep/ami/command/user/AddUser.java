@@ -124,22 +124,22 @@ public class AddUser extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8, ?9)",
-			bean.amiLogin,
-			bean.amiPasswordNew,
-			!Empty.is(bean.clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? bean.clientDN : null,
-			!Empty.is(bean.issuerDN, Empty.STRING_NULL_EMPTY_BLANK) ? bean.issuerDN : null,
-			bean.firstName,
-			bean.lastName,
-			bean.email,
-			bean.ssoUser,
-			bean.json,
+			bean.getAmiLogin(),
+			bean.getAmiPasswordNew(),
+			!Empty.is(bean.getClientDN(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getClientDN() : null,
+			!Empty.is(bean.getIssuerDN(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getIssuerDN() : null,
+			bean.getFirstName(),
+			bean.getLastName(),
+			bean.getEmail(),
+			bean.getSsoUser(),
+			bean.getJson(),
 			valid ? 1 : 0
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		querier.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
-			bean.amiLogin,
+			bean.getAmiLogin(),
 			"AMI_USER"
 		);
 
@@ -149,11 +149,11 @@ public class AddUser extends AbstractCommand
 		{
 			MailSingleton.sendMessage(
 				ConfigSingleton.getProperty("admin_email"),
-				bean.email,
+				bean.getEmail(),
 				null,
 				"New AMI account",
-				!generatedPassword ? String.format(SHORT_EMAIL, /*-----*/ bean.amiLogin /*-----*/)
-				                   : String.format(LONG_EMAIL, bean.amiLogin, bean.amiPasswordNew)
+				!generatedPassword ? String.format(SHORT_EMAIL, /*--------*/ bean.getAmiLogin() /*--------*/)
+				                   : String.format(LONG_EMAIL, bean.getAmiLogin(), bean.getAmiPasswordNew())
 			);
 		}
 		catch(Exception e)

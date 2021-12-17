@@ -13,6 +13,8 @@ import javax.net.ssl.*;
 
 /* CERTIFICATES */
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.*;
@@ -969,6 +971,69 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
+	/* OIDC TOKEN                                                                                                     */
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static String validateOIDCToken(String token) throws Exception
+	{
+		String ssoCheckURL = ConfigSingleton.getProperty("sso_check_url");
+
+		if(ssoCheckURL.isEmpty())
+		{
+			throw new Exception("OpenID Connect not configured");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(ssoCheckURL).openConnection();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
+
+		try
+		{
+			urlConnection.setRequestProperty("Authorization", token);
+
+			try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8)))
+			{
+				for(String line; (line = bufferedReader.readLine()) != null; )
+				{
+					result.append(line)
+						  .append('\n')
+					;
+				}
+			}
+		}
+		finally
+		{
+			urlConnection.disconnect();
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(urlConnection.getResponseCode() != 200)
+		{
+			throw new Exception("Invalid token: " + result.toString());
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result.toString();
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static Map<String, Object> validateAndParseOIDCToken(String token) throws Exception
+	{
+		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
+
+		return new ObjectMapper().readValue(validateOIDCToken(token), typeRef);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 	/* TEMPORARY PASSWORD                                                                                             */
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1079,7 +1144,7 @@ public class SecuritySingleton
 
 				try
 				{
-					validateToken(passFromUser);
+					validateOIDCToken(passFromUser);
 				}
 				catch(Exception e)
 				{
@@ -1116,58 +1181,6 @@ public class SecuritySingleton
 		}
 
 		return passFromDB;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public static String validateToken(String token) throws Exception
-	{
-		StringBuilder result = new StringBuilder();
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		String ssoCheckURL = ConfigSingleton.getProperty("sso_check_url");
-
-		if(!ssoCheckURL.isEmpty())
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(ssoCheckURL).openConnection();
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			try
-			{
-				urlConnection.setRequestProperty("Authorization", token);
-
-				try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8)))
-				{
-					for(String line; (line = bufferedReader.readLine()) != null; )
-					{
-						result.append(line)
-						      .append('\n')
-						;
-					}
-				}
-			}
-			finally
-			{
-				urlConnection.disconnect();
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			if(urlConnection.getResponseCode() != 200)
-			{
-				throw new Exception(result.toString());
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return result.toString();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

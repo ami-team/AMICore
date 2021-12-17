@@ -1,5 +1,7 @@
 package net.hep.ami.role;
 
+import lombok.*;
+
 import org.jetbrains.annotations.*;
 
 abstract public class UserValidator
@@ -16,32 +18,21 @@ abstract public class UserValidator
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
 	public static class Bean
 	{
-		@NotNull public String amiLogin;
-		@NotNull public String amiPasswordOld;
-		@NotNull public String amiPasswordNew;
-		@Nullable public String clientDN;
-		@Nullable public String issuerDN;
-		@Nullable public String firstName;
-		@Nullable public String lastName;
-		@Nullable public String email;
-		@Nullable public String ssoUser;
-		@Nullable public String json;
-
-		public Bean(@NotNull String _amiLogin, @NotNull String _amiPasswordOld, @NotNull String _amiPasswordNew, @Nullable String _clientDN, @Nullable String _issuerDN, @Nullable String _firstName, @Nullable String _lastName, @Nullable String _email, @Nullable String _ssoUser, @Nullable String _json)
-		{
-			amiLogin = _amiLogin;
-			amiPasswordOld = _amiPasswordOld;
-			amiPasswordNew = _amiPasswordNew;
-			clientDN = _clientDN;
-			issuerDN = _issuerDN;
-			firstName = _firstName;
-			lastName = _lastName;
-			email = _email;
-			ssoUser = _ssoUser;
-			json = _json;
-		}
+		@NotNull private String amiLogin;
+		@NotNull private String amiPasswordOld;
+		@NotNull private String amiPasswordNew;
+		@Nullable private String clientDN;
+		@Nullable private String issuerDN;
+		@Nullable private String firstName;
+		@Nullable private String lastName;
+		@Nullable private String email;
+		@Nullable private String ssoUser;
+		@Nullable private String json;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

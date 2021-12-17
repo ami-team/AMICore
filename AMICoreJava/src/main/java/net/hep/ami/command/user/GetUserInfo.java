@@ -398,15 +398,15 @@ public class GetUserInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(mode == UserValidator.Mode.ATTACH && (
-			!m_clientDN.equals(bean.clientDN)
+			!m_clientDN.equals(bean.getClientDN())
 			||
-			!m_issuerDN.equals(bean.issuerDN)
+			!m_issuerDN.equals(bean.getIssuerDN())
 		   )
 		   ||
 		   mode == UserValidator.Mode.DETACH && (
-			!Empty.is(bean.clientDN, Empty.STRING_NULL_EMPTY_BLANK)
+			!Empty.is(bean.getClientDN(), Empty.STRING_NULL_EMPTY_BLANK)
 			||
-			!Empty.is(bean.issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
+			!Empty.is(bean.getIssuerDN(), Empty.STRING_NULL_EMPTY_BLANK)
 		   )
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -414,13 +414,13 @@ public class GetUserInfo extends AbstractCommand
 			switch(mode)
 			{
 				case ATTACH:
-					bean.clientDN = m_clientDN;
-					bean.issuerDN = m_issuerDN;
+					bean.setClientDN(m_clientDN);
+					bean.setIssuerDN(m_issuerDN);
 					break;
 
 				case DETACH:
-					bean.clientDN = null;
-					bean.issuerDN = null;
+					bean.setClientDN(null);
+					bean.setIssuerDN(null);
 					break;
 
 				default:
@@ -439,10 +439,10 @@ public class GetUserInfo extends AbstractCommand
 
 			Update update = querier.executeSQLUpdate("router_user", "UPDATE `router_user` SET `clientDN` = ?#1, `issuerDN` = ?#2, `ssoUser` = ?3, `json` = ?4, `valid` = ?5 WHERE `id` = ?0",
 				_id,
-				bean.clientDN,
-				bean.issuerDN,
-				bean.ssoUser,
-				bean.json,
+				bean.getClientDN(),
+				bean.getIssuerDN(),
+				bean.getSsoUser(),
+				bean.getJson(),
 				valid ? 1 : 0
 			);
 

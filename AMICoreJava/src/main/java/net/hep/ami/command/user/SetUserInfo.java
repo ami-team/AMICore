@@ -65,10 +65,10 @@ public class SetUserInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `firstName` = ?1, `lastName` = ?2, `email` = ?3, `valid` = ?4 WHERE `AMIUser` = ?0",
-			bean.amiLogin,
-			bean.firstName,
-			bean.lastName,
-			bean.email,
+			bean.getAmiLogin(),
+			bean.getFirstName(),
+			bean.getLastName(),
+			bean.getEmail(),
 			valid ? 1 : 0
 		);
 
