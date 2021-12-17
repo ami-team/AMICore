@@ -19,6 +19,7 @@ import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.*;
 import org.bouncycastle.cert.jcajce.*;
+import org.bouncycastle.crypto.generators.BCrypt;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
 
@@ -967,6 +968,63 @@ public class SecuritySingleton
 	public static String sha256Sum(@NotNull String s) throws Exception
 	{
 		return sha256Sum(s.getBytes(StandardCharsets.UTF_8));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static byte[] bcryptEncode(byte[] data, @Nullable byte[] salt) throws Exception
+	{
+		return BCrypt.generate(data, salt, ConfigSingleton.getProperty("bcrypt_cost", 4));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	@Contract("null -> null; !null -> !null")
+	public static String bcryptEncode(@Nullable String s) throws Exception
+	{
+		if(s == null) {
+			return null;
+		}
+
+		byte[] salt = new SecureRandom().generateSeed(32);
+
+		byte[] data = bcryptEncode(s.getBytes(StandardCharsets.UTF_8), salt);
+
+		StringBuilder stringBuilder = new StringBuilder().append(org.bouncycastle.util.encoders.Base64.encode(salt))
+		                                                 .append("$")
+		                                                 .append(org.bouncycastle.util.encoders.Base64.encode(data))
+		;
+
+		return stringBuilder.toString();
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void bcryptCheck(@Nullable String strFromDB, @Nullable String strFromUser) throws Exception
+	{
+		if(Objects.equals(strFromDB, strFromUser))
+		{
+			return;
+		}
+
+		if(strFromDB != null && strFromUser != null)
+		{
+			String[] parts = strFromDB.split("\\$", -1);
+
+			if(parts.length == 2)
+			{
+				byte[] salt = org.bouncycastle.util.encoders.Base64.decode(parts[0]);
+				byte[] hash = org.bouncycastle.util.encoders.Base64.decode(parts[1]);
+
+				if(Arrays.equals(bcryptEncode(strFromUser.getBytes(StandardCharsets.UTF_8), salt), hash))
+				{
+					return;
+				}
+			}
+		}
+
+		throw new Exception("invalid check");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
