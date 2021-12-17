@@ -43,14 +43,14 @@ public class SetUserInfo extends AbstractCommand
 
 		UserValidator.Bean bean = new UserValidator.Bean(
 			m_AMIUser,
-			m_AMIPass,
-			m_AMIPass,
+			null,
+			null,
+			null,
 			m_clientDN,
 			m_issuerDN,
 			firstName,
 			lastName,
 			email,
-			null,
 			null
 		);
 
@@ -65,7 +65,7 @@ public class SetUserInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `firstName` = ?1, `lastName` = ?2, `email` = ?3, `valid` = ?4 WHERE `AMIUser` = ?0",
-			bean.getAmiLogin(),
+			bean.getAmiUsername(),
 			bean.getFirstName(),
 			bean.getLastName(),
 			bean.getEmail(),

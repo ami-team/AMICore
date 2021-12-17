@@ -80,32 +80,16 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String clientDN;
-		String issuerDN;
-
-		if(arguments.containsKey("attachCert"))
-		{
-			clientDN = m_clientDN;
-			issuerDN = m_issuerDN;
-		}
-		else
-		{
-			clientDN = null;
-			issuerDN = null;
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		UserValidator.Bean bean = new UserValidator.Bean(
 			amiLogin,
+			null,
 			amiPassword,
 			amiPassword,
-			clientDN,
-			issuerDN,
+			arguments.containsKey("attachCert") && !Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK) ? m_clientDN : null,
+			arguments.containsKey("attachCert") && !Empty.is(m_issuerDN, Empty.STRING_NULL_EMPTY_BLANK) ? m_issuerDN : null,
 			firstName,
 			lastName,
 			email,
-			null,
 			"{}"
 		);
 
@@ -123,15 +107,15 @@ public class AddUser extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8, ?9)",
-			bean.getAmiLogin(),
-			bean.getAmiPasswordNew(),
-			!Empty.is(bean.getClientDN(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getClientDN() : null,
-			!Empty.is(bean.getIssuerDN(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getIssuerDN() : null,
+		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8, ?9)",
+			bean.getAmiUsername(),
+			bean.getSsoUsername(),
+			bean.getPasswordNew(),
+			bean.getClientDN(),
+			bean.getIssuerDN(),
 			bean.getFirstName(),
 			bean.getLastName(),
 			bean.getEmail(),
-			bean.getSsoUser(),
 			bean.getJson(),
 			valid ? 1 : 0
 		);
@@ -139,7 +123,7 @@ public class AddUser extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		querier.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
-			bean.getAmiLogin(),
+			bean.getAmiUsername(),
 			"AMI_USER"
 		);
 
@@ -152,8 +136,8 @@ public class AddUser extends AbstractCommand
 				bean.getEmail(),
 				null,
 				"New AMI account",
-				!generatedPassword ? String.format(SHORT_EMAIL, /*--------*/ bean.getAmiLogin() /*--------*/)
-				                   : String.format(LONG_EMAIL, bean.getAmiLogin(), bean.getAmiPasswordNew())
+				!generatedPassword ? String.format(SHORT_EMAIL, /*--------*/ bean.getAmiUsername() /*--------*/)
+				                   : String.format(LONG_EMAIL, bean.getAmiUsername(), bean.getPasswordNew())
 			);
 		}
 		catch(Exception e)

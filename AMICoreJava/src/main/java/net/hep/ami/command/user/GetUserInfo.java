@@ -40,7 +40,7 @@ public class GetUserInfo extends AbstractCommand
 		boolean detachCert = arguments.containsKey("detachCert");
 
 		String amiLogin = arguments.getOrDefault("amiLogin", m_AMIUser);
-		String amiPassword = arguments.getOrDefault("amiPassword", m_AMIPass);
+		String amiPassword = arguments.getOrDefault("amiPassword", "@NULL");
 
 		if(attachCert
 		   &&
@@ -369,7 +369,7 @@ public class GetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
+		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `ssoUser`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -384,9 +384,9 @@ public class GetUserInfo extends AbstractCommand
 
 		UserValidator.Bean bean = new UserValidator.Bean(
 			amiLogin,
-			amiPassword,
-			amiPassword,
 			rowList.get(0).getValue(1),
+			amiPassword,
+			amiPassword,
 			rowList.get(0).getValue(2),
 			rowList.get(0).getValue(3),
 			rowList.get(0).getValue(4),
@@ -441,7 +441,7 @@ public class GetUserInfo extends AbstractCommand
 				_id,
 				bean.getClientDN(),
 				bean.getIssuerDN(),
-				bean.getSsoUser(),
+				bean.getSsoUsername(),
 				bean.getJson(),
 				valid ? 1 : 0
 			);

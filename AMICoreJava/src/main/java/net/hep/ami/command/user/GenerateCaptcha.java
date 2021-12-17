@@ -29,7 +29,7 @@ public class GenerateCaptcha extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new StringBuilder().append("<rowset>").append("<row>")
+		return new StringBuilder().append("<rowset type=\"captcha\">").append("<row>")
 		                          .append("<field name=\"image\"><![CDATA[").append(captcha.getImage()).append("]]></field>")
 		                          .append("<field name=\"hash\"><![CDATA[").append(captcha.getHash()).append("]]></field>")
 		                          .append("</row>").append("</rowset>")

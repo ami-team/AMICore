@@ -14,9 +14,13 @@ public abstract class AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected final String m_AMIUser;
-	protected final String m_AMIPass;
+	private final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
 
+	private final String TIME_ZONE = ConfigSingleton.getProperty("time_zone");
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	protected final String m_AMIUser;
 	protected final String m_clientDN;
 	protected final String m_issuerDN;
 	protected final String m_notBefore;
@@ -49,9 +53,7 @@ public abstract class AbstractCommand
 		/* ARGUMENT PARAMETERS                                                                                        */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : ConfigSingleton.getProperty("guest_user");
-		m_AMIPass = arguments.containsKey("AMIPass") ? arguments.remove("AMIPass") : ConfigSingleton.getProperty("guest_pass");
-
+		m_AMIUser = arguments.containsKey("AMIUser") ? arguments.remove("AMIUser") : GUEST_USER;
 		m_clientDN = arguments.containsKey("clientDN") ? arguments.remove("clientDN") : "";
 		m_issuerDN = arguments.containsKey("issuerDN") ? arguments.remove("issuerDN") : "";
 		m_notBefore = arguments.containsKey("notBefore") ? arguments.remove("notBefore") : "";
@@ -62,7 +64,7 @@ public abstract class AbstractCommand
 
 		m_userAgent = arguments.containsKey("userAgent") ? arguments.remove("userAgent") : "N/A";
 		m_userSession = arguments.containsKey("userSession") ? arguments.remove("userSession") : "";
-		m_userTimeZone = arguments.containsKey("userTimeZone") ? arguments.remove("userTimeZone") : ConfigSingleton.getProperty("time_zone");
+		m_userTimeZone = arguments.containsKey("userTimeZone") ? arguments.remove("userTimeZone") : TIME_ZONE;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CONSTRUCTOR PARAMETERS                                                                                     */

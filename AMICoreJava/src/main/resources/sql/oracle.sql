@@ -988,6 +988,7 @@ CREATE TRIGGER "trig1_router_command_role"
 CREATE TABLE "router_user" (
   "id" NUMBER(*, 0),
   "AMIUser" VARCHAR2(128),
+  "ssoUser" VARCHAR2(128),
   "AMIPass" VARCHAR2(128),
   "clientDN" VARCHAR2(512),
   "issuerDN" VARCHAR2(512),
@@ -995,7 +996,6 @@ CREATE TABLE "router_user" (
   "lastName" VARCHAR2(128),
   "email" VARCHAR2(128),
   "country" VARCHAR2(128) DEFAULT 'N/A',
-  "ssoUser" VARCHAR2(128),
   "json" CLOB,
   "valid" NUMBER(1, 0) DEFAULT 1,
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

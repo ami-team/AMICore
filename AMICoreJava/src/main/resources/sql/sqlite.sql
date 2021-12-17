@@ -164,6 +164,7 @@ CREATE TABLE "router_command_role" (
 CREATE TABLE "router_user" (
   "id" INTEGER PRIMARY KEY,
   "AMIUser" VARCHAR(128) NOT NULL,
+  "ssoUser" VARCHAR(128),
   "AMIPass" VARCHAR(128) NOT NULL,
   "clientDN" VARCHAR(512),
   "issuerDN" VARCHAR(512),
@@ -171,7 +172,6 @@ CREATE TABLE "router_user" (
   "lastName" VARCHAR(128) NOT NULL,
   "email" VARCHAR(128) NOT NULL,
   "country" VARCHAR(128) DEFAULT 'N/A',
-  "ssoUser" VARCHAR(128),
   "json" TEXT,
   "valid" integer NOT NULL DEFAULT 1,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.Empty;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
@@ -25,7 +26,7 @@ public class RemoveUser extends AbstractCommand
 	{
 		String amiLogin = arguments.get("amiLogin");
 
-		if(amiLogin == null)
+		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			throw new Exception("invalid usage");
 		}

@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = false)
@@ -23,11 +24,9 @@ public class LocalizeIP extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		StringBuilder result = new StringBuilder();
-
 		String ip = arguments.get("ip");
 
-		if(ip == null)
+		if(Empty.is(ip, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			throw new Exception("invalid usage");
 		}
@@ -38,17 +37,13 @@ public class LocalizeIP extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<rowset type=\"localization\">")
-		      .append("<row>")
-		      .append("<field name=\"ContinentCode\"><![CDATA[").append(localization.continentCode).append("]]></field>")
-		      .append("<field name=\"CountryCode\"><![CDATA[").append(localization.countryCode).append("]]></field>")
-		      .append("</row>")
-		      .append("</rowset>")
+		return new StringBuilder().append("<rowset type=\"localization\">").append("<row>")
+		                          .append("<field name=\"ContinentCode\"><![CDATA[").append(localization.continentCode).append("]]></field>")
+		                          .append("<field name=\"CountryCode\"><![CDATA[").append(localization.countryCode).append("]]></field>")
+		                          .append("</row>").append("</rowset>")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
-
-		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

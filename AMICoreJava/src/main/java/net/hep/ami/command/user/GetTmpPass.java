@@ -24,27 +24,27 @@ public class GetTmpPass extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String ssoLogin = arguments.get("ssoLogin");
 		String amiLogin = arguments.get("amiLogin");
+		String ssoLogin = arguments.get("ssoLogin");
 
 		int mode;
 
-		/**/ if(ssoLogin != null
+		/**/ if(ssoLogin == null
 		        &&
-		        amiLogin == null
+			    amiLogin != null
 		 ) {
-			if(/*--------------------------*/ !m_userRoles.contains("AMI_SSO") && !m_userRoles.contains("AMI_ADMIN"))
+			if(!m_AMIUser.equals(amiLogin) && !m_userRoles.contains("AMI_SSO") && !m_userRoles.contains("AMI_ADMIN"))
 			{
 				throw new Exception("wrong role for user `" + m_AMIUser + "`");
 			}
 
 			mode = 0;
 		}
-		else if(ssoLogin == null
+		else if(ssoLogin != null
 		        &&
-		        amiLogin != null
+		        amiLogin == null
 		 ) {
-			if(!m_AMIUser.equals(amiLogin) && !m_userRoles.contains("AMI_SSO") && !m_userRoles.contains("AMI_ADMIN"))
+			if(/*--------------------------*/ !m_userRoles.contains("AMI_SSO") && !m_userRoles.contains("AMI_ADMIN"))
 			{
 				throw new Exception("wrong role for user `" + m_AMIUser + "`");
 			}
@@ -55,7 +55,7 @@ public class GetTmpPass extends AbstractCommand
 		{
 			amiLogin = m_AMIUser;
 
-			mode = 1;
+			mode = 0;
 		}
 		else
 		{
@@ -69,11 +69,11 @@ public class GetTmpPass extends AbstractCommand
 		switch(mode)
 		{
 			case 0:
-				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `ssoUser` = ?0 AND `valid` != 0", ssoLogin).getAll(10, 0);
+				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0) AND `valid` != 0", amiLogin).getAll(10, 0);
 				break;
 
 			case 1:
-				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0 AND `valid` != 0", amiLogin).getAll(10, 0);
+				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE LOWER(`ssoUser`) = LOWER(?0) AND `valid` != 0", ssoLogin).getAll(10, 0);
 				break;
 
 			default:
@@ -82,29 +82,29 @@ public class GetTmpPass extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String tmpUser;
-		String tmpPass;
+		String tmpUsername;
+		String tmpPassword;
 
 		if(rowList.size() > 0)
 		{
 			Row row = rowList.get(0);
 
-			tmpUser = /*---------------------*/(row.getValue(0));
-			tmpPass = SecuritySingleton.decrypt(row.getValue(1));
+			tmpUsername = /*---------------------*/(row.getValue(0));
+			tmpPassword = SecuritySingleton.decrypt(row.getValue(1));
 
-			tmpPass = SecuritySingleton.buildTmpPassword(tmpUser, tmpPass);
+			tmpPassword = SecuritySingleton.generateTmpPassword(tmpPassword);
 		}
 		else
 		{
-			tmpUser = ConfigSingleton.getProperty("guest_user");
-			tmpPass = ConfigSingleton.getProperty("guest_pass");
+			tmpUsername = ConfigSingleton.getProperty("guest_user");
+			tmpPassword = ConfigSingleton.getProperty("guest_pass");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<rowset>").append("<row>")
-		                          .append("<field name=\"tmpUser\"><![CDATA[").append(tmpUser).append("]]></field>")
-		                          .append("<field name=\"tmpPass\"><![CDATA[").append(tmpPass).append("]]></field>")
+		                          .append("<field name=\"username\"><![CDATA[").append(tmpUsername).append("]]></field>")
+		                          .append("<field name=\"password\"><![CDATA[").append(tmpPassword).append("]]></field>")
 		                          .append("</row>").append("</rowset>")
 		;
 
@@ -126,7 +126,7 @@ public class GetTmpPass extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "(-ssoLogin=\"\" | -amiLogin=\"\")?";
+		return "(-amiLogin=\"\" | -ssoLogin=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

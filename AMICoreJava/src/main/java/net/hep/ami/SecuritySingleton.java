@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import lombok.*;
+
 import java.io.*;
 import java.net.*;
 import java.math.*;
@@ -11,15 +13,15 @@ import java.nio.charset.*;
 
 import javax.net.ssl.*;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.core.type.*;
+
 /* CERTIFICATES */
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.*;
 import org.bouncycastle.cert.jcajce.*;
-import org.bouncycastle.crypto.generators.BCrypt;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
 
@@ -28,6 +30,7 @@ import org.bouncycastle.operator.jcajce.*;
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
+import org.bouncycastle.crypto.generators.*;
 
 import org.jetbrains.annotations.*;
 
@@ -35,23 +38,18 @@ public class SecuritySingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
 	public static class Revocation
 	{
 		public static final int SUPERSEDED = 0;
 		public static final int COMPROMISED = 1;
 		public static final int AFFILIATION_CHANGED = 2;
 
-		public final BigInteger serial;
-		public final Integer reason;
-		public final Date date;
-
-		@Contract(pure = true)
-		public Revocation(BigInteger _serial, Integer _reason, Date _date)
-		{
-			serial = _serial;
-			reason = _reason;
-			date = _date;
-		}
+		private final BigInteger serial;
+		private final Integer reason;
+		private final Date date;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -424,6 +422,8 @@ public class SecuritySingleton
 
 	private static KeyParameter s_keyParameter;
 
+	private static int s_bcryptCost;
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Contract(pure = true)
@@ -431,19 +431,21 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void init(@NotNull String password) throws Exception
+	public static void init(@NotNull String aesPassword, int bcryptCost) throws Exception
 	{
-		final int length = password.length();
+		final int length = aesPassword.length();
 
 		/*--*/ if(length <= 16) {
-			s_keyParameter = new KeyParameter(String.format("%1$-16s", password).getBytes(StandardCharsets.UTF_8));
+			s_keyParameter = new KeyParameter(String.format("%1$-16s", aesPassword).getBytes(StandardCharsets.UTF_8));
 		} else if(length <= 24) {
-			s_keyParameter = new KeyParameter(String.format("%1$-24s", password).getBytes(StandardCharsets.UTF_8));
+			s_keyParameter = new KeyParameter(String.format("%1$-24s", aesPassword).getBytes(StandardCharsets.UTF_8));
 		} else if(length <= 32) {
-			s_keyParameter = new KeyParameter(String.format("%1$-32s", password).getBytes(StandardCharsets.UTF_8));
+			s_keyParameter = new KeyParameter(String.format("%1$-32s", aesPassword).getBytes(StandardCharsets.UTF_8));
 		} else {
 			throw new Exception("too long password (max 32)");
 		}
+
+		s_bcryptCost = bcryptCost;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -798,7 +800,51 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
-	/* CRYPTO                                                                                                         */
+	/* HASH                                                                                                           */
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String md5Sum(@NotNull byte[] s) throws Exception
+	{
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+		messageDigest.update(s);
+
+		return String.format("%032x", new BigInteger(1, messageDigest.digest()));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String md5Sum(@NotNull String s) throws Exception
+	{
+		return md5Sum(s.getBytes(StandardCharsets.UTF_8));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String sha256Sum(@NotNull byte[] s) throws Exception
+	{
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+		messageDigest.update(s);
+
+		return String.format("%064x", new BigInteger(1, messageDigest.digest()));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String sha256Sum(@NotNull String s) throws Exception
+	{
+		return sha256Sum(s.getBytes(StandardCharsets.UTF_8));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* AES ENCRYPT                                                                                                    */
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -902,7 +948,8 @@ public class SecuritySingleton
 	@Contract("null -> null; !null -> !null")
 	public static String encrypt(@Nullable String s) throws Exception
 	{
-		if(s == null) {
+		if(s == null)
+		{
 			return null;
 		}
 
@@ -917,7 +964,8 @@ public class SecuritySingleton
 	@Contract("null -> null; !null -> !null")
 	public static String decrypt(@Nullable String s) throws Exception
 	{
-		if(s == null) {
+		if(s == null)
+		{
 			return null;
 		}
 
@@ -928,103 +976,69 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
-	/* HASH                                                                                                           */
+	/* BCRYPT                                                                                                         */
 	/*----------------------------------------------------------------------------------------------------------------*/
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	public static String md5Sum(@NotNull byte[] s) throws Exception
-	{
-		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-
-		messageDigest.update(s);
-
-		return String.format("%032x", new BigInteger(1, messageDigest.digest()));
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	public static String md5Sum(@NotNull String s) throws Exception
-	{
-		return md5Sum(s.getBytes(StandardCharsets.UTF_8));
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	public static String sha256Sum(@NotNull byte[] s) throws Exception
-	{
-		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-
-		messageDigest.update(s);
-
-		return String.format("%064x", new BigInteger(1, messageDigest.digest()));
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	public static String sha256Sum(@NotNull String s) throws Exception
-	{
-		return sha256Sum(s.getBytes(StandardCharsets.UTF_8));
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public static byte[] bcryptEncode(byte[] data, @Nullable byte[] salt) throws Exception
-	{
-		return BCrypt.generate(data, salt, ConfigSingleton.getProperty("bcrypt_cost", 4));
-	}
-
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
 	@Contract("null -> null; !null -> !null")
-	public static String bcryptEncode(@Nullable String s) throws Exception
+	public static String bcryptEncode(@Nullable String pass) throws Exception
 	{
-		if(s == null) {
+		if(pass == null)
+		{
 			return null;
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		byte[] salt = new SecureRandom().generateSeed(32);
 
-		byte[] data = bcryptEncode(s.getBytes(StandardCharsets.UTF_8), salt);
+		byte[] data = BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, s_bcryptCost);
 
-		StringBuilder stringBuilder = new StringBuilder().append(org.bouncycastle.util.encoders.Base64.encode(salt))
+		StringBuilder stringBuilder = new StringBuilder().append(new String(org.bouncycastle.util.encoders.Base64.encode(salt), StandardCharsets.UTF_8))
 		                                                 .append("$")
-		                                                 .append(org.bouncycastle.util.encoders.Base64.encode(data))
+		                                                 .append(new String(org.bouncycastle.util.encoders.Base64.encode(data), StandardCharsets.UTF_8))
 		;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return stringBuilder.toString();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void bcryptCheck(@Nullable String strFromDB, @Nullable String strFromUser) throws Exception
+	public static void bcryptCheck(@Nullable String pass, @Nullable String hash) throws Exception
 	{
-		if(Objects.equals(strFromDB, strFromUser))
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(Objects.equals(pass, hash))
 		{
 			return;
 		}
 
-		if(strFromDB != null && strFromUser != null)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(pass != null && hash != null)
 		{
-			String[] parts = strFromDB.split("\\$", -1);
+			String[] parts = hash.split("\\$", -1);
 
 			if(parts.length == 2)
 			{
 				byte[] salt = org.bouncycastle.util.encoders.Base64.decode(parts[0]);
-				byte[] hash = org.bouncycastle.util.encoders.Base64.decode(parts[1]);
+				byte[] data = org.bouncycastle.util.encoders.Base64.decode(parts[1]);
 
-				if(Arrays.equals(bcryptEncode(strFromUser.getBytes(StandardCharsets.UTF_8), salt), hash))
+				if(Arrays.equals(BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, s_bcryptCost), data))
 				{
 					return;
 				}
 			}
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		throw new Exception("invalid check");
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1033,11 +1047,9 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String validateOIDCToken(String token) throws Exception
+	public static String validateOIDCToken(@NotNull String token, String ssoCheckURL) throws Exception
 	{
-		String ssoCheckURL = ConfigSingleton.getProperty("sso_check_url");
-
-		if(ssoCheckURL.isEmpty())
+		if(ssoCheckURL == null || ssoCheckURL.isEmpty())
 		{
 			throw new Exception("OpenID Connect not configured");
 		}
@@ -1071,28 +1083,30 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(urlConnection.getResponseCode() != 200)
+		if(urlConnection.getResponseCode() == 200)
 		{
-			throw new Exception("Invalid token: " + result.toString());
+			return result.toString();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result.toString();
+		throw new Exception("Invalid token: " + result);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateAndParseOIDCToken(String token) throws Exception
+	public static Map<String, Object> validateAndParseOIDCToken(String token, String ssoCheckURL) throws Exception
 	{
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		return new ObjectMapper().readValue(validateOIDCToken(token), typeRef);
+		return new ObjectMapper().readValue(validateOIDCToken(token, ssoCheckURL), typeRef);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
-	/* TEMPORARY PASSWORD                                                                                             */
+	/* PASSWORD                                                                                                       */
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -1128,15 +1142,15 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String buildTmpPassword(@NotNull String user, @NotNull String pass) throws Exception
+	public static String generateTmpPassword(@NotNull String pass) throws Exception
 	{
-		return generateTmpPassword(user, pass, true);
+		return generateTmpPassword(pass, true);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String generateTmpPassword(@NotNull String user, @NotNull String pass, boolean full) throws Exception
+	public static String generateTmpPassword(@NotNull String pass, boolean full) throws Exception
 	{
 		String result;
 
@@ -1155,8 +1169,6 @@ public class SecuritySingleton
 			+ "|" +
 			calendar.get(Calendar.HOUR_OF_DAY)
 			+ "|" +
-			user
-			+ "|" +
 			pass
 		)).substring(0, 16);
 
@@ -1164,6 +1176,8 @@ public class SecuritySingleton
 
 		if(full)
 		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -1174,8 +1188,6 @@ public class SecuritySingleton
 				calendar.get(Calendar.DAY_OF_YEAR)
 				+ "|" +
 				calendar.get(Calendar.HOUR_OF_DAY)
-				+ "|" +
-				user
 				+ "|" +
 				pass
 			)).substring(0, 16);
@@ -1188,57 +1200,103 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
-	@Contract("_, _, _ -> new")
-	public static String checkPassword(@NotNull String user, @NotNull String passFromUser, @NotNull String passFromDB) throws Exception
+	public static void checkTmpPassword(@Nullable String pass, @Nullable String hash) throws Exception
 	{
-		if(!passFromUser.equals(passFromDB))
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(Objects.equals(pass, hash))
 		{
-			/**/ if(passFromUser.startsWith("Bearer "))
-			{
-				/*----------------------------------------------------------------------------------------------------*/
-				/* OIDC TOKEN                                                                                         */
-				/*----------------------------------------------------------------------------------------------------*/
+			return;
+		}
 
-				try
-				{
-					validateOIDCToken(passFromUser);
-				}
-				catch(Exception e)
-				{
-					throw new Exception("invalid token");
-				}
+		/*------------------------------------------------------------------------------------------------------------*/
 
-				/*----------------------------------------------------------------------------------------------------*/
+		if(pass.length() == 32)
+		{
+			String a = /**/pass/**/.substring(0, 16);
+			String b = /**/pass/**/.substring(16, 32);
+			String c = generateTmpPassword(pass, false);
+
+			if(a.equals(c)
+			   ||
+			   b.equals(c)
+			 ) {
+				return;
 			}
-			else if(passFromUser.length() == 32)
-			{
-				/*----------------------------------------------------------------------------------------------------*/
-				/* AMI TOKEN                                                                                          */
-				/*----------------------------------------------------------------------------------------------------*/
+		}
 
-				String a = /**/ passFromUser /**/.substring(0, 16);
-				String b = /**/ passFromUser /**/.substring(16, 32);
-				String c = generateTmpPassword(user, passFromDB, false);
+		/*------------------------------------------------------------------------------------------------------------*/
 
-				if(!a.equals(c)
-				   &&
-				   !b.equals(c)
-				 ) {
-					throw new Exception("invalid password");
-				}
+		throw new Exception("invalid check");
+	}
 
-				/*----------------------------------------------------------------------------------------------------*/
-			}
-			else
-			{
-				throw new Exception("invalid password");
-			}
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void checkPassword(@NotNull String pass, @NotNull String hash) throws Exception
+	{
+		checkPassword(pass, hash, null);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void checkPassword(@NotNull String pass, @NotNull String hash, @Nullable String ssoCheckURL) throws Exception
+	{
+		/**/ if(pass.startsWith("Bearer "))
+		{
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* OIDC TOKEN                                                                                             */
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			validateOIDCToken(pass, ssoCheckURL);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
+		else
+		{
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* PASSWORD                                                                                               */
+			/*--------------------------------------------------------------------------------------------------------*/
 
-		return passFromDB;
+			if(Objects.equals(pass, hash))
+			{
+				return;
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* AMI TEMP PASSWORD                                                                                      */
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			if(pass.length() == 32)
+			{
+				String a = /**/pass/**/.substring(0, 16);
+				String b = /**/pass/**/.substring(16, 32);
+				String c = generateTmpPassword(pass, false);
+
+				if(a.equals(c)
+				   ||
+				   b.equals(c)
+				 ) {
+					return;
+				}
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* AMI CRYPTED PASSWORD                                                                                    */
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			if(encrypt(pass).equals(hash))
+			{
+				return;
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* AMI HASHED PASSWORD                                                                                    */
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			bcryptCheck(pass, hash);
+
+			/*--------------------------------------------------------------------------------------------------------*/
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

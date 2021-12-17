@@ -78,7 +78,7 @@ public class ConfigSingleton
 		{
 			loadConfigFile();
 
-			SecuritySingleton.init(s_properties.get("encryption_key"));
+			SecuritySingleton.init(s_properties.get("encryption_key"), 6);
 		}
 		catch(Exception e)
 		{

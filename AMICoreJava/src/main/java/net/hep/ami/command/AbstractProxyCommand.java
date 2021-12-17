@@ -5,6 +5,9 @@ import java.net.*;
 import java.util.*;
 import java.nio.charset.*;
 
+import net.hep.ami.jdbc.Querier;
+import net.hep.ami.jdbc.Router;
+import net.hep.ami.jdbc.Row;
 import org.w3c.dom.*;
 
 import net.hep.ami.*;
@@ -41,12 +44,17 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(!Empty.is(m_AMIUser, Empty.STRING_NULL_EMPTY_BLANK)
-		   &&
-		   !Empty.is(m_AMIPass, Empty.STRING_NULL_EMPTY_BLANK)
-		 ) {
-			argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
-			argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
+		if(!Empty.is(m_AMIUser, Empty.STRING_NULL_EMPTY_BLANK))
+		{
+			List<Row> rowList = getQuerier("self").executeSQLQuery("router_user", "SELECT `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0", m_AMIUser).getAll();
+
+			if(rowList.size() == 1)
+			{
+				String m_AMIPass = SecuritySingleton.decrypt(rowList.get(0).getValue(0));
+
+				argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
+				argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -70,7 +78,6 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		HttpURLConnection connection = HttpConnectionFactory.openConnection(ConfigSingleton.getProperty("proxy_command_endpoint"));
-		//HttpURLConnection connection = HttpConnectionFactory.openConnection("https://ami-dev.in2p3.fr/AMI/servlet/net.hep.atlas.Database.Bookkeeping.AMI.Servlet.FrontEnd");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

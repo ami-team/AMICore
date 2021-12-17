@@ -43,11 +43,11 @@ public class ChangePassword extends AbstractCommand
 
 		UserValidator.Bean bean = new UserValidator.Bean(
 			amiLogin,
+			null,
 			amiPasswordOld,
 			amiPasswordNew,
 			m_clientDN,
 			m_issuerDN,
-			null,
 			null,
 			null,
 			null,
@@ -63,9 +63,9 @@ public class ChangePassword extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#2, `valid` = ?3 WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1",
-			bean.getAmiLogin(),
-			bean.getAmiPasswordOld(),
-			bean.getAmiPasswordNew(),
+			bean.getAmiUsername(),
+			bean.getPasswordOld(),
+			bean.getPasswordNew(),
 			valid ? 1 : 0
 		);
 

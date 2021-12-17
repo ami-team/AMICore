@@ -63,7 +63,7 @@ public class ResetPassword extends AbstractCommand
 			String tmpPass = row.getValue(1);
 			String  email  = row.getValue(2);
 
-			String userdata = "{\"user\": \"" + Utility.escapeJavaString(tmpUser) + "\", \"old_pass\": \"" + SecuritySingleton.buildTmpPassword(tmpUser, tmpPass) + "\"}";
+			String userdata = "{\"user\": \"" + Utility.escapeJavaString(tmpUser) + "\", \"old_pass\": \"" + SecuritySingleton.generateTmpPassword(tmpPass) + "\"}";
 
 			userdata = new String(org.bouncycastle.util.encoders.UrlBase64.encode(userdata.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 

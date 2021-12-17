@@ -10,7 +10,7 @@ import javax.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.role.UserValidator;
+import net.hep.ami.role.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
@@ -30,11 +30,6 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
-	private static final String GUEST_PASS = ConfigSingleton.getProperty("guest_pass");
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	private static final org.slf4j.Logger LOGGER = LogSingleton.getLogger(FrontEnd.class.getSimpleName(), "INFO");
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -148,7 +143,7 @@ public class FrontEnd extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			if(true || ConfigSingleton.getProperty("dev_mode", false))
+			if(ConfigSingleton.getProperty("dev_mode", false))
 			{
 				data = XMLTemplates.error(
 					e.getMessage(), e.getStackTrace()
@@ -284,17 +279,13 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("null, _, _ -> new")
-	private Tuple2<String, String> resolveUserByCertificate(@Nullable String clientDN, @Nullable String issuerDN, String clientIP) throws Exception
+	private String resolveUserByCertificate(@Nullable String clientDN, @Nullable String issuerDN, String clientIP) throws Exception
 	{
 		if(Empty.is(clientDN, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		   ||
 		   Empty.is(issuerDN, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		 ) {
-			return new Tuple2<>(
-				GUEST_USER,
-				GUEST_PASS
-			);
+			return GUEST_USER;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -311,7 +302,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
+			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `country` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET CREDENTIALS                                                                                        */
@@ -319,20 +310,13 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() != 1)
 			{
-				return new Tuple2<>(
-					GUEST_USER,
-					GUEST_PASS
-				);
+				return GUEST_USER;
 			}
 
 			Row row = rowList.get(0);
 
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			Tuple2<String, String> result = new Tuple2<>(
-				/*---------------------*/(row.getValue(0)),
-				SecuritySingleton.decrypt(row.getValue(1))
-			);
+			String result = row.getValue(0);
+			String oldCountryCode = row.getValue(1);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* UPDATE COUNTRY                                                                                         */
@@ -340,11 +324,11 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				String countryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
+				String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
 
-				if(!countryCode.equals(row.getValue(2)))
+				if(!oldCountryCode.equals(newCountryCode))
 				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ?0 WHERE `AMIUser` = ?1", countryCode, result.x);
+					router.executeSQLUpdate("UPDATE `router_user` SET `country` = ?0 WHERE `AMIUser` = ?1", newCountryCode, result);
 				}
 			}
 			catch(Exception e)
@@ -368,16 +352,13 @@ public class FrontEnd extends HttpServlet
 
 	@NotNull
 	@Contract("null, _, _ -> new")
-	private Tuple2<String, String> resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP) throws Exception
+	private String resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP) throws Exception
 	{
 		if(Empty.is(AMIUser, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		   ||
 		   Empty.is(AMIPass, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		 ) {
-			return new Tuple2<>(
-				GUEST_USER,
-				GUEST_PASS
-			);
+			return GUEST_USER;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -408,92 +389,22 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() != 1)
 			{
-				if(token)
-				{
-					String json = SecuritySingleton.validateOIDCToken(AMIPass);
-
-					UserValidator.Bean bean = new UserValidator.Bean(
-						AMIUser,
-						AMIPass,
-						AMIPass,
-						null,
-						null,
-						null,
-						null,
-						null,
-						AMIUser,
-						json
-					);
-
-					RoleSingleton.checkUser(
-						ConfigSingleton.getProperty("new_user_validator_class"),
-						UserValidator.Mode.ADD,
-						bean
-					);
-
-					AMIPass = SecuritySingleton.generateTmpPassword(AMIUser, AMIUser, false);
-
-					Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
-						bean.getAmiLogin(),
-						SecuritySingleton.encrypt(bean.getAmiPasswordNew()),
-						SecuritySingleton.encrypt(bean.getClientDN()),
-						SecuritySingleton.encrypt(bean.getIssuerDN()),
-						bean.getFirstName() != null ? bean.getFirstName() : "Unknown",
-						bean.getLastName() != null ? bean.getLastName() : "Unknown",
-						bean.getEmail() != null ? bean.getEmail() : "x@y.z",
-						bean.getSsoUser(),
-						bean.getJson(),
-						1
-					);
-
-					if(update.getNbOfUpdatedRows() == 1)
-					{
-						Update update2 = router.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
-							AMIUser,
-							"AMI_USER"
-						);
-
-						if(update2.getNbOfUpdatedRows() == 1)
-						{
-							router.commit();
-
-							return new Tuple2<>(
-								AMIUser,
-								AMIPass
-							);
-						}
-						else
-						{
-							router.rollback();
-						}
-					}
-					else
-					{
-						router.rollback();
-					}
-				}
-
-				return new Tuple2<>(
-					GUEST_USER,
-					GUEST_PASS
-				);
+				return token ? createNewUser(router, AMIUser, AMIPass) : GUEST_USER;
 			}
 
 			Row row = rowList.get(0);
 
-			/*--------------------------------------------------------------------------------------------------------*/
+			String result = row.getValue(0);
+			String password = row.getValue(1);
+			String oldCountryCode = row.getValue(2);
 
 			try
 			{
-				AMIUser = /*----------------------------------------------------------------------*/((row.getValue(0)));
-				AMIPass = SecuritySingleton.checkPassword(AMIUser, AMIPass, SecuritySingleton.decrypt(row.getValue(1)));
+				SecuritySingleton.checkPassword(AMIPass, password);
 			}
 			catch(Exception e)
 			{
-				return new Tuple2<>(
-					GUEST_USER,
-					GUEST_PASS
-				);
+				return GUEST_USER;
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -502,11 +413,11 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				String countryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
+				String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
 
-				if(!countryCode.equals(row.getValue(1)))
+				if(!oldCountryCode.equals(newCountryCode))
 				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `router_user` = ?0 WHERE `AMIUser` = ?1", countryCode, AMIUser);
+					router.executeSQLUpdate("UPDATE `router_user` SET `country` = ?0 WHERE `AMIUser` = ?1", newCountryCode, result);
 				}
 			}
 			catch(Exception e)
@@ -516,10 +427,7 @@ public class FrontEnd extends HttpServlet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			return new Tuple2<>(
-				AMIUser,
-				AMIPass
-			);
+			return result;
 		}
 		finally
 		{
@@ -527,6 +435,68 @@ public class FrontEnd extends HttpServlet
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private String createNewUser(Router router, String AMIUser, String AMIPass) throws Exception
+	{
+		String json = SecuritySingleton.validateOIDCToken(AMIPass, ConfigSingleton.getProperty("sso_check_url"));
+
+		String tmpPass = SecuritySingleton.generatePassword();
+
+		UserValidator.Bean bean = new UserValidator.Bean(
+			AMIUser, AMIUser,
+			tmpPass, tmpPass,
+			null, null, null, null, null,
+			json
+		);
+
+		RoleSingleton.checkUser(
+			ConfigSingleton.getProperty("new_user_validator_class"),
+			UserValidator.Mode.ADD,
+			bean
+		);
+
+		Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+			bean.getAmiUsername(),
+			bean.getSsoUsername(),
+			SecuritySingleton.encrypt(bean.getPasswordNew()),
+			SecuritySingleton.encrypt(bean.getClientDN()),
+			SecuritySingleton.encrypt(bean.getIssuerDN()),
+			!Empty.is(bean.getFirstName(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getFirstName() : "Unknown",
+			!Empty.is(bean.getLastName(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getLastName() : "Unknown",
+			!Empty.is(bean.getEmail(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getEmail() : "x@y.z",
+			bean.getJson(),
+			1
+		);
+
+		if(update.getNbOfUpdatedRows() == 1)
+		{
+			Update update2 = router.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
+				AMIUser,
+				"AMI_USER"
+			);
+
+			if(update2.getNbOfUpdatedRows() == 1)
+			{
+				router.commit();
+
+				return AMIUser;
+			}
+			else
+			{
+				router.rollback();
+
+				return GUEST_USER;
+			}
+		}
+		else
+		{
+			router.rollback();
+
+			return GUEST_USER;
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -548,15 +518,14 @@ public class FrontEnd extends HttpServlet
 		/* GET ARGUMENT AND SESSION PARAMETERS                                                                        */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpSession session = request.getSession(true);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		String AMIUser = arguments.get("AMIUser");
 		String AMIPass = arguments.get("AMIPass");
 
-		String tmpAMIUser = (String) session.getAttribute("AMIUser");
-		String tmpAMIPass = (String) session.getAttribute("AMIPass");
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		HttpSession session = request.getSession(true);
+
+		String sessionAMIUser = (String) session.getAttribute("AMIUser");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET NOCERT FLAG                                                                                            */
@@ -594,21 +563,13 @@ public class FrontEnd extends HttpServlet
 			/* CERTIFICATE LOGIN                                                                                      */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(tmpAMIUser == null
-			   ||
-			   GUEST_USER.equals(tmpAMIUser)
-			   ||
-			   tmpAMIPass == null
-			 ) {
-				Tuple2<String, String> result = resolveUserByCertificate(clientDN, issuerDN, clientIP);
-
-				AMIUser = result.x;
-				AMIPass = result.y;
+			if(sessionAMIUser == null || GUEST_USER.equals(sessionAMIUser))
+			{
+				AMIUser = resolveUserByCertificate(clientDN, issuerDN, clientIP);
 			}
 			else
 			{
-				AMIUser = tmpAMIUser;
-				AMIPass = tmpAMIPass;
+				AMIUser = sessionAMIUser;
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -623,19 +584,13 @@ public class FrontEnd extends HttpServlet
 			/* CREDENTIAL LOGIN                                                                                       */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(tmpAMIUser == null || (AMIUser != null && !tmpAMIUser.equals(AMIUser))
-			   ||
-			   tmpAMIPass == null || (AMIPass != null && !tmpAMIPass.equals(AMIPass))
-			 ) {
-				Tuple2<String, String> result = resolveUserByUserPass(AMIUser, AMIPass, clientIP);
-
-				AMIUser = result.x;
-				AMIPass = result.y;
+			if(sessionAMIUser == null || (AMIUser != null && AMIPass != null && !sessionAMIUser.equals(AMIUser)))
+			{
+				AMIUser = resolveUserByUserPass(AMIUser, AMIPass, clientIP);
 			}
 			else
 			{
-				AMIUser = tmpAMIUser;
-				AMIPass = tmpAMIPass;
+				AMIUser = sessionAMIUser;
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -650,7 +605,6 @@ public class FrontEnd extends HttpServlet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		session.setAttribute("AMIUser", AMIUser);
-		session.setAttribute("AMIPass", AMIPass);
 
 		session.setAttribute("NoCert", noCert);
 
@@ -659,8 +613,6 @@ public class FrontEnd extends HttpServlet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		arguments.put("AMIUser", AMIUser);
-		arguments.put("AMIPass", AMIPass);
-
 		arguments.put("clientDN", clientDN);
 		arguments.put("issuerDN", issuerDN);
 		arguments.put("notBefore", notBefore);
