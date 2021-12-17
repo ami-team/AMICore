@@ -433,14 +433,14 @@ public class FrontEnd extends HttpServlet
 
 					AMIPass = SecuritySingleton.generateTmpPassword(AMIUser, AMIUser, false);
 
-					Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?#1, ?#2, ?#3, ?4, ?5, ?6, ?7, ?8, ?9)",
+					Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `ssoUser`, `json`, `valid`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
 						bean.getAmiLogin(),
-						bean.getAmiPasswordNew(),
-						bean.getClientDN(),
-						bean.getIssuerDN(),
+						SecuritySingleton.encrypt(bean.getAmiPasswordNew()),
+						SecuritySingleton.encrypt(bean.getClientDN()),
+						SecuritySingleton.encrypt(bean.getIssuerDN()),
 						bean.getFirstName() != null ? bean.getFirstName() : "Unknown",
 						bean.getLastName() != null ? bean.getLastName() : "Unknown",
-						bean.getEmail() != null ? bean.getEmail() : "Unknown",
+						bean.getEmail() != null ? bean.getEmail() : "x@y.z",
 						bean.getSsoUser(),
 						bean.getJson(),
 						1
@@ -485,7 +485,7 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				AMIUser = row.getValue(0);
+				AMIUser = /*----------------------------------------------------------------------*/((row.getValue(0)));
 				AMIPass = SecuritySingleton.checkPassword(AMIUser, AMIPass, SecuritySingleton.decrypt(row.getValue(1)));
 			}
 			catch(Exception e)
