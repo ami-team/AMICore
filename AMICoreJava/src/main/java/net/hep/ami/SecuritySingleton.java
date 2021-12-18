@@ -426,9 +426,9 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static KeyParameter s_keyParameter;
+	private static KeyParameter s_keyParameter = null;
 
-	private static String s_oidcCheckURL;
+	private static String s_oidcCheckURL = null;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -437,7 +437,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void init(@NotNull String aesPassword, @Nullable String oidcCheckURL) throws Exception
+	public static void setEncryptionKey(@NotNull String aesPassword) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -452,12 +452,13 @@ public class SecuritySingleton
 		} else {
 			throw new Exception("too long password (max 32)");
 		}
+	}
 
-		/*------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public static void setOIDCCheckURL(@Nullable String oidcCheckURL)
+	{
 		s_oidcCheckURL = oidcCheckURL;
-
-		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
