@@ -437,18 +437,18 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void setEncryptionKey(@NotNull String aesPassword) throws Exception
+	public static void setEncryptionKey(@NotNull String encryptionKey) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		final int length = aesPassword.length();
+		final int length = encryptionKey.length();
 
 		/*--*/ if(length <= 16) {
-			s_keyParameter = new KeyParameter(String.format("%1$-16s", aesPassword).getBytes(StandardCharsets.UTF_8));
+			s_keyParameter = new KeyParameter(String.format("%1$-16s", encryptionKey).getBytes(StandardCharsets.UTF_8));
 		} else if(length <= 24) {
-			s_keyParameter = new KeyParameter(String.format("%1$-24s", aesPassword).getBytes(StandardCharsets.UTF_8));
+			s_keyParameter = new KeyParameter(String.format("%1$-24s", encryptionKey).getBytes(StandardCharsets.UTF_8));
 		} else if(length <= 32) {
-			s_keyParameter = new KeyParameter(String.format("%1$-32s", aesPassword).getBytes(StandardCharsets.UTF_8));
+			s_keyParameter = new KeyParameter(String.format("%1$-32s", encryptionKey).getBytes(StandardCharsets.UTF_8));
 		} else {
 			throw new Exception("too long password (max 32)");
 		}
