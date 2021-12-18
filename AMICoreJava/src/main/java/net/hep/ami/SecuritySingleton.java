@@ -34,7 +34,7 @@ import org.bouncycastle.crypto.generators.*;
 
 import org.jetbrains.annotations.*;
 
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings({"SpellCheckingInspection", "DuplicatedCode"})
 public class SecuritySingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -249,12 +249,12 @@ public class SecuritySingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		@Contract(pure = true)
-		public PEM(@Nullable PrivateKey[] _privateKeys, @Nullable PublicKey[] _publicKeys, @Nullable X509Certificate[] _x509Certificates, @Nullable X509CRL[] _x509CRLs)
+		public PEM(@Nullable PrivateKey[] privateKeys, @Nullable PublicKey[] publicKeys, @Nullable X509Certificate[] x509Certificates, @Nullable X509CRL[] x509CRLs)
 		{
-			privateKeys = _privateKeys;
-			publicKeys = _publicKeys;
-			x509Certificates = _x509Certificates;
-			x509CRLs = _x509CRLs;
+			this.privateKeys = privateKeys;
+			this.publicKeys = publicKeys;
+			this.x509Certificates = x509Certificates;
+			this.x509CRLs = x509CRLs;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -422,9 +422,13 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final int BCRYPT_COST = 0x00000006;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private static KeyParameter s_keyParameter;
 
-	private static int s_bcryptCost;
+	private static String s_oidcCheckURL;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -433,8 +437,10 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void init(@NotNull String aesPassword, int bcryptCost) throws Exception
+	public static void init(@NotNull String aesPassword, String oidcCheckURL) throws Exception
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		final int length = aesPassword.length();
 
 		/*--*/ if(length <= 16) {
@@ -447,7 +453,11 @@ public class SecuritySingleton
 			throw new Exception("too long password (max 32)");
 		}
 
-		s_bcryptCost = bcryptCost;
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		s_oidcCheckURL = oidcCheckURL;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1013,7 +1023,7 @@ public class SecuritySingleton
 
 		byte[] salt = new SecureRandom().generateSeed(32);
 
-		byte[] data = BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, s_bcryptCost);
+		byte[] data = BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, BCRYPT_COST);
 
 		@SuppressWarnings("StringBufferReplaceableByString")
 		StringBuilder stringBuilder = new StringBuilder().append(new String(org.bouncycastle.util.encoders.Base64.encode(salt), StandardCharsets.UTF_8))
@@ -1048,7 +1058,7 @@ public class SecuritySingleton
 				byte[] salt = org.bouncycastle.util.encoders.Base64.decode(parts[0]);
 				byte[] data = org.bouncycastle.util.encoders.Base64.decode(parts[1]);
 
-				if(Arrays.equals(BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, s_bcryptCost), data))
+				if(Arrays.equals(BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, BCRYPT_COST), data))
 				{
 					return;
 				}
@@ -1068,17 +1078,16 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Contract("_, null -> fail")
-	public static @NotNull String validateOIDCToken(@NotNull String token, String oidcCheckURL) throws Exception
+	public static @NotNull String validateOIDCToken(@NotNull String token) throws Exception
 	{
-		if(oidcCheckURL == null || oidcCheckURL.isEmpty())
+		if(s_oidcCheckURL == null || s_oidcCheckURL.isEmpty())
 		{
 			throw new Exception("OpenID Connect not configured");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(oidcCheckURL).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(s_oidcCheckURL).openConnection();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1119,11 +1128,11 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateAndParseOIDCToken(String token, String ssoCheckURL) throws Exception
+	public static Map<String, Object> validateAndParseOIDCToken(String token) throws Exception
 	{
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		return new ObjectMapper().readValue(validateOIDCToken(token, ssoCheckURL), typeRef);
+		return new ObjectMapper().readValue(validateOIDCToken(token), typeRef);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1254,11 +1263,11 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkPassword(@Nullable String pass, @Nullable String hash, @Nullable String oidcCheckURL) throws Exception
+	public static void checkPassword(@Nullable String pass, @Nullable String hash) throws Exception
 	{
 		if(pass != null && pass.startsWith("Bearer "))
 		{
-			validateOIDCToken(pass, oidcCheckURL);
+			validateOIDCToken(pass);
 		}
 		else
 		{
