@@ -78,7 +78,10 @@ public class ConfigSingleton
 		{
 			loadConfigFile();
 
-			SecuritySingleton.init(s_properties.get("encryption_key"), 6);
+			SecuritySingleton.init(
+				s_properties.get("encryption_key"),
+				s_properties.get("sso_check_url")
+			);
 		}
 		catch(Exception e)
 		{

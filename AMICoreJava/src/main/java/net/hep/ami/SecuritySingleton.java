@@ -437,7 +437,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void init(@NotNull String aesPassword, String oidcCheckURL) throws Exception
+	public static void init(@NotNull String aesPassword, @Nullable String oidcCheckURL) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 

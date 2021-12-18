@@ -441,7 +441,7 @@ public class FrontEnd extends HttpServlet
 
 	private String createNewUser(Router router, String AMIUser, String AMIPass) throws Exception
 	{
-		String json = SecuritySingleton.validateOIDCToken(AMIPass, ConfigSingleton.getProperty("sso_check_url"));
+		String json = SecuritySingleton.validateOIDCToken(AMIPass);
 
 		String tmpPass = SecuritySingleton.generatePassword();
 
