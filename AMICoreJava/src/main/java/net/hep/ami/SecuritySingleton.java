@@ -323,6 +323,7 @@ public class SecuritySingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		@NotNull
+		@Override
 		public String toString()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
@@ -1067,7 +1068,8 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String validateOIDCToken(@NotNull String token, String oidcCheckURL) throws Exception
+	@Contract("_, null -> fail")
+	public static @NotNull String validateOIDCToken(@NotNull String token, String oidcCheckURL) throws Exception
 	{
 		if(oidcCheckURL == null || oidcCheckURL.isEmpty())
 		{
@@ -1248,17 +1250,6 @@ public class SecuritySingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		throw new Exception("invalid check");
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-	/*----------------------------------------------------------------------------------------------------------------*/
-	/*                                                                                                                */
-	/*----------------------------------------------------------------------------------------------------------------*/
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public static void checkPassword(@NotNull String pass, @NotNull String hash) throws Exception
-	{
-		checkPassword(pass, hash, null);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
