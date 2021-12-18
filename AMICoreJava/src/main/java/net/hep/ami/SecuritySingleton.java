@@ -422,6 +422,8 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final int BCRYPT_SALT_SIZE = 0x00000020;
+
 	private static final int BCRYPT_COST = 0x00000006;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1022,7 +1024,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		byte[] salt = new SecureRandom().generateSeed(32);
+		byte[] salt = new SecureRandom().generateSeed(BCRYPT_SALT_SIZE);
 
 		byte[] data = BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, BCRYPT_COST);
 
