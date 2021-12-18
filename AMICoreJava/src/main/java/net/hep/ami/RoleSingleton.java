@@ -177,7 +177,7 @@ public class RoleSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static Set<String> _getUserRoles(@NotNull Querier querier, @NotNull String amiUser, @NotNull String amiPass) throws Exception
+	private static Set<String> _getUserRoles(@NotNull Querier querier, @NotNull String amiUser) throws Exception
 	{
 		Set<String> result = new HashSet<>();
 
@@ -187,44 +187,12 @@ public class RoleSingleton
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* SELECT USER                                                                                            */
 			/*--------------------------------------------------------------------------------------------------------*/
-			" `router_user`.`AMIUser` = ?0 AND `router_user`.`AMIPass` = ?#1 AND `router_user`.`valid` != 0" +
+			" `router_user`.`AMIUser` = ?0 AND `router_user`.`valid` != 0" +
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* SELECT ROLE                                                                                            */
 			/*--------------------------------------------------------------------------------------------------------*/
 			" AND `router_user_role`.`userFK` = `router_user`.`id`" +
 			" AND `router_user_role`.`roleFK` = `router_role`.`id`",
-			/*--------------------------------------------------------------------------------------------------------*/
-			false,
-			null,
-			true,
-			amiUser,
-			amiPass
-		 )) {
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			ResultSet resultSet = statement.executeQuery();
-
-			while(resultSet.next())
-			{
-				result.add(resultSet.getString(1));
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-		}
-
-		return result;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@NotNull
-	private static String _getPassFromUser(@NotNull Querier querier, @NotNull String amiUser) throws Exception
-	{
-		String result;
-
-		try(PreparedStatement statement = querier.sqlPreparedStatement("router_user",
-			/*--------------------------------------------------------------------------------------------------------*/
-			"SELECT `AMIPass` FROM `router_user` WHERE `router_user`.`AMIUser` = ?0 AND `router_user`.`valid` != 0",
 			/*--------------------------------------------------------------------------------------------------------*/
 			false,
 			null,
@@ -235,13 +203,9 @@ public class RoleSingleton
 
 			ResultSet resultSet = statement.executeQuery();
 
-			if(resultSet.next())
+			while(resultSet.next())
 			{
-				result = SecuritySingleton.decrypt(resultSet.getString(1));
-			}
-			else
-			{
-				throw new Exception("user `" + amiUser + "` is not registered in AMI");
+				result.add(resultSet.getString(1));
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -273,12 +237,9 @@ public class RoleSingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		String amiUser = arguments.get("AMIUser");
-		String amiPass = arguments.get("AMIPass");
 
-		if(amiUser == null
-		   ||
-		   amiPass == null
-		 ) {
+		if(amiUser == null)
+		{
 			if(check)
 			{
 				throw new Exception("user not authenticated");
@@ -286,7 +247,6 @@ public class RoleSingleton
 			else
 			{
 				amiUser = ConfigSingleton.getProperty("admin_user");
-				amiPass = ConfigSingleton.getProperty("admin_pass");
 			}
 		}
 
@@ -301,23 +261,18 @@ public class RoleSingleton
 
 		Set<String> userRoles = _getUserRoles(
 			querier,
-			amiUser,
-			amiPass
+			amiUser
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(changeUser != null && userRoles.contains("AMI_SUDOER"))
 		{
-			amiPass = _getPassFromUser(querier, amiUser = changeUser);
-
 			arguments.put("AMIUser", amiUser);
-			arguments.put("AMIPass", amiPass);
 
 			userRoles = _getUserRoles(
 				querier,
-				amiUser,
-				amiPass
+				amiUser
 			);
 		}
 
