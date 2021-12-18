@@ -34,6 +34,7 @@ import org.bouncycastle.crypto.generators.*;
 
 import org.jetbrains.annotations.*;
 
+@SuppressWarnings("DuplicatedCode")
 public class SecuritySingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -54,6 +55,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@SuppressWarnings("PointlessBitwiseExpression")
 	public static final class PEM
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -398,8 +400,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		@NotNull
-		public byte[] toByteArray()
+		public byte @NotNull [] toByteArray()
 		{
 			return toString().getBytes(StandardCharsets.UTF_8);
 		}
@@ -587,7 +588,7 @@ public class SecuritySingleton
 		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(caCertificate));
 
 		// Subject Alternative Name
-		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.17"), false, new GeneralNames(generalNames.toArray(new GeneralName[generalNames.size()])));
+		builder.addExtension(new ASN1ObjectIdentifier("2.5.29.17"), false, new GeneralNames(generalNames.toArray(GeneralName[]::new)));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CREATE X509 CERTIFICATE                                                                                    */
@@ -663,7 +664,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static KeyStore generateJKSKeyStore(@NotNull PrivateKey privateKey, @NotNull X509Certificate[] certificates, @NotNull char[] password) throws Exception
+	public static KeyStore generateJKSKeyStore(@NotNull PrivateKey privateKey, X509Certificate @NotNull[] certificates, char @NotNull[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("JKS");
 
@@ -677,7 +678,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static KeyStore generatePKCS12KeyStore(@NotNull PrivateKey privateKey, @NotNull X509Certificate[] certificates, @NotNull char[] password) throws Exception
+	public static KeyStore generatePKCS12KeyStore(@NotNull PrivateKey privateKey, X509Certificate @NotNull[] certificates, char @NotNull[] password) throws Exception
 	{
 		KeyStore result = KeyStore.getInstance("PKCS12");
 
@@ -691,7 +692,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String byteArrayToBase64String(@NotNull byte[] data)
+	public static String byteArrayToBase64String(byte @NotNull[] data)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* ENCODE TO BASE64                                                                                           */
@@ -805,7 +806,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String md5Sum(@NotNull byte[] s) throws Exception
+	public static String md5Sum(byte @NotNull[] s) throws Exception
 	{
 		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 
@@ -825,7 +826,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String sha256Sum(@NotNull byte[] s) throws Exception
+	public static String sha256Sum(byte @NotNull[] s) throws Exception
 	{
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
@@ -918,8 +919,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
-	public static byte[] encrypt(@NotNull byte[] data) throws Exception
+	public static byte @NotNull[] encrypt(byte @NotNull[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
  		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
@@ -931,8 +931,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
-	public static byte[] decrypt(@NotNull byte[] data) throws Exception
+	public static byte @NotNull[] decrypt(byte @NotNull[] data) throws Exception
 	{
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
@@ -1015,6 +1014,7 @@ public class SecuritySingleton
 
 		byte[] data = BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, s_bcryptCost);
 
+		@SuppressWarnings("StringBufferReplaceableByString")
 		StringBuilder stringBuilder = new StringBuilder().append(new String(org.bouncycastle.util.encoders.Base64.encode(salt), StandardCharsets.UTF_8))
 		                                                 .append("$")
 		                                                 .append(new String(org.bouncycastle.util.encoders.Base64.encode(data), StandardCharsets.UTF_8))
@@ -1067,16 +1067,16 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String validateOIDCToken(@NotNull String token, String ssoCheckURL) throws Exception
+	public static String validateOIDCToken(@NotNull String token, String oidcCheckURL) throws Exception
 	{
-		if(ssoCheckURL == null || ssoCheckURL.isEmpty())
+		if(oidcCheckURL == null || oidcCheckURL.isEmpty())
 		{
 			throw new Exception("OpenID Connect not configured");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(ssoCheckURL).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(oidcCheckURL).openConnection();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1231,7 +1231,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(pass.length() == 32)
+		if(pass != null && pass.length() == 32)
 		{
 			String a = /**/pass/**/.substring(0, 16);
 			String b = /**/pass/**/.substring(16, 32);
@@ -1263,11 +1263,11 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkPassword(@Nullable String pass, @Nullable String hash, @Nullable String ssoCheckURL) throws Exception
+	public static void checkPassword(@Nullable String pass, @Nullable String hash, @Nullable String oidcCheckURL) throws Exception
 	{
 		if(pass != null && pass.startsWith("Bearer "))
 		{
-			validateOIDCToken(pass, ssoCheckURL);
+			validateOIDCToken(pass, oidcCheckURL);
 		}
 		else
 		{
