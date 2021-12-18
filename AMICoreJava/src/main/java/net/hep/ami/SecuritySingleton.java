@@ -1242,11 +1242,11 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(pass != null && pass.length() == 32)
+		if(pass != null && hash != null && pass.length() == 32)
 		{
 			String a = /**/pass/**/.substring(0, 16);
 			String b = /**/pass/**/.substring(16, 32);
-			String c = generateTmpPassword(pass, false);
+			String c = generateTmpPassword(hash, false);
 
 			if(a.equals(c)
 			   ||

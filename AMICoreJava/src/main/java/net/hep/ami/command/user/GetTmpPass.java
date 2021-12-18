@@ -89,8 +89,8 @@ public class GetTmpPass extends AbstractCommand
 		{
 			Row row = rowList.get(0);
 
-			tmpUsername = /*---------------------*/(row.getValue(0));
-			tmpPassword = SecuritySingleton.decrypt(row.getValue(1));
+			tmpUsername = row.getValue(0);
+			tmpPassword = row.getValue(1);
 
 			tmpPassword = SecuritySingleton.generateTmpPassword(tmpPassword);
 		}
