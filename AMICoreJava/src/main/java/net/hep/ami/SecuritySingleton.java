@@ -422,7 +422,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final int BCRYPT_SALT_SIZE = 0x00000020;
+	private static final int BCRYPT_SALT_SIZE = 0x00000010;
 
 	private static final int BCRYPT_COST = 0x00000006;
 
