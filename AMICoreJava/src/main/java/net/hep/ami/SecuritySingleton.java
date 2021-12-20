@@ -982,7 +982,7 @@ public class SecuritySingleton
 			return null;
 		}
 try{
-		return !s.isEmpty() ? new String(decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8))), StandardCharsets.UTF_8)
+		return !s.isEmpty() && !"@NOGO".equals(s) ? new String(decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8))), StandardCharsets.UTF_8)
 		                    : ""
 		;
 } catch(Exception e)
