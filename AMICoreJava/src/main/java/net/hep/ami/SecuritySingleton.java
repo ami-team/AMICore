@@ -1205,7 +1205,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result = sha256Sum(
+		result = //sha256Sum(
 			s_encryptionHash
 			+ "|" +
 			calendar.get(Calendar.   YEAR    )
@@ -1214,8 +1214,8 @@ public class SecuritySingleton
 			+ "|" +
 			calendar.get(Calendar.HOUR_OF_DAY)
 			+ "|" +
-			user
-		).substring(0, 16);
+			user;
+		//).substring(0, 16);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
