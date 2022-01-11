@@ -1197,6 +1197,8 @@ public class SecuritySingleton
 
 		Calendar calendar;
 
+		user = user.toLowerCase();
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
