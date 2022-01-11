@@ -50,7 +50,7 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 			if(rowList.size() == 1)
 			{
-				String m_AMIPass = SecuritySingleton.decrypt(rowList.get(0).getValue(0));
+				String m_AMIPass = SecuritySingleton.generateTmpPassword(rowList.get(0).getValue(0));
 
 				argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
 				argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
