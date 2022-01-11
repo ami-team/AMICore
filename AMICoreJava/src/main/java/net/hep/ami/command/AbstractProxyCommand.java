@@ -46,15 +46,10 @@ public abstract class AbstractProxyCommand extends AbstractCommand
 
 		if(!Empty.is(m_AMIUser, Empty.STRING_NULL_EMPTY_BLANK))
 		{
-			List<Row> rowList = getQuerier("self").executeSQLQuery("router_user", "SELECT `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0", m_AMIUser).getAll();
+			String m_AMIPass = SecuritySingleton.generateTmpPassword(m_AMIUser);
 
-			if(rowList.size() == 1)
-			{
-				String m_AMIPass = SecuritySingleton.generateTmpPassword(rowList.get(0).getValue(0));
-
-				argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
-				argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
-			}
+			argumentString.append(" -AMIUser=\"").append(Utility.escapeJavaString(m_AMIUser)).append("\"");
+			argumentString.append(" -AMIPass=\"").append(Utility.escapeJavaString(m_AMIPass)).append("\"");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
