@@ -69,11 +69,11 @@ public class GetTmpPass extends AbstractCommand
 		switch(mode)
 		{
 			case 0:
-				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0) AND `valid` != 0", amiLogin).getAll(10, 0);
+				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE `AMIUser` = ?0 AND `valid` != 0", amiLogin).getAll(10, 0);
 				break;
 
 			case 1:
-				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE LOWER(`ssoUser`) = LOWER(?0) AND `valid` != 0", ssoLogin).getAll(10, 0);
+				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE `ssoUser` = ?0 AND `valid` != 0", ssoLogin).getAll(10, 0);
 				break;
 
 			default:

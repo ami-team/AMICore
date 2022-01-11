@@ -377,8 +377,8 @@ public class FrontEnd extends HttpServlet
 
 			boolean token = AMIPass.startsWith("Bearer ");
 
-			String sql = token ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE LOWER(`ssoUser`) = LOWER(?0)"
-			                   : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0)"
+			String sql = token ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `ssoUser` = ?0"
+			                   : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
 			;
 
 			List<Row> rowList = router.executeSQLQuery("router_user", sql, AMIUser).getAll();
