@@ -981,14 +981,10 @@ public class SecuritySingleton
 		{
 			return null;
 		}
-try{
+
 		return !s.isEmpty() && !"@NOGO".equals(s) ? new String(decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8))), StandardCharsets.UTF_8)
 		                    : ""
 		;
-} catch(Exception e)
-{
-	throw new Exception(e.getMessage() + " " + s,  e);
-}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1188,7 +1184,7 @@ try{
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String generateTmpPassword(@NotNull String pass, boolean full) throws Exception
+	public static String generateTmpPassword(@NotNull String user, boolean full) throws Exception
 	{
 		String result;
 
@@ -1207,7 +1203,7 @@ try{
 			+ "|" +
 			calendar.get(Calendar.HOUR_OF_DAY)
 			+ "|" +
-			pass
+			user
 		)).substring(0, 16);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -1227,7 +1223,7 @@ try{
 				+ "|" +
 				calendar.get(Calendar.HOUR_OF_DAY)
 				+ "|" +
-				pass
+				user
 			)).substring(0, 16);
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -1238,22 +1234,15 @@ try{
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkTmpPassword(@Nullable String pass, @Nullable String hash) throws Exception
+	public static void checkTmpPassword(@Nullable String user, @Nullable String temp) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(Objects.equals(pass, hash))
+		if(user != null && temp != null && temp.length() == 32)
 		{
-			return;
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(pass != null && hash != null && pass.length() == 32)
-		{
-			String a = /**/pass/**/.substring(0, 16);
-			String b = /**/pass/**/.substring(16, 32);
-			String c = generateTmpPassword(hash, false);
+			String a = /**/temp/**/.substring(0, 16);
+			String b = /**/temp/**/.substring(16, 32);
+			String c = generateTmpPassword(user, false);
 
 			if(a.equals(c)
 			   ||
@@ -1270,7 +1259,7 @@ try{
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void checkPassword(@Nullable String pass, @Nullable String hash) throws Exception
+	public static void checkPassword(@Nullable String user, @Nullable String pass, @Nullable String hash) throws Exception
 	{
 		if(pass != null && pass.startsWith("Bearer "))
 		{
@@ -1292,7 +1281,7 @@ try{
 				{
 					try
 					{
-						checkTmpPassword(pass, hash);
+						checkTmpPassword(user, pass);
 					}
 					catch(Exception e3)
 					{

@@ -400,7 +400,7 @@ public class FrontEnd extends HttpServlet
 
 			try
 			{
-				SecuritySingleton.checkPassword(AMIPass, password);
+				SecuritySingleton.checkPassword(AMIUser, AMIPass, password);
 			}
 			catch(Exception e)
 			{

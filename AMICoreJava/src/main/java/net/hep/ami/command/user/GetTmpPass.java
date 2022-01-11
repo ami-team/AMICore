@@ -69,11 +69,11 @@ public class GetTmpPass extends AbstractCommand
 		switch(mode)
 		{
 			case 0:
-				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0) AND `valid` != 0", amiLogin).getAll(10, 0);
+				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE LOWER(`AMIUser`) = LOWER(?0) AND `valid` != 0", amiLogin).getAll(10, 0);
 				break;
 
 			case 1:
-				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE LOWER(`ssoUser`) = LOWER(?0) AND `valid` != 0", ssoLogin).getAll(10, 0);
+				rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE LOWER(`ssoUser`) = LOWER(?0) AND `valid` != 0", ssoLogin).getAll(10, 0);
 				break;
 
 			default:
@@ -87,12 +87,8 @@ public class GetTmpPass extends AbstractCommand
 
 		if(rowList.size() > 0)
 		{
-			Row row = rowList.get(0);
-
-			tmpUsername = row.getValue(0);
-			tmpPassword = row.getValue(1);
-
-			tmpPassword = SecuritySingleton.generateTmpPassword(tmpPassword);
+			tmpUsername = /*-------*/ rowList.get(0).getValue(0) /*-------*/;
+			tmpPassword = SecuritySingleton.generateTmpPassword(tmpUsername);
 		}
 		else
 		{
