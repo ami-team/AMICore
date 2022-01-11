@@ -430,6 +430,8 @@ public class SecuritySingleton
 
 	private static KeyParameter s_keyParameter = null;
 
+	private static String s_encryptionHash = null;
+
 	private static String s_oidcCheckURL = null;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -454,6 +456,11 @@ public class SecuritySingleton
 		} else {
 			throw new Exception("too long password (max 32)");
 		}
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		s_encryptionHash = sha256Sum(encryptionKey);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1196,7 +1203,9 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result = sha256Sum(encrypt(
+		result = sha256Sum(
+			s_encryptionHash
+			+ "|" +
 			calendar.get(Calendar.   YEAR    )
 			+ "|" +
 			calendar.get(Calendar.DAY_OF_YEAR)
@@ -1204,7 +1213,7 @@ public class SecuritySingleton
 			calendar.get(Calendar.HOUR_OF_DAY)
 			+ "|" +
 			user
-		)).substring(0, 16);
+		).substring(0, 16);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1216,7 +1225,9 @@ public class SecuritySingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			result += sha256Sum(encrypt(
+			result += sha256Sum(
+				s_encryptionHash
+				+ "|" +
 				calendar.get(Calendar.   YEAR    )
 				+ "|" +
 				calendar.get(Calendar.DAY_OF_YEAR)
@@ -1224,7 +1235,7 @@ public class SecuritySingleton
 				calendar.get(Calendar.HOUR_OF_DAY)
 				+ "|" +
 				user
-			)).substring(0, 16);
+			).substring(0, 16);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
