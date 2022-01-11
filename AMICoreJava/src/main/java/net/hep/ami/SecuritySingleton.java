@@ -1183,9 +1183,9 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String generateTmpPassword(@NotNull String pass) throws Exception
+	public static String generateTmpPassword(@NotNull String user) throws Exception
 	{
-		return generateTmpPassword(pass, true);
+		return generateTmpPassword(user, true);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
