@@ -387,7 +387,7 @@ public class FrontEnd extends HttpServlet
 			/* GET CREDENTIALS                                                                                        */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(rowList.size() != 1)
+			if(rowList.size() == 0)
 			{
 				return token ? createNewUser(router, AMIUser, AMIPass) : GUEST_USER;
 			}
