@@ -98,7 +98,7 @@ public class ChangePassword extends AbstractCommand
 		/* UPDATE PASSWORD                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#2, `valid` = ?3 WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1",
+		Update update = querier.executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#1, `valid` = ?2 WHERE `AMIUser` = ?0",
 			bean.getAmiUsername(),
 			bean.getPasswordNew(),
 			valid ? 1 : 0
