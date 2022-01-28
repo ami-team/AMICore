@@ -69,6 +69,9 @@ public class ChangePassword extends AbstractCommand
 		String currentUsername = row.getValue(0);
 		String currentPassword = row.getValue(1);
 
+		if(true)
+		throw new Exception(currentUsername + " | " + amiPasswordOld + " | " + currentPassword);
+
 		SecuritySingleton.checkPassword(currentUsername, amiPasswordOld, currentPassword);
 
 		/*------------------------------------------------------------------------------------------------------------*/
