@@ -40,9 +40,43 @@ public class ChangePassword extends AbstractCommand
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET QUERIER                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Querier querier = getQuerier("self");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CHECK CREDENTIALS                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean token = amiPasswordOld.startsWith("Bearer ");
+
+		String sql = token ? "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `ssoUser` = ?0"
+		                   : "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0"
+		;
+
+		List<Row> rowList = querier.executeSQLQuery("router_user", sql, amiLogin).getAll();
+
+		if(rowList.size() != 1)
+		{
+			throw new Exception("user `" + amiLogin + "` not registered in AMI");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Row row = rowList.get(0);
+
+		String currentUsername = row.getValue(0);
+		String currentPassword = row.getValue(1);
+
+		SecuritySingleton.checkPassword(currentUsername, amiPasswordOld, currentPassword);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* CREATE BEAN                                                                                                */
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		UserValidator.Bean bean = new UserValidator.Bean(
-			amiLogin,
+			currentUsername,
 			null,
 			amiPasswordOld,
 			amiPasswordNew,
@@ -61,10 +95,11 @@ public class ChangePassword extends AbstractCommand
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* UPDATE PASSWORD                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#2, `valid` = ?3 WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1",
+		Update update = querier.executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#2, `valid` = ?3 WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1",
 			bean.getAmiUsername(),
-			bean.getPasswordOld(),
 			bean.getPasswordNew(),
 			valid ? 1 : 0
 		);
