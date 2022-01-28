@@ -43,7 +43,7 @@ public class ConnectionPoolSingleton
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(!ConfigSingleton.getProperty("pool_enabled", true))
+		if(!ConfigSingleton.getProperty("pool_enabled", true) || !ConfigSingleton.getSystemProperty("ami.pool.enabled", true))
 		{
 			return DriverManager.getConnection(jdbcUrl, user, pass);
 		}
