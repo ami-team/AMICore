@@ -43,7 +43,7 @@ public class ChangePassword extends AbstractCommand
 		/* GET QUERIER                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Querier querier = getQuerier("self");
+		Querier querier = getAdminQuerier("self");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CHECK CREDENTIALS                                                                                          */
