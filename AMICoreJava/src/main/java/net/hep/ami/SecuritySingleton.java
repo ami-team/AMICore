@@ -1294,12 +1294,11 @@ public class SecuritySingleton
 				{
 					try
 					{
-						if(true) throw new Exception(user + " " + pass + " " + generateTmpPassword(user, false));
 						checkTmpPassword(user, pass);
 					}
 					catch(Exception e3)
 					{
-						throw new Exception(e3.getMessage());
+						throw new Exception("invalid password");
 					}
 				}
 			}
