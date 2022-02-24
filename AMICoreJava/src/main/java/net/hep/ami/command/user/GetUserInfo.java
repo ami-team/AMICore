@@ -351,31 +351,47 @@ public class GetUserInfo extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String changeCert(Querier querier, UserValidator.Mode mode, String amiLogin, String amiPassword) throws Exception
+	private String changeCert(Querier querier, UserValidator.Mode mode, @Nullable String amiLogin, @Nullable String amiPassword) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(mode == UserValidator.Mode.ATTACH)
 		{
-			if(!m_isSecure
-			   ||
-			   Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
+			if(Empty.is(m_clientDN, Empty.STRING_NULL_EMPTY_BLANK)
 			   ||
 			   Empty.is(m_issuerDN, Empty.STRING_NULL_EMPTY_BLANK)
 			 ) {
-				throw new Exception("You must connect using https and provide a valid certificate");
+				throw new Exception("you must provide a valid certificate");
 			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `ssoUser`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", amiLogin, amiPassword).getAll();
+		List<Row> rowList;
 
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(rowList.size() != 1)
+		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK) && !m_AMIUser.equals(GUEST_USER))
 		{
-			throw new Exception("Bad login and/or password");
+			rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json` FROM `router_user` WHERE `AMIUser` = ?0", m_AMIUser).getAll();
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("internal error, contact your administrator");
+			}
+		}
+		else
+		{
+			rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json` FROM `router_user` WHERE `AMIUser` = ?0", amiLogin).getAll();
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("bad username");
+			}
+
+			SecuritySingleton.checkPassword(
+				rowList.get(0).getValue(1),
+				amiPassword,
+				rowList.get(0).getValue(3)
+			);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -383,16 +399,16 @@ public class GetUserInfo extends AbstractCommand
 		String _id = rowList.get(0).getValue(0);
 
 		UserValidator.Bean bean = new UserValidator.Bean(
-			amiLogin,
 			rowList.get(0).getValue(1),
-			amiPassword,
-			amiPassword,
 			rowList.get(0).getValue(2),
-			rowList.get(0).getValue(3),
+			amiPassword,
+			amiPassword,
 			rowList.get(0).getValue(4),
 			rowList.get(0).getValue(5),
 			rowList.get(0).getValue(6),
-			rowList.get(0).getValue(7)
+			rowList.get(0).getValue(7),
+			rowList.get(0).getValue(8),
+			rowList.get(0).getValue(9)
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -411,6 +427,13 @@ public class GetUserInfo extends AbstractCommand
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			if(!querier.executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE `id` != ?0, `clientDN` = ?#1, `issuerDN` = ?#2", _id, bean.getClientDN(), bean.getIssuerDN()).getAll().isEmpty())
+			{
+				throw new Exception("this certificate is already associated to another account");
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			switch(mode)
 			{
 				case ATTACH:
@@ -424,7 +447,7 @@ public class GetUserInfo extends AbstractCommand
 					break;
 
 				default:
-					throw new Exception("Internal error");
+					throw new Exception("internal error, contact your administrator");
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
