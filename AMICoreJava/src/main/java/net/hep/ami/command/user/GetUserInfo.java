@@ -427,7 +427,7 @@ public class GetUserInfo extends AbstractCommand
 		 ) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(!querier.executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE `id` != ?0 AND `clientDN` = ?#1 AND `issuerDN` = ?#2", _id, bean.getClientDN(), bean.getIssuerDN()).getAll().isEmpty())
+			if(!querier.executeSQLQuery("router_user", "SELECT `AMIUser` FROM `router_user` WHERE `id` != ?0 AND `clientDN` = ?#1 AND `issuerDN` = ?#2", _id, m_clientDN, m_issuerDN).getAll().isEmpty())
 			{
 				throw new Exception("this certificate is already associated to another account");
 			}
