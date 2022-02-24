@@ -369,7 +369,7 @@ public class GetUserInfo extends AbstractCommand
 
 		List<Row> rowList;
 
-		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK) && !m_AMIUser.equals(GUEST_USER))
+		if(Empty.is(amiPassword, Empty.STRING_NULL_EMPTY_BLANK) && !m_AMIUser.equals(GUEST_USER))
 		{
 			rowList = querier.executeSQLQuery("router_user", "SELECT `id`, `AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json` FROM `router_user` WHERE `AMIUser` = ?0", m_AMIUser).getAll();
 
