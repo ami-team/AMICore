@@ -15,6 +15,8 @@ public class WebLink
 	public String m_class = "";
 	public String m_style = "";
 	public String m_onclick = "";
+	public boolean m_escape = true;
+
 	public String m_unitName = "";
 	public String m_unitFactor = "";
 	public String m_unitBase = "";
@@ -200,6 +202,12 @@ public class WebLink
 	}
 
 	@NotNull
+	public WebLink setEscape(@NotNull boolean escape) {
+		m_escape = escape;
+		return this;
+	}
+
+	@NotNull
 	public WebLink setUnitName(@NotNull String unitName) {
 		m_unitName = unitName;
 		return this;
@@ -246,7 +254,9 @@ public class WebLink
 		                          .append(" class=\"").append(Utility.escapeHTML(m_class)).append("\"")
 				                  .append(" style=\"").append(Utility.escapeHTML(m_style)).append("\"")
 		                          .append(" onclick=\"").append(Utility.escapeHTML(m_onclick)).append("\"")
-		                          .append(" unitName=\"").append(Utility.escapeHTML(m_unitName)).append("\"")
+		                          .append(" escape=\"").append(m_escape ? "true": "false").append("\"")
+		                          /**/
+			                      .append(" unitName=\"").append(Utility.escapeHTML(m_unitName)).append("\"")
 		                          .append(" unitFactor=\"").append(Utility.escapeHTML(m_unitFactor)).append("\"")
 		                          .append(" unitBase=\"").append(Utility.escapeHTML(m_unitBase)).append("\"")
 		                          .append(" humanReadable=\"").append(Utility.escapeHTML(m_humanReadable)).append("\"")
