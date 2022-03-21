@@ -56,6 +56,7 @@ public class WebLink
 		public String m_href = "";
 		public String m_target = "";
 		public String m_label = "";
+		public boolean m_escape = true;
 
 		public String m_ctrl = "";
 		public Location m_location = Location.NONE;
@@ -93,6 +94,11 @@ public class WebLink
 
 		public LinkProperties setLabel(@NotNull String label) {
 			m_label = label;
+			return this;
+		}
+
+		public LinkProperties setEscape(@NotNull boolean escape) {
+			m_escape = escape;
 			return this;
 		}
 
@@ -147,6 +153,7 @@ public class WebLink
 			                          .append(" href=\"").append(Utility.escapeHTML(m_href)).append("\"")
 			                          .append(" target=\"").append(Utility.escapeHTML(m_target)).append("\"")
 			                          .append(" label=\"").append(Utility.escapeHTML(m_label)).append("\"")
+			                          .append(" escape=\"").append(m_escape ? "true": "false").append("\"")
 			                           /**/
 			                          .append(" data-ctrl=\"").append(Utility.escapeHTML(m_ctrl)).append("\"")
 			                          .append(" data-ctrl-location=\"").append(m_location.toString()).append("\"")
