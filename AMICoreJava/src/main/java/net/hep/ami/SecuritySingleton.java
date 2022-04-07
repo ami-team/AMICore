@@ -1298,7 +1298,7 @@ public class SecuritySingleton
 					}
 					catch(Exception e3)
 					{
-						throw new Exception("invalid password");
+						throw new Exception("bad password");
 					}
 				}
 			}
