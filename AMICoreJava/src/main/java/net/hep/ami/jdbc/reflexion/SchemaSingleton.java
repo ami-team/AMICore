@@ -143,6 +143,7 @@ public class SchemaSingleton
 
 		public boolean hidden = false;
 		public boolean adminOnly = false;
+		public boolean hashed = false;
 		public boolean crypted = false;
 		public boolean primary = false;
 		public boolean json = false;
@@ -599,7 +600,7 @@ public class SchemaSingleton
 		{
 			if((m_driverTuple.t & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
-				return "SYNONYM".equals(type) ? m_internalCatalog.replace("_W", "") : m_internalCatalog; /* BERK !!! */
+				return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
 			}
 			else
 			{
@@ -613,7 +614,7 @@ public class SchemaSingleton
 		{
 			if((m_driverTuple.t & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
-				return "SYNONYM".equals(type) ? m_catalogTuple.z.replace("_W", "") : m_catalogTuple.z; /* BERK !!! */
+				return "SYNONYM".equals(type) && m_catalogTuple.z.endsWith("_W") ? m_catalogTuple.z.substring(0, m_catalogTuple.z.length() - 2) : m_catalogTuple.z; /* BERK !!! */
 			}
 			else
 			{
@@ -1393,6 +1394,7 @@ public class SchemaSingleton
 		             /**/
 		             .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
+		             .append("<field name=\"hashed\"><![CDATA[").append(column.hashed).append("]]></field>")
 		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 		             .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
 		             .append("<field name=\"json\"><![CDATA[").append(column.json).append("]]></field>")
