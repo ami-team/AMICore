@@ -517,6 +517,8 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup commands...");
 
+		this.commit();
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try(PreparedStatement statement1 = sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null, false))
@@ -541,7 +543,7 @@ public class Router implements Querier
 					   &&
 					   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
 					 ) {
-						/*------------------------------------------------------------------------------------------------*/
+						/*--------------------------------------------------------------------------------------------*/
 
 						commandName = clazz.getSimpleName();
 
@@ -550,7 +552,11 @@ public class Router implements Querier
 						commandVisible = commandMetadata.visible() ? 1 : 0;
 						commandSecured = commandMetadata.secured() ? 1 : 0;
 
-						/*------------------------------------------------------------------------------------------------*/
+						/*--------------------------------------------------------------------------------------------*/
+
+						System.out.println(commandName + " " + commandClass);
+						System.out.println(commandName + " " + commandRole);
+						System.out.println();
 
 						statement1.setString(1, commandName);
 						statement1.setString(2, commandClass);
@@ -563,12 +569,14 @@ public class Router implements Querier
 						statement1.addBatch();
 						statement2.addBatch();
 
-						/*------------------------------------------------------------------------------------------------*/
+						/*--------------------------------------------------------------------------------------------*/
 					}
-				}
 
-				statement1.executeBatch();
-				statement2.executeBatch();
+					statement1.executeBatch();
+					statement2.executeBatch();
+
+					this.commit(); /* BERKKKKKKKKKKKKKKKKKKKKKKKKKKKKK */
+				}
 			}
 		}
 
