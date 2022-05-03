@@ -18,7 +18,9 @@ public class CommandSingletonTest
 	{
 //		System.out.println(ConfigSingleton.getConfigFileName());
 
-//		Router querier = new Router();
+		Router querier = new Router();
+
+		System.out.println("YYYY");
 
 //		querier.create();
 //		querier.fill();
@@ -459,8 +461,18 @@ public class CommandSingletonTest
 				);
 			}*/
 
-			System.out.println(CommandSingleton.executeCommand("GetSessionInfo").replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand("GetResettableAMITags", true).replace(">", ">\n"));
 
+			//System.out.println(CommandSingleton.executeCommand("GetTmpPass -amiLogin=\"ami\"", false).replace(">", ">\n"));
+
+			//CommandSingleton.executeCommand("ChangePassword -amiLogin=\"ami\" -amiPasswordOld=\"c4eb529786520afd86bd955fae759ccc\" -amiPasswordNew=\"ami\"", false);
+			//System.out.println(CommandSingleton.executeCommand("ChangePassword -amiLogin=\"ami\" -amiPasswordOld=\"c4eb529786520afd86bd955fae759ccc\" -amiPasswordNew=\"ami\"", false).replace(">", ">\n"));
+
+//			String hash = SecuritySingleton.bcryptEncode("Hello");
+
+//			System.out.println(hash);
+
+//			SecuritySingleton.checkBCrypt("Hello", hash);
 		}
 		catch(Exception e)
 		{
