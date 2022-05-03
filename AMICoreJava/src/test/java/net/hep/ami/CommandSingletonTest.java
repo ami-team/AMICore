@@ -18,9 +18,7 @@ public class CommandSingletonTest
 	{
 //		System.out.println(ConfigSingleton.getConfigFileName());
 
-		Router querier = new Router();
-
-		System.out.println("YYYY");
+//		Router querier = new Router();
 
 //		querier.create();
 //		querier.fill();
