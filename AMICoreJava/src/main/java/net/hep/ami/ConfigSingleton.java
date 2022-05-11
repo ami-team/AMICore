@@ -2,6 +2,7 @@ package net.hep.ami;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.*;
 
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
@@ -11,6 +12,12 @@ import org.jetbrains.annotations.*;
 
 public class ConfigSingleton
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final Pattern s_envVarPattern = Pattern.compile(
+			"\\$\\{\\s*([a-zA-Z-_.]+)\\s*}"
+	);
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Map<String, String> s_properties = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
@@ -171,13 +178,16 @@ public class ConfigSingleton
 			/* ADD PROPERTIES                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			String key;
+			String val;
+
 			for(org.w3c.dom.Node node: XMLFactory.nodeListToIterable(nodeList))
 			{
-				s_properties.put(
-					XMLFactory.getNodeAttribute(node,
-					                             "name"),
-					XMLFactory.getNodeContent(node)
-				);
+				key = XMLFactory.getNodeAttribute(node,
+						                          "name");
+				val = XMLFactory.getNodeContent(node);
+
+				s_properties.put(key, s_envVarPattern.matcher(val).replaceAll(m -> System.getProperty(m.group(1), "")));
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -241,17 +251,17 @@ public class ConfigSingleton
 			/* ADD PROPERTIES                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String name;
-			String value;
+			String key;
+			String val;
 
 			for(Row row: rowSet.iterate())
 			{
-				name = row.getValue(0);
-				value = row.getValue(1);
+				key = row.getValue(0);
+				val = row.getValue(1);
 
-				if(!s_reservedParams.contains(name))
+				if(!s_reservedParams.contains(key))
 				{
-					s_properties.put(name, value);
+					s_properties.put(key, s_envVarPattern.matcher(val).replaceAll(m -> System.getProperty(m.group(1), "")));
 				}
 			}
 
