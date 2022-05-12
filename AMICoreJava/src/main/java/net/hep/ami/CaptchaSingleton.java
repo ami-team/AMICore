@@ -36,7 +36,7 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String generateImage(String text) throws Exception
+	public static String generateCaptchaImage(String text) throws Exception
 	{
 		Random random = new Random();
 
@@ -100,7 +100,7 @@ public class CaptchaSingleton
 
 		String hash = SecuritySingleton.md5Sum(SecuritySingleton.encrypt(text));
 
-		return new Captcha(generateImage(text), hash);
+		return new Captcha(generateCaptchaImage(text), hash);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
