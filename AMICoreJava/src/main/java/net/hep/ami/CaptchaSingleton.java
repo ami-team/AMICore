@@ -2,13 +2,8 @@ package net.hep.ami;
 
 import lombok.*;
 
-import java.io.*;
 import java.util.*;
-
-import java.awt.*;
-import java.awt.image.*;
-
-import javax.imageio.*;
+import java.nio.charset.*;
 
 public class CaptchaSingleton
 {
@@ -27,8 +22,8 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final int CAPTCH_HEIGHT = 40;
 	private static final int CAPTCHA_WIDTH = 180;
+	private static final int CAPTCHA_HEIGHT = 40;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -40,54 +35,44 @@ public class CaptchaSingleton
 	{
 		Random random = new Random();
 
-		byte[] bytes = text.getBytes();
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		StringBuilder svg = new StringBuilder(String.format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"%d\" height=\"%d\">", CAPTCHA_WIDTH, CAPTCHA_HEIGHT));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		BufferedImage image = new BufferedImage(CAPTCHA_WIDTH, CAPTCH_HEIGHT, BufferedImage.TYPE_INT_RGB);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		Graphics2D g = image.createGraphics();
-
-		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-		g.setColor(Color.white);
-		g.setFont(new Font("Serif", Font.PLAIN, 26));
-		g.fillRect(0, 0, CAPTCHA_WIDTH, CAPTCH_HEIGHT);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		for(int i = 0; i < bytes.length; i++)
+		for(int i = 0; i < text.length(); i++)
 		{
-			g.setColor(new Color(random.nextInt(128), random.nextInt(128), random.nextInt(128)));
-
-			g.drawString(new String(new byte[] {bytes[i]}), 10 + i * 20, (int) (1 + Math.random()) * 20);
+			svg.append(String.format("<text x=\"%d\" y=\"%d\" style=\"fill: #%02x%02x%02x\">%c</text>",
+				10 + i * 20,
+				(int) (1 + Math.random()) * 20,
+				random.nextInt(128),
+				random.nextInt(128),
+				random.nextInt(128),
+				text.charAt(i)
+			));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(int i = 0; i < 8; i++)
 		{
-			g.setColor(new Color(random.nextInt(128), random.nextInt(128), random.nextInt(128)));
-
-			g.drawOval((int) (Math.random() * 160), (int) (Math.random() * 10), 30, 30);
+			svg.append(String.format("<circle cx=\"%d\" cy=\"%d\" r=\"30\" style=\"fill: transparent; stroke: #%02x%02x%02x; stroke-width:0.126206\" />",
+				(int) (Math.random() * 160),
+				(int) (Math.random() * 10),
+				random.nextInt(128),
+				random.nextInt(128),
+				random.nextInt(128)
+			));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		g.dispose();
+		svg.append("</svg>");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-		ImageIO.write(image, "png", outputStream);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return "data:image/png;base64," + org.bouncycastle.util.encoders.Base64.toBase64String(outputStream.toByteArray());
+		return "data:image/svg;base64," + org.bouncycastle.util.encoders.Base64.toBase64String(svg.toString().getBytes(StandardCharsets.UTF_8));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
