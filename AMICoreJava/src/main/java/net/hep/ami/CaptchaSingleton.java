@@ -58,8 +58,8 @@ public class CaptchaSingleton
 		for(int i = 0; i < 8; i++)
 		{
 			svg.append(String.format("<circle cx=\"%d\" cy=\"%d\" r=\"%d\" style=\"fill: transparent; stroke: #%02x%02x%02x; stroke-width: 0.8;\" />",
-				(int) (CAPTCHA_WIDTH * (0.5 + (Math.random() - 0.5))),
-				(int) (CAPTCHA_HEIGHT * (0.5 + (Math.random() - 0.5))),
+				(int) Math.random() * CAPTCHA_WIDTH,
+				(int) Math.random() * CAPTCHA_HEIGHT,
 				(int) (0.375 * CAPTCHA_HEIGHT),
 				random.nextInt(128),
 				random.nextInt(128),
