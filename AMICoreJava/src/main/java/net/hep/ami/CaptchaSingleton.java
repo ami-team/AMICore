@@ -45,7 +45,7 @@ public class CaptchaSingleton
 		{
 			svg.append(String.format("<text x=\"%d\" y=\"%d\" style=\"fill: #%02x%02x%02x;\">%c</text>",
 				10 + i * 20,
-				(int) CAPTCHA_HEIGHT * (0.5 + 0.25 * (Math.random() - 0.5)),
+				(int) (CAPTCHA_HEIGHT * (0.5 + 0.25 * (Math.random() - 0.5))),
 				random.nextInt(128),
 				random.nextInt(128),
 				random.nextInt(128),
@@ -57,10 +57,9 @@ public class CaptchaSingleton
 
 		for(int i = 0; i < 8; i++)
 		{
-			svg.append(String.format("<circle cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" style=\"fill: transparent; stroke: #%02x%02x%02x; stroke-width: 0.8;\" />",
-				(int) CAPTCHA_WIDTH * (0.5 + 0.25 * Math.random() - 0.5),
-				(int) CAPTCHA_HEIGHT * (0.5 + 0.25 * Math.random() - 0.5),
-				(int) (0.375 * CAPTCHA_HEIGHT),
+			svg.append(String.format("<circle cx=\"%d\" cy=\"%d\" r=\"%d\" style=\"fill: transparent; stroke: #%02x%02x%02x; stroke-width: 0.8;\" />",
+				(int) (CAPTCHA_WIDTH * (0.5 + 0.25 * Math.random() - 0.5)),
+				(int) (CAPTCHA_HEIGHT * (0.5 + 0.25 * Math.random() - 0.5)),
 				(int) (0.375 * CAPTCHA_HEIGHT),
 				random.nextInt(128),
 				random.nextInt(128),
