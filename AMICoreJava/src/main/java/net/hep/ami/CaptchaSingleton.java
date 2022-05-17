@@ -43,7 +43,7 @@ public class CaptchaSingleton
 
 		for(int i = 0; i < text.length(); i++)
 		{
-			svg.append(String.format("<text x=\"%d\" y=\"%d\" style=\"fill: #%02x%02x%02x;\">%c</text>",
+			svg.append(String.format("<text x=\"%d\" y=\"%d\" style=\"fill: #%02x%02x%02x; font-size: 24px;\">%c</text>",
 				10 + i * 20,
 				10 + (int) (CAPTCHA_HEIGHT * 0.5 * (1.0 + (Math.random() - 0.5))),
 				random.nextInt(128),
