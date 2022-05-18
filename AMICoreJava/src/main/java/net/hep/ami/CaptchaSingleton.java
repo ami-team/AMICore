@@ -22,8 +22,8 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final int CAPTCHA_WIDTH = 180;
-	private static final int CAPTCHA_HEIGHT = 40;
+	private static final int DEFAULT_CAPTCHA_WIDTH = 180;
+	private static final int DEFAULT_CAPTCHA_HEIGHT = 40;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -31,24 +31,28 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String generateCaptchaImage(String text) throws Exception
+	public static String generateCaptchaImage(int width, int height, String text) throws Exception
 	{
 		Random random = new Random();
 
+		int fontSize = (int) (0.9 * width / text.length());
+		int fontSpace = (int) (0.05 * width / text.length());
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		StringBuilder svg = new StringBuilder(String.format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"%d\" height=\"%d\">", CAPTCHA_WIDTH, CAPTCHA_HEIGHT));
+		StringBuilder svg = new StringBuilder(String.format(Locale.US, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"%d\" height=\"%d\">", width, height));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		for(int i = 0; i < text.length(); i++)
 		{
-			svg.append(String.format("<text x=\"%d\" y=\"%d\" style=\"fill: #%02x%02x%02x; font-size: 24px;\">%c</text>",
-				10 + i * 20,
-				10 + (int) (CAPTCHA_HEIGHT * 0.5 * (1.0 + (Math.random() - 0.5))),
+			svg.append(String.format(Locale.US, "<text x=\"%d\" y=\"%d\" style=\"fill: #%02x%02x%02x; font-size: %dpx;\">%c</text>",
+				fontSpace + i * (fontSize + fontSpace),
+				(int) ((height + fontSize) * 0.5 + (height - fontSize) * (Math.random() - 0.5)),
 				random.nextInt(128),
 				random.nextInt(128),
 				random.nextInt(128),
+				fontSize,
 				text.charAt(i)
 			));
 		}
@@ -57,13 +61,14 @@ public class CaptchaSingleton
 
 		for(int i = 0; i < 8; i++)
 		{
-			svg.append(String.format("<circle cx=\"%d\" cy=\"%d\" r=\"%d\" style=\"fill: transparent; stroke: #%02x%02x%02x; stroke-width: 0.8;\" />",
-				(int) (CAPTCHA_WIDTH * Math.random()),
-				(int) (CAPTCHA_HEIGHT * Math.random()),
-				(int) (CAPTCHA_HEIGHT * 0.375000000000),
+			svg.append(String.format(Locale.US, "<circle cx=\"%d\" cy=\"%d\" r=\"%d\" style=\"fill: transparent; stroke: #%02x%02x%02x; stroke-width: %.2f;\" />",
+				(int) (width * Math.random()),
+				(int) (height * Math.random()),
+				(int) (height * 0.375000000000),
 				random.nextInt(128),
 				random.nextInt(128),
-				random.nextInt(128)
+				random.nextInt(128),
+				Math.min(width, height) * 0.025
 			));
 		}
 
@@ -80,13 +85,20 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Captcha generateCaptcha() throws Exception
+	public static Captcha generateCaptcha(int width, int height) throws Exception
 	{
 		String text = new StringTokenizer(UUID.randomUUID().toString(), "-").nextToken();
 
 		String hash = SecuritySingleton.md5Sum(SecuritySingleton.encrypt(text));
 
-		return new Captcha(generateCaptchaImage(text), hash);
+		return new Captcha(generateCaptchaImage(width, height, text), hash);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static Captcha generateCaptcha() throws Exception
+	{
+		return generateCaptcha(DEFAULT_CAPTCHA_WIDTH, DEFAULT_CAPTCHA_HEIGHT);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
