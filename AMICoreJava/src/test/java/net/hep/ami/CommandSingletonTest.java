@@ -471,6 +471,8 @@ public class CommandSingletonTest
 //			System.out.println(hash);
 
 //			SecuritySingleton.checkBCrypt("Hello", hash);
+
+			System.out.println(CommandSingleton.executeCommand("GenerateCaptcha", false).replace(">", ">\n"));
 		}
 		catch(Exception e)
 		{

@@ -725,7 +725,7 @@ public class SchemaSingleton
 					// ||
 					// "YES".equalsIgnoreCase(resultSet.getString("is_nullable"))
 
-					if(entity != null && field != null)
+					if(_entity.equalsIgnoreCase(entity) && field != null)
 					{
 						table = m_catalog.tables.get(entity);
 
@@ -734,7 +734,7 @@ public class SchemaSingleton
 							table.columns.put(field, new Column(
 								m_externalCatalog,
 								m_internalCatalog,
-								entity,
+								_entity,
 								field,
 								nativeType,
 								jdbcType,
