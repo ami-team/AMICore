@@ -219,9 +219,8 @@ public class GetUserInfo extends AbstractCommand
 		map.put("ssoSignOutURL", ConfigSingleton.getProperty("sso_sign_out_url", "N/A"));
 		map.put("ssoRealm", ConfigSingleton.getProperty("sso_realm", "N/A"));
 		map.put("ssoClientId", ConfigSingleton.getProperty("sso_client_id", "N/A"));
-		map.put("ssoSecret", ConfigSingleton.getProperty("sso_secret", "N/A"));
 
-		map.put("termsAndConditions", ConfigSingleton.getProperty("terms_and_conditions", "N/A"));
+		map.put("privacyPolicy", ConfigSingleton.getProperty("privacy_policy", "N/A"));
 
 		map.put("nodeRedURL", ConfigSingleton.getProperty("node_red_url", "N/A"));
 
