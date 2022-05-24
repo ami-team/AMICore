@@ -215,14 +215,14 @@ public class GetUserInfo extends AbstractCommand
 		map.put("timeHMFormat", ConfigSingleton.getProperty("time_hm_format", "HH:mm"));
 
 		map.put("ssoLabel", ConfigSingleton.getProperty("sso_label", "SSO"));
-		map.put("ssoAuthURL", ConfigSingleton.getProperty("sso_auth_url", "N/A"));
-		map.put("ssoSignOutURL", ConfigSingleton.getProperty("sso_sign_out_url", "N/A"));
-		map.put("ssoRealm", ConfigSingleton.getProperty("sso_realm", "N/A"));
-		map.put("ssoClientId", ConfigSingleton.getProperty("sso_client_id", "N/A"));
+		map.put("ssoAuthURL", ConfigSingleton.getProperty("sso_auth_url", ""));
+		map.put("ssoSignOutURL", ConfigSingleton.getProperty("sso_sign_out_url", ""));
+		map.put("ssoRealm", ConfigSingleton.getProperty("sso_realm", ""));
+		map.put("ssoClientId", ConfigSingleton.getProperty("sso_client_id", ""));
 
-		map.put("privacyPolicy", ConfigSingleton.getProperty("privacy_policy", "N/A"));
+		map.put("privacyPolicy", ConfigSingleton.getProperty("privacy_policy", ""));
 
-		map.put("nodeRedURL", ConfigSingleton.getProperty("node_red_url", "N/A"));
+		map.put("nodeRedURL", ConfigSingleton.getProperty("node_red_url", ""));
 
 		String config = Base64.getUrlEncoder().encodeToString(new ObjectMapper().writeValueAsBytes(map));
 
