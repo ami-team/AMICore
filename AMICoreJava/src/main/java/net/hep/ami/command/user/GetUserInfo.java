@@ -453,7 +453,7 @@ public class GetUserInfo extends AbstractCommand
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			boolean valid = RoleSingleton.checkUser(
-				ConfigSingleton.getProperty("user_cert_validator_class"),
+				ConfigSingleton.getProperty("user_certificate_validator_class"),
 				mode,
 				bean
 			);

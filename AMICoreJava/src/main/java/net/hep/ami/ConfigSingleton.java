@@ -282,7 +282,7 @@ public class ConfigSingleton
 		/* SET OIDC CHECK URL                                                                                         */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		SecuritySingleton.setOIDCCheckURL(s_properties.get("sso_check_url"));
+		SecuritySingleton.setOIDCUserInfoEndpoint(s_properties.get("sso_userinfo_endpoint"));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

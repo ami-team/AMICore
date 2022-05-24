@@ -432,7 +432,7 @@ public class SecuritySingleton
 
 	private static String s_encryptionHash = null;
 
-	private static String s_oidcCheckURL = null;
+	private static String s_oidcUserInfoEndpoint = null;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -465,9 +465,9 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void setOIDCCheckURL(@Nullable String oidcCheckURL)
+	public static void setOIDCUserInfoEndpoint(@Nullable String oidcUserInfoEndpoint)
 	{
-		s_oidcCheckURL = oidcCheckURL;
+		s_oidcUserInfoEndpoint = oidcUserInfoEndpoint;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1090,14 +1090,14 @@ public class SecuritySingleton
 
 	public static @NotNull String validateOIDCToken(@NotNull String token) throws Exception
 	{
-		if(s_oidcCheckURL == null || s_oidcCheckURL.isEmpty())
+		if(s_oidcUserInfoEndpoint == null || s_oidcUserInfoEndpoint.isEmpty())
 		{
 			throw new Exception("OpenID Connect not configured");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(s_oidcCheckURL).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(s_oidcUserInfoEndpoint).openConnection();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
