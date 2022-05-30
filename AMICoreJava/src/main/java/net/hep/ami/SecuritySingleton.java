@@ -475,6 +475,8 @@ public class SecuritySingleton
 
 	public static void setupOIDC(@Nullable String oidcClientId, @Nullable String oidcRedirectURL, @Nullable String oidcTokenEndpoint, @Nullable String oidcUserInfoEndpoint)
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		if(oidcRedirectURL != null)
 		{
 			try
@@ -489,10 +491,14 @@ public class SecuritySingleton
 			}
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		s_oidcClientId = oidcClientId;
 		s_oidcRedirectURL = oidcRedirectURL;
 		s_oidcTokenEndpoint = oidcTokenEndpoint;
 		s_oidcUserInfoEndpoint = oidcUserInfoEndpoint;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
