@@ -284,7 +284,7 @@ public class ConfigSingleton
 
 		SecuritySingleton.setupOIDC(
 			s_properties.get("sso_client_id"),
-			s_properties.get("sso_redirect_url"),
+			s_properties.get(/**/"base_url"/**/),
 			s_properties.get("sso_token_endpoint"),
 			s_properties.get("sso_userinfo_endpoint")
 		);
