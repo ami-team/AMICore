@@ -375,10 +375,11 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			boolean code = AMIPass.startsWith("Code ");
 			boolean token = AMIPass.startsWith("Bearer ");
 
-			String sql = token ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `ssoUser` = ?0"
-			                   : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
+			String sql = code || token ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `ssoUser` = ?0"
+			                           : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
 			;
 
 			List<Row> rowList = router.executeSQLQuery("router_user", sql, AMIUser).getAll();
@@ -389,7 +390,15 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() == 0)
 			{
-				return token ? createNewUser(router, AMIUser, AMIPass) : GUEST_USER;
+				/**/ if(code) {
+					return createNewUser(router, AMIUser, SecuritySingleton.validateOIDCCode(AMIPass), clientIP);
+				}
+				else if(token) {
+					return createNewUser(router, AMIUser, SecuritySingleton.validateOIDCToken(AMIPass), clientIP);
+				}
+				else {
+					return GUEST_USER;
+				}
 			}
 
 			Row row = rowList.get(0);
@@ -411,19 +420,7 @@ public class FrontEnd extends HttpServlet
 			/* UPDATE COUNTRY                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try
-			{
-				String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
-
-				if(!oldCountryCode.equals(newCountryCode))
-				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `country` = ?0 WHERE `AMIUser` = ?1", newCountryCode, result);
-				}
-			}
-			catch(Exception e)
-			{
-				/* IGNORE */
-			}
+			updateCountry(router, result, oldCountryCode, clientIP);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -439,10 +436,8 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String createNewUser(Router router, String AMIUser, String AMIPass) throws Exception
+	private String createNewUser(Router router, String AMIUser, String json, String clientIP) throws Exception
 	{
-		String json = SecuritySingleton.validateOIDCToken(AMIPass);
-
 		String tmpPass = SecuritySingleton.generatePassword();
 
 		UserValidator.Bean bean = new UserValidator.Bean(
@@ -480,6 +475,8 @@ public class FrontEnd extends HttpServlet
 
 			if(update2.getNbOfUpdatedRows() == 1)
 			{
+				updateCountry(router, bean.getAmiUsername(), "N/A", clientIP);
+
 				router.commit();
 
 				return AMIUser;
@@ -496,6 +493,25 @@ public class FrontEnd extends HttpServlet
 			router.rollback();
 
 			return GUEST_USER;
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private void updateCountry(Router router, String AMIUser, String oldCountryCode, String clientIP)
+	{
+		try
+		{
+			String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
+
+			if(!oldCountryCode.equals(newCountryCode))
+			{
+				router.executeSQLUpdate("UPDATE `router_user` SET `country` = ?0 WHERE `AMIUser` = ?1", newCountryCode, AMIUser);
+			}
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.error(e.getMessage(), e);
 		}
 	}
 

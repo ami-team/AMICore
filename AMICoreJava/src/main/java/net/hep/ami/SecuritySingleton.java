@@ -432,6 +432,14 @@ public class SecuritySingleton
 
 	private static String s_encryptionHash = null;
 
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static String s_oidcBaseURL = null;
+
+	private static String s_oidcClientId = null;
+
+	private static String s_oidcTokenEndpoint = null;
+
 	private static String s_oidcUserInfoEndpoint = null;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -465,8 +473,11 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void setOIDCUserInfoEndpoint(@Nullable String oidcUserInfoEndpoint)
+	public static void setupOIDC(@Nullable String oidcBaseURL, @Nullable String oidcClientId, @Nullable String oidcTokenEndpoint, @Nullable String oidcUserInfoEndpoint)
 	{
+		s_oidcBaseURL = oidcBaseURL;
+		s_oidcClientId = oidcClientId;
+		s_oidcTokenEndpoint = oidcTokenEndpoint;
 		s_oidcUserInfoEndpoint = oidcUserInfoEndpoint;
 	}
 
@@ -1084,20 +1095,90 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
+	/* OIDC CODE                                                                                                      */
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static @NotNull String validateOIDCCode(@NotNull String code) throws Exception
+	{
+		if(s_oidcClientId == null || s_oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcClientId.strip()))
+		{
+			throw new Exception("OpenID Connect not configured (sso_client_id is empty)");
+		}
+
+		if(s_oidcTokenEndpoint == null || s_oidcTokenEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcTokenEndpoint.strip()))
+		{
+			throw new Exception("OpenID Connect not configured (sso_token_endpoint is empty)");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&redirect_url=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(s_oidcBaseURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
+
+		urlConnection.setRequestMethod("POST");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
+
+		try
+		{
+			try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8)))
+			{
+				for(String line; (line = bufferedReader.readLine()) != null; )
+				{
+					result.append(line)
+					      .append('\n')
+					;
+				}
+			}
+		}
+		finally
+		{
+			urlConnection.disconnect();
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(urlConnection.getResponseCode() == 200)
+		{
+			return result.toString();
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		throw new Exception("code validation error: " + result);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static Map<String, Object> validateAndParseOIDCCode(String token) throws Exception
+	{
+		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
+
+		return new ObjectMapper().readValue(validateOIDCCode(token), typeRef);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 	/* OIDC TOKEN                                                                                                     */
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static @NotNull String validateOIDCToken(@NotNull String token) throws Exception
 	{
-		if(s_oidcUserInfoEndpoint == null || s_oidcUserInfoEndpoint.isEmpty())
+		if(s_oidcUserInfoEndpoint == null || s_oidcUserInfoEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcUserInfoEndpoint.strip()))
 		{
-			throw new Exception("OpenID Connect not configured");
+			throw new Exception("OpenID Connect not configured (sso_userinfo_endpoint is empty)");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(s_oidcUserInfoEndpoint).openConnection();
+
+		urlConnection.setRequestMethod("GET");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1131,7 +1212,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		throw new Exception("invalid token: " + result);
+		throw new Exception("token validation error: " + result);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -1274,7 +1355,11 @@ public class SecuritySingleton
 
 	public static void checkPassword(@Nullable String user, @Nullable String pass, @Nullable String hash) throws Exception
 	{
-		if(pass != null && pass.startsWith("Bearer "))
+		/**/ if(pass != null && pass.startsWith("Code "))
+		{
+			validateOIDCCode(pass);
+		}
+		else if(pass != null && pass.startsWith("Bearer "))
 		{
 			validateOIDCToken(pass);
 		}
