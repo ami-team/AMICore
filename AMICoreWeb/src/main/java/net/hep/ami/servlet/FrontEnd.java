@@ -362,6 +362,69 @@ public class FrontEnd extends HttpServlet
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* CONNECTION WITH OIDC                                                                                       */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean sso;
+
+		String json;
+
+		try
+		{
+			/**/ if("__oidc_code__".equals(AMIUser))
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				Map<String, Object> tokens = SecuritySingleton.validateOIDCCodeAndParseTokens(AMIPass);
+
+				if(tokens.containsKey("access_token"))
+				{
+					AMIPass = (String) tokens.get("access_token");
+				}
+				else
+				{
+					return GUEST_USER;
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				UserValidator.Bean bean = getUserInfoFromToken(AMIPass);
+
+				AMIUser = bean.getSsoUsername();
+
+				json = bean.getJson();
+
+				sso = true;
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else if("__oidc_token__".equals(AMIUser))
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				UserValidator.Bean bean = getUserInfoFromToken(AMIPass);
+
+				AMIUser = bean.getSsoUsername();
+
+				json = bean.getJson();
+
+				sso = true;
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else
+			{
+				json = null;
+
+				sso = false;
+			}
+		}
+		catch(Exception e)
+		{
+			return GUEST_USER;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -375,11 +438,8 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			boolean code = AMIPass.startsWith("Code ");
-			boolean token = AMIPass.startsWith("Bearer ");
-
-			String sql = code || token ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `ssoUser` = ?0"
-			                           : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
+			String sql = sso ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `ssoUser` = ?0"
+			                 : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
 			;
 
 			List<Row> rowList = router.executeSQLQuery("router_user", sql, AMIUser).getAll();
@@ -390,15 +450,7 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() == 0)
 			{
-				/**/ if(code) {
-					return createNewUser(router, AMIUser, SecuritySingleton.validateOIDCCode(AMIPass), clientIP);
-				}
-				else if(token) {
-					return createNewUser(router, AMIUser, SecuritySingleton.validateOIDCToken(AMIPass), clientIP);
-				}
-				else {
-					return GUEST_USER;
-				}
+				return sso ? createNewUser(router, AMIUser, json, clientIP) : GUEST_USER;
 			}
 
 			Row row = rowList.get(0);
@@ -407,13 +459,16 @@ public class FrontEnd extends HttpServlet
 			String password = row.getValue(1);
 			String oldCountryCode = row.getValue(2);
 
-			try
+			if(!sso)
 			{
-				SecuritySingleton.checkPassword(result, AMIPass, password);
-			}
-			catch(Exception e)
-			{
-				return GUEST_USER;
+				try
+				{
+					SecuritySingleton.checkPassword(result, AMIPass, password);
+				}
+				catch(Exception e)
+				{
+					return GUEST_USER;
+				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -436,9 +491,41 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private UserValidator.Bean getUserInfoFromToken(String token) throws Exception
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String json = SecuritySingleton.validateOIDCToken(token);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		UserValidator.Bean bean = new UserValidator.Bean(
+			null, null,
+			null, null,
+			null, null, null, null, null,
+			json
+		);
+
+		RoleSingleton.checkUser(
+			ConfigSingleton.getProperty("new_user_validator_class"),
+			UserValidator.Mode.OIDC_USER_INFO,
+			bean
+		);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return bean;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private String createNewUser(Router router, String AMIUser, String json, String clientIP) throws Exception
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		String tmpPass = SecuritySingleton.generatePassword();
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		UserValidator.Bean bean = new UserValidator.Bean(
 			AMIUser, AMIUser,
@@ -452,6 +539,8 @@ public class FrontEnd extends HttpServlet
 			UserValidator.Mode.ADD,
 			bean
 		);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
 			bean.getAmiUsername(),
@@ -494,6 +583,8 @@ public class FrontEnd extends HttpServlet
 
 			return GUEST_USER;
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

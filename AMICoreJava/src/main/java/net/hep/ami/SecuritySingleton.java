@@ -1174,11 +1174,11 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateAndParseOIDCCode(String token) throws Exception
+	public static Map<String, Object> validateOIDCCodeAndParseTokens(String code) throws Exception
 	{
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		return new ObjectMapper().readValue(validateOIDCCode(token), typeRef);
+		return new ObjectMapper().readValue(validateOIDCCode(code), typeRef);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1239,7 +1239,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateAndParseOIDCToken(String token) throws Exception
+	public static Map<String, Object> validateOIDCTokenAndParseUserInfo(String token) throws Exception
 	{
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
@@ -1375,11 +1375,11 @@ public class SecuritySingleton
 
 	public static void checkPassword(@Nullable String user, @Nullable String pass, @Nullable String hash) throws Exception
 	{
-		/**/ if(pass != null && pass.startsWith("Code "))
+		/**/ if("__oidc_code__".equals(user))
 		{
 			validateOIDCCode(pass);
 		}
-		else if(pass != null && pass.startsWith("Bearer "))
+		else if("__oidc_token__".equals(user))
 		{
 			validateOIDCToken(pass);
 		}
