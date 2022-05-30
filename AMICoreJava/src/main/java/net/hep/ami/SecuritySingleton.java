@@ -434,9 +434,9 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static String s_oidcBaseURL = null;
-
 	private static String s_oidcClientId = null;
+
+	private static String s_oidcRedirectURL = null;
 
 	private static String s_oidcTokenEndpoint = null;
 
@@ -473,10 +473,10 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void setupOIDC(@Nullable String oidcBaseURL, @Nullable String oidcClientId, @Nullable String oidcTokenEndpoint, @Nullable String oidcUserInfoEndpoint)
+	public static void setupOIDC(@Nullable String oidcClientId, @Nullable String oidcRedirectURL, @Nullable String oidcTokenEndpoint, @Nullable String oidcUserInfoEndpoint)
 	{
-		s_oidcBaseURL = oidcBaseURL;
 		s_oidcClientId = oidcClientId;
+		s_oidcRedirectURL = oidcRedirectURL;
 		s_oidcTokenEndpoint = oidcTokenEndpoint;
 		s_oidcUserInfoEndpoint = oidcUserInfoEndpoint;
 	}
@@ -1113,7 +1113,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&redirect_url=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(s_oidcBaseURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&redirect_url=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(s_oidcRedirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
 
 		urlConnection.setRequestMethod("POST");
 
