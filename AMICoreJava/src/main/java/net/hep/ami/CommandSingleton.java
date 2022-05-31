@@ -359,7 +359,7 @@ public class CommandSingleton
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			stringBuilder.append("<node><![CDATA[").append(HOSTNAME).append("]]></node>")
-			             .append("<executionTime><![CDATA[").append(String.format(Locale.US, "%.3f", 0.001f * (t2 - t1))).append("]]></executionTime>")
+			             .append(String.format(Locale.US, "<executionTime><![CDATA[%.3f]]></executionTime>", 0.001f * (t2 - t1)))
 			             .append(s_xml10Pattern.matcher(content).replaceAll("?"))
 			;
 
