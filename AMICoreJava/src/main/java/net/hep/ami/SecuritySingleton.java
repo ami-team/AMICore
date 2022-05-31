@@ -1179,6 +1179,8 @@ public class SecuritySingleton
 
 		urlConnection.setRequestMethod("POST");
 
+		urlConnection.setDoOutput(true);
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		String data = String.format("client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s", URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(redirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8));
