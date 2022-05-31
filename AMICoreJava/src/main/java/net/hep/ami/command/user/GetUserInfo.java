@@ -205,6 +205,12 @@ public class GetUserInfo extends AbstractCommand
 		map.put("certEnabled", m_isSecure ? "true" : "false");
 		map.put("vomsEnabled", vomsEnabled ? "true" : "false");
 
+		map.put("privacyPolicyURL", ConfigSingleton.getProperty("privacy_policy_url", ""));
+
+		map.put("ssoLabel", ConfigSingleton.getProperty("sso_label", "SSO"));
+		map.put("ssoAuthURL", SecuritySingleton.getOIDCAuthorizationEndpoint());
+		map.put("ssoClientId", ConfigSingleton.getProperty("sso_client_id", ""));
+
 		map.put("datetimePrecision", ConfigSingleton.getProperty("datetime_precision", 6));
 		map.put("datetimeFormat", ConfigSingleton.getProperty("datetime_format", "yyyy-MM-dd HH:mm:ss"));
 		map.put("dateFormat", ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"));
@@ -212,12 +218,6 @@ public class GetUserInfo extends AbstractCommand
 		map.put("timePrecision", ConfigSingleton.getProperty("time_precision", 6));
 		map.put("timeHMSFormat", ConfigSingleton.getProperty("time_hms_format", "HH:mm:ss"));
 		map.put("timeHMFormat", ConfigSingleton.getProperty("time_hm_format", "HH:mm"));
-
-		map.put("ssoLabel", ConfigSingleton.getProperty("sso_label", "SSO"));
-		map.put("ssoAuthURL", SecuritySingleton.getOIDCAuthorizationEndpoint());
-		map.put("ssoClientId", ConfigSingleton.getProperty("sso_client_id", ""));
-
-		map.put("privacyPolicyURL", ConfigSingleton.getProperty("privacy_policy_url", ""));
 
 		map.put("nodeRedURL", ConfigSingleton.getProperty("node_red_url", ""));
 
