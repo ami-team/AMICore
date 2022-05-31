@@ -395,7 +395,7 @@ public class FrontEnd extends HttpServlet
 				json = bean.getJson();
 
 				sso = true;
-				return AMIUser;
+
 				/*----------------------------------------------------------------------------------------------------*/
 			}
 			else if("__oidc_token__".equals(AMIUser))
@@ -421,7 +421,8 @@ public class FrontEnd extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			return GUEST_USER;
+			throw e;
+			//return GUEST_USER;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
