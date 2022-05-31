@@ -518,7 +518,7 @@ public class FrontEnd extends HttpServlet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		UserValidator.Bean bean = new UserValidator.Bean(
-			null, null,
+			GUEST_USER, GUEST_USER,
 			null, null,
 			null, null, null, null, null,
 			json
