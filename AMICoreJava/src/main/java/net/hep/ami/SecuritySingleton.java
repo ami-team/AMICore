@@ -1168,7 +1168,7 @@ public class SecuritySingleton
 		   ||
 		   s_oidcAuthorizationEndpoint == null || s_oidcAuthorizationEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcAuthorizationEndpoint.strip())
 		 ) {
-			throw new Exception("OpenID Connect not properly configured (" + s_oidcClientId + ") (" + s_oidcTokenEndpoint + ") (" + s_oidcAuthorizationEndpoint + ") " + yyy);
+			throw new Exception("OpenID Connect not properly configured (" + s_oidcClientId + ") (" + s_oidcTokenEndpoint + ") (" + s_oidcAuthorizationEndpoint + ") //" + yyy + "//");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
