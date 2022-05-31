@@ -1088,7 +1088,7 @@ public class SecuritySingleton
 	/* OIDC AUTHENTICATION                                                                                            */
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
-	private static String yyy = "";
+	private static String yyy = "N/A";
 	public static String setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfURL) throws Exception
 	{
 		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
