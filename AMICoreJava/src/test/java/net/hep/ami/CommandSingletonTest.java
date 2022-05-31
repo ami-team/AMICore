@@ -477,12 +477,11 @@ public class CommandSingletonTest
 
 			SecuritySingleton.setupOIDC(
 				"1ebb0532-7e02-4003-8038-4d4190fd7664",
-				"http://localhost:8000",
 				"https://atlas-auth.web.cern.ch/token",
 				"https://atlas-auth.web.cern.ch/userinfo"
 			);
 
-			Map<String, Object> tokens = SecuritySingleton.validateOIDCCodeAndParseTokens("WCyx6VVkQvEh7IgN6zaK1y");
+			Map<String, Object> tokens = SecuritySingleton.validateOIDCCodeAndParseTokens("http://localhost:8000", "WCyx6VVkQvEh7IgN6zaK1y");
 
 			String accessToken = (String) tokens.get("access_token");
 

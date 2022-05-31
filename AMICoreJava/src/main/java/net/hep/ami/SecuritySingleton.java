@@ -436,8 +436,6 @@ public class SecuritySingleton
 
 	private static String s_oidcClientId = null;
 
-	private static String s_oidcRedirectURL = null;
-
 	private static String s_oidcTokenEndpoint = null;
 
 	private static String s_oidcUserInfoEndpoint = null;
@@ -473,28 +471,9 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void setupOIDC(@Nullable String oidcClientId, @Nullable String oidcRedirectURL, @Nullable String oidcTokenEndpoint, @Nullable String oidcUserInfoEndpoint)
+	public static void setupOIDC(@Nullable String oidcClientId, @Nullable String oidcTokenEndpoint, @Nullable String oidcUserInfoEndpoint)
 	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(oidcRedirectURL != null)
-		{
-			try
-			{
-				URL url = new URL(oidcRedirectURL);
-
-				oidcRedirectURL = new URL(url.getProtocol(), url.getHost(), url.getPort(), "/docs/sso.html").toString();
-			}
-			catch(MalformedURLException e)
-			{
-				/* IGNORE */
-			}
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		s_oidcClientId = oidcClientId;
-		s_oidcRedirectURL = oidcRedirectURL;
 		s_oidcTokenEndpoint = oidcTokenEndpoint;
 		s_oidcUserInfoEndpoint = oidcUserInfoEndpoint;
 
@@ -1119,7 +1098,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static @NotNull String validateOIDCCode(@NotNull String code) throws Exception
+	public static @NotNull String validateOIDCCode(@NotNull String redirectURL, @NotNull String code) throws Exception
 	{
 		if(s_oidcClientId == null || s_oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcClientId.strip()))
 		{
@@ -1133,7 +1112,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(s_oidcRedirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(redirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
 
 		urlConnection.setRequestMethod("POST");
 
@@ -1174,11 +1153,11 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateOIDCCodeAndParseTokens(String code) throws Exception
+	public static Map<String, Object> validateOIDCCodeAndParseTokens(@NotNull String redirectURL, @NotNull String code) throws Exception
 	{
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		return new ObjectMapper().readValue(validateOIDCCode(code), typeRef);
+		return new ObjectMapper().readValue(validateOIDCCode(redirectURL, code), typeRef);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1239,7 +1218,7 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateOIDCTokenAndParseUserInfo(String token) throws Exception
+	public static Map<String, Object> validateOIDCTokenAndParseUserInfo(@NotNull String token) throws Exception
 	{
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
@@ -1375,36 +1354,25 @@ public class SecuritySingleton
 
 	public static void checkPassword(@Nullable String user, @Nullable String pass, @Nullable String hash) throws Exception
 	{
-		/**/ if("__oidc_code__".equals(user))
+		try
 		{
-			validateOIDCCode(pass);
+			checkBCrypt(pass, hash);
 		}
-		else if("__oidc_token__".equals(user))
-		{
-			validateOIDCToken(pass);
-		}
-		else
+		catch(Exception e1)
 		{
 			try
 			{
-				checkBCrypt(pass, hash);
+				checkEncrypt(pass, hash);
 			}
-			catch(Exception e1)
+			catch(Exception e2)
 			{
 				try
 				{
-					checkEncrypt(pass, hash);
+					checkTmpPassword(user, pass);
 				}
-				catch(Exception e2)
+				catch(Exception e3)
 				{
-					try
-					{
-						checkTmpPassword(user, pass);
-					}
-					catch(Exception e3)
-					{
-						throw new Exception("bad password");
-					}
+					throw new Exception("bad password");
 				}
 			}
 		}

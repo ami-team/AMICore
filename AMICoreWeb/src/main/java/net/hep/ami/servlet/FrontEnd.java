@@ -1,6 +1,8 @@
 package net.hep.ami.servlet;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.*;
 import java.util.*;
 import java.security.cert.*;
@@ -352,7 +354,7 @@ public class FrontEnd extends HttpServlet
 
 	@NotNull
 	@Contract("null, _, _ -> new")
-	private String resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP) throws Exception
+	private String resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP, String clientOrigin) throws Exception
 	{
 		if(Empty.is(AMIUser, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		   ||
@@ -375,7 +377,22 @@ public class FrontEnd extends HttpServlet
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
-				Map<String, Object> tokens = SecuritySingleton.validateOIDCCodeAndParseTokens(AMIPass);
+				String redirectURL;
+
+				try
+				{
+					URL url = new URL(clientOrigin);
+
+					redirectURL = new URL(url.getProtocol(), url.getHost(), url.getPort(), "/docs/sso.html").toString();
+				}
+				catch(MalformedURLException e)
+				{
+					return GUEST_USER;
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				Map<String, Object> tokens = SecuritySingleton.validateOIDCCodeAndParseTokens(redirectURL, AMIPass);
 
 				if(tokens.containsKey("access_token"))
 				{
@@ -661,6 +678,8 @@ public class FrontEnd extends HttpServlet
 
 		String clientIP = request.getRemoteAddr();
 
+		String clientOrigin = request.getHeader("Origin");
+
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* UPDATE SESSION                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -694,7 +713,7 @@ public class FrontEnd extends HttpServlet
 
 			if(sessionAMIUser == null || (AMIUser != null && AMIPass != null && !sessionAMIUser.equals(AMIUser)))
 			{
-				AMIUser = resolveUserByUserPass(AMIUser, AMIPass, clientIP);
+				AMIUser = resolveUserByUserPass(AMIUser, AMIPass, clientIP, clientOrigin);
 			}
 			else
 			{
