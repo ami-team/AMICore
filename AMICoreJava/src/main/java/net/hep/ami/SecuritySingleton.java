@@ -483,7 +483,7 @@ public class SecuritySingleton
 			{
 				URL url = new URL(oidcRedirectURL);
 
-				oidcRedirectURL = new URL(url.getProtocol(), url.getHost(), url.getPort(), "/").toString();
+				oidcRedirectURL = new URL(url.getProtocol(), url.getHost(), url.getPort(), "/docs/sso.html").toString();
 			}
 			catch(MalformedURLException e)
 			{
@@ -1133,7 +1133,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&redirect_url=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(s_oidcRedirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(s_oidcRedirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
 
 		urlConnection.setRequestMethod("POST");
 
@@ -1206,7 +1206,7 @@ public class SecuritySingleton
 
 		try
 		{
-			urlConnection.setRequestProperty("Authorization", token);
+			urlConnection.setRequestProperty("Authorization", "Bearer " + token);
 
 			try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8)))
 			{
