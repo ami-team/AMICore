@@ -440,6 +440,8 @@ public class SecuritySingleton
 
 	private static String s_oidcUserInfoEndpoint = null;
 
+	private static String s_oidcAuthorizationEndpoint = null;
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Contract(pure = true)
@@ -465,17 +467,6 @@ public class SecuritySingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		s_encryptionHash = sha256Sum(encryptionKey);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public static void setupOIDC(@Nullable String oidcClientId, @Nullable String oidcTokenEndpoint, @Nullable String oidcUserInfoEndpoint)
-	{
-		s_oidcClientId = oidcClientId;
-		s_oidcTokenEndpoint = oidcTokenEndpoint;
-		s_oidcUserInfoEndpoint = oidcUserInfoEndpoint;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -1094,20 +1085,82 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
-	/* OIDC CODE                                                                                                      */
+	/* OIDC AUTHENTICATION                                                                                            */
 	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static String setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfEndpoint) throws Exception
+	{
+		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
+		{
+			throw new Exception("OpenID Connect not properly configured (oidc_client_id is empty)");
+		}
+
+		if(oidcConfEndpoint == null || oidcConfEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(oidcConfEndpoint.strip()))
+		{
+			throw new Exception("OpenID Connect not properly configured (oidc_conf_endpoint is empty)");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(oidcConfEndpoint).openConnection();
+
+		urlConnection.setRequestMethod("GET");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		StringBuilder result = new StringBuilder();
+
+		try
+		{
+			try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8)))
+			{
+				for(String line; (line = bufferedReader.readLine()) != null; )
+				{
+					result.append(line)
+					      .append('\n')
+					;
+				}
+			}
+		}
+		finally
+		{
+			urlConnection.disconnect();
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(urlConnection.getResponseCode() == 200)
+		{
+			TypeReference<HashMap<String, String>> typeRef = new TypeReference<>() {};
+
+			HashMap<String, String> map = new ObjectMapper().readValue(result.toString(), typeRef);
+
+			s_oidcTokenEndpoint = map.getOrDefault("token_endpoint", null);
+			s_oidcUserInfoEndpoint = map.getOrDefault("userinfo_endpoint", null);
+			s_oidcAuthorizationEndpoint = map.getOrDefault("authorization_endpoint", null);
+
+			return s_oidcAuthorizationEndpoint;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		throw new Exception("OpenID Connect configuration error: " + result);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static @NotNull String validateOIDCCode(@NotNull String redirectURL, @NotNull String code) throws Exception
 	{
-		if(s_oidcClientId == null || s_oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcClientId.strip()))
-		{
-			throw new Exception("OpenID Connect not configured (sso_client_id is empty)");
-		}
-
-		if(s_oidcTokenEndpoint == null || s_oidcTokenEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcTokenEndpoint.strip()))
-		{
-			throw new Exception("OpenID Connect not configured (sso_token_endpoint is empty)");
+		if(s_oidcClientId == null || s_oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcClientId.strip())
+		   ||
+		   s_oidcTokenEndpoint == null || s_oidcTokenEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcTokenEndpoint.strip())
+		   ||
+		   s_oidcAuthorizationEndpoint == null || s_oidcAuthorizationEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcAuthorizationEndpoint.strip())
+		 ) {
+			throw new Exception("OpenID Connect not properly configured");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -1146,7 +1199,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		throw new Exception("code validation error: " + result);
+		throw new Exception("OpenID Connect, code validation error: " + result);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -1161,16 +1214,14 @@ public class SecuritySingleton
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
-	/*----------------------------------------------------------------------------------------------------------------*/
-	/* OIDC TOKEN                                                                                                     */
-	/*----------------------------------------------------------------------------------------------------------------*/
-	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static @NotNull String validateOIDCToken(@NotNull String token) throws Exception
 	{
-		if(s_oidcUserInfoEndpoint == null || s_oidcUserInfoEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcUserInfoEndpoint.strip()))
-		{
-			throw new Exception("OpenID Connect not configured (sso_userinfo_endpoint is empty)");
+		if(s_oidcUserInfoEndpoint == null || s_oidcUserInfoEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcUserInfoEndpoint.strip())
+		   ||
+		   s_oidcAuthorizationEndpoint == null || s_oidcAuthorizationEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcAuthorizationEndpoint.strip())
+		) {
+			throw new Exception("OpenID Connect not properly configured");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -1211,7 +1262,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		throw new Exception("token validation error: " + result);
+		throw new Exception("OpenID Connect, token validation error: " + result);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

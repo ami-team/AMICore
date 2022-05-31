@@ -282,11 +282,17 @@ public class ConfigSingleton
 		/* SET OIDC CHECK URL                                                                                         */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		SecuritySingleton.setupOIDC(
-			s_properties.get("sso_client_id"),
-			s_properties.get("sso_token_endpoint"),
-			s_properties.get("sso_userinfo_endpoint")
-		);
+		try
+		{
+			s_properties.put("sso_auth_url", SecuritySingleton.setupOIDC(
+				s_properties.getOrDefault("sso_client_id", null),
+				s_properties.getOrDefault("oidc_conf_endpoint", null)
+			));
+		}
+		catch(Exception e)
+		{
+			LogSingleton.root.warn(e.getMessage());
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
