@@ -472,7 +472,9 @@ public class CommandSingletonTest
 
 //			SecuritySingleton.checkBCrypt("Hello", hash);
 
-			SecuritySingleton.setupOIDC("1ebb0532-7e02-4003-8038-4d4190fd7664", "https://atlas-auth.web.cern.ch/.well-known/openid-configuration");
+			System.out.println(SecuritySingleton.setupOIDC("1ebb0532-7e02-4003-8038-4d4190fd7664", "https://atlas-auth.web.cern.ch/.well-known/openid-configuration"));
+
+			System.out.println(SecuritySingleton.setupOIDC("amiwf", "https://auth.cern.ch/auth/realms/cern/.well-known/openid-configuration"));
 		}
 		catch(Exception e)
 		{

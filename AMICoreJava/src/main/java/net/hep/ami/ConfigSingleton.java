@@ -291,6 +291,8 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
+			s_properties.put("sso_auth_url", "@NULL");
+
 			LogSingleton.root.warn(e.getMessage());
 		}
 
