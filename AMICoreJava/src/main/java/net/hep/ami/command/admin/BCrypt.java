@@ -1,18 +1,20 @@
 package net.hep.ami.command.admin;
 
-import java.util.*;
+import net.hep.ami.SecuritySingleton;
+import net.hep.ami.command.AbstractCommand;
+import net.hep.ami.command.CommandMetadata;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-import net.hep.ami.*;
-import net.hep.ami.command.*;
-
-import org.jetbrains.annotations.*;
+import java.util.Map;
+import java.util.Set;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
-public class Encrypt extends AbstractCommand
+public class BCrypt extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Encrypt(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
+	public BCrypt(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
@@ -30,7 +32,7 @@ public class Encrypt extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		return new StringBuilder("<info><![CDATA[").append(SecuritySingleton.encrypt(string)).append("]]></info>");
+		return new StringBuilder("<info><![CDATA[").append(SecuritySingleton.bcrypt(string)).append("]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -39,7 +41,7 @@ public class Encrypt extends AbstractCommand
 	@Contract(pure = true)
 	public static String help()
 	{
-		return "Encrypt a string.";
+		return "BCrypt a string.";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

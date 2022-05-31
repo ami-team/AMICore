@@ -30,7 +30,7 @@ public class Decrypt extends AbstractCommand
 			throw new Exception("invalid usage");
 		}
 
-		return new StringBuilder("<info><![CDATA[" + SecuritySingleton.decrypt(string) + "]]></info>");
+		return new StringBuilder("<info><![CDATA[").append(SecuritySingleton.decrypt(string)).append("]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

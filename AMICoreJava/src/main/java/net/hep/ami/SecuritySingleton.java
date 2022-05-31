@@ -1023,7 +1023,7 @@ public class SecuritySingleton
 
 	@Nullable
 	@Contract("null -> null; !null -> !null")
-	public static String bcryptEncode(@Nullable String pass) throws Exception
+	public static String bcrypt(@Nullable String pass) throws Exception
 	{
 		if(pass == null)
 		{
