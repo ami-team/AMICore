@@ -284,16 +284,14 @@ public class ConfigSingleton
 
 		try
 		{
-			String ssoAuthURL = SecuritySingleton.setupOIDC(
+			SecuritySingleton.setupOIDC(
 				s_properties.getOrDefault("sso_client_id", null),
 				s_properties.getOrDefault("sso_conf_url", null)
 			);
-
-			s_properties.put("sso_auth_url", ssoAuthURL);
 		}
 		catch(Exception e)
 		{
-			s_properties.put("sso_auth_url", "@NULL");
+			LogSingleton.root.warn(e.getMessage());
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

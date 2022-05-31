@@ -1089,7 +1089,7 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfURL) throws Exception
+	public static void setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfURL) throws Exception
 	{
 		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
 		{
@@ -1150,7 +1150,7 @@ public class SecuritySingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			return s_oidcAuthorizationEndpoint;
+			return;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -1158,6 +1158,13 @@ public class SecuritySingleton
 		throw new Exception("OpenID Connect configuration error: " + result);
 
 		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static String getOIDCAuthorizationEndpoint()
+	{
+		return s_oidcAuthorizationEndpoint;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
