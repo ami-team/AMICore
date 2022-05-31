@@ -1152,7 +1152,7 @@ public class SecuritySingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		yyy = result.toString();
+		yyy = result.toString() + " " + urlConnection.getResponseCode();
 		throw new Exception("OpenID Connect configuration error: " + result);
 
 		/*------------------------------------------------------------------------------------------------------------*/
