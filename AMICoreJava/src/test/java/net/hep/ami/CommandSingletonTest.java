@@ -8,6 +8,7 @@ import net.hep.ami.jdbc.query.sql.Tokenizer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("all")
 public class CommandSingletonTest
@@ -441,7 +442,9 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_PATHS(ancillaryData,'$') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"nika2:production\" -entity=\"CLUSTER\"  -mql=\"SELECT JSON_VALUES(ancillaryData,'$.test') WHERE shortName LIKE '%'\"", false).replace(">", ">\n"));
 
-			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"DatasetWB:production\" -entity=\"WB_HASHTAGS\"  -mql=\"SELECT DISTINCT \\\"DATASETFK\\\" AS \\\"id\\\", \\\"DATASETCATALOG\\\" AS \\\"catalog\\\", \\\"DATASETNAME\\\" AS \\\"ldn\\\" WHERE \\\"SCOPE\\\" = 'PMGL1' AND \\\"NAME\\\" = 'Exotics'\"", false).replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"DatasetWB:production\" -entity=\"WB_HASHTAGS\"  -mql=\"SELECT DISTINCT \\\"DATASETFK\\\" AS \\\"id\\\", \\\"DATASETCATALOG\\\" AS \\\"catalog\\\", \\\"DATASETNAME\\\" AS \\\"ldn\\\" WHERE [\\\"SCOPE\\\" = 'PMGL1' AND \\\"NAME\\\" = 'Higgs'] AND [\\\"SCOPE\\\" = 'PMGL2' AND \\\"NAME\\\" = 'Higgs_VH']\"", false).replace(">", ">\n"));
+
+
 
 			/*Querier querier = new Router();
 
@@ -453,7 +456,7 @@ public class CommandSingletonTest
 						"UPDATE \"router_catalog\" SET " +
 								"\"internalCatalog\" = '" + row.getValue("internalCatalog") + "_W', " +
 								"\"internalSchema\" = '" + row.getValue("internalSchema") + "_W', " +
-								"\"jdbcUrl\" = 'the new url', " +
+								"\"jdbcUrl\" = 'jdbc:oracle:thin:@( DESCRIPTION= (ADDRESS= (PROTOCOL=TCP) (HOST=cman1-atlas.cern.ch) (PORT=10500)) (ADDRESS= (PROTOCOL=TCP) (HOST=cman2-atlas.cern.ch)(PORT=10500)) (ADDRESS= (PROTOCOL=TCP) (HOST=cman3-atlas.cern.ch) (PORT=10500))(LOAD_BALANCE=on) (ENABLE=BROKEN) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME=atlr.cern.ch)))', " +
 								"\"user\" = '" + SecuritySingleton.encrypt(row.getValue("internalSchema") + "_W") + "' " +
 						"WHERE \"id\" = " + row.getValue("id") + ";"
 				);
@@ -472,7 +475,22 @@ public class CommandSingletonTest
 
 //			SecuritySingleton.checkBCrypt("Hello", hash);
 
-			System.out.println(CommandSingleton.executeCommand("GenerateCaptcha", false).replace(">", ">\n"));
+			SecuritySingleton.setupOIDC(
+				"1ebb0532-7e02-4003-8038-4d4190fd7664",
+				"http://localhost:8000",
+				"https://atlas-auth.web.cern.ch/token",
+				"https://atlas-auth.web.cern.ch/userinfo"
+			);
+
+			Map<String, Object> tokens = SecuritySingleton.validateOIDCCodeAndParseTokens("WCyx6VVkQvEh7IgN6zaK1y");
+
+			String accessToken = (String) tokens.get("access_token");
+
+			System.out.println(accessToken);
+
+			String userinfo = SecuritySingleton.validateOIDCToken(accessToken);
+
+			System.out.println(userinfo);
 		}
 		catch(Exception e)
 		{
