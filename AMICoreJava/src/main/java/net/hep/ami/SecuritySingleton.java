@@ -1093,12 +1093,12 @@ public class SecuritySingleton
 	{
 		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
 		{
-			throw new Exception("OpenID Connect not properly configured (oidc_client_id is empty)");
+			throw new Exception("OpenID Connect not properly configured (sso_client_id is empty)");
 		}
 
 		if(oidcConfEndpoint == null || oidcConfEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(oidcConfEndpoint.strip()))
 		{
-			throw new Exception("OpenID Connect not properly configured (oidc_conf_endpoint is empty)");
+			throw new Exception("OpenID Connect not properly configured (sso_conf_url is empty)");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -1132,13 +1132,21 @@ public class SecuritySingleton
 
 		if(urlConnection.getResponseCode() == 200)
 		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
 			TypeReference<HashMap<String, String>> typeRef = new TypeReference<>() {};
 
 			HashMap<String, String> map = new ObjectMapper().readValue(result.toString(), typeRef);
 
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			s_oidcClientId = oidcClientId;
+
 			s_oidcTokenEndpoint = map.getOrDefault("token_endpoint", null);
 			s_oidcUserInfoEndpoint = map.getOrDefault("userinfo_endpoint", null);
 			s_oidcAuthorizationEndpoint = map.getOrDefault("authorization_endpoint", null);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 
 			return s_oidcAuthorizationEndpoint;
 		}
