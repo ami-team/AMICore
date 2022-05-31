@@ -1088,7 +1088,7 @@ public class SecuritySingleton
 	/* OIDC AUTHENTICATION                                                                                            */
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
-	private static String yyy = "N/A";
+
 	public static String setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfURL) throws Exception
 	{
 		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
@@ -1134,17 +1134,17 @@ public class SecuritySingleton
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			TypeReference<HashMap<String, String>> typeRef = new TypeReference<>() {};
+			TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-			HashMap<String, String> map = new ObjectMapper().readValue(result.toString(), typeRef);
+			HashMap<String, Object> map = new ObjectMapper().readValue(result.toString(), typeRef);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			s_oidcClientId = oidcClientId;
 
-			s_oidcTokenEndpoint = map.getOrDefault("token_endpoint", null);
-			s_oidcUserInfoEndpoint = map.getOrDefault("userinfo_endpoint", null);
-			s_oidcAuthorizationEndpoint = map.getOrDefault("authorization_endpoint", null);
+			s_oidcTokenEndpoint = (String) map.getOrDefault("token_endpoint", null);
+			s_oidcUserInfoEndpoint = (String) map.getOrDefault("userinfo_endpoint", null);
+			s_oidcAuthorizationEndpoint = (String) map.getOrDefault("authorization_endpoint", null);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -1152,7 +1152,7 @@ public class SecuritySingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		yyy = result.toString() + " " + urlConnection.getResponseCode();
+
 		throw new Exception("OpenID Connect configuration error: " + result);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -1168,7 +1168,7 @@ public class SecuritySingleton
 		   ||
 		   s_oidcAuthorizationEndpoint == null || s_oidcAuthorizationEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcAuthorizationEndpoint.strip())
 		 ) {
-			throw new Exception("OpenID Connect not properly configured (" + s_oidcClientId + ") (" + s_oidcTokenEndpoint + ") (" + s_oidcAuthorizationEndpoint + ") //" + yyy + "//");
+			throw new Exception("OpenID Connect not properly configured");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

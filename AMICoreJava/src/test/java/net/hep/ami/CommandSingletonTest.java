@@ -472,7 +472,7 @@ public class CommandSingletonTest
 
 //			SecuritySingleton.checkBCrypt("Hello", hash);
 
-			System.out.println(CommandSingleton.executeCommand("GenerateCaptcha", false).replace(">", ">\n"));
+			SecuritySingleton.setupOIDC("1ebb0532-7e02-4003-8038-4d4190fd7664", "https://atlas-auth.web.cern.ch/.well-known/openid-configuration");
 		}
 		catch(Exception e)
 		{
