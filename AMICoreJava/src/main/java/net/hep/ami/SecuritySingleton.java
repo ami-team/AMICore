@@ -1173,9 +1173,22 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(String.format("%s?client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s", s_oidcTokenEndpoint, URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(redirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8))).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(s_oidcTokenEndpoint).openConnection();
+
+		urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
 		urlConnection.setRequestMethod("POST");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String data = String.format("client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s", URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(redirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8));
+
+		try(BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), StandardCharsets.UTF_8)))
+		{
+			bufferedWriter.write(data);
+
+			bufferedWriter.flush();
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
