@@ -286,7 +286,7 @@ public class ConfigSingleton
 		{
 			s_properties.put("sso_auth_url", SecuritySingleton.setupOIDC(
 				s_properties.getOrDefault("sso_client_id", null),
-				s_properties.getOrDefault("oidc_conf_endpoint", null)
+					s_properties.getOrDefault("oidc_conf_url", null)
 			));
 		}
 		catch(Exception e)
