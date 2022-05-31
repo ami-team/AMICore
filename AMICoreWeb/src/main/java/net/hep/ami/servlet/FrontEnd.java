@@ -367,9 +367,9 @@ public class FrontEnd extends HttpServlet
 		/* CONNECTION WITH OIDC                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean sso;
+		Map<String, Object> userinfo;
 
-		String json;
+		boolean sso;
 
 		try
 		{
@@ -405,11 +405,11 @@ public class FrontEnd extends HttpServlet
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				UserValidator.Bean bean = getUserInfoFromToken(AMIPass);
+				Tuple2<Map<String, Object>, UserValidator.Bean> tuple = getUserInfoFromToken(AMIPass);
 
-				AMIUser = bean.getSsoUsername();
+				AMIUser = tuple.y.getAmiUsername();
 
-				json = bean.getJson();
+				userinfo = tuple.x;
 
 				sso = true;
 
@@ -419,11 +419,11 @@ public class FrontEnd extends HttpServlet
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
-				UserValidator.Bean bean = getUserInfoFromToken(AMIPass);
+				Tuple2<Map<String, Object>, UserValidator.Bean> tuple = getUserInfoFromToken(AMIPass);
 
-				AMIUser = bean.getSsoUsername();
+				AMIUser = tuple.y.getAmiUsername();
 
-				json = bean.getJson();
+				userinfo = tuple.x;
 
 				sso = true;
 
@@ -431,7 +431,7 @@ public class FrontEnd extends HttpServlet
 			}
 			else
 			{
-				json = null;
+				userinfo = null;
 
 				sso = false;
 			}
@@ -467,7 +467,7 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() == 0)
 			{
-				return sso ? createNewUser(router, AMIUser, json, clientIP) : GUEST_USER;
+				return sso ? createNewUser(router, AMIUser, userinfo, clientIP) : GUEST_USER;
 			}
 
 			Row row = rowList.get(0);
@@ -508,7 +508,7 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private UserValidator.Bean getUserInfoFromToken(String token) throws Exception
+	private Tuple2<Map<String, Object>, UserValidator.Bean> getUserInfoFromToken(String token) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -526,12 +526,12 @@ public class FrontEnd extends HttpServlet
 
 			String json = (String) userinfo.get("orig");
 
-			return new UserValidator.Bean(
+			return new Tuple2<>(userinfo, new UserValidator.Bean(
 				username, username,
 				null, null,
 				null, null, null, null, null,
 				json
-			);
+			));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -543,7 +543,7 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String createNewUser(Router router, String AMIUser, String json, String clientIP) throws Exception
+	private String createNewUser(@NotNull Router router, @NotNull String AMIUser, @NotNull Map<String, Object> userinfo, @NotNull String clientIP) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -551,11 +551,28 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		String firstnameKey = ConfigSingleton.getProperty("sso_userinfo_firstname_key", "@NULL");
+
+		String lastnameKey = ConfigSingleton.getProperty("sso_userinfo_lastname_key", "@NULL");
+
+		String emailKey = ConfigSingleton.getProperty("sso_userinfo_email_key", "@NULL");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String firstname = (String) userinfo.getOrDefault(firstnameKey, "Unknown");
+
+		String lastname = (String) userinfo.getOrDefault(lastnameKey, "Unknown");
+
+		String email = (String) userinfo.getOrDefault(emailKey, "x@y.z");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		UserValidator.Bean bean = new UserValidator.Bean(
 			AMIUser, AMIUser,
 			tmpPass, tmpPass,
-			null, null, null, null, null,
-			json
+			null, null,
+			firstname, lastname, email,
+			(String) userinfo.get("orig")
 		);
 
 		RoleSingleton.checkUser(
@@ -613,7 +630,7 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private void updateCountry(Router router, String AMIUser, String oldCountryCode, String clientIP)
+	private void updateCountry(@NotNull Router router, @NotNull String AMIUser, @NotNull String oldCountryCode, @NotNull String clientIP)
 	{
 		try
 		{
