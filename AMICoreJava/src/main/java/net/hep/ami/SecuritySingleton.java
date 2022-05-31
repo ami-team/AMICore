@@ -1088,7 +1088,7 @@ public class SecuritySingleton
 	/* OIDC AUTHENTICATION                                                                                            */
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
-
+	private static String yyy = "";
 	public static String setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfURL) throws Exception
 	{
 		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
@@ -1152,7 +1152,7 @@ public class SecuritySingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-
+		yyy = result.toString();
 		throw new Exception("OpenID Connect configuration error: " + result);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -1168,7 +1168,7 @@ public class SecuritySingleton
 		   ||
 		   s_oidcAuthorizationEndpoint == null || s_oidcAuthorizationEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcAuthorizationEndpoint.strip())
 		 ) {
-			throw new Exception("OpenID Connect not properly configured (" + s_oidcClientId + ") (" + s_oidcTokenEndpoint + ") (" + s_oidcAuthorizationEndpoint + ")");
+			throw new Exception("OpenID Connect not properly configured (" + s_oidcClientId + ") (" + s_oidcTokenEndpoint + ") (" + s_oidcAuthorizationEndpoint + ") " + yyy);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
