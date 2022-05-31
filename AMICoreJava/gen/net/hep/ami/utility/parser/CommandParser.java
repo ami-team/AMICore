@@ -1,4 +1,4 @@
-// Generated from /home/lambert/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/utility/parser/Command.g4 by ANTLR 4.10.1
+// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/utility/parser/Command.g4 by ANTLR 4.10.1
 package net.hep.ami.utility.parser;
 
 	import java.util.*;
