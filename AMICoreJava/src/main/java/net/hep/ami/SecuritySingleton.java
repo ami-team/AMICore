@@ -1089,21 +1089,21 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfEndpoint) throws Exception
+	public static String setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfURL) throws Exception
 	{
 		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
 		{
 			throw new Exception("OpenID Connect not properly configured (sso_client_id is empty)");
 		}
 
-		if(oidcConfEndpoint == null || oidcConfEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(oidcConfEndpoint.strip()))
+		if(oidcConfURL == null || oidcConfURL.isEmpty() || "@NULL".equalsIgnoreCase(oidcConfURL.strip()))
 		{
 			throw new Exception("OpenID Connect not properly configured (sso_conf_url is empty)");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(oidcConfEndpoint).openConnection();
+		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(oidcConfURL).openConnection();
 
 		urlConnection.setRequestMethod("GET");
 
