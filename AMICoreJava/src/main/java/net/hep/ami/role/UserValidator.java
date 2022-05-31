@@ -14,7 +14,6 @@ abstract public class UserValidator
 		DETACH,
 		PASSWORD,
 		INFO,
-		OIDC_USER_INFO,
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

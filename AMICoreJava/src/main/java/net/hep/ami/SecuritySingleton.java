@@ -1107,6 +1107,8 @@ public class SecuritySingleton
 
 		urlConnection.setRequestMethod("GET");
 
+		urlConnection.setDoOutput(false);
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder result = new StringBuilder();
@@ -1231,9 +1233,15 @@ public class SecuritySingleton
 
 	public static Map<String, Object> validateOIDCCodeAndParseTokens(@NotNull String redirectURL, @NotNull String code) throws Exception
 	{
+		String tokens = validateOIDCCode(redirectURL, code);
+
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		return new ObjectMapper().readValue(validateOIDCCode(redirectURL, code), typeRef);
+		Map<String, Object> result = new ObjectMapper().readValue(tokens, typeRef);
+
+		result.put("orig", tokens);
+
+		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1252,6 +1260,8 @@ public class SecuritySingleton
 		HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(s_oidcUserInfoEndpoint).openConnection();
 
 		urlConnection.setRequestMethod("GET");
+
+		urlConnection.setDoOutput(false);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1294,9 +1304,15 @@ public class SecuritySingleton
 
 	public static Map<String, Object> validateOIDCTokenAndParseUserInfo(@NotNull String token) throws Exception
 	{
+		String userInfo = validateOIDCToken(token);
+
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		return new ObjectMapper().readValue(validateOIDCToken(token), typeRef);
+		Map<String, Object> result = new ObjectMapper().readValue(userInfo, typeRef);
+
+		result.put("orig", userInfo);
+
+		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

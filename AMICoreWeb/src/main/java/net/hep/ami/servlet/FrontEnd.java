@@ -353,7 +353,7 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("null, _, _ -> new")
+	@Contract("null, _, _, _ -> new")
 	private String resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP, String clientOrigin) throws Exception
 	{
 		if(Empty.is(AMIUser, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
@@ -438,8 +438,7 @@ public class FrontEnd extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			throw e;
-			//return GUEST_USER;
+			return GUEST_USER;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -513,26 +512,33 @@ public class FrontEnd extends HttpServlet
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String json = SecuritySingleton.validateOIDCToken(token);
+		Map<String, Object> userinfo = SecuritySingleton.validateOIDCTokenAndParseUserInfo(token);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		UserValidator.Bean bean = new UserValidator.Bean(
-			GUEST_USER, GUEST_USER,
-			null, null,
-			null, null, null, null, null,
-			json
-		);
-
-		RoleSingleton.checkUser(
-			ConfigSingleton.getProperty("new_user_validator_class"),
-			UserValidator.Mode.OIDC_USER_INFO,
-			bean
-		);
+		String usernameKey = ConfigSingleton.getProperty("sso_userinfo_username_key", "preferred_username");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return bean;
+		if(userinfo.containsKey(usernameKey))
+		{
+			String username = (String) userinfo.get(usernameKey);
+
+			String json = (String) userinfo.get("orig");
+
+			return new UserValidator.Bean(
+				username, username,
+				null, null,
+				null, null, null, null, null,
+				json
+			);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		throw new Exception("OpenID Connect not properly configured");
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
