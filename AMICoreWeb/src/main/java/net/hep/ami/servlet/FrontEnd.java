@@ -552,17 +552,12 @@ public class FrontEnd extends HttpServlet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		String firstnameKey = ConfigSingleton.getProperty("sso_userinfo_firstname_key", "@NULL");
-
-		String lastnameKey = ConfigSingleton.getProperty("sso_userinfo_lastname_key", "@NULL");
-
-		String emailKey = ConfigSingleton.getProperty("sso_userinfo_email_key", "@NULL");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		String firstname = (String) userinfo.getOrDefault(firstnameKey, "Unknown");
 
+		String lastnameKey = ConfigSingleton.getProperty("sso_userinfo_lastname_key", "@NULL");
 		String lastname = (String) userinfo.getOrDefault(lastnameKey, "Unknown");
 
+		String emailKey = ConfigSingleton.getProperty("sso_userinfo_email_key", "@NULL");
 		String email = (String) userinfo.getOrDefault(emailKey, "x@y.z");
 
 		/*------------------------------------------------------------------------------------------------------------*/
