@@ -42,6 +42,7 @@ public class RowSet
 	/* From AMI */
 	protected final boolean[] m_fieldHidden;
 	protected final boolean[] m_fieldAdminOnly;
+	protected final boolean[] m_fieldHashed;
 	protected final boolean[] m_fieldCrypted;
 	protected final boolean[] m_fieldPrimary;
 	protected final boolean[] m_fieldJson;
@@ -127,7 +128,7 @@ public class RowSet
 		/* PARSE SQL                                                                                                  */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> aliasInfo = Tokenizer.extractAliasInfo(m_sql);
+		Tokenizer.Tuple aliasInfo = Tokenizer.extractAliasInfo(m_sql);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET METADATA                                                                                               */
@@ -156,6 +157,7 @@ public class RowSet
 		/* From AMI */
 		m_fieldHidden = new boolean[m_numberOfFields];
 		m_fieldAdminOnly = new boolean[m_numberOfFields];
+		m_fieldHashed = new boolean[m_numberOfFields];
 		m_fieldCrypted = new boolean[m_numberOfFields];
 		m_fieldPrimary = new boolean[m_numberOfFields];
 		m_fieldJson = new boolean[m_numberOfFields];
@@ -224,7 +226,7 @@ public class RowSet
 				{
 					qId = QId.parseQId(label, QId.Type.FIELD);
 
-					for(Map.Entry<QId, QId> entry : aliasInfo.x.entrySet())
+					for(Map.Entry<QId, QId> entry : aliasInfo.getAliasFieldMap().entrySet())
 					{
 						if(qId.matches(entry.getKey()))
 						{
@@ -322,7 +324,7 @@ public class RowSet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(aliasInfo.y.size() == m_numberOfFields && !aliasInfo.y.get(i)
+			if(aliasInfo.getFieldHasAliasList().size() == m_numberOfFields && !aliasInfo.getFieldHasAliasList().get(i)
 			   &&
 			   (
 			    	!Empty.is(defaultExternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) && !defaultExternalCatalog.equalsIgnoreCase(m_fieldCatalogs[i])
@@ -343,6 +345,7 @@ public class RowSet
 				/**/
 				m_fieldHidden[i] = column.hidden;
 				m_fieldAdminOnly[i] = column.adminOnly;
+				m_fieldHashed[i] = column.hashed;
 				m_fieldCrypted[i] = column.crypted;
 				m_fieldPrimary[i] = column.primary;
 				m_fieldJson[i] = column.json;
@@ -368,6 +371,7 @@ public class RowSet
 			{
 				m_fieldHidden[i] = false;
 				m_fieldAdminOnly[i] = false;
+				m_fieldHashed[i] = false;
 				m_fieldCrypted[i] = false;
 				m_fieldPrimary[i] = false;
 				m_fieldJson[i] = false;
