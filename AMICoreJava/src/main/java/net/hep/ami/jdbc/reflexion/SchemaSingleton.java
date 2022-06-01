@@ -529,7 +529,7 @@ public class SchemaSingleton
 
 		private void apply()
 		{
-			m_catalog.description = m_catalogTuple.w;
+			m_catalog.description = m_catalogTuple.getDescription();
 
 			m_catalogs.put(m_externalCatalog, m_catalog);
 		}
@@ -598,7 +598,7 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getCatalogName(@Nullable String type)
 		{
-			if((m_driverTuple.t & DriverMetadata.FLAG_HAS_CATALOG) != 0)
+			if((m_driverTuple.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
 				return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
 			}
@@ -612,9 +612,9 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getSchemaName(@Nullable String type)
 		{
-			if((m_driverTuple.t & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
+			if((m_driverTuple.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
-				return "SYNONYM".equals(type) && m_catalogTuple.z.endsWith("_W") ? m_catalogTuple.z.substring(0, m_catalogTuple.z.length() - 2) : m_catalogTuple.z; /* BERK !!! */
+				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
 			}
 			else
 			{
@@ -638,7 +638,7 @@ public class SchemaSingleton
 			/* CREATE CONNECTION                                           */
 			/*-------------------------------------------------------------*/
 
-			try(Connection connection = DriverManager.getConnection(m_catalogTuple.t, m_catalogTuple.u, m_catalogTuple.v))
+			try(Connection connection = DriverManager.getConnection(m_catalogTuple.getJdbcUrl(), m_catalogTuple.getUsername(), m_catalogTuple.getPassword()))
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 				/* GET METADATA OBJECT                                                                                */
@@ -1061,7 +1061,7 @@ public class SchemaSingleton
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
 				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
-				driverTuple = DriverSingleton.getTuple(catalogTuple.t);
+				driverTuple = DriverSingleton.getTuple(catalogTuple.getJdbcUrl());
 
 				threads.add(
 					new Thread(
@@ -1098,7 +1098,7 @@ public class SchemaSingleton
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
 				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
-				driverTuple = DriverSingleton.getTuple(catalogTuple.t);
+				driverTuple = DriverSingleton.getTuple(catalogTuple.getJdbcUrl());
 
 				threads.add(
 					new Thread(

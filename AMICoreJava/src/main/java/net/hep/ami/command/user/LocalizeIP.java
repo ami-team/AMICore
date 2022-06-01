@@ -38,8 +38,8 @@ public class LocalizeIP extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<rowset type=\"localization\">").append("<row>")
-		                          .append("<field name=\"ContinentCode\"><![CDATA[").append(localization.continentCode).append("]]></field>")
-		                          .append("<field name=\"CountryCode\"><![CDATA[").append(localization.countryCode).append("]]></field>")
+		                          .append("<field name=\"ContinentCode\"><![CDATA[").append(localization.getContinentCode()).append("]]></field>")
+		                          .append("<field name=\"CountryCode\"><![CDATA[").append(localization.getCountryCode()).append("]]></field>")
 		                          .append("</row>").append("</rowset>")
 		;
 

@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import lombok.*;
+
 import java.util.*;
 import java.util.regex.*;
 import java.lang.reflect.*;
@@ -14,14 +16,17 @@ public class DriverSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static final class Tuple extends Tuple6<DriverMetadata.Type, String, String, Integer, String, Constructor<?>>
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class Tuple
 	{
-		private static final long serialVersionUID = 3082894522888817449L;
-
-		public Tuple(DriverMetadata.Type _x, String _y, String _z, Integer _t, String _u, Constructor<?> _v)
-		{
-			super(_x, _y, _z, _t, _u, _v);
-		}
+		@NotNull DriverMetadata.Type type;
+		@NotNull String proto;
+		@NotNull String clazz;
+		/*----*/ int flags;
+		@NotNull String driverClazz;
+		@NotNull Constructor<?> Constructor;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -170,7 +175,7 @@ public class DriverSingleton
 	{
 		try
 		{
-			return (AbstractDriver) getTuple(jdbcUrl).v.newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags);
+			return (AbstractDriver) getTuple(jdbcUrl).getConstructor().newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags);
 		}
 		catch(InvocationTargetException e)
 		{
@@ -183,7 +188,7 @@ public class DriverSingleton
 	@NotNull
 	public static DriverMetadata.Type getType(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).x;
+		return getTuple(jdbcUrl).getType();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -191,7 +196,7 @@ public class DriverSingleton
 	@NotNull
 	public static String getProto(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).y;
+		return getTuple(jdbcUrl).getProto();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -199,14 +204,14 @@ public class DriverSingleton
 	@NotNull
 	public static String getClass(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).z;
+		return getTuple(jdbcUrl).getClazz();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static int getFlags(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).t;
+		return getTuple(jdbcUrl).getFlags();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -232,11 +237,11 @@ public class DriverSingleton
 		for(Tuple tuple: s_drivers.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"jdbcType\"><![CDATA[").append(tuple.x).append("]]></field>")
-			      .append("<field name=\"jdbcProto\"><![CDATA[").append(tuple.y).append("]]></field>")
-			      .append("<field name=\"jdbcClass\"><![CDATA[").append(tuple.z).append("]]></field>")
-			      .append("<field name=\"jdbcFlags\"><![CDATA[").append(tuple.t).append("]]></field>")
-			      .append("<field name=\"driverClass\"><![CDATA[").append(tuple.u).append("]]></field>")
+			      .append("<field name=\"jdbcType\"><![CDATA[").append(tuple.getType()).append("]]></field>")
+			      .append("<field name=\"jdbcProto\"><![CDATA[").append(tuple.getProto()).append("]]></field>")
+			      .append("<field name=\"jdbcClass\"><![CDATA[").append(tuple.getClazz()).append("]]></field>")
+			      .append("<field name=\"jdbcFlags\"><![CDATA[").append(tuple.getFlags()).append("]]></field>")
+			      .append("<field name=\"driverClass\"><![CDATA[").append(tuple.getDriverClazz()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

@@ -10,7 +10,7 @@ public class Zip
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static <U, V> Stream<Tuple2<U, V>> asStream(@NotNull U[] o1, @NotNull V[] o2)
+	public static <U, V> Stream<Tuple2<U, V>> asStream(@NotNull U @NotNull [] o1, @NotNull V @NotNull [] o2)
 	{
 		return IntStream.range(0, Math.min(o1.length, o2.length)).mapToObj(i -> new Tuple2<>(o1[i], o2[i]));
 	}

@@ -91,7 +91,7 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		if(tuple != null)
 		{
-			tokens = patch(tokens, CatalogSingleton.getTuple(m_externalCatalog).z);
+			tokens = patch(tokens, CatalogSingleton.getTuple(m_externalCatalog).getInternalSchema());
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

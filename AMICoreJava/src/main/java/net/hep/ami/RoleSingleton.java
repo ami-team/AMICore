@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import lombok.*;
+
 import java.sql.*;
 import java.util.*;
 import java.lang.reflect.*;
@@ -14,26 +16,26 @@ public class RoleSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class CommandValidatorTuple extends Tuple3<String, String, Constructor<CommandValidator>>
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class CommandValidatorTuple
 	{
-		private static final long serialVersionUID = -5126479111138460006L;
-
-		private CommandValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<CommandValidator> _z)
-		{
-			super(_x, _y, _z);
-		}
+		@NotNull private String name;
+		@NotNull private String help;
+		@NotNull private Constructor<CommandValidator> constructor;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class UserValidatorTuple extends Tuple3<String, String, Constructor<UserValidator>>
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class UserValidatorTuple
 	{
-		private static final long serialVersionUID = 6410545925675367511L;
-
-		private UserValidatorTuple(@NotNull String _x, @NotNull String _y, @NotNull Constructor<UserValidator> _z)
-		{
-			super(_x, _y, _z);
-		}
+		@NotNull private String name;
+		@NotNull private String help;
+		@NotNull private Constructor<UserValidator> constructor;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -332,7 +334,7 @@ public class RoleSingleton
 
 		try
 		{
-			validator = tuple.z.newInstance();
+			validator = tuple.getConstructor().newInstance();
 		}
 		catch(Exception e)
 		{
@@ -374,7 +376,7 @@ public class RoleSingleton
 
 		try
 		{
-			validator = tuple.z.newInstance();
+			validator = tuple.getConstructor().newInstance();
 		}
 		catch(Exception e)
 		{
@@ -402,8 +404,8 @@ public class RoleSingleton
 		for(CommandValidatorTuple tuple: s_commandRoleValidators.values())
 		{
 			result.append("<row>")
-			     .append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
-			     .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
+			     .append("<field name=\"class\"><![CDATA[").append(tuple.getName()).append("]]></field>")
+			     .append("<field name=\"help\"><![CDATA[").append(tuple.getHelp()).append("]]></field>")
 			     .append("</row>")
 			;
 		}
@@ -417,8 +419,8 @@ public class RoleSingleton
 		for(UserValidatorTuple tuple: s_userRoleValidators.values())
 		{
 			result.append("<row>")
-					.append("<field name=\"class\"><![CDATA[").append(tuple.x).append("]]></field>")
-					.append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
+					.append("<field name=\"class\"><![CDATA[").append(tuple.getName()).append("]]></field>")
+					.append("<field name=\"help\"><![CDATA[").append(tuple.getHelp()).append("]]></field>")
 					.append("</row>")
 			;
 		}

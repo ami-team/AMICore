@@ -56,7 +56,7 @@ public class LogSingleton
 
 					e.printStackTrace(pw);
 
-					root.error("could not send emails:\n" + sw.toString(), e);
+					root.error("could not send emails: " + sw, e);
 				}
 			}
 		}

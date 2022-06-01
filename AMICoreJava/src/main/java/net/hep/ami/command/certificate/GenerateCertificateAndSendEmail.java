@@ -147,24 +147,24 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 				MailSingleton.Attachment attachment1 = new MailSingleton.Attachment(
 					commonName + ".jks",
-					"application/octet-stream",
-					output1.toByteArray()
+					output1.toByteArray(),
+					"application/octet-stream"
 				);
 
 				/*----------------------------------------------------------------------------------------------------*/
 
 				MailSingleton.Attachment attachment2 = new MailSingleton.Attachment(
 					commonName + ".p12",
-					"application/x-pkcs12",
-					output2.toByteArray()
+					output2.toByteArray(),
+					"application/x-pkcs12"
 				);
 
 				/*----------------------------------------------------------------------------------------------------*/
 
 				MailSingleton.Attachment attachment3 = new MailSingleton.Attachment(
 					commonName + ".crt",
-					"application/x-pem-file",
-					pem.toByteArray()
+					pem.toByteArray(),
+					"application/x-pem-file"
 				);
 
 				/*----------------------------------------------------------------------------------------------------*/

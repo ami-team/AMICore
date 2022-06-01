@@ -48,9 +48,9 @@ public class SecuritySingleton
 		public static final int COMPROMISED = 1;
 		public static final int AFFILIATION_CHANGED = 2;
 
-		private final BigInteger serial;
-		private final Integer reason;
-		private final Date date;
+		@NotNull private final BigInteger serial;
+		@NotNull private final Integer reason;
+		@NotNull private final Date date;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1089,6 +1089,18 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class MapAndJSON
+	{
+		@NotNull private Map<String, Object> map;
+
+		@NotNull private String json;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public static void setupOIDC(@Nullable String oidcClientId, @Nullable String oidcConfURL) throws Exception
 	{
 		if(oidcClientId == null || oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(oidcClientId.strip()))
@@ -1169,7 +1181,8 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static @NotNull String validateOIDCCode(@NotNull String redirectURL, @NotNull String code) throws Exception
+	@NotNull
+	public static String validateOIDCCode(@NotNull String redirectURL, @NotNull String code) throws Exception
 	{
 		if(s_oidcClientId == null || s_oidcClientId.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcClientId.strip())
 		   ||
@@ -1238,22 +1251,20 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateOIDCCodeAndParseTokens(@NotNull String redirectURL, @NotNull String code) throws Exception
+	@NotNull
+	public static MapAndJSON validateOIDCCodeAndParseTokens(@NotNull String redirectURL, @NotNull String code) throws Exception
 	{
 		String tokens = validateOIDCCode(redirectURL, code);
 
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		Map<String, Object> result = new ObjectMapper().readValue(tokens, typeRef);
-
-		result.put("orig", tokens);
-
-		return result;
+		return new MapAndJSON(new ObjectMapper().readValue(tokens, typeRef), tokens);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static @NotNull String validateOIDCToken(@NotNull String token) throws Exception
+	@NotNull
+	public static String validateOIDCToken(@NotNull String token) throws Exception
 	{
 		if(s_oidcUserInfoEndpoint == null || s_oidcUserInfoEndpoint.isEmpty() || "@NULL".equalsIgnoreCase(s_oidcUserInfoEndpoint.strip())
 		   ||
@@ -1309,17 +1320,14 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static Map<String, Object> validateOIDCTokenAndParseUserInfo(@NotNull String token) throws Exception
+	@NotNull
+	public static MapAndJSON validateOIDCTokenAndParseUserInfo(@NotNull String token) throws Exception
 	{
 		String userInfo = validateOIDCToken(token);
 
 		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
-		Map<String, Object> result = new ObjectMapper().readValue(userInfo, typeRef);
-
-		result.put("orig", userInfo);
-
-		return result;
+		return new MapAndJSON(new ObjectMapper().readValue(userInfo, typeRef), userInfo);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

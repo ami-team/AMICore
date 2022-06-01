@@ -1,8 +1,9 @@
 package net.hep.ami.servlet;
 
+import lombok.*;
+
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.text.*;
 import java.util.*;
 import java.security.cert.*;
@@ -128,7 +129,7 @@ public class FrontEnd extends HttpServlet
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			updateSessionAndCommandArgs(
-				tuple.arguments,
+				tuple.getArguments(),
 				req
 			);
 
@@ -137,8 +138,8 @@ public class FrontEnd extends HttpServlet
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			data = CommandSingleton.executeCommand(
-				tuple.command,
-				tuple.arguments
+				tuple.getCommand(),
+				tuple.getArguments()
 			);
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -216,8 +217,21 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class CertInfo
+	{
+		@NotNull private String clientDN;
+		@NotNull private String issuerDN;
+		@NotNull private String notBefore;
+		@NotNull private String notAfter;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@NotNull
-	private static Tuple4<String, String, String, String> getDNs(@NotNull Map<String, String> arguments, @NotNull HttpServletRequest req)
+	private static CertInfo getCertInfo(@NotNull Map<String, String> arguments, @NotNull HttpServletRequest req)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -231,7 +245,7 @@ public class FrontEnd extends HttpServlet
 		 ) {
 			try
 			{
-				return new Tuple4<>(
+				return new CertInfo(
 					SecuritySingleton.decrypt(arguments.get("clientDN")),
 					SecuritySingleton.decrypt(arguments.get("issuerDN")),
 					SecuritySingleton.decrypt(arguments.get("notBefore")),
@@ -254,7 +268,7 @@ public class FrontEnd extends HttpServlet
 			{
 				if(!SecuritySingleton.isProxy(certificate))
 				{
-					return new Tuple4<>(
+					return new CertInfo(
 						SecuritySingleton.getDN(certificate.getSubjectX500Principal()),
 						SecuritySingleton.getDN(certificate.getIssuerX500Principal()),
 						new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(
@@ -270,7 +284,7 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple4<>(
+		return new CertInfo(
 			"",
 			"",
 			"",
@@ -324,19 +338,7 @@ public class FrontEnd extends HttpServlet
 			/* UPDATE COUNTRY                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try
-			{
-				String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
-
-				if(!oldCountryCode.equals(newCountryCode))
-				{
-					router.executeSQLUpdate("UPDATE `router_user` SET `country` = ?0 WHERE `AMIUser` = ?1", newCountryCode, result);
-				}
-			}
-			catch(Exception e)
-			{
-				/* IGNORE */
-			}
+			updateCountry(router, result, oldCountryCode, clientIP);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -367,9 +369,7 @@ public class FrontEnd extends HttpServlet
 		/* CONNECTION WITH OIDC                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Map<String, Object> userinfo;
-
-		boolean sso;
+		UserInfoAndUsername userInfoAndUsername;
 
 		try
 		{
@@ -392,11 +392,11 @@ public class FrontEnd extends HttpServlet
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				Map<String, Object> tokens = SecuritySingleton.validateOIDCCodeAndParseTokens(redirectURL, AMIPass);
+				SecuritySingleton.MapAndJSON mapAndJSON = SecuritySingleton.validateOIDCCodeAndParseTokens(redirectURL, AMIPass);
 
-				if(tokens.containsKey("access_token"))
+				if(mapAndJSON.getMap().containsKey("access_token"))
 				{
-					AMIPass = (String) tokens.get("access_token");
+					AMIPass = (String) mapAndJSON.getMap().get("access_token");
 				}
 				else
 				{
@@ -405,13 +405,9 @@ public class FrontEnd extends HttpServlet
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				Tuple2<Map<String, Object>, UserValidator.Bean> tuple = getUserInfoFromToken(AMIPass);
+				userInfoAndUsername = getUserInfoFromToken(AMIPass);
 
-				AMIUser = tuple.y.getAmiUsername();
-
-				userinfo = tuple.x;
-
-				sso = true;
+				AMIUser = userInfoAndUsername.getUsername();
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -419,21 +415,15 @@ public class FrontEnd extends HttpServlet
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
-				Tuple2<Map<String, Object>, UserValidator.Bean> tuple = getUserInfoFromToken(AMIPass);
+				userInfoAndUsername = getUserInfoFromToken(AMIPass);
 
-				AMIUser = tuple.y.getAmiUsername();
-
-				userinfo = tuple.x;
-
-				sso = true;
+				AMIUser = userInfoAndUsername.getUsername();
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
 			else
 			{
-				userinfo = null;
-
-				sso = false;
+				userInfoAndUsername = null;
 			}
 		}
 		catch(Exception e)
@@ -455,8 +445,8 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String sql = sso ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `ssoUser` = ?0"
-			                 : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
+			String sql = userInfoAndUsername != null ? "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `ssoUser` = ?0"
+			                                         : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
 			;
 
 			List<Row> rowList = router.executeSQLQuery("router_user", sql, AMIUser).getAll();
@@ -467,7 +457,7 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() == 0)
 			{
-				return sso ? createNewUser(router, AMIUser, userinfo, clientIP) : GUEST_USER;
+				return userInfoAndUsername != null ? createNewUser(router, userInfoAndUsername, clientIP) : GUEST_USER;
 			}
 
 			Row row = rowList.get(0);
@@ -476,7 +466,7 @@ public class FrontEnd extends HttpServlet
 			String password = row.getValue(1);
 			String oldCountryCode = row.getValue(2);
 
-			if(!sso)
+			if(userInfoAndUsername == null)
 			{
 				try
 				{
@@ -508,30 +498,39 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private Tuple2<Map<String, Object>, UserValidator.Bean> getUserInfoFromToken(String token) throws Exception
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class UserInfoAndUsername
+	{
+		@NotNull private Map<String, Object> userInfoMap;
+
+		@NotNull private String userInfoJson;
+
+		@NotNull private String username;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@Contract("_ -> new")
+	private UserInfoAndUsername getUserInfoFromToken(@NotNull String token) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Map<String, Object> userinfo = SecuritySingleton.validateOIDCTokenAndParseUserInfo(token);
+		SecuritySingleton.MapAndJSON mapAndJSON = SecuritySingleton.validateOIDCTokenAndParseUserInfo(token);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String usernameKey = ConfigSingleton.getProperty("sso_userinfo_username_key", "preferred_username");
+		String usernameKey = ConfigSingleton.getProperty("sso_userinfo_username_key", "@NULL");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(userinfo.containsKey(usernameKey))
+		if(mapAndJSON.getMap().containsKey(usernameKey))
 		{
-			String username = (String) userinfo.get(usernameKey);
+			String username = (String) mapAndJSON.getMap().get(usernameKey);
 
-			String json = (String) userinfo.get("orig");
-
-			return new Tuple2<>(userinfo, new UserValidator.Bean(
-				username, username,
-				null, null,
-				null, null, null, null, null,
-				json
-			));
+			return new UserInfoAndUsername(mapAndJSON.getMap(), mapAndJSON.getJson(), username);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -543,31 +542,32 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private String createNewUser(@NotNull Router router, @NotNull String AMIUser, @NotNull Map<String, Object> userinfo, @NotNull String clientIP) throws Exception
+	@NotNull
+	private String createNewUser(@NotNull Router router, @NotNull UserInfoAndUsername userInfoAndUsername, @NotNull String clientIP) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String tmpPass = SecuritySingleton.generatePassword();
+		String username = userInfoAndUsername.getUsername();
 
-		/*------------------------------------------------------------------------------------------------------------*/
+		String password = SecuritySingleton.generatePassword();
 
 		String firstnameKey = ConfigSingleton.getProperty("sso_userinfo_firstname_key", "@NULL");
-		String firstname = (String) userinfo.getOrDefault(firstnameKey, "Unknown");
+		String firstname = (String) userInfoAndUsername.getUserInfoMap().getOrDefault(firstnameKey, "Unknown");
 
 		String lastnameKey = ConfigSingleton.getProperty("sso_userinfo_lastname_key", "@NULL");
-		String lastname = (String) userinfo.getOrDefault(lastnameKey, "Unknown");
+		String lastname = (String) userInfoAndUsername.getUserInfoMap().getOrDefault(lastnameKey, "Unknown");
 
 		String emailKey = ConfigSingleton.getProperty("sso_userinfo_email_key", "@NULL");
-		String email = (String) userinfo.getOrDefault(emailKey, "x@y.z");
+		String email = (String) userInfoAndUsername.getUserInfoMap().getOrDefault(emailKey, "x@y.z");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		UserValidator.Bean bean = new UserValidator.Bean(
-			AMIUser, AMIUser,
-			tmpPass, tmpPass,
+			username, username,
+			password, password,
 			null, null,
 			firstname, lastname, email,
-			(String) userinfo.get("orig")
+			userInfoAndUsername.getUserInfoJson()
 		);
 
 		RoleSingleton.checkUser(
@@ -579,9 +579,9 @@ public class FrontEnd extends HttpServlet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
-			bean.getAmiUsername(),
-			bean.getSsoUsername(),
-			SecuritySingleton.encrypt(bean.getPasswordNew()),
+			username,
+			username,
+			password,
 			SecuritySingleton.encrypt(bean.getClientDN()),
 			SecuritySingleton.encrypt(bean.getIssuerDN()),
 			!Empty.is(bean.getFirstName(), Empty.STRING_NULL_EMPTY_BLANK) ? bean.getFirstName() : "Unknown",
@@ -594,7 +594,7 @@ public class FrontEnd extends HttpServlet
 		if(update.getNbOfUpdatedRows() == 1)
 		{
 			Update update2 = router.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
-				AMIUser,
+				username,
 				"AMI_USER"
 			);
 
@@ -604,7 +604,7 @@ public class FrontEnd extends HttpServlet
 
 				router.commit();
 
-				return AMIUser;
+				return username;
 			}
 			else
 			{
@@ -629,7 +629,7 @@ public class FrontEnd extends HttpServlet
 	{
 		try
 		{
-			String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).countryCode;
+			String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).getCountryCode();
 
 			if(!oldCountryCode.equals(newCountryCode))
 			{
@@ -650,12 +650,12 @@ public class FrontEnd extends HttpServlet
 		/* GET CLIENT_DN, ISSUER_DN, AMI_USER, AMI_PASS                                                               */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple4<String, String, String, String> dns = getDNs(arguments, request);
+		CertInfo certInfo = getCertInfo(arguments, request);
 
-		String clientDN = dns.x;
-		String issuerDN = dns.y;
-		String notBefore = dns.z;
-		String notAfter = dns.t;
+		String clientDN = certInfo.getClientDN();
+		String issuerDN = certInfo.getClientDN();
+		String notBefore = certInfo.getNotBefore();
+		String notAfter = certInfo.getNotAfter();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET ARGUMENT AND SESSION PARAMETERS                                                                        */
@@ -671,7 +671,7 @@ public class FrontEnd extends HttpServlet
 		String sessionAMIUser = (String) session.getAttribute("AMIUser");
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* GET NOCERT FLAG                                                                                            */
+		/* GET NO CERT FLAG                                                                                           */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		boolean noCert;
@@ -680,14 +680,11 @@ public class FrontEnd extends HttpServlet
 		{
 			Boolean attr = (Boolean) session.getAttribute("NoCert");
 
-			noCert = (attr != null)
-			         &&
-			         (attr != false)
-			;
+			noCert = (attr != null) && attr;
 		}
 		else
 		{
-			noCert = true;
+			noCert = /*----*/ true /*----*/;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -716,10 +713,6 @@ public class FrontEnd extends HttpServlet
 			{
 				AMIUser = sessionAMIUser;
 			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			noCert = /*------*/ false /*------*/;
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}

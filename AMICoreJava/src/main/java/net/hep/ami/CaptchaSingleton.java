@@ -5,6 +5,8 @@ import lombok.*;
 import java.util.*;
 import java.nio.charset.*;
 
+import org.jetbrains.annotations.*;
+
 public class CaptchaSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -12,12 +14,11 @@ public class CaptchaSingleton
 	@Setter
 	@Getter
 	@AllArgsConstructor
-	@ToString
 	public static class Captcha
 	{
-		private String image;
+		@NotNull private String image;
 
-		private String hash;
+		@NotNull private String hash;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -31,11 +32,12 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static String generateCaptchaImage(int width, int height, String text) throws Exception
+	@NotNull
+	public static String generateCaptchaImage(int width, int height, @NotNull String text) throws Exception
 	{
 		Random random = new Random();
 
-		int fontSize = (int) (0.9 * width / text.length());
+		int fontSize = (int) (0.90 * width / text.length());
 		int fontSpace = (int) (0.05 * width / text.length());
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -85,6 +87,7 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static Captcha generateCaptcha(int width, int height) throws Exception
 	{
 		String text = new StringTokenizer(UUID.randomUUID().toString(), "-").nextToken();
@@ -96,6 +99,7 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static Captcha generateCaptcha() throws Exception
 	{
 		return generateCaptcha(DEFAULT_CAPTCHA_WIDTH, DEFAULT_CAPTCHA_HEIGHT);
@@ -103,7 +107,7 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static boolean checkCaptcha(String hash, String text)
+	public static boolean checkCaptcha(@NotNull String hash, @NotNull String text)
 	{
 		try
 		{

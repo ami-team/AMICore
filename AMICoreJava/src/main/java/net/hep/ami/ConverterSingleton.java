@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import lombok.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -15,14 +17,14 @@ public class ConverterSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple3<String, String, Templates>
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class Tuple
 	{
-		private static final long serialVersionUID = -4041558092571279841L;
-
-		private Tuple(@NotNull String _x, @NotNull String _y, @NotNull Templates _z)
-		{
-			super(_x, _y, _z);
-		}
+		@NotNull String name;
+		@NotNull String mime;
+		@NotNull Templates templates;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -158,7 +160,7 @@ public class ConverterSingleton
 		/* APPLY TRANSFORM                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Transformer transformer = tuple.z.newTransformer();
+		Transformer transformer = tuple.getTemplates().newTransformer();
 
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
@@ -171,7 +173,7 @@ public class ConverterSingleton
 		/* RETURN MIME                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return tuple.y;
+		return tuple.getMime();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -190,8 +192,8 @@ public class ConverterSingleton
 		for(Tuple tuple: s_converters.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"xslt\"><![CDATA[").append(tuple.x).append("]]></field>")
-			      .append("<field name=\"mime\"><![CDATA[").append(tuple.y).append("]]></field>")
+			      .append("<field name=\"xslt\"><![CDATA[").append(tuple.getName()).append("]]></field>")
+			      .append("<field name=\"mime\"><![CDATA[").append(tuple.getMime()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

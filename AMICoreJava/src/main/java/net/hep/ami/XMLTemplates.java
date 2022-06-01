@@ -12,7 +12,8 @@ public class XMLTemplates
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static Object[] asArray(@Nullable Object arg)
+	@Contract("null -> new")
+	private static Object @NotNull [] asArray(@Nullable Object arg)
 	{
 		if(arg == null)
 		{
@@ -27,7 +28,7 @@ public class XMLTemplates
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static String format(@NotNull String tag, @NotNull Object[] args)
+	private static String format(@NotNull String tag, @NotNull Object @NotNull [] args)
 	{
 		StringBuilder xml = new StringBuilder();
 
@@ -38,7 +39,7 @@ public class XMLTemplates
 			for(Object ARG: asArray(arg))
 			{
 				xml.append("<").append(tag).append(">")
-				   .append("<![CDATA[").append(ARG.toString().replace("]]>", "))>")).append("]]>")
+				   .append("<![CDATA[").append(ARG.toString().replace("<![CDATA[", "<!(CDATA(").replace("]]>", "))>")).append("]]>")
 				   .append("</").append(tag).append(">")
 				;
 			}

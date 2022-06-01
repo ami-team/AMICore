@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import lombok.*;
+
 import java.io.*;
 import java.net.*;
 import java.sql.*;
@@ -11,21 +13,18 @@ import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
 
+@SuppressWarnings("ALL")
 public class LocalizationSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
 	public static final class Localization
 	{
-		public final String continentCode;
-		public final String countryCode;
-
-		@Contract(pure = true)
-		public Localization(@NotNull String _continentCode, @NotNull String _countryCode)
-		{
-			continentCode = _continentCode;
-			countryCode = _countryCode;
-		}
+		@NotNull private final String continentCode;
+		@NotNull private final String countryCode;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -284,7 +283,7 @@ public class LocalizationSingleton
 			}
 			catch(UnknownHostException e2)
 			{
-				throw new Exception("invalid IP `" + ip + "`");
+				throw new Exception(String.format("invalid IP `%s`", ip));
 			}
 		}
 
@@ -306,7 +305,7 @@ public class LocalizationSingleton
 
 		if(rowList.isEmpty())
 		{
-			throw new Exception("could not localize IP `" + ip + "`");
+			throw new Exception(String.format("could not localize IP `%s`", ip));
 		}
 
 		Row row = rowList.get(0);

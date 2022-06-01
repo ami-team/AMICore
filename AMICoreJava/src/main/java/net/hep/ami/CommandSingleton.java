@@ -4,6 +4,9 @@ import java.util.*;
 import java.util.regex.*;
 import java.lang.reflect.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
@@ -16,14 +19,17 @@ public class CommandSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple7<String, String, String, Constructor<?>, Boolean, Boolean, String>
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class Tuple
 	{
-		private static final long serialVersionUID = -1908438407272143175L;
-
-		private Tuple(@NotNull String _x, @NotNull String _y, @NotNull String _z, @NotNull Constructor<?> _t, boolean _u, boolean _v, @NotNull String w)
-		{
-			super(_x, _y, _z, _t, _u, _v, w);
-		}
+		@NotNull private String name;
+		@Nullable private String help;
+		@Nullable private String usage;
+		@NotNull private Constructor<?> constructor;
+		/*----*/ private boolean visible;
+		@Nullable private String commandRoleValidatorClass;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -144,7 +150,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("router_command", "SELECT `command`, `class`, `visible`, `secured`, `roleValidatorClass` FROM `router_command`");
+			RowSet rowSet = router.executeSQLQuery("router_command", "SELECT `command`, `class`, `visible`, `roleValidatorClass` FROM `router_command`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* ADD COMMANDS                                                                                           */
@@ -158,8 +164,7 @@ public class CommandSingleton
 						row.getValue(0),
 						row.getValue(1),
 						row.getValue(2),
-						row.getValue(3),
-						row.getValue(4)
+						row.getValue(3)
 					);
 				}
 				catch(Exception e)
@@ -180,7 +185,7 @@ public class CommandSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void addCommand(@NotNull String commandName, @NotNull String commandClass, @NotNull String commandVisible, @NotNull String commandSecured, @NotNull String commandRoleValidatorClass) throws Exception
+	private static void addCommand(@NotNull String commandName, @NotNull String commandClass, @NotNull String commandVisible, @NotNull String commandRoleValidatorClass) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET CLASS OBJECT                                                                                           */
@@ -215,7 +220,6 @@ public class CommandSingleton
 					long.class
 				),
 				!commandVisible.equals("0"),
-				!commandSecured.equals("0"),
 				commandRoleValidatorClass
 			)
 		);
@@ -230,7 +234,7 @@ public class CommandSingleton
 	{
 		Command.Tuple tuple = Command.parse(command);
 
-		return CommandSingleton.executeCommand(tuple.command, tuple.arguments);
+		return CommandSingleton.executeCommand(tuple.getCommand(), tuple.getArguments());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -240,7 +244,7 @@ public class CommandSingleton
 	{
 		Command.Tuple tuple = Command.parse(command);
 
-		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles);
+		return CommandSingleton.executeCommand(tuple.getCommand(), tuple.getArguments(), checkRoles);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -250,7 +254,7 @@ public class CommandSingleton
 	{
 		Command.Tuple tuple = Command.parse(command);
 
-		return CommandSingleton.executeCommand(tuple.command, tuple.arguments, checkRoles, transactionId);
+		return CommandSingleton.executeCommand(tuple.getCommand(), tuple.getArguments(), checkRoles, transactionId);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -290,7 +294,7 @@ public class CommandSingleton
 
 		try
 		{
-			userRoles = RoleSingleton.checkRoles(router, tuple.x, arguments, tuple.w, checkRoles);
+			userRoles = RoleSingleton.checkRoles(router, tuple.getName(), arguments, tuple.getCommandRoleValidatorClass(), checkRoles);
 		}
 		finally
 		{
@@ -308,7 +312,7 @@ public class CommandSingleton
 		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		             .append("\n")
 		             .append("<AMIMessage>")
-		             .append("<command><![CDATA[").append(tuple.x).append("]]></command>")
+		             .append("<command><![CDATA[").append(tuple.getName()).append("]]></command>")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -342,7 +346,7 @@ public class CommandSingleton
 			/* CREATE COMMAND INSTANCE                                                                                */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			AbstractCommand commandObject = (AbstractCommand) tuple.t.newInstance(
+			AbstractCommand commandObject = (AbstractCommand) tuple.getConstructor().newInstance(
 				userRoles,
 				arguments,
 				transactionId
@@ -373,11 +377,11 @@ public class CommandSingleton
 			             .append("<executionTime><![CDATA[0.000]]></executionTime>")
 
 			             .append("<help><![CDATA[")
-			             .append((tuple.y != null) ? s_xml10Pattern.matcher(tuple.y).replaceAll("?") : "")
+			             .append((tuple.getHelp() != null) ? s_xml10Pattern.matcher(tuple.getHelp()).replaceAll("?") : "")
 			             .append("]]></help>")
 
 			             .append("<usage><![CDATA[")
-			             .append((tuple.z != null) ? s_xml10Pattern.matcher(tuple.z).replaceAll("?") : "")
+			             .append((tuple.getUsage() != null) ? s_xml10Pattern.matcher(tuple.getUsage()).replaceAll("?") : "")
 			             .append("]]></usage>")
 			;
 
@@ -416,7 +420,7 @@ public class CommandSingleton
 		/* CREATE COMMAND INSTANCE                                                                                    */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		AbstractCommand commandObject = (AbstractCommand) tuple.t.newInstance(
+		AbstractCommand commandObject = (AbstractCommand) tuple.getConstructor().newInstance(
 			userRoles,
 			arguments,
 			transactionId
@@ -487,19 +491,18 @@ public class CommandSingleton
 
 		for(Tuple tuple: s_commands.values())
 		{
-			if(tuple.x.equals("GetConfig"))
+			if(tuple.getName().equals("GetConfig"))
 			{
 				continue;
 			}
 
 			result.append("<row>")
-			      .append("<field name=\"command\"><![CDATA[").append(tuple.x).append("]]></field>")
-			      .append("<field name=\"help\"><![CDATA[").append(tuple.y).append("]]></field>")
-			      .append("<field name=\"usage\"><![CDATA[").append(tuple.z).append("]]></field>")
-			      .append("<field name=\"class\"><![CDATA[").append(tuple.t).append("]]></field>")
-			      .append("<field name=\"visible\"><![CDATA[").append(tuple.u).append("]]></field>")
-			      .append("<field name=\"secured\"><![CDATA[").append(tuple.v).append("]]></field>")
-			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(tuple.w).append("]]></field>")
+			      .append("<field name=\"command\"><![CDATA[").append(tuple.getName()).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(tuple.getHelp()).append("]]></field>")
+			      .append("<field name=\"usage\"><![CDATA[").append(tuple.getUsage()).append("]]></field>")
+			      .append("<field name=\"class\"><![CDATA[").append(tuple.getConstructor()).append("]]></field>")
+			      .append("<field name=\"visible\"><![CDATA[").append(tuple.isVisible()).append("]]></field>")
+			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(tuple.getCommandRoleValidatorClass()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

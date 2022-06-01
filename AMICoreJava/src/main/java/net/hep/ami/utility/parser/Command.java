@@ -1,5 +1,7 @@
 package net.hep.ami.utility.parser;
 
+import lombok.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -11,23 +13,16 @@ public class Command
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static class Tuple
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class Tuple
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		public final String command;
+		@NotNull private final String command;
 
-		public final Map<String, String> arguments;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		@Contract(pure = true)
-		public Tuple(@NotNull String _command, @NotNull Map<String, String> _arguments)
-		{
-			command = _command;
-
-			arguments = _arguments;
-		}
+		@NotNull private final Map<String, String> arguments;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

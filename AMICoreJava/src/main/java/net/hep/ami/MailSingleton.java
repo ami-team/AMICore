@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import lombok.*;
+
 import net.hep.ami.utility.*;
 
 import org.simplejavamail.email.*;
@@ -12,19 +14,14 @@ public class MailSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static class Attachment
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class Attachment
 	{
-		protected final String m_name;
-		protected final String m_mime;
-		protected final byte[] m_data;
-
-		@Contract(pure = true)
-		public Attachment(String name, String mime, byte[] data)
-		{
-			m_name = name;
-			m_mime = mime;
-			m_data = data;
-		}
+		@NotNull private final String name;
+		/*----*/ private final byte[] data;
+		@NotNull private final String mime;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -112,9 +109,9 @@ public class MailSingleton
 				if(attachment != null)
 				{
 					emailBuilder.withAttachment(
-						attachment.m_name,
-						attachment.m_data,
-						attachment.m_mime
+						attachment.getName(),
+						attachment.getData(),
+						attachment.getMime()
 					);
 				}
 			}

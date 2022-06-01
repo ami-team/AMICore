@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc;
 
+import lombok.*;
+
 import java.util.*;
 import java.util.regex.*;
 
@@ -14,14 +16,19 @@ public class CatalogSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static final class Tuple extends Tuple8<String, String, String, String, String, String, String, Boolean>
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class Tuple
 	{
-		private static final long serialVersionUID = -7534852988258983396L;
-
-		public Tuple(String _x, String _y, String _z, String _t, String _u, String _v, String _w, boolean _a)
-		{
-			super(_x, _y, _z, _t, _u, _v, _w, _a);
-		}
+		@NotNull String externalCatalog;
+		@NotNull String internalCatalog;
+		@Nullable String internalSchema;
+		@NotNull String jdbcUrl;
+		@Nullable String username;
+		@Nullable String password;
+		@Nullable String description;
+		/*----*/ boolean archived;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -191,7 +198,7 @@ public class CatalogSingleton
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getConnection(tuple.x, tuple.y, tuple.t, tuple.u, tuple.v, AMIUser, timeZone, flags);
+		return DriverSingleton.getConnection(tuple.getExternalCatalog(), tuple.getInternalCatalog(), tuple.getJdbcUrl(), tuple.getUsername(), tuple.getPassword(), AMIUser, timeZone, flags);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -201,7 +208,7 @@ public class CatalogSingleton
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getType(tuple.t);
+		return DriverSingleton.getType(tuple.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -211,7 +218,7 @@ public class CatalogSingleton
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getProto(tuple.t);
+		return DriverSingleton.getProto(tuple.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -221,7 +228,7 @@ public class CatalogSingleton
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getClass(tuple.t);
+		return DriverSingleton.getClass(tuple.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -231,7 +238,7 @@ public class CatalogSingleton
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getFlags(tuple.t);
+		return DriverSingleton.getFlags(tuple.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -241,7 +248,7 @@ public class CatalogSingleton
 	{
 		Tuple tuple = getTuple(catalog);
 
-		return DriverSingleton.getKey(tuple.y, tuple.t, tuple.u , tuple.v);
+		return DriverSingleton.getKey(tuple.getInternalCatalog(), tuple.getJdbcUrl(), tuple.getUsername() , tuple.getPassword());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -284,11 +291,11 @@ public class CatalogSingleton
 		for(Tuple tuple: s_catalogs.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"externalCatalog\"><![CDATA[").append(tuple.x).append("]]></field>")
-			      .append("<field name=\"internalCatalog\"><![CDATA[").append(tuple.y).append("]]></field>")
-			      .append("<field name=\"internalSchema\"><![CDATA[").append(tuple.z).append("]]></field>")
-			      .append("<field name=\"description\"><![CDATA[").append(tuple.w).append("]]></field>")
-			      .append("<field name=\"archived\"><![CDATA[").append(tuple.a).append("]]></field>")
+			      .append("<field name=\"externalCatalog\"><![CDATA[").append(tuple.getExternalCatalog()).append("]]></field>")
+			      .append("<field name=\"internalCatalog\"><![CDATA[").append(tuple.getInternalCatalog()).append("]]></field>")
+			      .append("<field name=\"internalSchema\"><![CDATA[").append(tuple.getInternalSchema()).append("]]></field>")
+			      .append("<field name=\"description\"><![CDATA[").append(tuple.getDescription()).append("]]></field>")
+			      .append("<field name=\"archived\"><![CDATA[").append(tuple.isArchived()).append("]]></field>")
 			      .append("</row>")
 			;
 		}
