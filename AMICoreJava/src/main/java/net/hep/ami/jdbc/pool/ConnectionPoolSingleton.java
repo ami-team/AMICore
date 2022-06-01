@@ -1,10 +1,11 @@
 package net.hep.ami.jdbc.pool;
 
+import lombok.*;
+
 import java.sql.*;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
 
 import com.zaxxer.hikari.*;
 
@@ -14,14 +15,13 @@ public class ConnectionPoolSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final class Tuple extends Tuple2<HikariDataSource, HikariPoolMXBean>
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class Tuple
 	{
-		private static final long serialVersionUID = 315517018319324046L;
-
-		public Tuple(HikariDataSource _x, HikariPoolMXBean _y)
-		{
-			super(_x, _y);
-		}
+		@NotNull private final HikariDataSource dataSource;
+		@NotNull private final HikariPoolMXBean poolMXBean;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -120,7 +120,7 @@ public class ConnectionPoolSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return tuple.x.getConnection();
+		return tuple.getDataSource().getConnection();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -138,13 +138,13 @@ public class ConnectionPoolSingleton
 		for(Tuple value: s_pools.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"name\">").append(value.x.getPoolName()).append("</field>")
-			      .append("<field name=\"minIdle\">").append(value.x.getMinimumIdle()).append("</field>")
-			      .append("<field name=\"maxSize\">").append(value.x.getMaximumPoolSize()).append("</field>")
-			      .append("<field name=\"numIdle\">").append(value.y.getIdleConnections()).append("</field>")
-			      .append("<field name=\"numActive\">").append(value.y.getActiveConnections()).append("</field>")
-			      .append("<field name=\"connTimeout\">").append(value.x.getConnectionTimeout()).append("</field>")
-			      .append("<field name=\"idleTimeout\">").append(value.x.getIdleTimeout()).append("</field>")
+			      .append("<field name=\"name\">").append(value.getDataSource().getPoolName()).append("</field>")
+			      .append("<field name=\"minIdle\">").append(value.getDataSource().getMinimumIdle()).append("</field>")
+			      .append("<field name=\"maxSize\">").append(value.getDataSource().getMaximumPoolSize()).append("</field>")
+			      .append("<field name=\"numIdle\">").append(value.getPoolMXBean().getIdleConnections()).append("</field>")
+			      .append("<field name=\"numActive\">").append(value.getPoolMXBean().getActiveConnections()).append("</field>")
+			      .append("<field name=\"connTimeout\">").append(value.getDataSource().getConnectionTimeout()).append("</field>")
+			      .append("<field name=\"idleTimeout\">").append(value.getDataSource().getIdleTimeout()).append("</field>")
 			      .append("</row>")
 			;
 		}

@@ -3,7 +3,6 @@ package net.hep.ami.jdbc;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -53,6 +52,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	@Override
 	public Iterator<Row> iterator()
 	{
@@ -184,7 +184,7 @@ public final class RowSetIterable implements Iterable<Row>
 	@NotNull
 	public static StringBuilder getStringBuilder(@NotNull RowSet rowSet, @Nullable String type, @Nullable Integer totalNumberOfRows) throws Exception
 	{
-		AMIStringBuilder result = new AMIStringBuilder();
+		StringBuilder result = new StringBuilder();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* FIELD DESCRIPTIONS                                                                                         */
@@ -277,18 +277,18 @@ public final class RowSetIterable implements Iterable<Row>
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<fieldDescriptions").appendIf(type != null, " rowset=\"", Utility.escapeHTML(type), "\"").append(">")
+		result.append("<fieldDescriptions").append(type != null ? " rowset=\"" + Utility.escapeHTML(type) + "\"" : "").append(">")
 		      .append(descrs)
 		      .append("</fieldDescriptions>")
 
-		      .append("<rowset").appendIf(type != null, " type=\"", Utility.escapeHTML(type), "\"").append(" truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\"").appendIf(totalNumberOfRows != null, " totalNumberOfRows=\"", totalNumberOfRows, "\"").append(">")
+		      .append("<rowset").append(type != null ? " type=\"" + Utility.escapeHTML(type) + "\"" : "").append(" truncated=\"").append(rowSet.isTruncated()).append("\" maxNumberOfRows=\"").append(maxNumberOfRows).append("\"").append(totalNumberOfRows != null ? " totalNumberOfRows=\"" + totalNumberOfRows + "\"" : "").append(">")
 		      .append(rows)
 		      .append("</rowset>")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result.toStringBuilder();
+		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -1,13 +1,12 @@
 package net.hep.ami.jdbc.query.sql;
 
-import java.util.*;
-
 import lombok.*;
+
+import java.util.*;
 
 import org.antlr.v4.runtime.*;
 
 import net.hep.ami.jdbc.query.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -244,9 +243,23 @@ public class Tokenizer
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class Tuple
+	{
+		@NotNull private final Map<QId, QId> aliasFieldMap;
+		@NotNull private final List<Boolean> fieldHasAliasList;
+		@NotNull private final Map<QId, QId> rawFieldAliasMap;
+		@NotNull private final List<Boolean> tableHasAliasList;
+		@NotNull private final Map<QId, QId> rawTableAliasMap;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@NotNull
 	@Contract("_ -> new")
-	public static Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> extractAliasInfo(@NotNull String sql) throws Exception
+	public static Tuple extractAliasInfo(@NotNull String sql) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* EXTRACT FIELDS AND TABLES                                                                                  */
@@ -482,7 +495,7 @@ public class Tokenizer
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple5<>(
+		return new Tuple(
 			aliasFieldMap,
 			fieldHasAliasList,
 			rawFieldAliasMap,

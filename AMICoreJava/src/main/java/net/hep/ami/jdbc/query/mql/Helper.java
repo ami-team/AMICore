@@ -1,5 +1,7 @@
 package net.hep.ami.jdbc.query.mql;
 
+import lombok.*;
+
 import java.util.*;
 import java.util.regex.*;
 
@@ -89,9 +91,20 @@ public class Helper
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static final class FromAndWhereSets
+	{
+		@NotNull private final Set<String> fromSet;
+		@NotNull private final Set<String> whereSet;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@NotNull
 	@Contract("_, _, _, _, _ -> new")
-	public static Tuple2<Set<String>, Set<String>> getIsolatedPath(String catalog, QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
+	public static Helper.FromAndWhereSets getIsolatedPath(String catalog, QId primaryKey, List<Resolution> resolutionList, int skip, boolean isFieldNameOnly) throws Exception
 	{
 		boolean dualNeeded = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_HAS_DUAL) == DriverMetadata.FLAG_HAS_DUAL;
 
@@ -134,7 +147,7 @@ public class Helper
 				}
 			}
 
-			return new Tuple2<>(globalFromSet, globalWhereSet);
+			return new FromAndWhereSets(globalFromSet, globalWhereSet);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -315,7 +328,7 @@ public class Helper
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple2<>(globalFromSet, globalWhereSet);
+		return new FromAndWhereSets(globalFromSet, globalWhereSet);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -329,7 +342,7 @@ public class Helper
 		/* ISOLATE JOINS                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2<Set<String>, Set<String>> tuple = getIsolatedPath(
+		FromAndWhereSets tuple = getIsolatedPath(
 			catalog,
 			primaryKey,
 			resolutionList,
@@ -341,7 +354,7 @@ public class Helper
 		/* ISOLATE EXPRESSION                                                                                         */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(noComp || !tuple.y.isEmpty())
+		if(noComp || !tuple.getWhereSet().isEmpty())
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -349,16 +362,16 @@ public class Helper
 			{
 				if(!"jdbc:oracle".equals(CatalogSingleton.getProto(catalog)))
 				{
-					tuple.x.remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
+					tuple.getFromSet().remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			XQLSelect query = new XQLSelect().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-			                                 .addFromPart(tuple.x)
+			                                 .addFromPart(tuple.getFromSet())
 			                                 .addWherePart("(" + expression + ")")
-			                                 .addWherePart(tuple.y)
+			                                 .addWherePart(tuple.getWhereSet())
 			;
 
 			/*-------------------------------------------------------------*/
@@ -397,14 +410,38 @@ public class Helper
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
-	private static final Pattern III = Pattern.compile("^\\s*\\?\\#[0-9]+\\s*$");
+	private static final Pattern III = Pattern.compile("^\\s*\\?#[0-9]+\\s*$");
 	private static final Pattern KKK = Pattern.compile("^\\s*'(''|[^'])*'\\s*$");
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static class FieldsAndValues
+	{
+		@NotNull private final List<String> fieldPart;
+		@NotNull private final List<String> valuePart;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	public static class Tuple
+	{
+		@NotNull private final AMIValue<String> catalog;
+		@NotNull private final AMIValue<QId> primaryKey;
+		@NotNull private final List<Resolution> resolutionList;
+		@NotNull private final Set<CharSequence> expression;
+	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Contract("_, _, _, _, _, _, _ -> new")
-	public static Tuple2<List<String>, List<String>> resolve(@NotNull String catalog, @NotNull QId primaryKey, @NotNull List<Resolution> resolutionList, @NotNull List<? extends CharSequence> expressionList, @NotNull String AMIUser, boolean isAdmin, boolean insert) throws Exception
+	public static FieldsAndValues resolve(@NotNull String catalog, @NotNull QId primaryKey, @NotNull List<Resolution> resolutionList, @NotNull List<? extends CharSequence> expressionList, @NotNull String AMIUser, boolean isAdmin, boolean insert) throws Exception
 	{
 		final int nb1 = resolutionList.size();
 		final int nb2 = expressionList.size();
@@ -434,9 +471,9 @@ public class Helper
 
 		Set<String> locked = new HashSet<>();
 
-		Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>> tuple;
+		Tuple tuple;
 
-		Map<String, Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>>> entries = new LinkedHashMap<>();
+		Map<String, Tuple> entries = new LinkedHashMap<>();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -465,7 +502,7 @@ public class Helper
 			{
 				if(!isAdmin)
 				{
-					throw new Exception("user `" + AMIUser + "` not allow to modify admin-only field " + new QId(column, false).toString());
+					throw new Exception("user `" + AMIUser + "` not allow to modify admin-only field " + new QId(column, false));
 				}
 
 				/**/ if(HHH.matcher(expression).matches())
@@ -481,7 +518,7 @@ public class Helper
 			{
 				if(!isAdmin)
 				{
-					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false).toString());
+					throw new Exception("user `" + AMIUser + "` not allow to modify crypted field " + new QId(column, false));
 				}
 
 				/**/ if(HHH.matcher(expression).matches())
@@ -520,7 +557,7 @@ public class Helper
 
 				tmpExpression = resolution.getInternalQId().toString()
 				                + " = " +
-				                /*----*/ expression /*----*/.toString()
+				                /*---------*/ expression /*---------*/
 				;
 
 				for(SchemaSingleton.FrgnKeys path: resolution.getPaths())
@@ -553,19 +590,19 @@ public class Helper
 
 					if(tuple == null)
 					{
-						entries.put(field, tuple = new Tuple4<>(
-							new Value<>(),
-							new Value<>(),
+						entries.put(field, tuple = new Tuple(
+							new AMIValue<>(),
+							new AMIValue<>(),
 							new ArrayList<>(),
 							new LinkedHashSet<>()
 						));
 					}
 
-					tuple.x.value = path.get(0).pkExternalCatalog;
-					tuple.y.value = new QId(path.get(0).pkInternalCatalog, path.get(0).pkEntity, path.get(0).pkField);
+					tuple.getCatalog().value = path.get(0).pkExternalCatalog;
+					tuple.getPrimaryKey().value = new QId(path.get(0).pkInternalCatalog, path.get(0).pkEntity, path.get(0).pkField);
 
-					tuple.z.add(tmpResolution);
-					tuple.t.add(tmpExpression);
+					tuple.getResolutionList().add(tmpResolution);
+					tuple.getExpression().add(tmpExpression);
 
 					/*------------------------------------------------------------------------------------------------*/
 				}
@@ -584,21 +621,21 @@ public class Helper
 
 				if(tuple == null)
 				{
-					entries.put(field, tuple = new Tuple4<>(
-						new Value<>(),
-						new Value<>(),
+					entries.put(field, tuple = new Tuple(
+						new AMIValue<>(),
+						new AMIValue<>(),
 						new ArrayList<>(),
 						new LinkedHashSet<>()
 					));
 				}
 
-				tuple.x.value = /*--------*/ null /*--------*/;
-				tuple.y.value = /*----------------------------------*/ null /*----------------------------------*/;
+				tuple.getCatalog().value = /*--------*/ null /*--------*/;
+				tuple.getPrimaryKey().value = /*----------------------------------*/ null /*----------------------------------*/;
 
-				tuple.z.clear();
-				tuple.t.clear();
+				tuple.getResolutionList().clear();
+				tuple.getExpression().clear();
 
-				tuple.t.add(expression);
+				tuple.getExpression().add(expression);
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -613,22 +650,22 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple4<Value<String>, Value<QId>, List<Resolution>, Set<CharSequence>>> entry: entries.entrySet())
+		for(Map.Entry<String, Tuple> entry: entries.entrySet())
 		{
 			field = entry.getKey();
 			tuple = entry.getValue();
 
 			X.add(Utility.textToSqlId(field));
 
-			if(tuple.x.value != null
+			if(tuple.getCatalog().value != null
 			   &&
-			   tuple.y.value != null
+			   tuple.getPrimaryKey().value != null
 			 ) {
-				Y.add(getIsolatedExpression(tuple.x.value, tuple.y.value, tuple.z, String.join(" AND ", tuple.t), 1, true, true, false));
+				Y.add(getIsolatedExpression(tuple.getCatalog().value, tuple.getPrimaryKey().value, tuple.getResolutionList(), String.join(" AND ", tuple.getExpression()), 1, true, true, false));
 			}
 			else
 			{
-				Y.add(tuple.t.iterator().next().toString());
+				Y.add(tuple.getExpression().iterator().next().toString());
 			}
 		}
 
@@ -657,7 +694,7 @@ public class Helper
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple2<>(X, Y);
+		return new FieldsAndValues(X, Y);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

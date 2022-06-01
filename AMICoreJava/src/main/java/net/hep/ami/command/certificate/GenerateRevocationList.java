@@ -41,18 +41,18 @@ public class GenerateRevocationList extends AbstractCommand
 
 		SecuritySingleton.PEM ca = new SecuritySingleton.PEM(new FileInputStream(fileName));
 
-		if(ca.privateKeys.length == 0)
+		if(ca.getPrivateKeys().length == 0)
 		{
 			throw new Exception("no private key in  `" + fileName + "`");
 		}
 
-		if(ca.x509Certificates.length == 0)
+		if(ca.getX509Certificates().length == 0)
 		{
 			throw new Exception("no certificate in  `" + fileName + "`");
 		}
 
-		caKey = ca.privateKeys[0];
-		caCrt = ca.x509Certificates[0];
+		caKey = ca.getPrivateKeys()[0];
+		caCrt = ca.getX509Certificates()[0];
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

@@ -305,11 +305,11 @@ public class Row
 	@NotNull
 	public StringBuilder toStringBuilder(@Nullable String type)
 	{
-		AMIStringBuilder result = new AMIStringBuilder();
+		StringBuilder result = new StringBuilder();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<row").appendIf(type != null, " type=\"", Utility.escapeHTML(type), "\"").append(">");
+		result.append("<row").append(type != null ? " type=\"" + Utility.escapeHTML(type) + "\"" : "").append(">");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -327,7 +327,7 @@ public class Row
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result.toStringBuilder();
+		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

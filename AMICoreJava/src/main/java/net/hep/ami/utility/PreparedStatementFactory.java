@@ -4,6 +4,9 @@ import java.sql.*;
 import java.math.*;
 import java.util.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.utility.parser.*;
@@ -32,21 +35,21 @@ public class PreparedStatementFactory
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple3<String, List<String>, List<Object>> tuple = prepare(sql, connection, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
+			Tuple tuple = prepare(sql, connection, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			result = statementMap.get(tuple.x);
+			result = statementMap.get(tuple.getSql());
 
 			if(result == null || result.isClosed())
 			{
-				statementMap.put(tuple.x, result = !returnGeneratedKeys ? (
-						connection.prepareStatement(tuple.x)
+				statementMap.put(tuple.getSql(), result = !returnGeneratedKeys ? (
+						connection.prepareStatement(tuple.getSql())
 					) : (
 						(columnNames == null) ? (
-							connection.prepareStatement(tuple.x, Statement.RETURN_GENERATED_KEYS)
+							connection.prepareStatement(tuple.getSql(), Statement.RETURN_GENERATED_KEYS)
 						) : (
-							connection.prepareStatement(tuple.x, /*-----*/ columnNames /*-----*/)
+							connection.prepareStatement(tuple.getSql(), /*-----*/ columnNames /*-----*/)
 						)
 					)
 				);
@@ -86,9 +89,21 @@ public class PreparedStatementFactory
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class Tuple
+	{
+		@NotNull private final String sql;
+		@NotNull private final List<String> typeList;
+		@NotNull private final List<Object> valueList;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@NotNull
 	@Contract("_, _, _ -> new")
-	private static Tuple3<String, List<String>, List<Object>> prepare(@NotNull String sql, Connection connexion, @Nullable Object[] args) throws Exception
+	private static Tuple prepare(@NotNull String sql, Connection connexion, @Nullable Object[] args) throws Exception
 	{
 		List<String> typeList = new ArrayList<>();
 		List<Object> valueList = new ArrayList<>();
@@ -99,7 +114,7 @@ public class PreparedStatementFactory
 
 		if(args == null)
 		{
-			return new Tuple3<>(sql, typeList, valueList);
+			return new Tuple(sql, typeList, valueList);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -366,19 +381,19 @@ public class PreparedStatementFactory
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple3<>(stringBuilder.toString(), typeList, valueList);
+		return new Tuple(stringBuilder.toString(), typeList, valueList);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void inject(@NotNull PreparedStatement statement, @NotNull Tuple3<String, List<String>, List<Object>> tuple) throws Exception
+	private static void inject(@NotNull PreparedStatement statement, @NotNull Tuple tuple) throws Exception
 	{
-		for(int i = 0; i < tuple.y.size(); i++)
+		for(int i = 0; i < tuple.getTypeList().size(); i++)
 		{
-			String type = tuple.y.get(i);
-			Object value = tuple.z.get(i);
+			String type = tuple.getTypeList().get(i);
+			Object value = tuple.getValueList().get(i);
 
 			if(type.startsWith("parse::"))
 			{

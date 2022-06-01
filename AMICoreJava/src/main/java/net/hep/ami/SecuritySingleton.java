@@ -55,6 +55,9 @@ public class SecuritySingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Getter
+	@Setter
+	@AllArgsConstructor
 	@SuppressWarnings("PointlessBitwiseExpression")
 	public static final class PEM
 	{
@@ -67,10 +70,10 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		public final PrivateKey[] privateKeys;
-		public final PublicKey[] publicKeys;
-		public final X509Certificate[] x509Certificates;
-		public final X509CRL[] x509CRLs;
+		@Nullable private final PrivateKey[] privateKeys;
+		@Nullable private final PublicKey[] publicKeys;
+		@Nullable private final X509Certificate[] x509Certificates;
+		@Nullable private final X509CRL[] x509CRLs;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -248,17 +251,6 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		@Contract(pure = true)
-		public PEM(@Nullable PrivateKey[] privateKeys, @Nullable PublicKey[] publicKeys, @Nullable X509Certificate[] x509Certificates, @Nullable X509CRL[] x509CRLs)
-		{
-			this.privateKeys = privateKeys;
-			this.publicKeys = publicKeys;
-			this.x509Certificates = x509Certificates;
-			this.x509CRLs = x509CRLs;
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		@NotNull
 		public static PEM generateCA(int keySize, @NotNull String subject, @Nullable String email, int validity) throws Exception
 		{
@@ -334,10 +326,13 @@ public class SecuritySingleton
 			{
 				for(PrivateKey privateKey: privateKeys)
 				{
-					stringBuilder.append("-----BEGIN PRIVATE KEY-----\n")
-					             .append(byteArrayToBase64String(privateKey.getEncoded()))
-					             .append("-----END PRIVATE KEY-----\n")
-					;
+					if(privateKey != null)
+					{
+						stringBuilder.append("-----BEGIN PRIVATE KEY-----\n")
+						             .append(byteArrayToBase64String(privateKey.getEncoded()))
+						             .append("-----END PRIVATE KEY-----\n")
+						;
+					}
 				}
 			}
 
@@ -345,12 +340,15 @@ public class SecuritySingleton
 
 			if(publicKeys != null)
 			{
-				for(PublicKey _publicKey: publicKeys)
+				for(PublicKey publicKey: publicKeys)
 				{
-					stringBuilder.append("-----BEGIN PUBLIC KEY-----\n")
-					             .append(byteArrayToBase64String(_publicKey.getEncoded()))
-					             .append("-----END PUBLIC KEY-----\n")
-					;
+					if(publicKey != null)
+					{
+						stringBuilder.append("-----BEGIN PUBLIC KEY-----\n")
+						             .append(byteArrayToBase64String(publicKey.getEncoded()))
+						             .append("-----END PUBLIC KEY-----\n")
+						;
+					}
 				}
 			}
 
@@ -360,16 +358,19 @@ public class SecuritySingleton
 			{
 				for(X509Certificate x509Certificate: x509Certificates)
 				{
-					try
+					if(x509Certificate != null)
 					{
-						stringBuilder.append("-----BEGIN CERTIFICATE-----\n")
-						             .append(byteArrayToBase64String(x509Certificate.getEncoded()))
-						             .append("-----END CERTIFICATE-----\n")
-						;
-					}
-					catch(Exception e)
-					{
-						stringBuilder.append(e.getMessage());
+						try
+						{
+							stringBuilder.append("-----BEGIN CERTIFICATE-----\n")
+							             .append(byteArrayToBase64String(x509Certificate.getEncoded()))
+							             .append("-----END CERTIFICATE-----\n")
+							;
+						}
+						catch(Exception e)
+						{
+							stringBuilder.append(e.getMessage());
+						}
 					}
 				}
 			}
@@ -382,10 +383,13 @@ public class SecuritySingleton
 				{
 					try
 					{
-						stringBuilder.append("-----BEGIN X509 CRL-----\n")
-						             .append(byteArrayToBase64String(x509CRL.getEncoded()))
-						             .append("-----END X509 CRL-----\n")
-						;
+						if(x509CRL != null)
+						{
+							stringBuilder.append("-----BEGIN X509 CRL-----\n")
+							             .append(byteArrayToBase64String(x509CRL.getEncoded()))
+							             .append("-----END X509 CRL-----\n")
+							;
+						}
 					}
 					catch(Exception e)
 					{
@@ -714,8 +718,13 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String byteArrayToBase64String(byte @NotNull[] data)
+	public static String byteArrayToBase64String(byte[] data)
 	{
+		if(data == null)
+		{
+			return "";
+		}
+
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* ENCODE TO BASE64                                                                                           */
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -843,6 +852,26 @@ public class SecuritySingleton
 	public static String md5Sum(@NotNull String s) throws Exception
 	{
 		return md5Sum(s.getBytes(StandardCharsets.UTF_8));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String sha1Sum(byte @NotNull[] s) throws Exception
+	{
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+
+		messageDigest.update(s);
+
+		return String.format("%064x", new BigInteger(1, messageDigest.digest()));
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static String sha1Sum(@NotNull String s) throws Exception
+	{
+		return sha1Sum(s.getBytes(StandardCharsets.UTF_8));
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1023,7 +1052,7 @@ public class SecuritySingleton
 
 	@Nullable
 	@Contract("null -> null; !null -> !null")
-	public static String bcrypt(@Nullable String pass) throws Exception
+	public static String bcrypt(@Nullable String pass)
 	{
 		if(pass == null)
 		{

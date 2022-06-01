@@ -90,18 +90,18 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		SecuritySingleton.PEM ca = new SecuritySingleton.PEM(new FileInputStream(fileName));
 
-		if(ca.privateKeys.length == 0)
+		if(ca.getPrivateKeys().length == 0)
 		{
 			throw new Exception("no private key in  `" + fileName + "`");
 		}
 
-		if(ca.x509Certificates.length == 0)
+		if(ca.getX509Certificates().length == 0)
 		{
 			throw new Exception("no certificate in  `" + fileName + "`");
 		}
 
-		caKey = ca.privateKeys[0];
-		caCrt = ca.x509Certificates[0];
+		caKey = ca.getPrivateKeys()[0];
+		caCrt = ca.getX509Certificates()[0];
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -124,8 +124,8 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
-		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
+		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.getPrivateKeys()[0], pem.getX509Certificates(), password.toCharArray());
+		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.getPrivateKeys()[0], pem.getX509Certificates(), password.toCharArray());
 
 		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
@@ -192,11 +192,11 @@ public class GenerateCertificateAndSendEmail extends AbstractCommand
 
 		querier.executeSQLUpdate("router_authority", "INSERT INTO `router_authority` (`vo`, `clientDN`, `issuerDN`, `notBefore`, `notAfter`, `serial`, `email`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, CURRENT_TIMESTAMP, ?7, CURRENT_TIMESTAMP, ?7)",
 			virtOrg,
-			SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal()),
-			SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal()),
-			new java.sql.Date(pem.x509Certificates[0].getNotBefore().getTime()),
-			new java.sql.Date(pem.x509Certificates[0].getNotAfter().getTime()),
-			pem.x509Certificates[0].getSerialNumber().toString(10),
+			SecuritySingleton.getDN(pem.getX509Certificates()[0].getSubjectX500Principal()),
+			SecuritySingleton.getDN(pem.getX509Certificates()[0].getIssuerX500Principal()),
+			new java.sql.Date(pem.getX509Certificates()[0].getNotBefore().getTime()),
+			new java.sql.Date(pem.getX509Certificates()[0].getNotAfter().getTime()),
+			pem.getX509Certificates()[0].getSerialNumber().toString(10),
 			email,
 			m_AMIUser
 		);

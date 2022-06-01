@@ -2,6 +2,7 @@ package net.hep.ami.utility;
 
 import org.jetbrains.annotations.*;
 
+@SuppressWarnings({"PointlessBitwiseExpression", "RedundantIfStatement"})
 public class Empty
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -96,19 +96,19 @@ public class Update
 	@NotNull
 	public StringBuilder toStringBuilder()
 	{
-		AMIStringBuilder result = new AMIStringBuilder().append("<sql><![CDATA[").append(m_sql).append("]]></sql>")
-		                                                .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
-		                                                .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
-		                                                .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
-		                                                .append("<rowset>")
-		                                                .append("<row>")
-		                                                .append("<field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field>")
-		                                                .appendIf(m_generatedKey != null, "<field name=\"generatedKey\"><![CDATA[", m_generatedKey, "]]></field>")
-		                                                .append("</row>")
-		                                                .append("</rowset>")
+		StringBuilder result = new StringBuilder().append("<sql><![CDATA[").append(m_sql).append("]]></sql>")
+		                                          .append("<mql><![CDATA[").append(m_mql).append("]]></mql>")
+		                                          .append("<ast><![CDATA[").append(m_ast).append("]]></ast>")
+		                                          .append("<info><![CDATA[").append(m_nbOfUpdatedRows).append(" element(s) updated with success]]></info>")
+		                                          .append("<rowset>")
+		                                          .append("<row>")
+		                                          .append("<field name=\"nbOfUpdatedRows\"><![CDATA[").append(m_nbOfUpdatedRows).append("]]></field>")
+		                                          .append(m_generatedKey != null ? "<field name=\"generatedKey\"><![CDATA[" + m_generatedKey + "]]></field>" : "")
+		                                          .append("</row>")
+		                                          .append("</rowset>")
 		;
 
-		return result.toStringBuilder();
+		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

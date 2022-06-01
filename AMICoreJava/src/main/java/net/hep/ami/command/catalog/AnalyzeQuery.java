@@ -39,18 +39,18 @@ public class AnalyzeQuery extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple5<Map<QId, QId>, List<Boolean>, Map<QId, QId>, List<Boolean>, Map<QId, QId>> aliasInfo = Tokenizer.extractAliasInfo(xql);
+		Tokenizer.Tuple aliasInfo = Tokenizer.extractAliasInfo(xql);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<rowset type=\"info\">")
 		                          .append("<row>")
 		                          .append("<field name=\"parts\"><![CDATA[").append(partInfo.toString()).append("]]></field>")
-		                          .append("<field name=\"aliasField\"><![CDATA[").append(Utility.object2json(aliasInfo.x)).append("]]></field>")
-		                          .append("<field name=\"fieldHasAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.y)).append("]]></field>")
-		                          .append("<field name=\"rawFieldAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.z)).append("]]></field>")
-		                          .append("<field name=\"tableHasAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.t)).append("]]></field>")
-		                          .append("<field name=\"rawTableAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.u)).append("]]></field>")
+		                          .append("<field name=\"aliasField\"><![CDATA[").append(Utility.object2json(aliasInfo.getAliasFieldMap())).append("]]></field>")
+		                          .append("<field name=\"fieldHasAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.getFieldHasAliasList())).append("]]></field>")
+		                          .append("<field name=\"rawFieldAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.getRawFieldAliasMap())).append("]]></field>")
+		                          .append("<field name=\"tableHasAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.getTableHasAliasList())).append("]]></field>")
+		                          .append("<field name=\"rawTableAlias\"><![CDATA[").append(Utility.object2json(aliasInfo.getRawTableAliasMap())).append("]]></field>")
 		                          .append("</row>")
 		                          .append("</rowset>")
 		;

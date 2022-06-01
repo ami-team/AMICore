@@ -85,18 +85,18 @@ public class GenerateCertificate extends AbstractCommand
 
 		SecuritySingleton.PEM ca = new SecuritySingleton.PEM(new FileInputStream(fileName));
 
-		if(ca.privateKeys.length == 0)
+		if(ca.getPrivateKeys().length == 0)
 		{
 			throw new Exception("no private key in  `" + fileName + "`");
 		}
 
-		if(ca.x509Certificates.length == 0)
+		if(ca.getX509Certificates().length == 0)
 		{
 			throw new Exception("no certificate in  `" + fileName + "`");
 		}
 
-		caKey = ca.privateKeys[0];
-		caCrt = ca.x509Certificates[0];
+		caKey = ca.getPrivateKeys()[0];
+		caCrt = ca.getX509Certificates()[0];
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -119,8 +119,8 @@ public class GenerateCertificate extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
-		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.privateKeys[0], pem.x509Certificates, password.toCharArray());
+		KeyStore keyStore_JKS = SecuritySingleton.generateJKSKeyStore(pem.getPrivateKeys()[0], pem.getX509Certificates(), password.toCharArray());
+		KeyStore keyStore_PKCS12 = SecuritySingleton.generatePKCS12KeyStore(pem.getPrivateKeys()[0], pem.getX509Certificates(), password.toCharArray());
 
 		keyStore_JKS.setCertificateEntry("AMI-CA", caCrt);
 		keyStore_PKCS12.setCertificateEntry("AMI-CA", caCrt);
@@ -137,9 +137,9 @@ public class GenerateCertificate extends AbstractCommand
 
 				result.append("<rowset type=\"certificates\">")
 				      .append("<row>")
-				      .append("<field name=\"client_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getSubjectX500Principal())).append("]]></field>")
-				      .append("<field name=\"issuer_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.x509Certificates[0].getIssuerX500Principal())).append("]]></field>")
-				      .append("<field name=\"serial\"><![CDATA[").append(pem.x509Certificates[0].getSerialNumber()).append("]]></field>")
+				      .append("<field name=\"client_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.getX509Certificates()[0].getSubjectX500Principal())).append("]]></field>")
+				      .append("<field name=\"issuer_dn\"><![CDATA[").append(SecuritySingleton.getDN(pem.getX509Certificates()[0].getIssuerX500Principal())).append("]]></field>")
+				      .append("<field name=\"serial\"><![CDATA[").append(pem.getX509Certificates()[0].getSerialNumber()).append("]]></field>")
 				      .append("<field name=\"pem\">").append(pem.toString()).append("</field>")
 				      .append("<field name=\"keystore_jks\">").append(SecuritySingleton.byteArrayToBase64String(output1.toByteArray())).append("</field>")
 				      .append("<field name=\"keystore_p12\">").append(SecuritySingleton.byteArrayToBase64String(output2.toByteArray())).append("</field>")

@@ -10,7 +10,6 @@ import net.hep.ami.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.reflexion.*;
 
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -164,10 +163,10 @@ public class MQLToSQL
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2<Set<String>, Set<String>> tuple = Helper.getIsolatedPath(m_catalog, m_primaryKey, m_resolutionList, 0, false);
+		Helper.FromAndWhereSets fromAndWhereSets = Helper.getIsolatedPath(m_catalog, m_primaryKey, m_resolutionList, 0, false);
 
-		return result.addFromPart(tuple.x)
-		             .addWherePart(tuple.y)
+		return result.addFromPart(fromAndWhereSets.getFromSet())
+		             .addWherePart(fromAndWhereSets.getWhereSet())
 		             .addExtraPart(extra)
 		             .toStringBuilder()
 		;
@@ -184,7 +183,7 @@ public class MQLToSQL
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
+		Helper.FieldsAndValues fieldsAndValues = Helper.resolve(
 			m_catalog,
 			m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STMT),
@@ -197,7 +196,7 @@ public class MQLToSQL
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.addInsertPart(m_primaryKey.toStringBuilder(QId.MASK_ENTITY))
-		      .addFieldValuePart(tuple.x, tuple.y)
+		      .addFieldValuePart(fieldsAndValues.getFieldPart(), fieldsAndValues.getValuePart())
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -214,7 +213,7 @@ public class MQLToSQL
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple2<List<String>, List<String>> tuple = Helper.resolve(
+		Helper.FieldsAndValues fieldsAndValues = Helper.resolve(
 			m_catalog,
 			m_primaryKey,
 			visitQIdTuple       (context.m_qIds       , null, IS_MODIF_STMT),
@@ -227,7 +226,7 @@ public class MQLToSQL
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.addUpdatePart(m_primaryKey.toStringBuilder(QId.MASK_ENTITY))
-		      .addFieldValuePart(tuple.x, tuple.y)
+		      .addFieldValuePart(fieldsAndValues.getFieldPart(), fieldsAndValues.getValuePart())
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/

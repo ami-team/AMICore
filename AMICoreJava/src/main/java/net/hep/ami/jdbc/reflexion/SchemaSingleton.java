@@ -5,6 +5,9 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
@@ -797,9 +800,9 @@ public class SchemaSingleton
 
 					if(name != null && fkEntity != null && fkField != null && pkEntity != null && pkField != null)
 					{
-						Tuple2<String, String> tuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
+						CatalogTuple tuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
 
-						if(tuple.x != null && tuple.y != null)
+						if(tuple.getInternalCatalog() != null && tuple.getInternalCatalog() != null)
 						{
 							table = m_catalog.tables.get(fkEntity);
 
@@ -811,8 +814,8 @@ public class SchemaSingleton
 									m_internalCatalog,
 									fkEntity,
 									fkField,
-									tuple.x,
-									tuple.y,
+									tuple.getExternalCatalog(),
+									tuple.getExternalCatalog(),
 									pkEntity,
 									pkField
 								)));
@@ -827,9 +830,20 @@ public class SchemaSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		@Getter
+		@Setter
+		@AllArgsConstructor
+		private static final class CatalogTuple
+		{
+			@Nullable private final String externalCatalog;
+			@Nullable private final String internalCatalog;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		@NotNull
 		@Contract("_, _, _, _, _, _ -> new")
-		private Tuple2<String, String> resolvePKExternalCatalog(@Nullable String fkInternalCatalog, @NotNull String fkEntity, @NotNull String fkField, @Nullable String pkInternalCatalog, @NotNull String pkEntity, @NotNull String pkField)
+		private CatalogTuple resolvePKExternalCatalog(@Nullable String fkInternalCatalog, @NotNull String fkEntity, @NotNull String fkField, @Nullable String pkInternalCatalog, @NotNull String pkEntity, @NotNull String pkField)
 		{
 			String result_pkExternalCatalog;
 			String result_pkInternalCatalog;
@@ -892,7 +906,7 @@ public class SchemaSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			return new Tuple2<>(
+			return new CatalogTuple(
 				result_pkExternalCatalog,
 				result_pkInternalCatalog
 			);

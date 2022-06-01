@@ -1,49 +1,37 @@
 package net.hep.ami.utility;
 
-import java.io.*;
+import lombok.*;
 
-import net.hep.ami.utility.parser.*;
+import java.io.*;
 
 import org.jetbrains.annotations.*;
 
-/**
- * A 2-tuple.
- */
-
-public class Tuple2<A, B> implements Serializable
+@Getter
+@Setter
+public class AMIValue<A> implements Serializable
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final long serialVersionUID = -483227104742113803L;
+	private static final long serialVersionUID = -4379454079126814232L;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	/**
-	 * x
-	 */
-
-	public final A x;
-
-	/**
-	 * y
-	 */
-
-	public final B y;
+	public A value;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
-
-	/**
-	 * Constructor
-	 *
-	 * @param _x x
-	 * @param _y y
-	 */
 
 	@Contract(pure = true)
-	public Tuple2(A _x, B _y)
+	public AMIValue()
 	{
-		x = _x;
-		y = _y;
+		value = null;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Contract(pure = true)
+	public AMIValue(A _value)
+	{
+		value = _value;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -51,13 +39,7 @@ public class Tuple2<A, B> implements Serializable
 	@Override
 	public String toString()
 	{
-		return new StringBuilder().append("[")
-		                          .append(Utility.object2json(x))
-		                          .append(",")
-		                          .append(Utility.object2json(y))
-		                          .append("]")
-		                          .toString()
-		;
+		return value.toString();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
