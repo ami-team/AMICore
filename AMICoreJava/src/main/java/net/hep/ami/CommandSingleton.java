@@ -1,12 +1,11 @@
 package net.hep.ami;
 
+import lombok.*;
+
 import java.util.*;
 import java.util.regex.*;
 import java.lang.reflect.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
