@@ -802,7 +802,7 @@ public class SchemaSingleton
 					{
 						CatalogTuple tuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
 
-						if(tuple.getInternalCatalog() != null && tuple.getInternalCatalog() != null)
+						if(tuple.getExternalCatalog() != null && tuple.getInternalCatalog() != null)
 						{
 							table = m_catalog.tables.get(fkEntity);
 
@@ -815,7 +815,7 @@ public class SchemaSingleton
 									fkEntity,
 									fkField,
 									tuple.getExternalCatalog(),
-									tuple.getExternalCatalog(),
+									tuple.getInternalCatalog(),
 									pkEntity,
 									pkField
 								)));
