@@ -339,7 +339,7 @@ PARAMETER
 	| '?^<' (~'>')+ '>' INT		/* TYPED HASHED LABELED PARAMETER */
 	| '?<' (~'>')+ '>' INT		/* TYPED LABELED PARAMETER */
 	| '?#' INT					/* CRYPTED LABELED PARAMETER */
-	| '?^' INT					/* CRYPTED HASHED PARAMETER */
+	| '?^' INT					/* HASHED LABELED PARAMETER */
 	| '?' INT					/* LABELED PARAMETER */
 	;
 

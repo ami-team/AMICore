@@ -14,7 +14,7 @@ options {
 
 query returns [ List<String> tokens ]
 	@init { $tokens = new ArrayList<>(); }
-	: (token	 { $tokens.add($token.v); })*
+	: (token { $tokens.add($token.v); })*
 	;
 
 token returns [ String v ]
@@ -46,8 +46,10 @@ STRING
 
 PARAMETER
 	: '?#<' (~'>')+ '>' INT		/* TYPED CRYPTED LABELED PARAMETER */
+	| '?^<' (~'>')+ '>' INT		/* TYPED HASHED LABELED PARAMETER */
 	| '?<' (~'>')+ '>' INT		/* TYPED LABELED PARAMETER */
 	| '?#' INT					/* CRYPTED LABELED PARAMETER */
+	| '?^' INT					/* HASHED LABELED PARAMETER */
 	| '?' INT					/* LABELED PARAMETER */
 	;
 
