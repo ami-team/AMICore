@@ -13,7 +13,7 @@ import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings("DuplicatedCode")
 public class LocalizationSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -84,7 +84,7 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error("could not initialize " + NEW_TLS_PROTOCOL + " context", e);
+			LogSingleton.root.error("could not initialize {} context", NEW_TLS_PROTOCOL, e);
 
 			tmp = null;
 		}
@@ -118,7 +118,7 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error("could not initialize " + OLD_TLS_PROTOCOL + " context", e);
+			LogSingleton.root.error("could not initialize {} context", OLD_TLS_PROTOCOL, e);
 
 			tmp = null;
 		}

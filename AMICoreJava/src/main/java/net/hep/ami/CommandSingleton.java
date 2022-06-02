@@ -21,7 +21,7 @@ public class CommandSingleton
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	private static final class Tuple
+	private static final class CommandDescr
 	{
 		@NotNull private String name;
 		@Nullable private String help;
@@ -33,7 +33,7 @@ public class CommandSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_commands = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, CommandDescr> s_commands = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	private static final Set<String> s_reserved = new HashSet<>();
 
@@ -209,7 +209,7 @@ public class CommandSingleton
 		s_commands.put(
 			commandName
 			,
-			new Tuple(
+			new CommandDescr(
 				commandName,
 				clazz.getMethod("help").invoke(null).toString(),
 				clazz.getMethod("usage").invoke(null).toString(),
@@ -218,7 +218,7 @@ public class CommandSingleton
 					Map.class,
 					long.class
 				),
-				!commandVisible.equals("0"),
+				Bool.valueOf(commandVisible),
 				commandRoleValidatorClass
 			)
 		);
@@ -281,7 +281,7 @@ public class CommandSingleton
 		/* RESOLVE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple tuple = resolveCommand(command);
+		CommandDescr commandDescr = resolveCommand(command);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CHECK ROLES                                                                                                */
@@ -293,7 +293,7 @@ public class CommandSingleton
 
 		try
 		{
-			userRoles = RoleSingleton.checkRoles(router, tuple.getName(), arguments, tuple.getCommandRoleValidatorClass(), checkRoles);
+			userRoles = RoleSingleton.checkRoles(router, commandDescr.getName(), arguments, commandDescr.getCommandRoleValidatorClass(), checkRoles);
 		}
 		finally
 		{
@@ -311,7 +311,7 @@ public class CommandSingleton
 		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		             .append("\n")
 		             .append("<AMIMessage>")
-		             .append("<command><![CDATA[").append(tuple.getName()).append("]]></command>")
+		             .append("<command><![CDATA[").append(commandDescr.getName()).append("]]></command>")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -345,7 +345,7 @@ public class CommandSingleton
 			/* CREATE COMMAND INSTANCE                                                                                */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			AbstractCommand commandObject = (AbstractCommand) tuple.getConstructor().newInstance(
+			AbstractCommand commandObject = (AbstractCommand) commandDescr.getConstructor().newInstance(
 				userRoles,
 				arguments,
 				transactionId
@@ -376,11 +376,11 @@ public class CommandSingleton
 			             .append("<executionTime><![CDATA[0.000]]></executionTime>")
 
 			             .append("<help><![CDATA[")
-			             .append((tuple.getHelp() != null) ? s_xml10Pattern.matcher(tuple.getHelp()).replaceAll("?") : "")
+			             .append((commandDescr.getHelp() != null) ? s_xml10Pattern.matcher(commandDescr.getHelp()).replaceAll("?") : "")
 			             .append("]]></help>")
 
 			             .append("<usage><![CDATA[")
-			             .append((tuple.getUsage() != null) ? s_xml10Pattern.matcher(tuple.getUsage()).replaceAll("?") : "")
+			             .append((commandDescr.getUsage() != null) ? s_xml10Pattern.matcher(commandDescr.getUsage()).replaceAll("?") : "")
 			             .append("]]></usage>")
 			;
 
@@ -413,7 +413,7 @@ public class CommandSingleton
 		/* RESOLVE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple tuple = resolveCommand(command);
+		CommandDescr tuple = resolveCommand(command);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CREATE COMMAND INSTANCE                                                                                    */
@@ -436,9 +436,9 @@ public class CommandSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static Tuple resolveCommand(String command) throws Exception
+	private static CommandDescr resolveCommand(String command) throws Exception
 	{
-		Tuple result;
+		CommandDescr result;
 
 		for(;;)
 		{
@@ -488,20 +488,20 @@ public class CommandSingleton
 
 		result.append("<rowset type=\"commands\">");
 
-		for(Tuple tuple: s_commands.values())
+		for(CommandDescr commandDescr: s_commands.values())
 		{
-			if(tuple.getName().equals("GetConfig"))
+			if(commandDescr.getName().equals("GetConfig"))
 			{
 				continue;
 			}
 
 			result.append("<row>")
-			      .append("<field name=\"command\"><![CDATA[").append(tuple.getName()).append("]]></field>")
-			      .append("<field name=\"help\"><![CDATA[").append(tuple.getHelp()).append("]]></field>")
-			      .append("<field name=\"usage\"><![CDATA[").append(tuple.getUsage()).append("]]></field>")
-			      .append("<field name=\"class\"><![CDATA[").append(tuple.getConstructor()).append("]]></field>")
-			      .append("<field name=\"visible\"><![CDATA[").append(tuple.isVisible()).append("]]></field>")
-			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(tuple.getCommandRoleValidatorClass()).append("]]></field>")
+			      .append("<field name=\"command\"><![CDATA[").append(commandDescr.getName()).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(commandDescr.getHelp()).append("]]></field>")
+			      .append("<field name=\"usage\"><![CDATA[").append(commandDescr.getUsage()).append("]]></field>")
+			      .append("<field name=\"class\"><![CDATA[").append(commandDescr.getConstructor()).append("]]></field>")
+			      .append("<field name=\"visible\"><![CDATA[").append(commandDescr.isVisible()).append("]]></field>")
+			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(commandDescr.getCommandRoleValidatorClass()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

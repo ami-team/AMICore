@@ -20,7 +20,7 @@ public class ConverterSingleton
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	private static final class Tuple
+	private static final class ConverterDescr
 	{
 		@NotNull String name;
 		@NotNull String mime;
@@ -29,7 +29,7 @@ public class ConverterSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_converters = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, ConverterDescr> s_converters = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -129,7 +129,7 @@ public class ConverterSingleton
 			s_converters.put(
 				name
 				,
-				new Tuple(
+				new ConverterDescr(
 					name,
 					mime,
 					templates
@@ -149,9 +149,9 @@ public class ConverterSingleton
 		/* GET TRANSFORM                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple tuple = s_converters.get(converter);
+		ConverterDescr converterInfo = s_converters.get(converter);
 
-		if(tuple == null)
+		if(converterInfo == null)
 		{
 			throw new Exception("converter `" + converter + "` not found");
 		}
@@ -160,7 +160,7 @@ public class ConverterSingleton
 		/* APPLY TRANSFORM                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Transformer transformer = tuple.getTemplates().newTransformer();
+		Transformer transformer = converterInfo.getTemplates().newTransformer();
 
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
@@ -173,7 +173,7 @@ public class ConverterSingleton
 		/* RETURN MIME                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return tuple.getMime();
+		return converterInfo.getMime();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -189,11 +189,11 @@ public class ConverterSingleton
 
 		result.append("<rowset type=\"converters\">");
 
-		for(Tuple tuple: s_converters.values())
+		for(ConverterDescr converterInfo: s_converters.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"xslt\"><![CDATA[").append(tuple.getName()).append("]]></field>")
-			      .append("<field name=\"mime\"><![CDATA[").append(tuple.getMime()).append("]]></field>")
+			      .append("<field name=\"xslt\"><![CDATA[").append(converterInfo.getName()).append("]]></field>")
+			      .append("<field name=\"mime\"><![CDATA[").append(converterInfo.getMime()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

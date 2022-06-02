@@ -1,12 +1,11 @@
 package net.hep.ami.utility;
 
+import lombok.*;
+
 import java.sql.*;
 import java.math.*;
 import java.util.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.utility.parser.*;

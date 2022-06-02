@@ -19,7 +19,7 @@ public class RoleSingleton
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	private static final class CommandValidatorTuple
+	private static final class CommandValidatorDescr
 	{
 		@NotNull private String name;
 		@NotNull private String help;
@@ -31,7 +31,7 @@ public class RoleSingleton
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	private static final class UserValidatorTuple
+	private static final class UserValidatorDescr
 	{
 		@NotNull private String name;
 		@NotNull private String help;
@@ -40,8 +40,8 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, CommandValidatorTuple> s_commandRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
-	private static final Map<String, UserValidatorTuple> s_userRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, CommandValidatorDescr> s_commandRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final Map<String, UserValidatorDescr> s_userRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -114,7 +114,7 @@ public class RoleSingleton
 		{
 			s_commandRoleValidators.put(
 				className,
-				new CommandValidatorTuple(
+				new CommandValidatorDescr(
 					className,
 					clazz.getMethod("help").invoke(null).toString(),
 					(Constructor<CommandValidator>) clazz.getConstructor()
@@ -125,7 +125,7 @@ public class RoleSingleton
 		{
 			s_userRoleValidators.put(
 				className,
-				new UserValidatorTuple(
+				new UserValidatorDescr(
 					className,
 					clazz.getMethod("help").invoke(null).toString(),
 					(Constructor<UserValidator>) clazz.getConstructor()
@@ -319,9 +319,9 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		CommandValidatorTuple tuple = s_commandRoleValidators.get(validatorClass.trim());
+		CommandValidatorDescr commandValidatorDescr = s_commandRoleValidators.get(validatorClass.trim());
 
-		if(tuple == null)
+		if(commandValidatorDescr == null)
 		{
 			throw new Exception("could not find command role validator `" + validatorClass + "`");
 		}
@@ -334,7 +334,7 @@ public class RoleSingleton
 
 		try
 		{
-			validator = tuple.getConstructor().newInstance();
+			validator = commandValidatorDescr.getConstructor().newInstance();
 		}
 		catch(Exception e)
 		{
@@ -361,9 +361,9 @@ public class RoleSingleton
 		/* GET VALIDATOR                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		UserValidatorTuple tuple = s_userRoleValidators.get(validatorClass.trim());
+		UserValidatorDescr userValidatorDescr = s_userRoleValidators.get(validatorClass.trim());
 
-		if(tuple == null)
+		if(userValidatorDescr == null)
 		{
 			throw new Exception("could not find user role validator `" + validatorClass + "`");
 		}
@@ -376,7 +376,7 @@ public class RoleSingleton
 
 		try
 		{
-			validator = tuple.getConstructor().newInstance();
+			validator = userValidatorDescr.getConstructor().newInstance();
 		}
 		catch(Exception e)
 		{
@@ -401,7 +401,7 @@ public class RoleSingleton
 
 		result.append("<rowset type=\"commandRoleValidator\">");
 
-		for(CommandValidatorTuple tuple: s_commandRoleValidators.values())
+		for(CommandValidatorDescr tuple: s_commandRoleValidators.values())
 		{
 			result.append("<row>")
 			     .append("<field name=\"class\"><![CDATA[").append(tuple.getName()).append("]]></field>")
@@ -416,7 +416,7 @@ public class RoleSingleton
 
 		result.append("<rowset type=\"UserRoleValidator\">");
 
-		for(UserValidatorTuple tuple: s_userRoleValidators.values())
+		for(UserValidatorDescr tuple: s_userRoleValidators.values())
 		{
 			result.append("<row>")
 					.append("<field name=\"class\"><![CDATA[").append(tuple.getName()).append("]]></field>")
