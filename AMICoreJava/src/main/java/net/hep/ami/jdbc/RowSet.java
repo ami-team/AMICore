@@ -155,6 +155,7 @@ public class RowSet
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		/* From AMI */
+
 		m_fieldHidden = new boolean[m_numberOfFields];
 		m_fieldAdminOnly = new boolean[m_numberOfFields];
 		m_fieldHashed = new boolean[m_numberOfFields];
@@ -711,7 +712,7 @@ public class RowSet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(m_fieldAdminOnly[i] || m_fieldCrypted[i])
+			if(m_fieldAdminOnly[i] || m_fieldHashed[i] || m_fieldCrypted[i])
 			{
 				if((m_flags & Querier.FLAG_ADMIN) != 0)
 				{

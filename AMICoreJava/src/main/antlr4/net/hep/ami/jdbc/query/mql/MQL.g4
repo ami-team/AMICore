@@ -336,8 +336,10 @@ STRING
 
 PARAMETER
 	: '?#<' (~'>')+ '>' INT		/* TYPED CRYPTED LABELED PARAMETER */
+	| '?^<' (~'>')+ '>' INT		/* TYPED HASHED LABELED PARAMETER */
 	| '?<' (~'>')+ '>' INT		/* TYPED LABELED PARAMETER */
 	| '?#' INT					/* CRYPTED LABELED PARAMETER */
+	| '?^' INT					/* CRYPTED HASHED PARAMETER */
 	| '?' INT					/* LABELED PARAMETER */
 	;
 

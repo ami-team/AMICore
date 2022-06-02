@@ -32,7 +32,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 
 	private final Map<String, String> m_lowerCaseToOrigCaseMap;
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public AMIMap(@NotNull Type type, boolean isOrdered, boolean isCaseInsensitive)
 	{

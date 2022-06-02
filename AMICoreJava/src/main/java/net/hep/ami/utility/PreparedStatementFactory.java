@@ -130,7 +130,74 @@ public class PreparedStatementFactory
 
 		for(String token: Tokenizer.tokenize(sql))
 		{
-			/**/ if(token.startsWith("?#<"))
+			/**/ if(token.startsWith("?^<")) /* HASHED PARAMETER */
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				idx = token.indexOf('>');
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(idx > 3)
+				{
+					i = Integer.parseInt(token.substring(idx + 1));
+
+					if(i >= l)
+					{
+						throw new Exception("not enough arguments");
+					}
+				}
+				else
+				{
+					throw new Exception("invalid parameter");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(!Empty.is(args[i], Empty.STRING_AMI_NULL))
+				{
+					typeList.add("parse::" + token.substring(3, idx).toLowerCase());
+
+					valueList.add(SecuritySingleton.bcrypt(args[i].toString()));
+
+					stringBuilder.append("?");
+				}
+				else
+				{
+					stringBuilder.append("NULL");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else if(token.startsWith("?^")) /* HASHED PARAMETER */
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				i = Integer.parseInt(token.substring(2));
+
+				if(i >= l)
+				{
+					throw new Exception("not enough arguments");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(!Empty.is(args[i], Empty.STRING_AMI_NULL))
+				{
+					typeList.add("java.lang.String");
+
+					valueList.add(SecuritySingleton.bcrypt(args[i].toString()));
+
+					stringBuilder.append("?");
+				}
+				else
+				{
+					stringBuilder.append("NULL");
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			}
+			else if(token.startsWith("?#<")) /* CRYPTED PARAMETER */
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
@@ -169,7 +236,7 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(token.startsWith("?#"))
+			else if(token.startsWith("?#")) /* CRYPTED PARAMETER */
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
@@ -197,7 +264,7 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(token.startsWith("?<"))
+			else if(token.startsWith("?<")) /* STD PARAMETER */
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
@@ -236,7 +303,7 @@ public class PreparedStatementFactory
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(token.startsWith("?"))
+			else if(token.startsWith("?")) /* STD PARAMETER */
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
@@ -253,7 +320,7 @@ public class PreparedStatementFactory
 				{
 					typeList.add(args[i].getClass().getName());
 
-					valueList.add(/*--------------*/ args[i] /*--------------*/);
+					valueList.add(/*----*/ args[i] /*----*/);
 
 					stringBuilder.append("?");
 				}
