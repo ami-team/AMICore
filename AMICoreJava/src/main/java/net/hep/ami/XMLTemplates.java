@@ -12,7 +12,6 @@ public class XMLTemplates
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("null -> new")
 	private static Object @NotNull [] asArray(@Nullable Object arg)
 	{
 		if(arg == null)

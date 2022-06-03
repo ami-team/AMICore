@@ -259,7 +259,6 @@ public class LocalizationSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("_, _ -> new")
 	public static Localization localizeIP(@NotNull Querier querier, @NotNull String ip) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/

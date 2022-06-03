@@ -94,7 +94,6 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("_ -> new")
 	private static File toFile(@NotNull String configPathName)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -434,7 +433,7 @@ public class ConfigSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
+	@Nullable
 	@Contract(value = "_, !null -> !null", pure = true)
 	public static String getSystemProperty(@NotNull String key, @Nullable String defaultValue)
 	{

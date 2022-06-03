@@ -551,7 +551,6 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("_ -> new")
 	public static DERSequence amiVirtOrg(@NotNull String virtOrg)
 	{
 		return new DERSequence(new ASN1Encodable[] {

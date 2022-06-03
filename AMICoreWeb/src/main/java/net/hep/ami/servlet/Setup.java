@@ -19,8 +19,7 @@ import org.slf4j.*;
 	name = "Setup",
 	urlPatterns = "/Setup"
 )
-
-@SuppressWarnings("DuplicateExpressions")
+@SuppressWarnings({"unused", "DuplicatedCode", "DuplicateExpressions"})
 public class Setup extends HttpServlet
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -70,7 +69,7 @@ public class Setup extends HttpServlet
 		/* CHECK IPS                                                                                                  */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Set<String> ips = Arrays.stream(ConfigSingleton.getProperty("authorized_ips").split(",", -1)).map(x -> x.trim()).filter(x -> !x.isEmpty()).collect(Collectors.toSet());
+		Set<String> ips = Arrays.stream(ConfigSingleton.getProperty("authorized_ips").split(",", -1)).map(String::trim).filter(x -> !x.isEmpty()).collect(Collectors.toSet());
 
 		if(!ips.isEmpty() && !ips.contains(req.getRemoteAddr()))
 		{
@@ -171,7 +170,7 @@ public class Setup extends HttpServlet
 		/* BUILD HTML                                                                                                 */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		TextFile.read(stringBuilder, Setup.class.getResourceAsStream("/twig/setup_level1.twig"));
+		TextFile.read(stringBuilder, Objects.requireNonNull(Setup.class.getResourceAsStream("/twig/setup_level1.twig")));
 
 		return stringBuilder.toString()
 		                    .replace("{{YEAR}}", year)
@@ -273,7 +272,7 @@ public class Setup extends HttpServlet
 
 		try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level2.twig"))
 		{
-			TextFile.read(stringBuilder, inputStream);
+			TextFile.read(stringBuilder, Objects.requireNonNull(inputStream));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -417,7 +416,7 @@ public class Setup extends HttpServlet
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			String stringContent2 = stringBuilder2.toString().replaceAll("endpoint_url\\s*:\\s*[\'\"][^\'\"]*[\'\"]", "endpoint_url: '" + base_url + "/AMI/FrontEnd'");
+			String stringContent2 = stringBuilder2.toString().replaceAll("endpoint_url\\s*:\\s*['\"][^'\"]*['\"]", "endpoint_url: '" + base_url + "/AMI/FrontEnd'");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -486,7 +485,7 @@ public class Setup extends HttpServlet
 
 			try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level3_success.twig"))
 			{
-				TextFile.read(stringBuilder3, inputStream);
+				TextFile.read(stringBuilder3, Objects.requireNonNull(inputStream));
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -530,7 +529,7 @@ public class Setup extends HttpServlet
 
 			try(InputStream inputStream = Setup.class.getResourceAsStream("/twig/setup_level3_error.twig"))
 			{
-				TextFile.read(stringBuilder3, inputStream);
+				TextFile.read(stringBuilder3, Objects.requireNonNull(inputStream));
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/

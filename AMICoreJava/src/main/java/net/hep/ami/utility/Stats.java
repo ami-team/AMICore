@@ -8,6 +8,7 @@ public class Stats
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static BigDecimal median(final BigDecimal[] bigDecimalNumbers)
 	{
 		return median(bigDecimalNumbers, 0, 1);
@@ -15,6 +16,7 @@ public class Stats
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@NotNull
 	public static BigDecimal median(final BigDecimal[] bigDecimalNumbers, final int start, final int end)
 	{
 		BigDecimal result;
@@ -37,7 +39,8 @@ public class Stats
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static BigDecimal quartile1(@NotNull BigDecimal[] bigDecimalNumbers)
+	@NotNull
+	public static BigDecimal quartile1(@NotNull BigDecimal @NotNull [] bigDecimalNumbers)
 	{
 		final int size = bigDecimalNumbers.length;
 
@@ -60,7 +63,8 @@ public class Stats
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static BigDecimal quartile3(@NotNull BigDecimal[] bigDecimalNumbers)
+	@NotNull
+	public static BigDecimal quartile3(@NotNull BigDecimal @NotNull [] bigDecimalNumbers)
 	{
 		final int size = bigDecimalNumbers.length;
 

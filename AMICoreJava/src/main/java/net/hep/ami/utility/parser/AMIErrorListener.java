@@ -16,7 +16,8 @@ public class AMIErrorListener extends BaseErrorListener
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-public static AMIErrorListener setListener(Lexer lexer, Parser parser)
+	@NotNull
+	public static AMIErrorListener setListener(@NotNull Lexer lexer, @NotNull Parser parser)
 	{
 		AMIErrorListener result = new AMIErrorListener();
 
@@ -32,7 +33,7 @@ public static AMIErrorListener setListener(Lexer lexer, Parser parser)
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int column, String message, RecognitionException e)
+	public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line, int column, @Nullable String message, @Nullable RecognitionException e)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -47,7 +48,7 @@ public static AMIErrorListener setListener(Lexer lexer, Parser parser)
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		m_messages.add("line " + line + ", column: " + column + ", " + message);
+		m_messages.add("line " + line + ", column: " + column + (message != null ? ", " + message : ""));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

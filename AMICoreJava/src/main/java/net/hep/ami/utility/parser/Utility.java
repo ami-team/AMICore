@@ -5,6 +5,7 @@ import java.util.stream.*;
 
 import org.jetbrains.annotations.*;
 
+@SuppressWarnings({"ConstantConditions", "UnnecessaryStringEscape", "StringBufferReplaceableByString"})
 public class Utility
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -90,7 +91,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String escapeBashString(@Nullable String s)
 	{
 		if(s == null)
@@ -254,7 +255,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String unescapeBashString(@Nullable String s) throws RuntimeException
 	{
 		if(s == null)
@@ -269,7 +270,6 @@ public class Utility
 		/*-*/ int i = 0x00000000;
 		final int l = s.length();
 
-		String code;
 		char c;
 
 		while(i < l)
@@ -347,7 +347,7 @@ public class Utility
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	@Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String bashStringToText(@Nullable String s) throws RuntimeException
 	{
 		if(s == null)
@@ -405,7 +405,7 @@ public class Utility
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Contract("null, _ -> null; !null, _ -> !null")
+	@Contract("null -> null; !null -> !null")
 	public static String textToBashString(@Nullable String s)
 	{
 		if(s == null)
@@ -491,7 +491,7 @@ public class Utility
 
 		else
 		{
-			result.append(object.toString());
+			result.append(object);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
