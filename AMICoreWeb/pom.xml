@@ -12,7 +12,7 @@
 		<groupId>net.hep.ami</groupId>
 		<artifactId>AMICore</artifactId>
 		<version>1.0.0</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<packaging>war</packaging>
