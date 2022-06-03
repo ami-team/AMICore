@@ -11,46 +11,46 @@ public class DateTime
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private SimpleDateFormat m_datetimeFormater = null;
+	private SimpleDateFormat m_datetimeFormatter = null;
 
-	private SimpleDateFormat m_dateFormater = null;
+	private SimpleDateFormat m_dateFormatter = null;
 
-	private SimpleDateFormat m_timeFormater = null;
+	private SimpleDateFormat m_timeFormatter = null;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private SimpleDateFormat getDateTimeFormat()
 	{
-		if(m_datetimeFormater == null)
+		if(m_datetimeFormatter == null)
 		{
-			m_datetimeFormater = new SimpleDateFormat(ConfigSingleton.getProperty("datetime_format", "yyyy-MM-dd HH:mm:ss"), Locale.US);
+			m_datetimeFormatter = new SimpleDateFormat(ConfigSingleton.getProperty("datetime_format", "yyyy-MM-dd HH:mm:ss"), Locale.US);
 		}
 
-		return m_datetimeFormater;
+		return m_datetimeFormatter;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private SimpleDateFormat getDateFormat()
 	{
-		if(m_dateFormater == null)
+		if(m_dateFormatter == null)
 		{
-			m_dateFormater = new SimpleDateFormat(ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"), Locale.US);
+			m_dateFormatter = new SimpleDateFormat(ConfigSingleton.getProperty("date_format", "yyyy-MM-dd"), Locale.US);
 		}
 
-		return m_dateFormater;
+		return m_dateFormatter;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private SimpleDateFormat getTimeFormat()
 	{
-		if(m_timeFormater == null)
+		if(m_timeFormatter == null)
 		{
-			m_timeFormater = new SimpleDateFormat(ConfigSingleton.getProperty("time_format", "HH:mm:ss"), Locale.US);
+			m_timeFormatter = new SimpleDateFormat(ConfigSingleton.getProperty("time_format", "HH:mm:ss"), Locale.US);
 		}
 
-		return m_timeFormater;
+		return m_timeFormatter;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

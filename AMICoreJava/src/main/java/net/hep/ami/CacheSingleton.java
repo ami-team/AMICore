@@ -148,13 +148,13 @@ public class CacheSingleton
 
 		if(s_memcachedClient != null)
 		{
-			for(Map.Entry<SocketAddress, Map<String, String>> entry1: s_memcachedClient.getStats().entrySet())
+			for(Map.Entry<SocketAddress, Map<String, String>> entry: s_memcachedClient.getStats().entrySet())
 			{
 				result.append("<row>");
 
-				result.append("<field name=\"addr\"><![CDATA[").append(entry1.getKey()).append("]]></field>");
+				result.append("<field name=\"address\"><![CDATA[").append(entry.getKey()).append("]]></field>");
 
-				entry1.getValue().forEach((x, y) -> result.append("<field name=\"").append(Utility.escapeHTML(x)).append("\"><![CDATA[").append(y).append("]]></field>"));
+				entry.getValue().forEach((x, y) -> result.append("<field name=\"").append(Utility.escapeHTML(x)).append("\"><![CDATA[").append(y).append("]]></field>"));
 
 				result.append("</row>");
 			}
@@ -162,7 +162,7 @@ public class CacheSingleton
 		else
 		{
 			result.append("<row>");
-			result.append("<field name=\"addr\"><![CDATA[]]></field>");
+			result.append("<field name=\"address\"><![CDATA[]]></field>");
 			result.append("</row>");
 		}
 

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.*;
 	name = "FrontEnd",
 	urlPatterns = "/FrontEnd"
 )
-
+@SuppressWarnings("DuplicatedCode")
 public class FrontEnd extends HttpServlet
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

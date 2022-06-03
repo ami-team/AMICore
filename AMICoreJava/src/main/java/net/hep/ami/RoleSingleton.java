@@ -338,7 +338,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not instanciate command role validator `" + validatorClass + "`", e);
+			throw new Exception("could not instantiate command role validator `" + validatorClass + "`", e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -380,7 +380,7 @@ public class RoleSingleton
 		}
 		catch(Exception e)
 		{
-			throw new Exception("could not instanciate user role validator `" + validatorClass + "`", e);
+			throw new Exception("could not instantiate user role validator `" + validatorClass + "`", e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

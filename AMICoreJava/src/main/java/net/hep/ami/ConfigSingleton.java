@@ -320,9 +320,9 @@ public class ConfigSingleton
 		else
 		{
 			String id = rows.get(0).getValue(0);
-			String eulav = rows.get(0).getValue(1);
+			String original = rows.get(0).getValue(1);
 
-			if(!SecuritySingleton.encrypt(eulav).equals(value))
+			if(!original.equals(value))
 			{
 				result = querier.executeSQLUpdate("router_config", "UPDATE `router_config` SET `paramValue` = ?#1, `modified` = CURRENT_TIMESTAMP, `modifiedBy` = ?2 WHERE `id` = ?0",
 					id,

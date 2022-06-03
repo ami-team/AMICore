@@ -34,6 +34,7 @@ public class AMIMap<U, V> implements Map<U, V>, Serializable
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@SuppressWarnings("SortedCollectionWithNonComparableKeys")
 	public AMIMap(@NotNull Type type, boolean isOrdered, boolean isCaseInsensitive)
 	{
 		m_isOrdered = isOrdered;

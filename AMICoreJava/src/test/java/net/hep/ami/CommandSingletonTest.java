@@ -476,9 +476,12 @@ public class CommandSingletonTest
 
 //			System.out.println(SecuritySingleton.setupOIDC("amiwf", "https://auth.cern.ch/auth/realms/cern/.well-known/openid-configuration"));
 
-			System.out.println(CommandSingleton.executeCommand("FlushServerCaches", false).replace(">", ">\n"));
+			//System.out.println(CommandSingleton.executeCommand("FlushServerCaches", false).replace(">", ">\n"));
 
 			//System.out.println(CommandSingleton.executeCommand("GetConfig", false).replace(">", ">\n"));
+
+
+			System.out.println(CommandSingleton.executeCommand("SetConfigProperty -name=\"foo\" -value=\"bar\"", false).replace(">", ">\n"));
 		}
 		catch(Exception e)
 		{

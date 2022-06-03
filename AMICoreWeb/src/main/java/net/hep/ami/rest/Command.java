@@ -15,6 +15,7 @@ import net.hep.ami.*;
 import org.jetbrains.annotations.*;
 
 @Path("/command")
+@SuppressWarnings("DuplicatedCode")
 public class Command
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -184,10 +185,7 @@ public class Command
 		/* EXECUTE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		for(Map.Entry<String, String> entry: token.entrySet())
-		{
-			arguments.put(entry.getKey(), entry.getValue());
-		}
+		arguments.putAll(token);
 
 		/**/
 

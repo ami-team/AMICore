@@ -39,6 +39,7 @@ public class XMLFactory
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			@Override
+			@SuppressWarnings("HttpUrlsUsage")
 			public StructuredQName getFunctionQName()
 			{
 				return new StructuredQName("ami", "http://ami.in2p3.fr/xsl", "replace");

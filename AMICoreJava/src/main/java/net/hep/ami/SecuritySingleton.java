@@ -34,7 +34,7 @@ import org.bouncycastle.crypto.generators.*;
 
 import org.jetbrains.annotations.*;
 
-@SuppressWarnings({"SpellCheckingInspection", "DuplicatedCode"})
+@SuppressWarnings({"DuplicatedCode", "SpellCheckingInspection"})
 public class SecuritySingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
