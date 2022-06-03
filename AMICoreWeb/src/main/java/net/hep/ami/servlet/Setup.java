@@ -2,7 +2,7 @@ package net.hep.ami.servlet;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
