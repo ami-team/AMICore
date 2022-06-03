@@ -128,7 +128,7 @@ public class RowSet
 		/* PARSE SQL                                                                                                  */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tokenizer.Tuple aliasInfo = Tokenizer.extractAliasInfo(m_sql);
+		Tokenizer.AliasInfo aliasInfo = Tokenizer.extractAliasInfo(m_sql);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET METADATA                                                                                               */

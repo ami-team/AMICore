@@ -19,21 +19,21 @@ public class CatalogSingleton
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	public static final class Tuple
+	public static final class CatalogDescr
 	{
-		@NotNull String externalCatalog;
-		@NotNull String internalCatalog;
-		@Nullable String internalSchema;
-		@NotNull String jdbcUrl;
-		@Nullable String username;
-		@Nullable String password;
-		@Nullable String description;
-		/*----*/ boolean archived;
+		@NotNull private final String externalCatalog;
+		@NotNull private final String internalCatalog;
+		@Nullable private final String internalSchema;
+		@NotNull private final String jdbcUrl;
+		@Nullable private final String username;
+		@Nullable private final String password;
+		@Nullable private final String description;
+		/*----*/ private final boolean archived;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, true, true);
+	private static final Map<String, CatalogDescr> s_catalogs = new AMIMap<>(AMIMap.Type.CONCURRENT_HASH_MAP, true, true);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -152,7 +152,7 @@ public class CatalogSingleton
 		s_catalogs.put(
 			externalCatalog
 			,
-			new Tuple(
+			new CatalogDescr(
 				externalCatalog,
 				internalCatalog,
 				internalSchema,
@@ -179,16 +179,16 @@ public class CatalogSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Tuple getTuple(@NotNull String catalog) throws Exception
+	public static CatalogSingleton.CatalogDescr getCatalogDescr(@NotNull String catalog) throws Exception
 	{
-		Tuple tuple = s_catalogs.get(catalog);
+		CatalogDescr catalogDescr = s_catalogs.get(catalog);
 
-		if(tuple == null)
+		if(catalogDescr == null)
 		{
 			throw new Exception("unknown catalog `" + catalog + "`");
 		}
 
-		return tuple;
+		return catalogDescr;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -196,9 +196,9 @@ public class CatalogSingleton
 	@NotNull
 	public static AbstractDriver getConnection(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, int flags) throws Exception
 	{
-		Tuple tuple = getTuple(catalog);
+		CatalogDescr catalogDescr = getCatalogDescr(catalog);
 
-		return DriverSingleton.getConnection(tuple.getExternalCatalog(), tuple.getInternalCatalog(), tuple.getJdbcUrl(), tuple.getUsername(), tuple.getPassword(), AMIUser, timeZone, flags);
+		return DriverSingleton.getConnection(catalogDescr.getExternalCatalog(), catalogDescr.getInternalCatalog(), catalogDescr.getJdbcUrl(), catalogDescr.getUsername(), catalogDescr.getPassword(), AMIUser, timeZone, flags);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -206,9 +206,9 @@ public class CatalogSingleton
 	@NotNull
 	public static DriverMetadata.Type getType(@NotNull String catalog) throws Exception
 	{
-		Tuple tuple = getTuple(catalog);
+		CatalogDescr catalogDescr = getCatalogDescr(catalog);
 
-		return DriverSingleton.getType(tuple.getJdbcUrl());
+		return DriverSingleton.getType(catalogDescr.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -216,9 +216,9 @@ public class CatalogSingleton
 	@NotNull
 	public static String getProto(@NotNull String catalog) throws Exception
 	{
-		Tuple tuple = getTuple(catalog);
+		CatalogDescr catalogDescr = getCatalogDescr(catalog);
 
-		return DriverSingleton.getProto(tuple.getJdbcUrl());
+		return DriverSingleton.getProto(catalogDescr.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -226,9 +226,9 @@ public class CatalogSingleton
 	@NotNull
 	public static String getClass(@NotNull String catalog) throws Exception
 	{
-		Tuple tuple = getTuple(catalog);
+		CatalogDescr catalogDescr = getCatalogDescr(catalog);
 
-		return DriverSingleton.getClass(tuple.getJdbcUrl());
+		return DriverSingleton.getClass(catalogDescr.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -236,9 +236,9 @@ public class CatalogSingleton
 	////////
 	public static int getFlags(@NotNull String catalog) throws Exception
 	{
-		Tuple tuple = getTuple(catalog);
+		CatalogDescr catalogDescr = getCatalogDescr(catalog);
 
-		return DriverSingleton.getFlags(tuple.getJdbcUrl());
+		return DriverSingleton.getFlags(catalogDescr.getJdbcUrl());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -246,9 +246,9 @@ public class CatalogSingleton
 	@NotNull
 	public static String getKey(@NotNull String catalog) throws Exception
 	{
-		Tuple tuple = getTuple(catalog);
+		CatalogDescr catalogDescr = getCatalogDescr(catalog);
 
-		return DriverSingleton.getKey(tuple.getInternalCatalog(), tuple.getJdbcUrl(), tuple.getUsername() , tuple.getPassword());
+		return DriverSingleton.getKey(catalogDescr.getInternalCatalog(), catalogDescr.getJdbcUrl(), catalogDescr.getUsername() , catalogDescr.getPassword());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -288,14 +288,14 @@ public class CatalogSingleton
 
 		result.append("<rowset type=\"catalogs\">");
 
-		for(Tuple tuple: s_catalogs.values())
+		for(CatalogDescr catalogDescr: s_catalogs.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"externalCatalog\"><![CDATA[").append(tuple.getExternalCatalog()).append("]]></field>")
-			      .append("<field name=\"internalCatalog\"><![CDATA[").append(tuple.getInternalCatalog()).append("]]></field>")
-			      .append("<field name=\"internalSchema\"><![CDATA[").append(tuple.getInternalSchema()).append("]]></field>")
-			      .append("<field name=\"description\"><![CDATA[").append(tuple.getDescription()).append("]]></field>")
-			      .append("<field name=\"archived\"><![CDATA[").append(tuple.isArchived()).append("]]></field>")
+			      .append("<field name=\"externalCatalog\"><![CDATA[").append(catalogDescr.getExternalCatalog()).append("]]></field>")
+			      .append("<field name=\"internalCatalog\"><![CDATA[").append(catalogDescr.getInternalCatalog()).append("]]></field>")
+			      .append("<field name=\"internalSchema\"><![CDATA[").append(catalogDescr.getInternalSchema()).append("]]></field>")
+			      .append("<field name=\"description\"><![CDATA[").append(catalogDescr.getDescription()).append("]]></field>")
+			      .append("<field name=\"archived\"><![CDATA[").append(catalogDescr.isArchived()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

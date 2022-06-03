@@ -445,8 +445,8 @@ public class SchemaSingleton
 		private final String m_externalCatalog;
 		private final String m_internalCatalog;
 
-		private final CatalogSingleton.Tuple m_catalogTuple;
-		private final DriverSingleton.Tuple m_driverTuple;
+		private final CatalogSingleton.CatalogDescr m_catalogTuple;
+		private final DriverSingleton.DriverDescr m_driverDescr;
 
 		private final int m_rank;
 
@@ -465,8 +465,8 @@ public class SchemaSingleton
 			/**/
 			@NotNull String externalCatalog,
 			@NotNull String internalCatalog,
-			@NotNull CatalogSingleton.Tuple catalogTuple,
-			@NotNull DriverSingleton.Tuple driverTuple,
+			@NotNull CatalogSingleton.CatalogDescr catalogTuple,
+			@NotNull DriverSingleton.DriverDescr driverDescr,
 			/**/
 			int rank,
 			/**/
@@ -482,7 +482,7 @@ public class SchemaSingleton
 			m_internalCatalog = internalCatalog;
 
 			m_catalogTuple = catalogTuple;
-			m_driverTuple = driverTuple;
+			m_driverDescr = driverDescr;
 
 			/**/
 
@@ -601,7 +601,7 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getCatalogName(@Nullable String type)
 		{
-			if((m_driverTuple.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
+			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
 				return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
 			}
@@ -615,7 +615,7 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getSchemaName(@Nullable String type)
 		{
-			if((m_driverTuple.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
+			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
 				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
 			}
@@ -800,9 +800,9 @@ public class SchemaSingleton
 
 					if(name != null && fkEntity != null && fkField != null && pkEntity != null && pkField != null)
 					{
-						CatalogTuple tuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
+						CatalogTuple catalogTuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
 
-						if(tuple.getExternalCatalog() != null && tuple.getInternalCatalog() != null)
+						if(catalogTuple.getExternalCatalog() != null && catalogTuple.getInternalCatalog() != null)
 						{
 							table = m_catalog.tables.get(fkEntity);
 
@@ -814,8 +814,8 @@ public class SchemaSingleton
 									m_internalCatalog,
 									fkEntity,
 									fkField,
-									tuple.getExternalCatalog(),
-									tuple.getInternalCatalog(),
+									catalogTuple.getExternalCatalog(),
+									catalogTuple.getInternalCatalog(),
 									pkEntity,
 									pkField
 								)));
@@ -1067,15 +1067,15 @@ public class SchemaSingleton
 		{
 			int rank = 1000;
 
-			CatalogSingleton.Tuple catalogTuple;
-			DriverSingleton.Tuple driverTuple;
+			CatalogSingleton.CatalogDescr catalogTuple;
+			DriverSingleton.DriverDescr driverDescr;
 
 			List<Thread> threads = new ArrayList<>();
 
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
-				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
-				driverTuple = DriverSingleton.getTuple(catalogTuple.getJdbcUrl());
+				catalogTuple = CatalogSingleton.getCatalogDescr(entry.getKey());
+				driverDescr = DriverSingleton.getDriverDescr(catalogTuple.getJdbcUrl());
 
 				threads.add(
 					new Thread(
@@ -1085,7 +1085,7 @@ public class SchemaSingleton
 							entry.getKey(),
 							entry.getValue(),
 							catalogTuple,
-							driverTuple,
+								driverDescr,
 							rank++,
 							true // fast
 						), "Fast metadata extractor for '" + entry.getKey() + "'"
@@ -1104,15 +1104,15 @@ public class SchemaSingleton
 		{
 			int rank = 1000;
 
-			CatalogSingleton.Tuple catalogTuple;
-			DriverSingleton.Tuple driverTuple;
+			CatalogSingleton.CatalogDescr catalogTuple;
+			DriverSingleton.DriverDescr driverDescr;
 
 			List<Thread> threads = new ArrayList<>();
 
 			for(Map.Entry<String, String> entry: s_externalCatalogToInternalCatalog.entrySet())
 			{
-				catalogTuple = CatalogSingleton.getTuple(entry.getKey());
-				driverTuple = DriverSingleton.getTuple(catalogTuple.getJdbcUrl());
+				catalogTuple = CatalogSingleton.getCatalogDescr(entry.getKey());
+				driverDescr = DriverSingleton.getDriverDescr(catalogTuple.getJdbcUrl());
 
 				threads.add(
 					new Thread(
@@ -1122,7 +1122,7 @@ public class SchemaSingleton
 							entry.getKey(),
 							entry.getValue(),
 							catalogTuple,
-							driverTuple,
+								driverDescr,
 							rank++,
 							false // slow
 						), "Slow metadata extractor for '" + entry.getKey() + "'"

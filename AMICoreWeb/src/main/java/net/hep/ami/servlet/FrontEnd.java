@@ -124,12 +124,12 @@ public class FrontEnd extends HttpServlet
 			/* PARSE COMMAND                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Command.Tuple tuple = Command.parse(command);
+			Command.CommandAndArguments commandAndArguments = Command.parse(command);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			updateSessionAndCommandArgs(
-				tuple.getArguments(),
+			updateSessionAndCommandArguments(
+				commandAndArguments.getArguments(),
 				req
 			);
 
@@ -138,8 +138,8 @@ public class FrontEnd extends HttpServlet
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			data = CommandSingleton.executeCommand(
-				tuple.getCommand(),
-				tuple.getArguments()
+				commandAndArguments.getCommand(),
+				commandAndArguments.getArguments()
 			);
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -222,10 +222,10 @@ public class FrontEnd extends HttpServlet
 	@AllArgsConstructor
 	private static final class CertInfo
 	{
-		@NotNull private String clientDN;
-		@NotNull private String issuerDN;
-		@NotNull private String notBefore;
-		@NotNull private String notAfter;
+		@NotNull private final String clientDN;
+		@NotNull private final String issuerDN;
+		@NotNull private final String notBefore;
+		@NotNull private final String notAfter;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -246,10 +246,10 @@ public class FrontEnd extends HttpServlet
 			try
 			{
 				return new CertInfo(
-					SecuritySingleton.decrypt(arguments.get("clientDN")),
-					SecuritySingleton.decrypt(arguments.get("issuerDN")),
-					SecuritySingleton.decrypt(arguments.get("notBefore")),
-					SecuritySingleton.decrypt(arguments.get("notAfter"))
+					SecuritySingleton.decrypt(arguments.getOrDefault("clientDN", "")),
+					SecuritySingleton.decrypt(arguments.getOrDefault("issuerDN", "")),
+					SecuritySingleton.decrypt(arguments.getOrDefault("notBefore", "")),
+					SecuritySingleton.decrypt(arguments.getOrDefault("notAfter", ""))
 				);
 			}
 			catch(Exception e)
@@ -355,8 +355,7 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("null, _, _, _ -> new")
-	private String resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, String clientIP, String clientOrigin) throws Exception
+	private String resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, @NotNull String clientIP, @NotNull String clientOrigin) throws Exception
 	{
 		if(Empty.is(AMIUser, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
 		   ||
@@ -503,17 +502,16 @@ public class FrontEnd extends HttpServlet
 	@AllArgsConstructor
 	public static final class UserInfoAndUsername
 	{
-		@NotNull private Map<String, Object> userInfoMap;
+		@NotNull private final Map<String, Object> userInfoMap;
 
-		@NotNull private String userInfoJson;
+		@NotNull private final String userInfoJson;
 
-		@NotNull private String username;
+		@NotNull private final String username;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	@Contract("_ -> new")
 	private UserInfoAndUsername getUserInfoFromToken(@NotNull String token) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -644,7 +642,7 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private void updateSessionAndCommandArgs(@NotNull Map<String, String> arguments, @NotNull HttpServletRequest request) throws Exception
+	private void updateSessionAndCommandArguments(@NotNull Map<String, String> arguments, @NotNull HttpServletRequest request) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET CLIENT_DN, ISSUER_DN, AMI_USER, AMI_PASS                                                               */
@@ -653,7 +651,7 @@ public class FrontEnd extends HttpServlet
 		CertInfo certInfo = getCertInfo(arguments, request);
 
 		String clientDN = certInfo.getClientDN();
-		String issuerDN = certInfo.getClientDN();
+		String issuerDN = certInfo.getIssuerDN();
 		String notBefore = certInfo.getNotBefore();
 		String notAfter = certInfo.getNotAfter();
 

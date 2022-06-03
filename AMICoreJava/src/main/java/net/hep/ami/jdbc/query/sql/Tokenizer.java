@@ -246,7 +246,7 @@ public class Tokenizer
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	public static final class Tuple
+	public static final class AliasInfo
 	{
 		@NotNull private final Map<QId, QId> aliasFieldMap;
 		@NotNull private final List<Boolean> fieldHasAliasList;
@@ -259,7 +259,7 @@ public class Tokenizer
 
 	@NotNull
 	@Contract("_ -> new")
-	public static Tuple extractAliasInfo(@NotNull String sql) throws Exception
+	public static Tokenizer.AliasInfo extractAliasInfo(@NotNull String sql) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* EXTRACT FIELDS AND TABLES                                                                                  */
@@ -495,7 +495,7 @@ public class Tokenizer
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple(
+		return new AliasInfo(
 			aliasFieldMap,
 			fieldHasAliasList,
 			rawFieldAliasMap,

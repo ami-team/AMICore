@@ -16,8 +16,8 @@ public class Zip
 	@AllArgsConstructor
 	public static final class Tuple2<U, V>
 	{
-		private final U x;
-		private final V y;
+		@NotNull private final U x;
+		@NotNull private final V y;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

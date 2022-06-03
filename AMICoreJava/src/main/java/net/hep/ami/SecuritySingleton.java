@@ -1018,7 +1018,7 @@ public class SecuritySingleton
 		{
 			return null;
 		}
-
+		/* BERKKKKKKKKKKKKKKKKKKKK: @NOGO */
 		return !s.isEmpty() && !"@NOGO".equals(s) ? new String(decrypt(org.bouncycastle.util.encoders.Base64.decode(s.getBytes(StandardCharsets.UTF_8))), StandardCharsets.UTF_8)
 		                    : ""
 		;
@@ -1123,9 +1123,9 @@ public class SecuritySingleton
 	@AllArgsConstructor
 	public static final class MapAndJSON
 	{
-		@NotNull private Map<String, Object> map;
+		@NotNull private final Map<String, Object> map;
 
-		@NotNull private String json;
+		@NotNull private final String json;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -2,7 +2,7 @@ package net.hep.ami.utility;
 
 import org.jetbrains.annotations.*;
 
-@SuppressWarnings({"PointlessBitwiseExpression", "RedundantIfStatement"})
+@SuppressWarnings({"Contract", "RedundantIfStatement", "PointlessBitwiseExpression"})
 public class Empty
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -18,6 +18,8 @@ public class Empty
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@SuppressWarnings("Contract")
+	@Contract("null, _ -> true; !null, _ -> _")
 	public static boolean is(@Nullable Object o, int mask)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/

@@ -3,9 +3,7 @@ package net.hep.ami.command.catalog;
 import java.util.*;
 
 import net.hep.ami.command.*;
-import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.sql.*;
-import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -39,7 +37,7 @@ public class AnalyzeQuery extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tokenizer.Tuple aliasInfo = Tokenizer.extractAliasInfo(xql);
+		Tokenizer.AliasInfo aliasInfo = Tokenizer.extractAliasInfo(xql);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

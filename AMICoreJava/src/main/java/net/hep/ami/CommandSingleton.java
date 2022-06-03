@@ -23,12 +23,12 @@ public class CommandSingleton
 	@AllArgsConstructor
 	private static final class CommandDescr
 	{
-		@NotNull private String name;
-		@Nullable private String help;
-		@Nullable private String usage;
-		@NotNull private Constructor<?> constructor;
-		/*----*/ private boolean visible;
-		@Nullable private String commandRoleValidatorClass;
+		@NotNull private final String name;
+		@Nullable private final String help;
+		@Nullable private final String usage;
+		@NotNull private final Constructor<?> constructor;
+		/*----*/ private final boolean visible;
+		@Nullable private final String commandRoleValidatorClass;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -231,9 +231,9 @@ public class CommandSingleton
 	@NotNull
 	public static String executeCommand(@NotNull String command) throws Exception
 	{
-		Command.Tuple tuple = Command.parse(command);
+		Command.CommandAndArguments commandAndArguments = Command.parse(command);
 
-		return CommandSingleton.executeCommand(tuple.getCommand(), tuple.getArguments());
+		return CommandSingleton.executeCommand(commandAndArguments.getCommand(), commandAndArguments.getArguments());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -241,9 +241,9 @@ public class CommandSingleton
 	@NotNull
 	public static String executeCommand(@NotNull String command, boolean checkRoles) throws Exception
 	{
-		Command.Tuple tuple = Command.parse(command);
+		Command.CommandAndArguments commandAndArguments = Command.parse(command);
 
-		return CommandSingleton.executeCommand(tuple.getCommand(), tuple.getArguments(), checkRoles);
+		return CommandSingleton.executeCommand(commandAndArguments.getCommand(), commandAndArguments.getArguments(), checkRoles);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -251,9 +251,9 @@ public class CommandSingleton
 	@NotNull
 	public static String executeCommand(@NotNull String command, boolean checkRoles, long transactionId) throws Exception
 	{
-		Command.Tuple tuple = Command.parse(command);
+		Command.CommandAndArguments commandAndArguments = Command.parse(command);
 
-		return CommandSingleton.executeCommand(tuple.getCommand(), tuple.getArguments(), checkRoles, transactionId);
+		return CommandSingleton.executeCommand(commandAndArguments.getCommand(), commandAndArguments.getArguments(), checkRoles, transactionId);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -413,13 +413,13 @@ public class CommandSingleton
 		/* RESOLVE COMMAND                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		CommandDescr tuple = resolveCommand(command);
+		CommandDescr commandDescr = resolveCommand(command);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CREATE COMMAND INSTANCE                                                                                    */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		AbstractCommand commandObject = (AbstractCommand) tuple.getConstructor().newInstance(
+		AbstractCommand commandObject = (AbstractCommand) commandDescr.getConstructor().newInstance(
 			userRoles,
 			arguments,
 			transactionId

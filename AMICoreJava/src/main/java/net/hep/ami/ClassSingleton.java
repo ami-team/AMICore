@@ -42,7 +42,7 @@ public class ClassSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String path = ClassSingleton.class.getResource("/net/hep/ami/ClassSingleton.class").getPath();
+		String path = Objects.requireNonNull(ClassSingleton.class.getResource("/net/hep/ami/ClassSingleton.class")).getPath();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

@@ -21,9 +21,9 @@ public class RoleSingleton
 	@AllArgsConstructor
 	private static final class CommandValidatorDescr
 	{
-		@NotNull private String name;
-		@NotNull private String help;
-		@NotNull private Constructor<CommandValidator> constructor;
+		@NotNull private final String name;
+		@NotNull private final String help;
+		@NotNull private final Constructor<CommandValidator> constructor;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -401,11 +401,11 @@ public class RoleSingleton
 
 		result.append("<rowset type=\"commandRoleValidator\">");
 
-		for(CommandValidatorDescr tuple: s_commandRoleValidators.values())
+		for(CommandValidatorDescr commandValidatorDescr: s_commandRoleValidators.values())
 		{
 			result.append("<row>")
-			     .append("<field name=\"class\"><![CDATA[").append(tuple.getName()).append("]]></field>")
-			     .append("<field name=\"help\"><![CDATA[").append(tuple.getHelp()).append("]]></field>")
+			     .append("<field name=\"class\"><![CDATA[").append(commandValidatorDescr.getName()).append("]]></field>")
+			     .append("<field name=\"help\"><![CDATA[").append(commandValidatorDescr.getHelp()).append("]]></field>")
 			     .append("</row>")
 			;
 		}
@@ -416,11 +416,11 @@ public class RoleSingleton
 
 		result.append("<rowset type=\"UserRoleValidator\">");
 
-		for(UserValidatorDescr tuple: s_userRoleValidators.values())
+		for(UserValidatorDescr userValidatorDescr: s_userRoleValidators.values())
 		{
 			result.append("<row>")
-					.append("<field name=\"class\"><![CDATA[").append(tuple.getName()).append("]]></field>")
-					.append("<field name=\"help\"><![CDATA[").append(tuple.getHelp()).append("]]></field>")
+					.append("<field name=\"class\"><![CDATA[").append(userValidatorDescr.getName()).append("]]></field>")
+					.append("<field name=\"help\"><![CDATA[").append(userValidatorDescr.getHelp()).append("]]></field>")
 					.append("</row>")
 			;
 		}

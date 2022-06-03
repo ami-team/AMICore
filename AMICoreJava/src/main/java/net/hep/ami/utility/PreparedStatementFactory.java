@@ -34,21 +34,21 @@ public class PreparedStatementFactory
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Tuple tuple = prepare(sql, connection, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
+			StatementDescr statementDescr = prepare(sql, connection, args.length == 1 && args[0] != null && args[0].getClass().isArray() ? (Object[]) args[0] : args);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			result = statementMap.get(tuple.getSql());
+			result = statementMap.get(statementDescr.getSql());
 
 			if(result == null || result.isClosed())
 			{
-				statementMap.put(tuple.getSql(), result = !returnGeneratedKeys ? (
-						connection.prepareStatement(tuple.getSql())
+				statementMap.put(statementDescr.getSql(), result = !returnGeneratedKeys ? (
+						connection.prepareStatement(statementDescr.getSql())
 					) : (
 						(columnNames == null) ? (
-							connection.prepareStatement(tuple.getSql(), Statement.RETURN_GENERATED_KEYS)
+							connection.prepareStatement(statementDescr.getSql(), Statement.RETURN_GENERATED_KEYS)
 						) : (
-							connection.prepareStatement(tuple.getSql(), /*-----*/ columnNames /*-----*/)
+							connection.prepareStatement(statementDescr.getSql(), /*-----*/ columnNames /*-----*/)
 						)
 					)
 				);
@@ -56,7 +56,7 @@ public class PreparedStatementFactory
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			inject(result, tuple);
+			inject(result, statementDescr);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
@@ -91,7 +91,7 @@ public class PreparedStatementFactory
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	private static final class Tuple
+	private static final class StatementDescr
 	{
 		@NotNull private final String sql;
 		@NotNull private final List<String> typeList;
@@ -102,7 +102,7 @@ public class PreparedStatementFactory
 
 	@NotNull
 	@Contract("_, _, _ -> new")
-	private static Tuple prepare(@NotNull String sql, Connection connexion, @Nullable Object[] args) throws Exception
+	private static PreparedStatementFactory.StatementDescr prepare(@NotNull String sql, Connection connexion, @Nullable Object[] args) throws Exception
 	{
 		List<String> typeList = new ArrayList<>();
 		List<Object> valueList = new ArrayList<>();
@@ -113,7 +113,7 @@ public class PreparedStatementFactory
 
 		if(args == null)
 		{
-			return new Tuple(sql, typeList, valueList);
+			return new StatementDescr(sql, typeList, valueList);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -447,19 +447,19 @@ public class PreparedStatementFactory
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new Tuple(stringBuilder.toString(), typeList, valueList);
+		return new StatementDescr(stringBuilder.toString(), typeList, valueList);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void inject(@NotNull PreparedStatement statement, @NotNull Tuple tuple) throws Exception
+	private static void inject(@NotNull PreparedStatement statement, @NotNull PreparedStatementFactory.StatementDescr statementDescr) throws Exception
 	{
-		for(int i = 0; i < tuple.getTypeList().size(); i++)
+		for(int i = 0; i < statementDescr.getTypeList().size(); i++)
 		{
-			String type = tuple.getTypeList().get(i);
-			Object value = tuple.getValueList().get(i);
+			String type = statementDescr.getTypeList().get(i);
+			Object value = statementDescr.getValueList().get(i);
 
 			if(type.startsWith("parse::"))
 			{

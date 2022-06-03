@@ -19,19 +19,19 @@ public class DriverSingleton
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	public static final class Tuple
+	public static final class DriverDescr
 	{
-		@NotNull DriverMetadata.Type type;
-		@NotNull String proto;
-		@NotNull String clazz;
-		/*----*/ int flags;
-		@NotNull String driverClazz;
-		@NotNull Constructor<?> Constructor;
+		@NotNull private final DriverMetadata.Type type;
+		@NotNull private final String proto;
+		@NotNull private final String clazz;
+		/*----*/ private final int flags;
+		@NotNull private final String driverClazz;
+		@NotNull private final Constructor<?> Constructor;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, Tuple> s_drivers = new AMIMap<>(AMIMap.Type.HASH_MAP, true, true);
+	private static final Map<String, DriverDescr> s_drivers = new AMIMap<>(AMIMap.Type.HASH_MAP, true, true);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -118,7 +118,7 @@ public class DriverSingleton
 		s_drivers.put(
 			jdbc.proto()
 			,
-			new Tuple(
+			new DriverDescr(
 				jdbc.type(),
 				jdbc.proto(),
 				jdbc.clazz(),
@@ -143,7 +143,7 @@ public class DriverSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Tuple getTuple(@NotNull String jdbcUrl) throws Exception
+	public static DriverSingleton.DriverDescr getDriverDescr(@NotNull String jdbcUrl) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -156,7 +156,7 @@ public class DriverSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple result = s_drivers.get(m.group(1));
+		DriverDescr result = s_drivers.get(m.group(1));
 
 		if(result == null)
 		{
@@ -175,7 +175,7 @@ public class DriverSingleton
 	{
 		try
 		{
-			return (AbstractDriver) getTuple(jdbcUrl).getConstructor().newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags);
+			return (AbstractDriver) getDriverDescr(jdbcUrl).getConstructor().newInstance(externalCatalog, internalCatalog, jdbcUrl, user, pass, AMIUser, timeZone, flags);
 		}
 		catch(InvocationTargetException e)
 		{
@@ -188,7 +188,7 @@ public class DriverSingleton
 	@NotNull
 	public static DriverMetadata.Type getType(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).getType();
+		return getDriverDescr(jdbcUrl).getType();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -196,7 +196,7 @@ public class DriverSingleton
 	@NotNull
 	public static String getProto(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).getProto();
+		return getDriverDescr(jdbcUrl).getProto();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -204,14 +204,14 @@ public class DriverSingleton
 	@NotNull
 	public static String getClass(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).getClazz();
+		return getDriverDescr(jdbcUrl).getClazz();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static int getFlags(@NotNull String jdbcUrl) throws Exception
 	{
-		return getTuple(jdbcUrl).getFlags();
+		return getDriverDescr(jdbcUrl).getFlags();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -234,14 +234,14 @@ public class DriverSingleton
 
 		result.append("<rowset type=\"drivers\">");
 
-		for(Tuple tuple: s_drivers.values())
+		for(DriverDescr driverDescr : s_drivers.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"jdbcType\"><![CDATA[").append(tuple.getType()).append("]]></field>")
-			      .append("<field name=\"jdbcProto\"><![CDATA[").append(tuple.getProto()).append("]]></field>")
-			      .append("<field name=\"jdbcClass\"><![CDATA[").append(tuple.getClazz()).append("]]></field>")
-			      .append("<field name=\"jdbcFlags\"><![CDATA[").append(tuple.getFlags()).append("]]></field>")
-			      .append("<field name=\"driverClass\"><![CDATA[").append(tuple.getDriverClazz()).append("]]></field>")
+			      .append("<field name=\"jdbcType\"><![CDATA[").append(driverDescr.getType()).append("]]></field>")
+			      .append("<field name=\"jdbcProto\"><![CDATA[").append(driverDescr.getProto()).append("]]></field>")
+			      .append("<field name=\"jdbcClass\"><![CDATA[").append(driverDescr.getClazz()).append("]]></field>")
+			      .append("<field name=\"jdbcFlags\"><![CDATA[").append(driverDescr.getFlags()).append("]]></field>")
+			      .append("<field name=\"driverClass\"><![CDATA[").append(driverDescr.getDriverClazz()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

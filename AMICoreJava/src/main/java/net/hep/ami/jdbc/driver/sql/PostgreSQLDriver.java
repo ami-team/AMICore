@@ -76,22 +76,22 @@ public class PostgreSQLDriver extends AbstractDriver
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		CatalogSingleton.Tuple tuple;
+		CatalogSingleton.CatalogDescr catalogDescr;
 
 		try
 		{
-			tuple = CatalogSingleton.getTuple(m_externalCatalog);
+			catalogDescr = CatalogSingleton.getCatalogDescr(m_externalCatalog);
 		}
 		catch(Exception e)
 		{
-			tuple = /*---------------*/ null /*---------------*/;
+			catalogDescr = /*-------------------*/ null /*-------------------*/;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(tuple != null)
+		if(catalogDescr != null)
 		{
-			tokens = patch(tokens, CatalogSingleton.getTuple(m_externalCatalog).getInternalSchema());
+			tokens = patch(tokens, CatalogSingleton.getCatalogDescr(m_externalCatalog).getInternalSchema());
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

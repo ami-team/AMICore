@@ -22,9 +22,9 @@ public class ConverterSingleton
 	@AllArgsConstructor
 	private static final class ConverterDescr
 	{
-		@NotNull String name;
-		@NotNull String mime;
-		@NotNull Templates templates;
+		@NotNull private final String name;
+		@NotNull private final String mime;
+		@NotNull private final Templates templates;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

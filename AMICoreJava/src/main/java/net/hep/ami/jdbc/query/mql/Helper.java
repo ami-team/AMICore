@@ -342,7 +342,7 @@ public class Helper
 		/* ISOLATE JOINS                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		FromAndWhereSets tuple = getIsolatedPath(
+		FromAndWhereSets fromAndWhereSets = getIsolatedPath(
 			catalog,
 			primaryKey,
 			resolutionList,
@@ -354,7 +354,7 @@ public class Helper
 		/* ISOLATE EXPRESSION                                                                                         */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(noComp || !tuple.getWhereSet().isEmpty())
+		if(noComp || !fromAndWhereSets.getWhereSet().isEmpty())
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -362,16 +362,16 @@ public class Helper
 			{
 				if(!"jdbc:oracle".equals(CatalogSingleton.getProto(catalog)))
 				{
-					tuple.getFromSet().remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
+					fromAndWhereSets.getFromSet().remove(primaryKey.toString(QId.MASK_CATALOG_ENTITY));
 				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			XQLSelect query = new XQLSelect().addSelectPart(primaryKey.toString(QId.MASK_CATALOG_ENTITY_FIELD))
-			                                 .addFromPart(tuple.getFromSet())
+			                                 .addFromPart(fromAndWhereSets.getFromSet())
 			                                 .addWherePart("(" + expression + ")")
-			                                 .addWherePart(tuple.getWhereSet())
+			                                 .addWherePart(fromAndWhereSets.getWhereSet())
 			;
 
 			/*-------------------------------------------------------------*/
@@ -410,10 +410,12 @@ public class Helper
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Pattern HHH = Pattern.compile("^\\s*\\?[0-9]+\\s*$");
-	private static final Pattern III = Pattern.compile("^\\s*\\?#[0-9]+\\s*$");
+	private static final Pattern III = Pattern.compile("^\\s*\\?\\^[0-9]+\\s*$");
+	private static final Pattern JJJ = Pattern.compile("^\\s*\\?#[0-9]+\\s*$");
 	private static final Pattern KKK = Pattern.compile("^\\s*'(''|[^'])*'\\s*$");
 
 	/*----------------------------------------------------------------------------------------------------------------*/
+
 
 	@Getter
 	@Setter
@@ -429,7 +431,7 @@ public class Helper
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	public static class Tuple
+	public static class isolatedExpressionParams
 	{
 		@NotNull private final AMIValue<String> catalog;
 		@NotNull private final AMIValue<QId> primaryKey;
@@ -471,9 +473,9 @@ public class Helper
 
 		Set<String> locked = new HashSet<>();
 
-		Tuple tuple;
+		isolatedExpressionParams isolatedExpressionParams;
 
-		Map<String, Tuple> entries = new LinkedHashMap<>();
+		Map<String, isolatedExpressionParams> entries = new LinkedHashMap<>();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -511,7 +513,34 @@ public class Helper
 				}
 				else if(III.matcher(expression).matches())
 				{
+					expression = "?^<" + column.jdbcType + ">" + expression.toString().substring(2);
+				}
+				else if(JJJ.matcher(expression).matches())
+				{
 					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(2);
+				}
+			}
+			else if(column.hashed)
+			{
+				if(!isAdmin)
+				{
+					throw new Exception("user `" + AMIUser + "` not allow to modify hashed field " + new QId(column, false));
+				}
+
+				/**/ if(HHH.matcher(expression).matches())
+				{
+					expression = "?^<" + column.jdbcType + ">" + expression.toString().substring(1);
+				}
+				else if(III.matcher(expression).matches())
+				{
+					expression = "?^<" + column.jdbcType + ">" + expression.toString().substring(2);
+				}
+				else if(KKK.matcher(expression).matches())
+				{
+					expression = Utility.textToSqlVal(
+							expression.toString(),
+							backslashEscapes
+					);
 				}
 			}
 			else if(column.crypted)
@@ -525,7 +554,7 @@ public class Helper
 				{
 					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(1);
 				}
-				else if(III.matcher(expression).matches())
+				else if(JJJ.matcher(expression).matches())
 				{
 					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(2);
 				}
@@ -544,6 +573,10 @@ public class Helper
 					expression = "?<" + column.jdbcType + ">" + expression.toString().substring(1);
 				}
 				else if(III.matcher(expression).matches())
+				{
+					expression = "?^<" + column.jdbcType + ">" + expression.toString().substring(2);
+				}
+				else if(JJJ.matcher(expression).matches())
 				{
 					expression = "?#<" + column.jdbcType + ">" + expression.toString().substring(2);
 				}
@@ -586,11 +619,11 @@ public class Helper
 
 					/*------------------------------------------------------------------------------------------------*/
 
-					tuple = entries.get(field);
+					isolatedExpressionParams = entries.get(field);
 
-					if(tuple == null)
+					if(isolatedExpressionParams == null)
 					{
-						entries.put(field, tuple = new Tuple(
+						entries.put(field, isolatedExpressionParams = new isolatedExpressionParams(
 							new AMIValue<>(),
 							new AMIValue<>(),
 							new ArrayList<>(),
@@ -598,11 +631,11 @@ public class Helper
 						));
 					}
 
-					tuple.getCatalog().value = path.get(0).pkExternalCatalog;
-					tuple.getPrimaryKey().value = new QId(path.get(0).pkInternalCatalog, path.get(0).pkEntity, path.get(0).pkField);
+					isolatedExpressionParams.getCatalog().value = path.get(0).pkExternalCatalog;
+					isolatedExpressionParams.getPrimaryKey().value = new QId(path.get(0).pkInternalCatalog, path.get(0).pkEntity, path.get(0).pkField);
 
-					tuple.getResolutionList().add(tmpResolution);
-					tuple.getExpression().add(tmpExpression);
+					isolatedExpressionParams.getResolutionList().add(tmpResolution);
+					isolatedExpressionParams.getExpression().add(tmpExpression);
 
 					/*------------------------------------------------------------------------------------------------*/
 				}
@@ -617,11 +650,11 @@ public class Helper
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				tuple = entries.get(field);
+				isolatedExpressionParams = entries.get(field);
 
-				if(tuple == null)
+				if(isolatedExpressionParams == null)
 				{
-					entries.put(field, tuple = new Tuple(
+					entries.put(field, isolatedExpressionParams = new isolatedExpressionParams(
 						new AMIValue<>(),
 						new AMIValue<>(),
 						new ArrayList<>(),
@@ -629,13 +662,13 @@ public class Helper
 					));
 				}
 
-				tuple.getCatalog().value = /*--------*/ null /*--------*/;
-				tuple.getPrimaryKey().value = /*----------------------------------*/ null /*----------------------------------*/;
+				isolatedExpressionParams.getCatalog().value = /*--------*/ null /*--------*/;
+				isolatedExpressionParams.getPrimaryKey().value = /*----------------------------------*/ null /*----------------------------------*/;
 
-				tuple.getResolutionList().clear();
-				tuple.getExpression().clear();
+				isolatedExpressionParams.getResolutionList().clear();
+				isolatedExpressionParams.getExpression().clear();
 
-				tuple.getExpression().add(expression);
+				isolatedExpressionParams.getExpression().add(expression);
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -650,22 +683,22 @@ public class Helper
 		List<String> X = new ArrayList<>();
 		List<String> Y = new ArrayList<>();
 
-		for(Map.Entry<String, Tuple> entry: entries.entrySet())
+		for(Map.Entry<String, isolatedExpressionParams> entry: entries.entrySet())
 		{
 			field = entry.getKey();
-			tuple = entry.getValue();
+			isolatedExpressionParams = entry.getValue();
 
 			X.add(Utility.textToSqlId(field));
 
-			if(tuple.getCatalog().value != null
+			if(isolatedExpressionParams.getCatalog().value != null
 			   &&
-			   tuple.getPrimaryKey().value != null
+			   isolatedExpressionParams.getPrimaryKey().value != null
 			 ) {
-				Y.add(getIsolatedExpression(tuple.getCatalog().value, tuple.getPrimaryKey().value, tuple.getResolutionList(), String.join(" AND ", tuple.getExpression()), 1, true, true, false));
+				Y.add(getIsolatedExpression(isolatedExpressionParams.getCatalog().value, isolatedExpressionParams.getPrimaryKey().value, isolatedExpressionParams.getResolutionList(), String.join(" AND ", isolatedExpressionParams.getExpression()), 1, true, true, false));
 			}
 			else
 			{
-				Y.add(tuple.getExpression().iterator().next().toString());
+				Y.add(isolatedExpressionParams.getExpression().iterator().next().toString());
 			}
 		}
 

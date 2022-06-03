@@ -16,7 +16,7 @@ public class Command
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	public static final class Tuple
+	public static final class CommandAndArguments
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -30,7 +30,7 @@ public class Command
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Command.Tuple parse(@NotNull String s) throws Exception
+	public static Command.CommandAndArguments parse(@NotNull String s) throws Exception
 	{
 		return parse(CharStreams.fromString(s));
 	}
@@ -38,7 +38,7 @@ public class Command
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Command.Tuple parse(@NotNull InputStream inputStream) throws Exception
+	public static Command.CommandAndArguments parse(@NotNull InputStream inputStream) throws Exception
 	{
 		return parse(CharStreams.fromStream(inputStream));
 	}
@@ -46,7 +46,7 @@ public class Command
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private static Command.Tuple parse(@NotNull CharStream charStream) throws Exception
+	private static Command.CommandAndArguments parse(@NotNull CharStream charStream) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -60,7 +60,7 @@ public class Command
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Tuple result = parser.command().tuple;
+		CommandAndArguments result = parser.command().commandAndArguments;
 
 		if(listener.isError())
 		{
