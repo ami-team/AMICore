@@ -28,7 +28,7 @@ public class XMLTemplates
 
 	@NotNull
 	@SuppressWarnings("StringBufferReplaceableByString")
-	private static String format(@NotNull String tag, @NotNull Object @NotNull [] args)
+	private static String format(@NotNull String tag, @NotNull Object[] args)
 	{
 		StringBuilder xml = new StringBuilder();
 

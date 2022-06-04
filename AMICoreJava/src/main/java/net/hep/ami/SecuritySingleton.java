@@ -70,10 +70,10 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		@Nullable private final PrivateKey[] privateKeys;
-		@Nullable private final PublicKey[] publicKeys;
-		@Nullable private final X509Certificate[] x509Certificates;
-		@Nullable private final X509CRL[] x509CRLs;
+		@NotNull private final PrivateKey[] privateKeys;
+		@NotNull private final PublicKey[] publicKeys;
+		@NotNull private final X509Certificate[] x509Certificates;
+		@NotNull private final X509CRL[] x509CRLs;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -326,13 +326,10 @@ public class SecuritySingleton
 			{
 				for(PrivateKey privateKey: privateKeys)
 				{
-					if(privateKey != null)
-					{
-						stringBuilder.append("-----BEGIN PRIVATE KEY-----\n")
-						             .append(byteArrayToBase64String(privateKey.getEncoded()))
-						             .append("-----END PRIVATE KEY-----\n")
-						;
-					}
+					stringBuilder.append("-----BEGIN PRIVATE KEY-----\n")
+								 .append(byteArrayToBase64String(privateKey.getEncoded()))
+								 .append("-----END PRIVATE KEY-----\n")
+					;
 				}
 			}
 
@@ -342,13 +339,10 @@ public class SecuritySingleton
 			{
 				for(PublicKey publicKey: publicKeys)
 				{
-					if(publicKey != null)
-					{
-						stringBuilder.append("-----BEGIN PUBLIC KEY-----\n")
-						             .append(byteArrayToBase64String(publicKey.getEncoded()))
-						             .append("-----END PUBLIC KEY-----\n")
-						;
-					}
+					stringBuilder.append("-----BEGIN PUBLIC KEY-----\n")
+								 .append(byteArrayToBase64String(publicKey.getEncoded()))
+								 .append("-----END PUBLIC KEY-----\n")
+					;
 				}
 			}
 
@@ -358,19 +352,16 @@ public class SecuritySingleton
 			{
 				for(X509Certificate x509Certificate: x509Certificates)
 				{
-					if(x509Certificate != null)
+					try
 					{
-						try
-						{
-							stringBuilder.append("-----BEGIN CERTIFICATE-----\n")
-							             .append(byteArrayToBase64String(x509Certificate.getEncoded()))
-							             .append("-----END CERTIFICATE-----\n")
-							;
-						}
-						catch(Exception e)
-						{
-							stringBuilder.append(e.getMessage());
-						}
+						stringBuilder.append("-----BEGIN CERTIFICATE-----\n")
+									 .append(byteArrayToBase64String(x509Certificate.getEncoded()))
+									 .append("-----END CERTIFICATE-----\n")
+						;
+					}
+					catch(Exception e)
+					{
+						stringBuilder.append(e.getMessage());
 					}
 				}
 			}
@@ -383,13 +374,10 @@ public class SecuritySingleton
 				{
 					try
 					{
-						if(x509CRL != null)
-						{
-							stringBuilder.append("-----BEGIN X509 CRL-----\n")
-							             .append(byteArrayToBase64String(x509CRL.getEncoded()))
-							             .append("-----END X509 CRL-----\n")
-							;
-						}
+						stringBuilder.append("-----BEGIN X509 CRL-----\n")
+									 .append(byteArrayToBase64String(x509CRL.getEncoded()))
+									 .append("-----END X509 CRL-----\n")
+						;
 					}
 					catch(Exception e)
 					{
@@ -1064,15 +1052,14 @@ public class SecuritySingleton
 
 		byte[] data = BCrypt.generate(pass.getBytes(StandardCharsets.UTF_8), salt, BCRYPT_COST);
 
-		@SuppressWarnings("StringBufferReplaceableByString")
-		StringBuilder stringBuilder = new StringBuilder().append(new String(org.bouncycastle.util.encoders.Base64.encode(salt), StandardCharsets.UTF_8))
-		                                                 .append("$")
-		                                                 .append(new String(org.bouncycastle.util.encoders.Base64.encode(data), StandardCharsets.UTF_8))
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return new String(org.bouncycastle.util.encoders.Base64.encode(salt), StandardCharsets.UTF_8)
+		       + "$" +
+		       new String(org.bouncycastle.util.encoders.Base64.encode(data), StandardCharsets.UTF_8)
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
-
-		return stringBuilder.toString();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -1418,17 +1405,13 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result = sha256Sum(
-			s_encryptionHash
-			+ "|" +
-			calendar.get(Calendar.   YEAR    )
-			+ "|" +
-			calendar.get(Calendar.DAY_OF_YEAR)
-			+ "|" +
-			calendar.get(Calendar.HOUR_OF_DAY)
-			+ "|" +
+		result = sha256Sum(String.format("%s|%d|%d|%d|%s",
+			s_encryptionHash,
+			calendar.get(Calendar.   YEAR    ),
+			calendar.get(Calendar.DAY_OF_YEAR),
+			calendar.get(Calendar.HOUR_OF_DAY),
 			user
-		).substring(0, 16);
+		)).substring(0, 16);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -1440,17 +1423,13 @@ public class SecuritySingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			result += sha256Sum(
-				s_encryptionHash
-				+ "|" +
-				calendar.get(Calendar.   YEAR    )
-				+ "|" +
-				calendar.get(Calendar.DAY_OF_YEAR)
-				+ "|" +
-				calendar.get(Calendar.HOUR_OF_DAY)
-				+ "|" +
+			result += sha256Sum(String.format("%s|%d|%d|%d|%s",
+				s_encryptionHash,
+				calendar.get(Calendar.   YEAR    ),
+				calendar.get(Calendar.DAY_OF_YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
 				user
-			).substring(0, 16);
+			)).substring(0, 16);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
