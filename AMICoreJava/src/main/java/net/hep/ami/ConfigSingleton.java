@@ -15,7 +15,7 @@ public class ConfigSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Pattern s_envVarPattern = Pattern.compile(
-			"\\$\\{\\s*([a-zA-Z-_.]+)\\s*}"
+		"\\$\\{\\s*([a-zA-Z-_.]+)\\s*}"
 	);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -29,8 +29,8 @@ public class ConfigSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static String s_configPathName = "N/A";
-	private static String s_configFileName = "N/A";
+	private static String s_configPathName = "@NULL";
+	private static String s_configFileName = "@NULL";
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -199,6 +199,7 @@ public class ConfigSingleton
 		s_properties.put("sudoer_user", "sudoer");
 		s_properties.put("sudoer_pass", s_properties.get("admin_pass"));
 
+		/* TODO: REMOVE THAT */
 		s_properties.put("sso_user", "sso");
 		s_properties.put("sso_pass", s_properties.get("admin_pass"));
 

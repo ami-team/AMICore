@@ -14,6 +14,7 @@ public class CaptchaSingleton
 	@Setter
 	@Getter
 	@AllArgsConstructor
+	@ToString
 	public static class Captcha
 	{
 		@NotNull private String image;

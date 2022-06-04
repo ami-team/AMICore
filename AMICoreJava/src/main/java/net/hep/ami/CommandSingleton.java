@@ -26,8 +26,8 @@ public class CommandSingleton
 		@NotNull private final String name;
 		@Nullable private final String help;
 		@Nullable private final String usage;
+		@NotNull private final Boolean visible;
 		@NotNull private final Constructor<?> constructor;
-		/*----*/ private final boolean visible;
 		@Nullable private final String commandRoleValidatorClass;
 	}
 
@@ -35,7 +35,7 @@ public class CommandSingleton
 
 	private static final Map<String, CommandDescr> s_commands = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
-	private static final Set<String> s_reserved = new HashSet<>();
+	private static final Set<String> s_reservedArguments = new HashSet<>();
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -98,19 +98,19 @@ public class CommandSingleton
 
 	static
 	{
-		s_reserved.add("AMIUser");
-		s_reserved.add("AMIPass");
+		s_reservedArguments.add("AMIUser");
+		s_reservedArguments.add("AMIPass");
 
-		s_reserved.add("clientDN");
-		s_reserved.add("issuerDN");
+		s_reservedArguments.add("clientDN");
+		s_reservedArguments.add("issuerDN");
 
-		s_reserved.add("notBefore");
-		s_reserved.add("notAfter");
+		s_reservedArguments.add("notBefore");
+		s_reservedArguments.add("notAfter");
 
-		s_reserved.add("isSecure");
+		s_reservedArguments.add("isSecure");
 
-		s_reserved.add("userAgent");
-		s_reserved.add("userSession");
+		s_reservedArguments.add("userAgent");
+		s_reservedArguments.add("userSession");
 
 		reload();
 	}
@@ -197,6 +197,8 @@ public class CommandSingleton
 			return;
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		if(!ClassSingleton.extendsClass(clazz, AbstractCommand.class))
 		{
 			throw new Exception("class '" + commandClass + "' doesn't extend 'AbstractCommand'");
@@ -213,12 +215,12 @@ public class CommandSingleton
 				commandName,
 				clazz.getMethod("help").invoke(null).toString(),
 				clazz.getMethod("usage").invoke(null).toString(),
+				Bool.valueOf(commandVisible),
 				clazz.getConstructor(
 					Set.class,
 					Map.class,
 					long.class
 				),
-				Bool.valueOf(commandVisible),
 				commandRoleValidatorClass
 			)
 		);
@@ -326,7 +328,7 @@ public class CommandSingleton
 			key = entry.getKey();
 			value = entry.getValue();
 
-			if(!s_reserved.contains(key))
+			if(!s_reservedArguments.contains(key))
 			{
 				key = Utility.escapeHTML(Utility.escapeJavaString(key));
 				value = Utility.escapeHTML(Utility.escapeJavaString(value));
@@ -500,7 +502,7 @@ public class CommandSingleton
 			      .append("<field name=\"help\"><![CDATA[").append(commandDescr.getHelp()).append("]]></field>")
 			      .append("<field name=\"usage\"><![CDATA[").append(commandDescr.getUsage()).append("]]></field>")
 			      .append("<field name=\"class\"><![CDATA[").append(commandDescr.getConstructor()).append("]]></field>")
-			      .append("<field name=\"visible\"><![CDATA[").append(commandDescr.isVisible()).append("]]></field>")
+			      .append("<field name=\"visible\"><![CDATA[").append(commandDescr.getVisible()).append("]]></field>")
 			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(commandDescr.getCommandRoleValidatorClass()).append("]]></field>")
 			      .append("</row>")
 			;

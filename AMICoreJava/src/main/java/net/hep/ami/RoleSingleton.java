@@ -41,6 +41,7 @@ public class RoleSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final Map<String, CommandValidatorDescr> s_commandRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+
 	private static final Map<String, UserValidatorDescr> s_userRoleValidators = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
