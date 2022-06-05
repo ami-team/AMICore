@@ -320,7 +320,7 @@ public class Router implements Querier
 
 		List<String> query = new ArrayList<>();
 
-		try(InputStream inputStream = Router.class.getResourceAsStream(path))
+		try(InputStream inputStream = Objects.requireNonNull(Router.class.getResourceAsStream(path)))
 		{
 			for(String line: TextFile.inputStreamToIterable(inputStream, true))
 			{
@@ -686,11 +686,14 @@ public class Router implements Querier
 
 		SchemaSingleton.Table router_user = SchemaSingleton.getEntityInfo("self", "router_user");
 
-		router_user.columns.get("AMIPass").adminOnly = true;
+		router_user.columns.get("ssoUser").adminOnly = true;
+		router_user.columns.get("AMIPass").crypted = true;
 		router_user.columns.get("clientDN").crypted = true;
 		router_user.columns.get("issuerDN").crypted = true;
+		router_user.columns.get("firstName").adminOnly = true;
+		router_user.columns.get("lastName").adminOnly = true;
+		router_user.columns.get("email").adminOnly = true;
 		router_user.columns.get("country").adminOnly = true;
-		router_user.columns.get("ssoUser").adminOnly = true;
 		router_user.columns.get("json").adminOnly = true;
 		router_user.columns.get("json").json = true;
 		router_user.columns.get("valid").groupable = true;

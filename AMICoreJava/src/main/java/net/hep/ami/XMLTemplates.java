@@ -14,13 +14,9 @@ public class XMLTemplates
 	@NotNull
 	private static Object @NotNull [] asArray(@Nullable Object arg)
 	{
-		if(arg == null)
-		{
-			return new Object[] {"null"};
-		}
-
-		return arg.getClass().isArray() ? ( Object[] ) (arg)
-			                            : new Object[] {arg}
+		return arg == null ? new Object[] {"@NULL"}
+		                   : arg.getClass().isArray() ? ( Object[] ) (arg)
+			                                          : new Object[] {arg}
 		;
 	}
 
@@ -28,7 +24,7 @@ public class XMLTemplates
 
 	@NotNull
 	@SuppressWarnings("StringBufferReplaceableByString")
-	private static String format(@NotNull String tag, @NotNull Object[] args)
+	private static String format(@NotNull String tag, @NotNull Object @NotNull [] args)
 	{
 		StringBuilder xml = new StringBuilder();
 

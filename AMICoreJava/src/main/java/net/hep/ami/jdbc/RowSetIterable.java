@@ -208,6 +208,8 @@ public final class RowSetIterable implements Iterable<Row>
 			      .append(rowSet.m_fieldHidden[i] ? "true" : "false")
 			      .append("\" adminOnly=\"")
 			      .append(rowSet.m_fieldAdminOnly[i] ? "true" : "false")
+			      .append("\" hashed=\"")
+			      .append(rowSet.m_fieldHashed[i] ? "true" : "false")
 			      .append("\" crypted=\"")
 			      .append(rowSet.m_fieldCrypted[i] ? "true" : "false")
 			      .append("\" primary=\"")
