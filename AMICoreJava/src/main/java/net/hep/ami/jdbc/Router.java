@@ -554,10 +554,6 @@ public class Router implements Querier
 
 						/*--------------------------------------------------------------------------------------------*/
 
-						System.out.println(commandName + " " + commandClass);
-						System.out.println(commandName + " " + commandRole);
-						System.out.println();
-
 						statement1.setString(1, commandName);
 						statement1.setString(2, commandClass);
 						statement1.setInt(3, commandVisible);

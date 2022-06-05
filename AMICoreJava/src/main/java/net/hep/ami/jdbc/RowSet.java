@@ -2,6 +2,7 @@ package net.hep.ami.jdbc;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
@@ -40,10 +41,11 @@ public class RowSet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/* From AMI */
+
 	protected final boolean[] m_fieldHidden;
 	protected final boolean[] m_fieldAdminOnly;
 	protected final boolean[] m_fieldHashed;
-	protected final boolean[] m_fieldCrypted;
+	protected final Boolean[] m_fieldCrypted;
 	protected final boolean[] m_fieldPrimary;
 	protected final boolean[] m_fieldJson;
 	protected final boolean[] m_fieldAutomatic;
@@ -159,7 +161,7 @@ public class RowSet
 		m_fieldHidden = new boolean[m_numberOfFields];
 		m_fieldAdminOnly = new boolean[m_numberOfFields];
 		m_fieldHashed = new boolean[m_numberOfFields];
-		m_fieldCrypted = new boolean[m_numberOfFields];
+		m_fieldCrypted = new Boolean[m_numberOfFields];
 		m_fieldPrimary = new boolean[m_numberOfFields];
 		m_fieldJson = new boolean[m_numberOfFields];
 		m_fieldAutomatic = new boolean[m_numberOfFields];
@@ -399,19 +401,34 @@ public class RowSet
 
 			if("self".equals(defaultExternalCatalog))
 			{
-				m_fieldCrypted[i] = (
-					"paramName".equals(m_fieldNames[i])
-					||
-					"paramValue".equals(m_fieldNames[i])
-					||
-					"user".equals(m_fieldNames[i])
-					||
-					"pass".equals(m_fieldNames[i])
-					||
-					"clientDN".equals(m_fieldNames[i])
-					||
-					"issuerDN".equals(m_fieldNames[i])
-				);
+				if("router_config".equals(defaultEntity))
+				{
+					m_fieldCrypted[i] = (
+						"paramName".equals(m_fieldNames[i])
+						||
+						"paramValue".equals(m_fieldNames[i])
+					);
+				}
+
+				if("router_catalog".equals(defaultEntity))
+				{
+					m_fieldCrypted[i] = (
+						"user".equals(m_fieldNames[i])
+						||
+						"pass".equals(m_fieldNames[i])
+					);
+				}
+
+				if("router_user".equals(defaultEntity))
+				{
+					m_fieldCrypted[i] = (
+						"AMIPass".equals(m_fieldNames[i])
+						||
+						"clientDN".equals(m_fieldNames[i])
+						||
+						"issuerDN".equals(m_fieldNames[i])
+					);
+				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/

@@ -206,9 +206,9 @@ public class MetadataSingleton
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			column.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
+			column.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
 			column.hashed = _safeBoolean((Boolean) map.get("hashed"), false);
 			column.crypted = _safeBoolean((Boolean) map.get("crypted"), false);
-			column.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
 			column.primary = _safeBoolean((Boolean) map.get("primary"), false);
 			column.json = _safeBoolean((Boolean) map.get("json"), false);
 

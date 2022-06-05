@@ -480,8 +480,10 @@ public class CommandSingletonTest
 
 			//System.out.println(CommandSingleton.executeCommand("GetConfig", false).replace(">", ">\n"));
 
+			//System.out.println(CommandSingleton.executeCommand("SetConfigProperty -name=\"foo\" -value=\"bar\"", false).replace(">", ">\n"));
 
-			System.out.println(CommandSingleton.executeCommand("SetConfigProperty -name=\"foo\" -value=\"bar\"", false).replace(">", ">\n"));
+			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"SELECT * WHERE 1 = 1\" -limit=\"10\" -offset=\"0\"", false).replace(">", ">\n"));
+
 		}
 		catch(Exception e)
 		{

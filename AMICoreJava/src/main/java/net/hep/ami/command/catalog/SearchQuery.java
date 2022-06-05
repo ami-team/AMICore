@@ -218,7 +218,6 @@ public class SearchQuery extends AbstractCommand
 
 					RowSet rowSet2;
 
-					/**/
 					if(sql != null)
 					{
 						rowSet2 = querier.executeSQLQuery(entity, xqlSelect2.toString());

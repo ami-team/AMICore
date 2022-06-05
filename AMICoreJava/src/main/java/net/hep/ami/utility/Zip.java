@@ -14,6 +14,7 @@ public class Zip
 	@Getter
 	@Setter
 	@AllArgsConstructor
+	@ToString
 	public static final class Tuple2<U, V>
 	{
 		@NotNull private final U x;
