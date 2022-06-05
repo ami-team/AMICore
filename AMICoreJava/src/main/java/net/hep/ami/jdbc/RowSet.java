@@ -422,8 +422,6 @@ public class RowSet
 				if("router_user".equals(defaultEntity))
 				{
 					m_fieldCrypted[i] = (
-						"AMIPass".equals(m_fieldNames[i])
-						||
 						"clientDN".equals(m_fieldNames[i])
 						||
 						"issuerDN".equals(m_fieldNames[i])

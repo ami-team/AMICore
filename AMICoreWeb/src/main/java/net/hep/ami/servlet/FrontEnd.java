@@ -576,7 +576,7 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+		Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?^2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
 			username,
 			username,
 			password,

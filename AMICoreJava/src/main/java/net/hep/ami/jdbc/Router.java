@@ -455,25 +455,25 @@ public class Router implements Querier
 
 		/**/
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?^1, ?0, ?0, ?2, 'N/A', '1');",
 			admin_user,
 			admin_pass,
 			admin_email
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?^1, ?0, ?0, ?2, 'N/A', '1');",
 			sudoer_user,
 			sudoer_pass,
 			admin_email
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?^1, ?0, ?0, ?2, 'N/A', '1');",
 			sso_user,
 			sso_pass,
 			admin_email
 		);
 
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?#1, ?0, ?0, ?2, 'N/A', '1');",
+		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?^1, ?0, ?0, ?2, 'N/A', '1');",
 			guest_user,
 			guest_pass,
 			admin_email
@@ -683,7 +683,7 @@ public class Router implements Querier
 		SchemaSingleton.Table router_user = SchemaSingleton.getEntityInfo("self", "router_user");
 
 		router_user.columns.get("ssoUser").adminOnly = true;
-		router_user.columns.get("AMIPass").crypted = true;
+		router_user.columns.get("AMIPass").hashed = true;
 		router_user.columns.get("clientDN").crypted = true;
 		router_user.columns.get("issuerDN").crypted = true;
 		router_user.columns.get("firstName").adminOnly = true;
