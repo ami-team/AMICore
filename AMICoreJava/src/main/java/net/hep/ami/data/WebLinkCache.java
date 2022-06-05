@@ -1,4 +1,4 @@
-package net.hep.ami.jdbc;
+package net.hep.ami.data;
 
 import groovy.lang.*;
 

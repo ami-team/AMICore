@@ -2,6 +2,7 @@ package net.hep.ami.command.catalog;
 
 import java.util.*;
 
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.jdbc.query.*;

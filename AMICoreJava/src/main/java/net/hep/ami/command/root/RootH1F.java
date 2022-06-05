@@ -4,6 +4,7 @@ import java.math.*;
 import java.util.*;
 import java.util.stream.*;
 
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;

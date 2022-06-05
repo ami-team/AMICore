@@ -2,6 +2,7 @@ package net.hep.ami.jdbc;
 
 import java.sql.*;
 
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.driver.*;
 
 import org.jetbrains.annotations.*;
@@ -52,13 +53,13 @@ public interface Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Executes a MQL query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
+	 * Executes a MQL query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.data.RowSet</code> object.
 	 *
 	 * @param entity The default entity.
 	 * @param mql The MQL query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the MQL query.
 	 *
-	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
+	 * @return The generated <code>net.hep.ami.data.RowSet</code> object.
 	 */
 
 	RowSet executeMQLQuery(@NotNull String entity, @NotNull String mql, Object... args) throws Exception;
@@ -66,13 +67,13 @@ public interface Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Executes a SQL query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
+	 * Executes a SQL query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.data.RowSet</code> object.
 	 *
 	 * @param entity The default entity.
 	 * @param sql The SQL query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the SQL query.
 	 *
-	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
+	 * @return The generated <code>net.hep.ami.data.RowSet</code> object.
 	 */
 
 	RowSet executeSQLQuery(@NotNull String entity, @NotNull String sql, Object... args) throws Exception;
@@ -80,13 +81,13 @@ public interface Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Executes a raw query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.jdbc.RowSet</code> object.
+	 * Executes a raw query, typically a <code>SELECT</code> statement, and returns a <code>net.hep.ami.data.RowSet</code> object.
 	 *
 	 * @param entity The default entity.
 	 * @param raw The raw query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
 	 *
-	 * @return The generated <code>net.hep.ami.jdbc.RowSet</code> object.
+	 * @return The generated <code>net.hep.ami.data.RowSet</code> object.
 	 */
 
 	RowSet executeRawQuery(@NotNull String entity, @NotNull String raw, Object... args) throws Exception;
@@ -94,13 +95,13 @@ public interface Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Executes a MQL query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
+	 * Executes a MQL query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.data.Update</code> object.
 	 *
 	 * @param entity The default entity.
 	 * @param mql The MQL query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the MQL query.
 	 *
-	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
+	 * @return The generated <code>net.hep.ami.data.Update</code> object.
 	 */
 
 	Update executeMQLUpdate(@NotNull String entity, @NotNull String mql, Object... args) throws Exception;
@@ -108,13 +109,13 @@ public interface Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Executes a SQL query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
+	 * Executes a SQL query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.data.Update</code> object.
 	 *
 	 * @param entity The default entity.
 	 * @param sql The SQL query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the SQL query.
 	 *
-	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
+	 * @return The generated <code>net.hep.ami.data.Update</code> object.
 	 */
 
 	Update executeSQLUpdate(@NotNull String entity, @NotNull String sql, Object... args) throws Exception;
@@ -122,13 +123,13 @@ public interface Querier
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/**
-	 * Executes a raw query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.jdbc.Update</code> object.
+	 * Executes a raw query, typically an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement, and returns a <code>net.hep.ami.data.Update</code> object.
 	 *
 	 * @param entity The default entity.
 	 * @param raw The raw query.
 	 * @param args The arguments referenced by the format specifiers (character '?') in the raw query.
 	 *
-	 * @return The generated <code>net.hep.ami.jdbc.Update</code> object.
+	 * @return The generated <code>net.hep.ami.data.Update</code> object.
 	 */
 
 	Update executeRawUpdate(@NotNull String entity, @NotNull String raw, Object... args) throws Exception;

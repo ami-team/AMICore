@@ -169,6 +169,7 @@ public class Command
 
 		try
 		{
+			//noinspection unchecked
 			token = (Map<String, String>) session.getAttribute("token");
 
 			if(token == null)

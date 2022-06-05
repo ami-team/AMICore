@@ -3,6 +3,7 @@ package net.hep.ami.jdbc;
 import java.sql.*;
 
 import net.hep.ami.*;
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.driver.*;
 
 import org.jetbrains.annotations.*;

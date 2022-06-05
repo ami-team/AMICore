@@ -1,14 +1,14 @@
-package net.hep.ami.jdbc;
+package net.hep.ami.data;
 
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import net.hep.ami.*;
-import net.hep.ami.utility.*;
+import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
 import net.hep.ami.jdbc.query.sql.*;
 import net.hep.ami.jdbc.reflexion.*;
+import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 

@@ -5,9 +5,6 @@ import java.net.*;
 import java.util.*;
 import java.nio.charset.*;
 
-import net.hep.ami.jdbc.Querier;
-import net.hep.ami.jdbc.Router;
-import net.hep.ami.jdbc.Row;
 import org.w3c.dom.*;
 
 import net.hep.ami.*;

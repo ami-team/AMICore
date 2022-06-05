@@ -8,6 +8,7 @@ import java.sql.*;
 import java.math.*;
 import java.util.*;
 
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.parser.*;
 

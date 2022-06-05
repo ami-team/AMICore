@@ -1,13 +1,11 @@
 package net.hep.ami.command.admin;
 
-import net.hep.ami.SecuritySingleton;
-import net.hep.ami.command.AbstractCommand;
-import net.hep.ami.command.CommandMetadata;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import java.util.*;
 
-import java.util.Map;
-import java.util.Set;
+import net.hep.ami.*;
+import net.hep.ami.command.*;
+
+import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
 public class BCrypt extends AbstractCommand

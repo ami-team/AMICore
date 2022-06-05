@@ -4,6 +4,7 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 

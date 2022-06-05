@@ -8,6 +8,7 @@ import javax.ws.rs.core.*;
 import javax.servlet.http.*;
 
 import net.hep.ami.*;
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 
 import org.jetbrains.annotations.*;

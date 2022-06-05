@@ -3,6 +3,8 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 
 import net.hep.ami.*;
+import net.hep.ami.data.Row;
+import net.hep.ami.data.RowSet;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.parser.*;
 

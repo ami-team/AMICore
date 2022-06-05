@@ -1,14 +1,5 @@
 package net.hep.ami;
 
-import net.hep.ami.jdbc.Querier;
-import net.hep.ami.jdbc.Router;
-import net.hep.ami.jdbc.Row;
-import net.hep.ami.jdbc.SimpleQuerier;
-import net.hep.ami.jdbc.query.sql.Tokenizer;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
 @SuppressWarnings("all")
 public class CommandSingletonTest
 {
@@ -218,7 +209,7 @@ public class CommandSingletonTest
 
 		//System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"test\" -entity=\"A\" -separator=\"§\" -fields=\"id§name§kux\" -values=\"-99§foo§bar\"", false).replace(">", ">\n"));
 
-//		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\"§\" -fields=\"catalog§entity§field§rank§ishidden§iscrypted§isprimary§iscreated§iscreatedby§ismodified§ismodifiedby§isstatable§isgroupable§description§weblinkscript§created§createdby§modified§modifiedby\" -values=\"mc16_001:production§dataset§logicalDatasetName§0§0§0§0§0§0§0§0§0§0§Logical Dataset Name§import net.hep.ami.jdbc.WebLink;  def webLink = new WebLink();  webLink.newLinkProperties().setLabel(\\\"Rucio\\\");  return webLink;§current_timestamp§§current_timestamp§\"", false).replace(">", ">\n"));
+//		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_catalog_extra\" -separator=\"§\" -fields=\"catalog§entity§field§rank§ishidden§iscrypted§isprimary§iscreated§iscreatedby§ismodified§ismodifiedby§isstatable§isgroupable§description§weblinkscript§created§createdby§modified§modifiedby\" -values=\"mc16_001:production§dataset§logicalDatasetName§0§0§0§0§0§0§0§0§0§0§Logical Dataset Name§import net.hep.ami.data.WebLink;  def webLink = new WebLink();  webLink.newLinkProperties().setLabel(\\\"Rucio\\\");  return webLink;§current_timestamp§§current_timestamp§\"", false).replace(">", ">\n"));
 
 //		System.out.println(CommandSingleton.executeCommand("AddElement -catalog=\"self\" -entity=\"router_search_interface\" -fields=\"interface,json,archived,createdBy,modifiedBy\" -values=\"A,{},0,jodier,jodier\"", false).replace(">", ">\n"));
 

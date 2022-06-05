@@ -1,6 +1,4 @@
-package net.hep.ami.jdbc;
-
-import net.hep.ami.utility.*;
+package net.hep.ami.data;
 
 import org.jetbrains.annotations.*;
 

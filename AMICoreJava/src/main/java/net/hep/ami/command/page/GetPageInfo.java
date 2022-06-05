@@ -2,7 +2,7 @@ package net.hep.ami.command.page;
 
 import java.util.*;
 
-import net.hep.ami.jdbc.*;
+import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;

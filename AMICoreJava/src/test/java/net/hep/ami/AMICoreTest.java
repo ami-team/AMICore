@@ -224,7 +224,7 @@ if(true)
 				String params3 = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT DATASET.NAME, DATASET.ID, DATASET.VALID, PROJECT.NAME{test.DATASET.projectFK} AS `PROJECT.NAME` WHERE valid=0 AND PROJECT.name{test.DATASET.projectFK}='\\\" + row.getValue(\\\"test.PROJECT.name\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 
 				String webLinkScript = ""
-						+ "import net.hep.ami.jdbc.WebLink;"
+						+ "import net.hep.ami.data.WebLink;"
 						+ "\\nwebLink = new WebLink();"
 						+ "\\nif(rowSet.isANameOrLabel(\\\"test.PROJECT.name\\\"))"
 						+ "\\n{"
@@ -286,7 +286,7 @@ if(true)
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"FILE\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE DATASET.id{test.DATASET_FILE_BRIDGE.fileFK}='\\\" + row.getValue(\\\"test.DATASET.id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 
 				String webLinkScript = ""
-						+ "import net.hep.ami.jdbc.WebLink;"
+						+ "import net.hep.ami.data.WebLink;"
 						+ "\\nwebLink = new WebLink();"
 						+ "\\nif(rowSet.isANameOrLabel(\\\"test.DATASET.id\\\"))"
 						+ "\\n{"
@@ -321,7 +321,7 @@ if(true)
 				String params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"DATASET\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE FILE.id{test.DATASET_FILE_BRIDGE.datasetFK}='\\\" + row.getValue(\\\"test.FILE.id\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 
 				String webLinkScript = ""
-						+ "import net.hep.ami.jdbc.WebLink;"
+						+ "import net.hep.ami.data.WebLink;"
 						+ "\\nwebLink = new WebLink();"
 						+ "\\nif(rowSet.isANameOrLabel(\\\"test.FILE.id\\\"))"
 						+ "\\n{"
@@ -345,10 +345,10 @@ if(true)
 				params = "[\\\\\\\"BrowseQuery -catalog=\\\\\\\\\\\\\\\"\\\" + catalog + \\\"\\\\\\\\\\\\\\\" -entity=\\\\\\\\\\\\\\\"PROJECT\\\\\\\\\\\\\\\" -mql=\\\\\\\\\\\\\\\"SELECT * WHERE PROJECT.id='\\\" + row.getValue(\\\"test.DATASET.projectFK\\\") + \\\"'\\\\\\\\\\\\\\\"  \\\\\\\"]";
 				String params2 = "[\\\\\\\"\\\" + catalog + \\\"\\\\\\\",\\\\\\\"PROJECT\\\\\\\",\\\\\\\"id\\\\\\\",\\\\\\\"\\\" + row.getValue(\\\"test.DATASET.projectFK\\\") + \\\"\\\\\\\"]";
 				String webLinkScript = ""
-						+ "import net.hep.ami.jdbc.WebLink;"
+						+ "import net.hep.ami.data.WebLink;"
 						+ "\\nimport net.hep.ami.jdbc.Querier;"
 						+ "\\nimport net.hep.ami.jdbc.SimpleQuerier;"
-						+ "\\nimport net.hep.ami.jdbc.Row;"
+						+ "\\nimport net.hep.ami.data.Row;"
 						+ "\\nimport net.hep.ami.jdbc.reflexion.SchemaSingleton;"
 						+ "\\nString test = SchemaSingleton.getFieldNames(catalog,\\\"PROJECT\\\").toString();"
 						+ "\\nQuerier querier = new SimpleQuerier(catalog);"
@@ -374,7 +374,7 @@ if(true)
 			try {
 				String fields = "catalogxxxxxentityxxxxxfieldxxxxxdescriptionxxxxxjson";
 				String webLinkScript = ""
-						+ "import net.hep.ami.jdbc.WebLink;"
+						+ "import net.hep.ami.data.WebLink;"
 						+ "\\nwebLink = new WebLink().setUnitName(\\\"Byte\\\").setUnitFactor(\\\"\\\").setUnitBase(\\\"1024\\\").setHumanReadable(\\\"true\\\");"
 						+ "\\nreturn webLink;";
 
