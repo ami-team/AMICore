@@ -140,7 +140,7 @@ public class CommandSingleton
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -150,7 +150,7 @@ public class CommandSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("router_command", "SELECT `command`, `class`, `visible`, `roleValidatorClass` FROM `router_command`");
+			RowSet rowSet = querier.executeSQLQuery("router_command", "SELECT `command`, `class`, `visible`, `roleValidatorClass` FROM `router_command`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* ADD COMMANDS                                                                                           */
@@ -177,7 +177,7 @@ public class CommandSingleton
 		}
 		finally
 		{
-			router.rollbackAndRelease();
+			querier.rollbackAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -292,15 +292,15 @@ public class CommandSingleton
 
 		Set<String> userRoles;
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		try
 		{
-			userRoles = RoleSingleton.checkRoles(router, commandDescr.getName(), arguments, commandDescr.getCommandRoleValidatorClass(), checkRoles);
+			userRoles = RoleSingleton.checkRoles(querier, commandDescr.getName(), arguments, commandDescr.getCommandRoleValidatorClass(), checkRoles);
 		}
 		finally
 		{
-			router.commitAndRelease();
+			querier.commitAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

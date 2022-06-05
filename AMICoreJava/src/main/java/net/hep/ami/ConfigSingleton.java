@@ -236,7 +236,7 @@ public class ConfigSingleton
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -246,7 +246,7 @@ public class ConfigSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("router_config", "SELECT `paramName`, `paramValue` FROM `router_config`");
+			RowSet rowSet = querier.executeSQLQuery("router_config", "SELECT `paramName`, `paramValue` FROM `router_config`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* ADD PROPERTIES                                                                                         */
@@ -270,7 +270,7 @@ public class ConfigSingleton
 		}
 		finally
 		{
-			router.rollbackAndRelease();
+			querier.rollbackAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

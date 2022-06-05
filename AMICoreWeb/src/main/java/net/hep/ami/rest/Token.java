@@ -92,7 +92,7 @@ public class Token
 
 		try
 		{
-			Router router = new Router();
+			RouterQuerier querier = new RouterQuerier();
 
 			try
 			{
@@ -102,13 +102,13 @@ public class Token
 				        &&
 				        issuerDN != null
 				 ) {
-					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
+					rows = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
 				}
 				else if(AMIUser != null
 				        &&
 				        AMIPass != null
 				 ) {
-					rows = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", AMIUser, AMIPass).getAll();
+					rows = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", AMIUser, AMIPass).getAll();
 				}
 				else
 				{
@@ -125,7 +125,7 @@ public class Token
 			}
 			finally
 			{
-				router.rollbackAndRelease();
+				querier.rollbackAndRelease();
 			}
 		}
 		catch(Exception e)

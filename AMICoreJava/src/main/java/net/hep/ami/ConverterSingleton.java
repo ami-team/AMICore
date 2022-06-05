@@ -68,7 +68,7 @@ public class ConverterSingleton
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -78,7 +78,7 @@ public class ConverterSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("router_converter", "SELECT `xslt`, `mime` FROM `router_converter`");
+			RowSet rowSet = querier.executeSQLQuery("router_converter", "SELECT `xslt`, `mime` FROM `router_converter`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* ADD CONVERTERS                                                                                         */
@@ -103,7 +103,7 @@ public class ConverterSingleton
 		}
 		finally
 		{
-			router.rollbackAndRelease();
+			querier.rollbackAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

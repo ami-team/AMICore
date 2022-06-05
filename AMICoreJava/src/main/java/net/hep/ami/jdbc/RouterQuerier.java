@@ -14,7 +14,7 @@ import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
-public class Router implements Querier
+public class RouterQuerier implements Querier
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -22,7 +22,7 @@ public class Router implements Querier
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Router() throws Exception
+	public RouterQuerier() throws Exception
 	{
 		this(
 			"self",
@@ -36,7 +36,7 @@ public class Router implements Querier
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public Router(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String timeZone) throws Exception
+	public RouterQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String timeZone) throws Exception
 	{
 		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
 
@@ -321,7 +321,7 @@ public class Router implements Querier
 
 		List<String> query = new ArrayList<>();
 
-		try(InputStream inputStream = Objects.requireNonNull(Router.class.getResourceAsStream(path)))
+		try(InputStream inputStream = Objects.requireNonNull(RouterQuerier.class.getResourceAsStream(path)))
 		{
 			for(String line: TextFile.inputStreamToIterable(inputStream, true))
 			{
@@ -392,8 +392,6 @@ public class Router implements Querier
 		String admin_email = ConfigSingleton.getProperty("admin_email");
 		String sudoer_user = ConfigSingleton.getProperty("sudoer_user");
 		String sudoer_pass = ConfigSingleton.getProperty("sudoer_pass");
-		String sso_user = ConfigSingleton.getProperty("sso_user");
-		String sso_pass = ConfigSingleton.getProperty("sso_pass");
 		String guest_user = ConfigSingleton.getProperty("guest_user");
 		String guest_pass = ConfigSingleton.getProperty("guest_pass");
 
@@ -415,6 +413,10 @@ public class Router implements Querier
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
+
+		this.commit();
+
+		/*------------------------------------------------------------------------------------------------------------*/
 		/* CONVERTERS                                                                                                 */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -429,6 +431,10 @@ public class Router implements Querier
 		executeSQLUpdate("router_converter", "INSERT INTO `router_converter` (`xslt`, `mime`) VALUES ('/xslt/AMIXmlToXml.xsl', 'application/xml')");
 
 		/*------------------------------------------------------------------------------------------------------------*/
+
+		this.commit();
+
+		/*------------------------------------------------------------------------------------------------------------*/
 		/* ROLES                                                                                                      */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -438,8 +444,6 @@ public class Router implements Querier
 
 		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_SUDOER')");
 
-		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_SSO')");
-
 		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_CERT')");
 
 		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_WRITER')");
@@ -447,6 +451,10 @@ public class Router implements Querier
 		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_USER')");
 
 		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_GUEST')");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		this.commit();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* USERS                                                                                                      */
@@ -465,12 +473,6 @@ public class Router implements Querier
 		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?^1, ?0, ?0, ?2, 'N/A', '1');",
 			sudoer_user,
 			sudoer_pass,
-			admin_email
-		);
-
-		executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `AMIPass`, `firstName`, `lastName`, `email`, `country`, `valid`) VALUES (?0, ?^1, ?0, ?0, ?2, 'N/A', '1');",
-			sso_user,
-			sso_pass,
 			admin_email
 		);
 
@@ -498,19 +500,13 @@ public class Router implements Querier
 		);
 
 		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
-			sso_user,
-			"AMI_SSO"
-		);
-
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
-			sso_user,
-			"AMI_USER"
-		);
-
-		executeSQLUpdate("router_user", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1));",
 			guest_user,
 			"AMI_GUEST"
 		);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		this.commit();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* COMMANDS                                                                                                   */
@@ -518,9 +514,9 @@ public class Router implements Querier
 
 		LogSingleton.root.info("setup commands...");
 
-		this.commit();
-
 		/*------------------------------------------------------------------------------------------------------------*/
+
+		int i = 0;
 
 		try(PreparedStatement statement1 = sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null, false))
 		{
@@ -572,10 +568,17 @@ public class Router implements Querier
 					statement1.executeBatch();
 					statement2.executeBatch();
 
-					this.commit(); /* BERKKKKKKKKKKKKKKKKKKKKKKKKKKKKK */
+					if(i++ % 50 == 0)
+					{
+						this.commit();
+					}
 				}
 			}
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		this.commit();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* LOCALIZATION                                                                                               */

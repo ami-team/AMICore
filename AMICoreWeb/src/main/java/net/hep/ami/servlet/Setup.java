@@ -440,7 +440,7 @@ public class Setup extends HttpServlet
 			/* SETUP SERVER CONFIG                                                                                    */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Router db = new Router("self", router_catalog, router_url, router_user, router_pass, "UTC");
+			RouterQuerier db = new RouterQuerier("self", router_catalog, router_url, router_user, router_pass, "UTC");
 
 			try
 			{
@@ -477,7 +477,7 @@ public class Setup extends HttpServlet
 			/* LOAD SERVER CONFIG                                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			Router.reload(true);
+			RouterQuerier.reload(true);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* BUILD HTML                                                                                             */

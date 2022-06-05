@@ -24,7 +24,7 @@ public class FlushServerCaches extends AbstractCommand
 	public StringBuilder main(@NotNull Map<String, String> arguments)
 	{
 		long t1 = System.currentTimeMillis();
-		Router.reload(arguments.containsKey("full"));
+		RouterQuerier.reload(arguments.containsKey("full"));
 		long t2 = System.currentTimeMillis();
 
 		return new StringBuilder(String.format(Locale.US, "<info><![CDATA[done with success within %.3f s]]></info>", 0.001f * (t2 - t1)));

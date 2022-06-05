@@ -78,7 +78,7 @@ public class CatalogSingleton
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -88,7 +88,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet = router.executeSQLQuery("router_catalog", "SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `description`, `archived` FROM `router_catalog`");
+			RowSet rowSet = querier.executeSQLQuery("router_catalog", "SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `description`, `archived` FROM `router_catalog`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* ADD CATALOGS                                                                                           */
@@ -119,7 +119,7 @@ public class CatalogSingleton
 		}
 		finally
 		{
-			router.rollbackAndRelease();
+			querier.rollbackAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

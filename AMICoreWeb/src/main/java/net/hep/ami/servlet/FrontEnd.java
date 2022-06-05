@@ -309,7 +309,7 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -319,7 +319,7 @@ public class FrontEnd extends HttpServlet
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			List<Row> rowList = router.executeSQLQuery("router_user", "SELECT `AMIUser`, `country` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
+			List<Row> rowList = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `country` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET CREDENTIALS                                                                                        */
@@ -339,7 +339,7 @@ public class FrontEnd extends HttpServlet
 			/* UPDATE COUNTRY                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			updateCountry(router, result, oldCountryCode, clientIP);
+			updateCountry(querier, result, oldCountryCode, clientIP);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -347,7 +347,7 @@ public class FrontEnd extends HttpServlet
 		}
 		finally
 		{
-			router.commitAndRelease();
+			querier.commitAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -435,7 +435,7 @@ public class FrontEnd extends HttpServlet
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -449,7 +449,7 @@ public class FrontEnd extends HttpServlet
 			                                         : "SELECT `AMIUser`, `AMIPass`, `country` FROM `router_user` WHERE `AMIUser` = ?0"
 			;
 
-			List<Row> rowList = router.executeSQLQuery("router_user", sql, AMIUser).getAll();
+			List<Row> rowList = querier.executeSQLQuery("router_user", sql, AMIUser).getAll();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* GET CREDENTIALS                                                                                        */
@@ -457,7 +457,7 @@ public class FrontEnd extends HttpServlet
 
 			if(rowList.size() == 0)
 			{
-				return userInfoAndUsername != null ? createNewUser(router, userInfoAndUsername, clientIP) : GUEST_USER;
+				return userInfoAndUsername != null ? createNewUser(querier, userInfoAndUsername, clientIP) : GUEST_USER;
 			}
 
 			Row row = rowList.get(0);
@@ -482,7 +482,7 @@ public class FrontEnd extends HttpServlet
 			/* UPDATE COUNTRY                                                                                         */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			updateCountry(router, result, oldCountryCode, clientIP);
+			updateCountry(querier, result, oldCountryCode, clientIP);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -490,7 +490,7 @@ public class FrontEnd extends HttpServlet
 		}
 		finally
 		{
-			router.commitAndRelease();
+			querier.commitAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -542,7 +542,7 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	private String createNewUser(@NotNull Router router, @NotNull UserInfoAndUsername userInfoAndUsername, @NotNull String clientIP) throws Exception
+	private String createNewUser(@NotNull RouterQuerier querier, @NotNull UserInfoAndUsername userInfoAndUsername, @NotNull String clientIP) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -577,7 +577,7 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = router.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?^2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?^2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
 			username,
 			username,
 			password,
@@ -592,29 +592,29 @@ public class FrontEnd extends HttpServlet
 
 		if(update.getNbOfUpdatedRows() == 1)
 		{
-			Update update2 = router.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
+			Update update2 = querier.executeSQLUpdate("router_user_role", "INSERT INTO `router_user_role` (`userFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_user` WHERE `AMIUser` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))",
 				username,
 				"AMI_USER"
 			);
 
 			if(update2.getNbOfUpdatedRows() == 1)
 			{
-				updateCountry(router, bean.getAmiUsername(), "N/A", clientIP);
+				updateCountry(querier, bean.getAmiUsername(), "N/A", clientIP);
 
-				router.commit();
+				querier.commit();
 
 				return username;
 			}
 			else
 			{
-				router.rollback();
+				querier.rollback();
 
 				return GUEST_USER;
 			}
 		}
 		else
 		{
-			router.rollback();
+			querier.rollback();
 
 			return GUEST_USER;
 		}
@@ -624,15 +624,15 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private void updateCountry(@NotNull Router router, @NotNull String AMIUser, @NotNull String oldCountryCode, @NotNull String clientIP)
+	private void updateCountry(@NotNull RouterQuerier querier, @NotNull String AMIUser, @NotNull String oldCountryCode, @NotNull String clientIP)
 	{
 		try
 		{
-			String newCountryCode = LocalizationSingleton.localizeIP(router, clientIP).getCountryCode();
+			String newCountryCode = LocalizationSingleton.localizeIP(querier, clientIP).getCountryCode();
 
 			if(!oldCountryCode.equals(newCountryCode))
 			{
-				router.executeSQLUpdate("UPDATE `router_user` SET `country` = ?0 WHERE `AMIUser` = ?1", newCountryCode, AMIUser);
+				querier.executeSQLUpdate("UPDATE `router_user` SET `country` = ?0 WHERE `AMIUser` = ?1", newCountryCode, AMIUser);
 			}
 		}
 		catch(Exception e)

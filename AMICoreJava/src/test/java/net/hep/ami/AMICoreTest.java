@@ -72,7 +72,7 @@ if(true)
 				/* SETUP SERVER CONFIG                                         */
 				/*-------------------------------------------------------------*/
 
-				Router db = new Router();
+				RouterQuerier db = new RouterQuerier();
 
 				try {
 					System.out.println("init create");
@@ -93,7 +93,7 @@ if(true)
 				/* LOAD SERVER CONFIG                                          */
 				/*-------------------------------------------------------------*/
 
-				Router.reload(true);
+				RouterQuerier.reload(true);
 
 				/*-------------------------------------------------------------*/
 			} catch (Exception e) {
@@ -170,7 +170,7 @@ if(true)
 			/* GET INPUT STREAM                                                */
 			/*-----------------------------------------------------------------*/
 
-			InputStream inputStream = Router.class.getResourceAsStream(path);
+			InputStream inputStream = RouterQuerier.class.getResourceAsStream(path);
 
 			/*-----------------------------------------------------------------*/
 			/* EXECUTE SQL QUERIES                                             */
@@ -608,40 +608,40 @@ if(true)
 
 
 			String imageBase64 = "";
-			InputStream inputStream2 = Router.class.getResourceAsStream("/base64media/jpg");
+			InputStream inputStream2 = RouterQuerier.class.getResourceAsStream("/base64media/jpg");
 
 			Scanner s = new Scanner(inputStream2).useDelimiter("\\A");
 			imageBase64 = s.hasNext() ? s.next() : "";
 
 
 			String transparentBase64 = "";
-			inputStream2 = Router.class.getResourceAsStream("/base64media/png");
+			inputStream2 = RouterQuerier.class.getResourceAsStream("/base64media/png");
 
 			s = new Scanner(inputStream2).useDelimiter("\\A");
 			transparentBase64 = s.hasNext() ? s.next() : "";
 
 
 			String animationBase64 = "";
-			inputStream2 = Router.class.getResourceAsStream("/base64media/gif");
+			inputStream2 = RouterQuerier.class.getResourceAsStream("/base64media/gif");
 
 			s = new Scanner(inputStream2).useDelimiter("\\A");
 			animationBase64 = s.hasNext() ? s.next() : "";
 
 			String videoBase64 = "";
-			inputStream2 = Router.class.getResourceAsStream("/base64media/mp4");
+			inputStream2 = RouterQuerier.class.getResourceAsStream("/base64media/mp4");
 
 			s = new Scanner(inputStream2).useDelimiter("\\A");
 			videoBase64 = s.hasNext() ? s.next() : "";
 
 			String musicBase64 = "";
-			inputStream2 = Router.class.getResourceAsStream("/base64media/mp3");
+			inputStream2 = RouterQuerier.class.getResourceAsStream("/base64media/mp3");
 
 			s = new Scanner(inputStream2).useDelimiter("\\A");
 			musicBase64 = s.hasNext() ? s.next() : "";
 
 
 			String documentBase64 = "";
-			inputStream2 = Router.class.getResourceAsStream("/base64media/pdf");
+			inputStream2 = RouterQuerier.class.getResourceAsStream("/base64media/pdf");
 
 			s = new Scanner(inputStream2).useDelimiter("\\A");
 			documentBase64 = s.hasNext() ? s.next() : "";

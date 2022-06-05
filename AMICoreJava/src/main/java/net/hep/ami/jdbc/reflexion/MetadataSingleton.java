@@ -25,7 +25,7 @@ public class MetadataSingleton
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Router router = new Router();
+		RouterQuerier querier = new RouterQuerier();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -35,7 +35,7 @@ public class MetadataSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet1 = router.executeSQLQuery("router_entity", "SELECT `catalog`, `entity`, `rank`, `json`, `description` FROM `router_entity`");
+			RowSet rowSet1 = querier.executeSQLQuery("router_entity", "SELECT `catalog`, `entity`, `rank`, `json`, `description` FROM `router_entity`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* UPDATE ENTITIES                                                                                        */
@@ -56,7 +56,7 @@ public class MetadataSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet2 = router.executeSQLQuery("router_field", "SELECT `catalog`, `entity`, `field`, `rank`, `json`, `description` FROM `router_field`");
+			RowSet rowSet2 = querier.executeSQLQuery("router_field", "SELECT `catalog`, `entity`, `field`, `rank`, `json`, `description` FROM `router_field`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* UPDATE COLUMNS                                                                                         */
@@ -78,7 +78,7 @@ public class MetadataSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet3 = router.executeSQLQuery("router_foreign_key", "SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
+			RowSet rowSet3 = querier.executeSQLQuery("router_foreign_key", "SELECT `name`, `fkCatalog`, `fkTable`, `fkColumn`, `pkCatalog`, `pkTable`, `pkColumn` FROM `router_foreign_key`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* UPDATE FOREIGN KEYS                                                                                    */
@@ -101,14 +101,14 @@ public class MetadataSingleton
 		}
 		finally
 		{
-			router.rollbackAndRelease();
+			querier.rollbackAndRelease();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			Router.patchSchemaSingleton();
+			RouterQuerier.patchSchemaSingleton();
 		}
 		catch(Exception e)
 		{
