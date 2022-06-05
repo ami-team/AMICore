@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8"/>
 
 		<title>AMI wizard</title>
 
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/bootstrap-icons.min.css" />
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/wizard.js"></script>
 
-		<style type="text/css">
+		<style>
 			.navbar-light {
 				background: rgb(255, 255, 255) url("images/stripe1.png");
 			}
@@ -33,33 +33,35 @@
 	<body style="background: white url('images/background.jpg') fixed; background-size: cover;">
 
 		<nav class="navbar navbar-light navbar-expand-md border-bottom">
-			<span class="navbar-brand py-0">
-				<img src="images/logo.png" alt="AMI" style="height: 38px;" />
-			</span>
-			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#ami_navbar">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="ami_navbar">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a class="nav-link" href="mailto:ami@lpsc.in2p3.fr"></i> Contact</a></li>
-					<li class="nav-item"><a class="nav-link" href="http://www.cern.ch/ami/" target="_blank">About</a></li>
-				</ul>
+			<div class="container-fluid">
+				<span class="navbar-brand py-0">
+					<img src="images/logo.png" alt="AMI" style="height: 38px;" />
+				</span>
+				<button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#ami_navbar">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="ami_navbar">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item"><a class="nav-link" href="mailto:ami@lpsc.in2p3.fr">Contact</a></li>
+						<li class="nav-item"><a class="nav-link" href="https://www.cern.ch/ami/" target="_blank">About</a></li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 
-		<div class="modal-dialog modal-lg mb-2">
+		<div class="modal-dialog modal-lg shadow-lg mb-2">
 			<div class="modal-content">
 
-				<div class="modal-header px-3 py-2">
-					<h3 class="modal-title"><i class="fa fa-magic"></i> AMI wizard</h3>
+				<div class="modal-header py-2">
+					<h3 class="modal-title"><i class="bi bi-magic"></i> AMI wizard</h3>
 				</div>
 
 				<div class="modal-body">
 
 					<div class="row">
 
-						<div class="col-md-2 text-center text-success" style="padding-top: 20px;">
-							<i class="fa fa-check fa-5x"></i>
+						<div class="col-md-2 text-center text-success">
+							<i class="bi bi-check-lg" style="font-size: 48pt"></i>
 						</div>
 
 						<div class="col-md-10">
@@ -72,7 +74,7 @@
 
 								<div class="col-md-6">
 
-									<h3><i class="fa fa-arrow-circle-right"></i> Now What?</h3>
+									<h3><i class="bi bi-arrow-right-circle-fill"></i> Now What?</h3>
 
 									<ul>
 										<li>Customize your home page.</li>
@@ -84,12 +86,13 @@
 
 								<div class="col-md-6">
 
-									<h3><i class="fa fa-arrow-circle-right"></i> Documentation</h3>
+									<h3><i class="bi bi-arrow-right-circle-fill"></i> Documentation</h3>
 
 									<ul>
-										<li><a href="" target="_blank"><i class="fa fa-book"></i> Core</a></li>
-										<li><a href="" target="_blank"><i class="fa fa-book"></i> Web Framework</a></li>
-										<li><a href="" target="_blank"><i class="fa fa-book"></i> Lightweight clients, REST API</a></li>
+										<li><a href="" target="_blank"><i class="bi bi-book"></i> Core</a></li>
+										<li><a href="" target="_blank"><i class="bi bi-book"></i> Web Framework</a></li>
+										<li><a href="" target="_blank"><i class="bi bi-book"></i> Tasks and Pipeline</a></li>
+										<li><a href="" target="_blank"><i class="bi bi-book"></i> Lightweight clients, REST API</a></li>
 									</ul>
 
 								</div>
@@ -102,14 +105,18 @@
 
 				</div>
 
-				<div class="modal-footer px-3 py-2">
+				<div class="modal-footer py-1">
 					<!-- empty -->
 				</div>
 
 			</div>
 		</div>
 
-		<p class="text-center">Copyright © 2001-{{YEAR}}, <a href="http://lpsc.in2p3.fr/" target="_blank">CNRS/LPSC</a>. All right reserved.</p>
+		<div class="text-center mb-4">
+			<span class="badge rounded-pill bg-dark">
+				Copyright © 2001-{{YEAR}}, <a class="text-white" href="https://lpsc.in2p3.fr/" target="_blank">CNRS/LPSC</a>. All right reserved.
+			</span>
+		</div>
 
 	</body>
 </html>

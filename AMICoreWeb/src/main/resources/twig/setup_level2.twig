@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8"/>
 
 		<title>AMI wizard</title>
 
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/bootstrap-icons.min.css" />
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/wizard.js"></script>
 
-		<style type="text/css">
+		<style>
 			.navbar-light {
 				background: rgb(255, 255, 255) url("images/stripe1.png");
 			}
@@ -33,25 +33,27 @@
 	<body style="background: white url('images/background.jpg') fixed; background-size: cover;">
 
 		<nav class="navbar navbar-light navbar-expand-md border-bottom">
-			<span class="navbar-brand py-0">
-				<img src="images/logo.png" alt="AMI" style="height: 38px;" />
-			</span>
-			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#ami_navbar">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="ami_navbar">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a class="nav-link" href="mailto:ami@lpsc.in2p3.fr"></i> Contact</a></li>
-					<li class="nav-item"><a class="nav-link" href="http://www.cern.ch/ami/" target="_blank">About</a></li>
-				</ul>
+			<div class="container-fluid">
+				<span class="navbar-brand py-0">
+					<img src="images/logo.png" alt="AMI" style="height: 38px;" />
+				</span>
+				<button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#ami_navbar">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="ami_navbar">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item"><a class="nav-link" href="mailto:ami@lpsc.in2p3.fr">Contact</a></li>
+						<li class="nav-item"><a class="nav-link" href="https://www.cern.ch/ami/" target="_blank">About</a></li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 
-		<div class="modal-dialog modal-lg mb-2">
+		<div class="modal-dialog modal-lg shadow-lg mb-2">
 			<form method="post" action="" class="modal-content" onsubmit="return validateForm();">
 
-				<div class="modal-header px-3 py-2">
-					<h3 class="modal-title"><i class="fa fa-magic"></i> AMI wizard</h3>
+				<div class="modal-header py-2">
+					<h3 class="modal-title"><i class="bi bi-magic"></i> AMI wizard</h3>
 				</div>
 
 				<div class="modal-body">
@@ -60,50 +62,48 @@
 
 					<div class="row">
 
-						<div class="col-md-2 text-center text-primary" style="padding-top: 20px;">
-							<i class="fa fa-server fa-5x"></i>
+						<div class="col-md-2 text-center text-primary">
+							<i class="bi bi-hdd-network" style="font-size: 48pt"></i>
 						</div>
 
 						<div class="col-md-10">
 
-							<h5 class="text-right"><span class="badge badge-dark">Server</span></h5>
+							<h5 class="text-right"><span class="badge bg-dark">Server</span></h5>
 
-							<div class="form-group">
+							<div class="mb-2">
 								<label class="control-label" for="base_url">base_url<sup class="text-danger">*</sup></label>
 								<input class="form-control" type="text" name="base_url" value="{{BASE_URL}}" id="base_url" required="required" />
 							</div>
 
 							<div class="row">
 								<div class="col-md-6">
-									<div class="form-group">
+									<div class="mb-2">
 										<label class="control-label" for="admin_user">admin_user<sup class="text-danger">*</sup></label>
 										<input class="form-control" type="text" name="admin_user" value="{{ADMIN_USER}}" id="admin_user" required="required" />
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group">
+									<div class="mb-2">
 										<label class="control-label" for="admin_pass">admin_pass<sup class="text-danger">*</sup></label>
 										<input class="form-control" type="text" name="admin_pass" value="{{ADMIN_PASS}}" id="admin_pass" required="required" />
 									</div>
 								</div>
 							</div>
 
-							<div class="form-group">
+							<div class="mb-2">
 								<label class="control-label" for="admin_email">admin_email<sup class="text-danger">*</sup></label>
 								<input type="email" class="form-control" name="admin_email" value="{{ADMIN_EMAIL}}" id="admin_email" required="required" />
 							</div>
 
-							<div class="form-group">
+							<div class="mb-2">
 								<label class="control-label" for="encryption_key">encryption_key<sup class="text-danger">*</sup></label>
 								<div class="input-group">
 									<input class="form-control" type="text" name="encryption_key" value="{{ENCRYPTION_KEY}}" id="encryption_key" required="required" />
-									<div class="input-group-append">
-										<button type="button" class="btn btn-outline-secondary" onclick="generateEncryptionKey();"><i class="fa fa-cog"></i> Generate</button>
-									</div>
+									<button type="button" class="btn btn-outline-secondary" onclick="generateEncryptionKey();">Generate</button>
 								</div>
 							</div>
 
-							<div class="form-group">
+							<div class="mb-2">
 								<label class="control-label" for="authorized_ips">authorized_ips<sup class="text-danger">*</sup></label>
 								<input type="text" class="form-control" name="authorized_ips" value="{{AUTHORIZED_IPS}}" id="authorized_ips" xxxxxxxx="xxxxxxxx" />
 							</div>
@@ -114,43 +114,43 @@
 
 					<div class="row">
 
-						<div class="col-md-2 text-center text-primary" style="padding-top: 20px;">
-							<i class="fa fa-database fa-5x"></i>
+						<div class="col-md-2 text-center text-primary">
+							<i class="bi bi-hdd-network" style="font-size: 48pt"></i>
 						</div>
 
 						<div class="col-md-10">
 
-							<h5 class="text-right"><span class="badge badge-dark">AMI database</span></h5>
+							<h5 class="text-right"><span class="badge bg-dark">AMI database</span></h5>
 
 							<div class="row">
 								<div class="col-md-6">
-									<div class="form-group">
+									<div class="mb-2">
 										<label class="control-label" for="router_catalog">catalog<sup class="text-danger">*</sup></label>
 										<input class="form-control" type="text" name="router_catalog" value="{{ROUTER_CATALOG}}" id="router_catalog" required="required" />
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group">
+									<div class="mb-2">
 										<label class="control-label" for="route_schema">schema<sup class="text-info">opt</sup></label>
 										<input class="form-control" type="text" name="router_schema" value="{{ROUTER_SCHEMA}}" id="route_schema" xxxxxxxx="xxxxxxxx" />
 									</div>
 								</div>
 							</div>
 
-							<div class="form-group">
+							<div class="mb-2">
 								<label class="control-label" for="router_url">url<sup class="text-danger">*</sup></label>
 								<input class="form-control" type="text" name="router_url" value="{{ROUTER_URL}}" id="router_url" required="required" />
 							</div>
 
 							<div class="row">
 								<div class="col-md-6">
-									<div class="form-group">
+									<div class="mb-2">
 										<label class="control-label" for="router_user">user<sup class="text-danger">*</sup></label>
 										<input class="form-control" type="text" name="router_user" value="{{ROUTER_USER}}" id="router_user" required="required" />
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group">
+									<div class="mb-2">
 										<label class="control-label" for="router_pass">pass<sup class="text-danger">*</sup></label>
 										<input class="form-control" type="text" name="router_pass" value="{{ROUTER_PASS}}" id="router_pass" required="required" />
 									</div>
@@ -165,9 +165,9 @@
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group">
+									<div class="mb-2">
 										<label class="control-label" for="time_zone">time zone<sup class="text-danger">*</sup></label>
-										<select class="custom-select custom-select-sm" name="time_zone" value="{{TIME_ZONE}}" id="time_zone">
+										<select class="form-select" name="time_zone" value="{{TIME_ZONE}}" id="time_zone">
 											<option value="UTC">UTC</option>
 										</select>
 									</div>
@@ -183,15 +183,15 @@
 
 					<div class="row">
 
-						<div class="col-md-2 text-center text-primary" style="padding-top: 20px;">
-							<i class="fa fa-plug fa-5x"></i>
+						<div class="col-md-2 text-center text-primary">
+							<i class="bi bi-plug" style="font-size: 48pt"></i>
 						</div>
 
 						<div class="col-md-10">
 
-							<h5 class="text-right"><span class="badge badge-dark">User extensions</span></h5>
+							<h5 class="text-right"><span class="badge bg-dark">User extensions</span></h5>
 
-							<div class="form-group">
+							<div class="mb-2">
 								<label for="class_path" class="control-label">class_path<sup class="text-info">opt</sup></label>
 								<input class="form-control" type="text" name="class_path" value="{{CLASS_PATH}}" id="class_path" xxxxxxxx="xxxxxxxx" />
 							</div>
@@ -202,14 +202,18 @@
 
 				</div>
 
-				<div class="modal-footer px-3 py-2">
-					<button type="submit" class="btn btn-outline-primary" id="next"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
+				<div class="modal-footer py-1">
+					<button type="submit" class="btn btn-outline-primary" id="next"><i class="bi bi-chevron-right"></i><i class="bi bi-chevron-right"></i></button>
 				</div>
 
 			</form>
 		</div>
 
-		<p class="text-center">Copyright © 2001-{{YEAR}}, <a href="http://lpsc.in2p3.fr/" target="_blank">CNRS/LPSC</a>. All right reserved.</p>
+		<div class="text-center mb-4">
+			<span class="badge rounded-pill bg-dark">
+				Copyright © 2001-{{YEAR}}, <a class="text-white" href="https://lpsc.in2p3.fr/" target="_blank">CNRS/LPSC</a>. All right reserved.
+			</span>
+		</div>
 
 	</body>
 </html>
