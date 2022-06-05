@@ -49,11 +49,7 @@ public class ChangePassword extends AbstractCommand
 		/* CHECK CREDENTIALS                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean token = amiPasswordOld.startsWith("Bearer ");
-
-		String sql = token ? "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `ssoUser` = ?0"
-		                   : "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0"
-		;
+		String sql = "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0";
 
 		List<Row> rowList = querier.executeSQLQuery("router_user", sql, amiLogin).getAll();
 
@@ -98,7 +94,7 @@ public class ChangePassword extends AbstractCommand
 		/* UPDATE PASSWORD                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?#1, `valid` = ?2 WHERE `AMIUser` = ?0",
+		Update update = querier.executeSQLUpdate("router_user", "UPDATE `router_user` SET `AMIPass` = ?^1, `valid` = ?2 WHERE `AMIUser` = ?0",
 			bean.getAmiUsername(),
 			bean.getPasswordNew(),
 			valid ? 1 : 0
