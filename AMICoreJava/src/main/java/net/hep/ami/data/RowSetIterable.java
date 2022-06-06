@@ -25,14 +25,14 @@ public final class RowSetIterable implements Iterable<Row>
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected RowSetIterable(@NotNull RowSet rowSet) throws Exception
+	public RowSetIterable(@NotNull RowSet rowSet) throws Exception
 	{
 		this(rowSet, Integer.MAX_VALUE, 0);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected RowSetIterable(@NotNull RowSet rowSet, int limit, int offset) throws Exception
+	public RowSetIterable(@NotNull RowSet rowSet, int limit, int offset) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -250,7 +250,7 @@ public final class RowSetIterable implements Iterable<Row>
 
 		final int maxNumberOfRows = ConfigSingleton.getProperty("max_number_of_rows", 10000);
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		StringBuilder rows = new StringBuilder().append("<sql><![CDATA[").append(rowSet.m_sql).append("]]></sql>")
 		                                        .append("<mql><![CDATA[").append(rowSet.m_mql).append("]]></mql>")

@@ -731,11 +731,7 @@ public class RowSet
 			{
 				if((m_flags & Querier.FLAG_ADMIN) != 0)
 				{
-					if(result[i] == null)
-					{
-						result[i] = /*---------*/ "@NULL" /*---------*/;
-					}
-					else
+					if(result[i] != null)
 					{
 						if(m_fieldCrypted[i])
 						{
@@ -754,6 +750,10 @@ public class RowSet
 							result[i] = /*---------*/ "@LONG" /*---------*/;
 						}
 					}
+					else
+					{
+						result[i] = /*---------*/ "@NULL" /*---------*/;
+					}
 				}
 				else
 				{
@@ -762,16 +762,16 @@ public class RowSet
 			}
 			else
 			{
-				if(result[i] == null)
-				{
-					result[i] = /*---------*/ "@NULL" /*---------*/;
-				}
-				else
+				if(result[i] != null)
 				{
 					if((m_flags & Querier.FLAG_HIDE_BIG_CONTENT) != 0 && result[i].length() > ConfigSingleton.getProperty("max_value_length", 4096))
 					{
 						result[i] = /*---------*/ "@LONG" /*---------*/;
 					}
+				}
+				else
+				{
+					result[i] = /*---------*/ "@NULL" /*---------*/;
 				}
 			}
 
