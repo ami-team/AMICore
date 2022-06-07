@@ -189,11 +189,6 @@ public class GetUserInfo extends AbstractCommand
 			remoteOriginURL = "N/A";
 		}
 
-		String termsAndConditions = ConfigSingleton.getProperty("terms_and_conditions", "N/A");
-
-		String ssoLabel = ConfigSingleton.getProperty("sso_label", "SSO");
-		String ssoSignInURL = ConfigSingleton.getProperty("sso_sign_in_url", "N/A");
-
 		Map<String, Object> map = new HashMap<>();
 
 		map.put("tags", tags);
@@ -298,43 +293,6 @@ public class GetUserInfo extends AbstractCommand
 		      .append("<field name=\"config\"><![CDATA[").append(config).append("]]></field>")
 		      .append("</row>")
 		;
-
-		result.append("</rowset>");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* UDP                                                                                                        */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		result.append("<rowset type=\"udp\">");
-
-		if(!termsAndConditions.isEmpty()
-		   &&
-		   !"N/A".equals(termsAndConditions)
-		 ) {
-			result.append("<row>")
-			      .append("<field name=\"termsAndConditions\"><![CDATA[").append(termsAndConditions).append("]]></field>")
-			      .append("</row>")
-			;
-		}
-
-		result.append("</rowset>");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* SSO                                                                                                        */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		result.append("<rowset type=\"sso\">");
-
-		if(!ssoLabel.isEmpty()
-		   &&
-		   !"N/A".equals(ssoSignInURL)
-		 ) {
-			result.append("<row>")
-			      .append("<field name=\"label\"><![CDATA[").append(ssoLabel).append("]]></field>")
-			      .append("<field name=\"signInURL\"><![CDATA[").append(ssoSignInURL).append("]]></field>")
-			      .append("</row>")
-			;
-		}
 
 		result.append("</rowset>");
 
