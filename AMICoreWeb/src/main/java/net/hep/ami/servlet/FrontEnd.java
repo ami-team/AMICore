@@ -463,14 +463,14 @@ public class FrontEnd extends HttpServlet
 			Row row = rowList.get(0);
 
 			String result = row.getValue(0);
-			String password = row.getValue(1);
+			String hashed = row.getValue(1);
 			String oldCountryCode = row.getValue(2);
 
 			if(userInfoAndUsername == null)
 			{
 				try
 				{
-					SecuritySingleton.checkPassword(result, AMIPass, password);
+					SecuritySingleton.checkPassword(result, AMIPass, hashed);
 				}
 				catch(Exception e)
 				{
@@ -577,7 +577,7 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?^2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+		Update update = querier.executeSQLUpdate("router_user", "INSERT INTO `router_user` (`AMIUser`, `ssoUser`, `AMIPass`, `clientDN`, `issuerDN`, `firstName`, `lastName`, `email`, `json`, `valid`) VALUES (?0, ?1, ?^2, ?#3, ?#4, ?5, ?6, ?7, ?8, ?9)",
 			username,
 			username,
 			password,

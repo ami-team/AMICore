@@ -98,30 +98,57 @@ public class Token
 			{
 				List<Row> rows;
 
+				boolean checkPasswork;
+
+				/*----------------------------------------------------------------------------------------------------*/
+
 				/**/ if(clientDN != null
 				        &&
 				        issuerDN != null
 				 ) {
 					rows = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `clientDN` = ?#0 AND `issuerDN` = ?#1", clientDN, issuerDN).getAll();
+
+					checkPasswork = false;
 				}
 				else if(AMIUser != null
 				        &&
 				        AMIPass != null
 				 ) {
-					rows = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0 AND `AMIPass` = ?#1", AMIUser, AMIPass).getAll();
+					rows = querier.executeSQLQuery("router_user", "SELECT `AMIUser`, `AMIPass` FROM `router_user` WHERE `AMIUser` = ?0", AMIUser).getAll();
+
+					checkPasswork = true;
 				}
 				else
 				{
 					return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 				}
 
+				/*----------------------------------------------------------------------------------------------------*/
+
 				if(rows.size() != 1)
 				{
 					return Response.status(Response.Status.UNAUTHORIZED).build();
 				}
 
-				AMIUser = /*---------------------*/(rows.get(0).getValue(0));
-				AMIPass = SecuritySingleton.decrypt(rows.get(0).getValue(1));
+				AMIUser = rows.get(0).getValue(0);
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				if(checkPasswork)
+				{
+					try
+					{
+						String hashed = rows.get(0).getValue(1);
+
+						SecuritySingleton.checkPassword(AMIUser, AMIPass, hashed);
+					}
+					catch(Exception e)
+					{
+						return Response.status(Response.Status.UNAUTHORIZED).build();
+					}
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 			finally
 			{
@@ -146,7 +173,6 @@ public class Token
 		Map<String, String> token = new HashMap<>();
 
 		token.put("AMIUser", AMIUser);
-		token.put("AMIPass", AMIPass);
 		token.put("clientDN", clientDN != null ? clientDN : "");
 		token.put("issuerDN", issuerDN != null ? issuerDN : "");
 		token.put("notBefore", notBefore != null ? notBefore : "");
