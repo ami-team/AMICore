@@ -1,9 +1,8 @@
 package net.hep.ami.servlet;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionBindingEvent;
-import java.util.Collections;
+import java.util.*;
+
+import javax.servlet.http.*;
 
 public class SessionListener implements HttpSessionAttributeListener
 {
@@ -33,7 +32,6 @@ public class SessionListener implements HttpSessionAttributeListener
 		Collections.list(session.getAttributeNames()).forEach(s -> { System.out.println("V2 -> " + s + " : " + session.getAttribute(s));});
 
 		System.out.println("********************************************************************************************");
-
 	}
 
 	@Override
