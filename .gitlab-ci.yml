@@ -10,4 +10,4 @@ build:
     - ./get_ojdbc.sh
     - mvn package
     - lftp -u ${FTP_USERNAME},${FTP_PASSWORD} -p 22 sftp://ami.in2p3.fr -e "put -O /www/htdocs/download/ /builds/ami-team/AMICore/AMICoreJava/target/AMICoreJava-${AMI_SERVER_VERSION}.jar ; quit"
-    - lftp -u ${FTP_USERNAME},${FTP_PASSWORD} -p 22 sftp://ami.in2p3.fr -e "put -O /www/htdocs/download/ /builds/ami-team/AMICore/AMICoreWeb/target/AMICoreWeb-${AMI_SERVER_VERSION}.jar ; quit"
+    - lftp -u ${FTP_USERNAME},${FTP_PASSWORD} -p 22 sftp://ami.in2p3.fr -e "put -O /www/htdocs/download/ /builds/ami-team/AMICore/AMICoreWeb/target/AMICoreWeb-${AMI_SERVER_VERSION}.war ; quit"
