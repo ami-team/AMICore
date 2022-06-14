@@ -74,7 +74,7 @@ public class Histogram extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" -field=\"\" (-numberOfBins=\"\")?";
+		return "-catalog=\"\" -entity=\"\" -field=\"\" (-multiple=\"\")? (-numberOfBins=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
