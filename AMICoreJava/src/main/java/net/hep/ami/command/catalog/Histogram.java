@@ -91,7 +91,7 @@ public class Histogram extends AbstractCommand
 			}
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-					"WITH `bins` AS (SELECT FLOOR((%s - %d) / %d.0) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %d) / %d.0) ORDER BY FLOOR((%s - %d) / %d.0) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
+					"WITH `bins` AS (SELECT FLOOR((%s - %d) / %d.0) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %d) / %d.0) ORDER BY FLOOR((%s - %d) / %d.0)) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
 					Utility.textToSqlId(field),
 					min, sizeOfBins,
 					Utility.textToSqlId(entity),
