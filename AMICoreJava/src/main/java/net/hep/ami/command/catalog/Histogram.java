@@ -62,7 +62,7 @@ public class Histogram extends AbstractCommand
 			float min = row.getValue(0, 0.0f);
 			float max = row.getValue(1, 0.0f);
 
-			float delta = max - min + 1.0f;
+			float delta = (max - min) + 1.0f;
 
 			float multiple = delta / (sizeOfBins > 0 ? sizeOfBins : (delta > 10 ? 10 : 1));
 
@@ -83,20 +83,22 @@ public class Histogram extends AbstractCommand
 			int min = row.getValue(0, 0);
 			int max = row.getValue(1, 0);
 
-			int delta = max - min + 1;
+			int delta = max - min;
 
-			int multiple = Math.floorDiv(delta, sizeOfBins > 0 ? sizeOfBins : (delta > 10 ? 10 : 1));
+			if(sizeOfBins == 0)
+			{
+				sizeOfBins = delta > 10 ? 10 : 1;
+			}
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-					"WITH `bins` AS (SELECT FLOOR(%s / %f) * %d AS `bin_floor`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR(%s / %f) * %d ORDER BY FLOOR(%s / %f) * %d) SELECT `bin_floor` AS `floor`, `bin_floor` + %d AS `ceiling`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_floor`",
+					"WITH `bins` AS (SELECT FLOOR((%s - %d) / %d.0) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %d) / %f) ORDER BY FLOOR((%s - %d) / %f) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
 					Utility.textToSqlId(field),
-					(float) multiple, multiple,
+					min, sizeOfBins,
 					Utility.textToSqlId(entity),
 					Utility.textToSqlId(field),
-					(float) multiple, multiple,
+					min, sizeOfBins,
 					Utility.textToSqlId(field),
-					(float) multiple, multiple,
-					multiple
+					min, sizeOfBins
 			));
 		}
 
