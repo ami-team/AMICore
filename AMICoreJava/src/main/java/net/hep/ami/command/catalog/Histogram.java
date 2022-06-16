@@ -66,8 +66,9 @@ public class Histogram extends AbstractCommand
 
 			if(sizeOfBins <= 0.0f)
 			{
-				sizeOfBins = delta > 10.0f ? 10.0000000000000000000000000f
-				                           : (delta > 1.0f ? 1.0f : 0.5f);
+				sizeOfBins = delta > 100.0f ? 10.0000000000000000000000000f
+				                            : (delta > 10.0f ? 1.0f : 0.1f)
+				;
 			}
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
@@ -90,8 +91,8 @@ public class Histogram extends AbstractCommand
 
 			if(sizeOfBins <= 0.0f)
 			{
-				sizeOfBins = delta > 10.0f ? 10.0f
-				                           : 1.00f
+				sizeOfBins = delta > 100.0f ? 10.0f
+				                            : 1.00f
 				;
 			}
 
