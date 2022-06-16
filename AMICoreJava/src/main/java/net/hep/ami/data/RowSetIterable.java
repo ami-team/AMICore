@@ -166,6 +166,19 @@ public final class RowSetIterable implements Iterable<Row>
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
+	public static Row getFirst(@NotNull RowSet rowSet) throws Exception
+	{
+		if(rowSet.m_resultSet.next())
+		{
+			return new Row(rowSet);
+		}
+
+		throw new Exception("empty result");
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
 	public static StringBuilder getStringBuilder(@NotNull RowSet rowSet) throws Exception
 	{
 		return getStringBuilder(rowSet, null, null);

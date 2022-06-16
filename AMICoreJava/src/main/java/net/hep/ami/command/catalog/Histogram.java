@@ -43,22 +43,24 @@ public class Histogram extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rows = getQuerier(catalog).executeSQLQuery(entity, String.format(
+		Row row = getQuerier(catalog).executeSQLQuery(entity, String.format(
 			"SELECT (SELECT COUNT(%s) FROM %s), (SELECT COUNT(%s) FROM %s)",
 			Utility.textToSqlId(field),
 			Utility.textToSqlId(entity),
 			Utility.textToSqlId(field),
 			Utility.textToSqlId(entity)
-		)).getAll();
+		)).getFirst();
 
-		Row row = rows.get(0);
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		int min = row.getValue(0, 0);
 		int max = row.getValue(1, 0);
 
-		int multiple = sizeOfBins != 0 ? (max - min) / sizeOfBins
-		                               : (max - min) / 0x0000000A
-		;
+		int delta = max - min;
+
+		int multiple = delta / (
+			sizeOfBins == 0 ? (delta > 10 ? 10 : 1) : sizeOfBins
+		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -90,7 +92,7 @@ public class Histogram extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" -field=\"\" (-multiple=\"\")? (-numberOfBins=\"\")?";
+		return "-catalog=\"\" -entity=\"\" -field=\"\" (-sizeOfBins=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
