@@ -72,14 +72,16 @@ public class Histogram extends AbstractCommand
 			}
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-				"WITH `bins` AS (SELECT FLOOR((%s - %f) / %f) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %f) / %f) ORDER BY FLOOR((%s - %f) / %f)) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
+				"WITH `bins` AS (SELECT FLOOR((%s - %f) / %f) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %f) / %f) ORDER BY FLOOR((%s - %f) / %f)) SELECT `bin_index` AS `index`, (`bin_index` + 0) * %f AS `floor`, (`bin_index` + 1) * %f AS `ceiling`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
 				Utility.textToSqlId(field),
 				min, /*-*/ sizeOfBins,
 				Utility.textToSqlId(entity),
 				Utility.textToSqlId(field),
 				min, /*-*/ sizeOfBins,
 				Utility.textToSqlId(field),
-				min, /*-*/ sizeOfBins
+				min, /*-*/ sizeOfBins,
+				/*-*/ sizeOfBins,
+				/*-*/ sizeOfBins
 			));
 		}
 		else
@@ -97,14 +99,16 @@ public class Histogram extends AbstractCommand
 			}
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-				"WITH `bins` AS (SELECT FLOOR((%s - %d) / %d.0) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %d) / %d.0) ORDER BY FLOOR((%s - %d) / %d.0)) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
+				"WITH `bins` AS (SELECT FLOOR((%s - %d) / %d.0) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %d) / %d.0) ORDER BY FLOOR((%s - %d) / %d.0)) SELECT `bin_index` AS `index`, (`bin_index` + 0) * %d AS `floor`, (`bin_index` + 1) * %d AS `ceiling`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
 				Utility.textToSqlId(field),
 				min, (int) sizeOfBins,
 				Utility.textToSqlId(entity),
 				Utility.textToSqlId(field),
 				min, (int) sizeOfBins,
 				Utility.textToSqlId(field),
-				min, (int) sizeOfBins
+				min, (int) sizeOfBins,
+				(int) sizeOfBins,
+				(int) sizeOfBins
 			));
 		}
 
