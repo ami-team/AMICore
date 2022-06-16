@@ -27,21 +27,38 @@ public class Histogram extends AbstractCommand
 		String entity = arguments.get("entity");
 		String field = arguments.get("field");
 
-		int multiple;
+		int sizeOfBins;
 
 		try {
-			multiple = Integer.parseInt(arguments.get("multiple"));
+			sizeOfBins = Integer.parseInt(arguments.get("sizeOfBins"));
 		}
 		catch(NumberFormatException e) {
-			multiple = 0x00000000000000000000000000000000000000001;
+			sizeOfBins = 0x0000000000000000000000000000000000000000000;
 		}
-
-		Double sizeOfBins = arguments.containsKey("sizeOfBins") ? Double.parseDouble(arguments.get("sizeOfBins")) : null;
 
 		if(catalog == null || entity == null || field == null)
 		{
 			throw new Exception("invalid usage");
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		List<Row> rows = getQuerier(catalog).executeSQLQuery(entity, String.format(
+			"SELECT ((SELECT COUNT(%s) FROM %s), (SELECT COUNT(%s) FROM %s)",
+			Utility.textToSqlId(field),
+			Utility.textToSqlId(entity),
+			Utility.textToSqlId(field),
+			Utility.textToSqlId(entity)
+		)).getAll();
+
+		Row row = rows.get(0);
+
+		int min = row.getValue(0, 0);
+		int max = row.getValue(1, 0);
+
+		int multiple = sizeOfBins != 0 ? (max - min) / sizeOfBins
+		                               : (max - min) / 0x0000000A
+		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

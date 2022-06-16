@@ -128,10 +128,6 @@ public class GetUserInfo extends AbstractCommand
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-
-		boolean vomsEnabled = ConfigSingleton.getProperty("has_virtual_organization_management_system", false);
-
-		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET USER ROLES                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -198,9 +194,6 @@ public class GetUserInfo extends AbstractCommand
 		map.put("commitIdAbbrev", commitIdAbbrev);
 		map.put("remoteOriginURL", remoteOriginURL);
 
-		map.put("certEnabled", m_isSecure ? "true" : "false");
-		map.put("vomsEnabled", vomsEnabled ? "true" : "false");
-
 		map.put("privacyPolicyURL", ConfigSingleton.getProperty("privacy_policy_url", ""));
 
 		map.put("ssoLabel", ConfigSingleton.getProperty("sso_label", "SSO"));
@@ -238,8 +231,6 @@ public class GetUserInfo extends AbstractCommand
 		      .append("<field name=\"email\"><![CDATA[").append(email).append("]]></field>")
 		      .append("<field name=\"country\"><![CDATA[").append(country).append("]]></field>")
 		      .append("<field name=\"valid\"><![CDATA[").append(valid).append("]]></field>")
-		      .append("<field name=\"certEnabled\"><![CDATA[").append(m_isSecure).append("]]></field>")
-		      .append("<field name=\"vomsEnabled\"><![CDATA[").append(vomsEnabled).append("]]></field>")
 		      .append("</row>")
 		      .append("</rowset>")
 		;
