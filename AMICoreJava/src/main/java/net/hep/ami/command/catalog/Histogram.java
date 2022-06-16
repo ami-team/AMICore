@@ -56,7 +56,7 @@ public class Histogram extends AbstractCommand
 		int min = row.getValue(0, 0);
 		int max = row.getValue(1, 0);
 
-		int delta = max - min;
+		int delta = max - min + 1;
 
 		int multiple = delta / (
 			sizeOfBins == 0 ? (delta > 10 ? 10 : 1) : sizeOfBins
