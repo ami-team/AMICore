@@ -64,9 +64,7 @@ public class Histogram extends AbstractCommand
 
 			float delta = max - min + 1.0f;
 
-			float multiple = (
-				delta / (sizeOfBins > 0 ? sizeOfBins : (delta > 10.0f ? 10.0f : 1.0f))
-			);
+			float multiple = delta / (sizeOfBins > 0 ? sizeOfBins : (delta > 10 ? 10 : 1));
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
 				"WITH `bins` AS (SELECT FLOOR(%s / %f) * %f AS `bin_floor`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR(%s / %f) * %f ORDER BY FLOOR(%s / %f) * %f) SELECT `bin_floor` AS `floor`, `bin_floor` + %f AS `ceiling`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_floor`",
@@ -87,19 +85,17 @@ public class Histogram extends AbstractCommand
 
 			int delta = max - min + 1;
 
-			int multiple = Math.floorDiv(
-				delta, sizeOfBins > 0 ? sizeOfBins : (delta > 10 ? 10 : 1)
-			);
+			int multiple = delta / (sizeOfBins > 0 ? sizeOfBins : (delta > 10 ? 10 : 1));
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-					"WITH `bins` AS (SELECT FLOOR(%s / %d.0) * %d AS `bin_floor`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR(%s / %d.0) * %d ORDER BY FLOOR(%s / %d.0) * %d) SELECT `bin_floor` AS `floor`, `bin_floor` + %d AS `ceiling`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_floor`",
+					"WITH `bins` AS (SELECT FLOOR(%s / %f) * %d AS `bin_floor`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR(%s / %f) * %d ORDER BY FLOOR(%s / %f) * %d) SELECT `bin_floor` AS `floor`, `bin_floor` + %d AS `ceiling`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_floor`",
 					Utility.textToSqlId(field),
-					multiple, multiple,
+					(float) multiple, multiple,
 					Utility.textToSqlId(entity),
 					Utility.textToSqlId(field),
-					multiple, multiple,
+					(float) multiple, multiple,
 					Utility.textToSqlId(field),
-					multiple, multiple,
+					(float) multiple, multiple,
 					multiple
 			));
 		}
@@ -124,7 +120,7 @@ public class Histogram extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" -field=\"\" (-sizeOfBins=\"\")?";
+		return "-catalog=\"\" -entity=\"\" -field=\"\" (-sizeOfBins=\"\")? (-floating)?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
