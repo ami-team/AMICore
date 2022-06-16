@@ -870,6 +870,14 @@ public class RowSet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
+	public Row getFirst() throws Exception
+	{
+		return RowSetIterable.getFirst(this);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
 	public StringBuilder toStringBuilder() throws Exception
 	{
 		return RowSetIterable.getStringBuilder(this);
