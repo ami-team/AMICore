@@ -44,7 +44,7 @@ public class Histogram extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		List<Row> rows = getQuerier(catalog).executeSQLQuery(entity, String.format(
-			"SELECT ((SELECT COUNT(%s) FROM %s), (SELECT COUNT(%s) FROM %s)",
+			"SELECT (SELECT COUNT(%s) FROM %s), (SELECT COUNT(%s) FROM %s)",
 			Utility.textToSqlId(field),
 			Utility.textToSqlId(entity),
 			Utility.textToSqlId(field),
@@ -63,12 +63,11 @@ public class Histogram extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		RowSet rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-			"SELECT a.`_floor` AS `floor`, a.`_ceiling AS `ceiling`, COUNT(*) AS `count` FROM (SELECT FLOOR(%s / %d.0) * %d + %d AS `_floor`, FLOOR(%s / %d.0) * %d + %d AS `_ceiling` FROM %s) a GROUP BY 1 ORDER BY 1",
+			"WITH `bins` AS (SELECT FLOOR(%s / %d.0) * %d AS `bin_floor`, COUNT(`id`) AS `bin_count` FROM %s GROUP BY 1 ORDER BY 1) SELECT `bin_floor`, `bin_floor` + %d, `bin_count` FROM `bins` ORDER BY 1",
 			Utility.textToSqlId(field),
-			multiple, multiple, 0x000000,
-			Utility.textToSqlId(field),
-			multiple, multiple, multiple,
-			Utility.textToSqlId(entity)
+			multiple, multiple,
+			Utility.textToSqlId(entity),
+			multiple
 		));
 
 		/*------------------------------------------------------------------------------------------------------------*/
