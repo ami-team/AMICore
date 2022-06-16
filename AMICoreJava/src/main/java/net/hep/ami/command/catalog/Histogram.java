@@ -27,10 +27,10 @@ public class Histogram extends AbstractCommand
 		String entity = arguments.get("entity");
 		String field = arguments.get("field");
 
-		int sizeOfBins;
+		float sizeOfBins;
 
 		try {
-			sizeOfBins = Integer.parseInt(arguments.get("sizeOfBins"));
+			sizeOfBins = Float.parseFloat(arguments.get("sizeOfBins"));
 		}
 		catch(NumberFormatException e) {
 			sizeOfBins = 0x0000000000000000000000000000000000000000000;
@@ -62,20 +62,23 @@ public class Histogram extends AbstractCommand
 			float min = row.getValue(0, 0.0f);
 			float max = row.getValue(1, 0.0f);
 
-			float delta = (max - min) + 1.0f;
+			float delta = (max - min) + 1;
 
-			float multiple = delta / (sizeOfBins > 0 ? sizeOfBins : (delta > 10 ? 10 : 1));
+			if(sizeOfBins <= 0.0f)
+			{
+				sizeOfBins = delta > 10.0f ? 10.0000000000000000000000000f
+				                           : (delta > 1.0f ? 1.0f : 0.5f);
+			}
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-				"WITH `bins` AS (SELECT FLOOR(%s / %f) * %f AS `bin_floor`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR(%s / %f) * %f ORDER BY FLOOR(%s / %f) * %f) SELECT `bin_floor` AS `floor`, `bin_floor` + %f AS `ceiling`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_floor`",
+				"WITH `bins` AS (SELECT FLOOR((%s - %f) / %f) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %f) / %f) ORDER BY FLOOR((%s - %f) / %f)) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
 				Utility.textToSqlId(field),
-				multiple, multiple,
+				min, /*-*/ sizeOfBins,
 				Utility.textToSqlId(entity),
 				Utility.textToSqlId(field),
-				multiple, multiple,
+				min, /*-*/ sizeOfBins,
 				Utility.textToSqlId(field),
-				multiple, multiple,
-				multiple
+				min, /*-*/ sizeOfBins
 			));
 		}
 		else
@@ -83,22 +86,24 @@ public class Histogram extends AbstractCommand
 			int min = row.getValue(0, 0);
 			int max = row.getValue(1, 0);
 
-			int delta = max - min;
+			int delta = (max - min) + 1;
 
-			if(sizeOfBins == 0)
+			if(sizeOfBins <= 0.0f)
 			{
-				sizeOfBins = delta > 10 ? 10 : 1;
+				sizeOfBins = delta > 10.0f ? 10.0f
+				                           : 1.00f
+				;
 			}
 
 			rowSet = getQuerier(catalog).executeSQLQuery(entity, String.format(
-					"WITH `bins` AS (SELECT FLOOR((%s - %d) / %d.0) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %d) / %d.0) ORDER BY FLOOR((%s - %d) / %d.0)) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
-					Utility.textToSqlId(field),
-					min, sizeOfBins,
-					Utility.textToSqlId(entity),
-					Utility.textToSqlId(field),
-					min, sizeOfBins,
-					Utility.textToSqlId(field),
-					min, sizeOfBins
+				"WITH `bins` AS (SELECT FLOOR((%s - %d) / %d.0) AS `bin_index`, COUNT(*) AS `bin_count` FROM %s GROUP BY FLOOR((%s - %d) / %d.0) ORDER BY FLOOR((%s - %d) / %d.0)) SELECT `bin_index` AS `index`, `bin_count` AS `count` FROM `bins` ORDER BY `bin_index`",
+				Utility.textToSqlId(field),
+				min, (int) sizeOfBins,
+				Utility.textToSqlId(entity),
+				Utility.textToSqlId(field),
+				min, (int) sizeOfBins,
+				Utility.textToSqlId(field),
+				min, (int) sizeOfBins
 			));
 		}
 
