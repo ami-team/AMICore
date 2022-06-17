@@ -135,7 +135,7 @@ public class Histogram extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-catalog=\"\" -entity=\"\" -field=\"\" (-sizeOfBins=\"\")? (-floating)?";
+		return "-catalog=\"\" -entity=\"\" -field=\"\" (-where=\"\")? (-sizeOfBins=\"\")? (-floating)?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
