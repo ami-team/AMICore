@@ -215,7 +215,6 @@ CREATE TABLE `router_command` (
   `command` VARCHAR(128) NOT NULL,
   `class` VARCHAR(256) NOT NULL,
   `visible` TINYINT(1) NOT NULL DEFAULT 1,
-  `secured` TINYINT(1) NOT NULL DEFAULT 0,
   `roleValidatorClass` VARCHAR(256)
 
 ) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;

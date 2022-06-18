@@ -8,7 +8,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_WRITER", visible = true, secured = false)
+@CommandMetadata(role = "AMI_WRITER", visible = true)
 public class UpdateQuery extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

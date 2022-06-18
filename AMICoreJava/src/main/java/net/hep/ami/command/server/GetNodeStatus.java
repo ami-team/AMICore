@@ -7,7 +7,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = false)
 public class GetNodeStatus extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

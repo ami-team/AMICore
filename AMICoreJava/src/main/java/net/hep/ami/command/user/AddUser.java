@@ -11,7 +11,7 @@ import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = false)
 public class AddUser extends AbstractCommand
 {
 	/*------------------------------------------------------------------------------------------------------------*/

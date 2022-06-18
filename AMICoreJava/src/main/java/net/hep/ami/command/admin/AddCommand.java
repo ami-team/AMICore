@@ -10,7 +10,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = false)
 public class AddCommand extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -62,19 +62,11 @@ public class AddCommand extends AbstractCommand
 			if(commandVisible == null) {
 				commandVisible = commandMetadata.visible() ? "1" : "0";
 			}
-
-			if(commandSecured == null) {
-				commandSecured = commandMetadata.secured() ? "1" : "0";
-			}
 		}
 		else
 		{
 			if(commandVisible == null) {
 				commandVisible = "1";
-			}
-
-			if(commandSecured == null) {
-				commandSecured = "0";
 			}
 		}
 

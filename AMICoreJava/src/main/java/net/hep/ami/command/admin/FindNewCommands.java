@@ -10,7 +10,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = false)
 public class FindNewCommands extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -40,13 +40,12 @@ public class FindNewCommands extends AbstractCommand
 		String commandRole;
 
 		int commandVisible;
-		int commandSecured;
 
 		Set<String> foundCommandNames = new HashSet<>();
 
 		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
-		PreparedStatement statement1 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null, false);
+		PreparedStatement statement1 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false);
 
 		PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false);
 
@@ -72,14 +71,12 @@ public class FindNewCommands extends AbstractCommand
 					commandRole = commandMetadata.role();
 
 					commandVisible = commandMetadata.visible() ? 1 : 0;
-					commandSecured = commandMetadata.secured() ? 1 : 0;
 
 					/*------------------------------------------------------------------------------------------------*/
 
 					statement1.setString(1, commandName);
 					statement1.setString(2, commandClass);
 					statement1.setInt(3, commandVisible);
-					statement1.setInt(4, commandSecured);
 
 					statement2.setString(1, commandName);
 					statement2.setString(2, commandRole);

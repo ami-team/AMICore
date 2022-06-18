@@ -7,7 +7,7 @@ import net.hep.ami.jdbc.reflexion.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
+@CommandMetadata(role = "AMI_USER", visible = true)
 public class ListEntities extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

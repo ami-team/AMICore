@@ -891,7 +891,6 @@ CREATE TABLE "router_command" (
   "command" VARCHAR2(128),
   "class" VARCHAR2(256),
   "visible" NUMBER(1, 0) DEFAULT 1,
-  "secured" NUMBER(1, 0) DEFAULT 0,
   "roleValidatorClass" VARCHAR2(256)
 );;
 
@@ -917,10 +916,6 @@ ALTER TABLE "router_command"
 
 ALTER TABLE "router_command"
   ADD CONSTRAINT "ck4_router_command" CHECK("visible" IS NOT NULL)
-;;
-
-ALTER TABLE "router_command"
-  ADD CONSTRAINT "ck5_router_command" CHECK("secured" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_command"

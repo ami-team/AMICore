@@ -8,7 +8,7 @@ import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_GUEST", visible = false, secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = false)
 public class AnalyzeQuery extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

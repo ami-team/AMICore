@@ -7,7 +7,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_USER", visible = false, secured = false)
+@CommandMetadata(role = "AMI_USER", visible = false)
 public class SendEmail extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

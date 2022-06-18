@@ -13,7 +13,6 @@ public @interface CommandMetadata
 	String role();
 
 	boolean visible();
-	boolean secured();
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 }

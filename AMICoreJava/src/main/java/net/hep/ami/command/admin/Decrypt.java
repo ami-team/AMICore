@@ -7,7 +7,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
+@CommandMetadata(role = "AMI_ADMIN", visible = false)
 public class Decrypt extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

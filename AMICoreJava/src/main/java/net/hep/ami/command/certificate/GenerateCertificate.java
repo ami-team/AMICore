@@ -10,7 +10,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_CERT", visible = false, secured = true)
+@CommandMetadata(role = "AMI_CERT", visible = false)
 public class GenerateCertificate extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -7,7 +7,7 @@ import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = true)
 public class Echo extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

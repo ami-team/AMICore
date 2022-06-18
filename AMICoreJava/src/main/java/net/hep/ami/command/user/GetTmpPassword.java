@@ -8,7 +8,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_USER", visible = true, secured = true)
+@CommandMetadata(role = "AMI_USER", visible = true)
 public class GetTmpPassword extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

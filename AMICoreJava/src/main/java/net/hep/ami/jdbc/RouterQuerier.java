@@ -518,7 +518,7 @@ public class RouterQuerier implements Querier
 
 		int i = 0;
 
-		try(PreparedStatement statement1 = sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`, `secured`) VALUES (?, ?, ?, ?)", false, null, false))
+		try(PreparedStatement statement1 = sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
 		{
 			try(PreparedStatement statement2 = sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
 			{
@@ -526,7 +526,6 @@ public class RouterQuerier implements Querier
 				String commandRole;
 
 				int commandVisible;
-				int commandSecured;
 
 				for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 				{
@@ -547,14 +546,12 @@ public class RouterQuerier implements Querier
 						commandRole = commandMetadata.role();
 
 						commandVisible = commandMetadata.visible() ? 1 : 0;
-						commandSecured = commandMetadata.secured() ? 1 : 0;
 
 						/*--------------------------------------------------------------------------------------------*/
 
 						statement1.setString(1, commandName);
 						statement1.setString(2, commandClass);
 						statement1.setInt(3, commandVisible);
-						statement1.setInt(4, commandSecured);
 
 						statement2.setString(1, commandName);
 						statement2.setString(2, commandRole);

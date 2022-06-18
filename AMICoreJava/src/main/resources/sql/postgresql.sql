@@ -224,7 +224,6 @@ CREATE TABLE "router_command" (
   "command" VARCHAR(128) NOT NULL,
   "class" VARCHAR(256) NOT NULL,
   "visible" SMALLINT NOT NULL DEFAULT 1,
-  "secured" SMALLINT NOT NULL DEFAULT 0,
   "roleValidatorClass" VARCHAR(256)
 );;
 

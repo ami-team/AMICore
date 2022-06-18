@@ -7,7 +7,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = false)
+@CommandMetadata(role = "AMI_ADMIN", visible = false)
 public class RemoveCommand extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

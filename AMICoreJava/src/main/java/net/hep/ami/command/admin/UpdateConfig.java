@@ -10,7 +10,7 @@ import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_ADMIN", visible = false, secured = true)
+@CommandMetadata(role = "AMI_ADMIN", visible = false)
 public class UpdateConfig extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

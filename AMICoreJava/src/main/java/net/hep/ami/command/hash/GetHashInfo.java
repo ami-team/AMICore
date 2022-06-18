@@ -7,7 +7,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_USER", visible = true, secured = false)
+@CommandMetadata(role = "AMI_USER", visible = true)
 public class GetHashInfo extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

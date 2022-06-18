@@ -8,7 +8,7 @@ import net.hep.ami.jdbc.query.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_WRITER", visible = true, secured = false)
+@CommandMetadata(role = "AMI_WRITER", visible = true)
 public class RemoveElements extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/

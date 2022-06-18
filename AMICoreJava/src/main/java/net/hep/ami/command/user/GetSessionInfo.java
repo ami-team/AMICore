@@ -6,7 +6,7 @@ import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
-@CommandMetadata(role = "AMI_GUEST", visible = true, secured = false)
+@CommandMetadata(role = "AMI_GUEST", visible = true)
 public class GetSessionInfo extends GetUserInfo
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
