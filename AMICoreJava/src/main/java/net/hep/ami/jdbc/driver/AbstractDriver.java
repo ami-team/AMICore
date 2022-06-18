@@ -220,8 +220,6 @@ public abstract class AbstractDriver implements Querier
 			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, true, args);
 
 			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, sql, mql, ast);
-
-			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
@@ -239,8 +237,6 @@ public abstract class AbstractDriver implements Querier
 			PreparedStatement statement = PreparedStatementFactory.createStatement(m_statementMap, m_connection, patchSQL(sql), false, null, true, args);
 
 			return new RowSet(statement.executeQuery(), m_externalCatalog, entity, m_flags, sql, null, null);
-
-			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{

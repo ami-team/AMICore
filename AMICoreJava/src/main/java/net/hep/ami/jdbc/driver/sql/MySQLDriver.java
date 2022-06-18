@@ -74,11 +74,11 @@ public class MySQLDriver extends AbstractDriver
 
 		try(Statement statement = m_connection.createStatement())
 		{
-			statement.executeQuery("USE `" + db + "`");
+			statement.execute("USE `" + db + "`");
 
-			statement.executeQuery("SET time_zone = '" + tz + "'");
+			statement.execute("SET time_zone = '" + tz + "'");
 
-			statement.executeQuery("SET sql_mode = 'ANSI_QUOTES'");
+			statement.execute("SET sql_mode = 'ANSI_QUOTES'");
 		}
 	}
 
