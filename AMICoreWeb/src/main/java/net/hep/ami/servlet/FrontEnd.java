@@ -38,7 +38,7 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse res)
+	protected void doGet(@NotNull HttpServletRequest req, @NotNull HttpServletResponse res)
 	{
 		doCommand(req, res);
 	}
@@ -46,7 +46,7 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res)
+	protected void doPost(@NotNull HttpServletRequest req, @NotNull HttpServletResponse res)
 	{
 		doCommand(req, res);
 	}

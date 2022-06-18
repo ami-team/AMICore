@@ -1,5 +1,7 @@
 package net.hep.ami.servlet;
 
+import lombok.extern.slf4j.*;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.*;
@@ -13,8 +15,7 @@ import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
-import org.slf4j.*;
-
+@Slf4j
 @WebServlet(
 	name = "Setup",
 	urlPatterns = "/Setup"
@@ -25,10 +26,6 @@ public class Setup extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 5570607624197246874L;
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public static final Logger logger = LoggerFactory.getLogger("SETUP");
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -429,7 +426,7 @@ public class Setup extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			logger.info(e.getMessage(), e);
+			log.info(e.getMessage(), e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -521,7 +518,7 @@ public class Setup extends HttpServlet
 			/* LOG ERROR                                                                                              */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			logger.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* BUILD HTML                                                                                             */
