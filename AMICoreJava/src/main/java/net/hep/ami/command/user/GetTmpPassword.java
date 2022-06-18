@@ -9,11 +9,11 @@ import net.hep.ami.command.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true, secured = true)
-public class GetTmpPass extends AbstractCommand
+public class GetTmpPassword extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public GetTmpPass(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
+	public GetTmpPassword(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
