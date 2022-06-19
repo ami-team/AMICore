@@ -6,7 +6,9 @@ import net.hep.ami.utility.*;
 
 import org.simplejavamail.email.*;
 import org.simplejavamail.mailer.*;
-import org.simplejavamail.mailer.config.*;
+import org.simplejavamail.api.email.*;
+import org.simplejavamail.api.mailer.*;
+import org.simplejavamail.api.mailer.config.*;
 
 import org.jetbrains.annotations.*;
 
@@ -63,26 +65,35 @@ public class MailSingleton
 		/* CREATE MAILER                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		MailerBuilder.MailerRegularBuilder mailerBuilder = MailerBuilder.withSMTPServer(host, Integer.parseInt(port), user, pass);
+		TransportStrategy transportStrategy;
 
 		switch(mode.trim())
 		{
 			case "0":
-				mailerBuilder.withTransportStrategy(TransportStrategy.SMTP);
+			case "SMTP":
+				transportStrategy = TransportStrategy.SMTP;
 				break;
 
 			case "1":
-				mailerBuilder.withTransportStrategy(TransportStrategy.SMTPS);
+			case "SMTPS":
+				transportStrategy = TransportStrategy.SMTPS;
 				break;
 
 			case "2":
-				mailerBuilder.withTransportStrategy(TransportStrategy.SMTP_TLS);
+			case "SMTP_TLS":
+				transportStrategy = TransportStrategy.SMTP_TLS;
 				break;
+
+			default:
+				throw new Exception("invalid SMTP mode");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Mailer mailer = mailerBuilder.buildMailer();
+		Mailer mailer = MailerBuilder.withSMTPServer(host, Integer.parseInt(port), user, pass)
+		                             .withTransportStrategy(transportStrategy)
+		                             .buildMailer()
+		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CREATE EMAIL                                                                                               */
@@ -92,11 +103,11 @@ public class MailSingleton
 
 		emailBuilder.from(from);
 
-		if(!Empty.is(to, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)) {
+		if(!Empty.is(to, Empty.STRING_NULL_EMPTY_BLANK)) {
 			emailBuilder.to(to.trim());
 		}
 
-		if(!Empty.is(cc, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)) {
+		if(!Empty.is(cc, Empty.STRING_NULL_EMPTY_BLANK)) {
 			emailBuilder.cc(cc.trim());
 		}
 
