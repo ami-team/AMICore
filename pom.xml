@@ -11,7 +11,16 @@
 	<version>1.0.0</version>
 
 	<name>AMICore</name>
+	<description>AMI Core</description>
 	<url>https://www.cern.ch/ami/</url>
+
+	<licenses>
+		<license>
+			<name>CeCILL, Version 2.1</name>
+			<!--suppress HttpUrlsUsage -->
+			<url>http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.txt</url>
+		</license>
+	</licenses>
 
 	<packaging>pom</packaging>
 
