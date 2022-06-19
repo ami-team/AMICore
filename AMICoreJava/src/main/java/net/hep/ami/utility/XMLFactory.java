@@ -13,7 +13,6 @@ import net.hep.ami.utility.parser.*;
 
 import net.sf.saxon.*;
 import net.sf.saxon.om.*;
-import net.sf.saxon.dom.*;
 import net.sf.saxon.lib.*;
 import net.sf.saxon.expr.*;
 import net.sf.saxon.trans.*;
@@ -110,7 +109,7 @@ public class XMLFactory
 
 	public static org.w3c.dom.Document newDocument(InputStream inputStream) throws Exception
 	{
-		DocumentBuilder documentBuilder = new DocumentBuilderImpl();
+		DocumentBuilder documentBuilder = new net.sf.saxon.dom.DocumentBuilderImpl();
 
 		return documentBuilder.parse(new org.xml.sax.InputSource(
 			inputStream
@@ -132,10 +131,34 @@ public class XMLFactory
 	/* NODE ATTRIBUTES                                                                                                */
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Nullable
+	private static org.w3c.dom.Node getNodeAttr(@NotNull org.w3c.dom.Node node, @NotNull String name)
+	{
+		/* This code is an emulation of `node.getAttributes().getNamedItem(name)`
+		 * because the feature is buggy in Saxon-HE 11...
+		 */
+
+		org.w3c.dom.NamedNodeMap map = node.getAttributes();
+
+		for(int i = 0; i < map.getLength(); i++)
+		{
+			org.w3c.dom.Node attr = map.item(i);
+
+			if(name.equals(attr.getNodeName()))
+			{
+				return attr;
+			}
+		}
+
+		return null;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@NotNull
 	public static String getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name)
 	{
-		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
+		org.w3c.dom.Node attr = getNodeAttr(node, name);
 
 		if(attr != null)
 		{
@@ -151,7 +174,7 @@ public class XMLFactory
 	@Contract("_, _, !null -> !null")
 	public static String getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable String defaultValue)
 	{
-		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
+		org.w3c.dom.Node attr = getNodeAttr(node, name);
 
 		if(attr != null)
 		{
@@ -167,7 +190,7 @@ public class XMLFactory
 	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Boolean getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Boolean defaultValue)
 	{
-		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
+		org.w3c.dom.Node attr = getNodeAttr(node, name);
 
 		if(attr != null)
 		{
@@ -190,7 +213,7 @@ public class XMLFactory
 	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Integer getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Integer defaultValue)
 	{
-		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
+		org.w3c.dom.Node attr = getNodeAttr(node, name);
 
 		if(attr != null)
 		{
@@ -213,7 +236,7 @@ public class XMLFactory
 	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Float getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Float defaultValue)
 	{
-		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
+		org.w3c.dom.Node attr = getNodeAttr(node, name);
 
 		if(attr != null)
 		{
@@ -236,7 +259,7 @@ public class XMLFactory
 	@Contract(value = "_, _, !null -> !null", pure = true)
 	public static Double getNodeAttribute(@NotNull org.w3c.dom.Node node, @NotNull String name, @Nullable Double defaultValue)
 	{
-		org.w3c.dom.Node attr = node.getAttributes().getNamedItem(name);
+		org.w3c.dom.Node attr = getNodeAttr(node, name);
 
 		if(attr != null)
 		{
