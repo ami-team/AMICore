@@ -1,8 +1,8 @@
 package net.hep.ami.rest;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.servlet.http.*;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
+import jakarta.servlet.http.*;
 
 import org.jetbrains.annotations.*;
 

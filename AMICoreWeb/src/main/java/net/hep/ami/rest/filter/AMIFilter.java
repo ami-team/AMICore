@@ -1,7 +1,7 @@
 package net.hep.ami.rest.filter;
 
-import javax.ws.rs.core.*;
-import javax.ws.rs.container.*;
+import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.container.*;
 
 import org.jetbrains.annotations.*;
 

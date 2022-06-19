@@ -3,9 +3,9 @@ package net.hep.ami.rest;
 import java.text.*;
 import java.util.*;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.servlet.http.*;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
+import jakarta.servlet.http.*;
 
 import net.hep.ami.*;
 import net.hep.ami.data.*;

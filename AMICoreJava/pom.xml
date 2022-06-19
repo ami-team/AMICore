@@ -19,13 +19,13 @@
 
 	<name>AMICoreJava</name>
 	<description>AMI JAVA core</description>
-	<url>http://www.cern.ch/ami/</url>
+	<url>https://www.cern.ch/ami/</url>
 
 	<properties>
 		<antlr4.visitor>false</antlr4.visitor>
 		<antlr4.listener>false</antlr4.listener>
 
-		<junit.jupiter.version>5.3.2</junit.jupiter.version>
+		<junit.jupiter.version>5.8.2</junit.jupiter.version>
 	</properties>
 
 	<dependencies>

@@ -2,7 +2,7 @@ package net.hep.ami.rest.app;
 
 import java.util.*;
 
-import javax.ws.rs.core.*;
+import jakarta.ws.rs.core.*;
 
 public class AMIApp extends Application
 {

@@ -6,9 +6,9 @@ import com.fasterxml.jackson.core.type.*;
 import java.io.*;
 import java.util.*;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.servlet.http.*;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
+import jakarta.servlet.http.*;
 
 import net.hep.ami.*;
 

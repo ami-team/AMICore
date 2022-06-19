@@ -6,8 +6,8 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.*;
 
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;

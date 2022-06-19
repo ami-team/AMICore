@@ -2,7 +2,7 @@ package net.hep.ami.servlet;
 
 import java.util.*;
 
-import javax.servlet.http.*;
+import jakarta.servlet.http.*;
 
 public class SessionListener implements HttpSessionAttributeListener
 {

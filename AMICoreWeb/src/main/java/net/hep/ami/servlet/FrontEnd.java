@@ -8,8 +8,8 @@ import java.text.*;
 import java.util.*;
 import java.security.cert.*;
 
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
 
 import net.hep.ami.*;
 import net.hep.ami.data.*;
