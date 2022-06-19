@@ -161,7 +161,7 @@ public class TransactionPoolSingleton
 				{
 					try(Statement statement = driver.getConnection().createStatement())
 					{
-						statement.executeQuery(driver.patchSQL("SELECT 1"));
+						statement.execute(driver.patchSQL("SELECT 1"));
 					}
 				}
 			}
@@ -248,7 +248,7 @@ public class TransactionPoolSingleton
 				{
 					try(Statement statement = driver.getConnection().createStatement())
 					{
-						statement.executeQuery(driver.patchSQL("SELECT 1"));
+						statement.execute(driver.patchSQL("SELECT 1"));
 					}
 				}
 			}
