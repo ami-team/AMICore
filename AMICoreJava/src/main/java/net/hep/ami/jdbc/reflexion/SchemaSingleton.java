@@ -570,7 +570,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromFiles() throws Exception
 		{
-			m_logger.info("for catalog '{}', loading from schema from file...", m_externalCatalog);
+			m_logger.info("for catalog '{}', loading schema from file...", m_externalCatalog);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -629,7 +629,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromDatabase() throws Exception
 		{
-			m_logger.info("for catalog '{}', loading from schema from database...", m_externalCatalog);
+			m_logger.info("for catalog '{}', loading schema from database...", m_externalCatalog);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* CREATE CATALOG                                                                                         */
