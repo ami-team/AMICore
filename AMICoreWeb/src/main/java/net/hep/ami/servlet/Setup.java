@@ -95,6 +95,8 @@ public class Setup extends HttpServlet
 
 		if(!isLocalIP && !ips.contains(ip))
 		{
+			log.warn("unauthorized IP: " + req.getRemoteAddr() + ", expected IPs: " + ips);
+
 			res.setStatus(404);
 
 			return;
