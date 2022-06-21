@@ -70,6 +70,8 @@ public class Setup extends HttpServlet
 
 		if(!ips.isEmpty() && !ips.contains(req.getRemoteAddr()))
 		{
+			log.warn("unauthorized IP: " + req.getRemoteAddr() + ", expected IPs: " + ips);
+
 			res.setStatus(404);
 
 			return;
