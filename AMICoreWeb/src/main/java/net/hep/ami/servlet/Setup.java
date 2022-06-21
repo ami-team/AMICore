@@ -3,6 +3,7 @@ package net.hep.ami.servlet;
 import lombok.extern.slf4j.*;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -63,12 +64,36 @@ public class Setup extends HttpServlet
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* CHECK IPS                                                                                                  */
+		/* CHECK IP                                                                                                   */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> ips = Arrays.stream(ConfigSingleton.getProperty("authorized_ips").split(",", -1)).map(String::trim).filter(x -> !x.isEmpty()).collect(Collectors.toSet());
 
-		if(!ips.isEmpty() && !ips.contains(req.getRemoteAddr()))
+		String ip = req.getRemoteAddr();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean isLocalIP;
+
+		try
+		{
+			InetAddress inetAddress = InetAddress.getByName(ip);
+
+			isLocalIP = NetworkInterface.getByInetAddress(inetAddress) != null
+			            ||
+			            inetAddress.isAnyLocalAddress()
+			            ||
+			            inetAddress.isLoopbackAddress()
+			;
+		}
+		catch(Exception e)
+		{
+			isLocalIP = false;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(!isLocalIP && !ips.contains(ip))
 		{
 			res.setStatus(404);
 
