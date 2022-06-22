@@ -158,11 +158,11 @@ public class Setup extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result = System.getProperty("user.home", "/fake1357") + File.separator + ".ami";
+		result = System.getProperty("catalina.base", "/fake1357") + File.separator + "conf";
 
 		if(!new File(result).exists())
 		{
-			result = System.getProperty("catalina.base", "/fake1357") + File.separator + "conf";
+			result = System.getProperty(/**/"user.home"/**/, "/fake1357") + File.separator + ".ami";
 
 			if(!new File(result).exists())
 			{
