@@ -8,8 +8,10 @@
 
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/bootstrap-icons.min.css" />
+		<link rel="stylesheet" href="css/tagin.min.css" />
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/tagin.min.js"></script>
 		<script type="text/javascript" src="js/wizard.js"></script>
 
 		<style>
@@ -86,7 +88,7 @@
 
 							<div class="mb-2">
 								<label class="control-label" for="authorized_ips">Authorized IPs<sup class="text-danger">*</sup></label>
-								<input type="text" class="form-control" name="authorized_ips" value="{{AUTHORIZED_IPS}}" id="authorized_ips" xxxxxxxx="xxxxxxxx" />
+								<input type="text" class="form-control tagin" name="authorized_ips" value="{{AUTHORIZED_IPS}}" id="authorized_ips" xxxxxxxx="xxxxxxxx" />
 							</div>
 
 						</div>
@@ -120,7 +122,7 @@
 
 							<div class="mb-2">
 								<label class="control-label" for="router_url">URL<sup class="text-danger">*</sup></label>
-								<input class="form-control" type="text" name="router_url" value="{{ROUTER_URL}}" id="router_url" required="required" />
+								<textarea class="form-control" rows="3" name="router_url" id="router_url" required="required">{{ROUTER_URL}}</textarea>
 							</div>
 
 							<div class="row">
@@ -140,9 +142,9 @@
 
 							<div class="row">
 								<div class="col-md-6">
-									<div class="custom-control custom-checkbox">
-										<input class="custom-control-input" type="checkbox" name="router_reset" id="router_reset">
-										<label class="custom-control-label text-danger" for="router_reset">Reset the AMI database</label>
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" name="router_reset" id="router_reset">
+										<label class="form-check-label text-danger" for="router_reset">Reset the AMI database</label>
 									</div>
 								</div>
 								<div class="col-md-6">
@@ -184,7 +186,7 @@
 				</div>
 
 				<div class="modal-footer py-1">
-					<button class="btn btn-outline-primary" type="submit" id="next"><i class="bi bi-chevron-right"></i><i class="bi bi-chevron-right"></i></button>
+					<button class="btn btn-outline-primary" type="submit" id="next"><i class="bi bi-chevron-double-right"></i></button>
 				</div>
 
 			</form>
@@ -195,6 +197,16 @@
 				Copyright © 2001-{{YEAR}}, <a class="text-white" href="https://lpsc.in2p3.fr/" target="_blank">CNRS/LPSC</a>. All right reserved.
 			</span>
 		</div>
+
+		<script>
+
+			new Tagin(document.querySelector('#authorized_ips'), {
+				separator: ',',
+				duplicate: false,
+				placeholder: 'IP (then press coma)'
+			});
+
+		</script>
 
 	</body>
 </html>
