@@ -93,10 +93,8 @@ public class Setup extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(!isLocalIP && !ips.contains(ip))
+		if(!isLocalIP && !ips.isEmpty() && !ips.contains(ip))
 		{
-			log.warn("unauthorized IP: {}, expected localhost or IPs: [{}]", req.getRemoteAddr(), String.join(", ", ips));
-
 			res.setStatus(404);
 
 			return;
