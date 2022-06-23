@@ -261,7 +261,7 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
+		X509Certificate[] certificates = (X509Certificate[]) req.getAttribute("jakarta.servlet.request.X509Certificate");
 
 		if(certificates != null)
 		{

@@ -139,7 +139,7 @@ public class Setup extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, e.getMessage(), e);
+			log.error(e.getMessage(), e);
 
 			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
