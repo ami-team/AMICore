@@ -2,6 +2,7 @@ package net.hep.ami.rest;
 
 import java.text.*;
 import java.util.*;
+import java.security.cert.*;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -39,11 +40,11 @@ public class Token
 	 ) {
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		java.security.cert.X509Certificate[] certificates = (java.security.cert.X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
+		X509Certificate[] certificates = (X509Certificate[]) request.getAttribute("jakarta.servlet.request.X509Certificate");
 
 		if(certificates != null)
 		{
-			for(java.security.cert.X509Certificate certificate: certificates)
+			for(X509Certificate certificate: certificates)
 			{
 				if(!SecuritySingleton.isProxy(certificate))
 				{
