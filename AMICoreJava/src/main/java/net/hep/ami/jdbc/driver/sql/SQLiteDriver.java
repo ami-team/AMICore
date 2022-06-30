@@ -67,14 +67,6 @@ public class SQLiteDriver extends AbstractDriver
 			//System.out.println("error "+ e.getMessage());
 		}
 
-		try(Statement statement = m_connection.createStatement())
-		{
-			statement.execute("PRAGMA foreign_keys=ON'");
-		}
-		catch (Exception e)
-		{
-
-		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -82,7 +74,7 @@ public class SQLiteDriver extends AbstractDriver
 	@Override
 	public String patchSQL(@NotNull String sql)
 	{
-		return sql.replaceAll("`" + this.m_internalCatalog + "`.","");
+		return "PRAGMA foreign_keys=ON;" + sql.replaceAll("`" + this.m_internalCatalog + "`.","");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
