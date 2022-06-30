@@ -74,7 +74,7 @@ public class SQLiteDriver extends AbstractDriver
 	@Override
 	public String patchSQL(@NotNull String sql)
 	{
-		return "PRAGMA foreign_keys=ON;" + sql.replaceAll("`" + this.m_internalCatalog + "`.","");
+		return sql.replaceAll("`" + this.m_internalCatalog + "`.","");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
