@@ -8,6 +8,7 @@ import org.sqlite.Function;
 import org.sqlite.SQLiteConnection;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
@@ -66,6 +67,14 @@ public class SQLiteDriver extends AbstractDriver
 			//System.out.println("error "+ e.getMessage());
 		}
 
+		try(Statement statement = m_connection.createStatement())
+		{
+			statement.execute("PRAGMA foreign_keys=ON'");
+		}
+		catch (Exception e)
+		{
+
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
