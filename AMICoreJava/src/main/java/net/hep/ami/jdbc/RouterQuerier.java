@@ -676,7 +676,7 @@ public class RouterQuerier implements Querier
 
 		SchemaSingleton.Table router_command = SchemaSingleton.getEntityInfo("self", "router_command");
 
-		//router_command.columns.get("visible").groupable = true;
+		router_command.columns.get("visible").groupable = true;
 		//router_command.columns.get("secured").groupable = true;
 
 		/*------------------------------------------------------------------------------------------------------------*/
