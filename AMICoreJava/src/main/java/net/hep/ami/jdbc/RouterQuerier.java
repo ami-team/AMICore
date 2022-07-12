@@ -636,7 +636,7 @@ public class RouterQuerier implements Querier
 
 		SchemaSingleton.Table router_entity = SchemaSingleton.getEntityInfo("self", "router_entity");
 
-		router_entity.columns.get("catalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"catalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"externalCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
+		router_entity.columns.get("catalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"catalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"catalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
 		router_entity.columns.get("json").json = true;
 		router_entity.columns.get("created").created = true;
 		router_entity.columns.get("createdBy").createdBy = true;
@@ -647,7 +647,7 @@ public class RouterQuerier implements Querier
 
 		SchemaSingleton.Table router_field = SchemaSingleton.getEntityInfo("self", "router_field");
 
-		router_field.columns.get("catalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"catalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"externalCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
+		router_field.columns.get("catalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"catalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"catalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
 		router_field.columns.get("json").json = true;
 		router_field.columns.get("created").created = true;
 		router_field.columns.get("createdBy").createdBy = true;
@@ -658,8 +658,8 @@ public class RouterQuerier implements Querier
 
 		SchemaSingleton.Table router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key");
 
-		router_foreign_key.columns.get("fkCatalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"fkCatalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"externalCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
-		router_foreign_key.columns.get("pkCatalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"pkCatalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"externalCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
+		router_foreign_key.columns.get("fkCatalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"fkCatalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"fkCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
+		router_foreign_key.columns.get("pkCatalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"pkCatalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"pkCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
 		router_foreign_key.columns.get("created").created = true;
 		router_foreign_key.columns.get("createdBy").createdBy = true;
 		router_foreign_key.columns.get("modified").modified = true;
