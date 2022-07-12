@@ -658,6 +658,8 @@ public class RouterQuerier implements Querier
 
 		SchemaSingleton.Table router_foreign_key = SchemaSingleton.getEntityInfo("self", "router_foreign_key");
 
+		router_foreign_key.columns.get("fkCatalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"fkCatalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"externalCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
+		router_foreign_key.columns.get("pkCatalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"pkCatalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"externalCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
 		router_foreign_key.columns.get("created").created = true;
 		router_foreign_key.columns.get("createdBy").createdBy = true;
 		router_foreign_key.columns.get("modified").modified = true;
