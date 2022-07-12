@@ -729,7 +729,7 @@ public class RouterQuerier implements Querier
 
 		SchemaSingleton.Table router_markdown = SchemaSingleton.getEntityInfo("self", "router_markdown");
 
-		router_markdown.columns.get("name").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"name\"))\n{\n\twebLink.newLinkProperties().setLabel(\"See Page\").setHRef(\"./?subapp=document&userdata=\" + row.getValue(\"name\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
+		router_markdown.columns.get("name").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"name\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit page\").setHRef(\"./?subapp=document&userdata=\" + row.getValue(\"name\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
 		router_markdown.columns.get("archived").groupable = true;
 		router_markdown.columns.get("created").created = true;
 		router_markdown.columns.get("createdBy").createdBy = true;
