@@ -700,6 +700,7 @@ public class RouterQuerier implements Querier
 
 		SchemaSingleton.Table router_dashboard = SchemaSingleton.getEntityInfo("self", "router_dashboard");
 
+		router_dashboard.columns.get("params").json = true;
 		router_dashboard.columns.get("settings").json = true;
 		router_dashboard.columns.get("owner").createdBy = true;
 		router_dashboard.columns.get("created").created = true;
