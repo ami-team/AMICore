@@ -3,6 +3,9 @@ package net.hep.ami.command.user;
 import java.io.*;
 import java.util.*;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import net.hep.ami.*;
 import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
@@ -128,6 +131,34 @@ public class GetUserInfo extends AbstractCommand
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* BUILD MQTT Token                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String mqttToken;
+
+		if(m_userRoles.contains("AMI_ADMIN"))
+		{
+			try
+			{
+				Algorithm algorithm = Algorithm.HMAC512(ConfigSingleton.getProperty("mqtt_jwt_secret", ""));
+
+				mqttToken = JWT.create()
+				               .withIssuer(ConfigSingleton.getProperty("mqtt_jwt_issuer", ""))
+				               .withSubject(m_AMIUser)
+				               .sign(algorithm)
+				;
+			}
+			catch(JWTCreationException e)
+			{
+				mqttToken = "";
+			}
+		}
+		else
+		{
+			mqttToken = "";
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET USER ROLES                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -226,6 +257,7 @@ public class GetUserInfo extends AbstractCommand
 		      .append("<field name=\"issuerDNInSession\"><![CDATA[").append(m_issuerDN).append("]]></field>")
 		      .append("<field name=\"notBefore\"><![CDATA[").append(m_notBefore).append("]]></field>")
 		      .append("<field name=\"notAfter\"><![CDATA[").append(m_notAfter).append("]]></field>")
+		      .append("<field name=\"mqttToken\"><![CDATA[").append(mqttToken).append("]]></field>")
 		      .append("<field name=\"firstName\"><![CDATA[").append(firstName).append("]]></field>")
 		      .append("<field name=\"lastName\"><![CDATA[").append(lastName).append("]]></field>")
 		      .append("<field name=\"email\"><![CDATA[").append(email).append("]]></field>")
