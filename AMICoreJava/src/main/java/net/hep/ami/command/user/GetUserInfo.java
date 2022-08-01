@@ -3,15 +3,16 @@ package net.hep.ami.command.user;
 import java.io.*;
 import java.util.*;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import net.hep.ami.*;
 import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.role.*;
 import net.hep.ami.command.*;
 import net.hep.ami.utility.*;
+
+import com.auth0.jwt.*;
+import com.auth0.jwt.algorithms.*;
+import com.auth0.jwt.exceptions.*;
 
 import com.fasterxml.jackson.databind.*;
 
@@ -131,18 +132,47 @@ public class GetUserInfo extends AbstractCommand
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* BUILD MQTT Token                                                                                           */
+		/* GET USER ROLES                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		List<Row> roles = querier.executeSQLQuery("router_role", "SELECT `router_role`.`role`, `router_role`.`description` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?0", amiLogin).getAll();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET USER BOOKMARKS                                                                                             */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		List<Row> bookmarks = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `owner` = ?0 ORDER BY `rank`", amiLogin).getAll();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET USER DASHBOARDS                                                                                        */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/* TODO */
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* BUILD MQTT TOKEN                                                                                           */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean admin = roles.stream().anyMatch(x -> {
+			try {
+				return "AMI_ADMIN".equals(x.getValue(0));
+			} catch(Exception e) {
+				return false;
+			}
+		});
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		String mqttToken;
 
-		if(m_userRoles.contains("AMI_ADMIN"))
+		if(admin)
 		{
 			try
 			{
 				Algorithm algorithm = Algorithm.HMAC512(ConfigSingleton.getProperty("mqtt_jwt_secret", ""));
 
 				mqttToken = JWT.create()
+				               .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 3600 * 1000))
 				               .withIssuer(ConfigSingleton.getProperty("mqtt_jwt_issuer", ""))
 				               .withSubject(m_AMIUser)
 				               .sign(algorithm)
@@ -150,25 +180,13 @@ public class GetUserInfo extends AbstractCommand
 			}
 			catch(JWTCreationException e)
 			{
-				mqttToken = e.getMessage();
+				mqttToken = "";
 			}
 		}
 		else
 		{
 			mqttToken = "";
 		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* GET USER ROLES                                                                                             */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		RowSet rowSet2 = querier.executeSQLQuery("router_role", "SELECT `router_role`.`role`, `router_role`.`description` FROM `router_user_role`, `router_user`, `router_role` WHERE `router_user_role`.`userFK` = `router_user`.`id` AND `router_user_role`.`roleFK` = `router_role`.`id` AND `AMIUser` = ?0", amiLogin);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* GET USER BOOKMARKS                                                                                             */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		RowSet rowSet3 = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `owner` = ?0 ORDER BY `rank`", amiLogin);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET OTHER INFO                                                                                             */
@@ -273,7 +291,7 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("<rowset type=\"role\">");
 
-		for(Row row2: rowSet2.iterate())
+		for(Row row2: roles)
 		{
 			result.append("<row>")
 			      .append("<field name=\"name\"><![CDATA[").append(row2.getValue(0)).append("]]></field>")
@@ -290,7 +308,7 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("<rowset type=\"bookmark\">");
 
-		for(Row row: rowSet3.iterate())
+		for(Row row: bookmarks)
 		{
 			result.append("<row>")
 					.append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
@@ -303,6 +321,14 @@ public class GetUserInfo extends AbstractCommand
 					.append("</row>")
 			;
 		}
+
+		result.append("</rowset>");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* DASHBOARDS                                                                                                 */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"dashboards\">");
 
 		result.append("</rowset>");
 
