@@ -150,7 +150,7 @@ public class GetUserInfo extends AbstractCommand
 			}
 			catch(JWTCreationException e)
 			{
-				mqttToken = "";
+				mqttToken = e.getMessage();
 			}
 		}
 		else
