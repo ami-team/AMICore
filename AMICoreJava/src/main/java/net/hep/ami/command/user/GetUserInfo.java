@@ -165,15 +165,18 @@ public class GetUserInfo extends AbstractCommand
 
 		String mqttToken;
 
-		if(admin)
+		String mqttJWTSecret = ConfigSingleton.getProperty("mqtt_jwt_secret");
+		String mqttJWTIssuer = ConfigSingleton.getProperty("mqtt_jwt_issuer");
+
+		if(admin && !Empty.is(mqttJWTSecret, Empty.STRING_NULL_EMPTY_BLANK) && !Empty.is(mqttJWTIssuer, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			try
 			{
-				Algorithm algorithm = Algorithm.HMAC512(ConfigSingleton.getProperty("mqtt_jwt_secret", ""));
+				Algorithm algorithm = Algorithm.HMAC512(mqttJWTSecret);
 
 				mqttToken = JWT.create()
 				               .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 3600 * 1000))
-				               .withIssuer(ConfigSingleton.getProperty("mqtt_jwt_issuer", ""))
+				               .withIssuer(mqttJWTIssuer)
 				               .withSubject(m_AMIUser)
 				               .sign(algorithm)
 				;
