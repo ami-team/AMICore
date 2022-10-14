@@ -1,5 +1,7 @@
 package net.hep.ami.servlet;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 import lombok.*;
 
 import java.io.*;
@@ -14,6 +16,7 @@ import jakarta.servlet.annotation.*;
 import net.hep.ami.*;
 import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.mqtt.MQTT;
 import net.hep.ami.role.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
@@ -34,6 +37,15 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public void init(@NotNull ServletConfig config) throws ServletException
+	{
+		super.init(config);
+
+		new MQTT().getJobInfo();
+	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
