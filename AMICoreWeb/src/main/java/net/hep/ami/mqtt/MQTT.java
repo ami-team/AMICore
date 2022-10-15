@@ -40,7 +40,7 @@ public class MQTT implements MqttCallbackExtended
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public void getJobInfo()
+	public void init()
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -66,7 +66,6 @@ public class MQTT implements MqttCallbackExtended
 			Algorithm algorithm = Algorithm.HMAC512(MQTT_JWT_SECRET);
 
 			String mqttToken = JWT.create()
-			                      .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 3600 * 1000))
 			                      .withIssuer(MQTT_JWT_ISSUER)
 			                      .withSubject(MQTT_USERNAME)
 			                      .sign(algorithm)
@@ -91,9 +90,9 @@ public class MQTT implements MqttCallbackExtended
 
 			m_asyncClient.setCallback(this);
 
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			m_asyncClient.connect(connectOptions).waitForCompletion(10000L);
+			m_asyncClient.connect(connectOptions)
+			             .waitForCompletion(10000L)
+			;
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -139,13 +138,6 @@ public class MQTT implements MqttCallbackExtended
 				/*----------------------------------------------------------------------------------------------------*/
 
 				public void run()
-				{
-					scheduleParse();
-				}
-
-				/*----------------------------------------------------------------------------------------------------*/
-
-				private void scheduleParse()
 				{
 					publish("ami/server/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\"}",
 						getCurrentTime(),

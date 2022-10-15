@@ -16,7 +16,7 @@ import jakarta.servlet.annotation.*;
 import net.hep.ami.*;
 import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
-import net.hep.ami.mqtt.MQTT;
+import net.hep.ami.mqtt.*;
 import net.hep.ami.role.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
@@ -44,7 +44,7 @@ public class FrontEnd extends HttpServlet
 	{
 		super.init(config);
 
-		new MQTT().getJobInfo();
+		new MQTT().init();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
