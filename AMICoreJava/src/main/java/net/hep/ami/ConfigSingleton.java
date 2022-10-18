@@ -106,7 +106,7 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.warn("Trying conf file `{}`", configPathName + File.separator + "AMI.xml");
+		LogSingleton.root.warn("Trying conf file `{}`", configPathName);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -126,7 +126,7 @@ public class ConfigSingleton
 		File file;
 		String path;
 
-		path = System.getProperty("ami.conffile");
+		path = System.getProperty("ami.conf_file");
 
 		if(path == null
 		   ||
