@@ -553,6 +553,7 @@ public class SchemaSingleton
 
 			if(!file.exists())
 			{
+				//noinspection ResultOfMethodCallIgnored
 				file.mkdirs();
 			}
 
@@ -570,7 +571,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromFiles() throws Exception
 		{
-			m_logger.info("for catalog '{}', loading schema from file...", m_externalCatalog);
+			m_logger.debug("for catalog '{}', loading schema from file...", m_externalCatalog);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -582,6 +583,7 @@ public class SchemaSingleton
 
 			if(!file.exists())
 			{
+				//noinspection ResultOfMethodCallIgnored
 				file.mkdirs();
 			}
 
@@ -629,7 +631,7 @@ public class SchemaSingleton
 
 		private void loadSchemaFromDatabase() throws Exception
 		{
-			m_logger.info("for catalog '{}', loading schema from database...", m_externalCatalog);
+			m_logger.debug("for catalog '{}', loading schema from database...", m_externalCatalog);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* CREATE CATALOG                                                                                         */
@@ -1044,6 +1046,7 @@ public class SchemaSingleton
 					{
 						try
 						{
+							//noinspection ResultOfMethodCallIgnored
 							file.delete();
 						}
 						catch(SecurityException e)
