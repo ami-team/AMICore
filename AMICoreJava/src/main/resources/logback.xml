@@ -12,6 +12,16 @@
 		</encoder>
 	</appender>
 
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %level %logger{36} - %m %throwable{2}%n</pattern>
+		</encoder>
+		<file>ami.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>ami.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+		</rollingPolicy>
+	</appender>
+
 	<root level="WARN">
 		<appender-ref ref="AMIFATAL" />
 
