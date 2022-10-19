@@ -106,7 +106,7 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.warn("Trying conf file `{}`", configPathName);
+		LogSingleton.root.info("Trying conf file `{}`", configPathName);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
