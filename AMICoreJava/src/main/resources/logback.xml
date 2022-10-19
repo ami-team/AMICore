@@ -8,18 +8,24 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %level %logger{36} - %m %throwable{2}%n</pattern>
+			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
 		</encoder>
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} [%thread] %level %logger{36} - %m %throwable{2}%n</pattern>
+			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
 		</encoder>
-		<file>ami.log</file>
+		<file>${catalina.base:-.}/logs/ami.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>ami.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+			<fileNamePattern>${catalina.base:-.}/logs/ami.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
 		</rollingPolicy>
+		<!-- max 10MB -->
+		<maxFileSize>10MB</maxFileSize>
+		<!-- 30 days to keep -->
+		<maxHistory>30</maxHistory>
+		<!-- total size of all archive files, if total size > 100GB, it will delete old archived file -->
+		<totalSizeCap>100GB</totalSizeCap>
 	</appender>
 
 	<root level="INFO">
