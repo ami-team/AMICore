@@ -20,15 +20,47 @@ public class MQTT implements MqttCallbackExtended
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final int PING_DELAY = ConfigSingleton.getProperty("ping_delay", 10);
+	private static final int PING_DELAY;
 
-	private static final String MQTT_BROKER_URL = ConfigSingleton.getProperty("mqtt_broker_url", "");
+	private static final String MQTT_BROKER_URL;
 
-	private static final String MQTT_JWT_ISSUER = ConfigSingleton.getProperty("mqtt_jwt_issuer", "");
+	private static final String MQTT_JWT_ISSUER;
 
-	private static final String MQTT_JWT_SECRET = ConfigSingleton.getProperty("mqtt_jwt_secret", "");
+	private static final String MQTT_JWT_SECRET;
 
-	private static final String MQTT_USERNAME = "cronjob";
+	private static final String MQTT_USERNAME;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MQTT.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	static
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		try
+		{
+			ConfigSingleton.readDataBase();
+		}
+		catch(Exception e)
+		{
+			LOG.error(e.getMessage(), e);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		PING_DELAY = ConfigSingleton.getProperty("ping_delay", 10);
+
+		MQTT_BROKER_URL = ConfigSingleton.getProperty("mqtt_broker_url", "");
+
+		MQTT_JWT_ISSUER = ConfigSingleton.getProperty("mqtt_jwt_issuer", "");
+
+		MQTT_JWT_SECRET = ConfigSingleton.getProperty("mqtt_jwt_secret", "");
+
+		MQTT_USERNAME = "cronjob";
+	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -102,7 +134,7 @@ public class MQTT implements MqttCallbackExtended
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -123,7 +155,7 @@ public class MQTT implements MqttCallbackExtended
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -152,7 +184,7 @@ public class MQTT implements MqttCallbackExtended
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -164,10 +196,10 @@ public class MQTT implements MqttCallbackExtended
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(reconnect) {
-			LogSingleton.root.info("client `{}` reconnected to server URL `{}`", m_serverName, serverURL);
+			LOG.info("client `{}` reconnected to server URL `{}`", m_serverName, serverURL);
 		}
 		else {
-			LogSingleton.root.info("client `{}` connected to server URL `{}`", m_serverName, serverURL);
+			LOG.info("client `{}` connected to server URL `{}`", m_serverName, serverURL);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -183,7 +215,7 @@ public class MQTT implements MqttCallbackExtended
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -194,7 +226,7 @@ public class MQTT implements MqttCallbackExtended
 	@Override
 	public void connectionLost(Throwable cause)
 	{
-		LogSingleton.root.warn("client `{}` disconnected, cause: {}", m_serverName, cause.getMessage());
+		LOG.warn("client `{}` disconnected, cause: {}", m_serverName, cause.getMessage());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -214,7 +246,7 @@ public class MQTT implements MqttCallbackExtended
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken token)
 	{
-		/* do nothing */
+		/* DO NOTHING  */
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

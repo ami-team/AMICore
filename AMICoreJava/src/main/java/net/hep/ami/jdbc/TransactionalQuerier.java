@@ -13,6 +13,10 @@ public class TransactionalQuerier implements Querier
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(TransactionalQuerier.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private final long m_transactionId;
 
 	private final AbstractDriver m_driver;
@@ -27,7 +31,7 @@ public class TransactionalQuerier implements Querier
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
+			LOG.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
 		}
 	}
 

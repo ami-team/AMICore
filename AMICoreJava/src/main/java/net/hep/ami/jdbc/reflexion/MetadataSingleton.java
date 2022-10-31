@@ -3,8 +3,7 @@ package net.hep.ami.jdbc.reflexion;
 import java.util.*;
 
 import net.hep.ami.*;
-import net.hep.ami.data.Row;
-import net.hep.ami.data.RowSet;
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.parser.*;
 
@@ -12,6 +11,10 @@ import org.jetbrains.annotations.*;
 
 public class MetadataSingleton
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MetadataSingleton.class.getSimpleName());
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Contract(pure = true)
@@ -112,7 +115,7 @@ public class MetadataSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "the AMI database is not properly setup", e);
+			LOG.error(LogSingleton.FATAL, "the AMI database is not properly setup", e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -175,7 +178,7 @@ public class MetadataSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -236,7 +239,7 @@ public class MetadataSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -300,7 +303,7 @@ public class MetadataSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 

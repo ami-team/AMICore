@@ -15,6 +15,10 @@ public class ConfigSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(ConfigSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private static final Pattern s_envVarPattern = Pattern.compile(
 		"\\$\\{\\s*([a-zA-Z-_.]+)\\s*}"
 	);
@@ -88,7 +92,7 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not read configuration", e);
+			LOG.error(LogSingleton.FATAL, "could not read configuration", e);
 		}
 	}
 
@@ -106,7 +110,7 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.debug("Trying conf file `{}`", configPathName);
+		LOG.debug("Trying conf file `{}`", configPathName);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -292,7 +296,7 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.warn(e.getMessage());
+			LOG.warn(e.getMessage());
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

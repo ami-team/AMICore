@@ -12,6 +12,10 @@ public class PermissiveSocketFactory
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(PermissiveSocketFactory.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private static final String NEW_TLS_PROTOCOL = "TLSv1.3";
 	private static final String OLD_TLS_PROTOCOL = "TLSv1.2";
 
@@ -84,7 +88,7 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error("could not initialize {} context", NEW_TLS_PROTOCOL, e);
+			LOG.error("could not initialize {} context", NEW_TLS_PROTOCOL, e);
 
 			tmp = null;
 		}
@@ -118,7 +122,7 @@ public class PermissiveSocketFactory
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error("could not initialize {} context", OLD_TLS_PROTOCOL, e);
+			LOG.error("could not initialize {} context", OLD_TLS_PROTOCOL, e);
 
 			tmp = null;
 		}

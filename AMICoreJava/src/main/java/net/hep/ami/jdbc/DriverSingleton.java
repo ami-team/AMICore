@@ -16,6 +16,10 @@ public class DriverSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(DriverSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -64,7 +68,7 @@ public class DriverSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not read config", e);
+			LOG.error(LogSingleton.FATAL, "could not read config", e);
 		}
 
 		CacheSingleton.reload();
@@ -82,7 +86,7 @@ public class DriverSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "for driver `{}`", className, e);
+				LOG.error(LogSingleton.FATAL, "for driver `{}`", className, e);
 			}
 		}
 	}

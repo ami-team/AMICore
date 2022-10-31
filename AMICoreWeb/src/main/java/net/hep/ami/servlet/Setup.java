@@ -1,7 +1,5 @@
 package net.hep.ami.servlet;
 
-import lombok.extern.slf4j.*;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -16,7 +14,6 @@ import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
 
-@Slf4j
 @WebServlet(
 	name = "Setup",
 	urlPatterns = "/Setup"
@@ -27,6 +24,10 @@ public class Setup extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 5570607624197246874L;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(FrontEnd.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -139,7 +140,7 @@ public class Setup extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			log.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 
 			res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
@@ -451,7 +452,7 @@ public class Setup extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			log.info(e.getMessage(), e);
+			LOG.info(e.getMessage(), e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -543,7 +544,7 @@ public class Setup extends HttpServlet
 			/* LOG ERROR                                                                                              */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			log.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* BUILD HTML                                                                                             */

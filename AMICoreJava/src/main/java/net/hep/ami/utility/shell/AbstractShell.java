@@ -9,6 +9,10 @@ public abstract class AbstractShell
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(AbstractShell.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public static class ShellTuple
 	{
 		public final Integer errorCode;
@@ -47,7 +51,7 @@ public abstract class AbstractShell
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error("could not read text file", e);
+				LOG.error("could not read text file", e);
 			}
 		}
 

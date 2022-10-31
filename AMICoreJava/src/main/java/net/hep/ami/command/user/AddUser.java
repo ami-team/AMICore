@@ -16,6 +16,10 @@ public class AddUser extends AbstractCommand
 {
 	/*------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(AddUser.class.getSimpleName());
+
+	/*------------------------------------------------------------------------------------------------------------*/
+
 	static final String SHORT_EMAIL = "%s";
 
 	static final String LONG_EMAIL = "%s %s";
@@ -143,7 +147,7 @@ public class AddUser extends AbstractCommand
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

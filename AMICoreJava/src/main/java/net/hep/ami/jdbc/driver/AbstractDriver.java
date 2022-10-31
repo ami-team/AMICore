@@ -19,6 +19,10 @@ public abstract class AbstractDriver implements Querier
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(DriverSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	protected final String m_externalCatalog;
 	protected final String m_internalCatalog;
 
@@ -128,7 +132,7 @@ public abstract class AbstractDriver implements Querier
 		}
 		catch(SQLException e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -411,7 +415,7 @@ public abstract class AbstractDriver implements Querier
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(
+					LOG.error(
 						"could not close statement", e
 					);
 				}
@@ -445,7 +449,7 @@ public abstract class AbstractDriver implements Querier
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(
+					LOG.error(
 						"could not close statement", e
 					);
 				}

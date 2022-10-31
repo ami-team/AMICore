@@ -1,10 +1,10 @@
 package net.hep.ami;
 
+import java.io.*;
+
 import ch.qos.logback.core.*;
 import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.spi.*;
-
-import java.io.*;
 
 import org.jetbrains.annotations.*;
 
@@ -16,7 +16,7 @@ public class LogSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static final org.slf4j.Logger root = org.slf4j.LoggerFactory.getLogger("ROOT");
+	private static final org.slf4j.Logger LOG = getLogger(LogSingleton.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -56,7 +56,7 @@ public class LogSingleton
 
 					e.printStackTrace(pw);
 
-					root.error("could not send emails: {}", sw, e);
+					LOG.error("could not send emails: {}", sw, e);
 				}
 			}
 		}

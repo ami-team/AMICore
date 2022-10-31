@@ -1,13 +1,12 @@
 package net.hep.ami.jdbc.reflexion;
 
+import lombok.*;
+
 import java.io.*;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.query.*;
@@ -20,6 +19,10 @@ import org.jetbrains.annotations.*;
 
 public class SchemaSingleton
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(SchemaSingleton.class.getSimpleName());
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final class Catalog implements Serializable
@@ -394,7 +397,7 @@ public class SchemaSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
+			LOG.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
 		}
 	}
 
@@ -1051,14 +1054,14 @@ public class SchemaSingleton
 						}
 						catch(SecurityException e)
 						{
-							LogSingleton.root.error(e.getMessage(), e);
+							LOG.error(e.getMessage(), e);
 						}
 					}
 				}
 			}
 			catch(SecurityException e)
 			{
-				LogSingleton.root.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 		}
 

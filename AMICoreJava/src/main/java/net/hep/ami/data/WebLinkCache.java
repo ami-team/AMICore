@@ -11,6 +11,10 @@ public class WebLinkCache
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(WebLinkCache.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private final GroovyShell m_groovyShell = new GroovyShell(WebLinkCache.class.getClassLoader());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -18,7 +22,7 @@ public class WebLinkCache
 	@NotNull
 	private String error(@NotNull Exception e)
 	{
-		LogSingleton.root.error(e.getMessage(), e);
+		LOG.error(e.getMessage(), e);
 
 		return new StringBuilder().append("<properties><![CDATA[").append(e.getMessage()).append("]]></properties>").toString();
 	}

@@ -5,15 +5,13 @@ import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
 
-import lombok.extern.slf4j.*;
-
+import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
 
 import org.jetbrains.annotations.*;
 
-@Slf4j
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:oracle",
@@ -22,6 +20,8 @@ import org.jetbrains.annotations.*;
 )
 public class OracleDriver extends AbstractDriver
 {
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MariaDBDriver.class.getSimpleName());
+
 	static final String JSON_PATHS_TEMPLATE;
 	static final String JSON_VALUES_TEMPLATE;
 
@@ -36,7 +36,7 @@ public class OracleDriver extends AbstractDriver
 		}
 		catch(Exception e)
 		{
-			log.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		try(InputStream inputStream = AbstractDriver.class.getResourceAsStream("/sql/oracle/json_values.sql"))
@@ -45,7 +45,7 @@ public class OracleDriver extends AbstractDriver
 		}
 		catch(Exception e)
 		{
-			log.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		JSON_PATHS_TEMPLATE = stringBuilder1.toString();

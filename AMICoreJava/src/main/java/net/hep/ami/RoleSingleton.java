@@ -16,6 +16,10 @@ public class RoleSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(RoleSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -86,7 +90,7 @@ public class RoleSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "for role validator `{}`", className, e);
+				LOG.error(LogSingleton.FATAL, "for role validator `{}`", className, e);
 			}
 		}
 	}

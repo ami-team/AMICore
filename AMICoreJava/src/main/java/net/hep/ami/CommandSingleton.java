@@ -9,6 +9,7 @@ import java.lang.reflect.*;
 import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.shell.*;
 import net.hep.ami.utility.parser.*;
@@ -17,6 +18,10 @@ import org.jetbrains.annotations.*;
 
 public class CommandSingleton
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MetadataSingleton.class.getSimpleName());
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Getter
@@ -128,7 +133,7 @@ public class CommandSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add commands: {}", e.getMessage(), e);
+			LOG.error(LogSingleton.FATAL, "could not add commands: {}", e.getMessage(), e);
 		}
 	}
 
@@ -169,7 +174,7 @@ public class CommandSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error("for command `{}`" , row.getValue(0), e);
+					LOG.error("for command `{}`" , row.getValue(0), e);
 				}
 			}
 

@@ -13,6 +13,10 @@ public class CacheSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(CacheSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	static private MemcachedClient s_memcachedClient = null;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -49,7 +53,7 @@ public class CacheSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 
 				s_memcachedClient = null;
 			}
@@ -74,7 +78,7 @@ public class CacheSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 		}
 
@@ -94,7 +98,7 @@ public class CacheSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 		}
 
@@ -113,7 +117,7 @@ public class CacheSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -130,7 +134,7 @@ public class CacheSingleton
 			}
 			catch(Exception e)
 			{
-				LogSingleton.root.error(e.getMessage(), e);
+				LOG.error(e.getMessage(), e);
 			}
 		}
 	}

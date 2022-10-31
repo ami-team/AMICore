@@ -5,10 +5,8 @@
 .classpath
 
 bin/
+logs/
 target/
 doxygen/html/
 
 *.iml
-*.log
-
-

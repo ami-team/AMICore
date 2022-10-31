@@ -1,7 +1,5 @@
 package net.hep.ami.servlet;
 
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import lombok.*;
 
 import java.io.*;
@@ -10,6 +8,7 @@ import java.text.*;
 import java.util.*;
 import java.security.cert.*;
 
+import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
@@ -33,6 +32,10 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final long serialVersionUID = 6325706434625863655L;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(FrontEnd.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -222,7 +225,7 @@ public class FrontEnd extends HttpServlet
 
 			res.setContentType("text/plain");
 
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -649,7 +652,7 @@ public class FrontEnd extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 

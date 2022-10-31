@@ -18,6 +18,10 @@ public class ConverterSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(ConverterSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -56,7 +60,7 @@ public class ConverterSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add converters", e);
+			LOG.error(LogSingleton.FATAL, "could not add converters", e);
 		}
 	}
 
@@ -95,7 +99,7 @@ public class ConverterSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, "for converter `{}`: ", row.getValue(0), e);
+					LOG.error(LogSingleton.FATAL, "for converter `{}`: ", row.getValue(0), e);
 				}
 			}
 

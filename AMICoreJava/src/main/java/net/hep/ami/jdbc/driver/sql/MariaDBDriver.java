@@ -1,19 +1,17 @@
 package net.hep.ami.jdbc.driver.sql;
 
-import java.io.InputStream;
+import java.io.*;
 import java.sql.*;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
-import lombok.extern.slf4j.Slf4j;
+import net.hep.ami.*;
 import net.hep.ami.jdbc.driver.*;
+import net.hep.ami.jdbc.query.sql.*;
+import net.hep.ami.utility.*;
 
-import net.hep.ami.jdbc.query.sql.Tokenizer;
-import net.hep.ami.utility.TextFile;
 import org.jetbrains.annotations.*;
 
-@Slf4j
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mariadb",
@@ -23,6 +21,10 @@ import org.jetbrains.annotations.*;
 
 public class MariaDBDriver extends AbstractDriver
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MariaDBDriver.class.getSimpleName());
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static final String JSON_PATHS_TEMPLATE;
@@ -39,7 +41,7 @@ public class MariaDBDriver extends AbstractDriver
 		}
 		catch(Exception e)
 		{
-			log.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		try(InputStream inputStream = AbstractDriver.class.getResourceAsStream("/sql/mysql/json_values.sql"))
@@ -48,7 +50,7 @@ public class MariaDBDriver extends AbstractDriver
 		}
 		catch(Exception e)
 		{
-			log.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 		}
 
 		JSON_PATHS_TEMPLATE = stringBuilder1.toString();

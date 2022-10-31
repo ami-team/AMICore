@@ -12,6 +12,10 @@ public class SimpleQuerier implements Querier
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(SimpleQuerier.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private final AbstractDriver m_driver;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -24,7 +28,7 @@ public class SimpleQuerier implements Querier
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
+			LOG.error(LogSingleton.FATAL, "could not load `CatalogSingleton`", e);
 		}
 	}
 

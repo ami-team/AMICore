@@ -18,6 +18,10 @@ public class RouterQuerier implements Querier
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(RouterQuerier.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private final AbstractDriver m_driver;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -399,7 +403,7 @@ public class RouterQuerier implements Querier
 		/* CATALOGS                                                                                                   */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.info("setup catalogs...");
+		LOG.info("setup catalogs...");
 
 		executeSQLUpdate("router_catalog", "INSERT INTO `router_catalog` (`externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `json`, `description`, `archived`, `createdBy`, `modifiedBy`) VALUES (?0, ?1, ?2, ?3, ?#4, ?#5, ?6, 'AMI configuration catalog', '0', ?7, ?7);",
 			getExternalCatalog(),
@@ -420,7 +424,7 @@ public class RouterQuerier implements Querier
 		/* CONVERTERS                                                                                                 */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.info("setup converters...");
+		LOG.info("setup converters...");
 
 		executeSQLUpdate("router_converter", "INSERT INTO `router_converter` (`xslt`, `mime`) VALUES ('/xslt/AMIXmlToText.xsl', 'text/plain')");
 
@@ -438,7 +442,7 @@ public class RouterQuerier implements Querier
 		/* ROLES                                                                                                      */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.info("setup roles...");
+		LOG.info("setup roles...");
 
 		executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`) VALUES ('AMI_ADMIN')");
 
@@ -460,7 +464,7 @@ public class RouterQuerier implements Querier
 		/* USERS                                                                                                      */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.info("setup users...");
+		LOG.info("setup users...");
 
 		/**/
 
@@ -512,7 +516,7 @@ public class RouterQuerier implements Querier
 		/* COMMANDS                                                                                                   */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.info("setup commands...");
+		LOG.info("setup commands...");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -581,7 +585,7 @@ public class RouterQuerier implements Querier
 		/* LOCALIZATION                                                                                               */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.info("setup localization...");
+		LOG.info("setup localization...");
 
 		LocalizationSingleton.importCSVToAMI(this);
 
@@ -589,7 +593,7 @@ public class RouterQuerier implements Querier
 		/* DONE                                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		LogSingleton.root.info("done");
+		LOG.info("done");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}

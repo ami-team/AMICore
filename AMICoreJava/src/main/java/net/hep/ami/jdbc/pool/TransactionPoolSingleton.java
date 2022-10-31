@@ -13,6 +13,10 @@ public class TransactionPoolSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(TransactionPoolSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private static final java.util.concurrent.atomic.AtomicLong s_lastId = new java.util.concurrent.atomic.AtomicLong(1);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -197,13 +201,13 @@ public class TransactionPoolSingleton
 		{
 			if(flag > 1)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with inconsistencies");
+				LOG.error(LogSingleton.FATAL, "broken transaction with inconsistencies");
 
 				throw new Exception("broken transaction with inconsistencies");
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
+				LOG.error(LogSingleton.FATAL, "broken transaction without inconsistency");
 
 				throw new Exception("broken transaction without inconsistency");
 			}
@@ -284,13 +288,13 @@ public class TransactionPoolSingleton
 		{
 			if(flag > 1)
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction with avoided inconsistencies");
+				LOG.error(LogSingleton.FATAL, "broken transaction with avoided inconsistencies");
 
 				throw new Exception("broken transaction with avoided inconsistencies");
 			}
 			else
 			{
-				LogSingleton.root.error(LogSingleton.FATAL, "broken transaction without inconsistency");
+				LOG.error(LogSingleton.FATAL, "broken transaction without inconsistency");
 
 				throw new Exception("broken transaction without inconsistency");
 			}
@@ -341,7 +345,7 @@ public class TransactionPoolSingleton
 
 		if(cnt > 0)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "{} broken transaction(s) without inconsistency", cnt);
+			LOG.error(LogSingleton.FATAL, "{} broken transaction(s) without inconsistency", cnt);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/

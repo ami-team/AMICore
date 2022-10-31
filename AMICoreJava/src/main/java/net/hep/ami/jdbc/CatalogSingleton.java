@@ -17,6 +17,10 @@ public class CatalogSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(CatalogSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -66,7 +70,7 @@ public class CatalogSingleton
 		}
 		catch(Exception e)
 		{
-			LogSingleton.root.error(LogSingleton.FATAL, "could not add catalogs", e);
+			LOG.error(LogSingleton.FATAL, "could not add catalogs", e);
 		}
 	}
 
@@ -111,7 +115,7 @@ public class CatalogSingleton
 				}
 				catch(Exception e)
 				{
-					LogSingleton.root.error(LogSingleton.FATAL, "for catalog `{}`", row.getValue(0), e);
+					LOG.error(LogSingleton.FATAL, "for catalog `{}`", row.getValue(0), e);
 				}
 			}
 
