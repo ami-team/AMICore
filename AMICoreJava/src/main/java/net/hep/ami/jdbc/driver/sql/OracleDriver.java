@@ -18,6 +18,7 @@ import org.jetbrains.annotations.*;
 	clazz = "oracle.jdbc.driver.OracleDriver",
 	flags = DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_SCHEMA | DriverMetadata.FLAG_HAS_DUAL
 )
+
 public class OracleDriver extends AbstractDriver
 {
 	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MariaDBDriver.class.getSimpleName());

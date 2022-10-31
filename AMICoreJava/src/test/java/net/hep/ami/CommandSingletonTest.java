@@ -9,10 +9,11 @@ public class CommandSingletonTest
 	{
 		try
 		{
-			System.out.println(ConfigSingleton.getConfigFileName());
+			ClassSingleton.reload();
 
-			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"SELECT * WHERE 1 = 1\" -limit=\"10\" -offset=\"0\"", false).replace(">", ">\n"));
+			//System.out.println(ConfigSingleton.getConfigFileName());
 
+			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"SELECT * WHERE 1 = 1\" -limit=\"10\" -offset=\"0\"", false).replace(">", ">\n"));
 		}
 		catch(Exception e)
 		{

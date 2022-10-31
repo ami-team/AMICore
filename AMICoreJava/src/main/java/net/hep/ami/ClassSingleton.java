@@ -182,9 +182,9 @@ public class ClassSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static Set<String> findClassNames(@NotNull String filter)
+	public static Set<String> findClassNames(@NotNull String prefix)
 	{
-		return s_classNames.stream().filter(x -> x.startsWith(filter)).collect(Collectors.toSet());
+		return s_classNames.stream().filter(x -> x.startsWith(prefix)).collect(Collectors.toSet());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

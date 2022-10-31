@@ -233,7 +233,7 @@ public class ConfigSingleton
 		s_properties.put("sudoer_pass", s_properties.get("admin_pass"));
 
 		s_properties.put("guest_user", "guest");
-		s_properties.put("guest_pass",  s_properties.get("admin_pass"));
+		s_properties.put("guest_pass", s_properties.get("admin_pass"));
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* CHECK CONFIG                                                                                               */
@@ -256,6 +256,15 @@ public class ConfigSingleton
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* READ DATABASE                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Class.forName("org.mariadb.jdbc.Driver");
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Class.forName("org.h2.Driver");
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Class.forName("org.postgresql.Driver");
+		Class.forName("org.sqlite.JDBC");
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try(Connection connection = DriverManager.getConnection(

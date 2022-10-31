@@ -18,6 +18,7 @@ import org.jetbrains.annotations.*;
 	clazz = "com.mysql.cj.jdbc.Driver",
 	flags = DriverMetadata.FLAG_BACKSLASH_ESCAPE | DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_DUAL
 )
+
 public class MySQLDriver extends AbstractDriver
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
