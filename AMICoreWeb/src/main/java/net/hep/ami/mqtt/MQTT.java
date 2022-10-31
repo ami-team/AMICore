@@ -1,5 +1,8 @@
 package net.hep.ami.mqtt;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.net.*;
 import java.util.*;
 import java.nio.charset.*;
@@ -20,7 +23,7 @@ public class MQTT implements MqttCallbackExtended
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final int PING_DELAY = ConfigSingleton.getProperty("ping_delay", 10);
+	private static final int PING_PERIOD = ConfigSingleton.getProperty("ping_period", 10);
 
 	private static final String MQTT_BROKER_URL = ConfigSingleton.getProperty("mqtt_broker_url", "");
 
@@ -145,16 +148,13 @@ public class MQTT implements MqttCallbackExtended
 
 				public void run()
 				{
-					publish("ami/server/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\"}",
-						getCurrentTime(),
-						Utility.escapeJSONString(m_serverName, false)
-					));
+					notifyServer();
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
 			};
 
-			m_timer.schedule(timerTask, 0, (long) PING_DELAY * 1000);
+			m_timer.schedule(timerTask, 0, (long) PING_PERIOD * 1000);
 		}
 		catch(Exception e)
 		{
@@ -221,6 +221,65 @@ public class MQTT implements MqttCallbackExtended
 	public void deliveryComplete(IMqttDeliveryToken token)
 	{
 		/* DO NOTHING  */
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private void notifyServer()
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		long memFree = 0;
+		long memTotal = 0;
+
+		File memFile = new File("/proc/meminfo");
+
+		if(memFile.exists())
+		{
+			try(BufferedReader bufferedReader = new BufferedReader(new FileReader(memFile)))
+			{
+				for(String line; (line = bufferedReader.readLine()) != null; )
+				{
+					String[] parts = line.split("[:\\s]+");
+
+					if(parts.length == 3)
+					{
+						/**/ if("MemAvailable".equalsIgnoreCase(parts[0])) {
+						memFree = Long.parseLong(parts[1]);
+					}
+					else if("MemTotal".equalsIgnoreCase(parts[0])) {
+						memTotal = Long.parseLong(parts[1]);
+					}
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		File diskFile = new File(MQTT.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+
+		long diskFree = diskFile.getFreeSpace() / 1024;
+		long diskTotal = diskFile.getTotalSpace() / 1024;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		publish("ami/server/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\", \"free_mem\": %d, \"total_mem\": %d, \"free_disk\": %d, \"total_disk\": %d, \"nb_of_cpus\": %d}",
+			getCurrentTime(),
+			Utility.escapeJSONString(m_serverName, false),
+			memFree,
+			memTotal,
+			diskFree,
+			diskTotal,
+			Runtime.getRuntime().availableProcessors()
+		));
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
