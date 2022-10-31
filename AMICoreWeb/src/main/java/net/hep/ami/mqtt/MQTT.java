@@ -23,7 +23,7 @@ public class MQTT implements MqttCallbackExtended
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final int PING_PERIOD = ConfigSingleton.getProperty("ping_period", 10);
+	private static final int PING_PERIOD = ConfigSingleton.getProperty("ping_period", 30);
 
 	private static final String MQTT_BROKER_URL = ConfigSingleton.getProperty("mqtt_broker_url", "");
 
