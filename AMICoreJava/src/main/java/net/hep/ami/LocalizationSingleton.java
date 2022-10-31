@@ -292,7 +292,7 @@ public class LocalizationSingleton
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		RowSet rowSet = querier.executeSQLQuery("router_locations", String.format(
-			"SELECT `L`.`continentCode`, `L`.`countryCode` FROM `%s` AS `B`, `router_locations` AS `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
+			"SELECT `L`.`continentCode`, `L`.`countryCode` FROM `%s` `B`, `router_locations` `L` WHERE %s BETWEEN `B`.`rangeBegin` AND `B`.`rangeEnd` AND `B`.`geoFK` = `L`.`id`",
 			_table,
 			_ip
 		));

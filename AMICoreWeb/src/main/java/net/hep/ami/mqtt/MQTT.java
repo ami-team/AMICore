@@ -76,12 +76,13 @@ public class MQTT implements MqttCallbackExtended
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(Empty.is(MQTT_BROKER_URL, Empty.STRING_NULL_EMPTY_BLANK)
-		   ||
-		   Empty.is(MQTT_JWT_ISSUER, Empty.STRING_NULL_EMPTY_BLANK)
-		   ||
-		   Empty.is(MQTT_JWT_SECRET, Empty.STRING_NULL_EMPTY_BLANK)
-		 ) {
+		boolean err1 = Empty.is(MQTT_BROKER_URL, Empty.STRING_NULL_EMPTY_BLANK);
+		boolean err2 = Empty.is(MQTT_JWT_ISSUER, Empty.STRING_NULL_EMPTY_BLANK);
+		boolean err3 = Empty.is(MQTT_JWT_SECRET, Empty.STRING_NULL_EMPTY_BLANK);
+
+		if(err1 || err2 || err3)
+		{
+		 	LogSingleton.root.warn("MQTT not configured, broker url: " + (err1 ? "error" : "okay") + ", jwt issuer: " + (err2 ? "error" : "okay") + ", jwt secret: " + (err3 ? "error" : "okay") );
 			return;
 		}
 
