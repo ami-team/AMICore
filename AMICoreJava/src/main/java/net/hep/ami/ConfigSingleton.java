@@ -5,7 +5,6 @@ import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
 
-import ch.qos.logback.classic.Logger;
 import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.utility.*;
@@ -17,7 +16,7 @@ public class ConfigSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final org.slf4j.Logger LOG = (Logger) org.slf4j.LoggerFactory.getLogger(ConfigSingleton.class.getSimpleName());
+	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ConfigSingleton.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
