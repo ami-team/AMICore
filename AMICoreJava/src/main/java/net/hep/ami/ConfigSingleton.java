@@ -1,6 +1,7 @@
 package net.hep.ami;
 
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 import java.util.regex.*;
 
@@ -84,7 +85,11 @@ public class ConfigSingleton
 
 	public static void reload()
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		s_properties.clear();
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
@@ -92,8 +97,27 @@ public class ConfigSingleton
 		}
 		catch(Exception e)
 		{
-			LOG.error(LogSingleton.FATAL, "could not read configuration", e);
+			LOG.error(LogSingleton.FATAL, "could not read configuration from config file", e);
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		try
+		{
+			readDataBase();
+		}
+		catch(Exception e)
+		{
+			LOG.error(LogSingleton.FATAL, "could not read configuration from database", e);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* RESET LOGGERS                                                                                              */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		LogSingleton.reset("WARN");
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -218,12 +242,6 @@ public class ConfigSingleton
 		checkValidAMIConfigFile();
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* RESET LOGGERS                                                                                              */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		LogSingleton.reset("WARN");
-
-		/*------------------------------------------------------------------------------------------------------------*/
 		/* SET ENCRYPTION KEY                                                                                         */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -234,54 +252,59 @@ public class ConfigSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void readDataBase() throws Exception
+	private static void readDataBase() throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* CREATE QUERIER                                                                                             */
+		/* READ DATABASE                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RouterQuerier querier = new RouterQuerier();
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		try
-		{
-			/*--------------------------------------------------------------------------------------------------------*/
-			/* EXECUTE QUERY                                                                                          */
+		try(Connection connection = DriverManager.getConnection(
+			ConfigSingleton.getProperty("router_url"),
+			ConfigSingleton.getProperty("router_user"),
+			ConfigSingleton.getProperty("router_pass")
+		)) {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet = querier.executeSQLQuery("router_config", "SELECT `paramName`, `paramValue` FROM `router_config`");
-
-			/*--------------------------------------------------------------------------------------------------------*/
-			/* ADD PROPERTIES                                                                                         */
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			String key;
-			String val;
-
-			for(Row row: rowSet.iterate())
+			try(Statement statement = connection.createStatement())
 			{
-				key = row.getValue(0);
-				val = row.getValue(1);
+				/*----------------------------------------------------------------------------------------------------*/
+				/* EXECUTE QUERY                                                                                      */
+				/*----------------------------------------------------------------------------------------------------*/
 
-				if(!s_reservedParams.contains(key))
+				try
 				{
-					s_properties.put(key, s_envVarPattern.matcher(val).replaceAll(m -> System.getProperty(m.group(1), "")));
+					statement.execute("SET sql_mode = 'ANSI'");
 				}
+				catch(SQLException e)
+				{
+					/* IGNORE */
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				ResultSet resultSet = statement.executeQuery("SELECT \"paramName\", \"paramValue\" FROM \"router_config\"");
+
+				/*----------------------------------------------------------------------------------------------------*/
+				/* ADD PROPERTIES                                                                                     */
+				/*----------------------------------------------------------------------------------------------------*/
+
+				String key;
+				String val;
+
+				while(resultSet.next())
+				{
+					key = SecuritySingleton.decrypt(resultSet.getString(1));
+					val = SecuritySingleton.decrypt(resultSet.getString(2));
+
+					if(!s_reservedParams.contains(key))
+					{
+						s_properties.put(key, s_envVarPattern.matcher(val).replaceAll(m -> System.getProperty(m.group(1), "")));
+					}
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
 		}
-		finally
-		{
-			querier.rollbackAndRelease();
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* RESET LOGGERS                                                                                              */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		LogSingleton.reset("WARN");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* SETUP OIDC AUTHENTICATION                                                                                  */

@@ -62,15 +62,6 @@ public class DriverSingleton
 
 		DriverSingleton.addDrivers();
 
-		try
-		{
-			ConfigSingleton.readDataBase();
-		}
-		catch(Exception e)
-		{
-			LOG.error(LogSingleton.FATAL, "could not read config", e);
-		}
-
 		CacheSingleton.reload();
 	}
 

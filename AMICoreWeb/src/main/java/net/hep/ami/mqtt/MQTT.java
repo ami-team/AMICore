@@ -20,47 +20,19 @@ public class MQTT implements MqttCallbackExtended
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final int PING_DELAY;
+	private static final int PING_DELAY = ConfigSingleton.getProperty("ping_delay", 10);
 
-	private static final String MQTT_BROKER_URL;
+	private static final String MQTT_BROKER_URL = ConfigSingleton.getProperty("mqtt_broker_url", "");
 
-	private static final String MQTT_JWT_ISSUER;
+	private static final String MQTT_JWT_ISSUER = ConfigSingleton.getProperty("mqtt_jwt_issuer", "");
 
-	private static final String MQTT_JWT_SECRET;
+	private static final String MQTT_JWT_SECRET = ConfigSingleton.getProperty("mqtt_jwt_secret", "");
 
-	private static final String MQTT_USERNAME;
+	private static final String MQTT_USERNAME = "cronjob";
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MQTT.class.getSimpleName());
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	static
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		try
-		{
-			ConfigSingleton.readDataBase();
-		}
-		catch(Exception e)
-		{
-			LOG.error(e.getMessage(), e);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		PING_DELAY = ConfigSingleton.getProperty("ping_delay", 10);
-
-		MQTT_BROKER_URL = ConfigSingleton.getProperty("mqtt_broker_url", "");
-
-		MQTT_JWT_ISSUER = ConfigSingleton.getProperty("mqtt_jwt_issuer", "");
-
-		MQTT_JWT_SECRET = ConfigSingleton.getProperty("mqtt_jwt_secret", "");
-
-		MQTT_USERNAME = "cronjob";
-	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -82,7 +54,8 @@ public class MQTT implements MqttCallbackExtended
 
 		if(err1 || err2 || err3)
 		{
-		 	LogSingleton.root.warn("MQTT not configured, broker url: " + (err1 ? "error" : "okay") + ", jwt issuer: " + (err2 ? "error" : "okay") + ", jwt secret: " + (err3 ? "error" : "okay") );
+			LOG.warn("MQTT not configured, broker url: " + (err1 ? "error" : "okay") + ", jwt issuer: " + (err2 ? "error" : "okay") + ", jwt secret: " + (err3 ? "error" : "okay") );
+
 			return;
 		}
 
