@@ -252,11 +252,11 @@ public class MQTT implements MqttCallbackExtended
 					if(parts.length == 3)
 					{
 						/**/ if("MemAvailable".equalsIgnoreCase(parts[0])) {
-						memFree = Long.parseLong(parts[1]);
-					}
-					else if("MemTotal".equalsIgnoreCase(parts[0])) {
-						memTotal = Long.parseLong(parts[1]);
-					}
+							memFree = Long.parseLong(parts[1]);
+						}
+						else if("MemTotal".equalsIgnoreCase(parts[0])) {
+							memTotal = Long.parseLong(parts[1]);
+						}
 					}
 				}
 			}
