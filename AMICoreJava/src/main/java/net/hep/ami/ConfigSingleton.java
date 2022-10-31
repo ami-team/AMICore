@@ -258,14 +258,18 @@ public class ConfigSingleton
 		/* READ DATABASE                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		/* BERK */
+
+		Class.forName("org.h2.Driver");
+		Class.forName("org.sqlite.JDBC");
+		Class.forName("org.postgresql.Driver");
 		Class.forName("org.mariadb.jdbc.Driver");
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		Class.forName("org.h2.Driver");
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Class.forName("org.postgresql.Driver");
-		Class.forName("org.sqlite.JDBC");
 
 		/*------------------------------------------------------------------------------------------------------------*/
+
+		DriverManager.setLoginTimeout(15);
 
 		try(Connection connection = DriverManager.getConnection(
 			ConfigSingleton.getProperty("router_url"),
@@ -375,6 +379,13 @@ public class ConfigSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		if(result == 1)
+		{
+			setProperty(name, value);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		return result;
 	}
 
@@ -382,7 +393,20 @@ public class ConfigSingleton
 
 	public static int removePropertyInDataBase(@NotNull Querier querier, @NotNull String name) throws Exception
 	{
-		return querier.executeSQLUpdate("router_config", "DELETE FROM `router_config` WHERE `paramName` = ?#0", name).getNbOfUpdatedRows();
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		final int result = querier.executeSQLUpdate("router_config", "DELETE FROM `router_config` WHERE `paramName` = ?#0", name).getNbOfUpdatedRows();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(result == 1)
+		{
+			removeProperty(name);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

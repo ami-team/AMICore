@@ -63,8 +63,6 @@ public class UpdateConfig extends AbstractCommand
 			{
 				if(Empty.is(value, Empty.STRING_AMI_NULL))
 				{
-					ConfigSingleton.removeProperty(name);
-
 					if(ConfigSingleton.removePropertyInDataBase(querier, name) > 0)
 					{
 						updatedParamNames.add(name);
@@ -72,8 +70,6 @@ public class UpdateConfig extends AbstractCommand
 				}
 				else
 				{
-					ConfigSingleton.setProperty(name, value);
-
 					if(ConfigSingleton.setPropertyInDataBase(querier, name, value, m_AMIUser) > 0)
 					{
 						updatedParamNames.add(name);
