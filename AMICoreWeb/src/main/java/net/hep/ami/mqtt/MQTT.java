@@ -140,6 +140,12 @@ public class MQTT implements MqttCallbackExtended
 
 	private void startScheduler()
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		this.notifyServer("STARTING");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		try
 		{
 			TimerTask timerTask = new TimerTask() {
@@ -148,18 +154,20 @@ public class MQTT implements MqttCallbackExtended
 
 				public void run()
 				{
-					notifyServer();
+					notifyServer("ALIVE");
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
 			};
 
-			m_timer.schedule(timerTask, 0, (long) PING_PERIOD * 1000);
+			m_timer.schedule(timerTask, (long) PING_PERIOD * 1000, (long) PING_PERIOD * 1000);
 		}
 		catch(Exception e)
 		{
 			LOG.error(e.getMessage(), e);
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -226,7 +234,7 @@ public class MQTT implements MqttCallbackExtended
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private void notifyServer()
+	private void notifyServer(String state)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -269,9 +277,10 @@ public class MQTT implements MqttCallbackExtended
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		publish("ami/server/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\", \"free_mem\": %d, \"total_mem\": %d, \"free_disk\": %d, \"total_disk\": %d, \"nb_of_cpus\": %d}",
+		publish("ami/server/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\", \"state\": \"%s\", \"free_mem\": %d, \"total_mem\": %d, \"free_disk\": %d, \"total_disk\": %d, \"nb_of_cpus\": %d}",
 			getCurrentTime(),
 			Utility.escapeJSONString(m_serverName, false),
+			state,
 			memFree,
 			memTotal,
 			diskFree,
