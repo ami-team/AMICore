@@ -45,6 +45,8 @@ public class ConnectionPoolSingleton
 
 		if(!ConfigSingleton.getProperty("pool_enabled", true) || !ConfigSingleton.getSystemProperty("ami.pool.enabled", true))
 		{
+			DriverManager.setLoginTimeout(15);
+
 			return DriverManager.getConnection(jdbcUrl, user, pass);
 		}
 
