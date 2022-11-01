@@ -42,7 +42,8 @@ public class ClassSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String path = ClassSingleton.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		//String path = ClassSingleton.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		String path = Objects.requireNonNull(ClassSingleton.class.getResource("/net/hep/ami/ClassSingleton.class")).getPath();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
