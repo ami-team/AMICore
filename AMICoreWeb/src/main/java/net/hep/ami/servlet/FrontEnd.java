@@ -53,6 +53,22 @@ public class FrontEnd extends HttpServlet
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
+	protected void doOptions(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	{
+		super.doOptions(req, res);
+
+		String origin = req.getHeader("Origin");
+
+		if(origin != null)
+		{
+			res.setHeader("Access-Control-Allow-Credentials", "true");
+			res.setHeader("Access-Control-Allow-Origin", origin);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
 	protected void doGet(@NotNull HttpServletRequest req, @NotNull HttpServletResponse res)
 	{
 		doCommand(req, res);
