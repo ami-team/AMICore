@@ -246,6 +246,9 @@ public class GetUserInfo extends AbstractCommand
 		map.put("commitIdAbbrev", commitIdAbbrev);
 		map.put("remoteOriginURL", remoteOriginURL);
 
+		map.put("mqttBrokerEndpoint", ConfigSingleton.getProperty("mqtt_broker_endpoint", ""));
+		map.put("amiPipelineEndpoint", ConfigSingleton.getProperty("ami_pipeline_endpoint", ""));
+
 		map.put("privacyPolicyURL", ConfigSingleton.getProperty("privacy_policy_url", ""));
 
 		map.put("ssoLabel", ConfigSingleton.getProperty("sso_label", "SSO"));
@@ -259,8 +262,6 @@ public class GetUserInfo extends AbstractCommand
 		map.put("timePrecision", ConfigSingleton.getProperty("time_precision", 6));
 		map.put("timeHMSFormat", ConfigSingleton.getProperty("time_hms_format", "HH:mm:ss"));
 		map.put("timeHMFormat", ConfigSingleton.getProperty("time_hm_format", "HH:mm"));
-
-		map.put("nodeRedURL", ConfigSingleton.getProperty("node_red_url", ""));
 
 		String config = Base64.getUrlEncoder().encodeToString(new ObjectMapper().writeValueAsBytes(map));
 
