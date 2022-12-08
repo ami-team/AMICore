@@ -1,5 +1,7 @@
 package net.hep.ami;
 
+import lombok.*;
+
 import java.util.*;
 import java.lang.reflect.*;
 
@@ -16,15 +18,27 @@ public class LogSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final Map<String, AppenderBase<ILoggingEvent>> s_logAppenders = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+	private static final org.slf4j.Logger LOG = getLogger(LogSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	private static final class LogAppenderDescr
+	{
+		@NotNull private final String name;
+		@NotNull private final String help;
+		@NotNull private final AppenderBase<ILoggingEvent> instance;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final Map<String, LogAppenderDescr> s_logAppenders = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final org.slf4j.Marker FATAL = org.slf4j.MarkerFactory.getMarker("FATAL");
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	private static final org.slf4j.Logger LOG = getLogger(LogSingleton.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -93,36 +107,40 @@ public class LogSingleton
 
 		if(ClassSingleton.extendsClass(clazz, AbstractLogAppender.class))
 		{
-			s_logAppenders.put(className, new AppenderBase<>() {
+			s_logAppenders.put(className, new LogAppenderDescr(
+				className,
+				clazz.getMethod("help").invoke(null).toString(),
+				new AppenderBase<>() {
 
-				/*----------------------------------------------------------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
-				private final AbstractLogAppender m_logAppender = (AbstractLogAppender) clazz.getConstructor().newInstance();
+					private final AbstractLogAppender m_logAppender = (AbstractLogAppender) clazz.getConstructor().newInstance();
 
-				/*----------------------------------------------------------------------------------------------------*/
+					/*------------------------------------------------------------------------------------------------*/
 
-				@Override
-				protected void append(ILoggingEvent event)
-				{
-					try {
-						m_logAppender.append(
-							event.getLoggerName(),
-							event.getLevel().toString(),
-							event.getMarker().getName(),
-							event.getTimeStamp(),
-							event.getThreadName(),
-							event.getFormattedMessage(),
-							event./**/getCallerData/**/()
-						);
-					}
-					catch(Exception e)
+					@Override
+					protected void append(ILoggingEvent event)
 					{
-						LOG.error(e.getMessage(), e);
+						try {
+							m_logAppender.append(
+								event.getLoggerName(),
+								event.getLevel().toString(),
+								event.getMarker().getName(),
+								event.getTimeStamp(),
+								event.getThreadName(),
+								event.getFormattedMessage(),
+								event./**/getCallerData/**/()
+							);
+						}
+						catch(Exception e)
+						{
+							LOG.error(e.getMessage(), e);
+						}
 					}
-				}
 
-				/*----------------------------------------------------------------------------------------------------*/
-			});
+					/*------------------------------------------------------------------------------------------------*/
+				}
+			));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -162,11 +180,11 @@ public class LogSingleton
 			{
 				/*----------------------------------------------------------------------------------------------------*/
 
-				for(Map.Entry<String, AppenderBase<ILoggingEvent>> entry: s_logAppenders.entrySet())
+				for(LogAppenderDescr logAppenderDescr: s_logAppenders.values())
 				{
-					if(logger.getAppender(entry.getKey()) == null)
+					if(logger.getAppender(logAppenderDescr.getName()) == null)
 					{
-						logger.addAppender(entry.getValue());
+						logger.addAppender(logAppenderDescr.getInstance());
 					}
 				}
 
@@ -204,11 +222,11 @@ public class LogSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		for(Map.Entry<String, AppenderBase<ILoggingEvent>> entry: s_logAppenders.entrySet())
+		for(LogAppenderDescr logAppenderDescr: s_logAppenders.values())
 		{
-			if(result.getAppender(entry.getKey()) == null)
+			if(result.getAppender(logAppenderDescr.getName()) == null)
 			{
-				result.addAppender(entry.getValue());
+				result.addAppender(logAppenderDescr.getInstance());
 			}
 		}
 
@@ -233,10 +251,11 @@ public class LogSingleton
 
 		result.append("<rowset type=\"appenders\">");
 
-		for(String name: s_logAppenders.keySet())
+		for(LogAppenderDescr logAppenderDescr: s_logAppenders.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"name\"><![CDATA[").append(name).append("]]></field>")
+			      .append("<field name=\"class\"><![CDATA[").append(logAppenderDescr.getName()).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(logAppenderDescr.getHelp()).append("]]></field>")
 			      .append("</row>")
 			;
 		}
