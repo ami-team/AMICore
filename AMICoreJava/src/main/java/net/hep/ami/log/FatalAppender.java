@@ -27,4 +27,13 @@ public class FatalAppender extends AbstractLogAppender
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	@Contract(pure = true)
+	public static String help()
+	{
+		return "Send an email if the `net.hep.ami.LogSingleton.FATAL` marker is used";
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 }

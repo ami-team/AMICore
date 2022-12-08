@@ -86,7 +86,7 @@ public class LogSingleton
 	private static void addLogAppender(@NotNull String className) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* GET AMI LOG APPENDER                                                                                       */
+		/* GET LOG APPENDER                                                                                           */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(s_logAppenders.containsKey(className))
@@ -121,7 +121,8 @@ public class LogSingleton
 					@Override
 					protected void append(ILoggingEvent event)
 					{
-						try {
+						try
+						{
 							m_logAppender.append(
 								event.getLoggerName(),
 								event.getLevel().toString(),
