@@ -1,15 +1,23 @@
 package net.hep.ami;
 
-import java.io.*;
+import java.util.*;
+import java.lang.reflect.*;
 
 import ch.qos.logback.core.*;
 import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.spi.*;
 
+import net.hep.ami.log.*;
+import net.hep.ami.utility.*;
+
 import org.jetbrains.annotations.*;
 
 public class LogSingleton
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final Map<String, AppenderBase<ILoggingEvent>> s_logAppenders = new AMIMap<>(AMIMap.Type.HASH_MAP, true, false);
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static final org.slf4j.Marker FATAL = org.slf4j.MarkerFactory.getMarker("FATAL");
@@ -25,39 +33,34 @@ public class LogSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static final class FatalAppender extends AppenderBase<ILoggingEvent>
+	public static void reset(@NotNull String defaultLogLevel)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		@Override
-		protected void append(@NotNull ILoggingEvent event)
+		addLogAppenders();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		setupLoggers(defaultLogLevel);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static void addLogAppenders()
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		for(String className: ClassSingleton.findClassNames("net.hep.ami.log"))
 		{
-			if(FATAL.equals(event.getMarker()))
+			try
 			{
-				String title = "AMI FATAL ERROR - " + event.getLoggerName() + " :: " + event.getCallerData()[0].getClassName()
-				                                                            + " :: " + event.getCallerData()[0].getMethodName()
-				;
-
-				String message = event.getFormattedMessage();
-
-				try
-				{
-					MailSingleton.sendMessage(
-						ConfigSingleton.getProperty("admin_email"),
-						ConfigSingleton.getProperty("log_to"),
-						ConfigSingleton.getProperty("log_cc"),
-						title, title + "\n\n" + message
-					);
-				}
-				catch(Exception e)
-				{
-					StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw);
-
-					e.printStackTrace(pw);
-
-					LOG.error("could not send emails: {}", sw, e);
-				}
+				addLogAppender(className);
+			}
+			catch(Exception e)
+			{
+				LOG.error(LogSingleton.FATAL, "for log appender `{}`", className, e);
 			}
 		}
 
@@ -66,7 +69,68 @@ public class LogSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static void reset(@NotNull String defaultLogLevel)
+	private static void addLogAppender(@NotNull String className) throws Exception
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* GET AMI LOG APPENDER                                                                                       */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(s_logAppenders.containsKey(className))
+		{
+			return;
+		}
+
+		Class<?> clazz = ClassSingleton.forName(className);
+
+		if((clazz.getModifiers() & Modifier.ABSTRACT) != 0x00)
+		{
+			return;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* ADD LOGBACK LOG APPENDER                                                                                   */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(ClassSingleton.extendsClass(clazz, AbstractLogAppender.class))
+		{
+			s_logAppenders.put(className, new AppenderBase<>() {
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				private final AbstractLogAppender m_logAppender = (AbstractLogAppender) clazz.getConstructor().newInstance();
+
+				/*----------------------------------------------------------------------------------------------------*/
+
+				@Override
+				protected void append(ILoggingEvent event)
+				{
+					try {
+						m_logAppender.append(
+							event.getLoggerName(),
+							event.getLevel().toString(),
+							event.getMarker().getName(),
+							event.getTimeStamp(),
+							event.getThreadName(),
+							event.getFormattedMessage(),
+							event./**/getCallerData/**/()
+						);
+					}
+					catch(Exception e)
+					{
+						LOG.error(e.getMessage(), e);
+					}
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+			});
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static void setupLoggers(@NotNull String defaultLogLevel)
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -94,8 +158,23 @@ public class LogSingleton
 			else if(name.contains("memcached")) {
 				logger.setLevel(devMode ? Level.DEBUG : Level.OFF);
 			}
-			else {
+			else
+			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				for(Map.Entry<String, AppenderBase<ILoggingEvent>> entry: s_logAppenders.entrySet())
+				{
+					if(logger.getAppender(entry.getKey()) == null)
+					{
+						logger.addAppender(entry.getValue());
+					}
+				}
+
+				/*----------------------------------------------------------------------------------------------------*/
+
 				logger.setLevel(level);
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 		}
 
@@ -123,9 +202,46 @@ public class LogSingleton
 
 		Logger result = (Logger) org.slf4j.LoggerFactory.getLogger(name);
 
-		result.setLevel(
-			level
-		);
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		for(Map.Entry<String, AppenderBase<ILoggingEvent>> entry: s_logAppenders.entrySet())
+		{
+			if(result.getAppender(entry.getKey()) == null)
+			{
+				result.addAppender(entry.getValue());
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.setLevel(level);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return result;
+	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	public static StringBuilder listLogAppenders()
+	{
+		StringBuilder result = new StringBuilder();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"appenders\">");
+
+		for(String name: s_logAppenders.keySet())
+		{
+			result.append("<row>")
+			      .append("<field name=\"name\"><![CDATA[").append(name).append("]]></field>")
+			      .append("</row>")
+			;
+		}
+
+		result.append("</rowset>");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

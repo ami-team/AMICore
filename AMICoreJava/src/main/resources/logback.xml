@@ -6,8 +6,6 @@
 
 	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 
-	<appender name="AMIFATAL" class="net.hep.ami.LogSingleton$FatalAppender" />
-
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %m %throwable{2}%n</pattern>
@@ -38,7 +36,7 @@
 		<appender-ref ref="FILE" />
 	</root>
 
-	<logger name="com.zaxxer.hikari" level="DEBUG">
+	<logger name="com.zaxxer.hikari" level="OFF">
 	</logger>
 
 	<logger name="net.spy.memcached" level="OFF">
