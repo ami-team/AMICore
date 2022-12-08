@@ -102,7 +102,7 @@ public class LogSingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* ADD LOGBACK LOG APPENDER                                                                                   */
+		/* ADD LOGBACK APPENDER                                                                                       */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		if(ClassSingleton.extendsClass(clazz, AbstractLogAppender.class))
