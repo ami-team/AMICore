@@ -109,7 +109,7 @@ public class LogSingleton
 		{
 			s_logAppenders.put(className, new LogAppenderDescr(
 				className,
-				"",//clazz.getMethod("help").invoke(null).toString(),
+				clazz.getMethod("help").invoke(null).toString(),
 				new AppenderBase<>() {
 
 					/*------------------------------------------------------------------------------------------------*/
