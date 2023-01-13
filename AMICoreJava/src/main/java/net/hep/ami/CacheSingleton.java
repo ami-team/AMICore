@@ -107,6 +107,23 @@ public class CacheSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public static void delete(@NotNull String key)
+	{
+		if(s_memcachedClient != null)
+		{
+			try
+			{
+				s_memcachedClient.delete(key);
+			}
+			catch(Exception e)
+			{
+				LOG.error(e.getMessage(), e);
+			}
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public static void flush()
 	{
 		if(s_memcachedClient != null)
