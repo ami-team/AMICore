@@ -142,7 +142,7 @@ public class MailSingleton
 		}
 		catch(RuntimeException e)
 		{
-			throw new Exception(e);
+			throw new Exception("error sending email");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
