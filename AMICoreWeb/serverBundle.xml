@@ -12,25 +12,6 @@
 
 	<baseDirectory>${artifactId}</baseDirectory>
 
-	<dependencySets>
-		<!-- ******************************************************************************************************* -->
-
-		<dependencySet>
-			<outputDirectory>webapps</outputDirectory>
-			<outputFileNameMapping>AMI.${artifact.extension}</outputFileNameMapping>
-			<useProjectArtifact>true</useProjectArtifact>
-		</dependencySet>
-
-		<!-- ******************************************************************************************************* -->
-
-		<dependencySet>
-			<outputDirectory>webapps</outputDirectory>
-
-		</dependencySet>
-
-		<!-- ******************************************************************************************************* -->
-	</dependencySets>
-
 	<fileSets>
 		<!-- ******************************************************************************************************* -->
 
