@@ -21,6 +21,10 @@
 	<description>AMI Web core</description>
 	<url>https://www.cern.ch/ami/</url>
 
+	<properties>
+		<version.tomcat>10.1.5</version.tomcat>
+	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<!--*****************************************************************************************************-->
@@ -36,7 +40,6 @@
 			<!--*****************************************************************************************************-->
 		</dependencies>
 	</dependencyManagement>
-
 
 	<dependencies>
 		<!--*********************************************************************************************************-->
@@ -128,7 +131,7 @@
 								<artifactItem>
 									<groupId>org.apache.tomcat</groupId>
 									<artifactId>tomcat</artifactId>
-									<version>10.1.5</version>
+									<version>${version.tomcat}</version>
 									<type>zip</type>
 									<outputDirectory>${java.io.tmpdir}</outputDirectory>
 								</artifactItem>
