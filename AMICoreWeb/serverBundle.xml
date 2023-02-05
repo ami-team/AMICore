@@ -16,18 +16,97 @@
 		<!-- ******************************************************************************************************* -->
 
 		<fileSet>
-			<directory>${project.basedir}</directory>
-			<outputDirectory></outputDirectory>
+			<directory>${project.basedir}/src/main/scripts</directory>
+			<outputDirectory>bin</outputDirectory>
+			<fileMode>755</fileMode>
 			<includes>
-				<include>LICENSE</include>
+				<include>*.sh</include>
 			</includes>
 		</fileSet>
 
 		<!-- ******************************************************************************************************* -->
 
+		<fileSet>
+			<directory>${project.build.directory}/tomcat/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>setclasspath.sh</include>
+				<include>bootstrap.jar</include>
+				<include>tomcat-juli.jar</include>
+			</includes>
+		</fileSet>
 
+		<!-- ******************************************************************************************************* -->
+
+		<fileSet>
+			<directory>${project.build.directory}/tomcat/conf</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>catalina.policy</include>
+				<include>catalina.properties</include>
+				<include>context.xml</include>
+				<include>logging.properties</include>
+				<include>web.xml</include>
+			</includes>
+		</fileSet>
+
+		<!-- ******************************************************************************************************* -->
+
+		<fileSet>
+			<directory>${project.build.directory}/tomcat/lib</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+			<excludes>
+				<exclude>jsp-qpi.jar</exclude>
+				<exclude>tomcat-i18n*.jar</exclude>
+			</excludes>
+		</fileSet>
+
+		<!-- ******************************************************************************************************* -->
+
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>logs</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
+
+		<!-- ******************************************************************************************************* -->
+
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>temp</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
 
 		<!-- ******************************************************************************************************* -->
 	</fileSets>
+
+	<files>
+		<!-- ******************************************************************************************************* -->
+
+		<file>
+			<source>${project.build.directory}/tomcat/bin/catalina.sh</source>
+			<outputDirectory>bin</outputDirectory>
+			<fileMode>755</fileMode>
+			<destName>ami.sh</destName>
+		</file>
+
+		<!-- ******************************************************************************************************* -->
+
+		<file>
+			<source>${project.build.directory}/${project.artifactId}-${project.version}.war</source>
+			<outputDirectory>webapps</outputDirectory>
+			<fileMode>644</fileMode>
+			<destName>AMI.war</destName>
+		</file>
+
+		<!-- ******************************************************************************************************* -->
+	</files>
 
 </assembly>
