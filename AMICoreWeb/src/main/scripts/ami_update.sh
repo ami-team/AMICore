@@ -57,7 +57,7 @@ function _err()
 
 _box "Stopping AMI"
 
-${AMI_HOME}/bin/ami.sh stop &> /dev/null
+"${AMI_HOME}/bin/ami.sh" stop &> /dev/null
 
 _ok
 
@@ -84,7 +84,7 @@ _box "Starting AMI"
 
 (
 
-  ${AMI_HOME}/bin/ami.sh start
+  "${AMI_HOME}/bin/ami.sh" start
 
   _ok
 

@@ -243,7 +243,7 @@
 	</dependencies>
 
 	<modules>
-		<module>AMICoreJava</module>
+		<module>AMICoreLib</module>
 		<module>AMICoreWeb</module>
 	</modules>
 
