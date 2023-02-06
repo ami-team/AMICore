@@ -240,7 +240,7 @@ _box "Creating '\${AMI_HOME}/conf/server.xml'"
   <Service name="Catalina">
 
     <!--*************************************************************************************************************-->
-    <!--
+
     <Connector port="${TOMCAT_HTTPS_PORT}"
                protocol="org.apache.coyote.http11.Http11Nio2Protocol"
                connectionTimeout="20000"
@@ -252,16 +252,16 @@ _box "Creating '\${AMI_HOME}/conf/server.xml'"
                secure="true">
 
         <SSLHostConfig certificateVerification="optional"
-                       truststoreFile="\${catalina.home}/conf/truststore.jks"
+                       truststoreFile="\${catalina.home}/certs/ami.jks"
                        truststorePassword="changeit">
 
-            <Certificate certificateKeystoreFile="\${catalina.home}/conf/certificate.jks"
+            <Certificate certificateKeystoreFile="\${catalina.home}/certs/ami.jks"
                          certificateKeystorePassword="changeit" />
 
         </SSLHostConfig>
 
     </Connector>
-    -->
+
     <!--*************************************************************************************************************-->
 
     <Connector port="${TOMCAT_HTTP_PORT}"
@@ -337,7 +337,7 @@ EOF
 ########################################################################################################################
 ########################################################################################################################
 
-_line
+"${AMI_HOME}/bin/ami_update.sh"
 
 ########################################################################################################################
 ########################################################################################################################
