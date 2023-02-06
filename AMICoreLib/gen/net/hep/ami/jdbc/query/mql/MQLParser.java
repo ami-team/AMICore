@@ -1,4 +1,4 @@
-// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/jdbc/query/mql/MQL.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package net.hep.ami.jdbc.query.mql;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class MQLParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -99,7 +99,7 @@ public class MQLParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "MQL.g4"; }
+	public String getGrammarFileName() { return "java-escape"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -115,6 +115,7 @@ public class MQLParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class MqlQueryContext extends ParserRuleContext {
 		public SelectStatementContext m_select;
 		public InsertStatementContext m_insert;
@@ -216,6 +217,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class SelectStatementContext extends ParserRuleContext {
 		public Token m_distinct;
 		public ColumnListContext m_columns;
@@ -377,6 +379,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class InsertStatementContext extends ParserRuleContext {
 		public QIdTupleContext m_qIds;
 		public ExpressionTupleContext m_expressions;
@@ -421,6 +424,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class UpdateStatementContext extends ParserRuleContext {
 		public QIdTupleContext m_qIds;
 		public ExpressionTupleContext m_expressions;
@@ -483,6 +487,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class DeleteStatementContext extends ParserRuleContext {
 		public ExpressionOrContext m_expression;
 		public TerminalNode DELETE() { return getToken(MQLParser.DELETE, 0); }
@@ -530,6 +535,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ColumnListContext extends ParserRuleContext {
 		public AColumnContext aColumn;
 		public List<AColumnContext> m_columns = new ArrayList<AColumnContext>();
@@ -585,6 +591,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class AColumnContext extends ParserRuleContext {
 		public ExpressionOrContext m_expression;
 		public Token m_alias;
@@ -633,6 +640,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class QIdListContext extends ParserRuleContext {
 		public AQIdContext aQId;
 		public List<AQIdContext> m_aQIds = new ArrayList<AQIdContext>();
@@ -688,6 +696,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class AQIdContext extends ParserRuleContext {
 		public QIdContext m_qId;
 		public QIdContext qId() {
@@ -720,6 +729,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionTupleContext extends ParserRuleContext {
 		public ExpressionOrContext expressionOr;
 		public List<ExpressionOrContext> m_expressions = new ArrayList<ExpressionOrContext>();
@@ -779,6 +789,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class QIdTupleContext extends ParserRuleContext {
 		public QIdContext qId;
 		public List<QIdContext> m_qIds = new ArrayList<QIdContext>();
@@ -838,6 +849,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class LiteralTupleContext extends ParserRuleContext {
 		public LiteralContext literal;
 		public List<LiteralContext> m_literals = new ArrayList<LiteralContext>();
@@ -897,6 +909,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionOrContext extends ParserRuleContext {
 		public List<ExpressionXorContext> expressionXor() {
 			return getRuleContexts(ExpressionXorContext.class);
@@ -952,6 +965,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionXorContext extends ParserRuleContext {
 		public List<ExpressionAndContext> expressionAnd() {
 			return getRuleContexts(ExpressionAndContext.class);
@@ -1007,6 +1021,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionAndContext extends ParserRuleContext {
 		public List<ExpressionNotContext> expressionNot() {
 			return getRuleContexts(ExpressionNotContext.class);
@@ -1062,6 +1077,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionNotContext extends ParserRuleContext {
 		public ExpressionCompContext expressionComp() {
 			return getRuleContext(ExpressionCompContext.class,0);
@@ -1112,6 +1128,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionCompContext extends ParserRuleContext {
 		public List<ExpressionAddSubContext> expressionAddSub() {
 			return getRuleContexts(ExpressionAddSubContext.class);
@@ -1266,6 +1283,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionAddSubContext extends ParserRuleContext {
 		public List<ExpressionMulDivContext> expressionMulDiv() {
 			return getRuleContexts(ExpressionMulDivContext.class);
@@ -1333,6 +1351,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionMulDivContext extends ParserRuleContext {
 		public List<ExpressionPlusMinusContext> expressionPlusMinus() {
 			return getRuleContexts(ExpressionPlusMinusContext.class);
@@ -1370,12 +1389,12 @@ public class MQLParser extends Parser {
 			setState(237);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MUL) | (1L << DIV) | (1L << MOD))) != 0)) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 7696581394432L) != 0) {
 				{
 				{
 				setState(233);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MUL) | (1L << DIV) | (1L << MOD))) != 0)) ) {
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 7696581394432L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -1404,6 +1423,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionPlusMinusContext extends ParserRuleContext {
 		public Token m_operator;
 		public ExpressionXContext expressionX() {
@@ -1458,6 +1478,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionXContext extends ParserRuleContext {
 		public ExpressionXContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1469,6 +1490,7 @@ public class MQLParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionStdGroupContext extends ExpressionXContext {
 		public ExpressionOrContext m_expression;
 		public ExpressionOrContext expressionOr() {
@@ -1476,6 +1498,7 @@ public class MQLParser extends Parser {
 		}
 		public ExpressionStdGroupContext(ExpressionXContext ctx) { copyFrom(ctx); }
 	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionFunctionContext extends ExpressionXContext {
 		public FunctionContext m_function;
 		public FunctionContext function() {
@@ -1483,6 +1506,7 @@ public class MQLParser extends Parser {
 		}
 		public ExpressionFunctionContext(ExpressionXContext ctx) { copyFrom(ctx); }
 	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionIsoGroupContext extends ExpressionXContext {
 		public ExpressionOrContext m_expression;
 		public ExpressionOrContext expressionOr() {
@@ -1490,6 +1514,7 @@ public class MQLParser extends Parser {
 		}
 		public ExpressionIsoGroupContext(ExpressionXContext ctx) { copyFrom(ctx); }
 	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionQIdContext extends ExpressionXContext {
 		public QIdContext m_qId;
 		public QIdContext qId() {
@@ -1497,6 +1522,7 @@ public class MQLParser extends Parser {
 		}
 		public ExpressionQIdContext(ExpressionXContext ctx) { copyFrom(ctx); }
 	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionLiteralContext extends ExpressionXContext {
 		public LiteralContext m_literal;
 		public LiteralContext literal() {
@@ -1581,6 +1607,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class FunctionContext extends ParserRuleContext {
 		public Token m_functionName;
 		public Token m_distinct;
@@ -1656,6 +1683,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class QIdContext extends ParserRuleContext {
 		public BasicQIdContext m_basicQId;
 		public ConstraintQIdContext constraintQId;
@@ -1737,6 +1765,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ConstraintQIdContext extends ParserRuleContext {
 		public Token m_op;
 		public QIdContext m_qId;
@@ -1781,6 +1810,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class BasicQIdContext extends ParserRuleContext {
 		public Token ID;
 		public List<Token> m_ids = new ArrayList<Token>();
@@ -1812,7 +1842,7 @@ public class MQLParser extends Parser {
 			setState(292);
 			((BasicQIdContext)_localctx)._tset731 = _input.LT(1);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << MUL) | (1L << ID))) != 0)) ) {
+			if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 564049465051136L) != 0) ) {
 				((BasicQIdContext)_localctx)._tset731 = (Token)_errHandler.recoverInline(this);
 			}
 			else {
@@ -1832,7 +1862,7 @@ public class MQLParser extends Parser {
 				setState(294);
 				((BasicQIdContext)_localctx)._tset744 = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << MUL) | (1L << ID))) != 0)) ) {
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 564049465051136L) != 0) ) {
 					((BasicQIdContext)_localctx)._tset744 = (Token)_errHandler.recoverInline(this);
 				}
 				else {
@@ -1860,6 +1890,7 @@ public class MQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class LiteralContext extends ParserRuleContext {
 		public TerminalNode NULL() { return getToken(MQLParser.NULL, 0); }
 		public TerminalNode CURRENT_TIMESTAMP() { return getToken(MQLParser.CURRENT_TIMESTAMP, 0); }
@@ -1881,7 +1912,7 @@ public class MQLParser extends Parser {
 			{
 			setState(300);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NULL) | (1L << CURRENT_TIMESTAMP) | (1L << STRING) | (1L << PARAMETER) | (1L << NUMBER))) != 0)) ) {
+			if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 545357767376896L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {

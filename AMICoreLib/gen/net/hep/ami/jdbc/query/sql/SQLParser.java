@@ -1,4 +1,4 @@
-// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/jdbc/query/sql/SQL.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package net.hep.ami.jdbc.query.sql;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class SQLParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -72,7 +72,7 @@ public class SQLParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "SQL.g4"; }
+	public String getGrammarFileName() { return "java-escape"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -88,6 +88,7 @@ public class SQLParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class QueryContext extends ParserRuleContext {
 		public List<String> tokens;
 		public TokenContext token;
@@ -114,7 +115,7 @@ public class SQLParser extends Parser {
 			setState(9);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SPACES) | (1L << SPECIAL) | (1L << STRING) | (1L << PARAMETER) | (1L << OTHERS))) != 0)) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 62L) != 0) {
 				{
 				{
 				setState(4);
@@ -139,6 +140,7 @@ public class SQLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class TokenContext extends ParserRuleContext {
 		public String v;
 		public Token SPACES;

@@ -1,4 +1,4 @@
-// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/utility/parser/JSON.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package net.hep.ami.utility.parser;
 
 	import java.util.*;
@@ -12,9 +12,9 @@ import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class JSONLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =

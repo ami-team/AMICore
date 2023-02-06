@@ -1,4 +1,4 @@
-// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/jdbc/query/mql/QId.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package net.hep.ami.jdbc.query.mql;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class QIdParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -74,7 +74,7 @@ public class QIdParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "QId.g4"; }
+	public String getGrammarFileName() { return "java-escape"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -90,6 +90,7 @@ public class QIdParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class QIdContext extends ParserRuleContext {
 		public BasicQIdContext m_basicQId;
 		public ConstraintQIdContext constraintQId;
@@ -171,6 +172,7 @@ public class QIdParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ConstraintQIdContext extends ParserRuleContext {
 		public Token m_op;
 		public QIdContext m_qId;
@@ -215,6 +217,7 @@ public class QIdParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class BasicQIdContext extends ParserRuleContext {
 		public Token ID;
 		public List<Token> m_ids = new ArrayList<Token>();
@@ -242,7 +245,7 @@ public class QIdParser extends Parser {
 			setState(25);
 			((BasicQIdContext)_localctx)._tset87 = _input.LT(1);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << ID))) != 0)) ) {
+			if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 704L) != 0) ) {
 				((BasicQIdContext)_localctx)._tset87 = (Token)_errHandler.recoverInline(this);
 			}
 			else {
@@ -262,7 +265,7 @@ public class QIdParser extends Parser {
 				setState(27);
 				((BasicQIdContext)_localctx)._tset100 = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << ID))) != 0)) ) {
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 704L) != 0) ) {
 					((BasicQIdContext)_localctx)._tset100 = (Token)_errHandler.recoverInline(this);
 				}
 				else {

@@ -1,4 +1,4 @@
-// Generated from /Users/jodier/IdeaProjects/AMICore/AMICoreJava/src/main/antlr4/net/hep/ami/utility/parser/JSON.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package net.hep.ami.utility.parser;
 
 	import java.util.*;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class JSONParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -80,7 +80,7 @@ public class JSONParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "JSON.g4"; }
+	public String getGrammarFileName() { return "java-escape"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -112,6 +112,7 @@ public class JSONParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class FileContext extends ParserRuleContext {
 		public Object v;
 		public ValueContext value;
@@ -149,6 +150,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ValueContext extends ParserRuleContext {
 		public Object v;
 		public ObjectContext object;
@@ -219,6 +221,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ObjectContext extends ParserRuleContext {
 		public Map<String, Object> v;
 		public PairContext pair;
@@ -294,6 +297,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ArrayContext extends ParserRuleContext {
 		public List<Object> v;
 		public ValueContext value;
@@ -369,6 +373,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class PairContext extends ParserRuleContext {
 		public Pair v;
 		public Token x;
@@ -409,6 +414,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class TermContext extends ParserRuleContext {
 		public Object v;
 		public Token STRING;
