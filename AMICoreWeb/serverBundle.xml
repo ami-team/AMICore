@@ -30,8 +30,8 @@
 			<directory>${project.build.directory}/tomcat/bin</directory>
 			<outputDirectory>bin</outputDirectory>
 			<includes>
-				<include>setclasspath.sh</include>
 				<include>bootstrap.jar</include>
+				<include>setclasspath.sh</include>
 				<include>tomcat-juli.jar</include>
 			</includes>
 		</fileSet>
@@ -58,10 +58,6 @@
 			<includes>
 				<include>*.jar</include>
 			</includes>
-			<excludes>
-				<exclude>jsp-api.jar</exclude>
-				<exclude>tomcat-i18n*.jar</exclude>
-			</excludes>
 		</fileSet>
 
 		<!-- ******************************************************************************************************* -->
