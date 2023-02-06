@@ -59,7 +59,7 @@
 				<include>*.jar</include>
 			</includes>
 			<excludes>
-				<exclude>jsp-qpi.jar</exclude>
+				<exclude>jsp-api.jar</exclude>
 				<exclude>tomcat-i18n*.jar</exclude>
 			</excludes>
 		</fileSet>
