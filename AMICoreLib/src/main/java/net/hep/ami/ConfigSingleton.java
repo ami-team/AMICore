@@ -262,9 +262,9 @@ public class ConfigSingleton
 
 		Class.forName("org.h2.Driver");
 		Class.forName("org.sqlite.JDBC");
-		Class.forName("com.mysql.jdbc.Driver");
 		Class.forName("org.postgresql.Driver");
 		Class.forName("org.mariadb.jdbc.Driver");
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 
 		/*------------------------------------------------------------------------------------------------------------*/
