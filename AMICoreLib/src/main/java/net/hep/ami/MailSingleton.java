@@ -58,7 +58,7 @@ public class MailSingleton
 		   ||
 		   Empty.is(pass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		 ) {
-			return;
+			throw new Exception("mailer not configured");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
