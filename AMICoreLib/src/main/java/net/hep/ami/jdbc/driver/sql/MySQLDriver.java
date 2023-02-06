@@ -15,7 +15,7 @@ import org.jetbrains.annotations.*;
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
 	proto = "jdbc:mysql",
-	clazz = "com.mysql.cj.jdbc.Driver",
+	clazz = "com.mysql.jdbc.Driver",
 	flags = DriverMetadata.FLAG_BACKSLASH_ESCAPE | DriverMetadata.FLAG_HAS_CATALOG | DriverMetadata.FLAG_HAS_DUAL
 )
 
