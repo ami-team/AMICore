@@ -142,7 +142,7 @@ public class MailSingleton
 		}
 		catch(RuntimeException e)
 		{
-			System.out.println(e.getCause().getMessage());
+			System.out.println("cause: " + e.getCause().getMessage());
 			throw new Exception("error sending email");
 		}
 
