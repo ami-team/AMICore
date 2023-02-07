@@ -67,7 +67,7 @@ public class MailSingleton
 
 		TransportStrategy transportStrategy;
 
-		switch(mode.trim())
+		switch(mode.trim().toUpperCase())
 		{
 			case "0":
 			case "SMTP":
