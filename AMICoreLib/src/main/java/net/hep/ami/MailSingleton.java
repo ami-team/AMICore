@@ -42,21 +42,21 @@ public class MailSingleton
 
 	public static void sendMessage(@NotNull String from, @Nullable String to, @Nullable String cc, @NotNull String subject, @NotNull String text, @Nullable Attachment[] attachments) throws Exception
 	{
-		String host = ConfigSingleton.getProperty("email_host");
-		String port = ConfigSingleton.getProperty("email_port");
-		String mode = ConfigSingleton.getProperty("email_mode");
-		String user = ConfigSingleton.getProperty("email_user");
-		String pass = ConfigSingleton.getProperty("email_pass");
+		String   host   = ConfigSingleton.getProperty(  "email_host"  );
+		String   port   = ConfigSingleton.getProperty(  "email_port"  );
+		String   mode   = ConfigSingleton.getProperty(  "email_mode"  );
+		String username = ConfigSingleton.getProperty("email_username");
+		String password = ConfigSingleton.getProperty("email_password");
 
-		if(Empty.is(host, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		if(Empty.is(  host  , Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.is(port, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		   Empty.is(  port  , Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.is(mode, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		   Empty.is(  mode  , Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.is(user, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		   Empty.is(username, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		   ||
-		   Empty.is(pass, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
+		   Empty.is(password, Empty.STRING_AMI_NULL | Empty.STRING_BLANK)
 		 ) {
 			throw new Exception("mailer not configured");
 		}
@@ -90,7 +90,7 @@ public class MailSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Mailer mailer = MailerBuilder.withSMTPServer(host, Integer.parseInt(port), user, pass)
+		Mailer mailer = MailerBuilder.withSMTPServer(host, Integer.parseInt(port), username, password)
 		                             .withTransportStrategy(transportStrategy)
 		                             .buildMailer()
 		;
