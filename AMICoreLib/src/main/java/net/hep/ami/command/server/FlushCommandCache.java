@@ -23,18 +23,11 @@ public class FlushCommandCache extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments)
 	{
-		String delay = arguments.get("delay");
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		long t1 = System.currentTimeMillis();
 
-		if(delay == null) {
-			CacheSingleton.flush(/*-------------------*/);
-		}
-		else {
-			CacheSingleton.flush(Integer.parseInt(delay));
-		}
+		CacheSingleton.flush();
 
 		long t2 = System.currentTimeMillis();
 
@@ -58,7 +51,7 @@ public class FlushCommandCache extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "(-delay=\"\")?";
+		return "";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

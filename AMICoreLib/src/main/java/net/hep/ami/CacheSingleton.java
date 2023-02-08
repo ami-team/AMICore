@@ -5,6 +5,8 @@ import java.util.*;
 
 import net.spy.memcached.*;
 
+import redis.clients.jedis.*;
+
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -16,6 +18,8 @@ public class CacheSingleton
 	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(CacheSingleton.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
+
+	static private JedisPooled s_redisClient = null;
 
 	static private MemcachedClient s_memcachedClient = null;
 
@@ -35,42 +39,84 @@ public class CacheSingleton
 
 	public static void reload()
 	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(s_redisClient != null)
+		{
+			s_redisClient.getPool().close();
+		}
+
 		if(s_memcachedClient != null)
 		{
 			s_memcachedClient.shutdown();
 		}
 
-		if(ConfigSingleton.getProperty("memcached_enabled", false))
-		{
-			try
-			{
-				System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
+		/*------------------------------------------------------------------------------------------------------------*/
 
+		s_redisClient = null;
+
+		s_memcachedClient = null;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean redisEnabled = ConfigSingleton.getProperty("redis_enabled", false);
+
+		boolean memcachedEnabled = ConfigSingleton.getProperty("memcached_enabled", false);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		try
+		{
+			/**/ if(redisEnabled)
+			{
+				s_redisClient = new JedisPooled(new HostAndPort(
+					ConfigSingleton.getProperty("redis_host", "localhost"),
+					ConfigSingleton.getProperty("redis_port", 6379)
+				));
+			}
+			else if(memcachedEnabled)
+			{
 				s_memcachedClient = new MemcachedClient(new InetSocketAddress(
 					ConfigSingleton.getProperty("memcached_host", "localhost"),
-					ConfigSingleton.getProperty("memcached_port", 11211))
-				);
-			}
-			catch(Exception e)
-			{
-				LOG.error(e.getMessage(), e);
-
-				s_memcachedClient = null;
+					ConfigSingleton.getProperty("memcached_port", 11211)
+				));
 			}
 		}
-		else
+		catch(Exception e)
 		{
-			s_memcachedClient = null;
+			LOG.error(e.getMessage(), e);
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
 	@Contract("_, _ -> param2")
-	public static Object set(@NotNull String key, @Nullable Object value)
+	public static String set(@NotNull String key, @Nullable String value)
 	{
-		if(s_memcachedClient != null)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/**/ if(s_redisClient != null)
+		{
+			try
+			{
+				s_redisClient.set(key, value); s_redisClient.expire(key, ConfigSingleton.getProperty("redis_expiration", 3600));
+			}
+			catch(Exception e)
+			{
+				LOG.error(e.getMessage(), e);
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		else if(s_memcachedClient != null)
 		{
 			try
 			{
@@ -82,25 +128,45 @@ public class CacheSingleton
 			}
 		}
 
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		return value;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Nullable
-	public static Object get(@NotNull String key)
+	public static String get(@NotNull String key)
 	{
-		if(s_memcachedClient != null)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/**/ if(s_redisClient != null)
 		{
 			try
 			{
-				return s_memcachedClient.get(key);
+				return s_redisClient.get(key).toString();
 			}
 			catch(Exception e)
 			{
 				LOG.error(e.getMessage(), e);
 			}
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		else if(s_memcachedClient != null)
+		{
+			try
+			{
+				return s_memcachedClient.get(key).toString();
+			}
+			catch(Exception e)
+			{
+				LOG.error(e.getMessage(), e);
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		return null;
 	}
@@ -109,7 +175,23 @@ public class CacheSingleton
 
 	public static void delete(@NotNull String key)
 	{
-		if(s_memcachedClient != null)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/**/ if(s_redisClient != null)
+		{
+			try
+			{
+				s_redisClient.del(key);
+			}
+			catch(Exception e)
+			{
+				LOG.error(e.getMessage(), e);
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		else if(s_memcachedClient != null)
 		{
 			try
 			{
@@ -120,13 +202,31 @@ public class CacheSingleton
 				LOG.error(e.getMessage(), e);
 			}
 		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static void flush()
 	{
-		if(s_memcachedClient != null)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		/**/ if(s_redisClient != null)
+		{
+			try
+			{
+				/* TODO */
+			}
+			catch(Exception e)
+			{
+				LOG.error(e.getMessage(), e);
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		else if(s_memcachedClient != null)
 		{
 			try
 			{
@@ -137,23 +237,8 @@ public class CacheSingleton
 				LOG.error(e.getMessage(), e);
 			}
 		}
-	}
 
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public static void flush(int delay)
-	{
-		if(s_memcachedClient != null)
-		{
-			try
-			{
-				s_memcachedClient.flush(delay);
-			}
-			catch(Exception e)
-			{
-				LOG.error(e.getMessage(), e);
-			}
-		}
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -162,6 +247,24 @@ public class CacheSingleton
 	public static StringBuilder getStatus()
 	{
 		StringBuilder result = new StringBuilder();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		result.append("<rowset type=\"redis\">");
+
+		if(s_redisClient != null)
+		{
+			result.append("<row>");
+			result.append("</row>");
+		}
+		else
+		{
+			result.append("<row>");
+			result.append("<field name=\"address\"><![CDATA[]]></field>");
+			result.append("</row>");
+		}
+
+		result.append("</rowset>");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

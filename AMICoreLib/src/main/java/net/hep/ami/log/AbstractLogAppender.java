@@ -1,5 +1,7 @@
 package net.hep.ami.log;
 
+import java.util.*;
+
 import org.jetbrains.annotations.*;
 
 abstract public class AbstractLogAppender
@@ -9,7 +11,7 @@ abstract public class AbstractLogAppender
 	abstract public void append(
 		@NotNull String loggerName,
 		@NotNull String loggerLevel,
-		@NotNull String loggerMarker,
+		@NotNull Set<String> loggerMarkers,
 		long timeStamp,
 		@NotNull String thread,
 		@NotNull String message,

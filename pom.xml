@@ -234,6 +234,14 @@
 		<!--*********************************************************************************************************-->
 
 		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>4.3.0</version>
+		</dependency>
+
+		<!--*********************************************************************************************************-->
+
+		<dependency>
 			<groupId>net.spy</groupId>
 			<artifactId>spymemcached</artifactId>
 			<version>2.12.3</version>

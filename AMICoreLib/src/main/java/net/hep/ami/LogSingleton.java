@@ -3,6 +3,7 @@ package net.hep.ami;
 import lombok.*;
 
 import java.util.*;
+import java.util.stream.*;
 import java.lang.reflect.*;
 
 import ch.qos.logback.core.*;
@@ -126,7 +127,7 @@ public class LogSingleton
 							m_logAppender.append(
 								event.getLoggerName(),
 								event.getLevel().toString(),
-								event.getMarker().getName(),
+								event.getMarkerList().stream().map(x -> x.getName()).collect(Collectors.toSet()),
 								event.getTimeStamp(),
 								event.getThreadName(),
 								event.getFormattedMessage(),
