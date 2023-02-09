@@ -61,22 +61,20 @@ public class CacheSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean redisEnabled = ConfigSingleton.getProperty("redis_enabled", false);
-
-		boolean memcachedEnabled = ConfigSingleton.getProperty("memcached_enabled", false);
+		String type = ConfigSingleton.getProperty("command_cache_type", "0").trim().toUpperCase();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
 		{
-			/**/ if(redisEnabled)
+			/**/ if("1".equals(type) || "REDIS".equals(type))
 			{
 				s_redisClient = new JedisPool(
 					ConfigSingleton.getProperty("redis_host", "localhost"),
 					ConfigSingleton.getProperty("redis_port", 6379)
 				);
 			}
-			else if(memcachedEnabled)
+			/**/ if("2".equals(type) || "MEMCACHED".equals(type))
 			{
 				s_memcachedClient = new MemcachedClient(new InetSocketAddress(
 					ConfigSingleton.getProperty("memcached_host", "localhost"),
