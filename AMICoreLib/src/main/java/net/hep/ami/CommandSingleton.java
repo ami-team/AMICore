@@ -1,7 +1,5 @@
 package net.hep.ami;
 
-import lombok.*;
-
 import java.util.*;
 import java.util.regex.*;
 import java.lang.reflect.*;
@@ -24,18 +22,14 @@ public class CommandSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	private static final class CommandDescr
-	{
-		@NotNull private final String name;
-		@Nullable private final String help;
-		@Nullable private final String usage;
-		@NotNull private final Boolean visible;
-		@NotNull private final Constructor<?> constructor;
-		@Nullable private final String commandRoleValidatorClass;
-	}
+	private record CommandDescr(
+		@NotNull String name,
+		@Nullable String help,
+		@Nullable String usage,
+		@NotNull Boolean visible,
+		@NotNull Constructor<?> constructor,
+		@Nullable String commandRoleValidatorClass
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -301,7 +295,7 @@ public class CommandSingleton
 
 		try
 		{
-			userRoles = RoleSingleton.checkRoles(querier, commandDescr.getName(), arguments, commandDescr.getCommandRoleValidatorClass(), checkRoles);
+			userRoles = RoleSingleton.checkRoles(querier, commandDescr.name(), arguments, commandDescr.commandRoleValidatorClass(), checkRoles);
 		}
 		finally
 		{
@@ -319,7 +313,7 @@ public class CommandSingleton
 		stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 		             .append("\n")
 		             .append("<AMIMessage>")
-		             .append("<command><![CDATA[").append(commandDescr.getName()).append("]]></command>")
+		             .append("<command><![CDATA[").append(commandDescr.name()).append("]]></command>")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -353,7 +347,7 @@ public class CommandSingleton
 			/* CREATE COMMAND INSTANCE                                                                                */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			AbstractCommand commandObject = (AbstractCommand) commandDescr.getConstructor().newInstance(
+			AbstractCommand commandObject = (AbstractCommand) commandDescr.constructor().newInstance(
 				userRoles,
 				arguments,
 				transactionId
@@ -384,11 +378,11 @@ public class CommandSingleton
 			             .append("<executionTime><![CDATA[0.000]]></executionTime>")
 
 			             .append("<help><![CDATA[")
-			             .append((commandDescr.getHelp() != null) ? s_xml10Pattern.matcher(commandDescr.getHelp()).replaceAll("?") : "")
+			             .append((commandDescr.help() != null) ? s_xml10Pattern.matcher(commandDescr.help()).replaceAll("?") : "")
 			             .append("]]></help>")
 
 			             .append("<usage><![CDATA[")
-			             .append((commandDescr.getUsage() != null) ? s_xml10Pattern.matcher(commandDescr.getUsage()).replaceAll("?") : "")
+			             .append((commandDescr.usage() != null) ? s_xml10Pattern.matcher(commandDescr.usage()).replaceAll("?") : "")
 			             .append("]]></usage>")
 			;
 
@@ -427,7 +421,7 @@ public class CommandSingleton
 		/* CREATE COMMAND INSTANCE                                                                                    */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		AbstractCommand commandObject = (AbstractCommand) commandDescr.getConstructor().newInstance(
+		AbstractCommand commandObject = (AbstractCommand) commandDescr.constructor().newInstance(
 			userRoles,
 			arguments,
 			transactionId
@@ -498,18 +492,18 @@ public class CommandSingleton
 
 		for(CommandDescr commandDescr: s_commands.values())
 		{
-			if(commandDescr.getName().equals("GetConfig"))
+			if(commandDescr.name().equals("GetConfig"))
 			{
 				continue;
 			}
 
 			result.append("<row>")
-			      .append("<field name=\"command\"><![CDATA[").append(commandDescr.getName()).append("]]></field>")
-			      .append("<field name=\"help\"><![CDATA[").append(commandDescr.getHelp()).append("]]></field>")
-			      .append("<field name=\"usage\"><![CDATA[").append(commandDescr.getUsage()).append("]]></field>")
-			      .append("<field name=\"class\"><![CDATA[").append(commandDescr.getConstructor()).append("]]></field>")
-			      .append("<field name=\"visible\"><![CDATA[").append(commandDescr.getVisible()).append("]]></field>")
-			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(commandDescr.getCommandRoleValidatorClass()).append("]]></field>")
+			      .append("<field name=\"command\"><![CDATA[").append(commandDescr.name()).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(commandDescr.help()).append("]]></field>")
+			      .append("<field name=\"usage\"><![CDATA[").append(commandDescr.usage()).append("]]></field>")
+			      .append("<field name=\"class\"><![CDATA[").append(commandDescr.constructor()).append("]]></field>")
+			      .append("<field name=\"visible\"><![CDATA[").append(commandDescr.visible()).append("]]></field>")
+			      .append("<field name=\"roleValidatorClass\"><![CDATA[").append(commandDescr.commandRoleValidatorClass()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

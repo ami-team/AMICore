@@ -1,7 +1,5 @@
 package net.hep.ami;
 
-import lombok.*;
-
 import java.io.*;
 import java.net.*;
 import java.sql.*;
@@ -19,14 +17,10 @@ public class LocalizationSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	public static final class Localization
-	{
-		@NotNull private final String continentCode;
-		@NotNull private final String countryCode;
-	}
+	public record Localization(
+		@NotNull String continentCode,
+		@NotNull String countryCode
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 

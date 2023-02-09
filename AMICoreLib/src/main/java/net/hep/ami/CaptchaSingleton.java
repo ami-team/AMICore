@@ -29,15 +29,13 @@ public class CaptchaSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	/*----------------------------------------------------------------------------------------------------------------*/
-
 	@Contract(pure = true)
 	private CaptchaSingleton() {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	public static String generateCaptchaImage(int width, int height, @NotNull String text) throws Exception
+	public static String generateCaptchaImage(int width, int height, @NotNull String text)
 	{
 		Random random = new Random();
 

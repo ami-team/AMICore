@@ -20,15 +20,11 @@ public class RoleSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	private static final class CommandValidatorDescr
-	{
-		@NotNull private final String name;
-		@NotNull private final String help;
-		@NotNull private final Constructor<CommandValidator> constructor;
-	}
+	private record CommandValidatorDescr(
+		@NotNull String name,
+		@NotNull String help,
+		@NotNull Constructor<CommandValidator> constructor
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -339,7 +335,7 @@ public class RoleSingleton
 
 		try
 		{
-			validator = commandValidatorDescr.getConstructor().newInstance();
+			validator = commandValidatorDescr.constructor().newInstance();
 		}
 		catch(Exception e)
 		{
@@ -409,9 +405,9 @@ public class RoleSingleton
 		for(CommandValidatorDescr commandValidatorDescr: s_commandRoleValidators.values())
 		{
 			result.append("<row>")
-			     .append("<field name=\"class\"><![CDATA[").append(commandValidatorDescr.getName()).append("]]></field>")
-			     .append("<field name=\"help\"><![CDATA[").append(commandValidatorDescr.getHelp()).append("]]></field>")
-			     .append("</row>")
+			      .append("<field name=\"class\"><![CDATA[").append(commandValidatorDescr.name()).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(commandValidatorDescr.help()).append("]]></field>")
+			      .append("</row>")
 			;
 		}
 
@@ -424,9 +420,9 @@ public class RoleSingleton
 		for(UserValidatorDescr userValidatorDescr: s_userRoleValidators.values())
 		{
 			result.append("<row>")
-					.append("<field name=\"class\"><![CDATA[").append(userValidatorDescr.getName()).append("]]></field>")
-					.append("<field name=\"help\"><![CDATA[").append(userValidatorDescr.getHelp()).append("]]></field>")
-					.append("</row>")
+			      .append("<field name=\"class\"><![CDATA[").append(userValidatorDescr.getName()).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(userValidatorDescr.getHelp()).append("]]></field>")
+			      .append("</row>")
 			;
 		}
 

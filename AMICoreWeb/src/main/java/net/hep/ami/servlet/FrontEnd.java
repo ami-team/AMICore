@@ -1,7 +1,5 @@
 package net.hep.ami.servlet;
 
-import lombok.*;
-
 import java.io.*;
 import java.net.*;
 import java.text.*;
@@ -31,6 +29,7 @@ public class FrontEnd extends HttpServlet
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@Serial
 	private static final long serialVersionUID = 6325706434625863655L;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -249,16 +248,12 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	private static final class CertInfo
-	{
-		@NotNull private final String clientDN;
-		@NotNull private final String issuerDN;
-		@NotNull private final String notBefore;
-		@NotNull private final String notAfter;
-	}
+	private record CertInfo(
+		@NotNull String clientDN,
+		@NotNull String issuerDN,
+		@NotNull String notBefore,
+		@NotNull String notAfter
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -425,9 +420,9 @@ public class FrontEnd extends HttpServlet
 
 				SecuritySingleton.MapAndJSON mapAndJSON = SecuritySingleton.validateOIDCCodeAndParseTokens(redirectURL, AMIPass);
 
-				if(mapAndJSON.getMap().containsKey("access_token"))
+				if(mapAndJSON.map().containsKey("access_token"))
 				{
-					AMIPass = (String) mapAndJSON.getMap().get("access_token");
+					AMIPass = (String) mapAndJSON.map().get("access_token");
 				}
 				else
 				{
@@ -438,7 +433,7 @@ public class FrontEnd extends HttpServlet
 
 				userInfoAndUsername = getUserInfoFromToken(AMIPass);
 
-				AMIUser = userInfoAndUsername.getUsername();
+				AMIUser = userInfoAndUsername.username();
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -448,7 +443,7 @@ public class FrontEnd extends HttpServlet
 
 				userInfoAndUsername = getUserInfoFromToken(AMIPass);
 
-				AMIUser = userInfoAndUsername.getUsername();
+				AMIUser = userInfoAndUsername.username();
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
@@ -529,17 +524,11 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	public static final class UserInfoAndUsername
-	{
-		@NotNull private final Map<String, Object> userInfoMap;
-
-		@NotNull private final String userInfoJson;
-
-		@NotNull private final String username;
-	}
+	public record UserInfoAndUsername(
+		@NotNull Map<String, Object> userInfoMap,
+		@NotNull String userInfoJson,
+		@NotNull String username
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -556,11 +545,11 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(mapAndJSON.getMap().containsKey(usernameKey))
+		if(mapAndJSON.map().containsKey(usernameKey))
 		{
-			String username = (String) mapAndJSON.getMap().get(usernameKey);
+			String username = (String) mapAndJSON.map().get(usernameKey);
 
-			return new UserInfoAndUsername(mapAndJSON.getMap(), mapAndJSON.getJson(), username);
+			return new UserInfoAndUsername(mapAndJSON.map(), mapAndJSON.json(), username);
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -577,18 +566,18 @@ public class FrontEnd extends HttpServlet
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String username = userInfoAndUsername.getUsername();
+		String username = userInfoAndUsername.username();
 
 		String password = SecuritySingleton.generatePassword();
 
 		String firstnameKey = ConfigSingleton.getProperty("sso_userinfo_firstname_key", "@NULL");
-		String firstname = (String) userInfoAndUsername.getUserInfoMap().getOrDefault(firstnameKey, "Unknown");
+		String firstname = (String) userInfoAndUsername.userInfoMap().getOrDefault(firstnameKey, "Unknown");
 
 		String lastnameKey = ConfigSingleton.getProperty("sso_userinfo_lastname_key", "@NULL");
-		String lastname = (String) userInfoAndUsername.getUserInfoMap().getOrDefault(lastnameKey, "Unknown");
+		String lastname = (String) userInfoAndUsername.userInfoMap().getOrDefault(lastnameKey, "Unknown");
 
 		String emailKey = ConfigSingleton.getProperty("sso_userinfo_email_key", "@NULL");
-		String email = (String) userInfoAndUsername.getUserInfoMap().getOrDefault(emailKey, "x@y.z");
+		String email = (String) userInfoAndUsername.userInfoMap().getOrDefault(emailKey, "x@y.z");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -597,7 +586,7 @@ public class FrontEnd extends HttpServlet
 			password, password,
 			null, null,
 			firstname, lastname, email,
-			userInfoAndUsername.getUserInfoJson()
+			userInfoAndUsername.userInfoJson()
 		);
 
 		RoleSingleton.checkUser(
@@ -659,7 +648,7 @@ public class FrontEnd extends HttpServlet
 	{
 		try
 		{
-			String newCountryCode = LocalizationSingleton.localizeIP(querier, clientIP).getCountryCode();
+			String newCountryCode = LocalizationSingleton.localizeIP(querier, clientIP).countryCode();
 
 			if(!oldCountryCode.equals(newCountryCode))
 			{
@@ -682,10 +671,10 @@ public class FrontEnd extends HttpServlet
 
 		CertInfo certInfo = getCertInfo(arguments, request);
 
-		String clientDN = certInfo.getClientDN();
-		String issuerDN = certInfo.getIssuerDN();
-		String notBefore = certInfo.getNotBefore();
-		String notAfter = certInfo.getNotAfter();
+		String clientDN = certInfo.clientDN();
+		String issuerDN = certInfo.issuerDN();
+		String notBefore = certInfo.notBefore();
+		String notAfter = certInfo.notAfter();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* GET ARGUMENT AND SESSION PARAMETERS                                                                        */

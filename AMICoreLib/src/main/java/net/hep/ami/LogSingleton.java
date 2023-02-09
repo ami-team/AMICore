@@ -1,9 +1,6 @@
 package net.hep.ami;
 
-import lombok.*;
-
 import java.util.*;
-import java.util.stream.*;
 import java.lang.reflect.*;
 
 import ch.qos.logback.core.*;
@@ -23,15 +20,11 @@ public class LogSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	private static final class LogAppenderDescr
-	{
-		@NotNull private final String name;
-		@NotNull private final String help;
-		@NotNull private final AppenderBase<ILoggingEvent> instance;
-	}
+	private record LogAppenderDescr(
+		@NotNull String name,
+		@NotNull String help,
+		@NotNull AppenderBase<ILoggingEvent> instance
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -126,8 +119,8 @@ public class LogSingleton
 						{
 							m_logAppender.append(
 								event.getLoggerName(),
-								event.getLevel().toString(),
-								event.getMarkerList().stream().map(x -> x.getName()).collect(Collectors.toSet()),
+								event.getLevel(),
+								event.getMarkerList(),
 								event.getTimeStamp(),
 								event.getThreadName(),
 								event.getFormattedMessage(),
@@ -175,6 +168,9 @@ public class LogSingleton
 			/**/ if(name.contains("hikari")) {
 				logger.setLevel(devMode ? Level.DEBUG : Level.OFF);
 			}
+			else if(name.contains("jedis")) {
+				logger.setLevel(devMode ? Level.DEBUG : Level.OFF);
+			}
 			else if(name.contains("memcached")) {
 				logger.setLevel(devMode ? Level.DEBUG : Level.OFF);
 			}
@@ -184,9 +180,9 @@ public class LogSingleton
 
 				for(LogAppenderDescr logAppenderDescr: s_logAppenders.values())
 				{
-					if(logger.getAppender(logAppenderDescr.getName()) == null)
+					if(logger.getAppender(logAppenderDescr.name()) == null)
 					{
-						logger.addAppender(logAppenderDescr.getInstance());
+						logger.addAppender(logAppenderDescr.instance());
 					}
 				}
 
@@ -226,9 +222,9 @@ public class LogSingleton
 
 		for(LogAppenderDescr logAppenderDescr: s_logAppenders.values())
 		{
-			if(result.getAppender(logAppenderDescr.getName()) == null)
+			if(result.getAppender(logAppenderDescr.name()) == null)
 			{
-				result.addAppender(logAppenderDescr.getInstance());
+				result.addAppender(logAppenderDescr.instance());
 			}
 		}
 
@@ -255,8 +251,8 @@ public class LogSingleton
 		for(LogAppenderDescr logAppenderDescr: s_logAppenders.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"class\"><![CDATA[").append(logAppenderDescr.getName()).append("]]></field>")
-			      .append("<field name=\"help\"><![CDATA[").append(logAppenderDescr.getHelp()).append("]]></field>")
+			      .append("<field name=\"class\"><![CDATA[").append(logAppenderDescr.name()).append("]]></field>")
+			      .append("<field name=\"help\"><![CDATA[").append(logAppenderDescr.help()).append("]]></field>")
 			      .append("</row>")
 			;
 		}

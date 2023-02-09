@@ -39,18 +39,14 @@ public class SecuritySingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	public static class Revocation
-	{
+	public record Revocation(
+		@NotNull BigInteger serial,
+		@NotNull Integer reason,
+		@NotNull Date date
+	) {
 		public static final int SUPERSEDED = 0;
 		public static final int COMPROMISED = 1;
 		public static final int AFFILIATION_CHANGED = 2;
-
-		@NotNull private final BigInteger serial;
-		@NotNull private final Integer reason;
-		@NotNull private final Date date;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -633,23 +629,15 @@ public class SecuritySingleton
 		{
 			for(Revocation revocation: revocations)
 			{
-				switch(revocation.reason)
-				{
-					case Revocation.SUPERSEDED:
+				switch (revocation.reason) {
+					case Revocation.SUPERSEDED ->
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.superseded);
-						break;
-
-					case Revocation.COMPROMISED:
+					case Revocation.COMPROMISED ->
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.keyCompromise);
-						break;
-
-					case Revocation.AFFILIATION_CHANGED:
+					case Revocation.AFFILIATION_CHANGED ->
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.affiliationChanged);
-						break;
-
-					default:
+					default ->
 						builder.addCRLEntry(revocation.serial, revocation.date, org.bouncycastle.asn1.x509.CRLReason.unspecified);
-						break;
 				}
 			}
 		}
@@ -1104,15 +1092,10 @@ public class SecuritySingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	public static final class MapAndJSON
-	{
-		@NotNull private final Map<String, Object> map;
-
-		@NotNull private final String json;
-	}
+	public record MapAndJSON(
+		@NotNull Map<String, Object> map,
+		@NotNull String json
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 

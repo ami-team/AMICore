@@ -65,28 +65,12 @@ public class MailSingleton
 		/* CREATE MAILER                                                                                              */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		TransportStrategy transportStrategy;
-
-		switch(mode.trim().toUpperCase())
-		{
-			case "0":
-			case "SMTP":
-				transportStrategy = TransportStrategy.SMTP;
-				break;
-
-			case "1":
-			case "SMTPS":
-				transportStrategy = TransportStrategy.SMTPS;
-				break;
-
-			case "2":
-			case "SMTP_TLS":
-				transportStrategy = TransportStrategy.SMTP_TLS;
-				break;
-
-			default:
-				throw new Exception("invalid SMTP mode");
-		}
+		TransportStrategy transportStrategy = switch(mode.trim().toUpperCase()) {
+			case "0", "SMTP" -> TransportStrategy.SMTP;
+			case "1", "SMTPS" -> TransportStrategy.SMTPS;
+			case "2", "SMTP_TLS" -> TransportStrategy.SMTP_TLS;
+			default -> throw new Exception("invalid SMTP mode");
+		};
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -142,8 +126,6 @@ public class MailSingleton
 		}
 		catch(RuntimeException e)
 		{
-			System.out.println("cause: " + e.getCause().getMessage());
-			e.printStackTrace();
 			throw new Exception("error sending email");
 		}
 

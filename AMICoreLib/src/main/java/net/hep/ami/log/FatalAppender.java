@@ -11,9 +11,9 @@ public class FatalAppender extends AbstractLogAppender
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void append(@NotNull String loggerName, @NotNull String loggerLevel, @NotNull Set<String> loggerMarkers, long timeStamp, @NotNull String thread, @NotNull String message, @NotNull StackTraceElement[] stackTraceElements) throws Exception
+	public void append(@NotNull String loggerName, @NotNull ch.qos.logback.classic.Level loggerLevel, @NotNull List<org.slf4j.Marker> loggerMarkers, long timeStamp, @NotNull String thread, @NotNull String message, @NotNull StackTraceElement[] stackTraceElements) throws Exception
 	{
-		if(loggerMarkers.contains("FATAL"))
+		if(loggerMarkers.contains(LogSingleton.FATAL))
 		{
 			String title = "AMI FATAL ERROR - " + loggerName + " :: " + stackTraceElements[0].getClassName()
 			                                                 + " :: " + stackTraceElements[0].getMethodName()

@@ -7,8 +7,6 @@ import net.spy.memcached.*;
 
 import redis.clients.jedis.*;
 
-import net.hep.ami.utility.parser.*;
-
 import org.jetbrains.annotations.*;
 
 public class CacheSingleton
@@ -19,7 +17,7 @@ public class CacheSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	static private JedisPooled s_redisClient = null;
+	static private JedisPool s_redisClient = null;
 
 	static private MemcachedClient s_memcachedClient = null;
 
@@ -47,7 +45,7 @@ public class CacheSingleton
 
 		if(s_redisClient != null)
 		{
-			s_redisClient.getPool().close();
+			s_redisClient.close();
 		}
 
 		if(s_memcachedClient != null)
@@ -73,10 +71,10 @@ public class CacheSingleton
 		{
 			/**/ if(redisEnabled)
 			{
-				s_redisClient = new JedisPooled(new HostAndPort(
+				s_redisClient = new JedisPool(
 					ConfigSingleton.getProperty("redis_host", "localhost"),
 					ConfigSingleton.getProperty("redis_port", 6379)
-				));
+				);
 			}
 			else if(memcachedEnabled)
 			{
@@ -104,9 +102,9 @@ public class CacheSingleton
 
 		/**/ if(s_redisClient != null)
 		{
-			try
+			try(Jedis jedis = s_redisClient.getResource())
 			{
-				s_redisClient.set(key, value); s_redisClient.expire(key, ConfigSingleton.getProperty("redis_expiration", 3600));
+				jedis.setex(key, ConfigSingleton.getProperty("redis_expiration", 3600), value);
 			}
 			catch(Exception e)
 			{
@@ -138,13 +136,15 @@ public class CacheSingleton
 	@Nullable
 	public static String get(@NotNull String key)
 	{
+		Object result = null;
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		/**/ if(s_redisClient != null)
 		{
-			try
+			try(Jedis jedis = s_redisClient.getResource())
 			{
-				return s_redisClient.get(key).toString();
+				result = jedis.get(key);
 			}
 			catch(Exception e)
 			{
@@ -158,7 +158,7 @@ public class CacheSingleton
 		{
 			try
 			{
-				return s_memcachedClient.get(key).toString();
+				result = s_memcachedClient.get(key);
 			}
 			catch(Exception e)
 			{
@@ -168,7 +168,7 @@ public class CacheSingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return null;
+		return result != null ? result.toString() : null;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -179,9 +179,9 @@ public class CacheSingleton
 
 		/**/ if(s_redisClient != null)
 		{
-			try
+			try(Jedis jedis = s_redisClient.getResource())
 			{
-				s_redisClient.del(key);
+				jedis.del(key);
 			}
 			catch(Exception e)
 			{
@@ -214,9 +214,9 @@ public class CacheSingleton
 
 		/**/ if(s_redisClient != null)
 		{
-			try
+			try(Jedis jedis = s_redisClient.getResource())
 			{
-				/* TODO */
+				jedis.flushAll();
 			}
 			catch(Exception e)
 			{
@@ -254,8 +254,14 @@ public class CacheSingleton
 
 		if(s_redisClient != null)
 		{
-			result.append("<row>");
-			result.append("</row>");
+			try(Jedis jedis = s_redisClient.getResource())
+			{
+				result.append("<row>")
+					  .append("<field name=\"address\"><![CDATA[").append(jedis.getClient().toString()).append("]]></field>")
+					  .append("<field name=\"size\"><![CDATA[").append(jedis.dbSize()).append("]]></field>")
+				      .append("</row>")
+				;
+			}
 		}
 		else
 		{
@@ -274,13 +280,11 @@ public class CacheSingleton
 		{
 			for(Map.Entry<SocketAddress, Map<String, String>> entry: s_memcachedClient.getStats().entrySet())
 			{
-				result.append("<row>");
-
-				result.append("<field name=\"address\"><![CDATA[").append(entry.getKey()).append("]]></field>");
-
-				entry.getValue().forEach((x, y) -> result.append("<field name=\"").append(Utility.escapeHTML(x)).append("\"><![CDATA[").append(y).append("]]></field>"));
-
-				result.append("</row>");
+				result.append("<row>")
+				      .append("<field name=\"address\"><![CDATA[").append(entry.getKey()).append("]]></field>")
+				      .append("<field name=\"size\"><![CDATA[").append(entry.getValue().getOrDefault("curr_items", ""))
+				      .append("</row>")
+				;
 			}
 		}
 		else

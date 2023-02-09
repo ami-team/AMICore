@@ -1,7 +1,5 @@
 package net.hep.ami;
 
-import lombok.*;
-
 import java.io.*;
 import java.util.*;
 
@@ -22,15 +20,11 @@ public class ConverterSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	private static final class ConverterDescr
-	{
-		@NotNull private final String name;
-		@NotNull private final String mime;
-		@NotNull private final Templates templates;
-	}
+	private record ConverterDescr(
+		@NotNull String name,
+		@NotNull String mime,
+		@NotNull Templates templates
+	) {}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -165,7 +159,7 @@ public class ConverterSingleton
 		/* APPLY TRANSFORM                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Transformer transformer = converterInfo.getTemplates().newTransformer();
+		Transformer transformer = converterInfo.templates().newTransformer();
 
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
@@ -178,7 +172,7 @@ public class ConverterSingleton
 		/* RETURN MIME                                                                                                */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return converterInfo.getMime();
+		return converterInfo.mime();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -197,8 +191,8 @@ public class ConverterSingleton
 		for(ConverterDescr converterInfo: s_converters.values())
 		{
 			result.append("<row>")
-			      .append("<field name=\"xslt\"><![CDATA[").append(converterInfo.getName()).append("]]></field>")
-			      .append("<field name=\"mime\"><![CDATA[").append(converterInfo.getMime()).append("]]></field>")
+			      .append("<field name=\"xslt\"><![CDATA[").append(converterInfo.name()).append("]]></field>")
+			      .append("<field name=\"mime\"><![CDATA[").append(converterInfo.mime()).append("]]></field>")
 			      .append("</row>")
 			;
 		}
