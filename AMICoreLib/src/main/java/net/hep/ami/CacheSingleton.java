@@ -282,7 +282,7 @@ public class CacheSingleton
 			{
 				result.append("<row>")
 				      .append("<field name=\"address\"><![CDATA[").append(entry.getKey()).append("]]></field>")
-				      .append("<field name=\"size\"><![CDATA[").append(entry.getValue().getOrDefault("curr_items", ""))
+				      .append("<field name=\"size\"><![CDATA[").append(entry.getValue().getOrDefault("curr_items", "")).append("]]></field>")
 				      .append("</row>")
 				;
 			}
