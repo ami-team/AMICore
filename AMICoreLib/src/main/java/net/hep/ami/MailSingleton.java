@@ -16,6 +16,10 @@ public class MailSingleton
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MailSingleton.class.getSimpleName());
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -126,6 +130,8 @@ public class MailSingleton
 		}
 		catch(RuntimeException e)
 		{
+			LOG.error(e.getMessage(), e);
+
 			throw new Exception("error sending email");
 		}
 
