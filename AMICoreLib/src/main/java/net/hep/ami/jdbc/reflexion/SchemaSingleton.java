@@ -635,7 +635,8 @@ public class SchemaSingleton
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
 				if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
-					return targetSchema;
+					//return targetSchema;
+					return null;
 
 				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
 			}
@@ -751,7 +752,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(_type, _targetDatabase), _getSchemaName(_type, _targetDatabase), _entity, "%"))
+			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(_type, _targetDatabase), _getSchemaName(_type, _targetSchema), _entity, "%"))
 			{
 				Table table;
 
