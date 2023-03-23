@@ -635,8 +635,8 @@ public class SchemaSingleton
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
 				if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
-					//return targetSchema;
-					return null;
+					return targetSchema;
+
 
 				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
 			}
@@ -706,6 +706,8 @@ public class SchemaSingleton
 							try (ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null)) {
 								targetDatabase = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
 								targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
+
+								System.out.println("FUFU: "+m_internalCatalog+ ":"+targetDatabase+ ":"+targetSchema);
 								//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
 							}
 							catch (Exception e){}
