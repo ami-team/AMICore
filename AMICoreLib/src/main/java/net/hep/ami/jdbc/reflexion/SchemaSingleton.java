@@ -87,6 +87,8 @@ public class SchemaSingleton
 		public final String entity;
 		public final String type;
 		public /*-*/ int rank;
+		public final String targetSchema;
+		public final String targetDatabase;
 
 		/**/
 
@@ -99,13 +101,17 @@ public class SchemaSingleton
 
 		/**/
 
-		public Table(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _type, int _rank)
+		public Table(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _type, int _rank, String _targetSchema, String _targetDatabase)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
 			entity = _entity;
 			type = _type;
 			rank = _rank;
+			targetSchema = _targetSchema;
+			targetDatabase = _targetDatabase;
+
+
 		}
 
 		@Override
@@ -604,11 +610,16 @@ public class SchemaSingleton
 
 		@Nullable
 		@Contract(pure = true)
-		private String _getCatalogName(@Nullable String type)
+		private String _getCatalogName(@Nullable String type, @Nullable String targetDatabase)
 		{
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
-				return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
+				//return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
+				if("SYNONYM".equals(type))
+					return targetDatabase;
+				else
+					return m_internalCatalog;
+
 			}
 			else
 			{
@@ -618,11 +629,15 @@ public class SchemaSingleton
 
 		@Nullable
 		@Contract(pure = true)
-		private String _getSchemaName(@Nullable String type)
+		private String _getSchemaName(@Nullable String type, @Nullable String targetSchema)
 		{
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
-				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
+				//return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
+				if("SYNONYM".equals(type))
+					return targetSchema;
+				else
+					return m_internalCatalog;
 			}
 			else
 			{
@@ -659,13 +674,17 @@ public class SchemaSingleton
 				/*----------------------------------------------------------------------------------------------------*/
 
 				Map<String, String> entities = new HashMap<>();
+				Map<String, String> targetSchemas = new HashMap<>();
+				Map<String, String> targetDatabases = new HashMap<>();
 
 				/*----------------------------------------------------------------------------------------------------*/
 
-				try(ResultSet resultSet = metaData.getTables(_getCatalogName(null), _getSchemaName(null), "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
+				try(ResultSet resultSet = metaData.getTables(_getCatalogName(null, null), _getSchemaName(null, null), "%", new String[] {"TABLE", "VIEW", "SYNONYM"}))
 				{
 					String type;
 					String entity;
+					String targetSchema;
+					String targetDatabase;
 
 					int rank = 1000;
 
@@ -673,6 +692,8 @@ public class SchemaSingleton
 					{
 						type = resultSet.getString("TABLE_TYPE");
 						entity = resultSet.getString("TABLE_NAME");
+						targetSchema = resultSet.getString("TABLE_SCHEM");
+						targetDatabase = resultSet.getString("TABLE_CATALOG");
 
 						if(entity != null
 						   &&
@@ -680,9 +701,11 @@ public class SchemaSingleton
 						   &&
 						   !entity.toLowerCase().startsWith("x_db_")
 						 ) {
-							m_catalog.tables.put(entity, new Table(m_externalCatalog, m_internalCatalog, entity, type, rank++));
+							m_catalog.tables.put(entity, new Table(m_externalCatalog, m_internalCatalog, entity, type, rank++, targetSchema, targetDatabase));
 
 							entities.put(entity, type);
+							targetSchemas.put(entity, targetSchema);
+							targetDatabases.put(entity, targetDatabase);
 						}
 					}
 				}
@@ -691,9 +714,9 @@ public class SchemaSingleton
 
 				for(Map.Entry<String, String> entry: entities.entrySet())
 				{
-					loadColumnMetadata(metaData, entry.getKey(), entry.getValue());
+					loadColumnMetadata(metaData, entry.getKey(), entry.getValue(), targetSchemas.get(entry.getKey()), targetDatabases.get(entry.getKey()));
 
-					loadFgnKeyMetadata(metaData, entry.getKey(), entry.getValue());
+					loadFgnKeyMetadata(metaData, entry.getKey(), entry.getValue(), targetSchemas.get(entry.getKey()), targetDatabases.get(entry.getKey()));
 				}
 
 				/*----------------------------------------------------------------------------------------------------*/
@@ -707,11 +730,13 @@ public class SchemaSingleton
 		private void loadColumnMetadata(
 			@NotNull DatabaseMetaData metaData,
 			@NotNull String _entity,
-			@NotNull String _type
+			@NotNull String _type,
+			@NotNull String _targetSchema,
+			@NotNull String _targetDatabase
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(_type), _getSchemaName(_type), _entity, "%"))
+			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(_type, _targetDatabase), _getSchemaName(_type, _targetSchema), _entity, "%"))
 			{
 				Table table;
 
@@ -761,7 +786,7 @@ public class SchemaSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getPrimaryKeys(_getCatalogName(_type), _getSchemaName(_type), _entity))
+			try(ResultSet resultSet = metaData.getPrimaryKeys(_getCatalogName(_type, _targetDatabase), _getSchemaName(_type, _targetSchema), _entity))
 			{
 				while(resultSet.next())
 				{
@@ -787,11 +812,13 @@ public class SchemaSingleton
 		private void loadFgnKeyMetadata(
 			@NotNull DatabaseMetaData metaData,
 			@NotNull String _entity,
-			@NotNull String _type
+			@NotNull String _type,
+			@NotNull String _targetSchema,
+			@NotNull String _targetDatabase
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getExportedKeys(_getCatalogName(_type), _getSchemaName(_type), _entity))
+			try(ResultSet resultSet = metaData.getExportedKeys(_getCatalogName(_type, _targetDatabase), _getSchemaName(_type, _targetSchema), _entity))
 			{
 				Table table;
 
