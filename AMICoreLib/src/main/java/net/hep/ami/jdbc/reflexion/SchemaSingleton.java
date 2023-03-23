@@ -612,11 +612,11 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getCatalogName(@Nullable String type, @Nullable String targetDatabase)
 		{
+			if("SYNONYM".equals(type) && targetDatabase != null && !targetDatabase.equals(m_internalCatalog))
+				return targetDatabase;
+
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
-				if("SYNONYM".equals(type) && targetDatabase != null && !targetDatabase.equals(m_internalCatalog))
-					return targetDatabase;
-				else
 					return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
 			}
 			else
@@ -629,12 +629,12 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getSchemaName(@Nullable String type, @Nullable String targetSchema)
 		{
+			if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
+				return targetSchema;
+
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
-				if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
-					return targetSchema;
-				else
-					return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
+				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
 			}
 			else
 			{
@@ -692,8 +692,14 @@ public class SchemaSingleton
 						entity = resultSet.getString("TABLE_NAME");
 						targetSchema = null;
 						targetDatabase = null;
+
 						try {
-							targetSchema = resultSet.getString("TABLE_SCHEM");
+							//targetSchema = resultSet.getString("TABLE_SCHEM");
+							targetDatabase = resultSet.getString("TABLE_CATALOG");
+						}
+						catch (Exception e){}
+
+						try {
 							targetDatabase = resultSet.getString("TABLE_CATALOG");
 						}
 						catch (Exception e){}
