@@ -612,12 +612,13 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getCatalogName(@Nullable String type, @Nullable String targetDatabase)
 		{
-			if("SYNONYM".equals(type) && targetDatabase != null && !targetDatabase.equals(m_internalCatalog))
-				return targetDatabase;
 
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
-					return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
+				if("SYNONYM".equals(type) && targetDatabase != null && !targetDatabase.equals(m_internalCatalog))
+					return targetDatabase;
+
+				return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
 			}
 			else
 			{
@@ -629,11 +630,13 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getSchemaName(@Nullable String type, @Nullable String targetSchema)
 		{
-			if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
-				return targetSchema;
+
 
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
+				if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
+					return targetSchema;
+
 				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
 			}
 			else
@@ -701,8 +704,7 @@ public class SchemaSingleton
 
 							try (ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null)) {
 								targetDatabase = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
-								targetSchema = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
-								//targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
+								targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
 								//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
 							}
 							catch (Exception e){}
@@ -749,7 +751,7 @@ public class SchemaSingleton
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(_type, _targetDatabase), _getSchemaName(_type, _targetSchema), _entity, "%"))
+			try(ResultSet resultSet = metaData.getColumns(_getCatalogName(_type, _targetDatabase), _getSchemaName(_type, _targetDatabase), _entity, "%"))
 			{
 				Table table;
 
