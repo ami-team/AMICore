@@ -710,7 +710,7 @@ public class SchemaSingleton
 								System.out.println("FUFU: "+m_internalCatalog+ ":"+targetDatabase+ ":"+targetSchema);
 								//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
 							}
-							catch (Exception e){}
+							catch (Exception e){System.out.println("FUFU:" +e.getMessage());}
 						}
 
 						if(entity != null
