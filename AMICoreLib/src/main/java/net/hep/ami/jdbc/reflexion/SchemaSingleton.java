@@ -695,8 +695,11 @@ public class SchemaSingleton
 					{
 						type = resultSet.getString("TABLE_TYPE");
 						entity = resultSet.getString("TABLE_NAME");
-						targetSchema = resultSet.getString("TABLE_SCHEM");
-						targetDatabase = resultSet.getString("TABLE_CATALOG");
+						try {
+							targetSchema = resultSet.getString("TABLE_SCHEM");
+							targetDatabase = resultSet.getString("TABLE_CATALOG");
+						}
+						catch (Exception e){}
 
 						if(entity != null
 						   &&
