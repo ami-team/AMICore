@@ -693,15 +693,19 @@ public class SchemaSingleton
 						targetSchema = null;
 						targetDatabase = null;
 
-						try {
-							targetSchema = resultSet.getString("TABLE_SCHEM");
-						}
-						catch (Exception e){}
+						if("SYNONYM".equals(type))
+						{
+							String catalogName = null; // Nom du catalogue de la base de données
+							String schemaName = null; // Nom du schéma de la base de données
+							String synonymName = entity; // Nom du synonyme que vous voulez récupérer
 
-						try {
-							targetDatabase = resultSet.getString("TABLE_CATALOG");
+							try (ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null)) {
+								targetDatabase = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
+								targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
+								//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
+							}
+							catch (Exception e){}
 						}
-						catch (Exception e){}
 
 						if(entity != null
 						   &&
