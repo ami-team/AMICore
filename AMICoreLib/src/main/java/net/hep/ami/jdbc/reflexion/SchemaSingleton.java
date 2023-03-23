@@ -614,12 +614,13 @@ public class SchemaSingleton
 		{
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
-				//return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
+				return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
+				/*
 				if("SYNONYM".equals(type))
 					return targetDatabase;
 				else
 					return m_internalCatalog;
-
+				*/
 			}
 			else
 			{
@@ -633,11 +634,13 @@ public class SchemaSingleton
 		{
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
-				//return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
+				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
+				/*
 				if("SYNONYM".equals(type))
 					return targetSchema;
 				else
 					return m_internalCatalog;
+				*/
 			}
 			else
 			{
