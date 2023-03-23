@@ -614,7 +614,7 @@ public class SchemaSingleton
 		{
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
-				if("SYNONYM".equals(type) && targetDatabase != null)
+				if("SYNONYM".equals(type) && targetDatabase != null && !targetDatabase.equals(m_internalCatalog))
 					return targetDatabase;
 				else
 					return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
@@ -631,7 +631,7 @@ public class SchemaSingleton
 		{
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
-				if("SYNONYM".equals(type) && targetSchema != null)
+				if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
 					return targetSchema;
 				else
 					return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
@@ -681,8 +681,8 @@ public class SchemaSingleton
 				{
 					String type;
 					String entity;
-					String targetSchema = null;
-					String targetDatabase = null;
+					String targetSchema;
+					String targetDatabase;
 
 					int rank = 1000;
 
@@ -690,6 +690,8 @@ public class SchemaSingleton
 					{
 						type = resultSet.getString("TABLE_TYPE");
 						entity = resultSet.getString("TABLE_NAME");
+						targetSchema = null;
+						targetDatabase = null;
 						try {
 							targetSchema = resultSet.getString("TABLE_SCHEM");
 							targetDatabase = resultSet.getString("TABLE_CATALOG");
