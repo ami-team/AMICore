@@ -699,8 +699,8 @@ public class SchemaSingleton
 
 						if("SYNONYM".equals(type) && !m_internalCatalog.endsWith("_W") )
 						{
-							String catalogName = m_internalCatalog; // Nom du catalogue de la base de données
-							String schemaName = m_catalogTuple.getInternalSchema(); // Nom du schéma de la base de données
+							String catalogName = null; // Nom du catalogue de la base de données
+							String schemaName = null; // Nom du schéma de la base de données
 							String synonymName = entity; // Nom du synonyme que vous voulez récupérer
 
 							try (ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null)) {
