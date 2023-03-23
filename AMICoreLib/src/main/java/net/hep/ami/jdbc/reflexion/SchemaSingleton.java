@@ -686,8 +686,8 @@ public class SchemaSingleton
 				{
 					String type;
 					String entity;
-					String targetSchema;
-					String targetDatabase;
+					String targetSchema = null;
+					String targetDatabase = null;
 
 					int rank = 1000;
 
