@@ -695,7 +695,7 @@ public class SchemaSingleton
 
 						try {
 							//targetSchema = resultSet.getString("TABLE_SCHEM");
-							targetDatabase = resultSet.getString("TABLE_CATALOG");
+							targetSchema = resultSet.getString("TABLE_CATALOG");
 						}
 						catch (Exception e){}
 
