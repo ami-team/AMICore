@@ -697,7 +697,7 @@ public class SchemaSingleton
 						targetSchema = null;
 						targetDatabase = null;
 
-						if("SYNONYM".equals(type) && !m_internalCatalog.endsWith("_W") )
+						if("SYNONYM".equals(type) && m_externalCatalog.endsWith("external") )
 						{
 							String catalogName = null; // Nom du catalogue de la base de données
 							String schemaName = null; // Nom du schéma de la base de données
