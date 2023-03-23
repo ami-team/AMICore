@@ -701,7 +701,7 @@ public class SchemaSingleton
 						{
 							String catalogName = null; // Nom du catalogue de la base de données
 							String schemaName = null; // Nom du schéma de la base de données
-							String synonymName = entity; // Nom du synonyme que vous voulez récupérer
+							String synonymName = entity.toUpperCase(); // Nom du synonyme que vous voulez récupérer
 
 							try (ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null)) {
 								if(resultSet2.next())
