@@ -704,11 +704,14 @@ public class SchemaSingleton
 							String synonymName = entity; // Nom du synonyme que vous voulez récupérer
 
 							try (ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null)) {
-								targetDatabase = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
-								targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
+								if(resultSet2.next())
+								{
+									targetDatabase = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
+									targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
+									System.out.println("FUFU: "+m_internalCatalog+ ":"+targetDatabase+ ":"+targetSchema);
+									//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
+								}
 
-								System.out.println("FUFU: "+m_internalCatalog+ ":"+targetDatabase+ ":"+targetSchema);
-								//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
 							}
 							catch (Exception e){System.out.println("FUFU:" +e.getMessage());}
 						}
