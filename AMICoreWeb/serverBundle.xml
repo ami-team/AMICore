@@ -10,7 +10,7 @@
 		<format>zip</format>
 	</formats>
 
-	<baseDirectory>${artifactId}</baseDirectory>
+	<baseDirectory>AMI</baseDirectory>
 
 	<fileSets>
 		<!-- ******************************************************************************************************* -->
@@ -96,7 +96,7 @@
 		<!-- ******************************************************************************************************* -->
 
 		<file>
-			<source>${project.build.directory}/${project.artifactId}-${project.version}.war</source>
+			<source>${project.build.directory}/AMI.war</source>
 			<outputDirectory>webapps</outputDirectory>
 			<fileMode>644</fileMode>
 			<destName>AMI.war</destName>
