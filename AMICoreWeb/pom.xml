@@ -22,7 +22,7 @@
 	<url>https://www.cern.ch/ami/</url>
 
 	<properties>
-		<version.tomcat>10.1.5</version.tomcat>
+		<version.tomcat>10.1.7</version.tomcat>
 	</properties>
 
 	<dependencyManagement>
