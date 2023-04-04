@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ########################################################################################################################
 ########################################################################################################################
@@ -29,7 +29,7 @@ NC='\033[0m'
 
 function _line()
 {
-  echo "${BLUE}-----------------------------------------------------------------------------${NC}"
+  echo -e "${BLUE}-----------------------------------------------------------------------------${NC}"
 }
 
 ########################################################################################################################
@@ -37,7 +37,7 @@ function _line()
 function _box()
 {
   _line
-  echo "${BLUE}- $1${NC}"
+  echo -e "${BLUE}- $1${NC}"
   _line
 }
 
@@ -45,7 +45,7 @@ function _box()
 
 function _ok()
 {
-  echo "                                                                       [${GREEN}OKAY${NC}]"
+  echo -e "                                                                       [${GREEN}OKAY${NC}]"
   #### #
 }
 
@@ -53,7 +53,7 @@ function _ok()
 
 function _err()
 {
-  echo "                                                                       [${RED}ERR.${NC}]"
+  echo -e "                                                                       [${RED}ERR.${NC}]"
   exit 1
 }
 
@@ -69,14 +69,14 @@ _ok
 ########################################################################################################################
 ########################################################################################################################
 
-_box "Updating '\${AMI_HOME}/webapps/AMI.war'"
+_box "Updating '\${AMI_HOME}/app/AMI.war'"
 
 (
-  #rm -fr "${AMI_HOME}/webapps/AMI/"
+  #rm -fr "${AMI_HOME}/app/AMI/"
 
-  #mv "${AMI_HOME}/webapps/AMI.war" "${AMI_HOME}/webapps/AMI.war.old"
+  #mv "${AMI_HOME}/app/AMI.war" "${AMI_HOME}/app/AMI.war.old"
 
-  #curl -L https://repo.ami-ecosystem.in2p3.fr/releases/net/hep/ami/AMICoreWeb/1.0.0/AMICoreWeb-1.0.0.war > "${AMI_HOME}/webapps/AMI.war"
+  #curl -L https://repo.ami-ecosystem.in2p3.fr/releases/net/hep/ami/AMICoreWeb/1.0.0/AMICoreWeb-1.0.0.war > "${AMI_HOME}/app/AMI.war"
 
   _ok
 
