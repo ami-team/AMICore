@@ -56,11 +56,6 @@ TOMCAT_JVM_ROUTE=$(hostname -s)
 while [[ $# -gt 0 ]]
 do
   case $1 in
-    -p|--base-path)
-      BASE_PATH="$2"
-      shift
-      shift
-      ;;
     -u|--user)
       AMI_U="$2"
       shift
@@ -132,7 +127,7 @@ do
       shift
       ;;
     --help)
-      echo -e "Sets-up an AMI Web Server.\n\n$0 --base-path \"${BASE_PATH}\" --user \"${AMI_U}\" --group \"${AMI_G}\" --java-ms \"${JAVA_MS}\" --java-mx \"${JAVA_MX}\" --java-ss \"${JAVA_SS}\" --tomcat-max-threads \"${TOMCAT_MAX_THREADS}\" --tomcat-shutdown-port \"${TOMCAT_SHUTDOWN_PORT}\" --tomcat-https-port \"${TOMCAT_HTTPS_PORT}\" --tomcat-http-port \"${TOMCAT_HTTP_PORT}\" --tomcat-ajp-port \"${TOMCAT_AJP_PORT}\" --tomcat-ajp-address \"${TOMCAT_AJP_ADDRESS}\" --tomcat-ajp-secret \"${TOMCAT_AJP_SECRET}\" --tomcat-jvm-route \"${TOMCAT_JVM_ROUTE}\" --awf \"${AWF}\" --awf-title \"${AWF_TITLE}\" --awf-endpoint \"${AWF_ENDPOINT}\"\n"
+      echo -e "Sets-up an AMI Web Server.\n\n$0 --user \"${AMI_U}\" --group \"${AMI_G}\" --java-home \"${JAVA_HOME}\" --java-ms \"${JAVA_MS}\" --java-mx \"${JAVA_MX}\" --java-ss \"${JAVA_SS}\" --tomcat-max-threads \"${TOMCAT_MAX_THREADS}\" --tomcat-shutdown-port \"${TOMCAT_SHUTDOWN_PORT}\" --tomcat-https-port \"${TOMCAT_HTTPS_PORT}\" --tomcat-http-port \"${TOMCAT_HTTP_PORT}\" --tomcat-ajp-port \"${TOMCAT_AJP_PORT}\" --tomcat-ajp-address \"${TOMCAT_AJP_ADDRESS}\" --tomcat-ajp-secret \"${TOMCAT_AJP_SECRET}\" --tomcat-jvm-route \"${TOMCAT_JVM_ROUTE}\" --awf \"${AWF}\" --awf-title \"${AWF_TITLE}\" --awf-endpoint \"${AWF_ENDPOINT}\"\n"
       exit 0
       ;;
     -*)
