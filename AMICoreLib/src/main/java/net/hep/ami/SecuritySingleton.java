@@ -1203,7 +1203,7 @@ public class SecuritySingleton
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String data = String.format("client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s", URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(redirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8));
+		String data = String.format("client_id=%s&grant_type=authorization_code&redirect_uri=%s&code=%s&scope=%s", URLEncoder.encode(s_oidcClientId, StandardCharsets.UTF_8), URLEncoder.encode(redirectURL, StandardCharsets.UTF_8), URLEncoder.encode(code, StandardCharsets.UTF_8), URLEncoder.encode("openid", StandardCharsets.UTF_8));
 
 		try(BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), StandardCharsets.UTF_8)))
 		{
