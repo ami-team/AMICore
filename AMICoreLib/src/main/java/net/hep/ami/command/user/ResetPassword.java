@@ -53,7 +53,7 @@ public class ResetPassword extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> rowList = getQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `email` FROM `router_user` WHERE `AMIUser` = ?0 AND `valid` != 0", amiLogin).getAll(10, 0);
+		List<Row> rowList = getAdminQuerier("self").executeSQLQuery("router_user", "SELECT `AMIUser`, `email` FROM `router_user` WHERE `AMIUser` = ?0 AND `valid` != 0", amiLogin).getAll(10, 0);
 
 		if(rowList.size() > 0)
 		{
