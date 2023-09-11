@@ -708,7 +708,6 @@ public class SchemaSingleton
 								{
 									targetDatabase = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
 									targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
-									System.out.println("FUFU: "+m_internalCatalog+ ":"+targetDatabase+ ":"+targetSchema);
 									//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
 								}
 
