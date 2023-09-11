@@ -712,7 +712,10 @@ public class SchemaSingleton
 								}
 
 							}
-							catch (Exception e){System.out.println("FUFU:" +e.getMessage());}
+							catch (Exception e)
+							{
+								/* DO NOTHING */
+							}
 						}
 
 						if(entity != null
