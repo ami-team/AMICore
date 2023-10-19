@@ -66,7 +66,7 @@ public class MQTT implements MqttCallbackExtended
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			m_serverName = InetAddress.getLocalHost().getHostName();
+			m_serverName = InetAddress.getLocalHost().getCanonicalHostName();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
