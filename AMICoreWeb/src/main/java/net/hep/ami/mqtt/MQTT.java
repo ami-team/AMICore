@@ -275,7 +275,7 @@ public class MQTT implements MqttCallbackExtended
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		publish("ami/server/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\", \"state\": \"%s\", \"free_mem\": %d, \"total_mem\": %d, \"free_disk\": %d, \"total_disk\": %d, \"nb_of_cpus\": %d}",
+		publish("ami/webserver/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\", \"state\": \"%s\", \"free_mem\": %d, \"total_mem\": %d, \"free_disk\": %d, \"total_disk\": %d, \"nb_of_cpus\": %d}",
 			getCurrentTime(),
 			Utility.escapeJSONString(m_serverName, false),
 			state,
