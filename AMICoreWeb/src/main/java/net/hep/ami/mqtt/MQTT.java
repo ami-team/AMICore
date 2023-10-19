@@ -23,7 +23,7 @@ public class MQTT implements MqttCallbackExtended
 
 	private static final int PING_PERIOD = ConfigSingleton.getProperty("ping_period", 30);
 
-	private static final String MQTT_BROKER_URL = ConfigSingleton.getProperty("mqtt_broker_url", "");
+	private static final String MQTT_BROKER_ENDPOINT = ConfigSingleton.getProperty("mqtt_broker_endpoint", "");
 
 	private static final String MQTT_JWT_ISSUER = ConfigSingleton.getProperty("mqtt_jwt_issuer", "");
 
@@ -49,7 +49,7 @@ public class MQTT implements MqttCallbackExtended
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean err1 = Empty.is(MQTT_BROKER_URL, Empty.STRING_NULL_EMPTY_BLANK);
+		boolean err1 = Empty.is(MQTT_BROKER_ENDPOINT, Empty.STRING_NULL_EMPTY_BLANK);
 		boolean err2 = Empty.is(MQTT_JWT_ISSUER, Empty.STRING_NULL_EMPTY_BLANK);
 		boolean err3 = Empty.is(MQTT_JWT_SECRET, Empty.STRING_NULL_EMPTY_BLANK);
 
@@ -82,7 +82,7 @@ public class MQTT implements MqttCallbackExtended
 
 			MqttConnectOptions connectOptions = new MqttConnectOptions();
 
-			connectOptions.setServerURIs(new String[] { MQTT_BROKER_URL });
+			connectOptions.setServerURIs(new String[] {MQTT_BROKER_ENDPOINT});
 
 			connectOptions.setUserName(/**/ MQTT_USERNAME /**/);
 			connectOptions.setPassword(mqttToken.toCharArray());
@@ -93,7 +93,7 @@ public class MQTT implements MqttCallbackExtended
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			m_asyncClient = new MqttAsyncClient(MQTT_BROKER_URL, m_serverName + "-" + UUID.randomUUID(), new MemoryPersistence());
+			m_asyncClient = new MqttAsyncClient(MQTT_BROKER_ENDPOINT, m_serverName + "-" + UUID.randomUUID(), new MemoryPersistence());
 
 			m_asyncClient.setCallback(this);
 
