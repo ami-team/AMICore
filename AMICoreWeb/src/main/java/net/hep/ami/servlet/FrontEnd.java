@@ -657,7 +657,7 @@ public class FrontEnd extends HttpServlet
 		}
 		catch(Exception e)
 		{
-			LOG.error(e.getMessage(), e);
+			LOG.debug(e.getMessage(), e);
 		}
 	}
 

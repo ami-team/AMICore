@@ -206,7 +206,7 @@ public class MQTT implements MqttCallbackExtended
 	@Override
 	public void connectionLost(Throwable cause)
 	{
-		LOG.warn("client `{}` disconnected, cause: {}", m_serverName, cause.getMessage());
+		LOG.debug("client `{}` disconnected, cause: {}", m_serverName, cause.getMessage());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
