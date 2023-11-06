@@ -107,7 +107,7 @@ public class MQTT2
 						 .whenComplete((connAck, throwable) -> {
 							 if (throwable != null)
 							 {
-								 LOG.error("client `{}` failed to connect to server URL `{}`", m_serverName, MQTT_BROKER_ENDPOINT);
+								 LOG.error("client `{}` failed to connect to server URL `{}`: `{}`", m_serverName, MQTT_BROKER_ENDPOINT, throwable.getMessage());
 							 }
 							 else
 							 {
