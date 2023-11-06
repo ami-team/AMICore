@@ -46,7 +46,7 @@ public class FrontEnd extends HttpServlet
 	{
 		super.init(config);
 
-		new MQTT2().init();
+		new MQTT().init();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

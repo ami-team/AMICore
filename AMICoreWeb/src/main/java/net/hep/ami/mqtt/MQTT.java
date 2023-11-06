@@ -8,16 +8,18 @@ import java.nio.charset.*;
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
 
+import com.hivemq.client.mqtt.*;
+import com.hivemq.client.mqtt.mqtt3.*;
+import com.hivemq.client.mqtt.mqtt3.message.publish.*;
+import com.hivemq.client.mqtt.datatypes.*;
+
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
 import net.hep.ami.utility.parser.*;
 
-import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.persist.*;
-
 import org.jetbrains.annotations.*;
 
-public class MQTT implements MqttCallbackExtended
+public class MQTT
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -39,7 +41,7 @@ public class MQTT implements MqttCallbackExtended
 
 	private String m_serverName;
 
-	private MqttAsyncClient m_asyncClient;
+	private Mqtt3AsyncClient m_asyncClient;
 
 	private final Timer m_timer = new Timer();
 
@@ -80,25 +82,71 @@ public class MQTT implements MqttCallbackExtended
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			MqttConnectOptions connectOptions = new MqttConnectOptions();
+			URL url = new URL(MQTT_BROKER_ENDPOINT);
 
-			connectOptions.setServerURIs(new String[] {MQTT_BROKER_ENDPOINT});
+			String host = url.getHost();
+			int port = url.getPort();
 
-			connectOptions.setUserName(/**/ MQTT_USERNAME /**/);
-			connectOptions.setPassword(mqttToken.toCharArray());
+			if(port < 0)
+			{
+				String protocol = url.getProtocol();
 
-			connectOptions.setAutomaticReconnect(true);
-
-			connectOptions.setCleanSession(true);
+				/**/ if("ws".equalsIgnoreCase(protocol)) {
+					port = 80;
+				}
+				else if("wss".equalsIgnoreCase(protocol)) {
+					port = 443;
+				}
+				else {
+					port = 1883;
+				}
+			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			m_asyncClient = new MqttAsyncClient(MQTT_BROKER_ENDPOINT, m_serverName + "-" + UUID.randomUUID(), new MemoryPersistence());
+			m_asyncClient = MqttClient.builder()
+			                          .useMqttVersion3()
+			                          /* Authentication */
+			                          .identifier(m_serverName + "-" + UUID.randomUUID())
+			                          .serverHost(host)
+			                          .serverPort(port)
+			                          .sslWithDefaultConfig()
+			                          .webSocketWithDefaultConfig()
+			                          /* High availability */
+			                          .automaticReconnectWithDefaultConfig()
+			                          .addDisconnectedListener((ctx) -> LOG.info("client `{}` disconnected from server URL `{}`", m_serverName, MQTT_BROKER_ENDPOINT))
+			                          /* Builder */
+			                          .buildAsync()
+			;
 
-			m_asyncClient.setCallback(this);
+			/*--------------------------------------------------------------------------------------------------------*/
 
-			m_asyncClient.connect(connectOptions)
-			             .waitForCompletion(10000L)
+			m_asyncClient.publishes(MqttGlobalPublishFilter.SUBSCRIBED, this::onMessageReceived);
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			m_asyncClient.connectWith()
+						 .simpleAuth().username(MQTT_USERNAME).password(mqttToken.getBytes()).applySimpleAuth()
+			             .cleanSession(true)
+						 .send()
+						 .whenComplete((connAck, throwable) -> {
+
+							 if(throwable != null)
+							 {
+								 LOG.error("client `{}` failed to connect to server URL `{}`: `{}`", m_serverName, MQTT_BROKER_ENDPOINT, throwable.getMessage());
+							 }
+							 else
+							 {
+								 LOG.info("client `{}` connect successfully to server URL `{}`", m_serverName, MQTT_BROKER_ENDPOINT);
+
+								 subscribe("ami/" + m_serverName + "/command");
+								 subscribe("ami/" + m_serverName + "/command/");
+								 subscribe("ami/" + m_serverName + "/command/AMIXmlToCsv.xsl");
+								 subscribe("ami/" + m_serverName + "/command/AMIXmlToJson.xsl");
+								 subscribe("ami/" + m_serverName + "/command/AMIXmlToText.xsl");
+								 subscribe("ami/" + m_serverName + "/command/AMIXmlToXml.xsl");
+							 }
+			             })
 			;
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -122,16 +170,57 @@ public class MQTT implements MqttCallbackExtended
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	@SuppressWarnings("SameParameterValue")
 	private void publish(@NotNull String topic, @NotNull String payload)
 	{
 		try
 		{
-			m_asyncClient.publish(topic, payload.getBytes(StandardCharsets.UTF_8), 0, false);
+			m_asyncClient.publishWith()
+			             .topic(topic)
+			             .payload(payload.getBytes(StandardCharsets.UTF_8))
+			             .qos(MqttQos.AT_MOST_ONCE)
+			             .retain(false)
+			             .send()
+			;
 		}
 		catch(Exception e)
 		{
 			LOG.error(e.getMessage(), e);
 		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private void subscribe(@NotNull String topic)
+	{
+		try
+		{
+			m_asyncClient.subscribeWith()
+			             .addSubscription().topicFilter(topic).qos(MqttQos.AT_MOST_ONCE).applySubscription()
+			             .send()
+					     .whenComplete((subAck, subThrowable) -> {
+
+							if(subThrowable != null)
+							{
+								LOG.error("client `{}` failed to suscribe to topic: `{}`: `{}`", m_serverName, topic, subThrowable.getMessage());
+							}
+							else
+							{
+								LOG.info("client `{}` suscribed to topic `{}`.", m_serverName, topic);
+							}
+		                 });
+		}
+		catch (Exception e)
+		{
+			LOG.error(e.getMessage(), e);
+		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private void onMessageReceived(Mqtt3Publish mqtt3Publish)
+	{
+		LOG.debug("message received from topic `{}`: `{}`.", mqtt3Publish.getTopic(), mqtt3Publish.getPayload());
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -168,68 +257,6 @@ public class MQTT implements MqttCallbackExtended
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public void connectComplete(boolean reconnect, String serverURL)
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(reconnect) {
-			LOG.info("client `{}` reconnected to server URL `{}`", m_serverName, serverURL);
-		}
-		else {
-			LOG.info("client `{}` connected to server URL `{}`", m_serverName, serverURL);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		try
-		{
-			m_asyncClient.subscribe("ami/" + m_serverName + "/command"              , 0).waitForCompletion(10000L);
-			m_asyncClient.subscribe("ami/" + m_serverName + "/command/"              , 0).waitForCompletion(10000L);
-			m_asyncClient.subscribe("ami/" + m_serverName + "/command/AMIXmlToCsv.xsl", 0).waitForCompletion(10000L);
-			m_asyncClient.subscribe("ami/" + m_serverName + "/command/AMIXmlToJson.xsl", 0).waitForCompletion(10000L);
-			m_asyncClient.subscribe("ami/" + m_serverName + "/command/AMIXmlToText.xsl", 0).waitForCompletion(10000L);
-			m_asyncClient.subscribe("ami/" + m_serverName + "/command/AMIXmlToXml.xsl", 0).waitForCompletion(10000L);
-		}
-		catch(Exception e)
-		{
-			LOG.error(e.getMessage(), e);
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public void connectionLost(Throwable cause)
-	{
-		LOG.debug("client `{}` disconnected, cause: {}", m_serverName, cause.getMessage());
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public void messageArrived(String topic, MqttMessage message)
-	{
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		/* TODO */
-
-		/*------------------------------------------------------------------------------------------------------------*/
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	@Override
-	public void deliveryComplete(IMqttDeliveryToken token)
-	{
-		/* DO NOTHING  */
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private void notifyServer(String state)
