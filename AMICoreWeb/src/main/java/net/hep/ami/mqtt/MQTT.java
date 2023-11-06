@@ -82,14 +82,14 @@ public class MQTT
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			URL url = new URL(MQTT_BROKER_ENDPOINT);
+			URI uri = new URI(MQTT_BROKER_ENDPOINT);
 
-			String host = url.getHost();
-			int port = url.getPort();
+			String host = uri.getHost();
+			int port = uri.getPort();
 
 			if(port < 0)
 			{
-				String protocol = url.getProtocol();
+				String protocol = uri.getScheme();
 
 				/**/ if("ws".equalsIgnoreCase(protocol)) {
 					port = 80;
@@ -126,8 +126,8 @@ public class MQTT
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			m_asyncClient.connectWith()
-			             .cleanSession(true)
 						 .simpleAuth().username(MQTT_USERNAME).password(mqttToken.getBytes()).applySimpleAuth()
+			             .cleanSession(true)
 						 .send()
 						 .whenComplete((connAck, throwable) -> {
 
