@@ -3,9 +3,9 @@ package net.hep.ami.mqtt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
-import com.hivemq.client.mqtt.mqtt3.Mqtt3Client;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 
@@ -24,6 +24,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -93,12 +94,17 @@ public class MQTT2
 
 			URI uri = new URI(MQTT_BROKER_ENDPOINT);
 
-			m_asyncClient = Mqtt3Client.builder()
-					                   .identifier(m_serverName + "-" + UUID.randomUUID())
-					                   .serverHost(uri.getHost())
-					                   .serverPort(uri.getPort())
-					                   .buildAsync()
-			;
+			m_asyncClient = MqttClient.builder()
+					                  .useMqttVersion3()
+					                  .identifier(m_serverName + "-" + UUID.randomUUID())
+					                  .serverHost(uri.getHost())
+					                  .serverPort(uri.getPort() > 0 ? uri.getPort(): 443)
+					                  .sslWithDefaultConfig().webSocketWithDefaultConfig()
+					                  .automaticReconnectWithDefaultConfig()
+					                  .addDisconnectedListener((ctx) -> {
+										  LOG.info("client `{}` disconnected from server URL `{}`", m_serverName, MQTT_BROKER_ENDPOINT);
+									  })
+					                  .buildAsync();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -107,8 +113,7 @@ public class MQTT2
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			m_asyncClient.connectWith()
-						 .keepAlive(10)
-						 .cleanSession(true)
+					     .cleanSession(true)
 						 .simpleAuth().username(MQTT_USERNAME).password(mqttToken.getBytes()).applySimpleAuth()
 						 .send()
 						 .whenComplete((connAck, throwable) -> {
@@ -120,7 +125,7 @@ public class MQTT2
 							 {
 								 /*-----------------------------------------------------------------------------------*/
 
-								 LOG.info("client `{}` connected to server URL `{}`", m_serverName, MQTT_BROKER_ENDPOINT);
+								 LOG.info("client `{}` connect successfully to server URL `{}`", m_serverName, MQTT_BROKER_ENDPOINT);
 
 								 /*-----------------------------------------------------------------------------------*/
 
@@ -188,7 +193,7 @@ public class MQTT2
 							 if (subThrowable != null) {
 								 LOG.error("client `{}` failed to suscribe to topic: `{}`: `{}`", m_serverName, topic, subThrowable.getMessage());
 							 } else {
-								 LOG.error("client `{}` suscribed to topic `{}`.", m_serverName, topic);
+								 LOG.info("client `{}` suscribed to topic `{}`.", m_serverName, topic);
 							 }
 					});
 		}
