@@ -126,8 +126,8 @@ public class MQTT
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			m_asyncClient.connectWith()
-						 .simpleAuth().username(MQTT_USERNAME).password(mqttToken.getBytes()).applySimpleAuth()
 			             .cleanSession(true)
+						 .simpleAuth().username(MQTT_USERNAME).password(mqttToken.getBytes()).applySimpleAuth()
 						 .send()
 						 .whenComplete((connAck, throwable) -> {
 
