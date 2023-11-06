@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Timer;
@@ -89,10 +91,15 @@ public class MQTT2
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			URI uri = new URI(MQTT_BROKER_ENDPOINT);
+
 			m_asyncClient = Mqtt3Client.builder()
 					                   .identifier(m_serverName + "-" + UUID.randomUUID())
-					                   .serverHost(MQTT_BROKER_ENDPOINT)
-					                   .buildAsync();
+					                   .serverHost(uri.getHost())
+					                   .serverPort(uri.getPort())
+					                   .buildAsync()
+			;
+
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			m_asyncClient.publishes(MqttGlobalPublishFilter.SUBSCRIBED, this::onMessageReceived);
