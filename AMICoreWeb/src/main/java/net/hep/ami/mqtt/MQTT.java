@@ -91,8 +91,6 @@ public class MQTT implements MqttCallbackExtended
 
             connectOptions.setCleanSession(true);
 
-            connectOptions.setKeepAliveInterval(10);
-
             /*--------------------------------------------------------------------------------------------------------*/
 
             m_asyncClient = new MqttAsyncClient(MQTT_BROKER_ENDPOINT, m_serverName + "-" + UUID.randomUUID(), new MemoryPersistence());
