@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.nio.charset.*;
+import java.util.regex.*;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
@@ -34,6 +35,22 @@ public class MQTT implements MqttCallbackExtended
     /*----------------------------------------------------------------------------------------------------------------*/
 
     private static final org.slf4j.Logger LOG = LogSingleton.getLogger(MQTT.class.getSimpleName());
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    private static final Pattern CPU_PATTERN = Pattern.compile("cpu\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    private static final int CPU_NB = Runtime.getRuntime().availableProcessors();
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    private long m_prevCPUFree = 0;
+    private long m_currCPUFree = 0;
+
+    private long m_prevCPUUsed = 0;
+    private long m_currCPUUsed = 0;
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -230,10 +247,59 @@ public class MQTT implements MqttCallbackExtended
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
-    /*----------------------------------------------------------------------------------------------------------------*/
 
     private void notifyServer(String state)
     {
+        /*------------------------------------------------------------------------------------------------------------*/
+
+        long cpuFree = 0;
+        long cpuTotal = 0;
+
+        File procFile = new File("/proc/stat");
+
+        if(procFile.exists())
+        {
+            try(BufferedReader bufferedReader = new BufferedReader(new FileReader(procFile)))
+            {
+                for(String line; (line = bufferedReader.readLine()) != null; )
+                {
+                    Matcher m = MQTT.CPU_PATTERN.matcher(line);
+
+                    if(m.find())
+                    {
+                        m_prevCPUFree = m_currCPUFree;
+                        m_prevCPUUsed = m_currCPUUsed;
+
+                        m_currCPUFree = Long.parseLong(m.group(4)) + Long.parseLong(m.group(5));
+
+                        m_currCPUUsed = Long.parseLong(m.group(1)) + Long.parseLong(m.group(2))
+                                +
+                                Long.parseLong(m.group(3)) + Long.parseLong(m.group(6))
+                                +
+                                Long.parseLong(m.group(7)) + Long.parseLong(m.group(8))
+                        ;
+
+                        float deltaCPUFree = m_currCPUFree - m_prevCPUFree;
+                        float deltaCPUUsed = m_currCPUUsed - m_prevCPUUsed;
+
+                        cpuFree = Math.round(
+                                (CPU_NB * 100.0 * deltaCPUFree)
+                                /
+                                (deltaCPUFree + deltaCPUUsed)
+                        );
+
+                        cpuTotal = CPU_NB * 100L;
+
+                        break;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                /* IGNORE */
+            }
+        }
+
         /*------------------------------------------------------------------------------------------------------------*/
 
         long memFree = 0;
@@ -275,7 +341,7 @@ public class MQTT implements MqttCallbackExtended
 
         /*------------------------------------------------------------------------------------------------------------*/
 
-        publish("ami/webserver/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\", \"state\": \"%s\", \"free_mem\": %d, \"total_mem\": %d, \"free_disk\": %d, \"total_disk\": %d, \"nb_of_cpus\": %d}",
+        publish("ami/webserver/ping", String.format("{\"timestamp\": %d, \"server_name\": \"%s\", \"state\": \"%s\", \"free_mem\": %d, \"total_mem\": %d, \"free_disk\": %d, \"total_disk\": %d, \"free_cpu\": %d, \"total_cpu\": %d, \"nb_of_cpus\": %d}",
                 getCurrentTime(),
                 Utility.escapeJSONString(m_serverName, false),
                 state,
@@ -283,7 +349,9 @@ public class MQTT implements MqttCallbackExtended
                 memTotal,
                 diskFree,
                 diskTotal,
-                Runtime.getRuntime().availableProcessors()
+                cpuFree,
+                cpuTotal,
+                CPU_NB
         ));
 
         /*------------------------------------------------------------------------------------------------------------*/
