@@ -624,8 +624,8 @@ public class RouterQuerier implements Querier
 		SchemaSingleton.Table router_catalog = SchemaSingleton.getEntityInfo("self", "router_catalog");
 
 		router_catalog.columns.get("externalCatalog").webLinkScript = "import net.hep.ami.data.WebLink;\n\nwebLink = new WebLink();\n\nif(rowSet.isANameOrLabel(\"externalCatalog\"))\n{\n\twebLink.newLinkProperties().setLabel(\"Show/Edit catalog\").setHRef(\"./?subapp=schemaViewer&userdata=\" + row.getValue(\"externalCatalog\")).setTarget(\"_blank\");\n}\n\nreturn webLink;\n";
-		router_catalog.columns.get("internalCatalog").hidden = true;
-		router_catalog.columns.get("internalSchema").hidden = true;
+		router_catalog.columns.get("internalCatalog").adminOnly = true;
+		router_catalog.columns.get("internalSchema").adminOnly = true;
 		router_catalog.columns.get("jdbcUrl").adminOnly = true;
 		router_catalog.columns.get("user").crypted = true;
 		router_catalog.columns.get("pass").crypted = true;
