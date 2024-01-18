@@ -47,7 +47,7 @@ public class ChangePassword extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(amiLogin.equals(GUEST_USER))
+		if(amiLogin.equals(GUEST_USER) && !m_userRoles.contains("AMI_ADMIN"))
 		{
 			throw new Exception("invalid operation for guest user");
 		}

@@ -41,6 +41,12 @@ public class SetUserInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		if(!m_userRoles.contains("AMI_ADMIN"))
+		{
+			throw new Exception("invalid operation for guest user");
+		}
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		UserValidator.Bean bean = new UserValidator.Bean(
 			m_AMIUser,
 			null,
