@@ -14,6 +14,11 @@ import org.jetbrains.annotations.*;
 @CommandMetadata(role = "AMI_GUEST", visible = true)
 public class ChangePassword extends AbstractCommand
 {
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public ChangePassword(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
@@ -38,6 +43,13 @@ public class ChangePassword extends AbstractCommand
 		   Empty.is(amiPasswordNew, Empty.STRING_NULL_EMPTY_BLANK)
 		 ) {
 			throw new Exception("invalid usage");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(amiLogin.equals(GUEST_USER))
+		{
+			throw new Exception("invalid operation for guest user");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
