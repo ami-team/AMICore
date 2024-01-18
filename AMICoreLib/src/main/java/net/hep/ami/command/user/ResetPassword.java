@@ -20,6 +20,10 @@ public class ResetPassword extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private final String GUEST_USER = ConfigSingleton.getProperty("guest_user");
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public ResetPassword(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
@@ -49,6 +53,13 @@ public class ResetPassword extends AbstractCommand
 		if(!CaptchaSingleton.checkCaptcha(captchaHash, captchaText))
 		{
 			throw new Exception("invalid captcha verification");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(amiLogin.equals(GUEST_USER))
+		{
+			throw new Exception("invalid operation for guest user");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
