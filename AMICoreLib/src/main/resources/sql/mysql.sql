@@ -304,6 +304,7 @@ CREATE TABLE `router_dashboard` (
   `id` INT NOT NULL,
   `name` VARCHAR(128) NOT NULL,
   `rank` INT NOT NULL DEFAULT 0,
+  `json` TEXT NOT NULL,
   `shared` TINYINT(1) NOT NULL DEFAULT 0,
   `owner` VARCHAR(128) NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -316,34 +317,6 @@ ALTER TABLE `router_dashboard`
 ;;
 
 ALTER TABLE `router_dashboard`
-  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE `router_dashboard_controls` (
-  `id` INT NOT NULL,
-  `dashboardFK` INT NOT NULL,
-  `control` VARCHAR(128) NOT NULL,
-  `params` TEXT NOT NULL,
-  `settings` TEXT NOT NULL,
-  `transparent` TINYINT(1) NOT NULL DEFAULT 0,
-  `autoRefresh` TINYINT(1) NOT NULL DEFAULT 1,
-  `x` INT NOT NULL DEFAULT 0,
-  `y` INT NOT NULL DEFAULT 0,
-  `width` INT NOT NULL DEFAULT 0,
-  `height` INT NOT NULL DEFAULT 0,
-  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
-) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
-
-ALTER TABLE `router_dashboard_controls`
-  ADD CONSTRAINT `pk1_router_dashboard_controls` PRIMARY KEY (`id`),
-  ADD CONSTRAINT `fk1_router_dashboard_controls` FOREIGN KEY (`dashboardFK`) REFERENCES `router_dashboard` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-;;
-
-ALTER TABLE `router_dashboard_controls`
   MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 

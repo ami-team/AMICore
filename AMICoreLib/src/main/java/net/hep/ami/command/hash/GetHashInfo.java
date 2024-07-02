@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.Empty;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true)
@@ -29,7 +30,7 @@ public class GetHashInfo extends AbstractCommand
 
 		String id = arguments.get("id");
 
-		if(id != null)
+		if(!Empty.is(id, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			rowList = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `id` = ?0 AND (`shared` = 1 OR `owner` = ?1)", id, m_AMIUser).getAll();
 
@@ -42,7 +43,7 @@ public class GetHashInfo extends AbstractCommand
 		{
 			String hash = arguments.get("hash");
 
-			if(hash != null)
+			if(!Empty.is(hash, Empty.STRING_NULL_EMPTY_BLANK))
 			{
 				rowList = getQuerier("self").executeSQLQuery("router_short_url", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `expire` FROM `router_short_url` WHERE `hash` = ?0 AND (`shared` = 1 OR `owner` = ?1)", hash, m_AMIUser).getAll();
 

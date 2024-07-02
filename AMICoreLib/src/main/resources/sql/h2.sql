@@ -196,29 +196,11 @@ CREATE TABLE `router_dashboard` (
   "id" INTEGER AUTO_INCREMENT PRIMARY KEY,
   "name" VARCHAR(128) NOT NULL,
   "rank" integer NOT NULL DEFAULT 0,
+  "json" TEXT NOT NULL,
   "shared" integer NOT NULL DEFAULT 0,
   "owner" VARCHAR(128) NOT NULL,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE "router_dashboard_controls" (
-  "id" INTEGER AUTO_INCREMENT PRIMARY KEY,
-  "dashboardFK" INT NOT NULL,
-  "control" VARCHAR(128) NOT NULL,
-  "params" TEXT NOT NULL,
-  "settings" TEXT NOT NULL,
-  "transparent" integer NOT NULL DEFAULT 0,
-  "autoRefresh" integer NOT NULL DEFAULT 1,
-  "x" integer NOT NULL DEFAULT 0,
-  "y" integer NOT NULL DEFAULT 0,
-  "width" integer NOT NULL DEFAULT 0,
-  "height" integer NOT NULL DEFAULT 0,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY ("dashboardFK") REFERENCES "router_dashboard" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );;
 
 ------------------------------------------------------------------------------------------------------------------------

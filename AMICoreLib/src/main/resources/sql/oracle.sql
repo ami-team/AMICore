@@ -1133,6 +1133,7 @@ CREATE TABLE "router_dashboard" (
   "id" NUMBER(*, 0),
   "name" VARCHAR2(128),
   "rank" NUMBER(*, 0) DEFAULT 0,
+  "json" CLOB,
   "shared" NUMBER(1, 0) DEFAULT 0,
   "owner" VARCHAR2(128),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -1151,20 +1152,24 @@ ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "ck2_router_dashboard" CHECK("rank" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck3_router_dashboard" CHECK("shared" IS NOT NULL)
+ALTER TABLE "router_search_interface"
+  ADD CONSTRAINT "ck2_router_dashboard" CHECK("json" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck4_router_dashboard" CHECK("owner" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_dashboard" CHECK("shared" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck5_router_dashboard" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_dashboard" CHECK("owner" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck6_router_dashboard" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_dashboard" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck7_router_dashboard" CHECK("modified" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_dashboard"
@@ -1185,104 +1190,6 @@ CREATE TRIGGER "trig2_router_dashboard"
 BEGIN
   :NEW."modified" := SYSDATE;
 END;
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE "router_dashboard_controls" (
-  "id" NUMBER(*, 0),
-  "dashboardFK" NUMBER(*, 0),
-  "control" VARCHAR2(128),
-  "params" CLOB,
-  "settings" CLOB,
-  "transparent" NUMBER(1, 0) DEFAULT 0,
-  "autoRefresh" NUMBER(1, 0) DEFAULT 1,
-  "x" NUMBER(*, 0) DEFAULT 0,
-  "y" NUMBER(*, 0) DEFAULT 0,
-  "width" NUMBER(*, 0) DEFAULT 0,
-  "height" NUMBER(*, 0) DEFAULT 0,
-  "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "pk1_router_dashboard_controls" PRIMARY KEY ("id")
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck1_router_dashboard_controls" CHECK("id" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck2_router_dashboard_controls" CHECK("dashboardFK" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck3_router_dashboard_controls" CHECK("control" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck4_router_dashboard_controls" CHECK("params" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck5_router_dashboard_controls" CHECK("settings" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck6_router_dashboard_controls" CHECK("transparent" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck7_router_dashboard_controls" CHECK("autoRefresh" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck8_router_dashboard_controls" CHECK("x" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck9_router_dashboard_controls" CHECK("y" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck10_router_dashboard_controls" CHECK("width" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck11_router_dashboard_controls" CHECK("height" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck12_router_dashboard_controls" CHECK("created" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "ck13_router_dashboard_controls" CHECK("modified" IS NOT NULL)
-;;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "fk1_router_dashboard_controls" FOREIGN KEY ("dashboardFK") REFERENCES "router_dashboard" ("id") ON DELETE CASCADE
-;;
-
-CREATE SEQUENCE "seq_router_dashboard_controls"
-  START WITH 1 INCREMENT BY 1 CACHE 10
-;;
-
-CREATE TRIGGER "trig1_router_dashboard_controls"
-  BEFORE INSERT ON "router_dashboard_controls"
-  FOR EACH ROW
-  BEGIN
-    SELECT "seq_router_dashboard".NEXTVAL INTO :NEW."id" FROM dual;
-  END;
-;;
-
-CREATE TRIGGER "trig2_router_dashboard_controls"
-  BEFORE UPDATE ON "router_dashboard_controls"
-  FOR EACH ROW
-  BEGIN
-    :NEW."modified" := SYSDATE;
-  END;
 ;;
 
 ------------------------------------------------------------------------------------------------------------------------

@@ -299,6 +299,7 @@ CREATE TABLE `router_dashboard` (
   "id" SERIAL,
   "name" VARCHAR(128) NOT NULL,
   "rank" INT NOT NULL DEFAULT 0,
+  "json" TEXT NOT NULL,
   "shared" SMALLINT NOT NULL DEFAULT 0,
   "owner" VARCHAR(128) NOT NULL,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -311,35 +312,6 @@ ALTER TABLE "router_dashboard"
 
 CREATE TRIGGER "trig1_router_dashboard"
   BEFORE UPDATE ON "router_dashboard"
-  FOR EACH ROW
-    EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
-;;
-
-------------------------------------------------------------------------------------------------------------------------
-
-CREATE TABLE "router_dashboard_controls" (
-  "id" SERIAL,
-  "dashboardFK" INT NOT NULL,
-  "control" VARCHAR(128) NOT NULL,
-  "params" TEXT NOT NULL,
-  "settings" TEXT NOT NULL,
-  "transparent" SMALLINT NOT NULL DEFAULT 0,
-  "autoRefresh" SMALLINT NOT NULL DEFAULT 1,
-  "x" INT NOT NULL DEFAULT 0,
-  "y" INT NOT NULL DEFAULT 0,
-  "width" INT NOT NULL DEFAULT 0,
-  "height" INT NOT NULL DEFAULT 0,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);;
-
-ALTER TABLE "router_dashboard_controls"
-  ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id"),
-  ADD CONSTRAINT "fk1_router_dashboard" FOREIGN KEY ("dashboardFK") REFERENCES "router_dashboard" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
-;;
-
-CREATE TRIGGER "trig1_router_dashboard_controls"
-  BEFORE UPDATE ON "router_dashboard_controls"
   FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;

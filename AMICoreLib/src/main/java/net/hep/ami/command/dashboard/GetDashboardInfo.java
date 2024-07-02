@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true)
@@ -23,42 +24,65 @@ public class GetDashboardInfo extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
+		List<Row> rowList;
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		String amiLogin = arguments.getOrDefault("amiLogin", m_AMIUser);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RowSet rowSet = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `control`, `params`, `settings`, `transparent`, `autoRefresh`, `x`, `y`, `width`, `height` FROM `router_dashboard` WHERE `owner` = ?0", amiLogin);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		StringBuilder result = new StringBuilder();
-
-		result.append("<rowset>");
-
-		for(Row row: rowSet.iterate())
+		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK))
 		{
-			result.append("<row>")
-			      .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
-			      .append("<field name=\"control\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
-			      .append("<field name=\"params\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
-			      .append("<field name=\"settings\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
-			      .append("<field name=\"transparent\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
-			      .append("<field name=\"autoRefresh\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
-			      .append("<field name=\"x\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
-			      .append("<field name=\"y\"><![CDATA[").append(row.getValue(7)).append("]]></field>")
-			      .append("<field name=\"width\"><![CDATA[").append(row.getValue(8)).append("]]></field>")
-			      .append("<field name=\"height\"><![CDATA[").append(row.getValue(9)).append("]]></field>")
-			      .append("</row>")
-			;
+			throw new Exception("invalid usage");
 		}
 
-		result.append("</rowset>");
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String id = arguments.get("id");
+
+		if(!Empty.is(id, Empty.STRING_NULL_EMPTY_BLANK))
+		{
+			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `name`, `rank`, `json`, `shared`, `owner` FROM `router_dashboard` WHERE `id` = ?0 AND `owner` = ?1 AND (`shared` = 1 OR `owner` = ?1)", id, amiLogin, m_AMIUser).getAll();
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("undefined id `" + id + "`");
+			}
+		}
+		else
+		{
+			String name = arguments.get("name");
+
+			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `name`, `rank`, `json`, `shared`, `owner` FROM `router_dashboard` WHERE `name` = ?0 AND `owner` = ?1 AND (`shared` = 1 OR `owner` = ?1)", name, amiLogin, m_AMIUser).getAll();
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("undefined name `" + name + "`");
+			}
+			else
+			{
+				throw new Exception("invalid usage");
+			}
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return result;
+		Row row = rowList.get(0);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return new StringBuilder().append("<rowset>")
+		                          .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
+		                          .append("<field name=\"name\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
+		                          .append("<field name=\"rank\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
+		                          .append("<field name=\"json\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
+		                          .append("<field name=\"shared\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
+		                          .append("<field name=\"owner\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
+		                          .append("</row>")
+		;
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
