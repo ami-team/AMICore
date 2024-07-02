@@ -1129,7 +1129,7 @@ CREATE TRIGGER "trig1_router_user_role"
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE `router_dashboard` (
+CREATE TABLE "router_dashboard" (
   "id" NUMBER(*, 0),
   "name" VARCHAR2(128),
   "owner" VARCHAR2(128),
