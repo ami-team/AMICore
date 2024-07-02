@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS "router_authority";;
 DROP TABLE IF EXISTS `router_markdown`;;
 DROP TABLE IF EXISTS "router_short_url";;
 DROP TABLE IF EXISTS "router_search_interface";;
+DROP TABLE IF EXISTS "router_dashboard_controls";;
 DROP TABLE IF EXISTS "router_dashboard";;
 DROP TABLE IF EXISTS "router_user_role";;
 DROP TABLE IF EXISTS "router_user";;
@@ -191,8 +192,19 @@ CREATE TABLE "router_user_role" (
 
 ------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE "router_dashboard" (
+CREATE TABLE `router_dashboard` (
+  "id" INT NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
+  "owner" VARCHAR(128) NOT NULL,
+  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);;
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "router_dashboard_controls" (
   "id" INTEGER PRIMARY KEY,
+  "dashboardFK" INT NOT NULL,
   "control" VARCHAR(128) NOT NULL,
   "params" TEXT NOT NULL,
   "settings" TEXT NOT NULL,
@@ -202,9 +214,9 @@ CREATE TABLE "router_dashboard" (
   "y" integer NOT NULL DEFAULT 0,
   "width" integer NOT NULL DEFAULT 0,
   "height" integer NOT NULL DEFAULT 0,
-  "owner" VARCHAR(128) NOT NULL,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY ("dashboardFK") REFERENCES "router_dashboard" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
 );;
 
 ------------------------------------------------------------------------------------------------------------------------
