@@ -147,7 +147,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER DASHBOARDS                                                                                        */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> dashboards = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `name`, `rank`, `json`, `shared`, FROM `router_dashboard` WHERE `owner` = ?0 ORDER BY `rank`", amiLogin).getAll();
+		List<Row> dashboards = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `name`, `rank`, `json`, `shared` FROM `router_dashboard` WHERE `owner` = ?0 ORDER BY `rank`", amiLogin).getAll();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* BUILD MQTT TOKEN                                                                                           */
@@ -334,7 +334,7 @@ public class GetUserInfo extends AbstractCommand
 
 		result.append("<rowset type=\"dashboards\">");
 
-		for(Row row: bookmarks)
+		for(Row row: dashboards)
 		{
 			result.append("<row>")
 			      .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
