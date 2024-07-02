@@ -1141,19 +1141,19 @@ ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
 ;;
 
-ALTER TABLE "router_dashboard_controls"
+ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "ck1_router_dashboard" CHECK("name" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_dashboard_controls"
+ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "ck2_router_dashboard" CHECK("owner" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_dashboard_controls"
+ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "ck3_router_dashboard" CHECK("created" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_dashboard_controls"
+ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "ck4_router_dashboard" CHECK("modified" IS NOT NULL)
 ;;
 
