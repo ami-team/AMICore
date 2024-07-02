@@ -2,16 +2,17 @@ package net.hep.ami.command.dashboard;
 
 import java.util.*;
 
+import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true)
-public class RemoveWidget extends AbstractCommand
+public class RemoveDashboard extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public RemoveWidget(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
+	public RemoveDashboard(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
@@ -22,19 +23,36 @@ public class RemoveWidget extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
+		Update update;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
 		String id = arguments.get("id");
 
-
-		if(id == null)
+		if(id != null)
 		{
-			throw new Exception("invalid usage");
+			update = getQuerier("self").executeSQLUpdate("router_dashboard", "DELETE FROM `router_dashboard` WHERE `id` = ?0", id);
+		}
+		else
+		{
+			String name = arguments.get("name");
+
+			if(name != null)
+			{
+				update = getQuerier("self").executeSQLUpdate("router_dashboard", "DELETE FROM `router_dashboard` WHERE `name` = ?0", name);
+			}
+			else
+			{
+				throw new Exception("invalid usage");
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLUpdate("router_dashboard", "DELETE FROM `router_dashboard` WHERE `id` = ?0 AND `owner` = ?1", id, m_AMIUser).toStringBuilder();
-
-		/*------------------------------------------------------------------------------------------------------------*/
+		return new StringBuilder(
+				update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+						: "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -43,7 +61,7 @@ public class RemoveWidget extends AbstractCommand
 	@Contract(pure = true)
 	public static String help()
 	{
-		return "Remove the given widget.";
+		return "Remove a dashboard.";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -52,7 +70,7 @@ public class RemoveWidget extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-id=\"\"";
+		return "(-id=\"\" | -dashboard=\"\")";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

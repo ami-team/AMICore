@@ -30,8 +30,10 @@ public class AddHash extends AbstractCommand
 		String shared = arguments.getOrDefault("shared", "0");
 		String expire = arguments.getOrDefault("expire", "0");
 
-		if(json == null)
-		{
+		if(Empty.is(name, Empty.STRING_NULL_EMPTY_BLANK)
+		   ||
+		   Empty.is(json, Empty.STRING_NULL_EMPTY_BLANK)
+		 ) {
 			throw new Exception("invalid usage");
 		}
 
@@ -102,7 +104,7 @@ public class AddHash extends AbstractCommand
 	@Contract(pure = true)
 	public static String help()
 	{
-		return "Add a hash.";
+		return "Add a new hash.";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

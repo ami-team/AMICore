@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true)
@@ -23,25 +24,53 @@ public class AddWidget extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String control = arguments.get("control");
-		String params = arguments.get("params");
-		String settings = arguments.get("settings");
+		String name = arguments.get("name");
+		String json = arguments.get("json");
 
-		if(control == null || params == null || settings == null)
+		String shared = arguments.getOrDefault("shared", "0");
+
+		if(Empty.is(json, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			throw new Exception("invalid usage");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_dashboard", "INSERT INTO `router_dashboard` (`control`, `params`, `settings`, `transparent`, `autoRefresh`, `owner`, `created`, `modified`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", control, params, settings, arguments.containsKey("transparent"), arguments.containsKey("autoRefresh"), m_AMIUser);
+		String rank = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT max(`rank`) + 1 FROM `router_short_url` WHERE `owner` = ?0", m_AMIUser).getAll().get(0).getValue(0);
+
+		if(Empty.is(rank, Empty.STRING_AMI_NULL))
+		{
+			rank = "0";
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new StringBuilder(
-			update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
-			                                : "<error><![CDATA[nothing done]]></error>"
+		Update update = getQuerier("self").executeSQLUpdate("router_dashboard", "INSERT INTO `router_dashboard` (`name`, `rank`, `json`, `shared`, `owner`, `created`, `modified`) VALUES (?0, ?1, ?2, ?3, ?4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
+			name,
+			rank,
+			json,
+			shared,
+			m_AMIUser
 		);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(update.getNbOfUpdatedRows() == 1)
+		{
+			return new StringBuilder().append("<info><![CDATA[done with success]]></info>")
+			                          .append("<rowset>")
+			                          .append("<row>")
+			                          .append("<field name=\"name\"><![CDATA[").append(name).append("]]></field>")
+			                          .append("</row>")
+			                          .append("</rowset>")
+			;
+		}
+		else
+		{
+			return new StringBuilder("<error><![CDATA[nothing done]]></error>");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -50,7 +79,7 @@ public class AddWidget extends AbstractCommand
 	@Contract(pure = true)
 	public static String help()
 	{
-		return "Add a new widget in the user dashboard.";
+		return "Add a new dashboard.";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -59,7 +88,7 @@ public class AddWidget extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-control=\"\" -params=\"\" -settings=\"\" (-transparent)? (-autoRefresh)?";
+		return "-name=\"\" -json=\"\" (-shared=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

@@ -1152,8 +1152,8 @@ ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "ck2_router_dashboard" CHECK("rank" IS NOT NULL)
 ;;
 
-ALTER TABLE "router_search_interface"
-  ADD CONSTRAINT "ck2_router_dashboard" CHECK("json" IS NOT NULL)
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck3_router_dashboard" CHECK("json" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
