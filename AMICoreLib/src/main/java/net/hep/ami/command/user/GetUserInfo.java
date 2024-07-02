@@ -332,7 +332,7 @@ public class GetUserInfo extends AbstractCommand
 		/* DASHBOARDS                                                                                                 */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		result.append("<rowset type=\"dashboards\">");
+		result.append("<rowset type=\"dashboard\">");
 
 		for(Row row: dashboards)
 		{
