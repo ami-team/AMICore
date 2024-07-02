@@ -195,6 +195,8 @@ CREATE TABLE "router_user_role" (
 CREATE TABLE `router_dashboard` (
   "id" INT NOT NULL,
   "name" VARCHAR(128) NOT NULL,
+  "rank" integer NOT NULL DEFAULT 0,
+  "shared" integer NOT NULL DEFAULT 0,
   "owner" VARCHAR(128) NOT NULL,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

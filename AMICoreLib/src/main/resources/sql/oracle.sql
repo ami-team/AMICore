@@ -1132,6 +1132,8 @@ CREATE TRIGGER "trig1_router_user_role"
 CREATE TABLE "router_dashboard" (
   "id" NUMBER(*, 0),
   "name" VARCHAR2(128),
+  "rank" NUMBER(*, 0) DEFAULT 0,
+  "shared" NUMBER(1, 0) DEFAULT 0,
   "owner" VARCHAR2(128),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -1146,15 +1148,23 @@ ALTER TABLE "router_dashboard"
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck2_router_dashboard" CHECK("owner" IS NOT NULL)
+  ADD CONSTRAINT "ck2_router_dashboard" CHECK("rank" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck3_router_dashboard" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_dashboard" CHECK("shared" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck4_router_dashboard" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_dashboard" CHECK("owner" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck5_router_dashboard" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck6_router_dashboard" CHECK("modified" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_dashboard"
@@ -1205,7 +1215,7 @@ ALTER TABLE "router_dashboard_controls"
 ;;
 
 ALTER TABLE "router_dashboard_controls"
-    ADD CONSTRAINT "ck2_router_dashboard_controls" CHECK("dashboardFK" IS NOT NULL)
+  ADD CONSTRAINT "ck2_router_dashboard_controls" CHECK("dashboardFK" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard_controls"
