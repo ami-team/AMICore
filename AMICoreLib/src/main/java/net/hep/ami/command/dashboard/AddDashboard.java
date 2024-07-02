@@ -9,11 +9,11 @@ import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true)
-public class AddWidget extends AbstractCommand
+public class AddDashboard extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public AddWidget(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
+	public AddDashboard(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
 	}
