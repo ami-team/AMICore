@@ -312,11 +312,11 @@ CREATE TABLE `router_dashboard` (
 ) CHARSET=`utf8` COLLATE=`utf8_bin` ENGINE=`INNODB`;;
 
 ALTER TABLE `router_dashboard`
-    ADD CONSTRAINT `pk1_router_dashboard` PRIMARY KEY (`id`)
+  ADD CONSTRAINT `pk1_router_dashboard` PRIMARY KEY (`id`)
 ;;
 
 ALTER TABLE `router_dashboard`
-    MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
+  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT
 ;;
 
 ------------------------------------------------------------------------------------------------------------------------

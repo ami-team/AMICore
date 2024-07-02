@@ -306,12 +306,12 @@ CREATE TABLE `router_dashboard` (
 );;
 
 ALTER TABLE "router_dashboard"
-    ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
+  ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
 ;;
 
 CREATE TRIGGER "trig1_router_dashboard"
-    BEFORE UPDATE ON "router_dashboard"
-    FOR EACH ROW
+  BEFORE UPDATE ON "router_dashboard"
+  FOR EACH ROW
     EXECUTE PROCEDURE UPDATE_MODIFIED_FIELD()
 ;;
 
