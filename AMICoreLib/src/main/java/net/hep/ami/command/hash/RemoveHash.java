@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true)
@@ -29,7 +30,7 @@ public class RemoveHash extends AbstractCommand
 
 		String id = arguments.get("id");
 
-		if(id != null)
+		if(!Empty.is(id, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			update = getQuerier("self").executeSQLUpdate("router_short_url", "DELETE FROM `router_short_url` WHERE `id` = ?0", id);
 		}
@@ -37,7 +38,7 @@ public class RemoveHash extends AbstractCommand
 		{
 			String hash = arguments.get("hash");
 
-			if(hash != null)
+			if(!Empty.is(hash, Empty.STRING_NULL_EMPTY_BLANK))
 			{
 				update = getQuerier("self").executeSQLUpdate("router_short_url", "DELETE FROM `router_short_url` WHERE `hash` = ?0", hash);
 			}

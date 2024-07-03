@@ -5,6 +5,7 @@ import java.util.*;
 import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.*;
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_USER", visible = true)
@@ -29,15 +30,15 @@ public class RemoveDashboard extends AbstractCommand
 
 		String id = arguments.get("id");
 
-		if(id != null)
+		if(!Empty.is(id, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			update = getQuerier("self").executeSQLUpdate("router_dashboard", "DELETE FROM `router_dashboard` WHERE `id` = ?0", id);
 		}
 		else
 		{
-			String name = arguments.get("hash");
+			String hash = arguments.get("hash");
 
-			if(name != null)
+			if(!Empty.is(hash, Empty.STRING_NULL_EMPTY_BLANK))
 			{
 				update = getQuerier("self").executeSQLUpdate("router_dashboard", "DELETE FROM `router_dashboard` WHERE `hash` = ?0", hash);
 			}
