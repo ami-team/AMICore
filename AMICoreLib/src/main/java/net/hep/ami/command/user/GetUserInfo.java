@@ -147,7 +147,7 @@ public class GetUserInfo extends AbstractCommand
 		/* GET USER DASHBOARDS                                                                                        */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		List<Row> dashboards = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `name`, `rank`, `json`, `shared` FROM `router_dashboard` WHERE `owner` = ?0 ORDER BY `rank`", amiLogin).getAll();
+		List<Row> dashboards = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `archived` FROM `router_dashboard` WHERE `owner` = ?0 ORDER BY `rank`", amiLogin).getAll();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* BUILD MQTT TOKEN                                                                                           */
@@ -338,10 +338,12 @@ public class GetUserInfo extends AbstractCommand
 		{
 			result.append("<row>")
 			      .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
-			      .append("<field name=\"name\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
-			      .append("<field name=\"rank\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
-			      .append("<field name=\"json\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
-			      .append("<field name=\"shared\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
+			      .append("<field name=\"hash\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
+			      .append("<field name=\"name\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
+			      .append("<field name=\"rank\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
+			      .append("<field name=\"json\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
+			      .append("<field name=\"shared\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
+			      .append("<field name=\"archived\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
 			      .append("</row>")
 			;
 		}
