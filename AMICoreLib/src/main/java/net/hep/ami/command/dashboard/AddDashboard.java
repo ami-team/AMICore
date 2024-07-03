@@ -28,10 +28,31 @@ public class AddDashboard extends AbstractCommand
 		String json = arguments.get("json");
 
 		String shared = arguments.getOrDefault("shared", "0");
+		String archived = arguments.getOrDefault("archived", "0");
 
 		if(Empty.is(json, Empty.STRING_NULL_EMPTY_BLANK))
 		{
 			throw new Exception("invalid usage");
+		}
+
+		/*----------------------------------------------------------------------------------------------------------------*/
+
+		long uuid;
+
+		String hash;
+
+		for(;;)
+		{
+			uuid = UUID.randomUUID().getMostSignificantBits();
+
+			hash = Base64.getEncoder().encodeToString(Long.toString(uuid < 0 ? -uuid : +uuid).getBytes());
+
+			if(hash.length() >= 8)
+			{
+				hash = hash.substring(0, 8);
+
+				break;
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -45,11 +66,13 @@ public class AddDashboard extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_dashboard", "INSERT INTO `router_dashboard` (`name`, `rank`, `json`, `shared`, `owner`, `created`, `modified`) VALUES (?0, ?1, ?2, ?3, ?4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
+		Update update = getQuerier("self").executeSQLUpdate("router_dashboard", "INSERT INTO `router_dashboard` (`hash`, `name`, `rank`, `json`, `shared`, `archived`, `owner`, `created`, `modified`) VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
+			hash,
 			name,
 			rank,
 			json,
 			shared,
+			archived,
 			m_AMIUser
 		);
 
@@ -60,7 +83,7 @@ public class AddDashboard extends AbstractCommand
 			return new StringBuilder().append("<info><![CDATA[done with success]]></info>")
 			                          .append("<rowset>")
 			                          .append("<row>")
-			                          .append("<field name=\"name\"><![CDATA[").append(name).append("]]></field>")
+			                          .append("<field name=\"hash\"><![CDATA[").append(hash).append("]]></field>")
 			                          .append("</row>")
 			                          .append("</rowset>")
 			;
@@ -88,7 +111,7 @@ public class AddDashboard extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-name=\"\" -json=\"\" (-shared=\"\")?";
+		return "-name=\"\" -json=\"\" (-shared=\"\")? (-archived=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

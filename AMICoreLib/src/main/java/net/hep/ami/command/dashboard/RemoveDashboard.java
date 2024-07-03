@@ -35,11 +35,11 @@ public class RemoveDashboard extends AbstractCommand
 		}
 		else
 		{
-			String name = arguments.get("name");
+			String name = arguments.get("hash");
 
 			if(name != null)
 			{
-				update = getQuerier("self").executeSQLUpdate("router_dashboard", "DELETE FROM `router_dashboard` WHERE `name` = ?0", name);
+				update = getQuerier("self").executeSQLUpdate("router_dashboard", "DELETE FROM `router_dashboard` WHERE `hash` = ?0", hash);
 			}
 			else
 			{
@@ -51,7 +51,7 @@ public class RemoveDashboard extends AbstractCommand
 
 		return new StringBuilder(
 				update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
-						: "<error><![CDATA[nothing done]]></error>"
+				                                : "<error><![CDATA[nothing done]]></error>"
 		);
 	}
 
@@ -70,7 +70,7 @@ public class RemoveDashboard extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "(-id=\"\" | -dashboard=\"\")";
+		return "(-id=\"\" | -hash=\"\")";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
