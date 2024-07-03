@@ -1131,10 +1131,12 @@ CREATE TRIGGER "trig1_router_user_role"
 
 CREATE TABLE "router_dashboard" (
   "id" NUMBER(*, 0),
+  "hash" VARCHAR2(16),
   "name" VARCHAR2(128),
   "rank" NUMBER(*, 0) DEFAULT 0,
   "json" CLOB,
   "shared" NUMBER(1, 0) DEFAULT 0,
+  "archived" NUMBER(1, 0) DEFAULT 0,
   "owner" VARCHAR2(128),
   "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "modified" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -1144,32 +1146,40 @@ ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
 ;;
 
-ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck1_router_dashboard" CHECK("name" IS NOT NULL)
+ALTER TABLE "router_short_url"
+  ADD CONSTRAINT "ck1_router_dashboard" CHECK("hash" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck2_router_dashboard" CHECK("rank" IS NOT NULL)
+  ADD CONSTRAINT "ck2_router_dashboard" CHECK("name" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck3_router_dashboard" CHECK("json" IS NOT NULL)
+  ADD CONSTRAINT "ck3_router_dashboard" CHECK("rank" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck4_router_dashboard" CHECK("shared" IS NOT NULL)
+  ADD CONSTRAINT "ck4_router_dashboard" CHECK("json" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck5_router_dashboard" CHECK("owner" IS NOT NULL)
+  ADD CONSTRAINT "ck5_router_dashboard" CHECK("shared" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck6_router_dashboard" CHECK("created" IS NOT NULL)
+  ADD CONSTRAINT "ck6_router_dashboard" CHECK("archived" IS NOT NULL)
 ;;
 
 ALTER TABLE "router_dashboard"
-  ADD CONSTRAINT "ck7_router_dashboard" CHECK("modified" IS NOT NULL)
+  ADD CONSTRAINT "ck7_router_dashboard" CHECK("owner" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck8_router_dashboard" CHECK("created" IS NOT NULL)
+;;
+
+ALTER TABLE "router_dashboard"
+  ADD CONSTRAINT "ck9_router_dashboard" CHECK("modified" IS NOT NULL)
 ;;
 
 CREATE SEQUENCE "seq_router_dashboard"
