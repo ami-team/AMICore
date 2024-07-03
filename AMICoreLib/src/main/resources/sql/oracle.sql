@@ -1146,7 +1146,11 @@ ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "pk1_router_dashboard" PRIMARY KEY ("id")
 ;;
 
-ALTER TABLE "router_short_url"
+ALTER TABLE "router_dashboard"
+   ADD CONSTRAINT "uk1_router_dashboard" UNIQUE ("hash")
+;;
+
+ALTER TABLE "router_dashboard"
   ADD CONSTRAINT "ck1_router_dashboard" CHECK("hash" IS NOT NULL)
 ;;
 
