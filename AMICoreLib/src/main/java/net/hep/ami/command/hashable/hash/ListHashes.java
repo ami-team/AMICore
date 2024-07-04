@@ -1,4 +1,4 @@
-package net.hep.ami.command.hash;
+package net.hep.ami.command.hashable.hash;
 
 import java.util.*;
 

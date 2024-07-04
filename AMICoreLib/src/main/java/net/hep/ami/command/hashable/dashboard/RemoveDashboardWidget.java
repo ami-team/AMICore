@@ -1,9 +1,7 @@
-package net.hep.ami.command.dashboard;
+package net.hep.ami.command.hashable.dashboard;
 
 import net.hep.ami.command.AbstractCommand;
 import net.hep.ami.command.CommandMetadata;
-import net.hep.ami.data.Update;
-import net.hep.ami.utility.Empty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

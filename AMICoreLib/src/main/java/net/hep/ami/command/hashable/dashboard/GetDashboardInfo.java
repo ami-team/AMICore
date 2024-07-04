@@ -1,4 +1,4 @@
-package net.hep.ami.command.dashboard;
+package net.hep.ami.command.hashable.dashboard;
 
 import java.util.*;
 

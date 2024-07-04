@@ -20,18 +20,18 @@ public abstract class AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected final String m_AMIUser;
-	protected final String m_clientDN;
-	protected final String m_issuerDN;
-	protected final String m_notBefore;
-	protected final String m_notAfter;
+	public final String m_AMIUser;
+	public final String m_clientDN;
+	public final String m_issuerDN;
+	public final String m_notBefore;
+	public final String m_notAfter;
 
-	protected final boolean m_isSecure;
-	protected final boolean m_isCached;
+	public final boolean m_isSecure;
+	public final boolean m_isCached;
 
-	protected final String m_userAgent;
-	protected final String m_userSession;
-	protected final String m_userTimeZone;
+	public final String m_userAgent;
+	public final String m_userSession;
+	public final String m_userTimeZone;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -93,7 +93,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getAdminQuerier(@NotNull String catalog) throws Exception
+	public Querier getAdminQuerier(@NotNull String catalog) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, Querier.FLAG_ADMIN, m_transactionId);
 
@@ -108,7 +108,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getAdminQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
+	public Querier getAdminQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, Querier.FLAG_ADMIN, m_transactionId);
 
@@ -123,7 +123,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getQuerier(@NotNull String catalog) throws Exception
+	public Querier getQuerier(@NotNull String catalog) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(catalog, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN") ? Querier.FLAG_ADMIN : 0x00, m_transactionId);
 
@@ -138,7 +138,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getQuerier(@NotNull String catalog, int flags) throws Exception
+	public Querier getQuerier(@NotNull String catalog, int flags) throws Exception
 	{
 		if(m_userRoles.contains("AMI_ADMIN"))
 		{
@@ -162,7 +162,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
+	public Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass) throws Exception
 	{
 		TransactionalQuerier result = new TransactionalQuerier(externalCatalog, internalCatalog, jdbcUrl, user, pass, m_AMIUser, m_userTimeZone, m_userRoles.contains("AMI_ADMIN") ? Querier.FLAG_ADMIN : 0x00, m_transactionId);
 
@@ -177,7 +177,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, int flags) throws Exception
+	public Querier getQuerier(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, int flags) throws Exception
 	{
 		if(m_userRoles.contains("AMI_ADMIN"))
 		{
@@ -201,7 +201,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected StringBuilder executeCommand(@NotNull String command) throws Exception
+	public StringBuilder executeCommand(@NotNull String command) throws Exception
 	{
 		return CommandSingleton.chainCommand(command, m_userRoles, m_arguments, m_transactionId);
 	}
@@ -209,7 +209,7 @@ public abstract class AbstractCommand
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
-	protected StringBuilder executeCommand(@NotNull String command, @NotNull Map<String, String> arguments) throws Exception
+	public StringBuilder executeCommand(@NotNull String command, @NotNull Map<String, String> arguments) throws Exception
 	{
 		return CommandSingleton.chainCommand(command, m_userRoles, arguments, m_transactionId);
 	}
