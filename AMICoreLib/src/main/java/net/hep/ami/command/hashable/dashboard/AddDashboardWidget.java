@@ -35,8 +35,8 @@ public class AddDashboardWidget extends AbstractCommand
 		String hash = arguments.get("hash");
 		String json = arguments.get("json");
 
-		String transparent = arguments.getOrDefault("transparent", "0");
-		String autoRefresh = arguments.getOrDefault("autoRefresh", "0");
+		boolean transparent = "0".equals(arguments.getOrDefault("transparent", "0"));
+		boolean autoRefresh = "0".equals(arguments.getOrDefault("autoRefresh", "0");
 
 		if(Empty.is(hash, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
