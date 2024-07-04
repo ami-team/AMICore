@@ -17,7 +17,7 @@ public class AddDashboardWidget extends AbstractCommand
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	static TypeReference<HashMap<String, Object>> DICT_TYPE_REF = new TypeReference<>() {};
+	static TypeReference<LinkedHashMap<String, Object>> DICT_TYPE_REF = new TypeReference<>() {};
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
