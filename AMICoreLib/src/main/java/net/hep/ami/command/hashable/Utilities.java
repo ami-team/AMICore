@@ -36,7 +36,7 @@ public class Utilities
 
     public static String getRank(AbstractCommand command, String entity) throws Exception
     {
-        String rank = command.getQuerier("self").executeSQLQuery(entity, "SELECT max(`rank`) + 1 FROM " + entity + " WHERE `owner` = ?0", command.m_AMIUser).getAll().get(0).getValue(0);
+        String rank = command.getQuerier("self").executeSQLQuery(entity, "SELECT max(`rank`) + 1 FROM `" + entity + "` WHERE `owner` = ?0", command.m_AMIUser).getAll().get(0).getValue(0);
 
         if(Empty.is(rank, Empty.STRING_AMI_NULL))
         {
