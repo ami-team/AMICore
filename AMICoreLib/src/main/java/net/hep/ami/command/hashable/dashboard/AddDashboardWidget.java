@@ -71,11 +71,11 @@ public class AddDashboardWidget extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		HashMap<String, Object> dashboardJSON = new ObjectMapper().readValue(dashboard, DICT_TYPE_REF);
+		Map<String, Object> dashboardJSON = new ObjectMapper().readValue(dashboard, DICT_TYPE_REF);
 
-		HashMap<String, Object> controlJSON = new ObjectMapper().readValue(json, DICT_TYPE_REF);
+		Map<String, Object> controlJSON = new ObjectMapper().readValue(json, DICT_TYPE_REF);
 
-		Map<String, Object> widget = new HashMap<>();
+		Map<String, Object> widget = new LinkedHashMap<>();
 
 		widget.put("control", controlJSON.get("control"));
 		widget.put("params", controlJSON.get("params"));
