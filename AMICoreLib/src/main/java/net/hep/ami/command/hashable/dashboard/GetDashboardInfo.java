@@ -28,22 +28,11 @@ public class GetDashboardInfo extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String amiLogin = arguments.getOrDefault("amiLogin", m_AMIUser);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(Empty.is(amiLogin, Empty.STRING_NULL_EMPTY_BLANK))
-		{
-			throw new Exception("invalid usage");
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
 		String id = arguments.get("id");
 
 		if(!Empty.is(id, Empty.STRING_NULL_EMPTY_BLANK))
 		{
-			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `archived`, `owner` FROM `router_dashboard` WHERE `id` = ?0 AND `owner` = ?1 AND (`shared` = 1 OR `owner` = ?1)", id, amiLogin, m_AMIUser).getAll();
+			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `archived`, `owner` FROM `router_dashboard` WHERE `id` = ?0 AND (`shared` = 1 OR `owner` = ?1)", id, m_AMIUser).getAll();
 
 			if(rowList.size() != 1)
 			{
@@ -54,11 +43,14 @@ public class GetDashboardInfo extends AbstractCommand
 		{
 			String hash = arguments.get("hash");
 
-			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `archived`, `owner` FROM `router_dashboard` WHERE `hash` = ?0 AND `owner` = ?1 AND (`shared` = 1 OR `owner` = ?1)", hash, amiLogin, m_AMIUser).getAll();
-
-			if(rowList.size() != 1)
+			if(!Empty.is(hash, Empty.STRING_NULL_EMPTY_BLANK))
 			{
-				throw new Exception("undefined name `" + hash + "`");
+				rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `archived`, `owner` FROM `router_dashboard` WHERE `hash` = ?0 AND (`shared` = 1 OR `owner` = ?1)", hash, m_AMIUser).getAll();
+
+				if(rowList.size() != 1)
+				{
+					throw new Exception("undefined name `" + hash + "`");
+				}
 			}
 			else
 			{
@@ -75,12 +67,12 @@ public class GetDashboardInfo extends AbstractCommand
 		return new StringBuilder().append("<rowset>")
 		                          .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
 		                          .append("<field name=\"hash\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
-		                          .append("<field name=\"name\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
-		                          .append("<field name=\"rank\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
-		                          .append("<field name=\"json\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
-		                          .append("<field name=\"shared\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
-		                          .append("<field name=\"archived\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
-		                          .append("<field name=\"owner\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
+		                          .append("<field name=\"name\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
+		                          .append("<field name=\"rank\"><![CDATA[").append(row.getValue(3)).append("]]></field>")
+		                          .append("<field name=\"json\"><![CDATA[").append(row.getValue(4)).append("]]></field>")
+		                          .append("<field name=\"shared\"><![CDATA[").append(row.getValue(5)).append("]]></field>")
+		                          .append("<field name=\"archived\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
+		                          .append("<field name=\"owner\"><![CDATA[").append(row.getValue(7)).append("]]></field>")
 		                          .append("</row>")
 		;
 
