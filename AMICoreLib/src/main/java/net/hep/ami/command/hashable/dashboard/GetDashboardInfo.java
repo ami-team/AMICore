@@ -54,7 +54,7 @@ public class GetDashboardInfo extends AbstractCommand
 		{
 			String hash = arguments.get("hash");
 
-			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `archived`, `owner` FROM `router_dashboard` WHERE `name` = ?0 AND `owner` = ?1 AND (`shared` = 1 OR `owner` = ?1)", hash, amiLogin, m_AMIUser).getAll();
+			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `hash`, `name`, `rank`, `json`, `shared`, `archived`, `owner` FROM `router_dashboard` WHERE `hash` = ?0 AND `owner` = ?1 AND (`shared` = 1 OR `owner` = ?1)", hash, amiLogin, m_AMIUser).getAll();
 
 			if(rowList.size() != 1)
 			{
