@@ -95,7 +95,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLUpdate("router_dashboard", "UPDATE `router_dashboard` SET `json` = ?0 WHERE `hash` = ?1 AND `owner` = ?1", dashboard, hash, m_AMIUser).toStringBuilder();
+		return getQuerier("self").executeSQLUpdate("router_dashboard", "UPDATE `router_dashboard` SET `json` = ?0 WHERE `hash` = ?1 AND `owner` = ?2", dashboard, hash, m_AMIUser).toStringBuilder();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
