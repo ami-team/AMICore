@@ -32,7 +32,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String hash = arguments.get("hash");
-		String widgetHash = arguments.get("widget-hash");
+		String widgetId = arguments.get("widget-id");
 		String transparent = arguments.get("transparent");
 		String autoRefresh = arguments.get("autoRefresh");
 		String x = arguments.get("x");
@@ -42,7 +42,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 
 		if(Empty.is(hash, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
-		   Empty.is(widgetHash, Empty.STRING_NULL_EMPTY_BLANK)
+		   Empty.is(widgetId, Empty.STRING_NULL_EMPTY_BLANK)
 		) {
 			throw new Exception("invalid usage");
 		}
@@ -60,7 +60,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 
 		Map<String, Object> dashboardJSON = new ObjectMapper().readValue(dashboard, DICT_TYPE_REF);
 
-		Map<String, Object> widget = (Map<String, Object>) dashboardJSON.get(widgetHash);
+		Map<String, Object> widget = (Map<String, Object>) dashboardJSON.get(widgetId);
 
 		if(widget != null)
 		{
