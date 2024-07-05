@@ -72,19 +72,19 @@ public class UpdateDashboardWidget extends AbstractCommand
 				widget.put("autoRefresh", "0".equals(autoRefresh));
 			}
 
-			if(autoRefresh != null) {
+			if(x != null) {
 				widget.put("x", Integer.valueOf(x));
 			}
 
-			if(autoRefresh != null) {
+			if(y != null) {
 				widget.put("y", Integer.valueOf(y));
 			}
 
-			if(autoRefresh != null) {
+			if(width != null) {
 				widget.put("width", Integer.valueOf(width));
 			}
 
-			if(autoRefresh != null) {
+			if(height != null) {
 				widget.put("height", Integer.valueOf(height));
 			}
 		}
@@ -115,7 +115,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-hash=\"\" -widget-hash=\"\" (-transparent=\"\")? (-autoRefresh=\"\")? (-x=\"\")? (-y=\"\")? (-width=\"\")? (-height=\"\")?";
+		return "-hash=\"\" -widgetId=\"\" (-transparent=\"\")? (-autoRefresh=\"\")? (-x=\"\")? (-y=\"\")? (-width=\"\")? (-height=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
