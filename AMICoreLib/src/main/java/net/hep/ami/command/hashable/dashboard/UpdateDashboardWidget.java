@@ -32,7 +32,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		String hash = arguments.get("hash");
-		String widgetId = arguments.get("widget-id");
+		String widgetId = arguments.get("widgetId");
 		String transparent = arguments.get("transparent");
 		String autoRefresh = arguments.get("autoRefresh");
 		String x = arguments.get("x");
@@ -44,7 +44,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 		   ||
 		   Empty.is(widgetId, Empty.STRING_NULL_EMPTY_BLANK)
 		) {
-			throw new Exception("invalid usage... |" + hash + "| - |" + widgetId + "|");
+			throw new Exception("invalid usage");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
