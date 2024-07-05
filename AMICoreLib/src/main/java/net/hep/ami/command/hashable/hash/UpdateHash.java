@@ -63,7 +63,7 @@ public class UpdateHash extends AbstractCommand
 
 		id = row.getValue(0);
 
-		String hash = arguments.getOrDefault("name", row.getValue(1));
+		String name = arguments.getOrDefault("name", row.getValue(1));
 		String rank = arguments.getOrDefault("rank", row.getValue(2));
 		String json = arguments.getOrDefault("json", row.getValue(3));
 		String shared = arguments.getOrDefault("shared", row.getValue(4));
@@ -71,7 +71,7 @@ public class UpdateHash extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_short_url", "UPDATE `router_short_url` SET `name` = ?1, `rank` = ?2, `json` = ?3, `shared` = ?4, `expire` = ?5 WHERE `id` = ?0", id, hash, rank, json, shared, expire);
+		Update update = getQuerier("self").executeSQLUpdate("router_short_url", "UPDATE `router_short_url` SET `name` = ?1, `rank` = ?2, `json` = ?3, `shared` = ?4, `expire` = ?5 WHERE `id` = ?0", id, name, rank, json, shared, expire);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 

@@ -2,6 +2,7 @@ package net.hep.ami.command.hashable.dashboard;
 
 import java.util.*;
 
+import net.hep.ami.data.*;
 import net.hep.ami.command.*;
 
 import org.jetbrains.annotations.*;
@@ -22,42 +23,81 @@ public class UpdateDashboard extends AbstractCommand
 	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		String id = arguments.get("id");
-		String transparent = arguments.get("transparent");
-		String x = arguments.get("x");
-		String y = arguments.get("y");
-		String width = arguments.get("width");
-		String height = arguments.get("height");
+		List<Row> rowList;
 
-		if(id == null || transparent == null || x == null || y == null || width == null || height == null)
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String id = arguments.get("id");
+
+		if(id != null)
 		{
-			throw new Exception("invalid usage");
+			rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `name`, `rank`, `json`, `shared`, `archived` FROM `router_dashboard` WHERE `id` = ?0 AND (`shared` = 1 OR `owner` = ?1)", id, m_AMIUser).getAll();
+
+			if(rowList.size() != 1)
+			{
+				throw new Exception("undefined id `" + id + "`");
+			}
+		}
+		else
+		{
+			String hash = arguments.get("hash");
+
+			if(hash != null)
+			{
+				rowList = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `id`, `name`, `rank`, `json`, `shared`, `archived` FROM `router_dashboard` WHERE `hash` = ?0 AND (`shared` = 1 OR `owner` = ?1)", hash, m_AMIUser).getAll();
+
+				if(rowList.size() != 1)
+				{
+					throw new Exception("undefined hash `" + hash + "`");
+				}
+			}
+			else
+			{
+				throw new Exception("invalid usage");
+			}
 		}
 
-		/*-----------------------------------------------------------------*/
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		return getQuerier("self").executeSQLUpdate("router_dashboard", "UPDATE `router_dashboard` SET `transparent` = ?0, `x` = ?1, `y` = ?2, `width` = ?3, `height` = ?4 WHERE `id` = ?5 AND `owner` = ?6", transparent, x, y, width, height, id, m_AMIUser).toStringBuilder();
+		Row row = rowList.get(0);
 
-		/*-----------------------------------------------------------------*/
+		id = row.getValue(0);
+
+		String name = arguments.getOrDefault("name", row.getValue(1));
+		String rank = arguments.getOrDefault("rank", row.getValue(2));
+		String json = arguments.getOrDefault("json", row.getValue(3));
+		String shared = arguments.getOrDefault("shared", row.getValue(4));
+		String archived = arguments.getOrDefault("archived", row.getValue(5));
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Update update = getQuerier("self").executeSQLUpdate("router_dashboard", "UPDATE `router_dashboard` SET `name` = ?1, `rank` = ?2, `json` = ?3, `shared` = ?4, `archived` = ?5 WHERE `id` = ?0", id, name, rank, json, shared, archived);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return new StringBuilder(
+				update.getNbOfUpdatedRows() > 0 ? "<info><![CDATA[done with success]]></info>"
+				                                : "<error><![CDATA[nothing done]]></error>"
+		);
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Contract(pure = true)
 	public static String help()
 	{
-		return "Update the given widget.";
+		return "Update the given dashboard.";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@NotNull
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-id=\"\" -transparent=\"\" -x=\"\"-y=\"\" -width=\"\" -height=\"\"";
+		return "(-id=\"\" | -hash=\"\") (-name=\"\")? (-rank=\"\")? (-json=\"\")? (-shared=\"\")? (-archived=\"\")?";
 	}
 
-	/*---------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------------------------*/
 }
