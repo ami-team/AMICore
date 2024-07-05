@@ -44,7 +44,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 		   ||
 		   Empty.is(widgetId, Empty.STRING_NULL_EMPTY_BLANK)
 		) {
-			throw new Exception("invalid usage...");
+			throw new Exception("invalid usage... |" + hash + "| - |" + widgetId + "|");
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
