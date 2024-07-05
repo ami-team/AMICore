@@ -65,6 +65,7 @@ public class GetDashboardInfo extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		return new StringBuilder().append("<rowset>")
+		                          .append("<row>")
 		                          .append("<field name=\"id\"><![CDATA[").append(row.getValue(0)).append("]]></field>")
 		                          .append("<field name=\"hash\"><![CDATA[").append(row.getValue(1)).append("]]></field>")
 		                          .append("<field name=\"name\"><![CDATA[").append(row.getValue(2)).append("]]></field>")
@@ -74,6 +75,7 @@ public class GetDashboardInfo extends AbstractCommand
 		                          .append("<field name=\"archived\"><![CDATA[").append(row.getValue(6)).append("]]></field>")
 		                          .append("<field name=\"owner\"><![CDATA[").append(row.getValue(7)).append("]]></field>")
 		                          .append("</row>")
+		                          .append("</rowset>")
 		;
 
 		/*------------------------------------------------------------------------------------------------------------*/
