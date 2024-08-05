@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS `router_authority`;;
 DROP TABLE IF EXISTS `router_markdown`;;
 DROP TABLE IF EXISTS `router_short_url`;;
 DROP TABLE IF EXISTS `router_search_interface`;;
-DROP TABLE IF EXISTS `router_dashboard_controls`;;
 DROP TABLE IF EXISTS `router_dashboard`;;
 DROP TABLE IF EXISTS `router_user_role`;;
 DROP TABLE IF EXISTS `router_user`;;
