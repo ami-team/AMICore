@@ -47,10 +47,18 @@ public class AddDashboardWidget extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String dashboard = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `json` FROM `router_dashboard` WHERE `hash` = ?0", hash).getAll().get(0).getValue(0);
+		String dashboard;
 
-		if(Empty.is(dashboard, Empty.STRING_AMI_NULL))
+		List<Row> rows = getQuerier("self").executeSQLQuery("router_dashboard", "SELECT `json` FROM `router_dashboard` WHERE `hash` = ?0", hash).getAll();
+
+		if(rows.size() == 1)
 		{
+			dashboard = rows.get(0).getValue(0);
+		}
+		else
+		{
+			dashboard = "{}";
+
 			String newHash = Utilities.getNewHash();
 
 			String newRank = Utilities.getRank(this, "router_dashboard");
@@ -66,7 +74,6 @@ public class AddDashboardWidget extends AbstractCommand
 			);
 
 			hash = newHash;
-			dashboard = "{}";
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
