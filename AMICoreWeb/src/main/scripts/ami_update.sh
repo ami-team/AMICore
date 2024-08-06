@@ -72,14 +72,14 @@ fi
 ########################################################################################################################
 ########################################################################################################################
 
-_box "Updating '\${AMI_HOME}/app/AMI.war'"
+_box "Updating '\${AMI_HOME}/webapps/AMI.war'"
 
 (
-  rm -fr "${AMI_HOME}/app/AMI/"
+  rm -fr "${AMI_HOME}/webapps/AMI/"
 
-  mv "${AMI_HOME}/app/AMI.war" "${AMI_HOME}/app/AMI.war.old"
+  mv "${AMI_HOME}/webapps/AMI.war" "${AMI_HOME}/webapps/AMI.war.old"
 
-  curl -L https://repo.ami-ecosystem.in2p3.fr/releases/net/hep/ami/AMICoreWeb/1.0.0/AMICoreWeb-1.0.0.war > "${AMI_HOME}/app/AMI.war"
+  curl -L https://repo.ami-ecosystem.in2p3.fr/releases/net/hep/ami/AMICoreWeb/1.0.0/AMICoreWeb-1.0.0.war > "${AMI_HOME}/webapps/AMI.war"
 
   _ok
 
