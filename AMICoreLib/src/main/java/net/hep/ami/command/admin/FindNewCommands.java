@@ -27,9 +27,91 @@ public class FindNewCommands extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
-	@Override
 	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		ClassSingleton.reload();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		RouterQuerier querier = new RouterQuerier();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		String commandName;
+		String commandRole;
+
+		int commandVisible;
+
+		Set<String> foundCommandNames = new HashSet<>();
+
+		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
+
+		for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
+		{
+			try
+			{
+				Class<?> clazz = ClassSingleton.forName(commandClass);
+
+				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
+
+				if(commandMetadata != null
+						&&
+						(clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+						&&
+						ClassSingleton.extendsClass(clazz, AbstractCommand.class)
+						&&
+						!existingCommandNames.contains(commandName = clazz.getSimpleName())
+				) {
+					/*------------------------------------------------------------------------------------------------*/
+
+					commandRole = commandMetadata.role();
+
+					commandVisible = commandMetadata.visible() ? 1 : 0;
+
+					/*------------------------------------------------------------------------------------------------*/
+
+					LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
+
+					/*------------------------------------------------------------------------------------------------*/
+
+					querier.executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false);
+					querier.executeSQLUpdate("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false);
+					querier.executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?)", false, null, false);
+					querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false);
+
+					/*------------------------------------------------------------------------------------------------*/
+
+					foundCommandNames.add(commandName);
+
+					/*------------------------------------------------------------------------------------------------*/
+				}
+			}
+			catch(Exception e)
+			{
+				/* IGNORE */
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(foundCommandNames.size() > 0)
+		{
+			CommandSingleton.reload();
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return new StringBuilder("<info><![CDATA[done with success, added command(s): " + foundCommandNames + "]]></info>");
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+
+	@NotNull
+	//@Override
+	public StringBuilder mainold(@NotNull Map<String, String> arguments) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
