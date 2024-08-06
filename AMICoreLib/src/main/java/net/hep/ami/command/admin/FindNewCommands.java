@@ -130,10 +130,15 @@ public class FindNewCommands extends AbstractCommand
 		}
 		finally
 		{
-			statement4.close();
+			/*statement4.close();
 			statement3.close();
 			statement2.close();
+			statement1.close();*/
+
 			statement1.close();
+			statement2.close();
+			statement3.close();
+			statement4.close();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
