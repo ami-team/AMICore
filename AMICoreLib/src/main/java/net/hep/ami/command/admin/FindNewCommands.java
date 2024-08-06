@@ -120,16 +120,9 @@ public class FindNewCommands extends AbstractCommand
 		try
 		{
 			statement1.executeBatch();
-			querier.getConnection().commit();
-
 			statement2.executeBatch();
-			querier.getConnection().commit();
-
 			statement3.executeBatch();
-			querier.getConnection().commit();
-
 			statement4.executeBatch();
-			querier.getConnection().commit();
 		}
 		catch(Exception e)
 		{
