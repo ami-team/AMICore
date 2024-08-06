@@ -20,6 +20,15 @@ public class FindNewCommands extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private record CommandDescr(
+		@NotNull String commandName,
+		@NotNull String commandClass,
+		@NotNull Integer commandVisible,
+		@Nullable String commandRole
+	) {}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public FindNewCommands(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
 	{
 		super(userRoles, arguments, transactionId);
@@ -44,7 +53,7 @@ public class FindNewCommands extends AbstractCommand
 
 		int commandVisible;
 
-		Set<String> foundCommandNames = new HashSet<>();
+		List<CommandDescr> commandDescrs = new ArrayList<>();
 
 		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
@@ -57,13 +66,13 @@ public class FindNewCommands extends AbstractCommand
 				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
 
 				if(commandMetadata != null
-						&&
-						(clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
-						&&
-						ClassSingleton.extendsClass(clazz, AbstractCommand.class)
-						&&
-						!existingCommandNames.contains(commandName = clazz.getSimpleName())
-				) {
+				   &&
+				   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+				   &&
+				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
+				   &&
+				   !existingCommandNames.contains(commandName = clazz.getSimpleName())
+				 ) {
 					/*------------------------------------------------------------------------------------------------*/
 
 					commandRole = commandMetadata.role();
@@ -72,18 +81,11 @@ public class FindNewCommands extends AbstractCommand
 
 					/*------------------------------------------------------------------------------------------------*/
 
+					commandDescrs.add(new CommandDescr(commandName, commandClass, commandVisible, commandRole));
+
+					/*------------------------------------------------------------------------------------------------*/
+
 					LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
-
-					/*------------------------------------------------------------------------------------------------*/
-
-					querier.executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?0", commandName);
-					querier.executeSQLUpdate("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?0, ?1, ?2)", commandName, commandClass, commandVisible);
-					querier.executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?0)", commandName);
-					querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))", commandName, commandRole);
-
-					/*------------------------------------------------------------------------------------------------*/
-
-					foundCommandNames.add(commandName);
 
 					/*------------------------------------------------------------------------------------------------*/
 				}
@@ -95,15 +97,52 @@ public class FindNewCommands extends AbstractCommand
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMMAND CLEANUP                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(foundCommandNames.size() > 0)
+		for(CommandDescr descr: commandDescrs)
+		{
+			querier.executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?0)", descr.commandName);
+
+			querier.executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?0", descr.commandName);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMMAND INSERTION                                                                                          */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Set<String> addedCommands = new HashSet<>();
+		Set<String> failingCommands = new HashSet<>();
+
+		for(CommandDescr descr: commandDescrs)
+		{
+			if(querier.executeSQLUpdate("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?0, ?1, ?2)", descr.commandName, descr.commandClass, descr.commandVisible).getNbOfUpdatedRows() == 1)
+			{
+				if(querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))", descr.commandName, descr.commandRole).getNbOfUpdatedRows() == 1)
+				{
+					addedCommands.add(descr.commandName);
+				}
+				else
+				{
+					failingCommands.add(descr.commandName);
+				}
+			}
+			else
+			{
+				failingCommands.add(descr.commandName);
+			}
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(addedCommands.size() > 0)
 		{
 			CommandSingleton.reload();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success, added command(s): " + foundCommandNames + "]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success, added command(s): [" + String.join(", ", addedCommands) + "], failing commands: [" + String.join(", ", failingCommands) + "]]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
