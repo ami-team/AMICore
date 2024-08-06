@@ -37,8 +37,7 @@ public class FindNewCommands extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		//Querier querier = getQuerier("self");
-		RouterQuerier querier = new RouterQuerier();
+		Querier querier = getQuerier("self");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -121,9 +120,16 @@ public class FindNewCommands extends AbstractCommand
 		try
 		{
 			statement1.executeBatch();
+			querier.getConnection().commit();
+
 			statement2.executeBatch();
+			querier.getConnection().commit();
+
 			statement3.executeBatch();
+			querier.getConnection().commit();
+
 			statement4.executeBatch();
+			querier.getConnection().commit();
 		}
 		catch(Exception e)
 		{
