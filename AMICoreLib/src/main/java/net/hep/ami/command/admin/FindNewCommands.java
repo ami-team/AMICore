@@ -49,7 +49,9 @@ public class FindNewCommands extends AbstractCommand
 
 		PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false);
 
-		PreparedStatement statement3 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false);
+		PreparedStatement statement3 = querier.sqlPreparedStatement("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?)", false, null, false);
+
+		PreparedStatement statement4 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false);
 
 		for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
@@ -82,11 +84,14 @@ public class FindNewCommands extends AbstractCommand
 					statement2.setInt(3, commandVisible);
 
 					statement3.setString(1, commandName);
-					statement3.setString(2, commandRole);
+
+					statement4.setString(1, commandName);
+					statement4.setString(2, commandRole);
 
 					statement1.addBatch();
 					statement2.addBatch();
 					statement3.addBatch();
+					statement4.addBatch();
 
 					/*------------------------------------------------------------------------------------------------*/
 
@@ -108,6 +113,7 @@ public class FindNewCommands extends AbstractCommand
 			statement1.executeBatch();
 			statement2.executeBatch();
 			statement3.executeBatch();
+			statement4.executeBatch();
 		}
 		catch(Exception e)
 		{
@@ -115,6 +121,7 @@ public class FindNewCommands extends AbstractCommand
 		}
 		finally
 		{
+			statement4.close();
 			statement3.close();
 			statement2.close();
 			statement1.close();
