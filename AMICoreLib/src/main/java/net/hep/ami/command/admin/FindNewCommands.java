@@ -76,10 +76,10 @@ public class FindNewCommands extends AbstractCommand
 
 					/*------------------------------------------------------------------------------------------------*/
 
-					querier.executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?", commandName);
-					querier.executeSQLUpdate("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", commandName, commandClass, commandVisible);
-					querier.executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?)", commandName);
-					querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", commandName, commandRole);
+					querier.executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?0", commandName);
+					querier.executeSQLUpdate("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?0, ?1, ?2)", commandName, commandClass, commandVisible);
+					querier.executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?0)", commandName);
+					querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))", commandName, commandRole);
 
 					/*------------------------------------------------------------------------------------------------*/
 
