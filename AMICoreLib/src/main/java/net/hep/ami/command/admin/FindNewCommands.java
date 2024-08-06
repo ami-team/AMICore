@@ -45,9 +45,11 @@ public class FindNewCommands extends AbstractCommand
 
 		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
-		PreparedStatement statement1 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false);
+		PreparedStatement statement1 = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false);
 
-		PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false);
+		PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false);
+
+		PreparedStatement statement3 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false);
 
 		for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
@@ -65,7 +67,6 @@ public class FindNewCommands extends AbstractCommand
 				   &&
 				   !existingCommandNames.contains(commandName = clazz.getSimpleName())
 				 ) {
-
 					/*------------------------------------------------------------------------------------------------*/
 
 					commandRole = commandMetadata.role();
@@ -75,14 +76,17 @@ public class FindNewCommands extends AbstractCommand
 					/*------------------------------------------------------------------------------------------------*/
 
 					statement1.setString(1, commandName);
-					statement1.setString(2, commandClass);
-					statement1.setInt(3, commandVisible);
 
 					statement2.setString(1, commandName);
-					statement2.setString(2, commandRole);
+					statement2.setString(2, commandClass);
+					statement2.setInt(3, commandVisible);
+
+					statement3.setString(1, commandName);
+					statement3.setString(2, commandRole);
 
 					statement1.addBatch();
 					statement2.addBatch();
+					statement3.addBatch();
 
 					/*------------------------------------------------------------------------------------------------*/
 
@@ -103,9 +107,11 @@ public class FindNewCommands extends AbstractCommand
 		{
 			statement1.executeBatch();
 			statement2.executeBatch();
+			statement3.executeBatch();
 		}
 		finally
 		{
+			statement3.close();
 			statement2.close();
 			statement1.close();
 		}
