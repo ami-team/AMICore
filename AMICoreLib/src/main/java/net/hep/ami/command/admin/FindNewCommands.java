@@ -135,14 +135,7 @@ public class FindNewCommands extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(addedCommands.size() > 0)
-		{
-			CommandSingleton.reload();
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return new StringBuilder("<info><![CDATA[done with success, added command(s): [" + String.join(", ", addedCommands) + "], failing commands: [" + String.join(", ", failingCommands) + "]]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success, added command(s): [" + String.join(", ", addedCommands) + "], failing command(s): [" + String.join(", ", failingCommands) + "]]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
