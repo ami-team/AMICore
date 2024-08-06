@@ -7,12 +7,17 @@ import java.lang.reflect.*;
 import net.hep.ami.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
+import net.hep.ami.command.user.*;
 
 import org.jetbrains.annotations.*;
 
 @CommandMetadata(role = "AMI_ADMIN", visible = false)
 public class FindNewCommands extends AbstractCommand
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(AddUser.class.getSimpleName());
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public FindNewCommands(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
@@ -74,6 +79,10 @@ public class FindNewCommands extends AbstractCommand
 					commandRole = commandMetadata.role();
 
 					commandVisible = commandMetadata.visible() ? 1 : 0;
+
+					/*------------------------------------------------------------------------------------------------*/
+
+					LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
 
 					/*------------------------------------------------------------------------------------------------*/
 
