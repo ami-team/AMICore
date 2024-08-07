@@ -160,7 +160,7 @@ public class FindNewCommands extends AbstractCommand
 
 		int commandVisible;
 
-		Set<String> foundCommandNames = new HashSet<>();
+		List<String> foundCommandNames = new ArrayList<>();
 
 		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
