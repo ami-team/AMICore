@@ -136,13 +136,13 @@ public class FindNewCommands extends AbstractCommand
 
 				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 			}
+
+			querier.commit();
 		}
 		catch(SQLException e)
 		{
 			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
-
-		//querier.getConnection().commit();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* COMMAND INSERTION                                                                                          */
