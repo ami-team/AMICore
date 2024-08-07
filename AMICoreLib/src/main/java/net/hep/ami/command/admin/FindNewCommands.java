@@ -176,6 +176,9 @@ public class FindNewCommands extends AbstractCommand
 		/* COMMAND ROLE INSERTION                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		String _commandName = "";
+		String _commandRole = "";
+
 		try
 		{
 			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
@@ -184,19 +187,23 @@ public class FindNewCommands extends AbstractCommand
 				{
 					CommandDescr descr = jarCommandDescrs.get(commandName);
 
+					_commandName = descr.commandName;
+					_commandRole = descr.commandRole;
+
 					statement.setString(1, descr.commandName);
 					statement.setString(2, descr.commandRole);
-					statement.addBatch();
+					statement.executeUpdate();
+					//statement.addBatch();
 				}
 
-				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
+				//nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
 		}
 		catch(SQLException e)
 		{
-			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandName, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
