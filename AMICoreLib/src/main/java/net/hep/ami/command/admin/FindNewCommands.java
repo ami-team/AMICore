@@ -7,6 +7,7 @@ import java.util.stream.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
+import net.hep.ami.data.Row;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.command.user.*;
@@ -63,7 +64,6 @@ public class FindNewCommands extends AbstractCommand
 
         }).collect(Collectors.toSet());
 
-		querier.commit();
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> jarCommandClasses = new HashSet<>();
@@ -185,8 +185,7 @@ public class FindNewCommands extends AbstractCommand
 
 		try
 		{
-			//try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `class` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
-			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`class` = ? AND rr.`role` = ?", false, null, false))
+			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES (?, ?)", false, null, false))
 			{
 				for(String commandName : toBeAdded)
 				{
@@ -195,10 +194,17 @@ public class FindNewCommands extends AbstractCommand
 					_commandClass = descr.commandClass;
 					_commandRole = descr.commandRole;
 
-					statement.setString(1, descr.commandClass);
-					statement.setString(2, descr.commandRole);
-					//statement.executeUpdate();
-					statement.addBatch();
+					List<Row> rows = querier.executeSQLQuery("router_command", "SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`class` = ?1 AND rr.`role` = ?2", _commandClass, _commandRole).getAll();
+
+					if(!rows.isEmpty())
+					{
+						statement.setInt(1, rows.get(0).getValue(0, 0));
+						statement.setInt(2, rows.get(0).getValue(1 , 0));
+
+						//statement.executeUpdate();
+						statement.addBatch();
+					}
+
 				}
 
 				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
@@ -210,6 +216,41 @@ public class FindNewCommands extends AbstractCommand
 		{
 			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
+
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMMAND ROLE INSERTION                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+//		String _commandClass = "";
+//		String _commandRole = "";
+//
+//		try
+//		{
+//			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `class` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
+//			{
+//				for(String commandName : toBeAdded)
+//				{
+//					CommandDescr descr = jarCommandDescrs.get(commandName);
+//
+//					_commandClass = descr.commandClass;
+//					_commandRole = descr.commandRole;
+//
+//					statement.setString(1, descr.commandClass);
+//					statement.setString(2, descr.commandRole);
+//					//statement.executeUpdate();
+//					statement.addBatch();
+//				}
+//
+//				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
+//			}
+//
+//			//querier.commit();
+//		}
+//		catch(SQLException e)
+//		{
+//			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+//		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* RELOAD                                                                                                     */
