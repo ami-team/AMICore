@@ -1,5 +1,6 @@
 package net.hep.ami.command.admin;
 
+import java.lang.reflect.Array;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.*;
@@ -112,7 +113,11 @@ public class FindNewCommands extends AbstractCommand
 		Set<String> toBeAdded = jarCommandClasses.stream().filter(x -> !dbCommandClasses.contains(x)).collect(Collectors.toSet());
 
 		LOG.info("Commands to be removed {}", String.join(", ", toBeRemoved));
-		LOG.info("Commands to be added {}", String.join(", ", toBeRemoved));
+		LOG.info("Commands to be added {}", String.join(", ", toBeAdded));
+
+		int nbCommandRemoved = 0;
+		int nbCommandAdded = 0;
+		int nbCommandRoleAdded = 0;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* COMMAND CLEANUP                                                                                            */
@@ -120,15 +125,21 @@ public class FindNewCommands extends AbstractCommand
 
 		try(PreparedStatement statement = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `class` = ?", false, null, false))
 		{
-			for(String commandName : toBeRemoved)
+			for(String commandClass : toBeRemoved)
 			{
-				statement.setString(1, commandName);
+				statement.setString(1, commandClass);
 
 				statement.addBatch();
 			}
 
-			statement.executeBatch();
+			nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 		}
+		catch(SQLException e)
+		{
+			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+		}
+
+		//querier.getConnection().commit();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* COMMAND INSERTION                                                                                          */
@@ -138,7 +149,6 @@ public class FindNewCommands extends AbstractCommand
 		{
 			try(PreparedStatement statement2 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
 			{
-
 				for(String commandName : toBeAdded)
 				{
 					CommandDescr descr = jarCommandDescrs.get(commandName);
@@ -153,9 +163,17 @@ public class FindNewCommands extends AbstractCommand
 					statement2.addBatch();
 				}
 
-				statement1.executeBatch();
-				statement2.executeBatch();
+				nbCommandAdded = Arrays.stream(statement1.executeBatch()).sum();
+				nbCommandRoleAdded = Arrays.stream(statement2.executeBatch()).sum();
 			}
+			catch(SQLException e)
+			{
+				throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+			}
+		}
+		catch(SQLException e)
+		{
+			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -171,7 +189,7 @@ public class FindNewCommands extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success, removed command(s): [" + String.join(", ", toBeRemoved) + "], added command(s): [" + String.join(", ", toBeAdded) + "]]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success, nbCommandRemoved: ").append(nbCommandRemoved).append(", nbCommandAdded: ").append(nbCommandAdded).append(", nbCommandRoleAdded: ").append(nbCommandRoleAdded).append(", removed command(s): [").append(String.join(", ", toBeRemoved)).append("], added command(s): [").append(String.join(", ", toBeAdded)).append("]]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
