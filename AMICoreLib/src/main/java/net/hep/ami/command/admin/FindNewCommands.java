@@ -48,6 +48,8 @@ public class FindNewCommands extends AbstractCommand
 
 		RouterQuerier querier = new RouterQuerier();
 
+		querier.getConnection().setAutoCommit(false);
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> dbCommandClasses = querier.executeSQLQuery("router_command", "SELECT DISTINCT `class` FROM `router_command`").getAll().stream().map(x -> {
@@ -131,14 +133,14 @@ public class FindNewCommands extends AbstractCommand
 				{
 					statement.setString(1, commandClass);
 
-					statement.executeUpdate();
-					//statement.addBatch();
+					//statement.executeUpdate();
+					statement.addBatch();
 				}
 
-				//nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			querier.commit();
+			//querier.commit();
 		}
 		catch(SQLException e)
 		{
@@ -160,14 +162,14 @@ public class FindNewCommands extends AbstractCommand
 					statement.setString(1, descr.commandName);
 					statement.setString(2, descr.commandClass);
 					statement.setInt(3, descr.commandVisible);
-					statement.executeUpdate();
-					//statement.addBatch();
+					//statement.executeUpdate();
+					statement.addBatch();
 				}
 
-				//nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			querier.commit();
+			//querier.commit();
 		}
 		catch(SQLException e)
 		{
@@ -194,14 +196,14 @@ public class FindNewCommands extends AbstractCommand
 
 					statement.setString(1, descr.commandClass);
 					statement.setString(2, descr.commandRole);
-					statement.executeUpdate();
-					//statement.addBatch();
+					//statement.executeUpdate();
+					statement.addBatch();
 				}
 
-				//nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			querier.commit();
+			//querier.commit();
 		}
 		catch(SQLException e)
 		{
@@ -211,6 +213,8 @@ public class FindNewCommands extends AbstractCommand
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* RELOAD                                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
+
+		querier.commit();
 
 		if(!toBeAdded.isEmpty()
 		   ||
