@@ -192,11 +192,10 @@ public class FindNewCommands extends AbstractCommand
 
 					statement.setString(1, descr.commandName);
 					statement.setString(2, descr.commandRole);
-					statement.executeUpdate();
-					//statement.addBatch();
+					statement.addBatch();
 				}
 
-				//nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
