@@ -230,16 +230,21 @@ public class FindNewCommands extends AbstractCommand
 
 						/**/
 
+						int i = 0;
+
 						try
 						{
 							statement1.executeBatch();
+							i++;
 							statement2.executeBatch();
+							i++;
 							statement3.executeBatch();
+							i++;
 							statement4.executeBatch();
 						}
 						catch(Exception e)
 						{
-							throw new Exception(String.format("Trying to add %s: %s", String.join(", ", foundCommandNames), e.getMessage()), e);
+							throw new Exception(String.format("Trying to add %s (step %d): %s", String.join(", ", foundCommandNames), i, e.getMessage()), e);
 						}
 					}
 				}
