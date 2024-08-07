@@ -166,9 +166,9 @@ public class FindNewCommands extends AbstractCommand
 
 		try(PreparedStatement statement1 = querier.sqlPreparedStatement("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?)", false, null, false))
 		{
-/*			try(PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false))
+			try(PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false))
 			{
-				try(PreparedStatement statement3 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
+/*				try(PreparedStatement statement3 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
 				{
 					try(PreparedStatement statement4 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
 					{*/
@@ -203,10 +203,10 @@ public class FindNewCommands extends AbstractCommand
 									statement1.setString(1, commandName);
 									statement1.addBatch();
 
-/*									statement2.setString(1, commandName);
+									statement2.setString(1, commandName);
 									statement2.addBatch();
 
-									statement3.setString(1, commandName);
+/*									statement3.setString(1, commandName);
 									statement3.setString(2, commandClass);
 									statement3.setInt(3, commandVisible);
 									statement3.addBatch();
@@ -236,9 +236,9 @@ public class FindNewCommands extends AbstractCommand
 						{
 							statement1.executeBatch();
 							i++;
-/*							statement2.executeBatch();
+							statement2.executeBatch();
 							i++;
-							statement3.executeBatch();
+/*							statement3.executeBatch();
 							i++;
 							statement4.executeBatch();*/
 						}
@@ -247,8 +247,8 @@ public class FindNewCommands extends AbstractCommand
 							throw new Exception(String.format("Trying to add %s (step %d): %s", String.join(", ", foundCommandNames), i, e.getMessage()), e);
 						}
 /*					}
-				}
-			}*/
+				}*/
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
