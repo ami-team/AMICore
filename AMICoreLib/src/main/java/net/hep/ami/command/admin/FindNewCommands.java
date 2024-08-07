@@ -48,8 +48,6 @@ public class FindNewCommands extends AbstractCommand
 
 		RouterQuerier querier = new RouterQuerier();
 
-		querier.getConnection().setAutoCommit(false);
-
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> dbCommandClasses = querier.executeSQLQuery("router_command", "SELECT DISTINCT `class` FROM `router_command`").getAll().stream().map(x -> {
@@ -65,6 +63,7 @@ public class FindNewCommands extends AbstractCommand
 
         }).collect(Collectors.toSet());
 
+		querier.commit();
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		Set<String> jarCommandClasses = new HashSet<>();
@@ -138,13 +137,13 @@ public class FindNewCommands extends AbstractCommand
 				}
 
 				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
+
 			}
 
-			querier.getConnection().commit();
+			//querier.commit();
 		}
 		catch(SQLException e)
 		{
-			querier.getConnection().rollback();
 			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
@@ -170,11 +169,10 @@ public class FindNewCommands extends AbstractCommand
 				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			querier.getConnection().commit();
+			//querier.commit();
 		}
 		catch(SQLException e)
 		{
-			querier.getConnection().rollback();
 			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
@@ -187,7 +185,8 @@ public class FindNewCommands extends AbstractCommand
 
 		try
 		{
-			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `class` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
+			//try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `class` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
+			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`class` = ? AND rr.`role` = ?", false, null, false))
 			{
 				for(String commandName : toBeAdded)
 				{
@@ -205,11 +204,10 @@ public class FindNewCommands extends AbstractCommand
 				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			querier.getConnection().commit();
+			//querier.commit();
 		}
 		catch(SQLException e)
 		{
-			querier.getConnection().rollback();
 			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
