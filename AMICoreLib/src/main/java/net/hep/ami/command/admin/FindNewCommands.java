@@ -2,6 +2,7 @@ package net.hep.ami.command.admin;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
@@ -19,14 +20,14 @@ public class FindNewCommands extends AbstractCommand
 	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(AddUser.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
-/*
+
 	private record CommandDescr(
 		@NotNull String commandName,
 		@NotNull String commandClass,
 		@NotNull Integer commandVisible,
 		@Nullable String commandRole
 	) {}
-*/
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public FindNewCommands(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
@@ -36,26 +37,36 @@ public class FindNewCommands extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	/*public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		*//*------------------------------------------------------------------------------------------------------------*//*
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		ClassSingleton.reload();
 
-		*//*------------------------------------------------------------------------------------------------------------*//*
+		/*------------------------------------------------------------------------------------------------------------*/
 
 		RouterQuerier querier = new RouterQuerier();
 
-		*//*------------------------------------------------------------------------------------------------------------*//*
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		String commandName;
-		String commandRole;
+		Set<String> dbCommandClasses = querier.executeSQLQuery("router_command", "SELECT DISTINCT `class` FROM `router_command`").getAll().stream().map(x -> {
 
-		int commandVisible;
+            try
+			{
+                return x.getValue(0);
+            }
+			catch(Exception e)
+			{
+                throw new RuntimeException(e);
+            }
 
-		List<CommandDescr> commandDescrs = new ArrayList<>();
+        }).collect(Collectors.toSet());
 
-		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		Set<String> jarCommandClasses = new HashSet<>();
+
+		Map<String, CommandDescr> jarCommandDescrs = new HashMap<>();
 
 		for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
 		{
@@ -70,197 +81,97 @@ public class FindNewCommands extends AbstractCommand
 				   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
 				   &&
 				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
-				   &&
-				   !existingCommandNames.contains(commandName = clazz.getSimpleName())
 				 ) {
-					*//*------------------------------------------------------------------------------------------------*//*
+					/*------------------------------------------------------------------------------------------------*/
 
-					commandRole = commandMetadata.role();
+					String commandName = clazz.getSimpleName();
 
-					commandVisible = commandMetadata.visible() ? 1 : 0;
+					String commandRole = commandMetadata.role();
 
-					*//*------------------------------------------------------------------------------------------------*//*
+					Integer commandVisible = commandMetadata.visible() ? 1 : 0;
 
-					commandDescrs.add(new CommandDescr(commandName, commandClass, commandVisible, commandRole));
+					/*------------------------------------------------------------------------------------------------*/
 
-					*//*------------------------------------------------------------------------------------------------*//*
+					jarCommandClasses.add(commandClass);
 
-					LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
+					jarCommandDescrs.put(commandClass, new CommandDescr(commandName, commandClass, commandVisible, commandRole));
 
-					*//*------------------------------------------------------------------------------------------------*//*
+					/*------------------------------------------------------------------------------------------------*/
 				}
 			}
 			catch(Exception e)
 			{
-				*//* IGNORE *//*
+				/* IGNORE */
 			}
 		}
 
-		*//*------------------------------------------------------------------------------------------------------------*//*
-		*//* COMMAND CLEANUP                                                                                            *//*
-		*//*------------------------------------------------------------------------------------------------------------*//*
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		for(CommandDescr descr: commandDescrs)
+		Set<String> toBeRemoved = dbCommandClasses.stream().filter(x -> !jarCommandClasses.contains(x)).collect(Collectors.toSet());
+
+		Set<String> toBeAdded = jarCommandClasses.stream().filter(x -> !dbCommandClasses.contains(x)).collect(Collectors.toSet());
+
+		LOG.info("Commands to be removed {}", String.join(", ", toBeRemoved));
+		LOG.info("Commands to be added {}", String.join(", ", toBeRemoved));
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMMAND CLEANUP                                                                                            */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		try(PreparedStatement statement = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false))
 		{
-			querier.executeSQLUpdate("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?0)", descr.commandName);
-
-			querier.executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?0", descr.commandName);
-		}
-
-		*//*------------------------------------------------------------------------------------------------------------*//*
-		*//* COMMAND INSERTION                                                                                          *//*
-		*//*------------------------------------------------------------------------------------------------------------*//*
-
-		Set<String> addedCommands = new HashSet<>();
-		Set<String> failingCommands = new HashSet<>();
-
-		for(CommandDescr descr: commandDescrs)
-		{
-			if(querier.executeSQLUpdate("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?0, ?1, ?2)", descr.commandName, descr.commandClass, descr.commandVisible).getNbOfUpdatedRows() == 1)
+			for(String commandName : toBeRemoved)
 			{
-				if(querier.executeSQLUpdate("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?0), (SELECT `id` FROM `router_role` WHERE `role` = ?1))", descr.commandName, descr.commandRole).getNbOfUpdatedRows() == 1)
-				{
-					addedCommands.add(descr.commandName);
-				}
-				else
-				{
-					failingCommands.add(descr.commandName);
-				}
+				statement.setString(1, commandName);
+
+				statement.addBatch();
 			}
-			else
-			{
-				failingCommands.add(descr.commandName);
-			}
+
+			statement.executeBatch();
 		}
 
-		*//*------------------------------------------------------------------------------------------------------------*//*
-
-		return new StringBuilder("<info><![CDATA[done with success, added command(s): [" + String.join(", ", addedCommands) + "], failing command(s): [" + String.join(", ", failingCommands) + "]]]></info>");
-	}*/
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-
-	@NotNull
-	@Override
-	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
-	{
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMMAND INSERTION                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		ClassSingleton.reload();
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		Querier querier = getQuerier("self");
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		String commandName;
-		String commandRole;
-
-		int commandVisible;
-
-		List<String> foundCommandNames = new ArrayList<>();
-
-		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
-
-		try(PreparedStatement statement1 = querier.sqlPreparedStatement("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?)", false, null, false))
+		try(PreparedStatement statement1 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
 		{
-			try(PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false))
+			try(PreparedStatement statement2 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
 			{
-				try(PreparedStatement statement3 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
+
+				for(String commandName : toBeAdded)
 				{
-/*					try(PreparedStatement statement4 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
-					{*/
-						for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
-						{
-							try
-							{
-								Class<?> clazz = ClassSingleton.forName(commandClass);
+					CommandDescr descr = jarCommandDescrs.get(commandName);
 
-								CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
+					statement1.setString(1, descr.commandName);
+					statement1.setString(2, descr.commandClass);
+					statement1.setInt(3, descr.commandVisible);
+					statement1.addBatch();
 
-								if(commandMetadata != null
-								   &&
-								   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
-								   &&
-								   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
-								   &&
-								   !existingCommandNames.contains(commandName = clazz.getSimpleName())
-								 ) {
-									/*--------------------------------------------------------------------------------*/
-
-									commandRole = commandMetadata.role();
-
-									commandVisible = commandMetadata.visible() ? 1 : 0;
-
-									/*--------------------------------------------------------------------------------*/
-
-									LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
-
-									/*--------------------------------------------------------------------------------*/
-
-									statement1.setString(1, commandName);
-									statement1.addBatch();
-
-									statement2.setString(1, commandName);
-									statement2.addBatch();
-
-									statement3.setString(1, commandName);
-									statement3.setString(2, commandClass);
-									statement3.setInt(3, commandVisible);
-									statement3.addBatch();
-
-/*									statement4.setString(1, commandName);
-									statement4.setString(2, commandRole);
-									statement4.addBatch();*/
-
-									/*--------------------------------------------------------------------------------*/
-
-									foundCommandNames.add(commandName);
-
-									/*--------------------------------------------------------------------------------*/
-								}
-							}
-							catch(Exception e)
-							{
-								/* IGNORE */
-							}
-						}
-
-						/**/
-
-						int i = 0;
-
-						try
-						{
-							statement1.executeBatch();
-							i++;
-							statement2.executeBatch();
-							i++;
-							statement3.executeBatch();
-							i++;
-/*							statement4.executeBatch();*/
-						}
-						catch(Exception e)
-						{
-							throw new Exception(String.format("Trying to add %s (step %d): %s", String.join(", ", foundCommandNames), i, e.getMessage()), e);
-						}
-/*					}*/
+					statement2.setString(1, descr.commandName);
+					statement2.setString(2, descr.commandRole);
+					statement2.addBatch();
 				}
+
+				statement1.executeBatch();
+				statement2.executeBatch();
 			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* RELOAD                                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(!foundCommandNames.isEmpty())
-		{
+		if(!toBeAdded.isEmpty()
+		   ||
+		   !toBeRemoved.isEmpty()
+		 ) {
 			CommandSingleton.reload();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success, added command(s): " + foundCommandNames + "]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success, removed command(s): [" + String.join(", ", toBeRemoved) + "], added command(s): [" + String.join(", ", toBeAdded) + "]]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
