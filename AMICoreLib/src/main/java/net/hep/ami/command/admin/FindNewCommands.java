@@ -194,7 +194,7 @@ public class FindNewCommands extends AbstractCommand
 					_commandClass = descr.commandClass;
 					_commandRole = descr.commandRole;
 
-					List<Row> rows = querier.executeSQLQuery("router_command", "SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`class` = ?1 AND rr.`role` = ?2", _commandClass, _commandRole).getAll();
+					List<Row> rows = querier.executeSQLQuery("router_command", "SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`class` = ?0 AND rr.`role` = ?1", _commandClass, _commandRole).getAll();
 
 					if(!rows.isEmpty())
 					{
