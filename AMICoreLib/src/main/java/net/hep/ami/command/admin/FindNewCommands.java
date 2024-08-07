@@ -19,14 +19,14 @@ public class FindNewCommands extends AbstractCommand
 	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(AddUser.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
-
+/*
 	private record CommandDescr(
 		@NotNull String commandName,
 		@NotNull String commandClass,
 		@NotNull Integer commandVisible,
 		@Nullable String commandRole
 	) {}
-
+*/
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public FindNewCommands(@NotNull Set<String> userRoles, @NotNull Map<String, String> arguments, long transactionId)
@@ -36,17 +36,17 @@ public class FindNewCommands extends AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
+	/*public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
-		/*------------------------------------------------------------------------------------------------------------*/
+		*//*------------------------------------------------------------------------------------------------------------*//*
 
 		ClassSingleton.reload();
 
-		/*------------------------------------------------------------------------------------------------------------*/
+		*//*------------------------------------------------------------------------------------------------------------*//*
 
 		RouterQuerier querier = new RouterQuerier();
 
-		/*------------------------------------------------------------------------------------------------------------*/
+		*//*------------------------------------------------------------------------------------------------------------*//*
 
 		String commandName;
 		String commandRole;
@@ -73,32 +73,32 @@ public class FindNewCommands extends AbstractCommand
 				   &&
 				   !existingCommandNames.contains(commandName = clazz.getSimpleName())
 				 ) {
-					/*------------------------------------------------------------------------------------------------*/
+					*//*------------------------------------------------------------------------------------------------*//*
 
 					commandRole = commandMetadata.role();
 
 					commandVisible = commandMetadata.visible() ? 1 : 0;
 
-					/*------------------------------------------------------------------------------------------------*/
+					*//*------------------------------------------------------------------------------------------------*//*
 
 					commandDescrs.add(new CommandDescr(commandName, commandClass, commandVisible, commandRole));
 
-					/*------------------------------------------------------------------------------------------------*/
+					*//*------------------------------------------------------------------------------------------------*//*
 
 					LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
 
-					/*------------------------------------------------------------------------------------------------*/
+					*//*------------------------------------------------------------------------------------------------*//*
 				}
 			}
 			catch(Exception e)
 			{
-				/* IGNORE */
+				*//* IGNORE *//*
 			}
 		}
 
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* COMMAND CLEANUP                                                                                            */
-		/*------------------------------------------------------------------------------------------------------------*/
+		*//*------------------------------------------------------------------------------------------------------------*//*
+		*//* COMMAND CLEANUP                                                                                            *//*
+		*//*------------------------------------------------------------------------------------------------------------*//*
 
 		for(CommandDescr descr: commandDescrs)
 		{
@@ -107,9 +107,9 @@ public class FindNewCommands extends AbstractCommand
 			querier.executeSQLUpdate("router_command", "DELETE FROM `router_command` WHERE `command` = ?0", descr.commandName);
 		}
 
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* COMMAND INSERTION                                                                                          */
-		/*------------------------------------------------------------------------------------------------------------*/
+		*//*------------------------------------------------------------------------------------------------------------*//*
+		*//* COMMAND INSERTION                                                                                          *//*
+		*//*------------------------------------------------------------------------------------------------------------*//*
 
 		Set<String> addedCommands = new HashSet<>();
 		Set<String> failingCommands = new HashSet<>();
@@ -133,17 +133,17 @@ public class FindNewCommands extends AbstractCommand
 			}
 		}
 
-		/*------------------------------------------------------------------------------------------------------------*/
+		*//*------------------------------------------------------------------------------------------------------------*//*
 
 		return new StringBuilder("<info><![CDATA[done with success, added command(s): [" + String.join(", ", addedCommands) + "], failing command(s): [" + String.join(", ", failingCommands) + "]]]></info>");
-	}
+	}*/
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 
 	@NotNull
-	//@Override
-	public StringBuilder mainold(@NotNull Map<String, String> arguments) throws Exception
+	@Override
+	public StringBuilder main(@NotNull Map<String, String> arguments) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -164,95 +164,91 @@ public class FindNewCommands extends AbstractCommand
 
 		Set<String> existingCommandNames = CommandSingleton.getCommandNames();
 
-		PreparedStatement statement1 = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false);
-
-		PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false);
-
-		PreparedStatement statement3 = querier.sqlPreparedStatement("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?)", false, null, false);
-
-		PreparedStatement statement4 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false);
-
-		for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
+		try(PreparedStatement statement1 = querier.sqlPreparedStatement("router_command_role", "DELETE FROM `router_command_role` WHERE `commandFK` = (SELECT `id` FROM `router_command` WHERE `command` = ?)", false, null, false))
 		{
-			try
+			try(PreparedStatement statement2 = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `command` = ?", false, null, false))
 			{
-				Class<?> clazz = ClassSingleton.forName(commandClass);
+				try(PreparedStatement statement3 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
+				{
+					try(PreparedStatement statement4 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
+					{
+						for(String commandClass: ClassSingleton.findClassNames("net.hep.ami.command"))
+						{
+							try
+							{
+								Class<?> clazz = ClassSingleton.forName(commandClass);
 
-				CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
+								CommandMetadata commandMetadata = clazz.getAnnotation(CommandMetadata.class);
 
-				if(commandMetadata != null
-				   &&
-				   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
-				   &&
-				   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
-				   &&
-				   !existingCommandNames.contains(commandName = clazz.getSimpleName())
-				 ) {
-					/*------------------------------------------------------------------------------------------------*/
+								if(commandMetadata != null
+								   &&
+								   (clazz.getModifiers() & Modifier.ABSTRACT) == 0x00
+								   &&
+								   ClassSingleton.extendsClass(clazz, AbstractCommand.class)
+								   &&
+								   !existingCommandNames.contains(commandName = clazz.getSimpleName())
+								 ) {
+									/*--------------------------------------------------------------------------------*/
 
-					commandRole = commandMetadata.role();
+									commandRole = commandMetadata.role();
 
-					commandVisible = commandMetadata.visible() ? 1 : 0;
+									commandVisible = commandMetadata.visible() ? 1 : 0;
 
-					/*------------------------------------------------------------------------------------------------*/
+									/*--------------------------------------------------------------------------------*/
 
-					LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
+									LOG.info("Installing command {} (class: {}, visible: {}, role: {})", commandName, commandClass, commandVisible, commandRole);
 
-					/*------------------------------------------------------------------------------------------------*/
+									/*--------------------------------------------------------------------------------*/
 
-					statement1.setString(1, commandName);
+									statement1.setString(1, commandName);
+									statement1.addBatch();
 
-					statement2.setString(1, commandName);
-					statement2.setString(2, commandClass);
-					statement2.setInt(3, commandVisible);
+									statement2.setString(1, commandName);
+									statement2.addBatch();
 
-					statement3.setString(1, commandName);
+									statement3.setString(1, commandName);
+									statement3.setString(2, commandClass);
+									statement3.setInt(3, commandVisible);
+									statement3.addBatch();
 
-					statement4.setString(1, commandName);
-					statement4.setString(2, commandRole);
+									statement4.setString(1, commandName);
+									statement4.setString(2, commandRole);
+									statement4.addBatch();
 
-					statement1.addBatch();
-					statement2.addBatch();
-					statement3.addBatch();
-					statement4.addBatch();
+									/*--------------------------------------------------------------------------------*/
 
-					/*------------------------------------------------------------------------------------------------*/
+									foundCommandNames.add(commandName);
 
-					foundCommandNames.add(commandName);
+									/*--------------------------------------------------------------------------------*/
+								}
+							}
+							catch(Exception e)
+							{
+								/* IGNORE */
+							}
+						}
 
-					/*------------------------------------------------------------------------------------------------*/
+						/**/
+
+						try
+						{
+							statement1.executeBatch();
+							statement2.executeBatch();
+							statement3.executeBatch();
+							statement4.executeBatch();
+						}
+						catch(Exception e)
+						{
+							throw new Exception(String.format("Trying to add %s: %s", String.join(", ", foundCommandNames), e.getMessage()), e);
+						}
+					}
 				}
 			}
-			catch(Exception e)
-			{
-				/* IGNORE */
-			}
-		}
-
-		/**/
-
-		try
-		{
-			statement1.executeBatch();
-			statement2.executeBatch();
-			statement3.executeBatch();
-			statement4.executeBatch();
-		}
-		catch(Exception e)
-		{
-			throw new Exception(String.format("Trying to add %s: %s", String.join(", ", foundCommandNames), e.getMessage()), e);
-		}
-		finally
-		{
-			statement4.close();
-			statement3.close();
-			statement2.close();
-			statement1.close();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(foundCommandNames.size() > 0)
+		if(!foundCommandNames.isEmpty())
 		{
 			CommandSingleton.reload();
 		}
