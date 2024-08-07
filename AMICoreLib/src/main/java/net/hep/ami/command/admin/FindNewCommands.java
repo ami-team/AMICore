@@ -183,16 +183,16 @@ public class FindNewCommands extends AbstractCommand
 
 		try
 		{
-			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
+			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `class` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
 			{
 				for(String commandName : toBeAdded)
 				{
 					CommandDescr descr = jarCommandDescrs.get(commandName);
 
-					_commandName = descr.commandName;
+					_commandName = descr.commandClass;
 					_commandRole = descr.commandRole;
 
-					statement.setString(1, descr.commandName);
+					statement.setString(1, descr.commandClass);
 					statement.setString(2, descr.commandRole);
 					statement.executeUpdate();
 					//statement.addBatch();
