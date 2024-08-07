@@ -140,10 +140,11 @@ public class FindNewCommands extends AbstractCommand
 				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			//querier.commit();
+			querier.getConnection().commit();
 		}
 		catch(SQLException e)
 		{
+			querier.getConnection().rollback();
 			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
@@ -169,10 +170,11 @@ public class FindNewCommands extends AbstractCommand
 				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			//querier.commit();
+			querier.getConnection().commit();
 		}
 		catch(SQLException e)
 		{
+			querier.getConnection().rollback();
 			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
@@ -203,18 +205,17 @@ public class FindNewCommands extends AbstractCommand
 				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
-			//querier.commit();
+			querier.getConnection().commit();
 		}
 		catch(SQLException e)
 		{
+			querier.getConnection().rollback();
 			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* RELOAD                                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
-
-		querier.commit();
 
 		if(!toBeAdded.isEmpty()
 		   ||
