@@ -132,15 +132,12 @@ public class FindNewCommands extends AbstractCommand
 				{
 					statement.setString(1, commandClass);
 
-					//statement.executeUpdate();
 					statement.addBatch();
 				}
 
 				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 
 			}
-
-			//querier.commit();
 		}
 		catch(SQLException e)
 		{
@@ -162,14 +159,12 @@ public class FindNewCommands extends AbstractCommand
 					statement.setString(1, descr.commandName);
 					statement.setString(2, descr.commandClass);
 					statement.setInt(3, descr.commandVisible);
-					//statement.executeUpdate();
+
 					statement.addBatch();
 				}
 
 				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
-
-			//querier.commit();
 		}
 		catch(SQLException e)
 		{
@@ -194,14 +189,13 @@ public class FindNewCommands extends AbstractCommand
 					_commandClass = descr.commandClass;
 					_commandRole = descr.commandRole;
 
-					List<Row> rows = querier.executeSQLQuery("router_command", "SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`class` = ?0 AND rr.`role` = ?1", _commandClass, _commandRole).getAll();
+					List<Row> rows = querier.executeSQLQuery("router_command", "SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`command` = ?0 AND rr.`role` = ?1", descr.commandName, descr.commandRole).getAll();
 
 					if(!rows.isEmpty())
 					{
 						statement.setInt(1, rows.get(0).getValue(0, 0));
 						statement.setInt(2, rows.get(0).getValue(1 , 0));
 
-						//statement.executeUpdate();
 						statement.addBatch();
 					}
 
@@ -209,8 +203,6 @@ public class FindNewCommands extends AbstractCommand
 
 				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
-
-			//querier.commit();
 		}
 		catch(SQLException e)
 		{
