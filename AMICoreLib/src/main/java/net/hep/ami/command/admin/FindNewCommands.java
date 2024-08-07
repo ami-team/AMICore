@@ -131,11 +131,11 @@ public class FindNewCommands extends AbstractCommand
 				{
 					statement.setString(1, commandClass);
 
-					//statement.executeUpdate();
-					statement.addBatch();
+					statement.executeUpdate();
+					//statement.addBatch();
 				}
 
-				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
+				//nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
@@ -160,11 +160,11 @@ public class FindNewCommands extends AbstractCommand
 					statement.setString(1, descr.commandName);
 					statement.setString(2, descr.commandClass);
 					statement.setInt(3, descr.commandVisible);
-					//statement.executeUpdate();
+					statement.executeUpdate();
 					statement.addBatch();
 				}
 
-				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
+				//nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
@@ -194,8 +194,8 @@ public class FindNewCommands extends AbstractCommand
 
 					statement.setString(1, descr.commandClass);
 					statement.setString(2, descr.commandRole);
-					//statement.executeUpdate();
-					statement.addBatch();
+					statement.executeUpdate();
+					//statement.addBatch();
 				}
 
 				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
