@@ -123,16 +123,19 @@ public class FindNewCommands extends AbstractCommand
 		/* COMMAND CLEANUP                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		try(PreparedStatement statement = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `class` = ?", false, null, false))
+		try
 		{
-			for(String commandClass : toBeRemoved)
+			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command", "DELETE FROM `router_command` WHERE `class` = ?", false, null, false))
 			{
-				statement.setString(1, commandClass);
+				for(String commandClass : toBeRemoved)
+				{
+					statement.setString(1, commandClass);
 
-				statement.addBatch();
+					statement.addBatch();
+				}
+
+				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 			}
-
-			nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 		}
 		catch(SQLException e)
 		{
@@ -145,30 +148,46 @@ public class FindNewCommands extends AbstractCommand
 		/* COMMAND INSERTION                                                                                          */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		try(PreparedStatement statement1 = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
+		try
 		{
-			try(PreparedStatement statement2 = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
+			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command", "INSERT INTO `router_command` (`command`, `class`, `visible`) VALUES (?, ?, ?)", false, null, false))
 			{
 				for(String commandName : toBeAdded)
 				{
 					CommandDescr descr = jarCommandDescrs.get(commandName);
 
-					statement1.setString(1, descr.commandName);
-					statement1.setString(2, descr.commandClass);
-					statement1.setInt(3, descr.commandVisible);
-					statement1.addBatch();
-
-					statement2.setString(1, descr.commandName);
-					statement2.setString(2, descr.commandRole);
-					statement2.addBatch();
+					statement.setString(1, descr.commandName);
+					statement.setString(2, descr.commandClass);
+					statement.setInt(3, descr.commandVisible);
+					statement.addBatch();
 				}
 
-				nbCommandAdded = Arrays.stream(statement1.executeBatch()).sum();
-				nbCommandRoleAdded = Arrays.stream(statement2.executeBatch()).sum();
+				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
-			catch(SQLException e)
+		}
+		catch(SQLException e)
+		{
+			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+		/* COMMAND ROLE INSERTION                                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		try
+		{
+			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `command` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
 			{
-				throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+				for(String commandName : toBeAdded)
+				{
+					CommandDescr descr = jarCommandDescrs.get(commandName);
+
+					statement.setString(1, descr.commandName);
+					statement.setString(2, descr.commandRole);
+					statement.addBatch();
+				}
+
+				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 		}
 		catch(SQLException e)
