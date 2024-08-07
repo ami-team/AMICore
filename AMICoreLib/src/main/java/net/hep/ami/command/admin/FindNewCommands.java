@@ -161,7 +161,7 @@ public class FindNewCommands extends AbstractCommand
 					statement.setString(2, descr.commandClass);
 					statement.setInt(3, descr.commandVisible);
 					statement.executeUpdate();
-					statement.addBatch();
+					//statement.addBatch();
 				}
 
 				//nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
@@ -198,7 +198,7 @@ public class FindNewCommands extends AbstractCommand
 					//statement.addBatch();
 				}
 
-				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
+				//nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
