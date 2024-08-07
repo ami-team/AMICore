@@ -131,11 +131,11 @@ public class FindNewCommands extends AbstractCommand
 				{
 					statement.setString(1, commandClass);
 
-					statement.executeUpdate();
-					//statement.addBatch();
+					//statement.executeUpdate();
+					statement.addBatch();
 				}
 
-				//nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
@@ -160,11 +160,11 @@ public class FindNewCommands extends AbstractCommand
 					statement.setString(1, descr.commandName);
 					statement.setString(2, descr.commandClass);
 					statement.setInt(3, descr.commandVisible);
-					statement.executeUpdate();
-					//statement.addBatch();
+					//statement.executeUpdate();
+					statement.addBatch();
 				}
 
-				//nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
@@ -178,7 +178,7 @@ public class FindNewCommands extends AbstractCommand
 		/* COMMAND ROLE INSERTION                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String _commandName = "";
+		String _commandClass = "";
 		String _commandRole = "";
 
 		try
@@ -189,23 +189,23 @@ public class FindNewCommands extends AbstractCommand
 				{
 					CommandDescr descr = jarCommandDescrs.get(commandName);
 
-					_commandName = descr.commandClass;
+					_commandClass = descr.commandClass;
 					_commandRole = descr.commandRole;
 
 					statement.setString(1, descr.commandClass);
 					statement.setString(2, descr.commandRole);
-					statement.executeUpdate();
-					//statement.addBatch();
+					//statement.executeUpdate();
+					statement.addBatch();
 				}
 
-				//nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
 			}
 
 			querier.commit();
 		}
 		catch(SQLException e)
 		{
-			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandName, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
