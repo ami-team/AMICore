@@ -1,13 +1,12 @@
 package net.hep.ami.command.admin;
 
-import java.lang.reflect.Array;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.*;
 import java.lang.reflect.*;
 
 import net.hep.ami.*;
-import net.hep.ami.data.Row;
+import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.command.*;
 import net.hep.ami.command.user.*;
@@ -200,17 +199,6 @@ public class FindNewCommands extends AbstractCommand
 		catch(SQLException e)
 		{
 			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* RELOAD                                                                                                     */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		if(!toBeAdded.isEmpty()
-		   ||
-		   !toBeRemoved.isEmpty()
-		 ) {
-			CommandSingleton.reload();
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
