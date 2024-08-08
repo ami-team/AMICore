@@ -175,9 +175,6 @@ public class FindNewCommands extends AbstractCommand
 		/* COMMAND ROLE INSERTION                                                                                     */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		String _commandClass = "";
-		String _commandRole = "";
-
 		try
 		{
 			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES (?, ?)", false, null, false))
@@ -186,10 +183,7 @@ public class FindNewCommands extends AbstractCommand
 				{
 					CommandDescr descr = jarCommandDescrs.get(commandName);
 
-					_commandClass = descr.commandClass;
-					_commandRole = descr.commandRole;
-
-					List<Row> rows = querier.executeSQLQuery("router_command", "SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`command` = ?0 AND rr.`role` = ?1", descr.commandName, descr.commandRole).getAll();
+					List<Row> rows = querier.executeSQLQuery("router_command", "SELECT rc.`id`, rr.`id` FROM `router_command` rc, `router_role` rr WHERE rc.`class` = ?0 AND rr.`role` = ?1", descr.commandClass, descr.commandRole).getAll();
 
 					if(!rows.isEmpty())
 					{
@@ -205,7 +199,7 @@ public class FindNewCommands extends AbstractCommand
 		}
 		catch(SQLException e)
 		{
-			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
+			throw new SQLException(String.format("%s - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -224,7 +218,7 @@ public class FindNewCommands extends AbstractCommand
 		Set<String> cmdRemoved = toBeRemoved.stream().map(x -> x.substring(x.lastIndexOf(".") + 1)).collect(Collectors.toSet());
 		Set<String> cmdAdded = toBeAdded.stream().map(x -> x.substring(x.lastIndexOf(".") + 1)).collect(Collectors.toSet());
 
-		return new StringBuilder("<info><![CDATA[done with success : ").append(nbCommandRemoved).append(" removed command(s): [").append(String.join(", ", cmdRemoved)).append("], ").append(nbCommandAdded).append(nbCommandRoleAdded).append(" added command(s): [").append(String.join(", ", cmdAdded)).append("]]]></info>");
+		return new StringBuilder("<info><![CDATA[done with success : ").append(nbCommandAdded).append(" added command(s): [").append(String.join(", ", cmdAdded)).append("], ").append(nbCommandRemoved).append(" removed command(s): [").append(String.join(", ", cmdRemoved)).append("]]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
