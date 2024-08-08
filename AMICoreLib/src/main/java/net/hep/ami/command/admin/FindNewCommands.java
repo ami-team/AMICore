@@ -116,9 +116,9 @@ public class FindNewCommands extends AbstractCommand
 		LOG.info("Commands to be removed {}", String.join(", ", toBeRemoved));
 		LOG.info("Commands to be added {}", String.join(", ", toBeAdded));
 
-		int nbCommandRemoved = 0;
-		int nbCommandAdded = 0;
-		int nbCommandRoleAdded = 0;
+		long nbCommandRemoved = 0;
+		long nbCommandAdded = 0;
+		long nbCommandRoleAdded = 0;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* COMMAND CLEANUP                                                                                            */
@@ -135,7 +135,7 @@ public class FindNewCommands extends AbstractCommand
 					statement.addBatch();
 				}
 
-				nbCommandRemoved = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandRemoved = Arrays.stream(statement.executeBatch()).filter(x -> x == Statement.SUCCESS_NO_INFO).count();
 
 			}
 		}
@@ -163,7 +163,7 @@ public class FindNewCommands extends AbstractCommand
 					statement.addBatch();
 				}
 
-				nbCommandAdded = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandAdded = Arrays.stream(statement.executeBatch()).filter(x -> x == Statement.SUCCESS_NO_INFO).count();
 			}
 		}
 		catch(SQLException e)
@@ -194,7 +194,7 @@ public class FindNewCommands extends AbstractCommand
 					}
 				}
 
-				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
+				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).filter(x -> x == Statement.SUCCESS_NO_INFO).count();
 			}
 		}
 		catch(SQLException e)
