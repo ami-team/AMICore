@@ -198,7 +198,6 @@ public class FindNewCommands extends AbstractCommand
 
 						statement.addBatch();
 					}
-
 				}
 
 				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
@@ -208,41 +207,6 @@ public class FindNewCommands extends AbstractCommand
 		{
 			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
 		}
-
-
-		/*------------------------------------------------------------------------------------------------------------*/
-		/* COMMAND ROLE INSERTION                                                                                     */
-		/*------------------------------------------------------------------------------------------------------------*/
-
-//		String _commandClass = "";
-//		String _commandRole = "";
-//
-//		try
-//		{
-//			try(PreparedStatement statement = querier.sqlPreparedStatement("router_command_role", "INSERT INTO `router_command_role` (`commandFK`, `roleFK`) VALUES ((SELECT `id` FROM `router_command` WHERE `class` = ?), (SELECT `id` FROM `router_role` WHERE `role` = ?))", false, null, false))
-//			{
-//				for(String commandName : toBeAdded)
-//				{
-//					CommandDescr descr = jarCommandDescrs.get(commandName);
-//
-//					_commandClass = descr.commandClass;
-//					_commandRole = descr.commandRole;
-//
-//					statement.setString(1, descr.commandClass);
-//					statement.setString(2, descr.commandRole);
-//					//statement.executeUpdate();
-//					statement.addBatch();
-//				}
-//
-//				nbCommandRoleAdded = Arrays.stream(statement.executeBatch()).sum();
-//			}
-//
-//			//querier.commit();
-//		}
-//		catch(SQLException e)
-//		{
-//			throw new SQLException(String.format("%s (%s/%s) - nbCommandRemoved: %d, nbCommandAdded: %d, nbCommandRoleAdded: %d", e.getMessage(), _commandClass, _commandRole, nbCommandRemoved, nbCommandAdded, nbCommandRoleAdded));
-//		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* RELOAD                                                                                                     */
@@ -257,7 +221,10 @@ public class FindNewCommands extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new StringBuilder("<info><![CDATA[done with success, nbCommandRemoved: ").append(nbCommandRemoved).append(", nbCommandAdded: ").append(nbCommandAdded).append(", nbCommandRoleAdded: ").append(nbCommandRoleAdded).append(", removed command(s): [").append(String.join(", ", toBeRemoved)).append("], added command(s): [").append(String.join(", ", toBeAdded)).append("]]]></info>");
+		Set<String> cmdRemoved = toBeRemoved.stream().map(x -> x.substring(x.lastIndexOf(".") + 1)).collect(Collectors.toSet());
+		Set<String> cmdAdded = toBeAdded.stream().map(x -> x.substring(x.lastIndexOf(".") + 1)).collect(Collectors.toSet());
+
+		return new StringBuilder("<info><![CDATA[done with success : ").append(nbCommandRemoved).append(" removed command(s): [").append(String.join(", ", cmdRemoved)).append("], ").append(nbCommandAdded).append(nbCommandRoleAdded).append(" added command(s): [").append(String.join(", ", cmdAdded)).append("]]]></info>");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
