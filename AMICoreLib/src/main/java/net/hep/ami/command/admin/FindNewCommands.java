@@ -47,7 +47,7 @@ public class FindNewCommands extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		RouterQuerier querier = new RouterQuerier();
+		Querier querier = this.getAdminQuerier("self");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
