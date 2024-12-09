@@ -158,6 +158,7 @@ public class SchemaSingleton
 		public boolean hashed = false;
 		public boolean crypted = false;
 		public boolean primary = false;
+		public boolean scope = false;
 		public boolean json = false;
 
 		public boolean automatic = false;
@@ -1141,7 +1142,7 @@ public class SchemaSingleton
 							entry.getKey(),
 							entry.getValue(),
 							catalogTuple,
-								driverDescr,
+							driverDescr,
 							rank++,
 							true // fast
 						), "Fast metadata extractor for '" + entry.getKey() + "'"
@@ -1178,7 +1179,7 @@ public class SchemaSingleton
 							entry.getKey(),
 							entry.getValue(),
 							catalogTuple,
-								driverDescr,
+							driverDescr,
 							rank++,
 							false // slow
 						), "Slow metadata extractor for '" + entry.getKey() + "'"
@@ -1467,6 +1468,7 @@ public class SchemaSingleton
 		             .append("<field name=\"hashed\"><![CDATA[").append(column.hashed).append("]]></field>")
 		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 		             .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
+		             .append("<field name=\"scope\"><![CDATA[").append(column.scope).append("]]></field>")
 		             .append("<field name=\"json\"><![CDATA[").append(column.json).append("]]></field>")
 		             .append("<field name=\"automatic\"><![CDATA[").append(column.automatic).append("]]></field>")
 		             .append("<field name=\"created\"><![CDATA[").append(column.created).append("]]></field>")
