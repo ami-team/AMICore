@@ -215,6 +215,7 @@ public class MetadataSingleton
 			column.hashed = _safeBoolean((Boolean) map.get("hashed"), false);
 			column.crypted = _safeBoolean((Boolean) map.get("crypted"), false);
 			column.primary = _safeBoolean((Boolean) map.get("primary"), false);
+			column.scope = _safeBoolean((Boolean) map.get("scope"), false);
 			column.json = _safeBoolean((Boolean) map.get("json"), false);
 
 			column.automatic = _safeBoolean((Boolean) map.get("automatic"), false);
