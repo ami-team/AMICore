@@ -1096,6 +1096,8 @@ public class SchemaSingleton
 							{
 								frgnKey3.fkScope = fkScope.getValue();
 								frgnKey3.pkScope = pkScope.getValue();
+
+								break;
 							}
 						}
 					}
