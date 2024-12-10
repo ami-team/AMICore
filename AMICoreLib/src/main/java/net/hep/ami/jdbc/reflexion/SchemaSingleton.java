@@ -1570,10 +1570,12 @@ public class SchemaSingleton
 		             .append("<field name=\"fkInternalCatalog\"><![CDATA[").append(frgnKey.fkInternalCatalog).append("]]></field>")
 		             .append("<field name=\"fkEntity\"><![CDATA[").append(frgnKey.fkEntity).append("]]></field>")
 		             .append("<field name=\"fkColumn\"><![CDATA[").append(frgnKey.fkField).append("]]></field>")
+		             .append("<field name=\"fkScope\"><![CDATA[").append(frgnKey.fkScope).append("]]></field>")
 		             .append("<field name=\"pkExternalCatalog\"><![CDATA[").append(frgnKey.pkExternalCatalog).append("]]></field>")
 		             .append("<field name=\"pkInternalCatalog\"><![CDATA[").append(frgnKey.pkInternalCatalog).append("]]></field>")
 		             .append("<field name=\"pkEntity\"><![CDATA[").append(frgnKey.pkEntity).append("]]></field>")
 		             .append("<field name=\"pkColumn\"><![CDATA[").append(frgnKey.pkField).append("]]></field>")
+		             .append("<field name=\"pkScope\"><![CDATA[").append(frgnKey.pkScope).append("]]></field>")
 		             .append("</row>")
 		;
 	}
