@@ -27,6 +27,7 @@ public class SchemaSingleton
 
 	public static final class Catalog implements Serializable
 	{
+		@Serial
 		private static final long serialVersionUID = 3229166541876111056L;
 
 		/**/
@@ -71,6 +72,7 @@ public class SchemaSingleton
 
 	public static final class Table implements Serializable
 	{
+		@Serial
 		private static final long serialVersionUID = 6564839225538503809L;
 
 		/**/
@@ -134,6 +136,7 @@ public class SchemaSingleton
 	@SuppressWarnings("UnusedAssignment")
 	public static final class Column implements Serializable
 	{
+		@Serial
 		private static final long serialVersionUID = 9088165113864128126L;
 
 		/**/
@@ -196,7 +199,8 @@ public class SchemaSingleton
 			{
 				return "ENUM";
 			}
-			else switch(jdbcType) {
+			else switch(jdbcType)
+			{
 				/*----------------------------------------------------------------------------------------------------*/
 
 				case Types.ROWID:
@@ -311,6 +315,7 @@ public class SchemaSingleton
 
 	public static final class FrgnKey implements Serializable
 	{
+		@Serial
 		private static final long serialVersionUID = 7467966033785286381L;
 
 		/**/
@@ -321,11 +326,15 @@ public class SchemaSingleton
 		public final String fkInternalCatalog;
 		public final String fkEntity;
 		public final String fkField;
+		@Nullable
+		public String fkScope;
 
 		public final String pkExternalCatalog;
 		public final String pkInternalCatalog;
 		public final String pkEntity;
 		public final String pkField;
+		@Nullable
+		public String pkScope;
 
 		/**/
 
@@ -338,11 +347,13 @@ public class SchemaSingleton
 			fkInternalCatalog = _fkInternalCatalog;
 			fkEntity = _fkEntity;
 			fkField = _fkField;
+			fkScope = null;
 
 			pkExternalCatalog = _pkExternalCatalog;
 			pkInternalCatalog = _pkInternalCatalog;
 			pkEntity = _pkEntity;
 			pkField = _pkField;
+			pkScope = null;
 		}
 
 		@Override
@@ -356,7 +367,14 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		public String toString()
 		{
-			return "`" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "`";
+			if(fkScope == null || pkScope == null)
+			{
+				return "`" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "`";
+			}
+			else
+			{
+				return "`" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkField + "` = `" + pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkField + "` AND `" + fkInternalCatalog + "`.`" + fkEntity + "`.`" + fkScope + "` = `" + pkInternalCatalog + "`.`" + pkEntity + "`.`" + pkScope + "`";
+			}
 		}
 	}
 
@@ -364,6 +382,7 @@ public class SchemaSingleton
 
 	public static final class FrgnKeys extends ArrayList<FrgnKey>
 	{
+		@Serial
 		private static final long serialVersionUID = 646216521092672318L;
 
 		public FrgnKeys()
@@ -614,11 +633,12 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getCatalogName(@Nullable String type, @Nullable String targetDatabase)
 		{
-
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_CATALOG) != 0)
 			{
 				if("SYNONYM".equals(type) && targetDatabase != null && !targetDatabase.equals(m_internalCatalog))
+				{
 					return targetDatabase;
+				}
 
 				return "SYNONYM".equals(type) && m_internalCatalog.endsWith("_W") ? m_internalCatalog.substring(0, m_internalCatalog.length() - 2) : m_internalCatalog; /* BERK !!! */
 			}
@@ -632,13 +652,12 @@ public class SchemaSingleton
 		@Contract(pure = true)
 		private String _getSchemaName(@Nullable String type, @Nullable String targetSchema)
 		{
-
-
 			if((m_driverDescr.getFlags() & DriverMetadata.FLAG_HAS_SCHEMA) != 0)
 			{
 				if("SYNONYM".equals(type) && targetSchema != null && !targetSchema.equals(m_catalogTuple.getInternalSchema()))
+				{
 					return targetSchema;
-
+				}
 
 				return "SYNONYM".equals(type) && m_catalogTuple.getInternalSchema().endsWith("_W") ? m_catalogTuple.getInternalSchema().substring(0, m_catalogTuple.getInternalSchema().length() - 2) : m_catalogTuple.getInternalSchema(); /* BERK !!! */
 			}
@@ -699,22 +718,21 @@ public class SchemaSingleton
 						targetSchema = null;
 						targetDatabase = null;
 
-						if("SYNONYM".equals(type) && m_externalCatalog.endsWith("external") )
+						if("SYNONYM".equals(type) && m_externalCatalog.endsWith("external"))
 						{
-							String catalogName = null; // Nom du catalogue de la base de données
-							String schemaName = null; // Nom du schéma de la base de données
-							String synonymName = entity; // Nom du synonyme que vous voulez récupérer
+							String catalogName = null;
+							String schemaName = null;
+							String synonymName = entity;
 
-							try (ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null)) {
+							try(ResultSet resultSet2 = metaData.getCrossReference(catalogName, schemaName, synonymName, catalogName, schemaName, null))
+							{
 								if(resultSet2.next())
 								{
-									targetDatabase = resultSet2.getString("PKTABLE_CAT"); // Nom du catalogue pointé par le synonyme
-									targetSchema = resultSet2.getString("PKTABLE_SCHEM"); // Nom du schéma pointé par le synonyme
-									//String referredTableName = resultSet2.getString("PKTABLE_NAME"); // Nom de l'entité pointée par le synonyme (table ou vue)
+									targetDatabase = resultSet2.getString("PKTABLE_CAT");
+									targetSchema = resultSet2.getString("PKTABLE_SCHEM");
 								}
-
 							}
-							catch (Exception e)
+							catch(Exception e)
 							{
 								/* DO NOTHING */
 							}
@@ -1038,7 +1056,54 @@ public class SchemaSingleton
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
-			/* POST TREATMENT                                                                                         */
+			/* POST TREATMENT - AUTO SCOPING                                                                          */
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			Map<String, Map<String, String>> scopeMap = new HashMap<>();
+
+			for(Catalog catalog3: m_catalogs.values())
+			 for(Table table3: catalog3.tables.values())
+			  for(Column column3: table3.columns.values())
+			{
+				if(column3.scope && !Empty.is(column3.scopeLabel, Empty.STRING_NULL_EMPTY_BLANK))
+				{
+					String entity = new QId(column3.externalCatalog, column3.entity, null).toString();
+
+					scopeMap.getOrDefault(entity, new HashMap<>()).put(column3.scopeLabel, column3.field);
+				}
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			for(Catalog catalog3: m_catalogs.values())
+			 for(Table table3: catalog3.tables.values())
+			  for(FrgnKeys frgnKeys3: table3.forwardFKs.values())
+			   for(FrgnKey frgnKey3: frgnKeys3)
+			{
+				String fkEntity = new QId(frgnKey3.fkExternalCatalog, frgnKey3.fkEntity, null).toString();
+				String pkEntity = new QId(frgnKey3.pkExternalCatalog, frgnKey3.pkEntity, null).toString();
+
+				Map<String, String> fkScopes = scopeMap.get(fkEntity);
+				Map<String, String> pkScopes = scopeMap.get(pkEntity);
+
+				if(fkScopes != null && pkScopes != null)
+				{
+					for(Map.Entry<String, String> fkScope: fkScopes.entrySet())
+					{
+						for(Map.Entry<String, String> pkScope: pkScopes.entrySet())
+						{
+							if(fkScope.getKey().equals(pkScope.getKey()))
+							{
+								frgnKey3.fkScope = fkScope.getValue();
+								frgnKey3.pkScope = pkScope.getValue();
+							}
+						}
+					}
+				}
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+			/* POST TREATMENT - BACKWARD FOREIGN KEYS                                                                 */
 			/*--------------------------------------------------------------------------------------------------------*/
 
 			FrgnKeys frgnKeys1;
