@@ -123,7 +123,16 @@ public class MetadataSingleton
 					{
 						String entity = new QId(column3.externalCatalog, column3.entity, null).toString();
 
-						scopeMap.getOrDefault(entity, new HashMap<>()).put(column3.scopeLabel, column3.field);
+						Map<String, String> map;
+
+						if(scopeMap.containsKey(entity)) {
+							map = scopeMap.get(entity);
+						}
+						else {
+							scopeMap.put(entity, map = new HashMap<>());
+						}
+
+						map.put(column3.scopeLabel, column3.field);
 					}
 				}
 
@@ -157,7 +166,7 @@ public class MetadataSingleton
 							}
 						}
 					}
-		
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
