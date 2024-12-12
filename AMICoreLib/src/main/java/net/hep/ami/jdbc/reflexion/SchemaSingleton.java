@@ -1056,55 +1056,6 @@ public class SchemaSingleton
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
-			/* POST TREATMENT - AUTO SCOPING                                                                          */
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			Map<String, Map<String, String>> scopeMap = new HashMap<>();
-
-			for(Catalog catalog3: m_catalogs.values())
-			 for(Table table3: catalog3.tables.values())
-			  for(Column column3: table3.columns.values())
-			{
-				if(column3.scope && !Empty.is(column3.scopeLabel, Empty.STRING_NULL_EMPTY_BLANK))
-				{
-					String entity = new QId(column3.externalCatalog, column3.entity, null).toString();
-
-					scopeMap.getOrDefault(entity, new HashMap<>()).put(column3.scopeLabel, column3.field);
-				}
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			for(Catalog catalog3: m_catalogs.values())
-			 for(Table table3: catalog3.tables.values())
-			  for(FrgnKeys frgnKeys3: table3.forwardFKs.values())
-			   for(FrgnKey frgnKey3: frgnKeys3)
-			{
-				String fkEntity = new QId(frgnKey3.fkExternalCatalog, frgnKey3.fkEntity, null).toString();
-				String pkEntity = new QId(frgnKey3.pkExternalCatalog, frgnKey3.pkEntity, null).toString();
-
-				Map<String, String> fkScopes = scopeMap.get(fkEntity);
-				Map<String, String> pkScopes = scopeMap.get(pkEntity);
-
-				if(fkScopes != null && pkScopes != null)
-				{
-					for(Map.Entry<String, String> fkScope: fkScopes.entrySet())
-					{
-						for(Map.Entry<String, String> pkScope: pkScopes.entrySet())
-						{
-							if(fkScope.getKey().equals(pkScope.getKey()))
-							{
-								frgnKey3.fkScope = fkScope.getValue();
-								frgnKey3.pkScope = pkScope.getValue();
-
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			/*--------------------------------------------------------------------------------------------------------*/
 			/* POST TREATMENT - BACKWARD FOREIGN KEYS                                                                 */
 			/*--------------------------------------------------------------------------------------------------------*/
 

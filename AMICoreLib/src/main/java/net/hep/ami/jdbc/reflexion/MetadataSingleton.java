@@ -5,6 +5,8 @@ import java.util.*;
 import net.hep.ami.*;
 import net.hep.ami.data.*;
 import net.hep.ami.jdbc.*;
+import net.hep.ami.jdbc.query.QId;
+import net.hep.ami.utility.Empty;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -107,6 +109,55 @@ public class MetadataSingleton
 			querier.rollbackAndRelease();
 		}
 
+		/*--------------------------------------------------------------------------------------------------------*/
+		/* POST TREATMENT - AUTO SCOPING                                                                          */
+		/*--------------------------------------------------------------------------------------------------------*/
+
+		Map<String, Map<String, String>> scopeMap = new HashMap<>();
+
+		for(SchemaSingleton.Catalog catalog3: SchemaSingleton.s_catalogs.values())
+			for(SchemaSingleton.Table table3: catalog3.tables.values())
+				for(SchemaSingleton.Column column3: table3.columns.values())
+				{
+					if(column3.scope && !Empty.is(column3.scopeLabel, Empty.STRING_NULL_EMPTY_BLANK))
+					{
+						String entity = new QId(column3.externalCatalog, column3.entity, null).toString();
+
+						scopeMap.getOrDefault(entity, new HashMap<>()).put(column3.scopeLabel, column3.field);
+					}
+				}
+
+		/*--------------------------------------------------------------------------------------------------------*/
+
+		for(SchemaSingleton.Catalog catalog3: SchemaSingleton.s_catalogs.values())
+			for(SchemaSingleton.Table table3: catalog3.tables.values())
+				for(SchemaSingleton.FrgnKeys frgnKeys3: table3.forwardFKs.values())
+					for(SchemaSingleton.FrgnKey frgnKey3: frgnKeys3)
+					{
+						String fkEntity = new QId(frgnKey3.fkExternalCatalog, frgnKey3.fkEntity, null).toString();
+						String pkEntity = new QId(frgnKey3.pkExternalCatalog, frgnKey3.pkEntity, null).toString();
+
+						Map<String, String> fkScopes = scopeMap.get(fkEntity);
+						Map<String, String> pkScopes = scopeMap.get(pkEntity);
+
+						if(fkScopes != null && pkScopes != null)
+						{
+							for(Map.Entry<String, String> fkScope: fkScopes.entrySet())
+							{
+								for(Map.Entry<String, String> pkScope: pkScopes.entrySet())
+								{
+									if(fkScope.getKey().equals(pkScope.getKey()))
+									{
+										frgnKey3.fkScope = fkScope.getValue();
+										frgnKey3.pkScope = pkScope.getValue();
+
+										break;
+									}
+								}
+							}
+						}
+					}
+		
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		try
