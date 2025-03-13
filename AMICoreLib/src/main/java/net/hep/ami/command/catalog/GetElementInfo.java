@@ -78,17 +78,25 @@ public class GetElementInfo extends AbstractCommand
 		/*                                                                                                            */
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, entity).values();
-
-		Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, entity).values();
+		SchemaSingleton.Table table = SchemaSingleton.getEntityInfo(catalog, entity);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"linked_elements\">");
 
-		_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, forwardLists, FORWARD);
+		if(!table.ignoreForwardEntities)
+		{
+			Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, entity).values();
 
-		_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, backwardLists, BACKWARD);
+			_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, forwardLists, FORWARD);
+		}
+
+		if(!table.ignoreBackwardEntities)
+		{
+			Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, entity).values();
+
+			_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, backwardLists, BACKWARD);
+		}
 
 		result.append("</rowset>");
 
