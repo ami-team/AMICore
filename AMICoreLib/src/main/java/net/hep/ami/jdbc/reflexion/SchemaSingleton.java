@@ -95,9 +95,14 @@ public class SchemaSingleton
 		/**/
 
 		public boolean bridge = false;
+		public boolean ignoreForwardEntities = false;
+		public boolean ignoreBackwardEntities = false;
 
 		public boolean hidden = false;
 		public boolean adminOnly = false;
+
+		public boolean viewOf = false;
+		public String viewOfTable = "";
 
 		public String description = "N/A";
 
@@ -112,8 +117,6 @@ public class SchemaSingleton
 			rank = _rank;
 			targetSchema = _targetSchema;
 			targetDatabase = _targetDatabase;
-
-
 		}
 
 		@Override
@@ -1456,8 +1459,14 @@ public class SchemaSingleton
 		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
 		             /**/
 		             .append("<field name=\"bridge\"><![CDATA[").append(table.bridge).append("]]></field>")
+		             .append("<field name=\"ignoreForwardEntities\"><![CDATA[").append(table.ignoreForwardEntities).append("]]></field>")
+		             .append("<field name=\"ignoreBackwardEntities\"><![CDATA[").append(table.ignoreBackwardEntities).append("]]></field>")
+		             /**/
 		             .append("<field name=\"hidden\"><![CDATA[").append(table.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(table.adminOnly).append("]]></field>")
+		             /**/
+		             .append("<field name=\"viewOf\"><![CDATA[").append(table.viewOf).append("]]></field>")
+		             .append("<field name=\"viewOfTable\"><![CDATA[").append(table.viewOfTable).append("]]></field>")
 		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
 		             .append("</row>")
