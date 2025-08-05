@@ -78,7 +78,7 @@ public class MariaDBDriver extends AbstractDriver
 		{
 			statement.execute("USE `" + db + "`");
 
-			statement.execute("SET time_zone = '" + tz + "'");
+			//statement.execute("SET time_zone = '" + tz + "'");
 
 			statement.execute("SET sql_mode = 'ANSI_QUOTES'");
 		}
