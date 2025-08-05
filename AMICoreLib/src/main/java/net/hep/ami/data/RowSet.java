@@ -16,6 +16,10 @@ public class RowSet
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	protected final Calendar CALENDAR = Calendar.getInstance(TimeZone.getTimeZone(ConfigSingleton.getProperty("time_zone")));
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	protected final ResultSet m_resultSet;
 
 	protected final int m_flags;
@@ -659,7 +663,7 @@ public class RowSet
 
 				try
 				{
-					java.sql.Timestamp timestamp = m_resultSet.getTimestamp(i + 1);
+					java.sql.Timestamp timestamp = m_resultSet.getTimestamp(i + 1, CALENDAR);
 
 					result[i] = (timestamp != null) ? m_amiDateTime.formatTimestamp(timestamp)
 					                                : m_resultSet.getString(i + 1)
@@ -680,7 +684,7 @@ public class RowSet
 
 				try
 				{
-					java.sql.Date date = m_resultSet.getDate(i + 1);
+					java.sql.Date date = m_resultSet.getDate(i + 1, CALENDAR);
 
 					result[i] = (date != null) ? m_amiDateTime.formatDate(date)
 					                           : m_resultSet.getString(i + 1)
@@ -701,7 +705,7 @@ public class RowSet
 
 				try
 				{
-					java.sql.Time time = m_resultSet.getTime(i + 1);
+					java.sql.Time time = m_resultSet.getTime(i + 1, CALENDAR);
 
 					result[i] = (time != null) ? m_amiDateTime.formatTime(time)
 					                           : m_resultSet.getString(i + 1)
