@@ -248,6 +248,77 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	private static int byteArrayToInt(byte[] bytes)
+	{
+		return (
+			((bytes[0] & 0xFF) << 24) |
+			((bytes[1] & 0xFF) << 16) |
+			((bytes[2] & 0xFF) << 8)  |
+			((bytes[3] & 0xFF) << 0)
+		);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private void checkClientSubnet(String clientIp) throws Exception
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean ok = true;
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+        try
+		{
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			int ipInt = byteArrayToInt(InetAddress.getByName(clientIp).getAddress());
+
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			for(String line : ConfigSingleton.getProperty("password_auth_allowed_subnets", "").split("\n"))
+			{
+				line = line.trim();
+
+				if(!line.isEmpty())
+				{
+					String[] parts = line.split("/");
+
+					if(parts.length == 2)
+					{
+						int subnetInt = byteArrayToInt(InetAddress.getByName(parts[0]).getAddress());
+
+						int mask = ~((1 << (32 - Integer.parseInt(parts[1]))) - 1);
+
+						if((ipInt & mask) == (subnetInt & mask))
+						{
+							return;
+						}
+					}
+
+					ok = false;
+				}
+			}
+
+			/*--------------------------------------------------------------------------------------------------------*/
+        }
+		catch(Exception e)
+		{
+			throw new Exception("subnets not properly configured");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(!ok)
+		{
+			throw new Exception("bad client subnet");
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	private record CertInfo(
 		@NotNull String clientDN,
 		@NotNull String issuerDN,
@@ -449,7 +520,13 @@ public class FrontEnd extends HttpServlet
 			}
 			else
 			{
+				/*----------------------------------------------------------------------------------------------------*/
+
+				checkClientSubnet(clientIP);
+
 				userInfoAndUsername = null;
+
+				/*----------------------------------------------------------------------------------------------------*/
 			}
 		}
 		catch(Exception e)
