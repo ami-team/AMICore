@@ -311,6 +311,8 @@ public class ConfigSingleton
 
 					if(!s_reservedParams.contains(key))
 					{
+						val = Utility.unescapeJavaString(val);
+
 						s_properties.put(key, s_envVarPattern.matcher(val).replaceAll(m -> System.getProperty(m.group(1), "")));
 					}
 				}

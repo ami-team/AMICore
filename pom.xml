@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>org.simplejavamail</groupId>
 			<artifactId>simple-java-mail</artifactId>
-			<version>7.8.1</version>
+			<version>8.12.6</version>
 		</dependency>
 
 		<!--*********************************************************************************************************-->
@@ -173,6 +173,14 @@
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
 			<version>0.1.55</version>
+		</dependency>
+
+		<!--*********************************************************************************************************-->
+
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+			<version>5.3</version>
 		</dependency>
 
 		<!--*********************************************************************************************************-->
