@@ -5,6 +5,7 @@ import java.util.stream.*;
 
 import net.hep.ami.jdbc.query.*;
 
+import net.hep.ami.utility.Empty;
 import org.jetbrains.annotations.*;
 
 public class AutoJoinSingleton
@@ -51,10 +52,18 @@ public class AutoJoinSingleton
 			Collection<SchemaSingleton.FrgnKeys> backwardLists;
 
 			/*--------------------------------------------------------------------------------------------------------*/
+			/* CHECK IF VIEW OF TABLE                                                                                 */
+			/*--------------------------------------------------------------------------------------------------------*/
+
+			SchemaSingleton.Table entityInfo = SchemaSingleton.getEntityInfo(defaultCatalog, defaultEntity);
+
+			String newDefaultEntity = !Empty.is(entityInfo.viewOfTable, Empty.STRING_NULL_EMPTY_BLANK) ? entityInfo.viewOfTable : defaultEntity;
+
+			/*--------------------------------------------------------------------------------------------------------*/
 			/* FORWARD RESOLUTION                                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultEntity).values();
+			forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, newDefaultEntity).values();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -79,7 +88,7 @@ public class AutoJoinSingleton
 			/* BACKWARD RESOLUTION                                                                                    */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultEntity).values();
+			backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, newDefaultEntity).values();
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
