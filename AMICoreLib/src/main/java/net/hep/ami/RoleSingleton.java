@@ -355,7 +355,7 @@ public class RoleSingleton
 	{
 		if(Empty.is(validatorClass, Empty.STRING_NULL_EMPTY_BLANK))
 		{
-			return true;
+			return false;
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
