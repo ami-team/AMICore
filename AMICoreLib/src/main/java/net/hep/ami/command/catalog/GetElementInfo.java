@@ -11,6 +11,7 @@ import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.reflexion.*;
 import net.hep.ami.command.*;
 
+import net.hep.ami.utility.Empty;
 import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
@@ -80,20 +81,26 @@ public class GetElementInfo extends AbstractCommand
 
 		SchemaSingleton.Table table = SchemaSingleton.getEntityInfo(catalog, entity);
 
+		/*--------------------------------------------------------------------------------------------------------*/
+		/* CHECK IF VIEW OF TABLE                                                                                 */
+		/*--------------------------------------------------------------------------------------------------------*/
+
+		String newEntity = !Empty.is(table.viewOfTable, Empty.STRING_NULL_EMPTY_BLANK) ? table.viewOfTable : entity;
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		result.append("<rowset type=\"linked_elements\">");
 
 		if(!table.ignoreForwardEntities)
 		{
-			Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, entity).values();
+			Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, newEntity).values();
 
 			_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, forwardLists, FORWARD);
 		}
 
 		if(!table.ignoreBackwardEntities)
 		{
-			Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, entity).values();
+			Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, newEntity).values();
 
 			_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, backwardLists, BACKWARD);
 		}
