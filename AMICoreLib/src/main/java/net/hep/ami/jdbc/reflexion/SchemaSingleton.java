@@ -876,6 +876,8 @@ public class SchemaSingleton
 					String pkEntity = resultSet.getString("PKTABLE_NAME");
 					String pkField = resultSet.getString("PKCOLUMN_NAME");
 
+					LOG.info("processing external catalog for " + pkEntity + "." + pkField + " from " + fkEntity + "." + fkField);
+
 					if(name != null && fkEntity != null && fkField != null && pkEntity != null && pkField != null)
 					{
 						CatalogTuple catalogTuple = resolvePKExternalCatalog(m_internalCatalog, fkEntity, fkField, resultSet.getString("PKTABLE_CAT"), pkEntity, pkField);
@@ -897,11 +899,9 @@ public class SchemaSingleton
 									pkEntity,
 									pkField
 								)));
+
+								LOG.info("ok");
 							}
-						}
-						else
-						{
-							LOG.error("Cannot retreive external catalog for " + pkEntity + "." + pkField + " from " + fkEntity + "." + fkField);
 						}
 					}
 				}
