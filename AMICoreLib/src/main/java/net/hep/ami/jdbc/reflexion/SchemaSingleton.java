@@ -899,6 +899,10 @@ public class SchemaSingleton
 								)));
 							}
 						}
+						else
+						{
+							LOG.error("Cannot retreive external catalog for " + pkEntity + "." + pkField + " from " + fkEntity + "." + fkField);
+						}
 					}
 				}
 			}
