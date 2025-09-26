@@ -274,7 +274,8 @@ public class MetadataSingleton
 			column.description = _safeString(description, "N∕A");
 
 			/*--------------------------------------------------------------------------------------------------------*/
-
+			
+			column.enumValues = _safeString((String) map.get("enumValues"), "");
 			column.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
 			column.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
 			column.hashed = _safeBoolean((Boolean) map.get("hashed"), false);
