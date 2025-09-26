@@ -187,6 +187,7 @@ public class SchemaSingleton
 		public String ctrl = "@NULL";
 
 		public String description = "N/A";
+		public String enumValues = "";
 
 		/**/
 
@@ -1518,6 +1519,7 @@ public class SchemaSingleton
 		             .append("<field name=\"ctrl\"><![CDATA[").append(column.ctrl).append("]]></field>")
 		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(column.description).append("]]></field>")
+					 .append("<field name=\"enumValues\"><![CDATA[").append(column.enumValues).append("]]></field>")
 		             .append("</row>")
 		;
 	}
