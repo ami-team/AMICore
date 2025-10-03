@@ -95,7 +95,6 @@ public class GetElementInfo extends AbstractCommand
 		{
 			Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, newEntity).values();
 
-			//_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, forwardLists, FORWARD);
 			_getLinkedEntities(result, catalog, newEntity, primaryFieldName, primaryFieldValue, forwardLists, FORWARD);
 		}
 
@@ -103,7 +102,6 @@ public class GetElementInfo extends AbstractCommand
 		{
 			Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, newEntity).values();
 
-			//_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, backwardLists, BACKWARD);
 			_getLinkedEntities(result, catalog, newEntity, primaryFieldName, primaryFieldValue, backwardLists, BACKWARD);
 		}
 
@@ -244,6 +242,58 @@ public class GetElementInfo extends AbstractCommand
 			;
 
 			/*--------------------------------------------------------------------------------------------------------*/
+			/* CHECK IF LINKED ENTITY IS VIEW OF ANTOHER ENTITY                                                       */
+			/*--------------------------------------------------------------------------------------------------------*/
+
+            try
+			{
+                for(String candidateViewEntity : SchemaSingleton.getEntityNames(linkedCatalog))
+                {
+                    if(SchemaSingleton.getEntityInfo(linkedCatalog, candidateViewEntity).viewOfTable.equals(linkedEntity))
+                    {
+						try
+						{
+							boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
+
+							String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, candidateViewEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+									.addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = " + Utility.textToSqlVal(primaryFieldValue, backslashEscapes))
+									.toString()
+									;
+
+							RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(candidateViewEntity, query);
+
+							sql = rowSet.getSQL();
+							mql = rowSet.getMQL();
+
+							count = rowSet.getAll().get(0).getValue(0);
+						}
+						catch(Exception e)
+						{
+							mql = "N/A";
+							sql = "N/A";
+
+							count = "N/A";
+						}
+
+						result.append("<row>")
+								.append("<field name=\"catalog\"><![CDATA[").append(linkedCatalog).append("]]></field>")
+								.append("<field name=\"entity\"><![CDATA[").append(candidateViewEntity).append("]]></field>")
+								.append("<field name=\"constraint\"><![CDATA[").append(constraints.stream().map(x -> x.toString(QId.MASK_CATALOG_ENTITY_FIELD)).collect(Collectors.joining(", "))).append("]]></field>")
+								.append("<field name=\"sql\"><![CDATA[").append(sql.replaceFirst("COUNT\\(([^)]+)\\)", "$1")).append("]]></field>")
+								.append("<field name=\"mql\"><![CDATA[").append(mql.replaceFirst("COUNT\\(([^)]+)\\)", "$1")).append("]]></field>")
+								.append("<field name=\"count\"><![CDATA[").append(count).append("]]></field>")
+								.append("<field name=\"direction\"><![CDATA[").append(direction).append("]]></field>")
+								.append("</row>")
+						;
+					}
+                }
+            }
+			catch (Exception e)
+			{
+                /* DO NOTHING */
+            }
+
+            /*--------------------------------------------------------------------------------------------------------*/
 		}
 	}
 
