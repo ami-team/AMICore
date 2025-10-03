@@ -255,12 +255,12 @@ public class GetElementInfo extends AbstractCommand
 						{
 							boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
 
-							String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, candidateViewEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+							String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
 									.addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = " + Utility.textToSqlVal(primaryFieldValue, backslashEscapes))
 									.toString()
 									;
 
-							RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(candidateViewEntity, query);
+							RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(linkedEntity, query);
 
 							sql = rowSet.getSQL();
 							mql = rowSet.getMQL();
