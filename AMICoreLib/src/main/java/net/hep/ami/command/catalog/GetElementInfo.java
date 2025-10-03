@@ -127,8 +127,6 @@ public class GetElementInfo extends AbstractCommand
 		String linkedEntity;
 		String direction;
 
-		String query;
-
 		for(SchemaSingleton.FrgnKeys frgnKeys: list)
 		 for(SchemaSingleton.FrgnKey frgnKey: frgnKeys)
 		{
@@ -210,7 +208,7 @@ public class GetElementInfo extends AbstractCommand
 			{
 				boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
 
-				/*String*/ query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+				String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, linkedEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
 				                              .addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = " + Utility.textToSqlVal(primaryFieldValue, backslashEscapes))
 				                              .toString()
 				;
@@ -244,25 +242,45 @@ public class GetElementInfo extends AbstractCommand
 			;
 
 			/*--------------------------------------------------------------------------------------------------------*/
-			/* CHECK IF LINKED ENTITY IS VIEW OF ANOTHER ENTITY                                                       */
+			/* CHECK IF LINKED ENTITY IS VIEW OF ANTOHER ENTITY                                                       */
 			/*--------------------------------------------------------------------------------------------------------*/
 
+/*
             try
 			{
                 for(String candidateViewEntity : SchemaSingleton.getEntityNames(linkedCatalog))
                 {
-
                     if(SchemaSingleton.getEntityInfo(linkedCatalog, candidateViewEntity).viewOfTable.equals(linkedEntity))
                     {
-						/*--------------------------------------------------------------------------------------------------------*/
+						*/
+/*--------------------------------------------------------------------------------------------------------*//*
+
+
+						constraints = new ArrayList<>();
+
+						*/
+/*--------------------------------------------------------------------------------------------------------*//*
+
+
+						constraints.add(new QId(frgnKey.fkExternalCatalog, linkedEntity, frgnKey.fkField));
+
+						*/
+/*--------------------------------------------------------------------------------------------------------*//*
+
 						try
 						{
-							query = sql.replaceAll("`" + linkedEntity + "`", "`" + candidateViewEntity + "`");
+							boolean backslashEscapes = (CatalogSingleton.getFlags(catalog) & DriverMetadata.FLAG_BACKSLASH_ESCAPE) == DriverMetadata.FLAG_BACKSLASH_ESCAPE;
 
-							RowSet rowSet = getQuerier(linkedCatalog).executeSQLQuery(candidateViewEntity, query);
+							String query = new XQLSelect().addSelectPart("COUNT(" + new QId(linkedCatalog, candidateViewEntity, "*").toString(QId.MASK_CATALOG_ENTITY_FIELD) + ")")
+									.addWherePart(new QId(catalog, entity, primaryFieldName, constraints).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = " + Utility.textToSqlVal(primaryFieldValue, backslashEscapes))
+									.addWherePart(new QId(frgnKey.fkExternalCatalog, candidateViewEntity, frgnKey.pkField).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD) + " = " + new QId(frgnKey.fkExternalCatalog, linkedEntity, frgnKey.pkField).toString(QId.MASK_CATALOG_ENTITY_FIELD, QId.MASK_CATALOG_ENTITY_FIELD))
+									.toString()
+									;
+
+							RowSet rowSet = getQuerier(linkedCatalog).executeMQLQuery(candidateViewEntity, query);
 
 							sql = rowSet.getSQL();
-							mql = "N/A";
+							mql = rowSet.getMQL();
 
 							count = rowSet.getAll().get(0).getValue(0);
 						}
@@ -289,8 +307,11 @@ public class GetElementInfo extends AbstractCommand
             }
 			catch (Exception e)
 			{
-                /* DO NOTHING */
+                */
+/* DO NOTHING *//*
+
             }
+*/
 
             /*--------------------------------------------------------------------------------------------------------*/
 		}
