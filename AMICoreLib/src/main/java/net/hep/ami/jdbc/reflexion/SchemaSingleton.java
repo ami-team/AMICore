@@ -108,7 +108,7 @@ public class SchemaSingleton
 
 		/**/
 
-		public Table(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _type, int _rank, String _targetSchema, String _targetDatabase)
+		public Table(@NotNull String _externalCatalog, @NotNull String _internalCatalog, @NotNull String _entity, @NotNull String _type, int _rank, @Nullable String _targetSchema, @Nullable String _targetDatabase)
 		{
 			externalCatalog = _externalCatalog;
 			internalCatalog = _internalCatalog;
@@ -360,7 +360,7 @@ public class SchemaSingleton
 			pkScope = null;
 		}
 
-		public FrgnKey clone(@Nullable String newPKEntity, @Nullable String newFKEntity)
+		public @NotNull FrgnKey clone(@Nullable String newPKEntity, @Nullable String newFKEntity)
 		{
 			if(newPKEntity == null) {
 				newPKEntity = pkEntity;
@@ -800,8 +800,8 @@ public class SchemaSingleton
 			@NotNull DatabaseMetaData metaData,
 			@NotNull String _entity,
 			@NotNull String _type,
-			@NotNull String _targetSchema,
-			@NotNull String _targetDatabase
+			@Nullable String _targetSchema,
+			@Nullable String _targetDatabase
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -882,8 +882,8 @@ public class SchemaSingleton
 			@NotNull DatabaseMetaData metaData,
 			@NotNull String _entity,
 			@NotNull String _type,
-			@NotNull String _targetSchema,
-			@NotNull String _targetDatabase
+			@Nullable String _targetSchema,
+			@Nullable String _targetDatabase
 		 ) throws SQLException {
 			/*--------------------------------------------------------------------------------------------------------*/
 

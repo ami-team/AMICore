@@ -85,7 +85,7 @@ public class GetElementInfo extends AbstractCommand
 		/* CHECK IF VIEW OF TABLE                                                                                 */
 		/*--------------------------------------------------------------------------------------------------------*/
 
-		String newEntity = !Empty.is(table.viewOfTable, Empty.STRING_NULL_EMPTY_BLANK) ? table.viewOfTable : entity;
+		//String newEntity = !Empty.is(table.viewOfTable, Empty.STRING_NULL_EMPTY_BLANK) ? table.viewOfTable : entity;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -93,16 +93,16 @@ public class GetElementInfo extends AbstractCommand
 
 		if(!table.ignoreForwardEntities)
 		{
-			Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, newEntity).values();
+			Collection<SchemaSingleton.FrgnKeys> forwardLists = SchemaSingleton.getForwardFKs(catalog, entity).values();
 
-			_getLinkedEntities(result, catalog, newEntity, primaryFieldName, primaryFieldValue, forwardLists, FORWARD);
+			_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, forwardLists, FORWARD);
 		}
 
 		if(!table.ignoreBackwardEntities)
 		{
-			Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, newEntity).values();
+			Collection<SchemaSingleton.FrgnKeys> backwardLists = SchemaSingleton.getBackwardFKs(catalog, entity).values();
 
-			_getLinkedEntities(result, catalog, newEntity, primaryFieldName, primaryFieldValue, backwardLists, BACKWARD);
+			_getLinkedEntities(result, catalog, entity, primaryFieldName, primaryFieldValue, backwardLists, BACKWARD);
 		}
 
 		result.append("</rowset>");
