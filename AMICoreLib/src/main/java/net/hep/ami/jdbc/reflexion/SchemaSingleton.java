@@ -360,6 +360,28 @@ public class SchemaSingleton
 			pkScope = null;
 		}
 
+		public FrgnKey clone(@Nullable String newPKEntity, @Nullable String newFKEntity)
+		{
+			if(newPKEntity == null) {
+				newPKEntity = pkEntity;
+			}
+
+            if(newFKEntity == null) {
+                newFKEntity = fkEntity;
+            }
+
+			FrgnKey result = new FrgnKey(
+				name,
+				fkExternalCatalog, fkInternalCatalog, newFKEntity, fkField,
+				pkExternalCatalog, pkInternalCatalog, newPKEntity, pkField
+			);
+
+			result.fkScope = fkScope;
+			result.pkScope = pkScope;
+
+			return result;
+		}
+
 		@Override
 		public int hashCode()
 		{

@@ -25,6 +25,8 @@ public class AutoJoinSingleton
 		int max,
 		@NotNull String defaultCatalog,
 		@NotNull String defaultEntity,
+		@NotNull String viewEntity,
+		@Nullable String viewOfEntity,
 		@NotNull QId givenQId
 	 ) throws Exception {
 
@@ -52,18 +54,15 @@ public class AutoJoinSingleton
 			Collection<SchemaSingleton.FrgnKeys> backwardLists;
 
 			/*--------------------------------------------------------------------------------------------------------*/
-			/* CHECK IF VIEW OF TABLE                                                                                 */
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			SchemaSingleton.Table entityInfo = SchemaSingleton.getEntityInfo(defaultCatalog, defaultEntity);
-
-			String newDefaultEntity = !Empty.is(entityInfo.viewOfTable, Empty.STRING_NULL_EMPTY_BLANK) ? entityInfo.viewOfTable : defaultEntity;
-
-			/*--------------------------------------------------------------------------------------------------------*/
 			/* FORWARD RESOLUTION                                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, newDefaultEntity).values();
+			if(defaultEntity.equals(viewEntity)) {
+				forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, viewOfEntity).values();
+			}
+			else {
+				forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, defaultEntity).values();
+			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -71,13 +70,18 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
+					if(frgnKey.fkEntity.equals(viewOfEntity))
+					{
+						frgnKey = frgnKey.clone(frgnKey.pkEntity, viewEntity);
+					}
+
 					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkEntity;
 
 					if(!done.contains(key))
 					{
 						done.add(key);
 						resolvedPath.add(frgnKey);
-						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkEntity, givenQId);
+						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.pkExternalCatalog, frgnKey.pkEntity, viewEntity, viewOfEntity, givenQId);
 						resolvedPath.pop();
 						done.remove(key);
 					}
@@ -88,7 +92,12 @@ public class AutoJoinSingleton
 			/* BACKWARD RESOLUTION                                                                                    */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, newDefaultEntity).values();
+			if(defaultEntity.equals(viewEntity)) {
+				backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, viewOfEntity).values();
+			}
+			else {
+				backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, defaultEntity).values();
+			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -96,13 +105,18 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
+					if(frgnKey.pkEntity.equals(viewOfEntity))
+					{
+						frgnKey = frgnKey.clone(viewEntity, frgnKey.fkEntity);
+					}
+
 					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkEntity;
 
 					if(!done.contains(key))
 					{
 						done.add(key);
 						resolvedPath.add(frgnKey);
-						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkEntity, givenQId);
+						resolve(resolution, resolvedPath, done, cnt + 1, max, frgnKey.fkExternalCatalog, frgnKey.fkEntity, viewEntity, viewOfEntity, givenQId);
 						resolvedPath.pop();
 						done.remove(key);
 					}
@@ -157,7 +171,9 @@ public class AutoJoinSingleton
 	{
 		Resolution result = new Resolution();
 
-		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultExternalCatalog, defaultEntity, givenQId);
+		SchemaSingleton.Table entityInfo = SchemaSingleton.getEntityInfo(defaultExternalCatalog, defaultEntity);
+
+		resolve(result, new Stack<>(), new HashSet<>(), 0, max, defaultExternalCatalog, defaultEntity, defaultEntity, entityInfo.viewOfTable, givenQId);
 
 		return result.finalize(givenQId);
 	}
@@ -169,7 +185,9 @@ public class AutoJoinSingleton
 	{
 		Resolution result = new Resolution();
 
-		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultExternalCatalog, defaultEntity, givenQId);
+		SchemaSingleton.Table entityInfo = SchemaSingleton.getEntityInfo(defaultExternalCatalog, defaultEntity);
+
+		resolve(result, new Stack<>(), new HashSet<>(), 0, 999, defaultExternalCatalog, defaultEntity, defaultEntity, entityInfo.viewOfTable, givenQId);
 
 		return result.finalize(givenQId);
 	}
