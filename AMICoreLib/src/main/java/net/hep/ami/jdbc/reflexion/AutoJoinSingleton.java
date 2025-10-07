@@ -57,7 +57,7 @@ public class AutoJoinSingleton
 			/* FORWARD RESOLUTION                                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(defaultEntity.equals(viewEntity)) {
+			if(!Empty.is(viewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && defaultEntity.equals(viewEntity)) {
 				forwardLists = SchemaSingleton.getForwardFKs(defaultCatalog, viewOfEntity).values();
 			}
 			else {
@@ -70,7 +70,7 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					if(frgnKey.fkEntity.equals(viewOfEntity))
+					if(!Empty.is(viewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.fkEntity.equals(viewOfEntity))
 					{
 						frgnKey = frgnKey.clone(frgnKey.pkEntity, viewEntity);
 					}
@@ -92,7 +92,7 @@ public class AutoJoinSingleton
 			/* BACKWARD RESOLUTION                                                                                    */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(defaultEntity.equals(viewEntity)) {
+			if(!Empty.is(viewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && defaultEntity.equals(viewEntity)) {
 				backwardLists = SchemaSingleton.getBackwardFKs(defaultCatalog, viewOfEntity).values();
 			}
 			else {
@@ -105,7 +105,7 @@ public class AutoJoinSingleton
 			{
 				for(SchemaSingleton.FrgnKey frgnKey: list)
 				{
-					if(frgnKey.pkEntity.equals(viewOfEntity))
+					if(!Empty.is(viewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.pkEntity.equals(viewOfEntity))
 					{
 						frgnKey = frgnKey.clone(viewEntity, frgnKey.fkEntity);
 					}
