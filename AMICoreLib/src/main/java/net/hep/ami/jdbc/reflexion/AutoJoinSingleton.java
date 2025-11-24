@@ -39,9 +39,11 @@ public class AutoJoinSingleton
 		String givenEntity = givenQId.getEntity();
 		String givenColumn = givenQId.getField();
 
+		String givenViewOfEntity = SchemaSingleton.getEntityInfo(givenCatalog == null ? defaultCatalog : givenCatalog, givenEntity).viewOfTable;
+
 		boolean checkNow = (givenCatalog == null || defaultCatalog.equalsIgnoreCase(givenCatalog))
 		                   &&
-		                   (givenEntity == null || defaultEntity.equalsIgnoreCase(givenEntity))
+				           (givenEntity == null || defaultEntity.equalsIgnoreCase(givenEntity))
 		;
 
 		SchemaSingleton.Column resolvedColumn = checkNow ? SchemaSingleton.getEntityInfo(defaultCatalog, defaultEntity).columns.get(givenColumn) : null;
@@ -73,6 +75,11 @@ public class AutoJoinSingleton
 					if(!Empty.is(viewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.fkEntity.equals(viewOfEntity))
 					{
 						frgnKey = frgnKey.clone(frgnKey.pkEntity, viewEntity);
+					}
+
+					if(!Empty.is(givenViewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.pkEntity.equals(givenViewOfEntity))
+					{
+						frgnKey = frgnKey.clone(givenEntity, frgnKey.fkEntity);
 					}
 
 					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkEntity;
@@ -108,6 +115,11 @@ public class AutoJoinSingleton
 					if(!Empty.is(viewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.pkEntity.equals(viewOfEntity))
 					{
 						frgnKey = frgnKey.clone(viewEntity, frgnKey.fkEntity);
+					}
+
+					if(!Empty.is(givenViewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.fkEntity.equals(givenViewOfEntity))
+					{
+						frgnKey = frgnKey.clone(frgnKey.pkEntity, givenEntity);
 					}
 
 					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkEntity;
