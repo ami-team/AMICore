@@ -18,17 +18,17 @@ public class AutoJoinSingleton
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	private static void resolve(
-		@NotNull Resolution resolution,
-		@NotNull Stack<SchemaSingleton.FrgnKey> resolvedPath,
-		@NotNull Set<String> done,
-		int cnt,
-		int max,
-		@NotNull String defaultCatalog,
-		@NotNull String defaultEntity,
-		@NotNull String viewEntity,
-		@Nullable String viewOfEntity,
-		@NotNull QId givenQId
-	 ) throws Exception {
+			@NotNull Resolution resolution,
+			@NotNull Stack<SchemaSingleton.FrgnKey> resolvedPath,
+			@NotNull Set<String> done,
+			int cnt,
+			int max,
+			@NotNull String defaultCatalog,
+			@NotNull String defaultEntity,
+			@NotNull String viewEntity,
+			@Nullable String viewOfEntity,
+			@NotNull QId givenQId
+	) throws Exception {
 
 		if(cnt >= max)
 		{
@@ -39,14 +39,10 @@ public class AutoJoinSingleton
 		String givenEntity = givenQId.getEntity();
 		String givenColumn = givenQId.getField();
 
-		SchemaSingleton.Table temp = SchemaSingleton.getEntityInfo(givenCatalog == null ? defaultCatalog : givenCatalog, givenEntity);
-
-		String givenViewOfEntity = temp != null ? temp.viewOfTable : null;
-
 		boolean checkNow = (givenCatalog == null || defaultCatalog.equalsIgnoreCase(givenCatalog))
-		                   &&
-				           (givenEntity == null || defaultEntity.equalsIgnoreCase(givenEntity))
-		;
+				&&
+				(givenEntity == null || defaultEntity.equalsIgnoreCase(givenEntity))
+				;
 
 		SchemaSingleton.Column resolvedColumn = checkNow ? SchemaSingleton.getEntityInfo(defaultCatalog, defaultEntity).columns.get(givenColumn) : null;
 
@@ -77,11 +73,6 @@ public class AutoJoinSingleton
 					if(!Empty.is(viewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.fkEntity.equals(viewOfEntity))
 					{
 						frgnKey = frgnKey.clone(frgnKey.pkEntity, viewEntity);
-					}
-
-					if(!Empty.is(givenViewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.pkEntity.equals(givenViewOfEntity))
-					{
-						frgnKey = frgnKey.clone(givenEntity, frgnKey.fkEntity);
 					}
 
 					key = frgnKey.fkExternalCatalog + "$" + frgnKey.fkEntity;
@@ -119,11 +110,6 @@ public class AutoJoinSingleton
 						frgnKey = frgnKey.clone(viewEntity, frgnKey.fkEntity);
 					}
 
-					if(!Empty.is(givenViewOfEntity, Empty.STRING_NULL_EMPTY_BLANK) && frgnKey.fkEntity.equals(givenViewOfEntity))
-					{
-						frgnKey = frgnKey.clone(frgnKey.pkEntity, givenEntity);
-					}
-
 					key = frgnKey.pkExternalCatalog + "$" + frgnKey.pkEntity;
 
 					if(!done.contains(key))
@@ -152,9 +138,9 @@ public class AutoJoinSingleton
 				for(SchemaSingleton.FrgnKey frgnKey: resolvedPath)
 				{
 					if(qId.matches(new QId(frgnKey.pkExternalCatalog, frgnKey.pkEntity, frgnKey.pkField))
-					   ||
-					   qId.matches(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField))
-					 ) {
+							||
+							qId.matches(new QId(frgnKey.fkExternalCatalog, frgnKey.fkEntity, frgnKey.fkField))
+					) {
 						map.put(qId, !qId.getExclusion());
 					}
 				}
