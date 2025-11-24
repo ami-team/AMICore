@@ -39,7 +39,9 @@ public class AutoJoinSingleton
 		String givenEntity = givenQId.getEntity();
 		String givenColumn = givenQId.getField();
 
-		String givenViewOfEntity = SchemaSingleton.getEntityInfo(givenCatalog == null ? defaultCatalog : givenCatalog, givenEntity).viewOfTable;
+		SchemaSingleton.Table temp = SchemaSingleton.getEntityInfo(givenCatalog == null ? defaultCatalog : givenCatalog, givenEntity);
+
+		String givenViewOfEntity = temp != null ? temp.viewOfTable : null;
 
 		boolean checkNow = (givenCatalog == null || defaultCatalog.equalsIgnoreCase(givenCatalog))
 		                   &&
