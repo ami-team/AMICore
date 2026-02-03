@@ -2,6 +2,7 @@ package net.hep.ami.utility;
 
 import java.io.*;
 import java.util.*;
+import java.lang.reflect.Field;
 
 import com.jayway.jsonpath.*;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
@@ -55,7 +56,6 @@ public class JsonUtility
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
-
     @NotNull
     public static Map<String, Object> parseJsonAsMap(@NotNull String jsonString) throws Exception
     {
@@ -63,7 +63,6 @@ public class JsonUtility
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
-
 
     @NotNull
     public static List<Object> parseJsonAsList(@NotNull String jsonString) throws Exception
@@ -149,7 +148,6 @@ public class JsonUtility
     /* JSON PATH NAVIGATION                                                                                           */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-
     @Nullable
     public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath) throws Exception
     {
@@ -167,11 +165,30 @@ public class JsonUtility
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
+    @Nullable
+    public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath,
+                                      @NotNull Configuration configuration) throws Exception
+    {
+        DocumentContext ctx = JsonPath.using(configuration).parse(jsonObject);
+        return ctx.read(jsonPath);
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     @NotNull
     public static <T> List<T> queryJsonPathAsList(@NotNull Object jsonObject, @NotNull String jsonPath) throws Exception
     {
         DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonObject);
         return ctx.read(jsonPath, new TypeRef<List<T>>() {});
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    @NotNull
+    public static <T> Map<String, T> queryJsonPathAsMap(@NotNull Object jsonObject, @NotNull String jsonPath) throws Exception
+    {
+        DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonObject);
+        return ctx.read(jsonPath, new TypeRef<Map<String, T>>() {});
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -190,13 +207,183 @@ public class JsonUtility
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
+    /* JAVA OBJECT EXTRACTION                                                                                         */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
+    /**
+     * Extracts a parameter from a Java object using reflection
+     */
     @Nullable
-    public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath,
-                                      @NotNull Configuration configuration) throws Exception
+    public static Object extractParameter(@NotNull Object object, @NotNull String parameterName) throws Exception
     {
-        DocumentContext ctx = JsonPath.using(configuration).parse(jsonObject);
-        return ctx.read(jsonPath);
+        Class<?> clazz = object.getClass();
+
+        try {
+            Field field = clazz.getDeclaredField(parameterName);
+            field.setAccessible(true);
+            return field.get(object);
+        } catch (NoSuchFieldException e) {
+            // Try with parent classes
+            Class<?> superClass = clazz.getSuperclass();
+            while (superClass != null && superClass != Object.class) {
+                try {
+                    Field field = superClass.getDeclaredField(parameterName);
+                    field.setAccessible(true);
+                    return field.get(object);
+                } catch (NoSuchFieldException ex) {
+                    superClass = superClass.getSuperclass();
+                }
+            }
+            throw new NoSuchFieldException("Field '" + parameterName + "' not found in " + clazz.getName());
+        }
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * Extracts a typed parameter from a Java object
+     */
+    @Nullable
+    public static <T> T extractParameter(@NotNull Object object, @NotNull String parameterName,
+                                         @NotNull Class<T> expectedType) throws Exception
+    {
+        Object value = extractParameter(object, parameterName);
+        if (value == null) {
+            return null;
+        }
+        if (!expectedType.isInstance(value)) {
+            throw new ClassCastException("Field '" + parameterName + "' is not of type " + expectedType.getName());
+        }
+        return expectedType.cast(value);
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * Extracts all parameters from a Java object as a Map
+     */
+    @NotNull
+    public static Map<String, Object> extractAllParameters(@NotNull Object object) throws Exception
+    {
+        Map<String, Object> parameters = new HashMap<>();
+        Class<?> clazz = object.getClass();
+
+        // Iterate through all fields of the class and its parents
+        while (clazz != null && clazz != Object.class) {
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true);
+                parameters.put(field.getName(), field.get(object));
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        return parameters;
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * Extracts and parses a JSON/Python dict parameter from a Java object
+     * The field must contain a String in JSON or Python dict format
+     */
+    @Nullable
+    public static Object extractAndParseParameter(@NotNull Object object, @NotNull String parameterName) throws Exception
+    {
+        Object value = extractParameter(object, parameterName);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (!(value instanceof String)) {
+            throw new IllegalArgumentException("Field '" + parameterName + "' is not a String, cannot parse");
+        }
+
+        String stringValue = (String) value;
+
+        // Try to parse as JSON first
+        try {
+            return parseJson(stringValue);
+        } catch (Exception e) {
+            // If it fails, try as Python dict
+            return parsePythonDict(stringValue);
+        }
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * Extracts and parses a parameter as Map
+     */
+    @NotNull
+    public static Map<String, Object> extractAndParseParameterAsMap(@NotNull Object object,
+                                                                    @NotNull String parameterName) throws Exception
+    {
+        Object value = extractParameter(object, parameterName);
+
+        if (value == null) {
+            return new HashMap<>();
+        }
+
+        if (!(value instanceof String)) {
+            throw new IllegalArgumentException("Field '" + parameterName + "' is not a String, cannot parse");
+        }
+
+        String stringValue = (String) value;
+
+        // Try to parse as JSON first
+        try {
+            return parseJsonAsMap(stringValue);
+        } catch (Exception e) {
+            // If it fails, try as Python dict
+            return parsePythonDictAsMap(stringValue);
+        }
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * Extracts and parses a parameter as List
+     */
+    @NotNull
+    public static List<Object> extractAndParseParameterAsList(@NotNull Object object,
+                                                              @NotNull String parameterName) throws Exception
+    {
+        Object value = extractParameter(object, parameterName);
+
+        if (value == null) {
+            return new ArrayList<>();
+        }
+
+        if (!(value instanceof String)) {
+            throw new IllegalArgumentException("Field '" + parameterName + "' is not a String, cannot parse");
+        }
+
+        String stringValue = (String) value;
+
+        // Try to parse as JSON first
+        try {
+            return parseJsonAsList(stringValue);
+        } catch (Exception e) {
+            // If it fails, try as Python dict
+            return parsePythonDictAsList(stringValue);
+        }
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * Extracts a parameter and applies a JSONPath query on it
+     */
+    @Nullable
+    public static <T> T extractAndQueryJsonPath(@NotNull Object object, @NotNull String parameterName,
+                                                @NotNull String jsonPath) throws Exception
+    {
+        Object parsedValue = extractAndParseParameter(object, parameterName);
+        if (parsedValue == null) {
+            return null;
+        }
+        return queryJsonPath(parsedValue, jsonPath);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
