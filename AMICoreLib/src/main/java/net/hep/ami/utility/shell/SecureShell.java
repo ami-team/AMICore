@@ -23,7 +23,7 @@ public class SecureShell extends AbstractShell
 	{
 		s_properties.put("StrictHostKeyChecking", "no");
 
-		s_properties.put("PreferredAuthentications", "publickey,password");
+		s_properties.put("PreferredAuthentications", "keyboard-interactive,password,publickey");
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
