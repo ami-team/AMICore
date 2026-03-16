@@ -90,7 +90,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 			}
 
 			if(!Empty.is(json, Empty.STRING_NULL_EMPTY_BLANK)) {
-				widget.put("json", Integer.valueOf(json));
+				widget.put("json", new ObjectMapper().readValue(json, DICT_TYPE_REF));
 			}
 		}
 
