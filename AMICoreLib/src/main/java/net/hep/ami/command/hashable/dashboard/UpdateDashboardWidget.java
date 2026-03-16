@@ -39,6 +39,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 		String y = arguments.get("y");
 		String width = arguments.get("width");
 		String height = arguments.get("height");
+		String json = arguments.get("json");
 
 		if(Empty.is(hash, Empty.STRING_NULL_EMPTY_BLANK)
 		   ||
@@ -87,6 +88,10 @@ public class UpdateDashboardWidget extends AbstractCommand
 			if(height != null) {
 				widget.put("height", Integer.valueOf(height));
 			}
+
+			if(!Empty.is(json, Empty.STRING_NULL_EMPTY_BLANK)) {
+				widget.put("json", Integer.valueOf(json));
+			}
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -115,7 +120,7 @@ public class UpdateDashboardWidget extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-hash=\"\" -widgetId=\"\" (-transparent=\"\")? (-autoRefresh=\"\")? (-x=\"\")? (-y=\"\")? (-width=\"\")? (-height=\"\")?";
+		return "-hash=\"\" -widgetId=\"\" (-transparent=\"\")? (-autoRefresh=\"\")? (-x=\"\")? (-y=\"\")? (-width=\"\")? (-height=\"\")? (-json=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
