@@ -89,8 +89,12 @@ public class UpdateDashboardWidget extends AbstractCommand
 				widget.put("height", Integer.valueOf(height));
 			}
 
-			if(!Empty.is(json, Empty.STRING_NULL_EMPTY_BLANK)) {
-				widget.put("json", new ObjectMapper().readValue(json, DICT_TYPE_REF));
+			if(!Empty.is(json, Empty.STRING_NULL_EMPTY_BLANK))
+			{
+				for(java.util.Map.Entry<String, Object> entry: new ObjectMapper().readValue(json, DICT_TYPE_REF).entrySet())
+				{
+					widget.put(entry.getKey(), entry.getValue());
+				}
 			}
 		}
 
