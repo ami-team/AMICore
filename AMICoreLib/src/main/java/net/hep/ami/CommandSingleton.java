@@ -68,9 +68,9 @@ public class CommandSingleton
 			SimpleShell.ShellTuple shellTuple = simpleShell.exec(new String[] {"hostname", "-f"});
 			simpleShell.disconnect();
 
-			if(shellTuple.errorCode() == 0)
+			if(shellTuple.getErrorCode() == 0)
 			{
-				hostName = shellTuple.inputStringBuilder().toString().trim();
+				hostName = shellTuple.getInputStringBuilder().toString().trim();
 			}
 			else
 			{

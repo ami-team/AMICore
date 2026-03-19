@@ -1,5 +1,7 @@
 package net.hep.ami.utility.shell;
 
+import lombok.*;
+
 import java.io.*;
 import java.nio.charset.*;
 import java.util.concurrent.atomic.*;
@@ -38,8 +40,17 @@ public abstract class AbstractShell
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public record ShellTuple(Integer errorCode, StringBuilder inputStringBuilder, StringBuilder errorStringBuilder) {}
+	@Getter
+	@ToString
+	@AllArgsConstructor
+	public class ShellTuple
+	{
+		private final Integer errorCode;
 
+		private final StringBuilder inputStringBuilder;
+
+		private final StringBuilder errorStringBuilder;
+	}
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public void set2FACode(String tfaCode)
