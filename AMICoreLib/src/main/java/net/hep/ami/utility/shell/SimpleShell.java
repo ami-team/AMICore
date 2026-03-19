@@ -4,8 +4,24 @@ import java.io.*;
 
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 public class SimpleShell extends AbstractShell
 {
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public SimpleShell()
+	{
+		this(null);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public SimpleShell(@Nullable String tfa_prompt)
+	{
+		super(tfa_prompt);
+	}
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
@@ -16,8 +32,8 @@ public class SimpleShell extends AbstractShell
 
 		Process process = Runtime.getRuntime().exec(new String[] {"bash", "-c", argsToString(args)});
 
-		try(StreamReader inputThread = new StreamReader(inputStringBuilder, process.getInputStream());
-		    StreamReader errorThread = new StreamReader(errorStringBuilder, process.getErrorStream()))
+		try(StreamReader inputThread = new StreamReader(inputStringBuilder, process.getInputStream(), process.getOutputStream());
+		    StreamReader errorThread = new StreamReader(errorStringBuilder, process.getErrorStream(), process.getOutputStream()))
 		{
 			inputThread.start();
 			errorThread.start();
@@ -55,7 +71,7 @@ public class SimpleShell extends AbstractShell
 	@Override
 	public void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
 	{
-		try(InputStream inputStream = new FileInputStream(new File(fpath + File.separator + fname)))
+		try(InputStream inputStream = new FileInputStream(fpath + File.separator + fname))
 		{
 			TextFile.read(stringBuilder, inputStream);
 		}
@@ -66,7 +82,7 @@ public class SimpleShell extends AbstractShell
 	@Override
 	public void writeTextFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
 	{
-		try(OutputStream outputStream = new FileOutputStream(new File(fpath + File.separator + fname)))
+		try(OutputStream outputStream = new FileOutputStream(fpath + File.separator + fname))
 		{
 			TextFile.write(outputStream, stringBuilder);
 		}

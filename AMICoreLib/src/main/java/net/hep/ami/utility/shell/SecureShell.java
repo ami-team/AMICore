@@ -7,13 +7,15 @@ import com.jcraft.jsch.*;
 
 import net.hep.ami.utility.*;
 
+import org.jetbrains.annotations.*;
+
 public class SecureShell extends AbstractShell
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private JSch m_jsch;
+	private final JSch m_jsch;
 
-	private Session m_session;
+	private final Session m_session;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
@@ -30,6 +32,17 @@ public class SecureShell extends AbstractShell
 
 	public SecureShell(String host, int port, String user, String passwordOrPrivateKey) throws Exception
 	{
+		this(host, port, user, passwordOrPrivateKey, null);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public SecureShell(String host, int port, String user, String passwordOrPrivateKey, @Nullable String tfa_prompt) throws Exception
+	{
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		super(tfa_prompt);
+
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_jsch = new JSch();
@@ -104,12 +117,14 @@ public class SecureShell extends AbstractShell
 
 		channel.setCommand(argsToString(args));
 
+		channel.setPty(true);
+
 		channel.connect();
 
 		try
 		{
-			try(StreamReader inputThread = new StreamReader(inputStringBuilder, channel.getInputStream());
-			    StreamReader errorThread = new StreamReader(errorStringBuilder, channel. getErrStream ()))
+			try(StreamReader inputThread = new StreamReader(inputStringBuilder, channel.getInputStream(), channel.getOutputStream());
+			    StreamReader errorThread = new StreamReader(errorStringBuilder, channel.getExtInputStream(), channel.getOutputStream()))
 			{
 				inputThread.start();
 				errorThread.start();

@@ -1,9 +1,13 @@
 package net.hep.ami.utility.shell;
 
 import java.io.*;
+import java.nio.charset.*;
+import java.util.concurrent.atomic.*;
 
 import net.hep.ami.*;
 import net.hep.ami.utility.*;
+
+import org.jetbrains.annotations.*;
 
 public abstract class AbstractShell
 {
@@ -13,33 +17,57 @@ public abstract class AbstractShell
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static class ShellTuple
+	private final AtomicBoolean m_tfaDone = new AtomicBoolean();
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private final @Nullable String m_tfaPrompt;
+
+	private volatile @Nullable String m_tfaCode;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public AbstractShell(@Nullable String tfaPrompt)
 	{
-		public final Integer errorCode;
+		m_tfaDone.set(false);
 
-		public final StringBuilder inputStringBuilder;
-		public final StringBuilder errorStringBuilder;
+		m_tfaPrompt = tfaPrompt;
 
-		public ShellTuple(int _errorCode, StringBuilder _inputStringBuilder, StringBuilder _errorStringBuilder)
-		{
-			errorCode = _errorCode;
-
-			inputStringBuilder = _inputStringBuilder;
-			errorStringBuilder = _errorStringBuilder;
-		}
+		m_tfaCode = null;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected static class StreamReader extends Thread implements Closeable
+	public record ShellTuple(Integer errorCode, StringBuilder inputStringBuilder, StringBuilder errorStringBuilder) {}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public void set2FACode(String tfaCode)
 	{
+		m_tfaDone.set(
+			Empty.is(m_tfaPrompt, Empty.STRING_NULL_EMPTY_BLANK)
+			||
+			Empty.is(tfaCode, Empty.STRING_NULL_EMPTY_BLANK)
+		);
+
+		m_tfaCode = tfaCode;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	protected class StreamReader extends Thread implements Closeable
+	{
+		private final StringBuilder m_tfaWindow = new StringBuilder();
+
 		private final StringBuilder m_stringBuilder;
 		private final InputStream m_inputStream;
+		private final OutputStream m_outputStream;
 
-		public StreamReader(StringBuilder stringBuilder, InputStream inputStream)
+		public StreamReader(StringBuilder stringBuilder, InputStream inputStream, OutputStream outputStream)
 		{
 			m_stringBuilder = stringBuilder;
 			m_inputStream = inputStream;
+			m_outputStream = outputStream;
 		}
 
 		@Override
@@ -47,11 +75,41 @@ public abstract class AbstractShell
 		{
 			try
 			{
-				TextFile.read(m_stringBuilder, m_inputStream);
+				InputStreamReader reader = new InputStreamReader(m_inputStream, StandardCharsets.UTF_8);
+
+				for(int c; (c = reader.read()) != -1; )
+				{
+					char ch = (char) c;
+
+					m_stringBuilder.append(ch);
+
+					/*------------------------------------------------------------------------------------------------*/
+					/* 2FA PROMPT DETECTION                                                                           */
+					/*------------------------------------------------------------------------------------------------*/
+
+					if(!m_tfaDone.get() && m_tfaPrompt != null)
+					{
+						m_tfaWindow.append(ch);
+
+						if(m_tfaWindow.length() > m_tfaPrompt.length())
+						{
+							m_tfaWindow.delete(0, m_tfaWindow.length() - m_tfaPrompt.length());
+						}
+
+						if(m_tfaWindow.toString().equals(m_tfaPrompt) && m_tfaDone.compareAndSet(false, true))
+						{
+							m_outputStream.write((m_tfaCode + "\n").getBytes(StandardCharsets.UTF_8));
+
+							m_outputStream.flush();
+						}
+					}
+
+					/*------------------------------------------------------------------------------------------------*/
+				}
 			}
 			catch(Exception e)
 			{
-				LOG.error("could not read text file", e);
+				LOG.error("could not read stream", e);
 			}
 		}
 
