@@ -17,9 +17,9 @@ public class SimpleShell extends AbstractShell
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SimpleShell(@Nullable String tfa_prompt)
+	public SimpleShell(@Nullable String tfaPrompt)
 	{
-		super(tfa_prompt);
+		super(tfaPrompt);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

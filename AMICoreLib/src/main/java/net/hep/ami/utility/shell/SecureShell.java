@@ -37,11 +37,11 @@ public class SecureShell extends AbstractShell
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SecureShell(String host, int port, String user, String passwordOrPrivateKey, @Nullable String tfa_prompt) throws Exception
+	public SecureShell(String host, int port, String user, String passwordOrPrivateKey, @Nullable String tfaPrompt) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		super(tfa_prompt);
+		super(tfaPrompt);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
