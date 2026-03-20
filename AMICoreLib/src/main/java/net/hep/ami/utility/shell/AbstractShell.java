@@ -15,27 +15,16 @@ public abstract class AbstractShell
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static final org.slf4j.Logger LOG = LogSingleton.getLogger(AbstractShell.class.getSimpleName());
+	protected static final org.slf4j.Logger LOG = LogSingleton.getLogger(AbstractShell.class.getSimpleName());
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private final AtomicBoolean m_tfaDone = new AtomicBoolean();
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	private final @Nullable String m_tfaPrompt;
-
-	private volatile @Nullable String m_tfaCode;
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public AbstractShell(@Nullable String tfaPrompt)
+	public void set2FACode(String tfaCode)
 	{
-		m_tfaDone.set(false);
-
-		m_tfaPrompt = tfaPrompt;
-
-		m_tfaCode = null;
+		if(!Empty.is(tfaCode, Empty.STRING_NULL_EMPTY_BLANK))
+		{
+			LOG.info("2AF not available");
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -43,7 +32,7 @@ public abstract class AbstractShell
 	@Getter
 	@ToString
 	@AllArgsConstructor
-	public class ShellTuple
+	public static class ShellTuple
 	{
 		private final Integer errorCode;
 
@@ -51,34 +40,18 @@ public abstract class AbstractShell
 
 		private final StringBuilder errorStringBuilder;
 	}
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public void set2FACode(String tfaCode)
-	{
-		m_tfaDone.set(
-			Empty.is(m_tfaPrompt, Empty.STRING_NULL_EMPTY_BLANK)
-			||
-			Empty.is(tfaCode, Empty.STRING_NULL_EMPTY_BLANK)
-		);
-
-		m_tfaCode = tfaCode;
-	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	protected class StreamReader extends Thread implements Closeable
+	protected static class StreamReader extends Thread implements Closeable
 	{
-		private final StringBuilder m_tfaWindow = new StringBuilder();
-
 		private final StringBuilder m_stringBuilder;
 		private final InputStream m_inputStream;
-		private final OutputStream m_outputStream;
 
-		public StreamReader(StringBuilder stringBuilder, InputStream inputStream, OutputStream outputStream)
+		public StreamReader(StringBuilder stringBuilder, InputStream inputStream)
 		{
 			m_stringBuilder = stringBuilder;
 			m_inputStream = inputStream;
-			m_outputStream = outputStream;
 		}
 
 		@Override
@@ -86,41 +59,11 @@ public abstract class AbstractShell
 		{
 			try
 			{
-				InputStreamReader reader = new InputStreamReader(m_inputStream, StandardCharsets.UTF_8);
-
-				for(int c; (c = reader.read()) != -1; )
-				{
-					char ch = (char) c;
-
-					m_stringBuilder.append(ch);
-
-					/*------------------------------------------------------------------------------------------------*/
-					/* 2FA PROMPT DETECTION                                                                           */
-					/*------------------------------------------------------------------------------------------------*/
-
-					if(!m_tfaDone.get() && m_tfaPrompt != null)
-					{
-						m_tfaWindow.append(ch);
-
-						if(m_tfaWindow.length() > m_tfaPrompt.length())
-						{
-							m_tfaWindow.delete(0, m_tfaWindow.length() - m_tfaPrompt.length());
-						}
-
-						if(m_tfaWindow.toString().equals(m_tfaPrompt) && m_tfaDone.compareAndSet(false, true))
-						{
-							m_outputStream.write((m_tfaCode + "\n").getBytes(StandardCharsets.UTF_8));
-
-							m_outputStream.flush();
-						}
-					}
-
-					/*------------------------------------------------------------------------------------------------*/
-				}
+				TextFile.read(m_stringBuilder, m_inputStream);
 			}
 			catch(Exception e)
 			{
-				LOG.error("could not read stream", e);
+				LOG.error("could not read text file", e);
 			}
 		}
 

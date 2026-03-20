@@ -1,9 +1,19 @@
 package net.hep.ami.utility.shell;
 
 import java.io.*;
+import java.nio.charset.*;
+import java.nio.file.*;
+import java.security.*;
 import java.util.*;
+import java.util.concurrent.*;
 
-import com.jcraft.jsch.*;
+import org.apache.sshd.client.*;
+import org.apache.sshd.client.channel.*;
+import org.apache.sshd.client.session.*;
+import org.apache.sshd.client.keyverifier.*;
+import org.apache.sshd.common.keyprovider.*;
+import org.apache.sshd.common.session.SessionContext;
+import org.apache.sshd.sftp.client.*;
 
 import net.hep.ami.utility.*;
 
@@ -13,56 +23,66 @@ public class SecureShell extends AbstractShell
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private final JSch m_jsch;
+	private final SshClient m_client;
 
-	private final Session m_session;
+	private ClientSession m_session;
 
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	static final Properties s_properties = new Properties();
-
-	static
-	{
-		s_properties.put("StrictHostKeyChecking", "no");
-
-		s_properties.put("PreferredAuthentications", "keyboard-interactive,password,publickey");
-	}
+	private final TwoFactorUserInfo m_userInfo;
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SecureShell(String host, int port, String user, String passwordOrPrivateKey) throws Exception
+	private final String m_host;
+	private final int    m_port;
+	private final String m_user;
+
+	@Nullable
+	private final String m_passwordOrPrivateKey;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	static final long s_timeout = 10L;
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public SecureShell(String host, int port, @Nullable String user, @Nullable String passwordOrPrivateKey) throws Exception
 	{
 		this(host, port, user, passwordOrPrivateKey, null);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SecureShell(String host, int port, String user, String passwordOrPrivateKey, @Nullable String tfaPrompt) throws Exception
+	public SecureShell(String host, int port, @Nullable String user, @Nullable String passwordOrPrivateKey, @Nullable String tfaPrompt) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		super(tfaPrompt);
+		m_host = host;
+		m_port = port;
+		m_user = user;
+		m_passwordOrPrivateKey = passwordOrPrivateKey;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		m_jsch = new JSch();
-
-		m_session = m_jsch.getSession(user, host, port);
-
-		m_session.setConfig(s_properties);
+		m_userInfo = new TwoFactorUserInfo(null, passwordOrPrivateKey, tfaPrompt);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(passwordOrPrivateKey.length() > 64)
-		{
-			m_jsch.addIdentity(passwordOrPrivateKey);
-		}
-		else
-		{
-			m_session.setPassword(passwordOrPrivateKey);
-		}
+		m_client = SshClient.setUpDefaultClient();
+
+		m_client.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
+
+		m_client.setUserInteraction(m_userInfo);
+
+		m_client.start();
 
 		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Override
+	public void set2FACode(@Nullable String tfaCode)
+	{
+		m_userInfo.set2FACode(tfaCode);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -70,7 +90,30 @@ public class SecureShell extends AbstractShell
 	@Override
 	public void connect() throws Exception
 	{
-		m_session.connect();
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		m_session = m_client.connect(m_user, m_host, m_port)
+				.verify(s_timeout, TimeUnit.SECONDS)
+				.getSession();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		if(!Empty.is(m_passwordOrPrivateKey, Empty.STRING_NULL_EMPTY_BLANK) && m_passwordOrPrivateKey.length() > 64)
+		{
+			KeyPair keyPair = loadKeyPair(m_passwordOrPrivateKey);
+
+			m_session.addPublicKeyIdentity(keyPair);
+		}
+		else
+		{
+			m_session.addPasswordIdentity(m_passwordOrPrivateKey);
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		m_session.auth().verify(s_timeout, TimeUnit.SECONDS);
+
+		/*------------------------------------------------------------------------------------------------------------*/
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -78,29 +121,22 @@ public class SecureShell extends AbstractShell
 	@Override
 	public void disconnect() ////// Exception
 	{
-		m_session.disconnect();
+		if(m_session != null)
+		{
+			m_session.close(false);
+		}
+
+		m_client.stop();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public String getHomeDirectory() throws Exception
 	{
-		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
-
-		channel.connect();
-
-		String result;
-
-		try
+		try(SftpClient channel = SftpClientFactory.instance().createSftpClient(m_session))
 		{
-			result = channel.getHome();
+			return channel.canonicalPath(".");
 		}
-		finally
-		{
-			channel.disconnect();
-		}
-
-		return result;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -113,39 +149,24 @@ public class SecureShell extends AbstractShell
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		ChannelExec channel = (ChannelExec) m_session.openChannel("exec");
-
-		channel.setCommand(argsToString(args));
-
-		channel.setPty(true);
-
-		channel.connect();
-
-		try
+		try(ClientChannel channel = m_session.createExecChannel(argsToString(args));
+			ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
+			ByteArrayOutputStream errorStream = new ByteArrayOutputStream())
 		{
-			try(StreamReader inputThread = new StreamReader(inputStringBuilder, channel.getInputStream(), channel.getOutputStream());
-			    StreamReader errorThread = new StreamReader(errorStringBuilder, channel.getExtInputStream(), channel.getOutputStream()))
-			{
-				inputThread.start();
-				errorThread.start();
+			channel.setOut(inputStream);
+			channel.setErr(errorStream);
 
-				inputThread.join();
-				errorThread.join();
+			channel.open().verify(s_timeout, TimeUnit.SECONDS);
 
-				while(!channel.isClosed())
-				{
-					Thread.sleep(10);
-				}
-			}
-		}
-		finally
-		{
-			channel.disconnect();
+			channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 0L);
+
+			inputStringBuilder.append(inputStream.toString(StandardCharsets.UTF_8));
+			errorStringBuilder.append(errorStream.toString(StandardCharsets.UTF_8));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new ShellTuple(channel.getExitStatus(), inputStringBuilder, errorStringBuilder);
+		return new ShellTuple(0, inputStringBuilder, errorStringBuilder);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -155,28 +176,16 @@ public class SecureShell extends AbstractShell
 	@Override
 	public void readTextFile(StringBuilder stringBuilder, String fpath, String fname) throws Exception
 	{
-		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
-
-		channel.connect();
-
-		try
+		try(SftpClient channel = SftpClientFactory.instance().createSftpClient(m_session))
 		{
-			channel.cd(fpath);
-
-			try(InputStream inputStream = channel.get(fname))
+			try(InputStream inputStream = channel.read(fpath + "/" + fname))
 			{
 				TextFile.read(stringBuilder, inputStream);
 			}
-
-			channel.exit();
 		}
 		catch(Exception e)
 		{
 			throw new Exception(e.getMessage() + " (" + fpath + "/" + fname + ")", e);
-		}
-		finally
-		{
-			channel.disconnect();
 		}
 	}
 
@@ -185,29 +194,35 @@ public class SecureShell extends AbstractShell
 	@Override
 	public void writeTextFile(String fpath, String fname, StringBuilder stringBuilder) throws Exception
 	{
-		ChannelSftp channel = (ChannelSftp) m_session.openChannel("sftp");
-
-		channel.connect();
-
-		try
+		try(SftpClient channel = SftpClientFactory.instance().createSftpClient(m_session))
 		{
-			channel.cd(fpath);
-
-			try(OutputStream outputStream = channel.put(fname))
+			try(OutputStream outputStream = channel.write(fpath + "/" + fname))
 			{
 				TextFile.write(outputStream, stringBuilder);
 			}
-
-			channel.exit();
 		}
 		catch(Exception e)
 		{
 			throw new Exception(e.getMessage() + " (" + fpath + "/" + fname + ")", e);
 		}
-		finally
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private KeyPair loadKeyPair(String privateKeyPath) throws Exception
+	{
+		FileKeyPairProvider provider = new FileKeyPairProvider(Paths.get(privateKeyPath));
+
+		Iterable<KeyPair> keyPairs = provider.loadKeys(null);
+
+		Iterator<KeyPair> iterator = keyPairs.iterator();
+
+		if(!iterator.hasNext())
 		{
-			channel.disconnect();
+			throw new Exception("No key pair found in: " + privateKeyPath);
 		}
+
+		return iterator.next();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

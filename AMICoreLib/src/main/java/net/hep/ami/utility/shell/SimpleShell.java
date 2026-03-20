@@ -10,20 +10,6 @@ public class SimpleShell extends AbstractShell
 {
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SimpleShell()
-	{
-		this(null);
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
-	public SimpleShell(@Nullable String tfaPrompt)
-	{
-		super(tfaPrompt);
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
-
 	@Override
 	public ShellTuple exec(String[] args) throws Exception
 	{
@@ -32,8 +18,8 @@ public class SimpleShell extends AbstractShell
 
 		Process process = Runtime.getRuntime().exec(new String[] {"bash", "-c", argsToString(args)});
 
-		try(StreamReader inputThread = new StreamReader(inputStringBuilder, process.getInputStream(), process.getOutputStream());
-		    StreamReader errorThread = new StreamReader(errorStringBuilder, process.getErrorStream(), process.getOutputStream()))
+		try(StreamReader inputThread = new StreamReader(inputStringBuilder, process.getInputStream());
+            StreamReader errorThread = new StreamReader(errorStringBuilder, process.getErrorStream()))
 		{
 			inputThread.start();
 			errorThread.start();
