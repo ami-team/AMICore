@@ -1,7 +1,7 @@
 package net.hep.ami.utility.shell;
 
-import org.apache.sshd.client.auth.keyboard.*;
 import org.apache.sshd.client.session.*;
+import org.apache.sshd.client.auth.keyboard.*;
 
 import net.hep.ami.utility.*;
 
@@ -11,9 +11,8 @@ public class TwoFactorUserInfo implements UserInteraction
 {
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    @Nullable private /*-*/ String m_passphrase;
-    @Nullable private /*-*/ String m_password;
-    @Nullable private /*-*/ String m_tfaCode;
+    @Nullable private String m_password;
+    @Nullable private String m_tfaCode;
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -23,7 +22,7 @@ public class TwoFactorUserInfo implements UserInteraction
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    public TwoFactorUserInfo(@Nullable String passphrase, @Nullable String password, @Nullable String tfaPrompt)
+    public TwoFactorUserInfo(@Nullable String password, @Nullable String tfaPrompt)
     {
         /*------------------------------------------------------------------------------------------------------------*/
 
@@ -40,7 +39,6 @@ public class TwoFactorUserInfo implements UserInteraction
 
         /*------------------------------------------------------------------------------------------------------------*/
 
-        this.m_passphrase = passphrase;
         this.m_password = password;
         this.m_tfaPrompt = tfaPrompt;
 
@@ -64,23 +62,21 @@ public class TwoFactorUserInfo implements UserInteraction
 
         for(int i = 0; i < prompt.length; i++)
         {
-            responses[i] = "";
-
             String p = prompt[i].toLowerCase();
 
             AbstractShell.LOG.info("KBI prompt[{}] = '{}'", i, p);
 
-            /**/ if(p.contains("passphrase"))
-            {
-                responses[i] = m_passphrase != null ? m_passphrase : "";
-            }
-            else if(p.contains("password"))
+            /**/ if(p.contains("password"))
             {
                 responses[i] = m_password != null ? m_password : "";
             }
             else if(this.m_tfaOk && p.contains(this.m_tfaPrompt))
             {
                 responses[i] = m_tfaCode != null ? m_tfaCode : "";
+            }
+            else
+            {
+                responses[i] = "";
             }
         }
 
@@ -97,34 +93,12 @@ public class TwoFactorUserInfo implements UserInteraction
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    public String getPassphrase()
-    {
-        return m_passphrase;
-    }
-
-    public void setPassphrase(String passphrase)
-    {
-        m_passphrase = passphrase;
-    }
-
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    public String getPassword()
-    {
-        return m_password;
-    }
-
     public void setPassword(String password)
     {
         m_password = password;
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
-
-    public String get2FACode()
-    {
-        return m_tfaCode;
-    }
 
     public void set2FACode(String tfaCode)
     {
