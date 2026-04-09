@@ -27,8 +27,6 @@ public class AddRole extends AbstractCommand
 
 		String description = arguments.get("description");
 
-		String roleValidatorClass = arguments.get("roleValidatorClass");
-
 		if(role == null)
 		{
 			throw new Exception("invalid usage");
@@ -36,10 +34,9 @@ public class AddRole extends AbstractCommand
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		Update update = getQuerier("self").executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`, `description`, `validatorClass`) VALUES (?0, ?1, ?2)",
+		Update update = getQuerier("self").executeSQLUpdate("router_role", "INSERT INTO `router_role` (`role`, `description`) VALUES (?0, ?1)",
 			role,
-			description,
-			roleValidatorClass
+			description
 		);
 
 		/*------------------------------------------------------------------------------------------------------------*/
@@ -65,7 +62,7 @@ public class AddRole extends AbstractCommand
 	@Contract(pure = true)
 	public static String usage()
 	{
-		return "-role=\"value\" (-description=\"\")? (-roleValidatorClass=\"\")?";
+		return "-role=\"value\" (-description=\"\")?";
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
