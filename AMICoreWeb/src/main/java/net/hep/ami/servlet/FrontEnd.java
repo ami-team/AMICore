@@ -248,7 +248,8 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static int byteArrayToInt(byte[] bytes)
+	@SuppressWarnings("PointlessBitwiseExpression")
+    private static int byteArrayToInt(byte[] bytes)
 	{
 		return (
 			((bytes[0] & 0xFF) << 24) |
@@ -264,11 +265,7 @@ public class FrontEnd extends HttpServlet
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		boolean ok = true;
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-        try
+		try
 		{
 			/*--------------------------------------------------------------------------------------------------------*/
 
@@ -280,28 +277,38 @@ public class FrontEnd extends HttpServlet
 			{
 				line = line.trim();
 
-				if(!line.isEmpty())
+				if(!Empty.is(line, Empty.STRING_NULL_EMPTY_BLANK))
 				{
+					/*------------------------------------------------------------------------------------------------*/
+
+					int prefix;
+
 					String[] parts = line.split("/");
 
-					if(parts.length == 2)
+					if(parts.length != 2 || (prefix = Integer.parseInt(parts[1])) < 0 || prefix > 32)
 					{
-						int subnetInt = byteArrayToInt(InetAddress.getByName(parts[0]).getAddress());
-
-						int mask = ~((1 << (32 - Integer.parseInt(parts[1]))) - 1);
-
-						if((ipInt & mask) == (subnetInt & mask))
-						{
-							return;
-						}
+						throw new Exception("subnets not properly configured");
 					}
 
-					ok = false;
+					/*------------------------------------------------------------------------------------------------*/
+
+					int subnetInt = byteArrayToInt(InetAddress.getByName(parts[0]).getAddress());
+
+					int mask = (prefix == 0) ? 0x0000000000000000000
+							                 : -(1 << (32 - prefix))
+					;
+
+					if((ipInt & mask) == (subnetInt & mask))
+					{
+						return;
+					}
+
+					/*------------------------------------------------------------------------------------------------*/
 				}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
-        }
+		}
 		catch(Exception e)
 		{
 			throw new Exception("subnets not properly configured");
@@ -309,10 +316,7 @@ public class FrontEnd extends HttpServlet
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		if(!ok)
-		{
-			throw new Exception("bad client subnet");
-		}
+		throw new Exception("bad client subnet");
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -452,7 +456,8 @@ public class FrontEnd extends HttpServlet
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	@NotNull
+    @NotNull
+	@SuppressWarnings("RedundantIfStatement")
 	private String resolveUserByUserPass(@Nullable String AMIUser, @Nullable String AMIPass, @NotNull String clientIP, @NotNull String clientOrigin) throws Exception
 	{
 		if(Empty.is(AMIUser, Empty.STRING_JAVA_NULL | Empty.STRING_BLANK)
@@ -463,7 +468,7 @@ public class FrontEnd extends HttpServlet
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
-		/* CONNECTION WITH OIDC                                                                                       */
+		/* CONNECTION ATTEMPT WITH OPEN ID CONNECT (OIDC)                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		UserInfoAndUsername userInfoAndUsername;
@@ -535,6 +540,38 @@ public class FrontEnd extends HttpServlet
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+		/* CONNECTION ATTEMPT WITH USER VALIDATOR                                                                     */
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		boolean checkPassword;
+
+		try
+		{
+			UserValidator.Bean bean = new UserValidator.Bean(
+				AMIUser, AMIUser,
+				AMIPass, AMIPass,
+				null, null,
+				null, null, null,
+				null
+			);
+
+			if(RoleSingleton.checkUser(
+				ConfigSingleton.getProperty("new_user_validator_class"),
+				UserValidator.Mode.AUTH,
+				bean
+			)) {
+				checkPassword = false;
+			}
+			else {
+				checkPassword = true;
+			}
+		}
+		catch(Exception e)
+		{
+			checkPassword = true;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
 		/* CREATE QUERIER                                                                                             */
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -558,7 +595,7 @@ public class FrontEnd extends HttpServlet
 			/* GET CREDENTIALS                                                                                        */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			if(rowList.size() == 0)
+			if(rowList.isEmpty())
 			{
 				return userInfoAndUsername != null ? createNewUser(querier, userInfoAndUsername, clientIP) : GUEST_USER;
 			}
@@ -569,7 +606,7 @@ public class FrontEnd extends HttpServlet
 			String hashed = row.getValue(1);
 			String oldCountryCode = row.getValue(2);
 
-			if(userInfoAndUsername == null)
+			if(userInfoAndUsername == null && checkPassword)
 			{
 				try
 				{
