@@ -237,8 +237,7 @@ public class RowSet
 					{
 						if(qId.matches(entry.getKey()))
 						{
-							/**/
-							if(entry.getValue().is(QId.MASK_CATALOG_ENTITY_FIELD))
+							/**/ if(entry.getValue().is(QId.MASK_CATALOG_ENTITY_FIELD))
 							{
 								internalCatalog = entry.getValue().getCatalog();
 								entity = entry.getValue().getEntity();
@@ -268,8 +267,10 @@ public class RowSet
 			/* RESOLVE EXTERNAL CATALOG IF NEEDED                                                                     */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			/**/ if(!Empty.is(defaultInternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) && defaultInternalCatalog.equalsIgnoreCase(internalCatalog))
-			{
+			/**/ if(!Empty.is(defaultInternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY)
+				    &&
+				    defaultInternalCatalog.equalsIgnoreCase(internalCatalog)
+		    ) {
 				/*----------------------------------------------------------------------------------------------------*/
 				/* TRIVIAL CASE                                                                                       */
 				/*----------------------------------------------------------------------------------------------------*/
@@ -278,8 +279,10 @@ public class RowSet
 
 				/*----------------------------------------------------------------------------------------------------*/
 			}
-			else if(!Empty.is(defaultExternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY) && !Empty.is(defaultEntity, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY))
-			{
+			else if(!Empty.is(defaultExternalCatalog, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY)
+				    &&
+				    !Empty.is(defaultEntity, Empty.STRING_JAVA_NULL | Empty.STRING_EMPTY)
+		    ) {
 				/*----------------------------------------------------------------------------------------------------*/
 				/* NON-TRIVIAL CASE                                                                                   */
 				/*----------------------------------------------------------------------------------------------------*/
