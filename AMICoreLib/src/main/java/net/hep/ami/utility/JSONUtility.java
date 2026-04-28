@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.type.*;
 
 import org.jetbrains.annotations.*;
 
-public class JsonUtility
+public class JSONUtility
 {
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -26,7 +26,7 @@ public class JsonUtility
     /*----------------------------------------------------------------------------------------------------------------*/
 
     @Contract(pure = true)
-    private JsonUtility() {}
+    private JSONUtility() {}
 
     /*----------------------------------------------------------------------------------------------------------------*/
     /* JSON PARSING                                                                                                   */

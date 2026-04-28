@@ -1,6 +1,6 @@
 package net.hep.ami;
 
-import net.hep.ami.utility.JsonUtility;
+import net.hep.ami.utility.JSONUtility;
 import java.util.*;
 import java.io.*;
 
@@ -57,12 +57,12 @@ public class JsonUtilityTest
 
             // Test 1.1: Parse Python dict
             System.out.println("Test 1.1: Basic Python dict parsing...");
-            Object parsedObject = JsonUtility.parsePythonDict(pythonDictString);
+            Object parsedObject = JSONUtility.parsePythonDict(pythonDictString);
             printResult("Parse successful", parsedObject != null);
 
             // Test 1.2: Parse Python dict as Map
             System.out.println("\nTest 1.2: Parsing Python dict as Map...");
-            Map<String, Object> dataMap = JsonUtility.parsePythonDictAsMap(pythonDictString);
+            Map<String, Object> dataMap = JSONUtility.parsePythonDictAsMap(pythonDictString);
             printResult("Map created with " + dataMap.size() + " keys", true);
             System.out.println("  - AMITag: " + dataMap.get("AMITag"));
             System.out.println("  - maxEvents: " + dataMap.get("maxEvents"));
@@ -71,7 +71,7 @@ public class JsonUtilityTest
             // Test 1.3: Parsing a Python list
             System.out.println("\nTest 1.3: Parsing Python list...");
             String pythonListString = "['item1', 'item2', 'item3', 'item4']";
-            List<Object> pythonList = JsonUtility.parsePythonDictAsList(pythonListString);
+            List<Object> pythonList = JSONUtility.parsePythonDictAsList(pythonListString);
             printResult("List parsed with " + pythonList.size() + " elements", pythonList.size() == 4);
             System.out.println("  - Content: " + pythonList);
 
@@ -85,23 +85,23 @@ public class JsonUtilityTest
 
             // Test 2.1: Convert to compact JSON
             System.out.println("Test 2.1: Converting to compact JSON...");
-            String jsonString = JsonUtility.toJson(dataMap);
+            String jsonString = JSONUtility.toJson(dataMap);
             printResult("Compact JSON created (" + jsonString.length() + " characters)", true);
 
             // Test 2.2: Convert to pretty JSON
             System.out.println("\nTest 2.2: Converting to pretty print JSON...");
-            String prettyJson = JsonUtility.toJsonPretty(dataMap);
+            String prettyJson = JSONUtility.toJsonPretty(dataMap);
             System.out.println(prettyJson);
             printResult("Pretty JSON created", true);
 
             // Test 2.3: Parse JSON
             System.out.println("\nTest 2.3: Re-parsing JSON...");
-            Object reparsed = JsonUtility.parseJson(jsonString);
+            Object reparsed = JSONUtility.parseJson(jsonString);
             printResult("Re-parse successful", reparsed != null);
 
             // Test 2.4: Parse JSON as Map
             System.out.println("\nTest 2.4: Parse JSON as Map...");
-            Map<String, Object> jsonMap = JsonUtility.parseJsonAsMap(jsonString);
+            Map<String, Object> jsonMap = JSONUtility.parseJsonAsMap(jsonString);
             printResult("JSON Map created", jsonMap.size() == dataMap.size());
 
             System.out.println();
@@ -114,51 +114,51 @@ public class JsonUtilityTest
 
             // Test 3.1: Simple query
             System.out.println("Test 3.1: Simple JSONPath queries...");
-            String amiTag = JsonUtility.queryJsonPath(dataMap, "$.AMITag");
+            String amiTag = JSONUtility.queryJsonPath(dataMap, "$.AMITag");
             System.out.println("  - $.AMITag = " + amiTag);
             printResult("Query AMITag", "x899".equals(amiTag));
 
             // Test 3.2: Nested query
             System.out.println("\nTest 3.2: Nested JSONPath queries...");
-            String conditionsTag = JsonUtility.queryJsonPath(dataMap, "$.conditionsTag.all");
+            String conditionsTag = JSONUtility.queryJsonPath(dataMap, "$.conditionsTag.all");
             System.out.println("  - $.conditionsTag.all = " + conditionsTag);
             printResult("Query conditionsTag", conditionsTag != null);
 
-            String geometryVersion = JsonUtility.queryJsonPath(dataMap, "$.geometryVersion.all");
+            String geometryVersion = JSONUtility.queryJsonPath(dataMap, "$.geometryVersion.all");
             System.out.println("  - $.geometryVersion.all = " + geometryVersion);
             printResult("Query geometryVersion", geometryVersion != null);
 
             // Test 3.3: Query as List
             System.out.println("\nTest 3.3: Query JSONPath as List...");
-            List<String> autoConfig = JsonUtility.queryJsonPathAsList(dataMap, "$.autoConfiguration[*]");
+            List<String> autoConfig = JSONUtility.queryJsonPathAsList(dataMap, "$.autoConfiguration[*]");
             System.out.println("  - $.autoConfiguration[*] = " + autoConfig);
             printResult("Query autoConfiguration", autoConfig.size() > 0);
 
-            List<String> athenaopts = JsonUtility.queryJsonPathAsList(dataMap, "$.athenaopts[*]");
+            List<String> athenaopts = JSONUtility.queryJsonPathAsList(dataMap, "$.athenaopts[*]");
             System.out.println("  - $.athenaopts[*] = " + athenaopts);
             printResult("Query athenaopts", athenaopts.contains("--threads=8"));
 
             // Test 3.4: Query as Map
             System.out.println("\nTest 3.4: Query JSONPath as Map...");
-            Map<String, Object> conditionsMap = JsonUtility.queryJsonPathAsMap(dataMap, "$.conditionsTag");
+            Map<String, Object> conditionsMap = JSONUtility.queryJsonPathAsMap(dataMap, "$.conditionsTag");
             System.out.println("  - $.conditionsTag = " + conditionsMap);
             printResult("Query Map conditionsTag", conditionsMap.containsKey("all"));
 
-            Map<String, Object> preExecMap = JsonUtility.queryJsonPathAsMap(dataMap, "$.preExec");
+            Map<String, Object> preExecMap = JSONUtility.queryJsonPathAsMap(dataMap, "$.preExec");
             System.out.println("  - $.preExec = " + preExecMap);
             printResult("Query Map preExec", preExecMap.containsKey("all"));
 
             // Test 3.5: Path exists
             System.out.println("\nTest 3.5: Checking path existence...");
-            boolean existsAMI = JsonUtility.pathExists(dataMap, "$.AMITag");
+            boolean existsAMI = JSONUtility.pathExists(dataMap, "$.AMITag");
             System.out.println("  - $.AMITag exists: " + existsAMI);
             printResult("Path AMITag exists", existsAMI);
 
-            boolean existsFake = JsonUtility.pathExists(dataMap, "$.nonExistent");
+            boolean existsFake = JSONUtility.pathExists(dataMap, "$.nonExistent");
             System.out.println("  - $.nonExistent exists: " + existsFake);
             printResult("Non-existent path detected", !existsFake);
 
-            boolean existsNested = JsonUtility.pathExists(dataMap, "$.conditionsTag.all");
+            boolean existsNested = JSONUtility.pathExists(dataMap, "$.conditionsTag.all");
             System.out.println("  - $.conditionsTag.all exists: " + existsNested);
             printResult("Nested path exists", existsNested);
 
@@ -173,13 +173,13 @@ public class JsonUtilityTest
             // Test 4.1: Writing to a file
             System.out.println("Test 4.1: Writing to a JSON file...");
             File tempFile = File.createTempFile("ami_test_", ".json");
-            JsonUtility.writeJson(tempFile, dataMap);
+            JSONUtility.writeJson(tempFile, dataMap);
             System.out.println("  - File: " + tempFile.getAbsolutePath());
             printResult("File written", tempFile.exists() && tempFile.length() > 0);
 
             // Test 4.2: Reading from a file
             System.out.println("\nTest 4.2: Reading from file...");
-            Object fileData = JsonUtility.parseJson(tempFile);
+            Object fileData = JSONUtility.parseJson(tempFile);
             printResult("Read successful", fileData != null);
 
             Map<String, Object> fileMap = (Map<String, Object>) fileData;
@@ -198,7 +198,7 @@ public class JsonUtilityTest
 
             // Test 5.1: Deep copy
             System.out.println("Test 5.1: Deep copy...");
-            Map<String, Object> copiedMap = JsonUtility.deepCopy(dataMap);
+            Map<String, Object> copiedMap = JSONUtility.deepCopy(dataMap);
             copiedMap.put("AMITag", "x900_MODIFIED");
             System.out.println("  - Original AMITag: " + dataMap.get("AMITag"));
             System.out.println("  - Copy AMITag: " + copiedMap.get("AMITag"));
@@ -224,23 +224,23 @@ public class JsonUtilityTest
 
             // Test 6.1: Extract parameter
             System.out.println("Test 6.1: Extract simple parameter...");
-            Object extractedVersion = JsonUtility.extractParameter(testObj, "version");
+            Object extractedVersion = JSONUtility.extractParameter(testObj, "version");
             System.out.println("  - version = " + extractedVersion);
             printResult("Version extracted", extractedVersion.equals(1));
 
             // Test 6.2: Extract typed parameter
             System.out.println("\nTest 6.2: Extract typed parameter...");
-            Integer typedVersion = JsonUtility.extractParameter(testObj, "version", Integer.class);
+            Integer typedVersion = JSONUtility.extractParameter(testObj, "version", Integer.class);
             System.out.println("  - version (typed) = " + typedVersion);
             printResult("Typed version extracted", typedVersion == 1);
 
-            String configData = JsonUtility.extractParameter(testObj, "configData", String.class);
+            String configData = JSONUtility.extractParameter(testObj, "configData", String.class);
             System.out.println("  - configData (length) = " + configData.length());
             printResult("ConfigData extracted", configData.contains("AMITag"));
 
             // Test 6.3: Extract all parameters
             System.out.println("\nTest 6.3: Extract all parameters...");
-            Map<String, Object> allParams = JsonUtility.extractAllParameters(testObj);
+            Map<String, Object> allParams = JSONUtility.extractAllParameters(testObj);
             System.out.println("  - Number of parameters: " + allParams.size());
             for (String key : allParams.keySet()) {
                 Object value = allParams.get(key);
@@ -254,44 +254,44 @@ public class JsonUtilityTest
 
             // Test 6.4: Extract and parse
             System.out.println("\nTest 6.4: Extract and parse parameter...");
-            Object parsedConfig = JsonUtility.extractAndParseParameter(testObj, "configData");
+            Object parsedConfig = JSONUtility.extractAndParseParameter(testObj, "configData");
             printResult("ConfigData parsed", parsedConfig instanceof Map);
             Map<String, Object> parsedConfigMap = (Map<String, Object>) parsedConfig;
             System.out.println("  - AMITag from parsed config: " + parsedConfigMap.get("AMITag"));
 
             // Test 6.5: Extract and parse as Map
             System.out.println("\nTest 6.5: Extract and parse as Map...");
-            Map<String, Object> extractedMap = JsonUtility.extractAndParseParameterAsMap(testObj, "configData");
+            Map<String, Object> extractedMap = JSONUtility.extractAndParseParameterAsMap(testObj, "configData");
             System.out.println("  - Keys in Map: " + extractedMap.keySet());
             printResult("Map extracted and parsed", extractedMap.containsKey("AMITag"));
 
-            Map<String, Object> jsonDataMap = JsonUtility.extractAndParseParameterAsMap(testObj, "jsonData");
+            Map<String, Object> jsonDataMap = JSONUtility.extractAndParseParameterAsMap(testObj, "jsonData");
             System.out.println("  - jsonData.name = " + jsonDataMap.get("name"));
             printResult("JSON parsed from object", "test".equals(jsonDataMap.get("name")));
 
             // Test 6.6: Extract and parse as List
             System.out.println("\nTest 6.6: Extract and parse as List...");
-            List<Object> itemsList = JsonUtility.extractAndParseParameterAsList(testObj, "listData");
+            List<Object> itemsList = JSONUtility.extractAndParseParameterAsList(testObj, "listData");
             System.out.println("  - listData parsed: " + itemsList);
             printResult("List extracted and parsed", itemsList.size() == 3);
 
             // Also extract nested list from jsonData
-            Map<String, Object> jsonWithList = JsonUtility.extractAndParseParameterAsMap(testObj, "jsonData");
+            Map<String, Object> jsonWithList = JSONUtility.extractAndParseParameterAsMap(testObj, "jsonData");
             List<String> nestedItems = (List<String>) jsonWithList.get("items");
             System.out.println("  - items from jsonData: " + nestedItems);
             printResult("Nested list extracted", nestedItems.contains("a"));
 
             // Test 6.7: Extract and query JSONPath
             System.out.println("\nTest 6.7: Extract and query JSONPath...");
-            String extractedAMI = JsonUtility.extractAndQueryJsonPath(testObj, "configData", "$.AMITag");
+            String extractedAMI = JSONUtility.extractAndQueryJsonPath(testObj, "configData", "$.AMITag");
             System.out.println("  - AMITag via extraction + JSONPath: " + extractedAMI);
             printResult("JSONPath on extracted parameter", "x899".equals(extractedAMI));
 
-            Integer extractedMaxEvents = JsonUtility.extractAndQueryJsonPath(testObj, "configData", "$.maxEvents");
+            Integer extractedMaxEvents = JSONUtility.extractAndQueryJsonPath(testObj, "configData", "$.maxEvents");
             System.out.println("  - maxEvents via extraction + JSONPath: " + extractedMaxEvents);
             printResult("Numeric value extracted", extractedMaxEvents == -1);
 
-            List<String> extractedAutoConfig = JsonUtility.extractAndQueryJsonPath(testObj, "configData", "$.autoConfiguration");
+            List<String> extractedAutoConfig = JSONUtility.extractAndQueryJsonPath(testObj, "configData", "$.autoConfiguration");
             System.out.println("  - autoConfiguration via extraction + JSONPath: " + extractedAutoConfig);
             printResult("List extracted", extractedAutoConfig.contains("everything"));
 
@@ -305,25 +305,25 @@ public class JsonUtilityTest
 
             // Test 7.1: Complex nested structures
             System.out.println("Test 7.1: Accessing deeply nested structures...");
-            List<String> preExecAll = JsonUtility.queryJsonPath(dataMap, "$.preExec.all");
+            List<String> preExecAll = JSONUtility.queryJsonPath(dataMap, "$.preExec.all");
             System.out.println("  - preExec.all: " + preExecAll);
             printResult("PreExec extracted", preExecAll.size() > 0);
 
-            List<String> postExecAll = JsonUtility.queryJsonPath(dataMap, "$.postExec.all");
+            List<String> postExecAll = JSONUtility.queryJsonPath(dataMap, "$.postExec.all");
             System.out.println("  - postExec.all (length): " + postExecAll.get(0).length() + " characters");
             printResult("PostExec extracted", postExecAll.size() > 0);
 
             // Test 7.2: Python data manipulation with single and double quotes
             System.out.println("\nTest 7.2: Python dict with mixed quotes...");
             String mixedQuotes = "{'simple': 'value', \"double\": \"value2\", 'mixed': \"value3\"}";
-            Map<String, Object> mixedMap = JsonUtility.parsePythonDictAsMap(mixedQuotes, true);
+            Map<String, Object> mixedMap = JSONUtility.parsePythonDictAsMap(mixedQuotes, true);
             printResult("Mixed quotes parsed", mixedMap.size() == 3);
             System.out.println("  - Keys: " + mixedMap.keySet());
 
             // Test 7.3: Boolean values and None in Python
             System.out.println("\nTest 7.3: Python special values...");
             String specialValues = "{'bool_true': True, 'bool_false': False, 'none_value': None}";
-            Map<String, Object> specialMap = JsonUtility.parsePythonDictAsMap(specialValues);
+            Map<String, Object> specialMap = JSONUtility.parsePythonDictAsMap(specialValues);
             System.out.println("  - bool_true: " + specialMap.get("bool_true"));
             System.out.println("  - bool_false: " + specialMap.get("bool_false"));
             System.out.println("  - none_value: " + specialMap.get("none_value"));
