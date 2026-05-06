@@ -15,6 +15,7 @@ import org.jetbrains.annotations.*;
 
 public class LDAPUserValidator extends UserValidator
 {
+    private static final org.slf4j.Logger LOG = LogSingleton.getLogger(LDAPUserValidator.class.getSimpleName());
     /*----------------------------------------------------------------------------------------------------------------*/
 
     private static final String LDAP_URL = "ldap.url";
@@ -25,93 +26,49 @@ public class LDAPUserValidator extends UserValidator
 
     private static final String LDAP_BASE = "ldap.base";
 
+    private static final String LDAP_FIRSTNAME_FIELD = "ldap.firstname_field";
+
+    private static final String LDAP_LASTNAME_FIELD = "ldap.lastname_field";
+
+    private static final String LDAP_EMAIL_FIELD = "ldap.email_field";
+
+    private static final String LDAP_USERNAME_FIELD = "ldap.username_field";
+    // NB: Hypothesis that this is to use in the same fieldname to use in the dn (ex: uid=..., + base ldap)
+    //      AND a field available in the LDAP entry itself
+    //      AND that these 2 values are the same
+    //      (Even though we don't actually use the field in the LDAP entry itself)
+
+    /* NB: Setting them once in a constructor would make the class stateful, and less robust to config change => better without */
+
     /*----------------------------------------------------------------------------------------------------------------*/
 
     @Override
     public boolean check(@NotNull Mode mode, @NotNull Bean bean) throws Exception
     {
+        LOG.info("Check, mode=%s, LDAP_URL=%s, LDAP_BASE=%s, LDAP_USERNAME=%s,"
+            .formatted(
+            mode,
+            requiredProperty(LDAP_URL),
+            requiredProperty(LDAP_BASE),
+            ConfigSingleton.getProperty(LDAP_USERNAME)
+            ));
+        
         switch(mode)
         {
+            case AUTH:
+                return this.authenticate_and_set_bean_if_valid(bean);
+                
             case ADD:
-                return this.checkAdd(bean);
-/*
-Modes:
-		ADD,
-		ATTACH,
-		DETACH,
-		PASSWORD,
-		INFO,
+                // Called from FrontEnd.java's createNewUser(): not sure why we would ever want to refuse at this stage => always true
+                return true; 
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	public static class Bean
-	{
-		@NotNull private String amiUsername;
-		@Nullable private String ssoUsername;  <- login LDAP
-		@Nullable private String passwordOld;
-		@Nullable private String passwordNew;
-		@Nullable private String clientDN;
-		@Nullable private String issuerDN;
-		@Nullable private String firstName;
-		@Nullable private String lastName;
-		@Nullable private String email;
-		@Nullable private String json;
-	}
-
-*/
-            default:
-                return false;
+          // Not Implemented:
+              // ATTACH, DETACH, <- Not sure what they're for
+                // PASSWORD <- for updating password <- not for LDAP
+                // INFO <- for updating info (email, ...) <- not for LDAP
+            default:  
+                return false; 
         }
-    }
-
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    private boolean checkAdd(@NotNull Bean bean) throws Exception
-    {
-        if(Empty.Is(bean.getSsoUsername(), Empty.STRING_NULL_EMPTY_BLANK)
-           ||
-           Empty.Is(bean.getPasswordNew(), Empty.STRING_NULL_EMPTY_BLANK))
-        {
-            return false;
-        }
-
-        String ssoUsername = bean.getSsoUsername();
-        String passwordNew = bean.getPasswordNew();
-
-        UserInfo userInfo = this.findUser(ssoUsername);
-
-        if(userInfo == null)
-        {
-            return false;
-        }
-
-        if(!this.authenticate(userInfo.username, passwordNew))
-        {
-            return false;
-        }
-
-        bean.setAmiUsername(userInfo.username);
-        bean.setSsoUsername(userInfo.username);
-        bean.setPasswordOld(passwordNew);
-        bean.setPasswordNew(passwordNew);
-
-        if(!Empty.Is(userInfo.firstName, Empty.STRING_NULL_EMPTY_BLANK))
-        {
-            bean.setFirstName(userInfo.firstName);
-        }
-
-        if(!Empty.Is(userInfo.lastName, Empty.STRING_NULL_EMPTY_BLANK))
-        {
-            bean.setLastName(userInfo.lastName);
-        }
-
-        if(!Empty.Is(userInfo.email, Empty.STRING_NULL_EMPTY_BLANK))
-        {
-            bean.setEmail(userInfo.email);
-        }
-
-        return true;
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -119,32 +76,36 @@ Modes:
     @Nullable
     private UserInfo findUser(@NotNull String username) throws Exception
     {
-        try(DirContext ctx = new InitialDirContext(
-            this.createEnvironment(
-                ConfigSingleton.getProperty(LDAP_USERNAME),
-                ConfigSingleton.getProperty(LDAP_PASSWORD)
-            )
-        )) {
+        try {
             /*--------------------------------------------------------------------------------------------------------*/
+
+            DirContext ctx = new InitialDirContext(
+                        this.createEnvironment(
+                            ConfigSingleton.getProperty(LDAP_USERNAME),
+                            ConfigSingleton.getProperty(LDAP_PASSWORD)
+                        )
+                    );
 
             SearchControls controls = new SearchControls();
 
             controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             controls.setCountLimit(2);
             controls.setReturningAttributes(new String[] {
-                "uid",
-                "firstName",
-                "lastName",
-                "mail"
+                requiredProperty(LDAP_USERNAME_FIELD),
+                requiredProperty(LDAP_FIRSTNAME_FIELD),
+                requiredProperty(LDAP_LASTNAME_FIELD),
+                requiredProperty(LDAP_EMAIL_FIELD)
             });
 
             /*--------------------------------------------------------------------------------------------------------*/
 
-            try(NamingEnumeration<SearchResult> results = ctx.search(
-                requiredProperty(LDAP_BASE),
-                "(uid=" + escapeLdapValue(username) + ")",
-                controls
-            )) {
+            try {
+                NamingEnumeration<SearchResult> results = ctx.search(
+                                requiredProperty(LDAP_BASE), // <=> -b (base dn for search) parameter of ldapsearch
+                                "("+requiredProperty(LDAP_USERNAME_FIELD)+"=" + escapeLdapValue(username) + ")",
+                                controls
+                            );
+
                 if(!results.hasMore())
                 {
                     return null;
@@ -161,33 +122,64 @@ Modes:
 
                 UserInfo userInfo = new UserInfo();
 
-                userInfo.username = getAttribute(attributes, "uid");
-                userInfo.firstName = getAttribute(attributes, "firstName");
-                userInfo.lastName = getAttribute(attributes, "lastName");
-                userInfo.email = getAttribute(attributes, "mail");
+                userInfo.username = getAttribute(attributes, requiredProperty(LDAP_USERNAME_FIELD));
+                userInfo.firstName = getAttribute(attributes, requiredProperty(LDAP_FIRSTNAME_FIELD));
+                userInfo.lastName = getAttribute(attributes, requiredProperty(LDAP_LASTNAME_FIELD));
+                userInfo.email = getAttribute(attributes, requiredProperty(LDAP_EMAIL_FIELD));
 
-                if(Empty.Is(userInfo.username, Empty.STRING_NULL_EMPTY_BLANK))
+                if(Empty.is(userInfo.username, Empty.STRING_NULL_EMPTY_BLANK))
                 {
                     return null;
                 }
 
                 return userInfo;
             }
+            catch(Exception e)
+            {
+                LOG.error("Exception while processing findUser results:" + e);
+                throw new RuntimeException(e); /* TODO: better exception handling */
+            }
 
             /*--------------------------------------------------------------------------------------------------------*/
         }
-    }
+        catch(Exception e)
+        {
+            LOG.error("Exception while launching findUser request:" + e);
+            throw new RuntimeException(e); /* TODO: better exception handling */
+        }
+}
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
+    private boolean authenticate_and_set_bean_if_valid(@NotNull Bean bean) throws Exception
+    {
+        String LDAP_username = bean.getSsoUsername(); 
+        if(this.authenticate(LDAP_username, bean.getPasswordNew())) {
+            UserInfo userInfo = this.findUser(LDAP_username);
+            // bean.setSsoUsername(username); We suppose this is already done in the call to authenticate => no need
+            bean.setFirstName(userInfo.firstName);
+            bean.setLastName(userInfo.lastName);
+            bean.setEmail(userInfo.email);
+
+            return true;
+        }
+
+        return false;
+
+    }
+
     private boolean authenticate(@Nullable String username, @Nullable String password)
     {
-        try(DirContext ctx = new InitialDirContext(this.createEnvironment(username, password)))
+        LOG.info("authenticate: user = %s".formatted(username));
+        try
         {
+            DirContext ctx = new InitialDirContext(this.createEnvironment(username, password));
+			// The call to the LDAP is done implicility in the constructor
             return true;
         }
         catch(Exception e)
         {
+            LOG.error("Exception while authenticating: for " + username + ": " + e);
             return false;
         }
     }
@@ -197,22 +189,26 @@ Modes:
     @NotNull
     private Hashtable<String, String> createEnvironment(@Nullable String username, @Nullable String password)
     {
+        LOG.info("createEnvironment for user %s".formatted(username));
         Hashtable<String, String> env = new Hashtable<>();
 
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, requiredProperty(LDAP_URL));
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
-
-        if(!Empty.Is(username, Empty.STRING_NULL_EMPTY_BLANK))
+        // env.put(Context.SECURITY_AUTHENTICATION, "simple");
+		// -> Not necessary because "If this property is not set then its default value is none, unless the java.naming.security.credentials property is set, in which case the default value is simple" (https://docs.oracle.com/javase/8/docs/technotes/guides/jndi/jndi-ldap-gl.html#authentication )
+		// -> This will auto-adjust according to if the SECURITY_CREDENTIALS is set or not (below) (according to if password is defined or not)
+         
+        if(!Empty.is(username, Empty.STRING_NULL_EMPTY_BLANK))
         {
-            env.put(Context.SECURITY_PRINCIPAL, username);
+            env.put(Context.SECURITY_PRINCIPAL, requiredProperty(LDAP_USERNAME_FIELD) + "=" + username + "," + requiredProperty(LDAP_BASE));
+            // <=> -D (bind DN) parameter of ldapsearch
         }
 
-        if(!Empty.Is(password, Empty.STRING_NULL_EMPTY_BLANK))
+        if(!Empty.is(password, Empty.STRING_NULL_EMPTY_BLANK)) 
         {
-            env.put(Context.SECURITY_CREDENTIALS, password);
+            env.put(Context.SECURITY_CREDENTIALS, password); //
+            // <=> -w/W (password) parameter of ldapsearch
         }
-
         return env;
     }
 
@@ -224,7 +220,7 @@ Modes:
     {
         String value = ConfigSingleton.getProperty(key);
 
-        if(Empty.Is(value, Empty.STRING_NULL_EMPTY_BLANK))
+        if(Empty.is(value, Empty.STRING_NULL_EMPTY_BLANK))
         {
             throw new IllegalStateException("Missing configuration property: " + key);
         }
@@ -316,9 +312,14 @@ Modes:
     @Contract(pure = true)
     public static String help()
     {
+        // TODO: don't hardcode this, get it from the LDAP_* fields declared at the beginning of the class
         return "Required properties:\n"
             + "  ldap.url\n"
             + "  ldap.base\n"
+            + "  ldap.username_field\n"
+            + "  ldap.firstname_field\n"
+            + "  ldap.lastname_field\n"
+            + "  ldap.email_field\n"
             + "\n"
             + "Optional properties:\n"
             + "  ldap.username\n"
