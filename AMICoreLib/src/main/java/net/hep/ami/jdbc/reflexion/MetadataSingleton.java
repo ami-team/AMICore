@@ -238,12 +238,7 @@ public class MetadataSingleton
 
 			table.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
 			table.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
-
 			table.roles = _safeString((String) map.get("roles"), "");
-
-			/*--------------------------------------------------------------------------------------------------------*/
-
-			CatalogSingleton.setRoles(catalog, table.roles);
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}
@@ -284,6 +279,7 @@ public class MetadataSingleton
 			column.enumValues = _safeString((String) map.get("enumValues"), "");
 			column.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
 			column.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
+			column.roles = _safeString((String) map.get("roles"), "");
 			column.hashed = _safeBoolean((Boolean) map.get("hashed"), false);
 			column.crypted = _safeBoolean((Boolean) map.get("crypted"), false);
 			column.primary = _safeBoolean((Boolean) map.get("primary"), false);

@@ -42,6 +42,8 @@ public class SchemaSingleton
 
 		/**/
 
+		public String roles = "";
+
 		public String description = "N/A";
 
 		/**/
@@ -103,7 +105,6 @@ public class SchemaSingleton
 
 		public boolean hidden = false;
 		public boolean adminOnly = false;
-
 		public String roles = "";
 
 		public String description = "N/A";
@@ -163,6 +164,7 @@ public class SchemaSingleton
 
 		public boolean hidden = false;
 		public boolean adminOnly = false;
+		public String roles = "";
 		public boolean hashed = false;
 		public boolean crypted = false;
 		public boolean primary = false;
@@ -590,6 +592,7 @@ public class SchemaSingleton
 
 		private void apply()
 		{
+			m_catalog.roles       = m_catalogTuple.getRoles()      ;
 			m_catalog.description = m_catalogTuple.getDescription();
 
 			m_catalogs.put(m_externalCatalog, m_catalog);
@@ -1492,7 +1495,6 @@ public class SchemaSingleton
 		             /**/
 		             .append("<field name=\"hidden\"><![CDATA[").append(table.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(table.adminOnly).append("]]></field>")
-		             /**/
 		             .append("<field name=\"roles\"><![CDATA[").append(table.roles).append("]]></field>")
 		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
@@ -1520,6 +1522,7 @@ public class SchemaSingleton
 		             /**/
 		             .append("<field name=\"hidden\"><![CDATA[").append(column.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(column.adminOnly).append("]]></field>")
+		             .append("<field name=\"roles\"><![CDATA[").append(column.roles).append("]]></field>")
 		             .append("<field name=\"hashed\"><![CDATA[").append(column.hashed).append("]]></field>")
 		             .append("<field name=\"crypted\"><![CDATA[").append(column.crypted).append("]]></field>")
 		             .append("<field name=\"primary\"><![CDATA[").append(column.primary).append("]]></field>")
