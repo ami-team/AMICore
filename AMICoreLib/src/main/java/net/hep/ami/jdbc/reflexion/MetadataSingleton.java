@@ -229,6 +229,9 @@ public class MetadataSingleton
 
 			/*--------------------------------------------------------------------------------------------------------*/
 
+			table.viewOf = _safeBoolean((Boolean) map.get("viewOf"), false);
+			table.viewOfTable = _safeString((String) map.get("viewOfTable"), "");
+
 			table.bridge = _safeBoolean((Boolean) map.get("bridge"), false);
 			table.ignoreForwardEntities = _safeBoolean((Boolean) map.get("ignoreForwardEntities"), false);
 			table.ignoreBackwardEntities = _safeBoolean((Boolean) map.get("ignoreBackwardEntities"), false);
@@ -236,8 +239,7 @@ public class MetadataSingleton
 			table.hidden = _safeBoolean((Boolean) map.get("hidden"), false);
 			table.adminOnly = _safeBoolean((Boolean) map.get("adminOnly"), false);
 
-			table.viewOf = _safeBoolean((Boolean) map.get("viewOf"), false);
-			table.viewOfTable = _safeString((String) map.get("viewOfTable"), "");
+			table.roles = _safeString((String) map.get("roles"), "");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 		}

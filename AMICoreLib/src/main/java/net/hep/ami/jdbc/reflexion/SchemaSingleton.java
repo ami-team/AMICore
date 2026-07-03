@@ -94,6 +94,9 @@ public class SchemaSingleton
 
 		/**/
 
+		public boolean viewOf = false;
+		public String viewOfTable = "";
+
 		public boolean bridge = false;
 		public boolean ignoreForwardEntities = false;
 		public boolean ignoreBackwardEntities = false;
@@ -101,8 +104,7 @@ public class SchemaSingleton
 		public boolean hidden = false;
 		public boolean adminOnly = false;
 
-		public boolean viewOf = false;
-		public String viewOfTable = "";
+		public String roles = "";
 
 		public String description = "N/A";
 
@@ -1481,6 +1483,9 @@ public class SchemaSingleton
 		             .append("<field name=\"type\"><![CDATA[").append(table.type).append("]]></field>")
 		             .append("<field name=\"rank\"><![CDATA[").append(table.rank).append("]]></field>")
 		             /**/
+		             .append("<field name=\"viewOf\"><![CDATA[").append(table.viewOf).append("]]></field>")
+		             .append("<field name=\"viewOfTable\"><![CDATA[").append(table.viewOfTable).append("]]></field>")
+		             /**/
 		             .append("<field name=\"bridge\"><![CDATA[").append(table.bridge).append("]]></field>")
 		             .append("<field name=\"ignoreForwardEntities\"><![CDATA[").append(table.ignoreForwardEntities).append("]]></field>")
 		             .append("<field name=\"ignoreBackwardEntities\"><![CDATA[").append(table.ignoreBackwardEntities).append("]]></field>")
@@ -1488,8 +1493,7 @@ public class SchemaSingleton
 		             .append("<field name=\"hidden\"><![CDATA[").append(table.hidden).append("]]></field>")
 		             .append("<field name=\"adminOnly\"><![CDATA[").append(table.adminOnly).append("]]></field>")
 		             /**/
-		             .append("<field name=\"viewOf\"><![CDATA[").append(table.viewOf).append("]]></field>")
-		             .append("<field name=\"viewOfTable\"><![CDATA[").append(table.viewOfTable).append("]]></field>")
+		             .append("<field name=\"roles\"><![CDATA[").append(table.roles).append("]]></field>")
 		             /**/
 		             .append("<field name=\"description\"><![CDATA[").append(table.description).append("]]></field>")
 		             .append("</row>")
