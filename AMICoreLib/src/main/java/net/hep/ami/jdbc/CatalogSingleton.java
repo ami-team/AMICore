@@ -93,7 +93,7 @@ public class CatalogSingleton
 			/* EXECUTE QUERY                                                                                          */
 			/*--------------------------------------------------------------------------------------------------------*/
 
-			RowSet rowSet = querier.executeSQLQuery("router_catalog", "SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, \"\" AS `roles`, `description`, `archived` FROM `router_catalog`");
+			RowSet rowSet = querier.executeSQLQuery("router_catalog", "SELECT `externalCatalog`, `internalCatalog`, `internalSchema`, `jdbcUrl`, `user`, `pass`, `description`, `archived` FROM `router_catalog`");
 
 			/*--------------------------------------------------------------------------------------------------------*/
 			/* ADD CATALOGS                                                                                           */
@@ -110,9 +110,9 @@ public class CatalogSingleton
 						row.getValue(3),
 						row.getValue(4),
 						row.getValue(5),
+							"",
 						row.getValue(6),
-						row.getValue(7),
-						row.getValue(8, false)
+						row.getValue(7, false)
 					);
 				}
 				catch(Exception e)
