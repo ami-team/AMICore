@@ -33,6 +33,7 @@ public class CatalogSingleton
 		@Nullable private final String username;
 		@Nullable private final String password;
 		@Nullable private final String description;
+		@Nullable private /*-*/ String roles;
 		/*----*/ private final boolean archived;
 	}
 
@@ -165,6 +166,7 @@ public class CatalogSingleton
 				user,
 				pass,
 				description,
+				"", /* empty at this point */
 				archived
 			)
 		);
@@ -179,6 +181,13 @@ public class CatalogSingleton
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void setRoles(@NotNull String catalog, @NotNull String roles) throws Exception
+	{
+		getCatalogDescr(catalog).setRoles(roles);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -300,6 +309,7 @@ public class CatalogSingleton
 			      .append("<field name=\"internalCatalog\"><![CDATA[").append(catalogDescr.getInternalCatalog()).append("]]></field>")
 			      .append("<field name=\"internalSchema\"><![CDATA[").append(catalogDescr.getInternalSchema()).append("]]></field>")
 			      .append("<field name=\"description\"><![CDATA[").append(catalogDescr.getDescription()).append("]]></field>")
+			      .append("<field name=\"roles\"><![CDATA[").append(catalogDescr.getRoles()).append("]]></field>")
 			      .append("<field name=\"archived\"><![CDATA[").append(catalogDescr.isArchived()).append("]]></field>")
 			      .append("</row>")
 			;

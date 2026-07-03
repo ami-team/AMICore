@@ -242,6 +242,10 @@ public class MetadataSingleton
 			table.roles = _safeString((String) map.get("roles"), "");
 
 			/*--------------------------------------------------------------------------------------------------------*/
+
+			CatalogSingleton.setRoles(catalog, table.roles);
+
+			/*--------------------------------------------------------------------------------------------------------*/
 		}
 		catch(Exception e)
 		{
