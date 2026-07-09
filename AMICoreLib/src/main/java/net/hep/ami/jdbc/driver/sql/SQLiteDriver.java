@@ -32,15 +32,14 @@ public class SQLiteDriver extends AbstractDriver
 	{
 		try
 		{
-
 			Function.create(this.m_connection.unwrap(SQLiteConnection.class),
-					"CONCAT",
-					new Function() {
-						@Override
-						protected void xFunc() throws SQLException {
-							result(value_text(0)+value_text(1));
-						}
+				"CONCAT",
+				new Function() {
+					@Override
+					protected void xFunc() throws SQLException {
+						result(value_text(0)+value_text(1));
 					}
+				}
 			);
 		}
 		catch (Exception e)
@@ -50,15 +49,14 @@ public class SQLiteDriver extends AbstractDriver
 
 		try
 		{
-
 			Function.create(this.m_connection.unwrap(SQLiteConnection.class),
-					"STDDEV",
-					new Function() {
-						@Override
-						protected void xFunc() throws SQLException {
-							result("N/A");
-						}
+				"STDDEV",
+				new Function() {
+					@Override
+					protected void xFunc() throws SQLException {
+						result("N/A");
 					}
+				}
 			);
 		}
 		catch (Exception e)
