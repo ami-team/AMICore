@@ -81,6 +81,8 @@ public class MySQLDriver extends AbstractDriver
 			//statement.execute("SET time_zone = '" + tz + "'");
 
 			statement.execute("SET sql_mode = 'ANSI_QUOTES'");
+
+			statement.setMaxRows(ConfigSingleton.getProperty("max_number_of_rows", 10000) + 1);
 		}
 	}
 

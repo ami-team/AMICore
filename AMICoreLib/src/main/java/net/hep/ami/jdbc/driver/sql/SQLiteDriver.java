@@ -65,7 +65,6 @@ public class SQLiteDriver extends AbstractDriver
 		{
 			//System.out.println("error "+ e.getMessage());
 		}
-
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

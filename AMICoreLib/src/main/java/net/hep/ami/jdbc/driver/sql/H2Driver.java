@@ -1,8 +1,11 @@
 package net.hep.ami.jdbc.driver.sql;
 
+import net.hep.ami.ConfigSingleton;
 import net.hep.ami.jdbc.driver.*;
 
 import org.jetbrains.annotations.*;
+
+import java.sql.Statement;
 
 @DriverMetadata(
 	type = DriverMetadata.Type.SQL,
@@ -23,9 +26,12 @@ public class H2Driver extends AbstractDriver
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public void setupSession(@NotNull String db, @NotNull String tz)
+	public void setupSession(@NotNull String db, @NotNull String tz) throws Exception
 	{
-		/* DO NOTHING */
+		try(Statement statement = m_connection.createStatement())
+		{
+			statement.setMaxRows(ConfigSingleton.getProperty("max_number_of_rows", 10000) + 1);
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

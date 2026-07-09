@@ -3,6 +3,7 @@ package net.hep.ami.jdbc.driver.sql;
 import java.sql.*;
 import java.util.*;
 
+import net.hep.ami.ConfigSingleton;
 import net.hep.ami.jdbc.*;
 import net.hep.ami.jdbc.driver.*;
 import net.hep.ami.jdbc.query.sql.*;
@@ -55,6 +56,8 @@ public class PostgreSQLDriver extends AbstractDriver
 		try(Statement statement = m_connection.createStatement())
 		{
 			statement.executeUpdate("SET TIME ZONE '" + tz + "'");
+
+			statement.setMaxRows(ConfigSingleton.getProperty("max_number_of_rows", 10000) + 1);
 		}
 	}
 
