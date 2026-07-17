@@ -20,6 +20,8 @@ import net.hep.ami.utility.parser.*;
 
 import org.jetbrains.annotations.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @WebServlet(
 	name = "FrontEnd",
 	urlPatterns = "/FrontEnd"
@@ -572,6 +574,16 @@ public class FrontEnd extends HttpServlet
 				bean
 			)) {
 				checkPassword = false;
+				Map<String, Object> map;map = new HashMap<String,Object>();
+				// We define userInofAndUsername so that createNewUser is called later
+				// We use sso fields because createNewUser is currently hard-coded to use them
+				map.put(ConfigSingleton.getProperty("sso_userinfo_firstname_key"),bean.getFirstName());
+				map.put(ConfigSingleton.getProperty("sso_userinfo_lastname_key"),bean.getLastName()); 
+				map.put(ConfigSingleton.getProperty("sso_userinfo_email_key"),bean.getEmail());
+				userInfoAndUsername=new UserInfoAndUsername(
+					map,
+					new ObjectMapper().writeValueAsString(map),
+					bean.getSsoUsername()); // for LDAP, distant username == entered username (AMIUser), but this is more generic
 			}
 			else {
 				checkPassword = true;
