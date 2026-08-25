@@ -76,6 +76,8 @@ public class OracleDriver extends AbstractDriver
 		try(Statement statement = m_connection.createStatement())
 		{
 			statement.executeUpdate("ALTER SESSION SET time_zone = '" + tz + "'");
+
+			statement.setMaxRows(ConfigSingleton.getProperty("max_number_of_rows", 10000) + 1);
 		}
 	}
 

@@ -19,8 +19,10 @@ public class CommandSingletonTest
 			//System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"self\" -entity=\"router_user\" -mql=\"SELECT * WHERE 1 = 1\" -limit=\"10\" -offset=\"0\"", false).replace(">", ">\n"));
 			//System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"AMI_TEST\" -entity=\"mc_dataset_2\"  -primaryFieldName=\"id\" -primaryFieldValue=\"157571\" -hideBigContent -expandedLinkedElements=\"\" ", false));
 			//System.out.println(CommandSingleton.executeCommand("GetElementInfo -catalog=\"AMI_TEST\" -entity=\"task\" -primaryFieldName=\"id\" -primaryFieldValue=\"19795054\" -hideBigContent -expandedLinkedElements=\"\" ", false));
-			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"AMI_TEST\" -entity=\"dataset\" -sql=\"SELECT `datasetName` FROM `ATLAS_AMI_DATASET`.`t0` WHERE `flag` = 'READY'\" ", false).replace(">", ">\n"));
 
+			//System.out.println(CommandSingleton.executeCommand("GetEntityInfo -catalog=\"TIER0:external\" -entity=\"R3DATASETS\"", false).replace(">", ">\n"));
+
+			System.out.println(CommandSingleton.executeCommand("SearchQuery -catalog=\"TIER0:external\" -entity=\"DATASETS\" -sql=\"SELECT `DATASETNAME`, `TRUNCATED`, `NFILES`, `TOTSIZE`, `TOTEVENTS` FROM `ATLAS_TZ_R3`.`DATASETS` WHERE `AMI` = 'READY' ORDER BY `CTIME` FETCH FIRST 40000 ROWS ONLY\"", false).replace(">", ">\n"));
 
 		}
 		catch(Exception e)

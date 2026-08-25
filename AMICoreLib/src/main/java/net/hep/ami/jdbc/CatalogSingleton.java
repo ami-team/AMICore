@@ -32,6 +32,7 @@ public class CatalogSingleton
 		@NotNull private final String jdbcUrl;
 		@Nullable private final String username;
 		@Nullable private final String password;
+		@Nullable private final String roles;
 		@Nullable private final String description;
 		/*----*/ private final boolean archived;
 	}
@@ -109,6 +110,7 @@ public class CatalogSingleton
 						row.getValue(3),
 						row.getValue(4),
 						row.getValue(5),
+							"",
 						row.getValue(6),
 						row.getValue(7, false)
 					);
@@ -131,7 +133,7 @@ public class CatalogSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void addCatalog(@NotNull String externalCatalog, @NotNull String internalCatalog, @NotNull String internalSchema, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String description, boolean archived) throws Exception
+	private static void addCatalog(@NotNull String externalCatalog, @NotNull String internalCatalog, @NotNull String internalSchema, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String roles, @NotNull String description, boolean archived) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 		/* ADD CATALOG                                                                                                */
@@ -164,6 +166,7 @@ public class CatalogSingleton
 				jdbcUrl,
 				user,
 				pass,
+				roles,
 				description,
 				archived
 			)
@@ -299,6 +302,7 @@ public class CatalogSingleton
 			      .append("<field name=\"externalCatalog\"><![CDATA[").append(catalogDescr.getExternalCatalog()).append("]]></field>")
 			      .append("<field name=\"internalCatalog\"><![CDATA[").append(catalogDescr.getInternalCatalog()).append("]]></field>")
 			      .append("<field name=\"internalSchema\"><![CDATA[").append(catalogDescr.getInternalSchema()).append("]]></field>")
+			      .append("<field name=\"roles\"><![CDATA[").append(catalogDescr.getRoles()).append("]]></field>")
 			      .append("<field name=\"description\"><![CDATA[").append(catalogDescr.getDescription()).append("]]></field>")
 			      .append("<field name=\"archived\"><![CDATA[").append(catalogDescr.isArchived()).append("]]></field>")
 			      .append("</row>")
