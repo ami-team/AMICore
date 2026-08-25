@@ -43,7 +43,10 @@ public class JSONUtility
     @Nullable
     public static Object parseJson(@NotNull File file) throws Exception
     {
-        return parseJson(new FileInputStream(file));
+        try (FileInputStream fis = new FileInputStream(file))
+        {
+            return parseJson(fis);
+        }
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -93,7 +96,10 @@ public class JSONUtility
     @Nullable
     public static Object parsePythonDict(@NotNull File file) throws Exception
     {
-        return parsePythonDict(new FileInputStream(file));
+        try (FileInputStream fis = new FileInputStream(file))
+        {
+            return parsePythonDict(fis);
+        }
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -160,7 +166,8 @@ public class JSONUtility
     @Nullable
     public static <T> T queryJsonPath(@NotNull String jsonString, @NotNull String jsonPath) throws Exception
     {
-        return JsonPath.read(jsonString, jsonPath);
+        DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonString);
+        return ctx.read(jsonPath);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -197,7 +204,24 @@ public class JSONUtility
     {
         try
         {
-            Object result = queryJsonPath(jsonObject, jsonPath);
+            Object result = (jsonObject instanceof String)
+                    ? queryJsonPath((String) jsonObject, jsonPath)
+                    : queryJsonPath(jsonObject, jsonPath);
+            return result != null;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    public static boolean pathExists(@NotNull String jsonString, @NotNull String jsonPath)
+    {
+        try
+        {
+            Object result = queryJsonPath(jsonString, jsonPath);
             return result != null;
         }
         catch(Exception e)
@@ -272,7 +296,7 @@ public class JSONUtility
         while (clazz != null && clazz != Object.class) {
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-                parameters.put(field.getName(), field.get(object));
+                parameters.putIfAbsent(field.getName(), field.get(object));
             }
             clazz = clazz.getSuperclass();
         }
@@ -418,8 +442,8 @@ public class JSONUtility
     {
         String json = toJson(object);
         @SuppressWarnings("unchecked")
-        T copy = (T) parseJson(json);
-        return copy;
+        Class<T> clazz = (Class<T>) object.getClass();
+        return OBJECT_MAPPER.readValue(json, clazz);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
