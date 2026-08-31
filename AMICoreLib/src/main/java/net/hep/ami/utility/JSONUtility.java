@@ -155,47 +155,51 @@ public class JSONUtility
     /*----------------------------------------------------------------------------------------------------------------*/
 
     @Nullable
-    public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath) throws Exception
+    public static <T> T queryJsonPath(@NotNull String jsonString, @NotNull String jsonPath, @NotNull Configuration configuration, @NotNull Class<T> clazz) throws Exception
     {
-        DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonObject);
-        return ctx.read(jsonPath);
+        DocumentContext ctx = JsonPath.using(configuration).parse(jsonString);
+        return ctx.read(jsonPath, new TypeRef<>() {});
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
     @Nullable
-    public static <T> T queryJsonPath(@NotNull String jsonString, @NotNull String jsonPath) throws Exception
-    {
-        DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonString);
-        return ctx.read(jsonPath);
-    }
-
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    @Nullable
-    public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath,
-                                      @NotNull Configuration configuration) throws Exception
+    public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath, @NotNull Configuration configuration, @NotNull Class<T> clazz) throws Exception
     {
         DocumentContext ctx = JsonPath.using(configuration).parse(jsonObject);
-        return ctx.read(jsonPath);
+        return ctx.read(jsonPath, new TypeRef<>() {});
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    @NotNull
-    public static <T> List<T> queryJsonPathAsList(@NotNull Object jsonObject, @NotNull String jsonPath) throws Exception
+    @Nullable
+    public static <T> T queryJsonPath(@NotNull String jsonString, @NotNull String jsonPath, @NotNull Class<T> clazz) throws Exception
     {
-        DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonObject);
-        return ctx.read(jsonPath, new TypeRef<List<T>>() {});
+        return JSONUtility.queryJsonPath(jsonString, jsonPath, JSON_PATH_CONFIG, clazz);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    @NotNull
-    public static <T> Map<String, T> queryJsonPathAsMap(@NotNull Object jsonObject, @NotNull String jsonPath) throws Exception
+    @Nullable
+    public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath, @NotNull Class<T> clazz) throws Exception
     {
-        DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonObject);
-        return ctx.read(jsonPath, new TypeRef<Map<String, T>>() {});
+        return JSONUtility.queryJsonPath(jsonObject, jsonPath, JSON_PATH_CONFIG, clazz);
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    @Nullable
+    public static Object queryJsonPath(@NotNull String jsonString, @NotNull String jsonPath) throws Exception
+    {
+        return JSONUtility.queryJsonPath(jsonString, jsonPath, JSON_PATH_CONFIG, Object.class);
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    @Nullable
+    public static Object queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath) throws Exception
+    {
+        return JSONUtility.queryJsonPath(jsonObject, jsonPath, JSON_PATH_CONFIG, Object.class);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -392,22 +396,6 @@ public class JSONUtility
             // If it fails, try as Python dict
             return parsePythonDictAsList(stringValue);
         }
-    }
-
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    /**
-     * Extracts a parameter and applies a JSONPath query on it
-     */
-    @Nullable
-    public static <T> T extractAndQueryJsonPath(@NotNull Object object, @NotNull String parameterName,
-                                                @NotNull String jsonPath) throws Exception
-    {
-        Object parsedValue = extractAndParseParameter(object, parameterName);
-        if (parsedValue == null) {
-            return null;
-        }
-        return queryJsonPath(parsedValue, jsonPath);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/

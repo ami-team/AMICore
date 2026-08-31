@@ -114,39 +114,19 @@ public class JsonUtilityTest
 
             // Test 3.1: Simple query
             System.out.println("Test 3.1: Simple JSONPath queries...");
-            String amiTag = JSONUtility.queryJsonPath(dataMap, "$.AMITag");
+            String amiTag = JSONUtility.queryJsonPath(dataMap, "$.AMITag", String.class);
             System.out.println("  - $.AMITag = " + amiTag);
             printResult("Query AMITag", "x899".equals(amiTag));
 
             // Test 3.2: Nested query
             System.out.println("\nTest 3.2: Nested JSONPath queries...");
-            String conditionsTag = JSONUtility.queryJsonPath(dataMap, "$.conditionsTag.all");
+            String conditionsTag = JSONUtility.queryJsonPath(dataMap, "$.conditionsTag.all", String.class);
             System.out.println("  - $.conditionsTag.all = " + conditionsTag);
             printResult("Query conditionsTag", conditionsTag != null);
 
-            String geometryVersion = JSONUtility.queryJsonPath(dataMap, "$.geometryVersion.all");
+            String geometryVersion = JSONUtility.queryJsonPath(dataMap, "$.geometryVersion.all", String.class);
             System.out.println("  - $.geometryVersion.all = " + geometryVersion);
             printResult("Query geometryVersion", geometryVersion != null);
-
-            // Test 3.3: Query as List
-            System.out.println("\nTest 3.3: Query JSONPath as List...");
-            List<String> autoConfig = JSONUtility.queryJsonPathAsList(dataMap, "$.autoConfiguration[*]");
-            System.out.println("  - $.autoConfiguration[*] = " + autoConfig);
-            printResult("Query autoConfiguration", autoConfig.size() > 0);
-
-            List<String> athenaopts = JSONUtility.queryJsonPathAsList(dataMap, "$.athenaopts[*]");
-            System.out.println("  - $.athenaopts[*] = " + athenaopts);
-            printResult("Query athenaopts", athenaopts.contains("--threads=8"));
-
-            // Test 3.4: Query as Map
-            System.out.println("\nTest 3.4: Query JSONPath as Map...");
-            Map<String, Object> conditionsMap = JSONUtility.queryJsonPathAsMap(dataMap, "$.conditionsTag");
-            System.out.println("  - $.conditionsTag = " + conditionsMap);
-            printResult("Query Map conditionsTag", conditionsMap.containsKey("all"));
-
-            Map<String, Object> preExecMap = JSONUtility.queryJsonPathAsMap(dataMap, "$.preExec");
-            System.out.println("  - $.preExec = " + preExecMap);
-            printResult("Query Map preExec", preExecMap.containsKey("all"));
 
             // Test 3.5: Path exists
             System.out.println("\nTest 3.5: Checking path existence...");
@@ -281,20 +261,6 @@ public class JsonUtilityTest
             System.out.println("  - items from jsonData: " + nestedItems);
             printResult("Nested list extracted", nestedItems.contains("a"));
 
-            // Test 6.7: Extract and query JSONPath
-            System.out.println("\nTest 6.7: Extract and query JSONPath...");
-            String extractedAMI = JSONUtility.extractAndQueryJsonPath(testObj, "configData", "$.AMITag");
-            System.out.println("  - AMITag via extraction + JSONPath: " + extractedAMI);
-            printResult("JSONPath on extracted parameter", "x899".equals(extractedAMI));
-
-            Integer extractedMaxEvents = JSONUtility.extractAndQueryJsonPath(testObj, "configData", "$.maxEvents");
-            System.out.println("  - maxEvents via extraction + JSONPath: " + extractedMaxEvents);
-            printResult("Numeric value extracted", extractedMaxEvents == -1);
-
-            List<String> extractedAutoConfig = JSONUtility.extractAndQueryJsonPath(testObj, "configData", "$.autoConfiguration");
-            System.out.println("  - autoConfiguration via extraction + JSONPath: " + extractedAutoConfig);
-            printResult("List extracted", extractedAutoConfig.contains("everything"));
-
             System.out.println();
 
             /*--------------------------------------------------------------------------------------------------------*/
@@ -303,15 +269,6 @@ public class JsonUtilityTest
 
             printSectionHeader("SECTION 7: ADVANCED TESTS");
 
-            // Test 7.1: Complex nested structures
-            System.out.println("Test 7.1: Accessing deeply nested structures...");
-            List<String> preExecAll = JSONUtility.queryJsonPath(dataMap, "$.preExec.all");
-            System.out.println("  - preExec.all: " + preExecAll);
-            printResult("PreExec extracted", preExecAll.size() > 0);
-
-            List<String> postExecAll = JSONUtility.queryJsonPath(dataMap, "$.postExec.all");
-            System.out.println("  - postExec.all (length): " + postExecAll.get(0).length() + " characters");
-            printResult("PostExec extracted", postExecAll.size() > 0);
 
             // Test 7.2: Python data manipulation with single and double quotes
             System.out.println("\nTest 7.2: Python dict with mixed quotes...");
