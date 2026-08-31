@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from /home/lambert/IdeaProjects/AMICore/AMICoreLib/src/main/antlr4/net/hep/ami/utility/parser/Command.g4 by ANTLR 4.13.2
 package net.hep.ami.utility.parser;
 
 	import java.util.*;
@@ -14,7 +14,7 @@ import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class CommandLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 

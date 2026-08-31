@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from /home/lambert/IdeaProjects/AMICore/AMICoreLib/src/main/antlr4/net/hep/ami/utility/parser/Command.g4 by ANTLR 4.13.2
 package net.hep.ami.utility.parser;
 
 	import java.util.*;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class CommandParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 
@@ -79,7 +79,7 @@ public class CommandParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "java-escape"; }
+	public String getGrammarFileName() { return "Command.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

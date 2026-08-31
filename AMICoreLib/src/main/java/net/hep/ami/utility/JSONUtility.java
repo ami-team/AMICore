@@ -158,7 +158,7 @@ public class JSONUtility
     public static <T> T queryJsonPath(@NotNull String jsonString, @NotNull String jsonPath, @NotNull Configuration configuration, @NotNull Class<T> clazz) throws Exception
     {
         DocumentContext ctx = JsonPath.using(configuration).parse(jsonString);
-        return ctx.read(jsonPath, new TypeRef<>() {});
+        return ctx.read(jsonPath, clazz);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -167,7 +167,7 @@ public class JSONUtility
     public static <T> T queryJsonPath(@NotNull Object jsonObject, @NotNull String jsonPath, @NotNull Configuration configuration, @NotNull Class<T> clazz) throws Exception
     {
         DocumentContext ctx = JsonPath.using(configuration).parse(jsonObject);
-        return ctx.read(jsonPath, new TypeRef<>() {});
+        return ctx.read(jsonPath, clazz);
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
