@@ -3,6 +3,7 @@ package net.hep.ami.utility.shell;
 import org.apache.sshd.client.session.*;
 import org.apache.sshd.client.auth.keyboard.*;
 
+import net.hep.ami.SecuritySingleton;
 import net.hep.ami.utility.*;
 
 import org.jetbrains.annotations.*;
@@ -11,8 +12,9 @@ public class TwoFactorUserInfo implements UserInteraction
 {
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    @Nullable private String m_password;
-    @Nullable private String m_tfaCode;
+    @Nullable private /*-*/ String m_password;
+    @Nullable private /*-*/ String m_tfaCode;
+    @Nullable private final String m_totpSecret;
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -22,7 +24,7 @@ public class TwoFactorUserInfo implements UserInteraction
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    public TwoFactorUserInfo(@Nullable String password, @Nullable String tfaPrompt)
+    public TwoFactorUserInfo(@Nullable String password, @Nullable String tfaPrompt, @Nullable String totpSecret)
     {
         /*------------------------------------------------------------------------------------------------------------*/
 
@@ -39,8 +41,9 @@ public class TwoFactorUserInfo implements UserInteraction
 
         /*------------------------------------------------------------------------------------------------------------*/
 
-        this.m_password = password;
-        this.m_tfaPrompt = tfaPrompt;
+        this.m_password   = password;
+        this.m_tfaPrompt  = tfaPrompt;
+        this.m_totpSecret = totpSecret;
 
         /*------------------------------------------------------------------------------------------------------------*/
     }
@@ -67,17 +70,35 @@ public class TwoFactorUserInfo implements UserInteraction
             AbstractShell.LOG.info("KBI prompt[{}] = '{}'", i, p);
 
             /**/ if(p.contains("password"))
+        {
+            responses[i] = m_password != null ? m_password : "";
+        }
+        else if(this.m_tfaOk && p.contains(this.m_tfaPrompt))
+        {
+            if(m_totpSecret != null)
             {
-                responses[i] = m_password != null ? m_password : "";
-            }
-            else if(this.m_tfaOk && p.contains(this.m_tfaPrompt))
-            {
-                responses[i] = m_tfaCode != null ? m_tfaCode : "";
+                try
+                {
+                    responses[i] = SecuritySingleton.generateTOTP(m_totpSecret, java.time.Instant.now().getEpochSecond(), 6, 30, "HmacSHA1");
+
+                    AbstractShell.LOG.info("KBI TOTP auto-generated for prompt[{}]", i);
+                }
+                catch(Exception e)
+                {
+                    AbstractShell.LOG.error("KBI TOTP generation failed, falling back to m_tfaCode", e);
+
+                    responses[i] = m_tfaCode != null ? m_tfaCode : "";
+                }
             }
             else
             {
-                responses[i] = "";
+                responses[i] = m_tfaCode != null ? m_tfaCode : "";
             }
+        }
+        else
+        {
+            responses[i] = "";
+        }
         }
 
         return responses;

@@ -3,6 +3,8 @@ package net.hep.ami;
 import lombok.*;
 
 import java.io.*;
+import java.nio.*;
+import java.time.*;
 import java.net.*;
 import java.math.*;
 import java.util.*;
@@ -18,6 +20,7 @@ import com.fasterxml.jackson.core.type.*;
 
 /* CERTIFICATES */
 
+import net.hep.ami.utility.Empty;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.*;
@@ -26,11 +29,13 @@ import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.jcajce.*;
 
 /* CRYPTOGRAPHY */
-
+import org.bouncycastle.crypto.*;
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.crypto.engines.*;
 import org.bouncycastle.crypto.paddings.*;
 import org.bouncycastle.crypto.generators.*;
+import org.bouncycastle.crypto.digests.*;
+import org.bouncycastle.crypto.macs.*;
 
 import org.jetbrains.annotations.*;
 
@@ -1472,6 +1477,117 @@ public class SecuritySingleton
 			}
 		}
 	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+	/* TOTP                                                                                                           */
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@NotNull
+	private static Digest getDigest(@NotNull String algorithm) throws Exception
+	{
+		return switch(algorithm.toUpperCase())
+		{
+			case "HMACSHA1" -> new SHA1Digest();
+			case "HMACSHA256" -> new SHA256Digest();
+			case "HMACSHA512" -> new SHA512Digest();
+			default -> throw new Exception("unsupported TOTP algorithm: " + algorithm);
+		};
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static byte @NotNull[] base32Decode(@NotNull String value)
+	{
+		String s = value.replace("=", "").replace(" ", "").toUpperCase();
+
+		int padLength = (8 - (s.length() % 8)) % 8;
+
+		StringBuilder padded = new StringBuilder(s);
+
+		for(int i = 0; i < padLength; i++)
+		{
+			padded.append('=');
+		}
+
+		return org.bouncycastle.util.encoders.Base32.decode(padded.toString());
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	@Nullable
+	public static String generateTOTP(@Nullable String totpSecret, long epochSeconds, int digits, int period, @NotNull String algorithm) throws Exception
+	{
+		if(Empty.is(totpSecret, Empty.STRING_NULL_EMPTY_BLANK))
+		{
+			return null;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		byte[] secret = base32Decode(totpSecret);
+
+		if(secret.length == 0)
+		{
+			return null;
+		}
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		long counter = epochSeconds / period;
+
+		byte[] data = ByteBuffer.allocate(8).putLong(counter).array();
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		HMac hmac = new HMac(getDigest(algorithm));
+
+		hmac.init(new KeyParameter(secret));
+		hmac.update(data, 0, data.length);
+
+		byte[] hash = new byte[hmac.getMacSize()];
+
+		hmac.doFinal(hash, 0);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		int offset = hash[hash.length - 1] & 0x0f;
+
+		int binary =
+				((hash[offset] & 0x7f) << 24) |
+						((hash[offset + 1] & 0xff) << 16) |
+						((hash[offset + 2] & 0xff) << 8) |
+						(hash[offset + 3] & 0xff)
+				;
+
+		int otp = binary % (int) Math.pow(10, digits);
+
+		/*------------------------------------------------------------------------------------------------------------*/
+
+		return String.format("%0" + digits + "d", otp);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public static void checkTOTP(@Nullable String totpSecret, @Nullable String code, int digits, int period, @NotNull String algorithm) throws Exception
+	{
+		if(!Empty.is(totpSecret, Empty.STRING_NULL_EMPTY_BLANK) && !Empty.is(code, Empty.STRING_NULL_EMPTY_BLANK))
+		{
+			long now = Instant.now().getEpochSecond();
+
+			// tolerate ±1 period for clock drift
+			for(int i = -1; i <= 1; i++)
+			{
+				if(code.equals(generateTOTP(totpSecret, now + (long) i * period, digits, period, algorithm)))
+				{
+					return;
+				}
+			}
+		}
+
+		throw new Exception("invalid check");
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 }
