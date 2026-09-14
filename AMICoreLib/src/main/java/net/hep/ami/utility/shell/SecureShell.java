@@ -1,14 +1,17 @@
 package net.hep.ami.utility.shell;
 
 import java.io.*;
-import java.util.*;
 import java.nio.charset.*;
+import java.nio.file.*;
+import java.security.*;
+import java.util.*;
 import java.util.concurrent.*;
 
 import org.apache.sshd.client.*;
 import org.apache.sshd.client.channel.*;
 import org.apache.sshd.client.session.*;
 import org.apache.sshd.client.keyverifier.*;
+import org.apache.sshd.common.keyprovider.*;
 import org.apache.sshd.sftp.client.*;
 
 import net.hep.ami.utility.*;
@@ -31,6 +34,9 @@ public class SecureShell extends AbstractShell
 	private final int    m_port;
 	private final String m_user;
 
+	@Nullable
+	private final String m_passwordOrPrivateKey;
+
 	/*----------------------------------------------------------------------------------------------------------------*/
 
 	static final long s_timeout = 10L;
@@ -39,22 +45,30 @@ public class SecureShell extends AbstractShell
 
 	public SecureShell(String host, int port, @Nullable String user, @Nullable String passwordOrPrivateKey) throws Exception
 	{
-		this(host, port, user, passwordOrPrivateKey, null);
+		this(host, port, user, passwordOrPrivateKey, null, null);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public SecureShell(String host, int port, @Nullable String user, @Nullable String pass, @Nullable String tfaPrompt) throws Exception
+	public SecureShell(String host, int port, @Nullable String user, @Nullable String passwordOrPrivateKey, @Nullable String tfaPrompt) throws Exception
+	{
+		this(host, port, user, passwordOrPrivateKey, tfaPrompt, null);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	public SecureShell(String host, int port, @Nullable String user, @Nullable String passwordOrPrivateKey, @Nullable String tfaPrompt, @Nullable String totpSecret) throws Exception
 	{
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_host = host;
 		m_port = port;
 		m_user = user;
+		m_passwordOrPrivateKey = passwordOrPrivateKey;
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		m_userInfo = new TwoFactorUserInfo(pass, tfaPrompt);
+		m_userInfo = new TwoFactorUserInfo(passwordOrPrivateKey, tfaPrompt, totpSecret);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -85,13 +99,21 @@ public class SecureShell extends AbstractShell
 		/*------------------------------------------------------------------------------------------------------------*/
 
 		m_session = m_client.connect(m_user, m_host, m_port)
-		                    .verify(s_timeout, TimeUnit.SECONDS)
-		                    .getSession()
-		;
+				.verify(s_timeout, TimeUnit.SECONDS)
+				.getSession();
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		//m_session.addPasswordIdentity(m_pass);
+		if(!Empty.is(m_passwordOrPrivateKey, Empty.STRING_NULL_EMPTY_BLANK) && m_passwordOrPrivateKey.length() > 64)
+		{
+			KeyPair keyPair = loadKeyPair(m_passwordOrPrivateKey);
+
+			m_session.addPublicKeyIdentity(keyPair);
+		}
+		else
+		{
+			m_session.addPasswordIdentity(m_passwordOrPrivateKey);
+		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
@@ -110,10 +132,7 @@ public class SecureShell extends AbstractShell
 			m_session.close(false);
 		}
 
-		if(m_client != null)
-		{
-			m_client.stop();
-		}
+		m_client.stop();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
@@ -136,9 +155,11 @@ public class SecureShell extends AbstractShell
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
+		Integer exitStatus = null;
+
 		try(ClientChannel channel = m_session.createExecChannel(argsToString(args));
-			ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
-			ByteArrayOutputStream errorStream = new ByteArrayOutputStream())
+		    ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
+		    ByteArrayOutputStream errorStream = new ByteArrayOutputStream())
 		{
 			channel.setOut(inputStream);
 			channel.setErr(errorStream);
@@ -147,13 +168,15 @@ public class SecureShell extends AbstractShell
 
 			channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 0L);
 
+			exitStatus = channel.getExitStatus();
+
 			inputStringBuilder.append(inputStream.toString(StandardCharsets.UTF_8));
 			errorStringBuilder.append(errorStream.toString(StandardCharsets.UTF_8));
 		}
 
 		/*------------------------------------------------------------------------------------------------------------*/
 
-		return new ShellTuple(0, inputStringBuilder, errorStringBuilder);
+		return new ShellTuple(exitStatus != null ? exitStatus : -1, inputStringBuilder, errorStringBuilder);
 
 		/*------------------------------------------------------------------------------------------------------------*/
 	}
@@ -192,6 +215,24 @@ public class SecureShell extends AbstractShell
 		{
 			throw new Exception(e.getMessage() + " (" + fpath + "/" + fname + ")", e);
 		}
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private KeyPair loadKeyPair(String privateKeyPath) throws Exception
+	{
+		FileKeyPairProvider provider = new FileKeyPairProvider(Paths.get(privateKeyPath));
+
+		Iterable<KeyPair> keyPairs = provider.loadKeys(null);
+
+		Iterator<KeyPair> iterator = keyPairs.iterator();
+
+		if(!iterator.hasNext())
+		{
+			throw new Exception("No key pair found in: " + privateKeyPath);
+		}
+
+		return iterator.next();
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
