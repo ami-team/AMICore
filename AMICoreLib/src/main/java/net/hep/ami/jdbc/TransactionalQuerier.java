@@ -37,6 +37,16 @@ public class TransactionalQuerier implements Querier
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public TransactionalQuerier(@NotNull String catalog, long transactionId) throws Exception
+	{
+		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
+		String timeZone = ConfigSingleton.getProperty("time_zone", "UTC");
+
+		m_driver = TransactionPoolSingleton.getConnection(catalog, AMIUser, timeZone, 0x00, m_transactionId = transactionId);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public TransactionalQuerier(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
 	{
 		m_driver = TransactionPoolSingleton.getConnection(catalog, AMIUser, timeZone, flags, m_transactionId = transactionId);
