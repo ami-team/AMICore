@@ -36,57 +36,6 @@ public class TransactionPoolSingleton
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/
-    //fl
-	public static AbstractDriver getConnection(@NotNull String catalog, long transactionId) throws Exception
-	{
-		String AMIUser = ConfigSingleton.getProperty("admin_user", "admin");
-		String timeZone = ConfigSingleton.getProperty("time_zone", "UTC");
-		int flags = 0x00;
-
-		if(transactionId <= 0x000000000000
-				||
-				transactionId >= s_lastId.get()
-		) {
-			throw new Exception("invalid transaction identifier (" + transactionId + " - " + s_lastId.get() + ")");
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		String key = CatalogSingleton.getKey(catalog);
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		AbstractDriver result;
-
-		Map<String, AbstractDriver> transaction;
-
-		synchronized(TransactionPoolSingleton.class)
-		{
-			/**/		transaction = s_pools.get(transactionId);
-			/**/
-			/**/		if(transaction == null)
-			/**/		{
-			/**/			s_pools.put(transactionId, transaction = new HashMap<>());
-			/**/
-			/**/			transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, flags));
-			/**/		}
-		    /**/		else
-			/**/		{
-			/**/			result = transaction.get(key);
-			/**/
-			/**/			if(result == null)
-			/**/			{
-			/**/				transaction.put(key, result = CatalogSingleton.getConnection(catalog, AMIUser, timeZone, flags));
-			/**/			}
-			/**/		}
-		}
-
-		/*------------------------------------------------------------------------------------------------------------*/
-
-		return result;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------*/
 
 	public static AbstractDriver getConnection(@NotNull String catalog, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
 	{
