@@ -105,9 +105,23 @@ public abstract class AbstractTask
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	protected void commit() throws Exception
+	{
+		TransactionPoolSingleton.commit(m_transactionId);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	protected void commitAndRelease() throws Exception
 	{
 		TransactionPoolSingleton.commitAndRelease(m_transactionId);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	protected void rollback() throws Exception
+	{
+		TransactionPoolSingleton.rollback(m_transactionId);
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------*/

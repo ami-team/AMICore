@@ -200,6 +200,20 @@ public abstract class AbstractCommand
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	protected void commit() throws Exception
+	{
+		TransactionPoolSingleton.commit(m_transactionId);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	protected void rollback() throws Exception
+	{
+		TransactionPoolSingleton.rollback(m_transactionId);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	@NotNull
 	public StringBuilder executeCommand(@NotNull String command) throws Exception
 	{
