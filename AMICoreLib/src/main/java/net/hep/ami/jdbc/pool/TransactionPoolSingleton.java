@@ -84,7 +84,7 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	public static AbstractDriver getConnection(@Nullable String externalCatalog, @NotNull String internalCatalog,  @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
+	public static AbstractDriver getConnection(@Nullable String externalCatalog, @NotNull String internalCatalog, @NotNull String jdbcUrl, @Nullable String user, @Nullable String pass, @NotNull String AMIUser, @NotNull String timeZone, int flags, long transactionId) throws Exception
 	{
 		if(transactionId <= 0x000000000000
 		   ||
@@ -131,7 +131,21 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public static void commit(long transactionId) throws Exception
+	{
+		TransactionPoolSingleton._commit(transactionId, false);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public static void commitAndRelease(long transactionId) throws Exception
+	{
+		TransactionPoolSingleton._commit(transactionId, true);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static void _commit(long transactionId, boolean release) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
 
@@ -176,7 +190,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				try { driver.commitAndRelease(); } catch(Exception e2) { flag = 2; }
+				try { if(release) driver.commitAndRelease(); else driver.commit(); } catch(Exception e2) { flag = 2; }
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -189,7 +203,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				try { driver.rollbackAndRelease(); } catch(Exception e2) {/* IGNORE */}
+				try { if(release) driver.rollbackAndRelease(); else driver.rollback(); } catch(Exception e2) {/* IGNORE */}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -218,7 +232,21 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	public static void rollback(long transactionId) throws Exception
+	{
+		TransactionPoolSingleton._rollback(transactionId, false);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	public static void rollbackAndRelease(long transactionId) throws Exception
+	{
+		TransactionPoolSingleton._rollback(transactionId, true);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	private static void _rollback(long transactionId, boolean rollback) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
 
@@ -263,7 +291,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				try { driver.rollbackAndRelease(); } catch(Exception e2) { flag = 2; }
+				try { if(rollback) driver.rollbackAndRelease(); else driver.rollback(); } catch(Exception e2) { flag = 2; }
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -276,7 +304,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				try { driver.rollbackAndRelease(); } catch(Exception e2) {/* IGNORE */}
+				try { if(rollback) driver.rollbackAndRelease(); else driver.rollback(); } catch(Exception e2) {/* IGNORE */}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
