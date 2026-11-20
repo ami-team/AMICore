@@ -266,7 +266,7 @@ public class TransactionPoolSingleton
 		/**/	}
 		/**/	else {
 		/**/		transaction = s_pools.get(transactionId);
-		/**/ }
+		/**/	}
 		}
 
 		if(transaction == null)
