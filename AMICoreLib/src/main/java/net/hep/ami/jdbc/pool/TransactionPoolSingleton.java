@@ -155,7 +155,12 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
+		/**/	if(release) {
 		/**/		transaction = s_pools.remove(transactionId);
+		/**/	}
+		/**/	else {
+		/**/		transaction = s_pools.get(transactionId);
+		/**/	}
 		}
 
 		if(transaction == null)
@@ -246,7 +251,7 @@ public class TransactionPoolSingleton
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
-	private static void _rollback(long transactionId, boolean rollback) throws Exception
+	private static void _rollback(long transactionId, boolean release) throws Exception
 	{
 		Map<String, AbstractDriver> transaction;
 
@@ -256,7 +261,12 @@ public class TransactionPoolSingleton
 
 		synchronized(TransactionPoolSingleton.class)
 		{
+		/**/	if(release) {
 		/**/		transaction = s_pools.remove(transactionId);
+		/**/	}
+		/**/	else {
+		/**/		transaction = s_pools.get(transactionId);
+		/**/ }
 		}
 
 		if(transaction == null)
@@ -291,7 +301,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				try { if(rollback) driver.rollbackAndRelease(); else driver.rollback(); } catch(Exception e2) { flag = 2; }
+				try { if(release) driver.rollbackAndRelease(); else driver.rollback(); } catch(Exception e2) { flag = 2; }
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
@@ -304,7 +314,7 @@ public class TransactionPoolSingleton
 
 			for(AbstractDriver driver: transaction.values())
 			{
-				try { if(rollback) driver.rollbackAndRelease(); else driver.rollback(); } catch(Exception e2) {/* IGNORE */}
+				try { if(release) driver.rollbackAndRelease(); else driver.rollback(); } catch(Exception e2) {/* IGNORE */}
 			}
 
 			/*--------------------------------------------------------------------------------------------------------*/
