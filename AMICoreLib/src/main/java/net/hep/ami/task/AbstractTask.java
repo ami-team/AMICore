@@ -63,6 +63,20 @@ public abstract class AbstractTask
 
 	/*----------------------------------------------------------------------------------------------------------------*/
 
+	protected String executeCommand(@NotNull String command) throws Exception
+	{
+		return CommandSingleton.executeCommand(command, false, m_transactionId);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
+	protected String executeCommand(@NotNull String command, boolean checkRoles) throws Exception
+	{
+		return CommandSingleton.executeCommand(command, checkRoles, m_transactionId);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------*/
+
 	protected String executeCommand(@NotNull String command, @NotNull Map<String, String> arguments) throws Exception
 	{
 		return CommandSingleton.executeCommand(command, arguments, false, m_transactionId);
